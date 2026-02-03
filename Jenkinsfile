@@ -1,31 +1,34 @@
 pipeline {
-  agent any
+    agent any
 
-  tools {
-    nodejs "node18"
-  }
-
-  stages {
-    stage('Install') {
-      steps {
-        sh 'npm install'
-      }
+    environment {
+        PROJECT_DIR = "/var/www/aryu_resumebuilder/resume_builder_frontend"
     }
 
-    stage('Build') {
-      steps {
-        sh 'npm run build'
-      }
-    }
+    stages {
 
-    stage('Deploy') {
-      steps {
-        sh '''
-          sudo rm -rf /var/www/aryu_resumebuilder/resume_builder_frontend/dist/*
-          sudo cp -r dist/* /var/www/aryu_resumebuilder/resume_builder_frontend/dist/
-        '''
-      }
+        stage('Pull Latest Code') {
+            steps {
+                sh '''
+                    cd $PROJECT_DIR
+                    git fetch --all
+                    git reset --hard origin/main
+                '''
+            }
+        }
+
+        stage('Verify dist exists') {
+            steps {
+                sh '''
+                    cd $PROJECT_DIR
+                    if [ ! -d "dist" ]; then
+                      echo "ERROR: dist folder not found. Dev team must push build."
+                      exit 1
+                    fi
+                '''
+            }
+        }
+
     }
-  }
 }
 
