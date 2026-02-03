@@ -460,7 +460,7 @@ function Choose_template() {
   useEffect(() => {
     if (containerRef.current && tabRefs.current.length > 0) {
       const activeTabElement = tabRefs.current.find(
-        (ref) => ref && ref.dataset.tabId === activeTab
+        (ref) => ref && ref.dataset.tabId === activeTab,
       );
 
       if (activeTabElement) {
@@ -481,231 +481,30 @@ function Choose_template() {
   const [showPreview, setShowPreview] = useState(false);
 
   useEffect(() => {
-    if (showPreview || showPopup) {
+    const shouldLockScroll = showPreview || showPopup;
+
+    if (shouldLockScroll) {
       document.body.classList.add("overflow-hidden");
     } else {
       document.body.classList.remove("overflow-hidden");
     }
 
-    return () => document.body.classList.remove("overflow-hidden");
+    return () => {
+      document.body.classList.remove("overflow-hidden");
+    };
   }, [showPopup, showPreview]);
 
+  console.log(showPopup);
+  console.log(showPreview);
+
   return (
-    // <section className="bg-white">
-    //   <div>
-    //     <Header />
-
-    //     {/* Floating Progress Bar */}
-    //     <div className="sticky top-6 mt-5 z-50 max-w-6xl mx-auto px-6">
-    //       <div className="backdrop-blur-xl bg-white/70 border border-gray-200 rounded-2xl shadow-lg px-8 py-4">
-    //         <div className="flex justify-center items-center gap-10">
-    //           {steps.map((step, index) => {
-    //             const isCurrent = step.id === 1;
-    //             const isActive = step.id <= 1;
-
-    //             return (
-    //               <React.Fragment key={step.id}>
-    //                 <div className="flex items-center gap-4">
-    //                   <div
-    //                     className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all duration-500
-    //                ${
-    //                  isCurrent
-    //                    ? "bg-gradient-to-r from-red-600 to-rose-500 text-white shadow-[0_0_20px_rgba(239,68,68,0.4)] scale-110"
-    //                    : isActive
-    //                    ? "bg-red-100 text-red-600"
-    //                    : "bg-gray-100 text-gray-400"
-    //                }`}
-    //                   >
-    //                     {step.id}
-    //                   </div>
-
-    //                   <span
-    //                     className={`text-lg ${
-    //                       isCurrent
-    //                         ? "text-gray-900 font-semibold"
-    //                         : "text-gray-500"
-    //                     }`}
-    //                   >
-    //                     {step.name}
-    //                   </span>
-    //                 </div>
-
-    //                 {index < steps.length - 1 && (
-    //                   <div className="w-16 h-[2px] bg-gradient-to-r from-red-400 to-rose-400 opacity-50 rounded-full" />
-    //                 )}
-    //               </React.Fragment>
-    //             );
-    //           })}
-    //         </div>
-    //       </div>
-    //     </div>
-
-    //     {/* Hero */}
-    //     <section className="relative max-w-7xl mx-auto px-6 pt-24 pb-20 text-center">
-    //       <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-gray-900 leading-tight">
-    //         Build a Resume that
-    //         <span className="block bg-gradient-to-r from-red-600 to-rose-500 bg-clip-text text-transparent">
-    //           Gets You Hired
-    //         </span>
-    //       </h1>
-
-    //       <p className="mt-8 text-xl text-gray-600 max-w-3xl mx-auto">
-    //         Choose from beautifully designed ATS-friendly templates crafted by
-    //         hiring experts.
-    //       </p>
-    //     </section>
-
-    //     <section className="px-4 md:px-20 pt-16 pb-24 bg-white">
-    //       <div className="max-w-7xl mx-auto">
-    //         {/* Header */}
-    //         <div className="mb-14 text-center">
-    //           <h2 className="text-3xl font-semibold text-gray-900">
-    //             Choose Your Resume Template
-    //           </h2>
-    //           <p className="mt-4 text-gray-600 text-lg max-w-2xl mx-auto">
-    //             Beautifully crafted, recruiter-approved resume templates built
-    //             for success.
-    //           </p>
-    //         </div>
-
-    //         {/* Grid */}
-    //         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
-    //           {currentTab?.templates.map((template) => {
-    //             const isFree = template.temp === "free";
-    //             const isLocked = !hasPlan && !isFree;
-
-    //             return (
-    //               <div
-    //                 key={template.id}
-    //                 className="group relative bg-white rounded-3xl border border-gray-200 overflow-hidden hover:border-red-200 hover:shadow-[0_25px_60px_rgba(196,1,22,0.10)] transition-all duration-500"
-    //               >
-    //                 {/* Image */}
-    //                 <div className="relative bg-[#fff5f6] p-8">
-    //                   {!isFree && (
-    //                     <div className="absolute top-4 left-4 bg-white text-red-600 border border-red-300 px-3 py-1 rounded-full text-xs font-bold shadow-sm">
-    //                       PREMIUM
-    //                     </div>
-    //                   )}
-
-    //                   <div className="absolute top-4 right-4 bg-white border border-gray-200 px-3 py-1 rounded-full text-xs font-semibold text-gray-700 shadow-sm">
-    //                     ATS Friendly
-    //                   </div>
-
-    //                   <img
-    //                     src={template.image}
-    //                     alt={template.style}
-    //                     className="w-full h-[340px] object-contain group-hover:scale-105 transition-transform duration-500"
-    //                   />
-
-    //                   {/* Hover Actions */}
-    //                   <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-all duration-500">
-    //                     <button
-    //                       onClick={() => {
-    //                         setPreviewTemplate(template);
-    //                         setShowPreview(true);
-    //                       }}
-    //                       className="px-5 py-2.5 rounded-xl bg-white text-[#c40116] border border-[#c40116] font-semibold shadow hover:scale-105 transition"
-    //                     >
-    //                       Live Preview
-    //                     </button>
-
-    //                     {isLocked ? (
-    //                       <button
-    //                         onClick={(e) => {
-    //                           e.stopPropagation();
-    //                           handleUnlockClick(e, template);
-    //                           // clickresumedetails(template);
-    //                         }}
-    //                         className="px-7 py-3 rounded-xl bg-gradient-to-r from-[#c40116] to-[#be0117] text-white font-semibold shadow-xl hover:scale-105 transition-transform flex items-center gap-2"
-    //                       >
-    //                         Unlock
-    //                       </button>
-    //                     ) : (
-    //                       <button
-    //                         onClick={() => {
-    //                           //   if (!isLoggedIn) {
-    //                           //     openLoginModal();
-    //                           //     return;
-    //                           //   }
-    //                           clickresumedetails(template);
-    //                         }}
-    //                         className="px-7 py-3 rounded-xl bg-gradient-to-r from-[#c40116] to-[#be0117] text-white font-semibold shadow-xl hover:scale-105 transition-transform"
-    //                       >
-    //                         Use This Template
-    //                       </button>
-    //                     )}
-    //                   </div>
-    //                 </div>
-
-    //                 {/* Info */}
-    //                 <div className="p-6">
-    //                   <h3 className="text-xl font-bold text-gray-900">
-    //                     {template.style}
-    //                   </h3>
-
-    //                   <p className="mt-2 text-sm text-gray-600 leading-relaxed">
-    //                     {template.description}
-    //                   </p>
-
-    //                   <div className="mt-6 flex items-center justify-between">
-    //                     <span className="text-sm font-semibold text-gray-500">
-    //                       {isFree ? "Free Template" : "Premium Template"}
-    //                     </span>
-
-    //                     {!isFree && (
-    //                       <span className="bg-red-100 text-red-600 text-xs font-bold px-3 py-1 rounded-full">
-    //                         PRO
-    //                       </span>
-    //                     )}
-    //                   </div>
-    //                 </div>
-    //               </div>
-    //             );
-    //           })}
-    //         </div>
-
-    //         {/* Preview Modal */}
-    //         <ResumePreviewModal
-    //           show={showPreview}
-    //           template={previewTemplate}
-    //           onClose={() => {
-    //             setShowPreview(false);
-    //             setPreviewTemplate(null);
-    //           }}
-    //           onUse={() => {
-    //             if (!isLoggedIn) {
-    //               openLoginModal();
-    //               return;
-    //             }
-    //             clickresumedetails(previewTemplate);
-    //           }}
-    //         />
-
-    //         {/* Subscription Popup */}
-    //         <SubscriptionPopup
-    //           show={showPopup}
-    //           onClose={() => {
-    //             setShowPopup(false);
-    //             setSelectedTemplate(null);
-    //           }}
-    //           template={selectedTemplate}
-    //         />
-    //       </div>
-    //     </section>
-
-    //     <Footer />
-    //   </div>
-    // </section>
-
     <section className="bg-white">
       <div>
         <Header />
 
-       
-
         {/* Hero */}
         <section className="relative max-w-7xl mx-auto px-4 md:px-6 pt-8 sm:pt-20 md:pt-24 pb-7 sm:pb-16 md:pb-20 text-center">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold md:font-extrabold tracking-tight text-gray-900 leading-tight">
+          <h1 className="text-2xl sm:text-3xl  md:text-5xl lg:text-6xl xl:text-7xl font-bold md:font-extrabold tracking-tight text-gray-900 leading-tight">
             Build a Resume that
             <span className="block bg-clip-text text-transparent bg-gradient-to-b from-black to-red-500 sm:mt-2">
               Gets You Hired
@@ -718,7 +517,7 @@ function Choose_template() {
           </p>
         </section>
 
-         {/* Floating Progress Bar */}
+        {/* Floating Progress Bar */}
         <div className="mt-4 sm:mt-5 max-lg:hidden z-50 max-w-6xl mx-auto px-3 sm:px-4 md:px-6">
           <div className="backdrop-blur-xl bg-white/70 border border-gray-200 rounded-xl sm:rounded-2xl shadow-lg px-4 sm:px-6 md:px-8 py-3 sm:py-4">
             <div className="flex justify-center items-center gap-4 sm:gap-6 md:gap-8 lg:gap-10 overflow-x-auto pb-2">
@@ -795,7 +594,7 @@ function Choose_template() {
                       />
 
                       {/* Hover Actions */}
-                      <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center gap-2 sm:gap-3 md:gap-4 opacity-0 group-hover:opacity-100 transition-all duration-500 p-3 sm:p-4">
+                      <div className="absolute inset-0 lg:bg-white/5 lg:backdrop-blur-sm flex items-center justify-center gap-2 sm:gap-3 md:gap-4 lg:opacity-0 lg:group-hover:opacity-100 transition-all duration-500 p-3 sm:p-4">
                         <button
                           onClick={() => {
                             setPreviewTemplate(template);
@@ -808,11 +607,13 @@ function Choose_template() {
 
                         {isLocked ? (
                           <button
-                            // onClick={(e) => {
-                            //   e.stopPropagation();
-                            //   handleUnlockClick(e, template);
-                            // }}
-                            className="px-3 sm:px-4 md:px-5 lg:px-7 py-1.5 sm:py-2 md:py-2.5 lg:py-3 rounded-lg sm:rounded-xl bg-gradient-to-r from-[#c40116] to-[#be0117] text-white font-semibold text-xs sm:text-sm md:text-base shadow-lg sm:shadow-xl hover:scale-105 transition-transform flex items-center gap-1 sm:gap-2"
+                            onClick={(e) => {
+                              // e.stopPropagation();
+                              // handleUnlockClick(e, template);
+
+                              clickresumedetails(template);
+                            }}
+                            className="px-3 sm:px-4 md:px-5 lg:px-7 py-1.5 sm:py-2 md:py-2.5 lg:py-3 rounded-lg sm:rounded-xl bg-gradient-to-r from-[#c40116] to-[#be0117] text-white font-semibold text-xs sm:text-sm md:text-base shadow-lg sm:shadow-xl hover:scale-105 transition-transform flex items-center gap-1 sm:gap-2 cursor-default"
                           >
                             Coming Soon
                           </button>

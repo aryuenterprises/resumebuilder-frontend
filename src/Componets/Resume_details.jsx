@@ -31,6 +31,10 @@ import { HiOutlineSquares2X2 } from "react-icons/hi2";
 import Swal from "sweetalert2";
 import SubscriptionPopup from "./SubscriptionPopup";
 import Loader from "./Loader";
+import { FiCornerDownLeft } from "react-icons/fi";
+import { IoIosArrowDropleftCircle } from "react-icons/io";
+import { IoCloseCircle } from "react-icons/io5";
+import SimpleCanvasPreview from "./SimpleCanvasPreview";
 
 function Resume_details() {
   const UseContext = useContext(CreateContext);
@@ -175,7 +179,7 @@ function Resume_details() {
   // );
 
   const selectedResume = resumeComponents.find(
-    (resume) => resume.id === Number(templateId)
+    (resume) => resume.id === Number(templateId),
   );
 
   const clickchoosetemplate = () => {
@@ -225,6 +229,8 @@ function Resume_details() {
     setLoading(false); // stop loader
   }, [Allplans]);
 
+  const [seeResumeClicked, setSeeResumeClicked] = useState(false);
+
   return (
     <section className="scrollbar-red bg-[#eff2f9]/50 flex  h-[100vh] overflow-hidden p-0 md:p-3 ">
       {loading ? (
@@ -236,29 +242,62 @@ function Resume_details() {
             onClose={() => setShowPopup(false)}
           /> */}
 
+          {/* show resume side popup */}
+          <div
+            className={`fixed duration-700 left-0 w-full h-full  z-[5000] ${seeResumeClicked ? "translate-x-0 " : "translate-x-full "}  `}
+          >
+            <p
+              onClick={() => setSeeResumeClicked(false)}
+              className=" font-semibold flex justify-end py-3 px-2"
+            >
+              <IoCloseCircle className="text-gray-500" size={23} />
+            </p>
+
+            <div
+             className="py-4 overflow-y-scroll"
+            >
+              <div
+                className=" flex justify-start overflow-y-scroll origin-top "
+                style={{
+                
+                  backgroundColor: "white",
+                  // height: "297mm",
+                  // boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+                  background: "white",
+                  borderRadius: "8px",
+                }}
+              >
+                <SimpleCanvasPreview>
+                {selectedResume ? selectedResume.component : null}
+
+                </SimpleCanvasPreview>
+              </div>
+            </div>
+          </div>
+
           {/* left tab  */}
-          <div className=" w-full md:w-[50%] flex flex-col   gap-2 ">
+          <div className=" w-full lg:w-[50%] flex flex-col  relative gap-2 ">
             <div className="bg-white flex-1  rounded-lg  overflow-auto ">
-          
               {/* steppers */}
-              <div className="relative w-full overflow-x-auto scrollbar-hide">
-                {/* Tabs + Dots container */}
-                <div className="flex justify-between items-center relative z-10">
-                  {tabsData.map((tab, index) => {
-                    const isActive = tab.id === activeTab;
-                    return (
-                      <div
-                        key={tab.id}
-                        className="flex flex-col items-center flex-shrink-0"
-                        style={{ width: `${100 / tabsData.length}%` }}
-                      >
-                        {/* Tab Label - Ultra compact on mobile */}
-                        <button
-                          onClick={() => {
-                            setActiveTab(tab.id);
-                            setAllTaskDetails(tab);
-                          }}
-                          className={`
+              <div className="fixed overflow-hidden z-40 w-full lg:w-[48%] ">
+                <div className="relative  w-full overflow-x-auto bg-white scrollbar-hide">
+                  {/* Tabs + Dots container */}
+                  <div className="flex justify-between items-center relative z-10">
+                    {tabsData.map((tab, index) => {
+                      const isActive = tab.id === activeTab;
+                      return (
+                        <div
+                          key={tab.id}
+                          className="flex flex-col items-center flex-shrink-0"
+                          style={{ width: `${100 / tabsData.length}%` }}
+                        >
+                          {/* Tab Label - Ultra compact on mobile */}
+                          <button
+                            onClick={() => {
+                              setActiveTab(tab.id);
+                              setAllTaskDetails(tab);
+                            }}
+                            className={`
               w-full px-1 py-1.5
               text-[10px] xs:text-xs sm:text-sm md:text-base lg:text-[16px]
               font-medium text-center
@@ -271,49 +310,51 @@ function Resume_details() {
               }
               active:scale-95
             `}
-                        >
-                          {tab.name}
-                        </button>
+                          >
+                            {tab.name}
+                          </button>
 
-                        {/* Dot Indicator - Scales with screen */}
-                        <div
-                          className={`
+                          {/* Dot Indicator - Scales with screen */}
+                          <div
+                            className={`
               w-1.5 h-1.5 xs:w-2 xs:h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3
               rounded-full mt-0.5 sm:mt-1 z-10 flex-shrink-0
               transition-all duration-300 ease-in-out
               ${
                 isActive
-                  ? "border border-[#C40116] bg-[#C40116]"
+                  ? "border border-[#C40116]/10 bg-[#C40116]/90"
                   : "border border-gray-300 bg-gray-300"
               }
             `}
-                        ></div>
-                      </div>
-                    );
-                  })}
+                          ></div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Base line */}
+                  <div className="absolute left-0 right-0 bottom-[3px] xs:bottom-[4px] sm:bottom-[5px] md:bottom-[6px] h-[1px] bg-gray-200"></div>
+
+                  {/* Animated Progress Line */}
+                  <div
+                    className="absolute bottom-[3px] xs:bottom-[4px] sm:bottom-[5px] md:bottom-[6px] h-[1px] bg-[#C40116]/50 transition-all duration-500 ease-in-out"
+                    style={{
+                      width: `${tabWidths[activeTab] || 0}%`,
+                      left: "0",
+                    }}
+                  ></div>
                 </div>
-
-                {/* Base line */}
-                <div className="absolute left-0 right-0 bottom-[3px] xs:bottom-[4px] sm:bottom-[5px] md:bottom-[6px] h-[1px] bg-gray-200"></div>
-
-                {/* Animated Progress Line */}
-                <div
-                  className="absolute bottom-[3px] xs:bottom-[4px] sm:bottom-[5px] md:bottom-[6px] h-[1px] bg-[#C40116] transition-all duration-500 ease-in-out"
-                  style={{
-                    width: `${tabWidths[activeTab] || 0}%`,
-                    left: "0",
-                  }}
-                ></div>
               </div>
-              <div className="mt-2">{renderTabContent()}</div>
+
+              <div className="mt-16 ">{renderTabContent()}</div>
             </div>
 
             {/* perivous */}
-            <div className="bg-white p-4  text-right rounded-lg  relative  ">
+            <div className="bg-white p-3 md:p-4 lg:p-5   text-right rounded-lg  relative  ">
               <div className="flex justify-between">
                 {prevTab && (
                   <button
-                    className="bg-gray-200 text-[#374151] border border-gray-300 text-sm md:text-base px-4 py-1 md:px-6 md:py-2 rounded-lg mr-3 font-nunito font-semibold hover:bg-gray-100 transition-colors duration-300"
+                    className="bg-gray-200 text-[#374151] border border-gray-300 text-sm md:text-base px-4 py-1 md:px-6 md:py-2 rounded-lg  font-nunito font-semibold hover:bg-gray-100 transition-colors duration-300"
                     onClick={handleBack}
                   >
                     Back
@@ -347,10 +388,18 @@ function Resume_details() {
                 )}
               </div>
             </div>
+
+            <button
+              className="lg:hidden absolute z-[1000] top-16 right-0 "
+              onClick={() => setSeeResumeClicked(!seeResumeClicked)}
+            >
+              {/* See Resume */}
+              <IoIosArrowDropleftCircle className="text-gray-500 " size={23} />
+            </button>
           </div>
 
           {/* right resume */}
-          <div className="flex shrink w-[50%] max-md:hidden h-screen justify-center font-nunito items-start p-4 overflow-y-auto">
+          <div className="flex grow shrink w-[50%] max-lg:hidden h-screen justify-center font-nunito items-start p-4 overflow-y-auto">
             {/* <button
               onClick={clickchangetemplate}
               className="absolute top-4 right-8 z-40 flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#C40116] to-[#5E000B]  rounded-lg text-white font-medium transition-all"
@@ -359,34 +408,30 @@ function Resume_details() {
               Change Template
             </button> */}
 
-            <div
-              className="flex justify-center items-start w-full"
-              style={{
-                paddingTop: "1rem", // optional spacing from top
-                paddingBottom: "1rem", // optional spacing from top
-              }}
-            >
+            
               <div
-                className="w-full"
+                // className="origin-top bg-white grow"
                 style={{
                   // transform: "scale(0.8)",
                   transformOrigin: "top center",
                   width: "100%",
-                  backgroundColor: "white",
-                  height: "297mm",
-                  boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-                  background: "white",
-                  borderRadius: "8px",
+                  // backgroundColor: "white",
+                  // height: "297mm",
+                  // boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+                  // background: "white",
+                  // borderRadius: "8px",
                 }}
               >
                 {selectedResume ? (
-                  selectedResume.component
+                  <SimpleCanvasPreview>
+                    {selectedResume.component}
+                  </SimpleCanvasPreview>
+                  // selectedResume.component
                 ) : (
                   <p className="text-center text-gray-500 mt-20">
                     No matching resume template found
                   </p>
                 )}
-              </div>
             </div>
           </div>
         </>

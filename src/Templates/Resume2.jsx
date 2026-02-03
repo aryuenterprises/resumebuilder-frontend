@@ -4,6 +4,7 @@ import { CreateContext } from '../App';
 import { IoPersonOutline } from "react-icons/io5";
 import { API_URL } from '../Config';
 import MonthYearDisplay from '../Componets/MonthYearDisplay';
+import SimpleCanvasPreview from '../Componets/SimpleCanvasPreview';
 
 
 const Resume2 = (alldetails) => {
@@ -96,12 +97,15 @@ const Resume2 = (alldetails) => {
 
 
   return (
-    <div className=" bg-white border border-gray-100 font-nunito mx-auto" style={{
-      width: "210mm",
-      // height: "297mm",
-      padding: "5mm",
-      boxSizing: "border-box",
-    }}>
+    // <div className=" bg-white border border-gray-100 font-nunito mx-auto" style={{
+    //   width: "210mm",
+    //   // height: "297mm",
+    //   padding: "5mm",
+    //   boxSizing: "border-box",
+    // }}>
+<SimpleCanvasPreview>
+
+
       {/* header */}
       <div className='flex bg-[#EADCCE] py-2 rounded-tl-3xl rounded-tr-3xl border-b border-gray-300 mx-auto'>
         <div className="flex justify-center items-center w-[22%] p-2 ">
@@ -555,7 +559,9 @@ const Resume2 = (alldetails) => {
 
         </div>
       </div>
-    </div>
+</SimpleCanvasPreview>
+
+    // </div>
   )
 }
 

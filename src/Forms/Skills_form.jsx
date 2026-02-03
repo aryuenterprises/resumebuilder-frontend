@@ -187,7 +187,6 @@ const SkillsForm = forwardRef((props, ref) => {
     setSkills(updatedSkills);
 
     if (!isValid) {
-      // toast.error("Please fix the highlighted errors before saving.");
       return false;
     }
 
@@ -206,7 +205,7 @@ const SkillsForm = forwardRef((props, ref) => {
       );
       console.log("response", response);
 
-      toast.success(" Skills  created successfully.");
+      // toast.success(" Skills  created successfully.");
 
       // reset();
 
@@ -338,7 +337,7 @@ const SkillsForm = forwardRef((props, ref) => {
             ${
               loading
                 ? "bg-gradient-to-r from-gray-300 to-gray-400 cursor-not-allowed opacity-70"
-                : "bg-gradient-to-r from-[#c40116] to-[#be0117] hover:shadow-lg hover:shadow-[#c40116]/25 hover:scale-[1.02]"
+                : "bg-gradient-to-r from-[#c40116] to-[#c40116]/60 hover:shadow-lg hover:shadow-[#c40116]/25 hover:scale-[1.02]"
             }
           `}
             >

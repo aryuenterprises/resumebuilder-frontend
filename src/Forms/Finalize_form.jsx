@@ -108,7 +108,7 @@ const FinalizeForm = forwardRef((props, ref) => {
   console.log("UseContext", UseContext);
 
   function stripHtml(html) {
-    return html.replace(/<\/?[^>]+(>|$)/g, "");
+    return html?.replace(/<\/?[^>]+(>|$)/g, "");
   }
 
   function textEditorTextsFormat(text) {
@@ -141,42 +141,7 @@ const FinalizeForm = forwardRef((props, ref) => {
 
   const [selected, setSelected] = useState(2);
   const stepWidth = 55;
-  // const sections = [
 
-  //   {
-  //     title: "certificationsAndLicenses",
-  //     heading: "Certifications & Licenses",
-  //     icon: <img src={Final_image2} alt="Languages" className="w-5 h-5" />,
-  //     description: "Add credentials that back up your expertise.",
-  //   },
-  //   {
-  //     title: "hobbiesAndInterests",
-  //     heading: "Hobbies & Interests",
-  //     icon: <img src={Final_image3} alt="Languages" className="w-5 h-5" />,
-  //     description: "Include activities relevant to your job or industry.",
-  //   },
-  //   {
-  //     title: "awardsAndHonors",
-  //     heading: "Awards & Honors",
-  //     icon: <img src={Final_image4} alt="Languages" className="w-5 h-5" />,
-  //     description: "Share achievements and milestones you’re proud of.",
-  //   },
-  //   {
-  //     title: "websitesAndSocialMedia",
-  //     heading: "Websites & Social Media",
-  //     icon: <img src={Final_image5} alt="Languages" className="w-5 h-5" />,
-  //     description:
-  //       "Share your portfolio, blog, LinkedIn, or other related websites.",
-  //   },
-
-  //   {
-  //     title: "customSection",
-  //     heading: "Custom Section",
-  //     icon: <img src={Final_image7} alt="Languages" className="w-5 h-5" />,
-  //     description:
-  //       "Create a custom section for any extra info you’d like to add.",
-  //   },
-  // ];
 
   const initialSkillData = {};
   sections.forEach((section) => {
@@ -284,7 +249,7 @@ const FinalizeForm = forwardRef((props, ref) => {
       );
       console.log("response", response);
 
-      toast.success(" Finalize  created successfully.");
+      // toast.success(" Finalize  created successfully.");
 
       // reset();
 
@@ -854,7 +819,7 @@ const FinalizeForm = forwardRef((props, ref) => {
                     onClick={() => handleToggleSection(section.title)}
                     className="group p-4 sm:p-5 bg-[#f3f4f6]/80 border border-gray-200 rounded-xl hover:border-[#c40116] hover:shadow-md transition-all duration-300"
                   >
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between gap-2 sm:gap-3">
                       <div className="flex items-center gap-2 sm:gap-3">
                         <div className="p-1.5 sm:p-2 bg-gradient-to-br from-[#c40116]/10 to-[#be0117]/10 rounded-lg group-hover:from-[#c40116]/20 group-hover:to-[#be0117]/20 transition-all">
                           <span className="text-[#c40116] text-lg sm:text-xl">
@@ -882,7 +847,7 @@ const FinalizeForm = forwardRef((props, ref) => {
         <div className="sticky bottom-0 bg-gradient-to-t from-white via-white to-transparent pt-4 pb-2">
           <button
             onClick={checkATSScore}
-            className="w-full sm:w-fit mx-auto p-2.5 sm:p-3 bg-gradient-to-r from-[#c40116] to-[#be0117] text-white font-medium rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl hover:shadow-[#c40116]/25 transition-all duration-300 hover:scale-[1.02] text-sm sm:text-base"
+            className="w-full sm:w-fit mx-auto p-2.5 sm:p-3 bg-gradient-to-r from-[#c40116] to-[#c40116]/60 text-white font-medium rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl hover:shadow-[#c40116]/25 transition-all duration-300 hover:scale-[1.02] text-sm sm:text-base"
           >
             Check Your ATS Score
           </button>

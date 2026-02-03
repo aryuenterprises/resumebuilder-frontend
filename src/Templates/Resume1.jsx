@@ -3,16 +3,17 @@ import { CreateContext } from "../App";
 import { IoPersonOutline } from "react-icons/io5";
 import { API_URL } from "../Config";
 import MonthYearDisplay from "../Componets/MonthYearDisplay";
+import SimpleCanvasPreview from "../Componets/SimpleCanvasPreview";
 
 const Resume1 = (alldetails) => {
   // console.log("alll check", alldetails)
 
-  const UseContext = useContext(CreateContext)
+  const UseContext = useContext(CreateContext);
 
-  console.log("UseContextdd", UseContext)
+  console.log("UseContextdd", UseContext);
 
   const { croppedImage } = UseContext;
-  console.log("croppedImage", croppedImage)
+  console.log("croppedImage", croppedImage);
 
   const [previewUrl, setPreviewUrl] = useState(null);
 
@@ -34,13 +35,14 @@ const Resume1 = (alldetails) => {
   //   }
   // }, [croppedImage]);
 
-
-
   const contact = alldetails?.alldata?.contact || UseContext || {};
-  const educations = alldetails?.alldata?.educations || UseContext?.education || [];
-  const experiences = alldetails?.alldata?.experiences || UseContext?.experiences || [];
+  const educations =
+    alldetails?.alldata?.educations || UseContext?.education || [];
+  const experiences =
+    alldetails?.alldata?.experiences || UseContext?.experiences || [];
   const skills = alldetails?.alldata?.skills || UseContext?.skills || [];
-  const finalize = alldetails?.alldata?.finalize || UseContext?.globalSkillsData || {};
+  const finalize =
+    alldetails?.alldata?.finalize || UseContext?.globalSkillsData || {};
   const summary = alldetails?.alldata?.summary || UseContext?.text || [];
 
   const linkedinUrl = contact?.linkedin || contact?.linkedIn;
@@ -61,28 +63,24 @@ const Resume1 = (alldetails) => {
   //     }
   //   }
 
-
   //   if (contact.photo) {
   //     const backendURL = `${API_URL}/api/uploads/photos/${contact.photo}`;
   //     setPreviewUrl(backendURL);
   //   }
   // }, [croppedImage, contact.photo]);
 
-
   useEffect(() => {
     let url;
 
     if (croppedImage) {
-
-      if (typeof croppedImage === "string" && croppedImage.startsWith("blob:")) {
+      if (
+        typeof croppedImage === "string" &&
+        croppedImage.startsWith("blob:")
+      ) {
         url = croppedImage;
-      }
-
-      else if (typeof croppedImage === "string") {
+      } else if (typeof croppedImage === "string") {
         url = `${API_URL}/api/uploads/photos/${croppedImage}`;
-      }
-
-      else if (croppedImage instanceof Blob || croppedImage instanceof File) {
+      } else if (croppedImage instanceof Blob || croppedImage instanceof File) {
         url = URL.createObjectURL(croppedImage);
         return () => URL.revokeObjectURL(url);
       }
@@ -97,21 +95,22 @@ const Resume1 = (alldetails) => {
     }
   }, [croppedImage, contact.photo]);
 
-
   return (
+    // <div
+    //   className=" bg-white border border-gray-100 font-nunito"
+    //   style={{
+    //     width: "210mm",
+    //     // height: "297mm",
+    //     padding: "5mm",
+    //     boxSizing: "border-box",
+    //   }}
+    // >
+    <SimpleCanvasPreview>
 
-
-    <div className=" bg-white border border-gray-100 font-nunito" style={{
-      width: "210mm",
-      // height: "297mm",
-      padding: "5mm",
-      boxSizing: "border-box",
-    }}>
       {/* HEADER */}
       <div className="bg-yellow-400 p-2 rounded-md  px-10">
         <div className="flex  items-center justify-between">
           <div className="flex gap-3 items-center">
-
             {previewUrl ? (
               <img
                 src={previewUrl}
@@ -119,12 +118,14 @@ const Resume1 = (alldetails) => {
                 className="w-24 h-24 rounded-md object-cover border"
               />
             ) : (
-              <p><IoPersonOutline className="w-24 h-24 rounded-md object-cover border" /></p>
+              <p>
+                <IoPersonOutline className="w-24 h-24 rounded-md object-cover border" />
+              </p>
             )}
             <div>
               <h1 className="text-2xl font-bold text-gray-900 uppercase">
-                {contact?.firstName || ""} {contact?.lastName || ""} </h1>
-
+                {contact?.firstName || ""} {contact?.lastName || ""}{" "}
+              </h1>
             </div>
           </div>
 
@@ -133,15 +134,11 @@ const Resume1 = (alldetails) => {
               DETAILS
             </h2>
             <p className="text-gray-700 text-sm">
-              {contact?.address
-                || ""}   , {contact?.city
-                  || ""}   , {contact?.country || ""}  ,{contact?.postcode || ""}
+              {contact?.address || ""} , {contact?.city || ""} ,{" "}
+              {contact?.country || ""} ,{contact?.postcode || ""}
             </p>
-            <p className="text-gray-700 text-sm">{contact?.phone
-
-              || ""}</p>
-            <p className="text-gray-700 text-sm">{contact?.email
-              || ""}</p>
+            <p className="text-gray-700 text-sm">{contact?.phone || ""}</p>
+            <p className="text-gray-700 text-sm">{contact?.email || ""}</p>
           </section>
         </div>
 
@@ -149,7 +146,11 @@ const Resume1 = (alldetails) => {
           {/* Show LinkedIn only if provided */}
           {linkedinUrl && (
             <a
-              href={linkedinUrl.startsWith("http") ? linkedinUrl : `https://${linkedinUrl}`}
+              href={
+                linkedinUrl.startsWith("http")
+                  ? linkedinUrl
+                  : `https://${linkedinUrl}`
+              }
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-full text-sm transition-all duration-300 shadow"
@@ -176,33 +177,27 @@ const Resume1 = (alldetails) => {
             </a>
           )}
         </div>
-
-
-
-
       </div>
-
-
 
       {/* SUMMARY */}
       <section className="mt-3 px-10">
         <h2 className="text-lg font-semibold mb-1 text-white bg-black w-fit p-2 rounded-md">
           SUMMARY
         </h2>
-        <p className="pt-2 pb-3 text-gray-700 text-[15px] break-words
+        <p
+          className="pt-2 pb-3 text-gray-700 text-[15px] break-words
     [&_ol]:list-decimal 
     [&_ul]:list-disc 
     [&_li[data-list='bullet']]:list-disc 
     [&_li[data-list='ordered']]:list-decimal 
-    [&_li]:ml-4">
+    [&_li]:ml-4"
+        >
           <div dangerouslySetInnerHTML={{ __html: summary || "" }} />
-
         </p>
       </section>
 
       {/* EXPERIENCE */}
       <section className="mt-2 px-10">
-
         <div>
           {experiences?.length > 0 ? (
             experiences.map((exp, index) => (
@@ -214,10 +209,14 @@ const Resume1 = (alldetails) => {
                   <h3 className="font-semibold text-gray-900 text-lg break-words">
                     {exp.jobTitle && `${exp.jobTitle} `}
                     {exp.employer && (
-                      <span className="text-gray-500 font-normal">— {exp.employer}</span>
+                      <span className="text-gray-500 font-normal">
+                        — {exp.employer}
+                      </span>
                     )}
                     {exp.location && (
-                      <span className="text-gray-500 font-normal">— {exp.location}</span>
+                      <span className="text-gray-500 font-normal">
+                        — {exp.location}
+                      </span>
                     )}
                   </h3>
                 )}
@@ -237,12 +236,14 @@ const Resume1 = (alldetails) => {
                   )}
                 </div>
 
-                <ul className="pt-2 pb-3 text-gray-700 text-[15px] break-words
+                <ul
+                  className="pt-2 pb-3 text-gray-700 text-[15px] break-words
     [&_ol]:list-decimal 
     [&_ul]:list-disc 
     [&_li[data-list='bullet']]:list-disc 
     [&_li[data-list='ordered']]:list-decimal 
-    [&_li]:ml-4">
+    [&_li]:ml-4"
+                >
                   <li dangerouslySetInnerHTML={{ __html: exp.text || "" }} />
                 </ul>
               </div>
@@ -263,30 +264,31 @@ const Resume1 = (alldetails) => {
             educations.map((edu, index) => (
               <div key={edu._id || edu.id || index} className="">
                 <h3 className="font-semibold text-gray-900 gap-1 break-words text-lg">
-                      {edu.schoolname || ""}
-                    </h3>
+                  {edu.schoolname || ""}
+                </h3>
 
-                    <p className="text-gray-500 text-[15px] font-normal">
-                      {edu.degree || ""}
-                    </p>
+                <p className="text-gray-500 text-[15px] font-normal">
+                  {edu.degree || ""}
+                </p>
 
-                    <p className="text-gray-500 font-normal">
-                      {edu.location || ""}
-                    </p>
+                <p className="text-gray-500 font-normal">
+                  {edu.location || ""}
+                </p>
 
                 {(edu.startDate || edu.endDate) && (
+                  <p className="text-gray-600 text-sm break-words  mt-1">
+                    {edu.startDate || ""} — {edu.endDate || ""}
+                  </p>
+                )}
 
-                      <p className="text-gray-600 text-sm break-words  mt-1">
-                        {edu.startDate || ""} — {edu.endDate || ""}
-                      </p>
-                    )}
-
-                <ul className="pt-2 pb-3 text-gray-700 text-[15px] break-words
+                <ul
+                  className="pt-2 pb-3 text-gray-700 text-[15px] break-words
     [&_ol]:list-decimal 
     [&_ul]:list-disc 
     [&_li[data-list='bullet']]:list-disc 
     [&_li[data-list='ordered']]:list-decimal 
-    [&_li]:ml-4">
+    [&_li]:ml-4"
+                >
                   <li dangerouslySetInnerHTML={{ __html: edu.text || "" }} />
                 </ul>
               </div>
@@ -303,40 +305,40 @@ const Resume1 = (alldetails) => {
           SKILLS
         </h2>
         <div>
-        {skills.length > 0 ? (
-          <div className="grid grid-cols-2 gap-x-8 gap-y-3">
-            {skills.map((skill) => (
-              <div key={skill._id || skill.id}>
-                <p className="text-sm text-gray-800 break-words mb-1">
-                  {skill.skill || ""}
-                </p>
-                {skill.level && (
-                  <div className="h-[4px] w-full bg-gray-300 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-[#0c0c1e]"
-                      style={{
-                        width: `${(Number(skill.level) / 4) * 100}%`, // 0–4 = 5 levels
-                      }}
-                    ></div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        ) : (
-          <ul className="list-disc pl-6 space-y-1 text-sm text-gray-800">
-            {skills.map((skill) => (
-              <li key={skill._id || skill.id}>{skill.skill || ""}</li>
-            ))}
-          </ul>
-        )}
-      </div>
+          {skills.length > 0 ? (
+            <div className="grid grid-cols-2 gap-x-8 gap-y-3">
+              {skills.map((skill) => (
+                <div key={skill._id || skill.id}>
+                  <p className="text-sm text-gray-800 break-words mb-1">
+                    {skill.skill || ""}
+                  </p>
+                  {skill.level && (
+                    <div className="h-[4px] w-full bg-gray-300 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-[#0c0c1e]"
+                        style={{
+                          width: `${(Number(skill.level) / 4) * 100}%`, // 0–4 = 5 levels
+                        }}
+                      ></div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <ul className="list-disc pl-6 space-y-1 text-sm text-gray-800">
+              {skills.map((skill) => (
+                <li key={skill._id || skill.id}>{skill.skill || ""}</li>
+              ))}
+            </ul>
+          )}
+        </div>
       </section>
 
       {/* Languages */}
       {Array.isArray(finalize?.languages) &&
         finalize.languages.some(
-          (lang) => lang?.name && lang.name.trim() !== ""
+          (lang) => lang?.name && lang.name.trim() !== "",
         ) && (
           <div className="mt-3 px-10">
             <h2 className="text-lg font-semibold uppercase text-white mb-2 bg-black w-fit p-2 rounded-md">
@@ -345,7 +347,8 @@ const Resume1 = (alldetails) => {
             <div className="grid grid-cols-2 gap-x-8 gap-y-3">
               {finalize.languages.map(
                 (lang, index) =>
-                  lang.name && lang.name.trim() !== "" && (
+                  lang.name &&
+                  lang.name.trim() !== "" && (
                     <div key={lang._id || index}>
                       <p className="text-sm break-words text-gray-800 mb-1">
                         {lang.name}
@@ -361,7 +364,7 @@ const Resume1 = (alldetails) => {
                         </div>
                       )}
                     </div>
-                  )
+                  ),
               )}
             </div>
           </div>
@@ -370,27 +373,30 @@ const Resume1 = (alldetails) => {
       {/* Certifications and Licenses */}
       {Array.isArray(finalize?.certificationsAndLicenses) &&
         finalize.certificationsAndLicenses.some(
-          (item) => item.name && item.name.replace(/<[^>]*>/g, "").trim() !== ""
-            ) && (
+          (item) =>
+            item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "",
+        ) && (
           <div className="mt-3 px-10">
             <h2 className="text-lg font-semibold uppercase text-white mb-2 bg-black w-fit p-2 rounded-md">
               Certifications and Licenses
             </h2>
-            <div className="pt-2 pb-3 text-gray-700 text-[15px] break-words
+            <div
+              className="pt-2 pb-3 text-gray-700 text-[15px] break-words
     [&_ol]:list-decimal 
     [&_ul]:list-disc 
     [&_li[data-list='bullet']]:list-disc 
     [&_li[data-list='ordered']]:list-decimal 
-    [&_li]:ml-4">
+    [&_li]:ml-4"
+            >
               {finalize.certificationsAndLicenses.map(
                 (item, index) =>
                   item.name &&
-                      item.name.replace(/<[^>]*>/g, "").trim() !== "" && (
+                  item.name.replace(/<[^>]*>/g, "").trim() !== "" && (
                     <div
                       key={item.id || index}
                       dangerouslySetInnerHTML={{ __html: item.name }}
                     />
-                  )
+                  ),
               )}
             </div>
           </div>
@@ -399,8 +405,9 @@ const Resume1 = (alldetails) => {
       {/* Hobbies and Interests */}
       {Array.isArray(finalize?.hobbiesAndInterests) &&
         finalize.hobbiesAndInterests.some(
-          (item) => item.name && item.name.replace(/<[^>]*>/g, "").trim() !== ""
-            ) && (
+          (item) =>
+            item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "",
+        ) && (
           <div className="mt-3 px-10">
             <h2 className="text-lg font-semibold uppercase text-white mb-2 bg-black w-fit p-2 rounded-md">
               Hobbies and Interests
@@ -408,13 +415,13 @@ const Resume1 = (alldetails) => {
             <div className="pt-1 pb-2 text-[15px] break-words">
               {finalize.hobbiesAndInterests.map(
                 (item, index) =>
-                      item.name &&
-                      item.name.replace(/<[^>]*>/g, "").trim() !== "" && (
+                  item.name &&
+                  item.name.replace(/<[^>]*>/g, "").trim() !== "" && (
                     <div
                       key={item.id || index}
                       dangerouslySetInnerHTML={{ __html: item.name }}
                     />
-                  )
+                  ),
               )}
             </div>
           </div>
@@ -423,27 +430,30 @@ const Resume1 = (alldetails) => {
       {/* Awards and Honors */}
       {Array.isArray(finalize?.awardsAndHonors) &&
         finalize.awardsAndHonors.some(
-          (item) => item.name && item.name.replace(/<[^>]*>/g, "").trim() !== ""
-            ) && (
+          (item) =>
+            item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "",
+        ) && (
           <div className="mt-3 px-10">
             <h2 className="text-lg font-semibold uppercase text-white mb-2 bg-black w-fit p-2 rounded-md">
               Awards and Honors
             </h2>
-            <div className="pt-2 pb-3 text-gray-700 text-[15px] break-words
+            <div
+              className="pt-2 pb-3 text-gray-700 text-[15px] break-words
     [&_ol]:list-decimal 
     [&_ul]:list-disc 
     [&_li[data-list='bullet']]:list-disc 
     [&_li[data-list='ordered']]:list-decimal 
-    [&_li]:ml-4">
+    [&_li]:ml-4"
+            >
               {finalize.awardsAndHonors.map(
                 (item, index) =>
-                      item.name &&
-                      item.name.replace(/<[^>]*>/g, "").trim() !== "" && (
+                  item.name &&
+                  item.name.replace(/<[^>]*>/g, "").trim() !== "" && (
                     <div
                       key={item.id || index}
                       dangerouslySetInnerHTML={{ __html: item.name }}
                     />
-                  )
+                  ),
               )}
             </div>
           </div>
@@ -454,7 +464,7 @@ const Resume1 = (alldetails) => {
         finalize.websitesAndSocialMedia.some(
           (item) =>
             (item?.websiteUrl && item.websiteUrl.trim() !== "") ||
-            (item?.socialMedia && item.socialMedia.trim() !== "")
+            (item?.socialMedia && item.socialMedia.trim() !== ""),
         ) && (
           <div className="mt-3 px-10">
             <h2 className="text-lg font-semibold uppercase text-white mb-2 bg-black w-fit p-2 rounded-md">
@@ -502,7 +512,7 @@ const Resume1 = (alldetails) => {
                         </div>
                       )}
                     </div>
-                  )
+                  ),
               )}
             </div>
           </div>
@@ -511,8 +521,9 @@ const Resume1 = (alldetails) => {
       {/* References */}
       {Array.isArray(finalize?.references) &&
         finalize.references.some(
-          (item) => item.name && item.name.replace(/<[^>]*>/g, "").trim() !== ""
-            ) && (
+          (item) =>
+            item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "",
+        ) && (
           <div className="mt-2 px-10">
             <h2 className="text-lg font-semibold uppercase text-white mb-2 bg-black w-fit p-2 rounded-md">
               References
@@ -520,13 +531,13 @@ const Resume1 = (alldetails) => {
             <div className="pt-1 pb-2 text-[15px] break-words">
               {finalize.references.map(
                 (item, index) =>
-                      item.name &&
-                      item.name.replace(/<[^>]*>/g, "").trim() !== "" && (
+                  item.name &&
+                  item.name.replace(/<[^>]*>/g, "").trim() !== "" && (
                     <div
                       key={item.id || index}
                       dangerouslySetInnerHTML={{ __html: item.name }}
                     />
-                  )
+                  ),
               )}
             </div>
           </div>
@@ -536,14 +547,15 @@ const Resume1 = (alldetails) => {
 
       {Array.isArray(finalize?.customSection) &&
         finalize.customSection.some(
-          (section) => section?.name?.trim() || section?.description?.trim()
+          (section) => section?.name?.trim() || section?.description?.trim(),
         ) && (
           <div className="mt-1">
             {/* REMOVE HEADING – DO NOT SHOW CUSTOM SECTION TITLE */}
 
             {finalize.customSection
               .filter(
-                (section) => section?.name?.trim() || section?.description?.trim()
+                (section) =>
+                  section?.name?.trim() || section?.description?.trim(),
               )
               .map((section, index) => (
                 <div key={section.id || index} className="mt-2 px-10">
@@ -569,17 +581,11 @@ const Resume1 = (alldetails) => {
               ))}
           </div>
         )}
-
-
-
-
-
-
-
-    </div>
-
+        
+    {/* </div> */}
+    </SimpleCanvasPreview>
 
   );
-}
+};
 
 export default Resume1;

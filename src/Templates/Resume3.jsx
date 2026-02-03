@@ -4,6 +4,7 @@ import { FaPhoneAlt } from "react-icons/fa";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { CreateContext } from '../App';
 import MonthYearDisplay from '../Componets/MonthYearDisplay';
+import SimpleCanvasPreview from '../Componets/SimpleCanvasPreview';
 // import { CgEditUnmask } from 'react-icons/cg';
 
 const Resume3 = (alldetails) => {
@@ -24,12 +25,14 @@ const Resume3 = (alldetails) => {
 
 
   return (
-    <div className=" bg-white border border-gray-100 font-nunito flex gap-1 mx-auto " style={{
-      width: "210mm",
-      // height: "297mm",
-      padding: "5mm",
-      boxSizing: "border-box",
-    }}>
+    // <div className=" bg-white border border-gray-100 font-nunito flex gap-1 mx-auto " style={{
+    //   width: "210mm",
+    //   // height: "297mm",
+    //   padding: "5mm",
+    //   boxSizing: "border-box",
+    // }}>
+      <SimpleCanvasPreview>
+
       {/* left side */}
       {/* header */}
       <div className='p-5 w-[40%] mx-auto bg-gray-100 rounded-tl-2xl'>
@@ -445,7 +448,9 @@ const Resume3 = (alldetails) => {
           )}
 
       </div>
-    </div>
+      </SimpleCanvasPreview>
+
+    // </div>
   )
 }
 

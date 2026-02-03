@@ -144,7 +144,7 @@ const Experience_form = forwardRef((props, ref) => {
         { params: { contactId: Contactid } }
       );
 
-      toast.success(" Experience  created successfully.");
+      // toast.success(" Experience  created successfully.");
 
       // reset();
 
@@ -1050,7 +1050,7 @@ const Experience_form = forwardRef((props, ref) => {
                     <motion.div
                       animate={{ rotate: exp.isOpen ? 180 : 0 }}
                       transition={{ duration: 0.3 }}
-                      className="text-gray-400 group-hover:text-[#c40116] transition-colors"
+                      className="text-gray-700 group-hover:text-[#c40116] transition-colors"
                     >
                       <FiChevronDown size={18} className="sm:w-5 sm:h-5" />
                     </motion.div>
@@ -1059,7 +1059,7 @@ const Experience_form = forwardRef((props, ref) => {
                         e.stopPropagation();
                         deleteExperience(exp.id);
                       }}
-                      className="p-1.5 sm:p-2 rounded-lg bg-gradient-to-r from-gray-100 to-gray-50 text-gray-400 hover:text-[#c40116] hover:shadow-sm transition-all duration-200"
+                      className="p-1.5 sm:p-2 rounded-lg bg-gradient-to-r from-gray-100 to-gray-50 text-[#c40116] hover:shadow-sm transition-all duration-200"
                       type="button"
                     >
                       <FiTrash2 size={14} className="sm:w-4 sm:h-4" />
@@ -1077,7 +1077,7 @@ const Experience_form = forwardRef((props, ref) => {
                 >
                   <div className="p-2 sm:p-3 md:p-4 space-y-4 sm:space-y-6 border-t border-gray-100">
                     {/* Job Title & Employer */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                       <div className="group">
                         <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2 group-hover:text-[#c40116] transition-colors">
                           Job Title
@@ -1195,7 +1195,7 @@ const Experience_form = forwardRef((props, ref) => {
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                         <div className="group">
                           <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2 group-hover:text-[#c40116] transition-colors">
                             Start Date
@@ -1305,10 +1305,10 @@ const Experience_form = forwardRef((props, ref) => {
                             <button
                               onClick={() => handleSubmitAi(index)}
                               disabled={loading || !exp.jobTitle}
-                              className={`inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg  text-xs sm:text-sm font-medium transition-all duration-500 w-fit ${
+                              className={`inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg  text-xs sm:text-sm font-medium transition-all duration-300 w-fit ${
                                 !exp.jobTitle
                                   ? "bg-gradient-to-r from-gray-300 text-black to-gray-400 cursor-not-allowed opacity-90"
-                                  : "bg-gradient-to-r from-[#c40116] to-[#be0117] hover:shadow-lg hover:shadow-[#c40116]/25 hover:scale-[1.02] text-white"
+                                  : "bg-gradient-to-r from-[#c40116] to-[#c40116]/60 hover:shadow-lg hover:shadow-[#c40116]/25 hover:scale-[1.02] text-white"
                               }`}
                             >
                               <svg
@@ -1501,6 +1501,8 @@ const Experience_form = forwardRef((props, ref) => {
               animate={{ opacity: 1, scale: 1 }}
               className="bg-white rounded-xl sm:rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] sm:max-h-[70vh] overflow-hidden"
             >
+                            <div className="p-1 bg-gradient-to-r from-[#c40116] to-[#be0117]"></div>
+
               <div className="p-4 sm:p-6">
                 <div className="flex items-start justify-between gap-3 mb-4 sm:mb-6">
                   <div className="flex-1 min-w-0">

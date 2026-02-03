@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+body{
+  margin: 0;
+  padding: 0;
+}
+
 /* @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700&family=Roboto+Serif&family=Times+New+Roman&display=swap'); */
 
 @font-face {
@@ -178,3 +183,15 @@ input::placeholder {
 .no-scrollbar::-webkit-scrollbar {
   display: none;             /* Chrome, Safari */
 }
+
+.Toastify__progress-bar--success {
+  background: hsl(354, 99%, 70%) !important; /* custom color */
+}
+
+/* Change success icon color */
+.Toastify__toast--success .Toastify__toast-icon svg {
+  fill: hsl(354, 99%, 70%)!important;
+}
+
+
+

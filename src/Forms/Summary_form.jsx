@@ -171,7 +171,7 @@ const Summary_form = forwardRef((props, ref) => {
       );
       console.log("response", response);
 
-      toast.success(" Summary  created successfully.");
+      // toast.success(" Summary  created successfully.");
 
       // reset();
 
@@ -478,7 +478,7 @@ const Summary_form = forwardRef((props, ref) => {
                 className={`inline-flex items-center justify-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5 rounded-lg text-white text-xs sm:text-sm font-medium transition-all duration-200 w-fit sm:w-auto ${
                   loading
                     ? "bg-gradient-to-r from-gray-300 to-gray-400 cursor-not-allowed opacity-70"
-                    : "bg-gradient-to-r from-[#c40116] to-[#be0117] hover:shadow-lg hover:shadow-[#c40116]/25 hover:scale-[1.02]"
+                    : "bg-gradient-to-r from-[#c40116] to-[#c40116]/60 hover:shadow-lg hover:shadow-[#c40116]/25 hover:scale-[1.02]"
                 }`}
               >
                 {loading ? (
