@@ -1,31 +1,32 @@
 pipeline {
-  agent any
+    agent any
 
-  tools {
-    nodejs "node18"
-  }
-
-  stages {
-    stage('Install') {
-      steps {
-        sh 'npm install'
-      }
+    environment {
+        WORKSPACE_DIR = "${WORKSPACE}"
+        DEPLOY_DIR    = "/var/www/aryu_resumebuilder/resume_builder_frontend/dist"
     }
 
-    stage('Build') {
-      steps {
-        sh 'npm run build'
-      }
-    }
+    stages {
 
-    stage('Deploy') {
-      steps {
-        sh '''
-          sudo rm -rf /var/www/aryu_resumebuilder/resume_builder_frontend/dist/*
-          sudo cp -r dist/* /var/www/aryu_resumebuilder/resume_builder_frontend/dist/
-        '''
-      }
+        stage('Verify dist exists in workspace') {
+            steps {
+                sh '''
+                    if [ ! -d "$WORKSPACE_DIR/dist" ]; then
+                      echo "ERROR: dist not found. Dev must push build."
+                      exit 1
+                    fi
+                '''
+            }
+        }
+
+        stage('Deploy static files') {
+            steps {
+                sh '''
+                    rm -rf $DEPLOY_DIR/*
+                    cp -r $WORKSPACE_DIR/dist/* $DEPLOY_DIR/
+                '''
+            }
+        }
     }
-  }
 }
 
