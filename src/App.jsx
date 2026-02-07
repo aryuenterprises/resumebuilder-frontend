@@ -43,11 +43,9 @@ import ScrollToTop from "./Componets/common/ScrollToTop.jsx";
 
 export const CreateContext = createContext(); // Create context
 
-function App() {
+const App = () =>  {
   const [userLoggedIn, setUserLoggedIn] = useState("");
-
   const [userId, setUserId] = useState("");
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -335,3 +333,7 @@ function App() {
 }
 
 export default App;
+
+
+
+

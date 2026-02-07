@@ -139,7 +139,7 @@ const Login = () => {
           confirmButtonText: "OK",
           confirmButtonColor: "#05a2ff",
         }).then(() => {
-          nagivate("/dashboard");
+          nagivate("/");
         });
 
         setEmail("");

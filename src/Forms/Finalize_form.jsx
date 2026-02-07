@@ -5,37 +5,13 @@ import React, {
   useImperativeHandle,
   forwardRef,
 } from "react";
-import { IoMdAdd } from "react-icons/io";
-import {
-  FiChevronDown,
-  FiTrash2,
-  FiBook,
-  FiAward,
-  FiGlobe,
-  FiUser,
-  FiEdit3,
-} from "react-icons/fi";
 import { Editor } from "primereact/editor";
-import { motion, AnimatePresence } from "framer-motion";
-
-import Final_image1 from "../assets/images/final/final-img1.png";
-import Final_image2 from "../assets/images/final/final-img2.png";
-import Final_image3 from "../assets/images/final/final-img3.png";
-import Final_image4 from "../assets/images/final/final-img4.png";
-import Final_image5 from "../assets/images/final/final-img5.png";
-import Final_image6 from "../assets/images/final/final-img6.png";
-import Final_image7 from "../assets/images/final/final-img7.png";
-
-import { Description } from "@headlessui/react";
+import { motion } from "framer-motion";
 import { CreateContext } from "../App";
-
 import axios from "axios";
 import { API_URL } from "../Config";
 import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
-import { head } from "framer-motion/m";
-const steps = ["Novice", "Beginner", "Intermediate", "Skilled", "Pro"];
-const colors = ["#b2e2ff", "#98d8ff", "#64c5ff", "#30b2ff", "#05a2ff"];
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import Confetti from "react-confetti";
@@ -89,8 +65,6 @@ const sections = [
 ];
 
 const FinalizeForm = forwardRef((props, ref) => {
-  // export default function FinalizeForm() {
-  const [isActive, setIsActive] = useState(true);
 
   const UseContext = useContext(CreateContext);
 
@@ -139,10 +113,6 @@ const FinalizeForm = forwardRef((props, ref) => {
   const location = useLocation();
   const templateId = location.state?.templateId.id;
 
-  const [selected, setSelected] = useState(2);
-  const stepWidth = 55;
-
-
   const initialSkillData = {};
   sections.forEach((section) => {
     initialSkillData[section.title] = [];
@@ -161,14 +131,11 @@ const FinalizeForm = forwardRef((props, ref) => {
     setGlobalSkillsData(skillsData);
   }, [skillsData]);
 
-  // const { skillsData, setSkillsData } = useContext(CreateContext,initialSkillData);
-
   const [deletePopup, setDeletePopup] = useState({
     show: false,
     section: null,
     heading: null,
   });
-  // const [collapseStates, setCollapseStates] = useState({});
 
   const [collapseStates, setCollapseStates] = useState(() => {
     const initialState = {};
@@ -179,14 +146,11 @@ const FinalizeForm = forwardRef((props, ref) => {
     return initialState;
   });
 
-  // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<//
-
-  const [error, setErrors] = useState({});
 
   const fetchSkill = async () => {
     try {
       const response = await axios.get(
-        `${API_URL}api/finalize-resume/get-finalize-resume/${Contactid}`
+        `${API_URL}api/finalize-resume/get-finalize-resume/${Contactid}`,
       );
 
       console.log("responsefinalyy", response);
@@ -231,7 +195,7 @@ const FinalizeForm = forwardRef((props, ref) => {
         Object.entries(skillsData).map(([section, skills]) => [
           section,
           skills.filter((skill) => skill.name && skill.name.trim() !== ""),
-        ])
+        ]),
       );
 
       const formData = {
@@ -245,7 +209,7 @@ const FinalizeForm = forwardRef((props, ref) => {
         `${API_URL}/api/finalize-resume/update`,
 
         formData,
-        { params: { contactId: Contactid } }
+        { params: { contactId: Contactid } },
       );
       console.log("response", response);
 
@@ -355,7 +319,7 @@ const FinalizeForm = forwardRef((props, ref) => {
               ...s,
               [type]: value, // dynamically update name, level, or description
             }
-          : s
+          : s,
       ),
     }));
   };
@@ -404,7 +368,7 @@ const FinalizeForm = forwardRef((props, ref) => {
     try {
       const response = await axios.post(
         `https://ai.aryuacademy.com/api/v1/ats/scan`,
-        formData
+        formData,
       );
 
       console.log(response.data);
@@ -443,11 +407,7 @@ const FinalizeForm = forwardRef((props, ref) => {
     return () => clearInterval(timer);
   }, [score, showPopup]);
 
-  const getColor = () => {
-    if (score < 60) return "#ef4444";
-    if (score < 80) return "#facc15";
-    return "#22c55e";
-  };
+
 
   return (
     <section className="">
@@ -529,7 +489,7 @@ const FinalizeForm = forwardRef((props, ref) => {
                             e.stopPropagation();
                             confirmDeleteSection(
                               section.title,
-                              section.heading
+                              section.heading,
                             );
                           }}
                           className="p-1.5 sm:p-2 rounded-lg bg-gradient-to-r from-gray-100 to-gray-50 text-gray-400 hover:text-[#c40116] hover:shadow-sm transition-all duration-200"
@@ -566,7 +526,7 @@ const FinalizeForm = forwardRef((props, ref) => {
                                       handleSkillChange(
                                         section.title,
                                         skill.id,
-                                        e.htmlValue
+                                        e.htmlValue,
                                       )
                                     }
                                     style={{
@@ -601,7 +561,7 @@ const FinalizeForm = forwardRef((props, ref) => {
                                                   ...s,
                                                   websiteUrl: e.target.value,
                                                 }
-                                              : s
+                                              : s,
                                           ),
                                         }))
                                       }
@@ -628,7 +588,7 @@ const FinalizeForm = forwardRef((props, ref) => {
                                                   ...s,
                                                   socialMedia: e.target.value,
                                                 }
-                                              : s
+                                              : s,
                                           ),
                                         }))
                                       }
@@ -663,7 +623,7 @@ const FinalizeForm = forwardRef((props, ref) => {
                                       handleSkillChange(
                                         section.title,
                                         skill.id,
-                                        e.htmlValue
+                                        e.htmlValue,
                                       )
                                     }
                                     style={{
@@ -690,7 +650,7 @@ const FinalizeForm = forwardRef((props, ref) => {
                                       handleSkillChange(
                                         section.title,
                                         skill.id,
-                                        e.target.value
+                                        e.target.value,
                                       )
                                     }
                                     placeholder={`Enter ${section.heading.toLowerCase()}`}
@@ -722,7 +682,7 @@ const FinalizeForm = forwardRef((props, ref) => {
                                         section.title,
                                         skill.id,
                                         e.target.value,
-                                        "name"
+                                        "name",
                                       )
                                     }
                                     placeholder="Enter section name"
@@ -743,7 +703,7 @@ const FinalizeForm = forwardRef((props, ref) => {
                                           section.title,
                                           skill.id,
                                           e.htmlValue,
-                                          "description"
+                                          "description",
                                         )
                                       }
                                       style={{
@@ -806,7 +766,7 @@ const FinalizeForm = forwardRef((props, ref) => {
                     </div>
                   </div>
                 </div>
-              )
+              ),
           )}
 
           {/* Available Sections Grid */}
@@ -838,7 +798,7 @@ const FinalizeForm = forwardRef((props, ref) => {
                       <FaPlus className="w-5 h-5 sm:w-6 sm:h-6 text-gray-400 group-hover:text-[#c40116] transition-colors" />
                     </div>
                   </button>
-                )
+                ),
             )}
           </div>
         </div>
@@ -929,14 +889,14 @@ const FinalizeForm = forwardRef((props, ref) => {
                         progress >= 80
                           ? "#10b981"
                           : progress >= 60
-                          ? "#f59e0b"
-                          : "#7d838e",
+                            ? "#f59e0b"
+                            : "#7d838e",
                       textColor:
                         progress >= 80
                           ? "#10b981"
                           : progress >= 60
-                          ? "#f59e0b"
-                          : "#7d838e",
+                            ? "#f59e0b"
+                            : "#7d838e",
                       trailColor: "#e5e7eb",
                       pathTransitionDuration: 1,
                     })}

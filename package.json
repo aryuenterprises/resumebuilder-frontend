@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --port 3000",
+    "dev": "vite --port 3000 --host",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview --port 3000"
@@ -34,6 +34,7 @@
     "react-multi-carousel": "^2.8.6",
     "react-router-dom": "^7.9.4",
     "react-slick": "^0.31.0",
+    "react-to-print": "^3.2.0",
     "react-toastify": "^11.0.5",
     "react-type-animation": "^3.2.0",
     "react-zoom-pan-pinch": "^3.7.0",

@@ -33,16 +33,12 @@ import { Dropdown } from "primereact/dropdown";
 
 const Contact_form = forwardRef((props, ref) => {
   const [userLoggedIn, setUserLoggedIn] = useState("");
-
   const Userid = userLoggedIn?.id || userLoggedIn?._id;
-
   const location = useLocation();
   const pic = location.state?.templateId.pic;
-
   const templateId = location.state?.templateId.id;
-
   const editid = location.state?.editid;
-
+  
   const { firstName, setFirstName } = useContext(CreateContext);
   const { lastName, setLastName } = useContext(CreateContext);
   const { jobTitle, setJobTitle } = useContext(CreateContext);

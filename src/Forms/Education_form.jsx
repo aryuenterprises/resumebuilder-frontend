@@ -162,6 +162,7 @@ const Education_form = forwardRef((props, ref) => {
       return { ...exp, error: newErrors };
     });
 
+    
     setEducation(updatedEducation);
 
     if (!isValid) {
