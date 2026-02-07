@@ -253,23 +253,18 @@ function Resume_details() {
               <IoCloseCircle className="text-gray-500" size={23} />
             </p>
 
-            <div
-             className="py-4 overflow-y-scroll"
-            >
+            <div className="py-4 overflow-y-scroll">
               <div
                 className=" flex justify-start overflow-y-scroll origin-top "
                 style={{
-                
                   backgroundColor: "white",
-                  // height: "297mm",
-                  // boxShadow: "0 0 10px rgba(0,0,0,0.1)",
                   background: "white",
                   borderRadius: "8px",
                 }}
               >
                 <SimpleCanvasPreview>
-                {selectedResume ? selectedResume.component : null}
-
+                  {/* {selectedResume ? selectedResume.component : null} */}
+                  <Resume4/>
                 </SimpleCanvasPreview>
               </div>
             </div>
@@ -408,30 +403,29 @@ function Resume_details() {
               Change Template
             </button> */}
 
-            
-              <div
-                // className="origin-top bg-white grow"
-                style={{
-                  // transform: "scale(0.8)",
-                  transformOrigin: "top center",
-                  width: "100%",
-                  // backgroundColor: "white",
-                  // height: "297mm",
-                  // boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-                  // background: "white",
-                  // borderRadius: "8px",
-                }}
-              >
-                {selectedResume ? (
-                  <SimpleCanvasPreview>
-                    {selectedResume.component}
-                  </SimpleCanvasPreview>
-                  // selectedResume.component
-                ) : (
-                  <p className="text-center text-gray-500 mt-20">
-                    No matching resume template found
-                  </p>
-                )}
+            <div
+              // className="origin-top bg-white grow"
+              style={{
+                // transform: "scale(0.8)",
+                transformOrigin: "top center",
+                width: "100%",
+                // backgroundColor: "white",
+                // height: "297mm",
+                // boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+                // background: "white",
+                // borderRadius: "8px",
+              }}
+            >
+              {selectedResume ? (
+                <SimpleCanvasPreview>
+                  {selectedResume.component}
+                </SimpleCanvasPreview>
+              ) : (
+                // selectedResume.component
+                <p className="text-center text-gray-500 mt-20">
+                  No matching resume template found
+                </p>
+              )}
             </div>
           </div>
         </>
