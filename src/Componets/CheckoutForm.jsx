@@ -1,146 +1,321 @@
 import React, { useState } from "react";
-import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 import axios from "axios";
 import { API_URL } from "../Config";
+import { RAZORPAY_KEY_ID } from "../Config";
 import Swal from "sweetalert2";
 
-const CheckoutForm = ({
-  amount,
-  email,
-  planId,
-  userId,
-  onSuccess,
-  currencyName,
-}) => {
-  const stripe = useStripe();
-  const elements = useElements();
-
+const CheckoutForm = ({ amount, email, planId, userId, onSuccess }) => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // const handlePayment = async () => {
+  //   try {
+  //     setLoading(true);
+
+  
+  //     const { data: order } = await axios.post(
+  //       `${API_URL}/api/payment-razor/create-order`,
+  //       {
+  //         amount,
+  //         email,
+  //         planId,
+  //         userId,
+  //       }
+  //     );
+  //     console.log("order response:", order);
+
+  //     const options = {
+  //       key: RAZORPAY_KEY_ID,
+  //       amount: order.amount,
+  //       currency: order.currency,
+  //       name: "Your Company Name",
+  //       description: "Plan Subscription Payment",
+  //       order_id: order.id,
+
+  //       handler: async function (response) {
+  //         try {
+  //           await axios.post(`${API_URL}/api/payment-razor/verify-payment`, {
+  //             razorpay_order_id: response.razorpay_order_id,
+  //             razorpay_payment_id: response.razorpay_payment_id,
+  //             razorpay_signature: response.razorpay_signature,
+  //           });
+
+  //           Swal.fire({
+  //             title: "Payment Successful!",
+  //             text: "Your subscription is now active.",
+  //             icon: "success",
+  //             confirmButtonText: "OK",
+  //           }).then(() => {
+  //             if (onSuccess) onSuccess();
+  //           });
+  //         } catch (err) {
+  //           Swal.fire("Verification Failed", "Payment verification failed", "error");
+  //         }
+  //       },
+
+  //       prefill: {
+  //         email: email,
+  //       },
+
+  //       theme: {
+  //         color: "#2563eb",
+  //       },
+
+  //       modal: {
+  //         ondismiss: function () {
+  //           setLoading(false);
+  //         },
+  //       },
+  //     };
+
+  //     const rzp = new window.Razorpay(options);
+  //     rzp.open();
+  //     setLoading(false);
+  //   } catch (error) {
+  //     console.error("Payment error:", error);
+  //     Swal.fire("Payment Failed", "Unable to initiate payment", "error");
+  //     setLoading(false);
+  //   }
+  // };
+
+  const handlePayment = async () => {
+  try {
     setLoading(true);
-    setError("");
 
-    try {
-      // await elements.submit();
-      // Create payment intent
-      const res = await axios.post(
-        `${API_URL}/api/payment/create-payment-intent`,
-        {
-          amount: amount,
-          email: email,
-          planId: planId,
-          userId: userId,
-          currencyName: currencyName,
-        }
-      );
+    const { data: order } = await axios.post(
+      `${API_URL}/api/payment-razor/create-order`,
+      { amount, email, planId, userId }
+    );
 
-      //   console.log('Payment intent response:', res.data);
+    const options = {
+      key: RAZORPAY_KEY_ID,
+      amount: order.amount,
+      currency: order.currency,
+      name: "Your Company Name",
+      description: "Plan Subscription Payment",
+      order_id: order.id,
 
-      const clientSecret = res.data.clientSecret;
 
-      if (!clientSecret) {
-        throw new Error("No client secret received from server");
-      }
+      handler: async function (response) {
+        await axios.post(`${API_URL}/api/payment-razor/verify-payment`, {
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_signature: response.razorpay_signature,
+        });
 
-      // Confirm payment with Stripe
-      // const { error, paymentIntent } = await stripe.confirmPayment({
-      //   elements,
-      //   clientSecret,
-      //   confirmParams: {
-      //     return_url: `${window.location.origin}/payment-success`,
-      //     receipt_email: email,
-      //   },
-      //   redirect: 'if_required',
-      // });
-      const { error, paymentIntent } = await stripe.confirmCardPayment(
-        clientSecret,
-        {
-          payment_method: {
-            card: elements.getElement(CardElement),
-            billing_details: {
-              email: email,
-            },
-          },
-        }
-      );
+        Swal.fire("Payment Successful!", "Subscription activated", "success");
+        if (onSuccess) onSuccess();
+      },
 
-      // if (error) {
-      //   throw new Error(error.message);
-      // }
+      prefill: { email },
 
-      if (error) {
-        setLoading(false); //  STOP showing "Processing..."
-        setError(error.message); //  Show card error message
-        return;
-      }
+      theme: { color: "#2563eb" },
 
-      //   console.log('Payment successful:', paymentIntent);
+      modal: {
+        ondismiss: async function () {
+          setLoading(false);
 
-      // Update payment status on backend
-      await axios.post(`${API_URL}/api/payment/update-payment-intent`, {
-        payment_intent_id: paymentIntent.id,
-        payment_status: paymentIntent.status,
-        email: email,
-        amount: amount,
-        paymentIntent,
-      });
-      //   console.log('res :', response);
-      // Show success message
-      Swal.fire({
-        title: "Payment Successful!",
-        text: "Your payment has been processed successfully.",
-        icon: "success",
-        confirmButtonText: "OK",
-      }).then(() => {
-        window.location.reload();
+
+          await axios.post(`${API_URL}/api/payment-razor/payment-failed`, {
+            orderId: order.id,
+            reason: "User closed payment popup",
+          });
+
+          Swal.fire("Payment Cancelled", "You closed the payment window.", "info");
+        },
+      },
+    };
+
+    const rzp = new window.Razorpay(options);
+
+
+    rzp.on("payment.failed", async function (response) {
+      setLoading(false);
+
+      await axios.post(`${API_URL}/api/payment-razor/payment-failed`, {
+        orderId: response.error.metadata.order_id,
+        paymentId: response.error.metadata.payment_id,
+        reason: response.error.description,
       });
 
-      if (onSuccess) onSuccess();
-    } catch (error) {
-      console.error("Payment error:", error);
+      Swal.fire("Payment Failed", response.error.description, "error");
+    });
 
-      Swal.fire({
-        title: "Payment Failed",
-        text:
-          error.message || "Payment could not be processed. Please try again.",
-        icon: "error",
-        confirmButtonText: "OK",
-      });
-    } finally {
-      //   setIsLoading(false);
-    }
-  };
+    rzp.open();
+    setLoading(false);
+  } catch (error) {
+    console.error(error);
+    Swal.fire("Error", "Unable to start payment", "error");
+    setLoading(false);
+  }
+};
+
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 w-full ">
-      {/* <PaymentElement /> */}
-      <CardElement
-        options={{
-          style: {
-            base: {
-              fontSize: "16px",
-              color: "#000",
-              "::placeholder": { color: "#888" },
-            },
-            invalid: { color: "#e5424d" },
-          },
-        }}
-      />
-
-      {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-
+    <div className="w-full">
       <button
-        type="submit"
-        disabled={!stripe || loading}
+        onClick={handlePayment}
+        disabled={loading}
         className="w-full bg-blue-500 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-60 transition"
       >
-        {loading ? "Processing..." : "Pay Now"}
+        {loading ? "Processing..." : `Pay ₹${amount}`}
       </button>
-    </form>
+    </div>
   );
 };
 
 export default CheckoutForm;
+
+
+
+
+
+
+
+
+
+// import React, { useState } from "react";
+// import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
+// import axios from "axios";
+// import { API_URL } from "../Config";
+// import Swal from "sweetalert2";
+
+// const CheckoutForm = ({
+//   amount,
+//   email,
+//   planId,
+//   userId,
+//   onSuccess,
+//   currencyName,
+// }) => {
+//   const stripe = useStripe();
+//   const elements = useElements();
+
+//   const [loading, setLoading] = useState(false);
+//   const [error, setError] = useState("");
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     setLoading(true);
+//     setError("");
+
+//     try {
+//       // await elements.submit();
+//       // Create payment intent
+//       const res = await axios.post(
+//         `${API_URL}/api/payment-razor/create-order`,
+//         {
+//           amount: amount,
+//           email: email,
+//           planId: planId,
+//           userId: userId,
+//           currencyName: currencyName,
+//         }
+//       );
+
+//       //   console.log('Payment intent response:', res.data);
+
+//       const clientSecret = res.data.clientSecret;
+
+//       if (!clientSecret) {
+//         throw new Error("No client secret received from server");
+//       }
+
+//       // Confirm payment with Stripe
+//       // const { error, paymentIntent } = await stripe.confirmPayment({
+//       //   elements,
+//       //   clientSecret,
+//       //   confirmParams: {
+//       //     return_url: `${window.location.origin}/payment-success`,
+//       //     receipt_email: email,
+//       //   },
+//       //   redirect: 'if_required',
+//       // });
+//       const { error, paymentIntent } = await stripe.confirmCardPayment(
+//         clientSecret,
+//         {
+//           payment_method: {
+//             card: elements.getElement(CardElement),
+//             billing_details: {
+//               email: email,
+//             },
+//           },
+//         }
+//       );
+
+//       // if (error) {
+//       //   throw new Error(error.message);
+//       // }
+
+//       if (error) {
+//         setLoading(false); //  STOP showing "Processing..."
+//         setError(error.message); //  Show card error message
+//         return;
+//       }
+
+//       //   console.log('Payment successful:', paymentIntent);
+
+//       // Update payment status on backend
+//       await axios.post(`${API_URL}/api/payment-razor/verify-payment`, {
+//         payment_intent_id: paymentIntent.id,
+//         payment_status: paymentIntent.status,
+//         email: email,
+//         amount: amount,
+//         paymentIntent,
+//       });
+//       //   console.log('res :', response);
+//       // Show success message
+//       Swal.fire({
+//         title: "Payment Successful!",
+//         text: "Your payment has been processed successfully.",
+//         icon: "success",
+//         confirmButtonText: "OK",
+//       }).then(() => {
+//         window.location.reload();
+//       });
+
+//       if (onSuccess) onSuccess();
+//     } catch (error) {
+//       console.error("Payment error:", error);
+
+//       Swal.fire({
+//         title: "Payment Failed",
+//         text:
+//           error.message || "Payment could not be processed. Please try again.",
+//         icon: "error",
+//         confirmButtonText: "OK",
+//       });
+//     } finally {
+//       //   setIsLoading(false);
+//     }
+//   };
+
+//   return (
+//     <form onSubmit={handleSubmit} className="space-y-4 w-full ">
+//       {/* <PaymentElement /> */}
+//       <CardElement
+//         options={{
+//           style: {
+//             base: {
+//               fontSize: "16px",
+//               color: "#000",
+//               "::placeholder": { color: "#888" },
+//             },
+//             invalid: { color: "#e5424d" },
+//           },
+//         }}
+//       />
+
+//       {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+
+//       <button
+//         type="submit"
+//         disabled={!stripe || loading}
+//         className="w-full bg-blue-500 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-60 transition"
+//       >
+//         {loading ? "Processing..." : "Pay Now"}
+//       </button>
+//     </form>
+//   );
+// };
+
+// export default CheckoutForm;
