@@ -36,9 +36,12 @@ const Contact_form = forwardRef((props, ref) => {
   const Userid = userLoggedIn?.id || userLoggedIn?._id;
   const location = useLocation();
   const pic = location.state?.templateId.pic;
+  console.log(pic);
   const templateId = location.state?.templateId.id;
+  console.log(templateId);
   const editid = location.state?.editid;
-  
+  console.log(editid);
+
   const { firstName, setFirstName } = useContext(CreateContext);
   const { lastName, setLastName } = useContext(CreateContext);
   const { jobTitle, setJobTitle } = useContext(CreateContext);
@@ -300,7 +303,7 @@ const Contact_form = forwardRef((props, ref) => {
 
         <form className="space-y-5 sm:space-y-6 bg-[#f3f4f6]/80 p-2 sm:p-3 md:p-4 rounded-xl sm:rounded-2xl ">
           {/* Profile Photo Section */}
-          {(pic === "true" || croppedImage) && (
+          {pic === "true" && (
             <div className="bg-gradient-to-r from-gray-50 to-white p-3 sm:p-4 rounded-xl border border-gray-100 shadow-subtle">
               <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
                 {croppedImage ? (

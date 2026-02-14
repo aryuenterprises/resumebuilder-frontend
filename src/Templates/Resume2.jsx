@@ -20,17 +20,6 @@ const Resume2 = (alldetails) => {
   console.log("croppedImaged", croppedImage)
   const [previewUrl, setPreviewUrl] = useState(null);
 
-  // useEffect(() => {
-  //   if (!croppedImage) return;
-  //   if (typeof croppedImage === "string" && croppedImage.startsWith("blob:")) {
-  //     setPreviewUrl(croppedImage);
-  //   }
-  //   else if (croppedImage instanceof Blob || croppedImage instanceof File) {
-  //     const url = URL.createObjectURL(croppedImage);
-  //     setPreviewUrl(url);
-  //     return () => URL.revokeObjectURL(url);
-  //   }
-  // }, [croppedImage]);
 
   const contact = alldetails?.alldata?.contact || UseContext || {};
   const educations = alldetails?.alldata?.educations || UseContext?.education || [];
@@ -41,29 +30,6 @@ const Resume2 = (alldetails) => {
 
   const linkedinUrl = contact?.linkedin || contact?.linkedIn;
 
-
-  //   useEffect(() => {
-  //   // 1️ If user selected new cropped image → show that
-  //   if (croppedImage) {
-  //     if (typeof croppedImage === "string" && croppedImage.startsWith("blob:")) {
-  //       setPreviewUrl(croppedImage);
-  //       return;
-  //     }
-
-  //     if (croppedImage instanceof Blob || croppedImage instanceof File) {
-  //       const url = URL.createObjectURL(croppedImage);
-  //       setPreviewUrl(url);
-
-  //       return () => URL.revokeObjectURL(url);
-  //     }
-  //   }
-
-
-  //   if (contact.photo) {
-  //     const backendURL = `${API_URL}/api/uploads/photos/${contact.photo || croppedImage}`;
-  //     setPreviewUrl(backendURL);
-  //   }
-  // }, [croppedImage, contact.photo]);
 
   useEffect(() => {
     let url;

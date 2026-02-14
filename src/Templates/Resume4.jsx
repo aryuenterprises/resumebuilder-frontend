@@ -6099,11 +6099,6 @@
 
 // export default Resume4;
 
-
-
-
-
-
 // import React, { useContext, useRef, useState } from "react";
 // import MonthYearDisplay from "../Componets/MonthYearDisplay";
 // import { CreateContext } from "../App";
@@ -6290,7 +6285,7 @@
 //             </div>
 //             <div class="item-date">
 //               ${exp.startDate ? new Date(exp.startDate).toLocaleDateString("en-US", { month: "short", year: "numeric" }) : ""}
-//               - 
+//               -
 //               ${exp.endDate ? new Date(exp.endDate).toLocaleDateString("en-US", { month: "short", year: "numeric" }) : "Present"}
 //             </div>
 //           </div>
@@ -6364,7 +6359,7 @@
 //     `;
 
 //     // Build summary section
-//     const summarySection = summary 
+//     const summarySection = summary
 //       ? createSection("Summary", `<div class="item-content">${summary}</div>`)
 //       : "";
 
@@ -6375,7 +6370,7 @@
 //         experienceContent += createExperienceItem(exp, index);
 //       });
 //     }
-//     const experienceSection = experienceContent 
+//     const experienceSection = experienceContent
 //       ? createSection("Experience", experienceContent)
 //       : "";
 
@@ -6386,7 +6381,7 @@
 //         educationContent += createEducationItem(edu, index);
 //       });
 //     }
-//     const educationSection = educationContent 
+//     const educationSection = educationContent
 //       ? createSection("Education", educationContent)
 //       : "";
 
@@ -6399,7 +6394,7 @@
 //       });
 //       skillsContent += `</div>`;
 //     }
-//     const skillsSection = skillsContent 
+//     const skillsSection = skillsContent
 //       ? createSection("Skills", skillsContent)
 //       : "";
 
@@ -6424,7 +6419,7 @@
 //         languagesContent += `</div>`;
 //       }
 //     }
-//     const languagesSection = languagesContent 
+//     const languagesSection = languagesContent
 //       ? createSection("Languages", languagesContent)
 //       : "";
 
@@ -6535,25 +6530,25 @@
 //     // Simple approach: Force split after header + 2 sections for page 1
 //     // This ensures multi-page when there's decent content
 //     const pages = [];
-    
+
 //     // Page 1: Header + Summary + Experience (or first part of experience if too long)
 //     const page1Sections = [];
 //     let page1Height = 0;
 //     const maxPage1Height = 200; // mm
-    
+
 //     // Always add header to page 1
 //     if (allSections[0]?.isHeader) {
 //       page1Sections.push(allSections[0]);
 //       page1Height += 40; // header height in mm
 //     }
-    
+
 //     // Add summary if exists
 //     if (allSections.find(s => s.id === "summary")) {
 //       const summarySection = allSections.find(s => s.id === "summary");
 //       page1Sections.push(summarySection);
 //       page1Height += 30;
 //     }
-    
+
 //     // Add experience section (might be split)
 //     const experienceSectionData = allSections.find(s => s.id === "experience");
 //     if (experienceSectionData) {
@@ -6562,16 +6557,16 @@
 //         // Split experiences between pages
 //         const halfIndex = Math.ceil(experiences.length / 2);
 //         const firstHalfExps = experiences.slice(0, halfIndex);
-        
+
 //         // Create first half experience section for page 1
 //         let firstHalfContent = "";
 //         firstHalfExps.forEach((exp, index) => {
 //           firstHalfContent += createExperienceItem(exp, index);
 //         });
 //         const firstHalfSection = createSection("Experience", firstHalfContent);
-        
+
 //         page1Sections.push({ id: "experience-part1", content: firstHalfSection });
-        
+
 //         // Create second half for page 2
 //         const secondHalfExps = experiences.slice(halfIndex);
 //         let secondHalfContent = "";
@@ -6579,47 +6574,47 @@
 //           secondHalfContent += createExperienceItem(exp, index + halfIndex);
 //         });
 //         const secondHalfSection = createSection("Experience", secondHalfContent);
-        
+
 //         // Remove original experience section and add split versions
-//         const remainingSections = allSections.filter(s => 
-//           s.id !== "header" && 
-//           s.id !== "summary" && 
+//         const remainingSections = allSections.filter(s =>
+//           s.id !== "header" &&
+//           s.id !== "summary" &&
 //           s.id !== "experience"
 //         );
-        
+
 //         // Page 1 content
 //         const page1Content = page1Sections.map(s => s.content).join('');
-        
+
 //         // Page 2 content (starts with second half of experience)
 //         const page2Sections = [
 //           { id: "experience-part2", content: secondHalfSection },
 //           ...remainingSections
 //         ];
 //         const page2Content = page2Sections.map(s => s.content).join('');
-        
+
 //         pages.push({
 //           number: 1,
 //           content: page1Content
 //         });
-        
+
 //         pages.push({
 //           number: 2,
 //           content: page2Content
 //         });
-        
+
 //       } else {
 //         // All experiences fit on page 1
 //         page1Sections.push(experienceSectionData);
 //         page1Height += experiences.length * 20;
-        
+
 //         // Add remaining sections to page 2 if they exist
-//         const remainingSections = allSections.filter(s => 
+//         const remainingSections = allSections.filter(s =>
 //           !page1Sections.includes(s)
 //         );
-        
+
 //         const page1Content = page1Sections.map(s => s.content).join('');
 //         pages.push({ number: 1, content: page1Content });
-        
+
 //         if (remainingSections.length > 0) {
 //           const page2Content = remainingSections.map(s => s.content).join('');
 //           pages.push({ number: 2, content: page2Content });
@@ -6629,18 +6624,18 @@
 //       // No experience section, simple split
 //       const page1SectionsSimple = allSections.slice(0, 3); // First 3 sections on page 1
 //       const page2SectionsSimple = allSections.slice(3); // Rest on page 2
-      
+
 //       if (page1SectionsSimple.length > 0) {
-//         pages.push({ 
-//           number: 1, 
-//           content: page1SectionsSimple.map(s => s.content).join('') 
+//         pages.push({
+//           number: 1,
+//           content: page1SectionsSimple.map(s => s.content).join('')
 //         });
 //       }
-      
+
 //       if (page2SectionsSimple.length > 0) {
-//         pages.push({ 
-//           number: 2, 
-//           content: page2SectionsSimple.map(s => s.content).join('') 
+//         pages.push({
+//           number: 2,
+//           content: page2SectionsSimple.map(s => s.content).join('')
 //         });
 //       }
 //     }
@@ -6677,7 +6672,7 @@
 //               font-family: Helvetica, Arial, sans-serif;
 //               background: white;
 //             }
-            
+
 //             .resume-page {
 //               width: 210mm;
 //               min-height: 297mm;
@@ -6685,33 +6680,33 @@
 //               box-sizing: border-box;
 //               position: relative;
 //             }
-            
+
 //             /* Resume content styles - EXACTLY like original */
 //             .contact-info {
 //               text-align: center;
 //               margin-bottom: 15px;
 //             }
-            
+
 //             .name {
 //               font-size: 22px;
 //               font-weight: 800;
 //               text-transform: uppercase;
 //               color: #000;
 //             }
-            
+
 //             .job-title {
 //               font-size: 14px;
 //               font-weight: 700;
 //               margin-top: 2px;
 //               color: #333;
 //             }
-            
+
 //             .address {
 //               font-size: 11px;
 //               margin-top: 4px;
 //               color: #555;
 //             }
-            
+
 //             .contact-details {
 //               display: flex;
 //               justify-content: center;
@@ -6721,21 +6716,21 @@
 //               font-weight: 600;
 //               color: #444;
 //             }
-            
+
 //             .links {
 //               display: flex;
 //               justify-content: center;
 //               gap: 15px;
 //               margin-top: 6px;
 //             }
-            
+
 //             .link-item {
 //               font-size: 11px;
 //               font-weight: 600;
 //               text-decoration: none;
 //               color: #000;
 //             }
-            
+
 //             .section-title {
 //               background: #f0f0f0;
 //               height: 26px;
@@ -6748,101 +6743,101 @@
 //               margin: 12px 0 8px;
 //               color: #000;
 //             }
-            
+
 //             .section-content {
 //               margin-bottom: 12px;
 //             }
-            
+
 //             .item-header {
 //               display: flex;
 //               justify-content: space-between;
 //               margin-bottom: 3px;
 //             }
-            
+
 //             .item-title {
 //               font-size: 13px;
 //               font-weight: 700;
 //               color: #000;
 //             }
-            
+
 //             .item-subtitle {
 //               font-size: 12px;
 //               color: #555;
 //             }
-            
+
 //             .item-date {
 //               font-size: 11px;
 //               white-space: nowrap;
 //               color: #666;
 //             }
-            
+
 //             .item-content {
 //               font-size: 11px;
 //               line-height: 1.5;
 //               color: #444;
 //             }
-            
+
 //             .skills-grid {
 //               display: grid;
 //               grid-template-columns: repeat(2, 1fr);
 //               gap: 12px;
 //             }
-            
+
 //             .skill-name {
 //               font-size: 11px;
 //               margin-bottom: 2px;
 //               color: #333;
 //             }
-            
+
 //             .skill-bar {
 //               height: 3px;
 //               background: #e0e0e0;
 //             }
-            
+
 //             .skill-level {
 //               height: 100%;
 //               background: #222;
 //             }
-            
+
 //             /* Print-specific styles */
 //             @media print {
 //               @page {
 //                 size: A4;
 //                 margin: 0;
 //               }
-              
+
 //               body {
 //                 width: 210mm;
 //                 height: 297mm;
 //                 margin: 0;
 //                 padding: 0;
 //               }
-              
+
 //               .resume-page {
 //                 page-break-after: always;
 //                 margin: 0;
 //                 padding: 20mm;
 //                 box-shadow: none;
 //               }
-              
+
 //               .resume-page:last-child {
 //                 page-break-after: avoid;
 //               }
-              
+
 //               /* Ensure colors print correctly */
 //               .section-title {
 //                 -webkit-print-color-adjust: exact !important;
 //                 print-color-adjust: exact !important;
 //                 background: #f0f0f0 !important;
 //               }
-              
+
 //               .skill-level {
 //                 -webkit-print-color-adjust: exact !important;
 //                 print-color-adjust: exact !important;
 //                 background: #222 !important;
 //               }
 //             }
-            
+
 //             /* Screen preview styles */
 //             @media screen {
 //               body {
@@ -6852,13 +6847,13 @@
 //                 flex-direction: column;
 //                 align-items: center;
 //               }
-              
+
 //               .resume-page {
 //                 margin-bottom: 20px;
 //                 box-shadow: 0 0 10px rgba(0,0,0,0.1);
 //                 background: white;
 //               }
-              
+
 //               .resume-page:last-child {
 //                 margin-bottom: 0;
 //               }
@@ -7274,20 +7269,6 @@
 
 // export default Resume4;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // import React, { useContext, useRef, useState } from "react";
 // import MonthYearDisplay from "../Componets/MonthYearDisplay";
 // import { CreateContext } from "../App";
@@ -7502,7 +7483,7 @@
 //             </div>
 //             <div class="item-date">
 //               ${exp.startDate ? new Date(exp.startDate).toLocaleDateString("en-US", { month: "short", year: "numeric" }) : ""}
-//               - 
+//               -
 //               ${exp.endDate ? new Date(exp.endDate).toLocaleDateString("en-US", { month: "short", year: "numeric" }) : "Present"}
 //             </div>
 //           </div>
@@ -7599,7 +7580,7 @@
 //     `;
 
 //     // Build summary section
-//     const summarySection = summary 
+//     const summarySection = summary
 //       ? createSection("Summary", `<div class="item-content">${summary}</div>`)
 //       : "";
 
@@ -7610,7 +7591,7 @@
 //         experienceContent += createExperienceItem(exp, index);
 //       });
 //     }
-//     const experienceSection = experienceContent 
+//     const experienceSection = experienceContent
 //       ? createSection("Experience", experienceContent)
 //       : "";
 
@@ -7621,7 +7602,7 @@
 //         educationContent += createEducationItem(edu, index);
 //       });
 //     }
-//     const educationSection = educationContent 
+//     const educationSection = educationContent
 //       ? createSection("Education", educationContent)
 //       : "";
 
@@ -7634,7 +7615,7 @@
 //       });
 //       skillsContent += `</div>`;
 //     }
-//     const skillsSection = skillsContent 
+//     const skillsSection = skillsContent
 //       ? createSection("Skills", skillsContent)
 //       : "";
 
@@ -7659,7 +7640,7 @@
 //         languagesContent += `</div>`;
 //       }
 //     }
-//     const languagesSection = languagesContent 
+//     const languagesSection = languagesContent
 //       ? createSection("Languages", languagesContent)
 //       : "";
 
@@ -7770,25 +7751,25 @@
 //     // Simple approach: Force split after header + 2 sections for page 1
 //     // This ensures multi-page when there's decent content
 //     const pages = [];
-    
+
 //     // Page 1: Header + Summary + Experience (or first part of experience if too long)
 //     const page1Sections = [];
 //     let page1Height = 0;
 //     const maxPage1Height = 200; // mm
-    
+
 //     // Always add header to page 1
 //     if (allSections[0]?.isHeader) {
 //       page1Sections.push(allSections[0]);
 //       page1Height += 40; // header height in mm
 //     }
-    
+
 //     // Add summary if exists
 //     if (allSections.find(s => s.id === "summary")) {
 //       const summarySection = allSections.find(s => s.id === "summary");
 //       page1Sections.push(summarySection);
 //       page1Height += 30;
 //     }
-    
+
 //     // Add experience section (might be split)
 //     const experienceSectionData = allSections.find(s => s.id === "experience");
 //     if (experienceSectionData) {
@@ -7797,16 +7778,16 @@
 //         // Split experiences between pages
 //         const halfIndex = Math.ceil(experiences.length / 2);
 //         const firstHalfExps = experiences.slice(0, halfIndex);
-        
+
 //         // Create first half experience section for page 1
 //         let firstHalfContent = "";
 //         firstHalfExps.forEach((exp, index) => {
 //           firstHalfContent += createExperienceItem(exp, index);
 //         });
 //         const firstHalfSection = createSection("Experience", firstHalfContent);
-        
+
 //         page1Sections.push({ id: "experience-part1", content: firstHalfSection });
-        
+
 //         // Create second half for page 2
 //         const secondHalfExps = experiences.slice(halfIndex);
 //         let secondHalfContent = "";
@@ -7814,47 +7795,47 @@
 //           secondHalfContent += createExperienceItem(exp, index + halfIndex);
 //         });
 //         const secondHalfSection = createSection("Experience", secondHalfContent);
-        
+
 //         // Remove original experience section and add split versions
-//         const remainingSections = allSections.filter(s => 
-//           s.id !== "header" && 
-//           s.id !== "summary" && 
+//         const remainingSections = allSections.filter(s =>
+//           s.id !== "header" &&
+//           s.id !== "summary" &&
 //           s.id !== "experience"
 //         );
-        
+
 //         // Page 1 content
 //         const page1Content = page1Sections.map(s => s.content).join('');
-        
+
 //         // Page 2 content (starts with second half of experience)
 //         const page2Sections = [
 //           { id: "experience-part2", content: secondHalfSection },
 //           ...remainingSections
 //         ];
 //         const page2Content = page2Sections.map(s => s.content).join('');
-        
+
 //         pages.push({
 //           number: 1,
 //           content: page1Content
 //         });
-        
+
 //         pages.push({
 //           number: 2,
 //           content: page2Content
 //         });
-        
+
 //       } else {
 //         // All experiences fit on page 1
 //         page1Sections.push(experienceSectionData);
 //         page1Height += experiences.length * 20;
-        
+
 //         // Add remaining sections to page 2 if they exist
-//         const remainingSections = allSections.filter(s => 
+//         const remainingSections = allSections.filter(s =>
 //           !page1Sections.includes(s)
 //         );
-        
+
 //         const page1Content = page1Sections.map(s => s.content).join('');
 //         pages.push({ number: 1, content: page1Content });
-        
+
 //         if (remainingSections.length > 0) {
 //           const page2Content = remainingSections.map(s => s.content).join('');
 //           pages.push({ number: 2, content: page2Content });
@@ -7864,18 +7845,18 @@
 //       // No experience section, simple split
 //       const page1SectionsSimple = allSections.slice(0, 3); // First 3 sections on page 1
 //       const page2SectionsSimple = allSections.slice(3); // Rest on page 2
-      
+
 //       if (page1SectionsSimple.length > 0) {
-//         pages.push({ 
-//           number: 1, 
-//           content: page1SectionsSimple.map(s => s.content).join('') 
+//         pages.push({
+//           number: 1,
+//           content: page1SectionsSimple.map(s => s.content).join('')
 //         });
 //       }
-      
+
 //       if (page2SectionsSimple.length > 0) {
-//         pages.push({ 
-//           number: 2, 
-//           content: page2SectionsSimple.map(s => s.content).join('') 
+//         pages.push({
+//           number: 2,
+//           content: page2SectionsSimple.map(s => s.content).join('')
 //         });
 //       }
 //     }
@@ -7912,7 +7893,7 @@
 //               font-family: Helvetica, Arial, sans-serif;
 //               background: white;
 //             }
-            
+
 //             .resume-page {
 //               width: 210mm;
 //               min-height: 297mm;
@@ -7920,33 +7901,33 @@
 //               box-sizing: border-box;
 //               position: relative;
 //             }
-            
+
 //             /* Resume content styles with FIXED ALIGNMENT */
 //             .contact-info {
 //               text-align: center;
 //               margin-bottom: 15px;
 //             }
-            
+
 //             .name {
 //               font-size: 22px;
 //               font-weight: 800;
 //               text-transform: uppercase;
 //               color: #000;
 //             }
-            
+
 //             .job-title {
 //               font-size: 14px;
 //               font-weight: 700;
 //               margin-top: 2px;
 //               color: #333;
 //             }
-            
+
 //             .address {
 //               font-size: 11px;
 //               margin-top: 4px;
 //               color: #555;
 //             }
-            
+
 //             .contact-details {
 //               display: flex;
 //               justify-content: center;
@@ -7956,21 +7937,21 @@
 //               font-weight: 600;
 //               color: #444;
 //             }
-            
+
 //             .links {
 //               display: flex;
 //               justify-content: center;
 //               gap: 15px;
 //               margin-top: 6px;
 //             }
-            
+
 //             .link-item {
 //               font-size: 11px;
 //               font-weight: 600;
 //               text-decoration: none;
 //               color: #000;
 //             }
-            
+
 //             .section-title {
 //               background: #f0f0f0;
 //               height: 26px;
@@ -7983,35 +7964,35 @@
 //               margin: 12px 0 8px;
 //               color: #000;
 //             }
-            
+
 //             .section-content {
 //               margin-bottom: 12px;
 //             }
-            
+
 //             .item-header {
 //               display: flex;
 //               justify-content: space-between;
 //               align-items: flex-start;
 //               margin-bottom: 3px;
 //             }
-            
+
 //             .item-title-container {
 //               flex: 1;
 //               min-width: 0; /* CRITICAL FIX for text wrapping */
 //             }
-            
+
 //             .item-title {
 //               font-size: 13px;
 //               font-weight: 700;
 //               color: #000;
 //             }
-            
+
 //             .item-subtitle {
 //               font-size: 12px;
 //               color: #555;
 //               margin-top: 2px;
 //             }
-            
+
 //             .item-date {
 //               font-size: 11px;
 //               white-space: nowrap;
@@ -8020,91 +8001,91 @@
 //               min-width: 100px;
 //               color: #666;
 //             }
-            
+
 //             .item-content {
 //               font-size: 11px;
 //               line-height: 1.5;
 //               color: #444;
 //               margin-top: 4px;
 //             }
-            
+
 //             .education-content {
 //               margin-top: 4px;
 //               padding-left: 2px;
 //             }
-            
+
 //             .education-list {
 //               padding-left: 15px;
 //               margin: 5px 0;
 //             }
-            
+
 //             .education-list li {
 //               margin-bottom: 2px;
 //               font-size: 11px;
 //               line-height: 1.3;
 //             }
-            
+
 //             .skills-grid {
 //               display: grid;
 //               grid-template-columns: repeat(2, 1fr);
 //               gap: 12px;
 //             }
-            
+
 //             .skill-name {
 //               font-size: 11px;
 //               margin-bottom: 2px;
 //               color: #333;
 //             }
-            
+
 //             .skill-bar {
 //               height: 3px;
 //               background: #e0e0e0;
 //             }
-            
+
 //             .skill-level {
 //               height: 100%;
 //               background: #222;
 //             }
-            
+
 //             /* Print-specific styles */
 //             @media print {
 //               @page {
 //                 size: A4;
 //                 margin: 0;
 //               }
-              
+
 //               body {
 //                 width: 210mm;
 //                 height: 297mm;
 //                 margin: 0;
 //                 padding: 0;
 //               }
-              
+
 //               .resume-page {
 //                 page-break-after: always;
 //                 margin: 0;
 //                 padding: 20mm;
 //                 box-shadow: none;
 //               }
-              
+
 //               .resume-page:last-child {
 //                 page-break-after: avoid;
 //               }
-              
+
 //               /* Ensure colors print correctly */
 //               .section-title {
 //                 -webkit-print-color-adjust: exact !important;
 //                 print-color-adjust: exact !important;
 //                 background: #f0f0f0 !important;
 //               }
-              
+
 //               .skill-level {
 //                 -webkit-print-color-adjust: exact !important;
 //                 print-color-adjust: exact !important;
 //                 background: #222 !important;
 //               }
 //             }
-            
+
 //             /* Screen preview styles */
 //             @media screen {
 //               body {
@@ -8114,13 +8095,13 @@
 //                 flex-direction: column;
 //                 align-items: center;
 //               }
-              
+
 //               .resume-page {
 //                 margin-bottom: 20px;
 //                 box-shadow: 0 0 10px rgba(0,0,0,0.1);
 //                 background: white;
 //               }
-              
+
 //               .resume-page:last-child {
 //                 margin-bottom: 0;
 //               }
@@ -8315,8 +8296,8 @@
 //                   );
 //                 } else {
 //                   textContent = (
-//                     <div 
-//                       className="item-content" 
+//                     <div
+//                       className="item-content"
 //                       style={{ whiteSpace: 'pre-wrap' }}
 //                     >
 //                       {edu.text}
@@ -8565,9 +8546,6 @@
 
 // export default Resume4;
 
-
-
-
 import React, { useContext, useState } from "react";
 import MonthYearDisplay from "../Componets/MonthYearDisplay";
 import { CreateContext } from "../App";
@@ -8579,10 +8557,13 @@ const Resume4 = (alldetails) => {
   const [isGenerating, setIsGenerating] = useState(false);
 
   const contact = alldetails?.alldata?.contact || UseContext || {};
-  const educations = alldetails?.alldata?.educations || UseContext?.education || [];
-  const experiences = alldetails?.alldata?.experiences || UseContext?.experiences || [];
+  const educations =
+    alldetails?.alldata?.educations || UseContext?.education || [];
+  const experiences =
+    alldetails?.alldata?.experiences || UseContext?.experiences || [];
   const skills = alldetails?.alldata?.skills || UseContext?.skills || [];
-  const finalize = alldetails?.alldata?.finalize || UseContext?.globalSkillsData || {};
+  const finalize =
+    alldetails?.alldata?.finalize || UseContext?.globalSkillsData || {};
   const summary = alldetails?.alldata?.summary || UseContext?.text || "";
 
   const addressParts = [
@@ -8713,7 +8694,7 @@ const Resume4 = (alldetails) => {
                            </div>
                            <div>${e.text || ""}</div>
                          </div>
-                       `
+                       `,
                      )
                      .join("")}
                  </div>`
@@ -8737,7 +8718,7 @@ const Resume4 = (alldetails) => {
                            </div>
                            <div>${e.text || ""}</div>
                          </div>
-                       `
+                       `,
                      )
                      .join("")}
                  </div>`
@@ -8755,10 +8736,10 @@ const Resume4 = (alldetails) => {
                            <div>
                              <div>${s.skill}</div>
                              <div class="skill-bar">
-                               <div class="skill-level" style="width:${(Number(s.level)/4)*100}%"></div>
+                               <div class="skill-level" style="width:${(Number(s.level) / 4) * 100}%"></div>
                              </div>
                            </div>
-                         `
+                         `,
                        )
                        .join("")}
                    </div>
@@ -8785,7 +8766,7 @@ const Resume4 = (alldetails) => {
         // "http://192.168.0.114:3015/api/candidates/generate-pdf",
         `${API_URL}/api/candidates/generate-pdf`,
         { html },
-        { responseType: "blob" }
+        { responseType: "blob" },
       );
 
       const url = URL.createObjectURL(res.data);
@@ -8806,363 +8787,370 @@ const Resume4 = (alldetails) => {
   ====================================================== */
   return (
     <div style={{ textAlign: "center", marginTop: 40 }}>
-      <button onClick={handleDownload} disabled={isGenerating}>
+      <button onClick={handleDownload} disabled={isGenerating}  className="download-btn bg-red-600 text-white px-6 py-3 font-nunito rounded-lg font-semibold hover:bg-red-700 transition shadow-md">
         {isGenerating ? "Generating..." : "Download Resume"}
       </button>
 
-{generateHTML()}
+      {/* {generateHTML()} */}
 
-          {/* Resume Preview - Single page view for UI */}
-       <div  className="resume-container bg-white">
-         <style>{styles}</style>
+      {/* Resume Preview - Single page view for UI */}
+      <div className="resume-container bg-white mt-3">
+        <style>{styles}</style>
 
-         {/* HEADER */}
-         <div className="contact-info">
-           <div className="name">
-             {contact?.firstName} {contact?.lastName}
-           </div>
-           <div className="job-title">{contact?.jobTitle?.name}</div>
-           <div className="address">{addressParts.join(", ")}</div>
+        {/* HEADER */}
+        <div className="contact-info">
+          <div className="name">
+            {contact?.firstName} {contact?.lastName}
+          </div>
+          <div className="job-title">{contact?.jobTitle?.name}</div>
+          <div className="address">{addressParts.join(", ")}</div>
 
-           <div className="contact-details">
-             {contact?.email && <span>{contact.email}</span>}
-             {contact?.phone && <span>{contact.phone}</span>}
-           </div>
+          <div className="contact-details">
+            {contact?.email && <span>{contact.email}</span>}
+            {contact?.phone && <span>{contact.phone}</span>}
+          </div>
 
-           <div className="links">
-             {linkedinUrl && (
-               <a
-                 href={
-                   linkedinUrl.startsWith("http")
-                     ? linkedinUrl
-                     : `https:${linkedinUrl}`
-                 }
-                 className="link-item"
-                 target="_blank"
-                 rel="noreferrer"
-               >
-                 LinkedIn
-               </a>
-             )}
-           </div>
-         </div>
-
-         {/* SUMMARY */}
-         {summary && (
-           <div className="section-content resume-section">
-             <div className="section-title">Summary</div>
-             <div
-               className="item-content"
-               dangerouslySetInnerHTML={{ __html: summary }}
-             />
-           </div>
-         )}
-
-         {/* EXPERIENCE - WITH FIXED ALIGNMENT */}
-         {experiences.length > 0 && (
-           <div className="section-content resume-section">
-             <div className="section-title">Experience</div>
-             {experiences.map((exp, i) => (
-               <div key={i} style={{ marginBottom: "8px" }}>
-                 <div className="item-header">
-                   <div className="item-title-container">
-                     <div className="item-title">{exp.jobTitle}</div>
-                     <div className="item-subtitle">
-                       {exp.employer} — {exp.location}
-                     </div>
-                   </div>
-                   <div className="item-date">
-                     <MonthYearDisplay value={exp.startDate} shortYear />
-                     {" - "}
-                     {exp.endDate ? (
-                       <MonthYearDisplay value={exp.endDate} shortYear />
-                     ) : (
-                       "Present"
-                     )}
-                   </div>
-                 </div>
-                 <div
-                   className="item-content"
-                   dangerouslySetInnerHTML={{ __html: exp.text }}
-                 />
-               </div>
-             ))}
-           </div>
-         )}
-
-         {/* EDUCATION - WITH FIXED ALIGNMENT */}
-         {educations?.length > 0 && (
-           <div className="section-content">
-             <div className="section-title">Education</div>
-             {educations.map((edu, index) => {
-               let textContent = null;
-               if (edu.text) {
-                 const lines = edu.text.split('\n').filter(line => line.trim() !== '');
-                 if (lines.some(line => line.trim().startsWith('-'))) {
-                   textContent = (
-                     <div className="education-content">
-                       <ul className="education-list">
-                         {lines.map((line, i) => {
-                           const trimmed = line.trim();
-                           if (trimmed.startsWith('-')) {
-                             return <li key={i}>{trimmed.substring(1).trim()}</li>;
-                           } else if (trimmed) {
-                             return <li key={i}>{trimmed}</li>;
-                           }
-                           return null;
-                         })}
-                       </ul>
-                     </div>
-                   );
-                 } else {
-                   textContent = (
-                     <div 
-                       className="item-content" 
-                       style={{ whiteSpace: 'pre-wrap' }}
-                     >
-                       {edu.text}
-                     </div>
-                   );
-                 }
-               }
-
-               return (
-                 <div key={edu._id || edu.id || index} className="education-item" style={{ marginBottom: "8px" }}>
-                   <div className="item-header">
-                     <div className="item-title-container">
-                       <div className="item-title">{edu.schoolname || ""}</div>
-                       {(edu.degree || edu.location) && (
-                         <div className="item-subtitle">
-                           {edu.degree && <span>{edu.degree}</span>}
-                           {edu.location && (
-                             <>
-                               {edu.degree && " — "}
-                               <span>{edu.location}</span>
-                             </>
-                           )}
-                         </div>
-                       )}
-                     </div>
-                     {(edu.startDate || edu.endDate) && (
-                       <div className="item-date">
-                         {edu.startDate || ""}
-                         {edu.startDate && edu.endDate && " - "}
-                         {edu.endDate || ""}
-                       </div>
-                     )}
-                   </div>
-                   {textContent}
-                 </div>
-               );
-             })}
-           </div>
-         )}
-
-         {/* SKILLS */}
-         {skills.length > 0 && (
-           <div className="section-content resume-section">
-             <div className="section-title">Skills</div>
-             <div className="skills-grid">
-               {skills.map((skill, i) => (
-                 <div key={i}>
-                   <div className="skill-name">{skill.skill}</div>
-                   <div className="skill-bar">
-                     <div
-                       className="skill-level"
-                       style={{
-                         width: `${(Number(skill.level) / 4) * 100}%`,
-                       }}
-                     />
-                   </div>
-                 </div>
-               ))}
-             </div>
-           </div>
-         )}
-
-         {/* Languages Section */}
-         {Array.isArray(finalize?.languages) &&
-           finalize.languages.some(
-             (lang) => lang.name && lang.name.trim() !== "",
-           ) && (
-             <div className="section-content resume-section">
-               <div className="section-title">Languages</div>
-               <div className="skills-grid">
-                 {finalize.languages.map(
-                   (lang, index) =>
-                     lang.name &&
-                     lang.name.trim() !== "" && (
-                       <div key={lang._id || index} className="skill-item">
-                         <div className="skill-name">{lang.name}</div>
-                         {lang.level && (
-                           <div className="skill-bar">
-                             <div
-                               className="skill-level"
-                               style={{
-                                 width: `${(Number(lang.level) / 4) * 100}%`,
-                               }}
-                             />
-                           </div>
-                         )}
-                       </div>
-                     ),
-                 )}
-               </div>
-             </div>
-           )}
-
-         {/* Additional Sections */}
-         {Array.isArray(finalize?.certificationsAndLicenses) &&
-           finalize.certificationsAndLicenses.some(
-             (item) =>
-               item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "",
-           ) && (
-             <div className="section-content resume-section">
-               <div className="section-title">Certifications and Licenses</div>
-               <div className="item-content">
-                 {finalize.certificationsAndLicenses.map(
-                   (item, index) =>
-                     item.name &&
-                     item.name.replace(/<[^>]*>/g, "").trim() !== "" && (
-                       <div
-                         key={item.id || index}
-                         dangerouslySetInnerHTML={{ __html: item.name }}
-                       />
-                     ),
-                 )}
-               </div>
-             </div>
-           )}
-
-         {Array.isArray(finalize?.hobbiesAndInterests) &&
-           finalize.hobbiesAndInterests.some(
-             (item) =>
-               item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "",
-           ) && (
-             <div className="section-content resume-section">
-               <div className="section-title">Hobbies and Interests</div>
-               <div className="item-content">
-                 {finalize.hobbiesAndInterests.map(
-                   (item, index) =>
-                     item.name &&
-                     item.name.replace(/<[^>]*>/g, "").trim() !== "" && (
-                       <div
-                         key={item.id || index}
-                         dangerouslySetInnerHTML={{ __html: item.name }}
-                       />
-                     ),
-                 )}
-               </div>
-             </div>
-           )}
-
-         {Array.isArray(finalize?.awardsAndHonors) &&
-           finalize.awardsAndHonors.some(
-             (item) =>
-               item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "",
-           ) && (
-             <div className="section-content resume-section">
-               <div className="section-title">Awards and Honors</div>
-               <div className="item-content">
-                 {finalize.awardsAndHonors.map(
-                   (item, index) =>
-                     item.name &&
-                     item.name.replace(/<[^>]*>/g, "").trim() !== "" && (
-                       <div
-                         key={item.id || index}
-                         dangerouslySetInnerHTML={{ __html: item.name }}
-                       />
-                     ),
-                 )}
-               </div>
-             </div>
-           )}
-
-         {/* Websites and Social Media */}
-         {Array.isArray(finalize?.websitesAndSocialMedia) &&
-           finalize.websitesAndSocialMedia.some(
-             (item) =>
-               (item.websiteUrl && item.websiteUrl.trim() !== "") ||
-               (item.socialMedia && item.socialMedia.trim() !== ""),
-           ) && (
-             <div className="section-content resume-section">
-               <div className="section-title">Websites and Social Media</div>
-               <div className="item-content">
-                 {finalize.websitesAndSocialMedia.map(
-                   (item, index) =>
-                     (item.websiteUrl || item.socialMedia) && (
-                       <div
-                         key={item.id || index}
-                         style={{ marginBottom: "5px" }}
-                       >
-                         {item.websiteUrl && (
-                           <div>Website: {item.websiteUrl}</div>
-                         )}
-                         {item.socialMedia && (
-                           <div>Social Media: {item.socialMedia}</div>
-                         )}
-                       </div>
-                     ),
-                 )}
-               </div>
-             </div>
-           )}
-
-         {/* References */}
-         {Array.isArray(finalize?.references) &&
-           finalize.references.some(
-             (item) =>
-               item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "",
-           ) && (
-             <div className="section-content resume-section">
-               <div className="section-title">References</div>
-               <div className="item-content">
-                 {finalize.references.map(
-                   (item, index) =>
-                     item.name &&
-                     item.name.replace(/<[^>]*>/g, "").trim() !== "" && (
-                       <div
-                         key={item.id || index}
-                         dangerouslySetInnerHTML={{ __html: item.name }}
-                       />
-                     ),
-                 )}
-               </div>
-             </div>
-           )}
-
-         {/* Custom Sections */}
-         {Array.isArray(finalize?.customSection) &&
-           finalize.customSection.some(
-             (section) => section?.name?.trim() || section?.description?.trim(),
-           ) && (
-             <div className="section-content resume-section">
-               {finalize.customSection
-                 .filter(
-                   (section) =>
-                     section?.name?.trim() || section?.description?.trim(),
-                 )
-                 .map((section, index) => (
-                   <div key={section.id || index} className="custom-section">
-                     {section.name && (
-                       <div className="section-title">{section.name}</div>
-                     )}
-                     {section.description && (
-                       <div
-                         className="item-content"
-                         dangerouslySetInnerHTML={{
-                           __html: section.description,
-                         }}
-                       />
-                     )}
-                   </div>
-                 ))}
-    </div>
-)}
-
+          <div className="links">
+            {linkedinUrl && (
+              <a
+                href={
+                  linkedinUrl.startsWith("http")
+                    ? linkedinUrl
+                    : `https:${linkedinUrl}`
+                }
+                className="link-item"
+                target="_blank"
+                rel="noreferrer"
+              >
+                LinkedIn
+              </a>
+            )}
+          </div>
         </div>
-</div>
-)
-}
+
+        {/* SUMMARY */}
+        {summary && (
+          <div className="section-content resume-section">
+            <div className="section-title">Summary</div>
+            <div
+              className="item-content"
+              dangerouslySetInnerHTML={{ __html: summary }}
+            />
+          </div>
+        )}
+
+        {/* EXPERIENCE - WITH FIXED ALIGNMENT */}
+        {experiences.length > 0 && (
+          <div className="section-content resume-section">
+            <div className="section-title">Experience</div>
+            {experiences.map((exp, i) => (
+              <div key={i} style={{ marginBottom: "8px" }}>
+                <div className="item-header">
+                  <div className="item-title-container">
+                    <div className="item-title">{exp.jobTitle}</div>
+                    <div className="item-subtitle">
+                      {exp.employer} — {exp.location}
+                    </div>
+                  </div>
+                  <div className="item-date">
+                    <MonthYearDisplay value={exp.startDate} shortYear />
+                    {" - "}
+                    {exp.endDate ? (
+                      <MonthYearDisplay value={exp.endDate} shortYear />
+                    ) : (
+                      "Present"
+                    )}
+                  </div>
+                </div>
+                <div
+                  className="item-content"
+                  dangerouslySetInnerHTML={{ __html: exp.text }}
+                />
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* EDUCATION - WITH FIXED ALIGNMENT */}
+        {educations?.length > 0 && (
+          <div className="section-content">
+            <div className="section-title">Education</div>
+            {educations.map((edu, index) => {
+              let textContent = null;
+              if (edu.text) {
+                const lines = edu.text
+                  .split("\n")
+                  .filter((line) => line.trim() !== "");
+                if (lines.some((line) => line.trim().startsWith("-"))) {
+                  textContent = (
+                    <div className="education-content">
+                      <ul className="education-list">
+                        {lines.map((line, i) => {
+                          const trimmed = line.trim();
+                          if (trimmed.startsWith("-")) {
+                            return (
+                              <li key={i}>{trimmed.substring(1).trim()}</li>
+                            );
+                          } else if (trimmed) {
+                            return <li key={i}>{trimmed}</li>;
+                          }
+                          return null;
+                        })}
+                      </ul>
+                    </div>
+                  );
+                } else {
+                  textContent = (
+                    <div
+                      className="item-content"
+                      style={{ whiteSpace: "pre-wrap" }}
+                    >
+                      {edu.text}
+                    </div>
+                  );
+                }
+              }
+
+              return (
+                <div
+                  key={edu._id || edu.id || index}
+                  className="education-item"
+                  style={{ marginBottom: "8px" }}
+                >
+                  <div className="item-header">
+                    <div className="item-title-container">
+                      <div className="item-title">{edu.schoolname || ""}</div>
+                      {(edu.degree || edu.location) && (
+                        <div className="item-subtitle">
+                          {edu.degree && <span>{edu.degree}</span>}
+                          {edu.location && (
+                            <>
+                              {edu.degree && " — "}
+                              <span>{edu.location}</span>
+                            </>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    {(edu.startDate || edu.endDate) && (
+                      <div className="item-date">
+                        {edu.startDate || ""}
+                        {edu.startDate && edu.endDate && " - "}
+                        {edu.endDate || ""}
+                      </div>
+                    )}
+                  </div>
+                  {textContent}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* SKILLS */}
+        {skills.length > 0 && (
+          <div className="section-content resume-section">
+            <div className="section-title">Skills</div>
+            <div className="skills-grid">
+              {skills.map((skill, i) => (
+                <div key={i}>
+                  <div className="skill-name">{skill.skill}</div>
+                  <div className="skill-bar">
+                    <div
+                      className="skill-level"
+                      style={{
+                        width: `${(Number(skill.level) / 4) * 100}%`,
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Languages Section */}
+        {Array.isArray(finalize?.languages) &&
+          finalize.languages.some(
+            (lang) => lang.name && lang.name.trim() !== "",
+          ) && (
+            <div className="section-content resume-section">
+              <div className="section-title">Languages</div>
+              <div className="skills-grid">
+                {finalize.languages.map(
+                  (lang, index) =>
+                    lang.name &&
+                    lang.name.trim() !== "" && (
+                      <div key={lang._id || index} className="skill-item">
+                        <div className="skill-name">{lang.name}</div>
+                        {lang.level && (
+                          <div className="skill-bar">
+                            <div
+                              className="skill-level"
+                              style={{
+                                width: `${(Number(lang.level) / 4) * 100}%`,
+                              }}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    ),
+                )}
+              </div>
+            </div>
+          )}
+
+        {/* Additional Sections */}
+        {Array.isArray(finalize?.certificationsAndLicenses) &&
+          finalize.certificationsAndLicenses.some(
+            (item) =>
+              item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "",
+          ) && (
+            <div className="section-content resume-section">
+              <div className="section-title">Certifications and Licenses</div>
+              <div className="item-content">
+                {finalize.certificationsAndLicenses.map(
+                  (item, index) =>
+                    item.name &&
+                    item.name.replace(/<[^>]*>/g, "").trim() !== "" && (
+                      <div
+                        key={item.id || index}
+                        dangerouslySetInnerHTML={{ __html: item.name }}
+                      />
+                    ),
+                )}
+              </div>
+            </div>
+          )}
+
+        {Array.isArray(finalize?.hobbiesAndInterests) &&
+          finalize.hobbiesAndInterests.some(
+            (item) =>
+              item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "",
+          ) && (
+            <div className="section-content resume-section">
+              <div className="section-title">Hobbies and Interests</div>
+              <div className="item-content">
+                {finalize.hobbiesAndInterests.map(
+                  (item, index) =>
+                    item.name &&
+                    item.name.replace(/<[^>]*>/g, "").trim() !== "" && (
+                      <div
+                        key={item.id || index}
+                        dangerouslySetInnerHTML={{ __html: item.name }}
+                      />
+                    ),
+                )}
+              </div>
+            </div>
+          )}
+
+        {Array.isArray(finalize?.awardsAndHonors) &&
+          finalize.awardsAndHonors.some(
+            (item) =>
+              item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "",
+          ) && (
+            <div className="section-content resume-section">
+              <div className="section-title">Awards and Honors</div>
+              <div className="item-content">
+                {finalize.awardsAndHonors.map(
+                  (item, index) =>
+                    item.name &&
+                    item.name.replace(/<[^>]*>/g, "").trim() !== "" && (
+                      <div
+                        key={item.id || index}
+                        dangerouslySetInnerHTML={{ __html: item.name }}
+                      />
+                    ),
+                )}
+              </div>
+            </div>
+          )}
+
+        {/* Websites and Social Media */}
+        {Array.isArray(finalize?.websitesAndSocialMedia) &&
+          finalize.websitesAndSocialMedia.some(
+            (item) =>
+              (item.websiteUrl && item.websiteUrl.trim() !== "") ||
+              (item.socialMedia && item.socialMedia.trim() !== ""),
+          ) && (
+            <div className="section-content resume-section">
+              <div className="section-title">Websites and Social Media</div>
+              <div className="item-content">
+                {finalize.websitesAndSocialMedia.map(
+                  (item, index) =>
+                    (item.websiteUrl || item.socialMedia) && (
+                      <div
+                        key={item.id || index}
+                        style={{ marginBottom: "5px" }}
+                      >
+                        {item.websiteUrl && (
+                          <div>Website: {item.websiteUrl}</div>
+                        )}
+                        {item.socialMedia && (
+                          <div>Social Media: {item.socialMedia}</div>
+                        )}
+                      </div>
+                    ),
+                )}
+              </div>
+            </div>
+          )}
+
+        {/* References */}
+        {Array.isArray(finalize?.references) &&
+          finalize.references.some(
+            (item) =>
+              item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "",
+          ) && (
+            <div className="section-content resume-section">
+              <div className="section-title">References</div>
+              <div className="item-content">
+                {finalize.references.map(
+                  (item, index) =>
+                    item.name &&
+                    item.name.replace(/<[^>]*>/g, "").trim() !== "" && (
+                      <div
+                        key={item.id || index}
+                        dangerouslySetInnerHTML={{ __html: item.name }}
+                      />
+                    ),
+                )}
+              </div>
+            </div>
+          )}
+
+        {/* Custom Sections */}
+        {Array.isArray(finalize?.customSection) &&
+          finalize.customSection.some(
+            (section) => section?.name?.trim() || section?.description?.trim(),
+          ) && (
+            <div className="section-content resume-section">
+              {finalize.customSection
+                .filter(
+                  (section) =>
+                    section?.name?.trim() || section?.description?.trim(),
+                )
+                .map((section, index) => (
+                  <div key={section.id || index} className="custom-section">
+                    {section.name && (
+                      <div className="section-title">{section.name}</div>
+                    )}
+                    {section.description && (
+                      <div
+                        className="item-content"
+                        dangerouslySetInnerHTML={{
+                          __html: section.description,
+                        }}
+                      />
+                    )}
+                  </div>
+                ))}
+            </div>
+          )}
+      </div>
+    </div>
+  );
+};
 
 export default Resume4;

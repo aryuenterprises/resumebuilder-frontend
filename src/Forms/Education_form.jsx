@@ -36,26 +36,6 @@ const Education_form = forwardRef((props, ref) => {
   const [loading, setLoading] = useState(false);
   const [Airesponse, setAireseponse] = useState(null);
 
-  console.log("Airesponse", Airesponse);
-
-  const pickerRefs = useRef({});
-  const inputRefs = useRef({});
-
-  const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
-
   const addEducation = () => {
     setEducation([
       ...education,

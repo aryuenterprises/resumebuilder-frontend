@@ -47,6 +47,8 @@ const App = () =>  {
   const [userLoggedIn, setUserLoggedIn] = useState("");
   const [userId, setUserId] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
+
 
   useEffect(() => {
     const userdata = JSON.parse(localStorage.getItem("Resumnit_user"));
@@ -69,11 +71,7 @@ const App = () =>  {
   const [country, setCountry] = useState("");
   const [postcode, setPostcode] = useState("");
   const [contactid, setContactid] = useState("");
-
-  // images
-
   const [croppedImage, setCroppedImage] = useState(null);
-
   const [experiences, setExperiences] = useState([
     {
       id: Date.now(),
@@ -89,7 +87,6 @@ const App = () =>  {
       year: new Date().getFullYear(),
     },
   ]);
-
   const [education, setEducation] = useState([
     {
       id: Date.now(),
@@ -105,57 +102,21 @@ const App = () =>  {
       year: new Date().getFullYear(),
     },
   ]);
-
-  // skills
-
   const [skills, setSkills] = useState([
     { skill: "", level: 2, id: Date.now() + Math.random() },
   ]);
-
-  // summary
-
   const [text, setText] = useState("");
-
-  // all plan details
-
   const [allplandetails, setAllplandetails] = useState([]);
-
   const [allPlanStatusDetails, setAllPlanStatusDetails] = useState("");
-
   const [Userdata, setUserdata] = useState([]);
-
   const [accessdate, setAccessdate] = useState("");
-
-  // const [accessdate, setAccessdate] = useState([])
-
-  const location = useLocation();
-
-  // finallize
-  // const initialSkillData = {};
-  // sections.forEach((section, idx) => {
-  //   initialSkillData[section.title] = [{ id: Date.now() + idx, name: "", level: 3 }];
-  // });
-
   const [globalSkillsData, setGlobalSkillsData] = useState([
     { globalSkill: "", level: 2, id: Date.now() + Math.random() },
   ]);
-
   const [currencysymbol, setCurrencySymbol] = useState([]);
   const [userdelete, setuserdelete] = useState(null);
-
   const [logoimage, setLogoImage] = useState("");
-  // console.log("logoimage", logoimage)
-
-  // useEffect(() => {
-  //   console.log("useEffect running");
-  //   if (userdelete === true) {
-  //     localStorage.removeItem("Resumnit_user");
-  //     localStorage.removeItem("Resumnit_token");
-
-  //     console.log("LocalStorage removed");
-  //   }
-  // }, [userdelete,location.pathname]);
-
+ 
   useEffect(() => {
     const userdata = JSON.parse(localStorage.getItem("Resumnit_user"));
     const userId = userdata?.id || userdata?._id;
@@ -209,7 +170,6 @@ const App = () =>  {
   }, [location.pathname]);
 
   const [logoPreview, setLogoPreview] = useState("");
-  // console.log("logoPreview", logoPreview)
 
   // On component mount, load from localStorage
   useEffect(() => {
@@ -225,6 +185,7 @@ const App = () =>  {
         value={{
           globalState,
           setGlobalState,
+          
           contactid,
           setContactid,
           firstName,

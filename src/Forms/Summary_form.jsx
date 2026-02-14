@@ -6,13 +6,8 @@ import React, {
   useImperativeHandle,
   forwardRef,
 } from "react";
-import { FiChevronDown, FiChevronUp, FiTrash2 } from "react-icons/fi";
-import { IoMdAdd } from "react-icons/io";
-
 import { Editor } from "primereact/editor";
-import { motion, AnimatePresence } from "framer-motion";
-
-import { Calendar } from "primereact/calendar";
+import { motion } from "framer-motion";
 import "primereact/resources/themes/saga-blue/theme.css";
 import "primereact/resources/primereact.min.css";
 import { CreateContext } from "../App";
@@ -20,17 +15,12 @@ import axios from "axios";
 import { API_URL } from "../Config";
 import { toast } from "react-toastify";
 
-// export default function Summary_form() {
-// const [text, setText] = useState("");
-
 const Summary_form = forwardRef((props, ref) => {
   const UseContext = useContext(CreateContext);
   const Contactid = UseContext?.contactid;
 
   const { text, setText, education, experiences, skills } =
     useContext(CreateContext);
-
-  const [summary, setSummary] = useState("");
 
   const filteredExperiences = experiences.map((exp) => ({
     job_title: exp.jobTitle,
@@ -69,7 +59,7 @@ const Summary_form = forwardRef((props, ref) => {
 
         `https://ai.aryuacademy.com/api/v1/resume/summary`,
 
-        formData
+        formData,
       );
 
       console.log("response", response.data.summary);
@@ -94,14 +84,12 @@ const Summary_form = forwardRef((props, ref) => {
   const fetchSummary = async () => {
     try {
       const response = await axios.get(
-        `${API_URL}/api/summary/get-summary/${Contactid}`
+        `${API_URL}/api/summary/get-summary/${Contactid}`,
       );
 
       console.log("responsesummary", response);
 
       setText(response.data[0]?.text);
-
-      
     } catch (error) {
       console.log(error);
     }
@@ -143,7 +131,7 @@ const Summary_form = forwardRef((props, ref) => {
         `${API_URL}/api/summary/update`,
 
         formData,
-        { params: { contactId: Contactid } }
+        { params: { contactId: Contactid } },
       );
       console.log("response", response);
 
@@ -166,8 +154,6 @@ const Summary_form = forwardRef((props, ref) => {
   }));
 
   return (
-    
-
     <section className="">
       <div className="p-3 md:p-4 lg:p-5 bg-white rounded-xl sm:rounded-2xl shadow-soft h-auto min-h-[500px] max-h-[700px] sm:max-h-[600px] lg:max-h-[500px] ">
         {/* Header Section */}
@@ -252,7 +238,7 @@ const Summary_form = forwardRef((props, ref) => {
                 backgroundColor: "#fafafa",
                 padding: "12px sm:16px",
                 fontSize: "14px sm:15px",
-                background:"white",
+                background: "white",
               }}
             />
 

@@ -202,18 +202,6 @@ function Resume_details() {
 
   const [showPopup, setShowPopup] = useState(false);
 
-  // useEffect(() => {
-  //     setShowPopup(true);
-  // }, []);
-
-  //     useEffect(() => {
-  //     if (!Allplans || Allplans.length === 0) {
-  //         setShowPopup(true);
-  //     } else {
-  //         setShowPopup(false);
-  //     }
-  // }, [Allplans]);
-
   const [loading, setLoading] = useState(true); // new state
 
   useEffect(() => {
@@ -272,6 +260,7 @@ function Resume_details() {
 
           {/* left tab  */}
           <div className=" w-full lg:w-[50%] flex flex-col  relative gap-2 ">
+           
             <div className="bg-white flex-1  rounded-lg  overflow-auto ">
               {/* steppers */}
               <div className="fixed overflow-hidden z-40 w-full lg:w-[48%] ">
@@ -395,13 +384,7 @@ function Resume_details() {
 
           {/* right resume */}
           <div className="flex grow shrink w-[50%] max-lg:hidden h-screen justify-center font-nunito items-start p-4 overflow-y-auto">
-            {/* <button
-              onClick={clickchangetemplate}
-              className="absolute top-4 right-8 z-40 flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#C40116] to-[#5E000B]  rounded-lg text-white font-medium transition-all"
-            >
-              <HiOutlineSquares2X2 size={18} />
-              Change Template
-            </button> */}
+        
 
             <div
               // className="origin-top bg-white grow"

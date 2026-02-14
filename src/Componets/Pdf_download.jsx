@@ -148,12 +148,12 @@ function Pdf_download() {
     <div className="relative">
       <Header />
       <div className="flex flex-col items-center justify-center p-6 bg-gray-100 min-h-screen">
-        <h2 className="text-xl font-semibold font-nunito mb-4 text-gray-700">
+        {/* <h2 className="text-xl font-semibold font-nunito mb-4 text-gray-700">
           Download Your Resume
-        </h2>
+        </h2> */}
 
         {/* Download Button using react-pdf */}
-        <div className="mt-2 mb-6">
+        {/* <div className="mt-2 mb-6">
           {pdfData ? (
             <PDFDownloadLink
               document={<Resume4PDF data={pdfData} />}
@@ -199,46 +199,14 @@ function Pdf_download() {
               Loading Data...
             </button>
           )}
-        </div>
-
-        {/* Optional: PDF Preview (for debugging) */}
-        {/* <div className="w-[70vw]">
-          <PDFViewer width="100%" height="500">
-            <Resume4PDF data={alldetails} />
-          </PDFViewer>
         </div> */}
+
+      
 
         <Resume4/>
 
        
-        {/* Edit Button */}
-        {hasPlan && alldetails?.contact?.templateId && (
-          <button
-            onClick={() =>
-              handleEdit(
-                alldetails?.contact?.templateId,
-                alldetails?.contact?._id,
-              )
-            }
-            className="edit-btn px-6 py-3 font-nunito bg-blue-600 hover:bg-blue-700 text-white rounded-md flex items-center gap-2 shadow-md transition"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-              />
-            </svg>
-            Edit Resume Details
-          </button>
-        )}
+  
       </div>
     </div>
   );
