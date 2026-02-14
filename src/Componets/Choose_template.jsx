@@ -611,7 +611,7 @@ function Choose_template() {
                               // e.stopPropagation();
                               // handleUnlockClick(e, template);
 
-                              clickresumedetails(template);
+                              // clickresumedetails(template);
                             }}
                             className="px-3 sm:px-4 md:px-5 lg:px-7 py-1.5 sm:py-2 md:py-2.5 lg:py-3 rounded-lg sm:rounded-xl bg-gradient-to-r from-[#c40116] to-[#be0117] text-white font-semibold text-xs sm:text-sm md:text-base shadow-lg sm:shadow-xl hover:scale-105 transition-transform flex items-center gap-1 sm:gap-2 cursor-default"
                           >
