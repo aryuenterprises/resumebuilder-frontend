@@ -645,7 +645,7 @@ export default function RootLayout({
               flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 
               hover:border-[#C40116] text-gray-700 hover:text-[#C40116] 
               font-medium rounded-xl shadow-lg hover:shadow-xl 
-              transition-all duration-300 group
+              transition-all duration-300 group cursor-pointer
               ${isHovered ? "scale-105" : ""}
             `}
           >

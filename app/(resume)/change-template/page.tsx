@@ -473,7 +473,6 @@ export default function ChangeTemplate() {
 
     setLocalStorage("chosenTemplate", previewTemplate);
 
-
     router.push("/resume-details/contact");
   };
 
@@ -522,70 +521,6 @@ export default function ChangeTemplate() {
               {isSidebarOpen ? "Close Templates" : "See Templates"}
             </span>
           </button>
-        </div>
-      </div>
-
-      {/* Hero Section - Responsive padding and text sizes */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-[#5E000B] to-[#C40116]">
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center"
-          >
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 sm:mb-6 tracking-tight px-2">
-              Choose Your Perfect
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-amber-200 mt-2 sm:mt-0">
-                Resume Template
-              </span>
-            </h1>
-
-            <p className="text-base sm:text-lg lg:text-xl text-white/90 max-w-3xl mx-auto px-4">
-              Just pick your favorite and start building!
-            </p>
-
-            {/* Stats - Responsive grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mt-8 sm:mt-10 lg:mt-12 max-w-3xl mx-auto px-4">
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 sm:p-5">
-                <div className="text-2xl sm:text-3xl font-bold text-white">
-                  {templateData.length}+
-                </div>
-                <div className="text-xs sm:text-sm text-white/80">
-                  Professional Templates
-                </div>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 sm:p-5">
-                <div className="text-2xl sm:text-3xl font-bold text-white">
-                  100%
-                </div>
-                <div className="text-xs sm:text-sm text-white/80">
-                  ATS Friendly
-                </div>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 sm:p-5">
-                <div className="text-2xl sm:text-3xl font-bold text-white">
-                  5min
-                </div>
-                <div className="text-xs sm:text-sm text-white/80">
-                  Quick Setup
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Curved Bottom - Responsive */}
-        <div className="absolute bottom-0 left-0 right-0 h-6 sm:h-8 lg:h-10">
-          <svg
-            viewBox="0 0 1440 100"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            preserveAspectRatio="none"
-            className="w-full h-full"
-          >
-            <path d="M0 100L1440 0V100H0Z" fill="white" fillOpacity="1" />
-          </svg>
         </div>
       </div>
 
@@ -787,14 +722,14 @@ export default function ChangeTemplate() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={handleUseTemplate}
-                      className="w-fit px-4 py-3 sm:px-5 sm:py-3.5 bg-gradient-to-r from-[#C40116] to-[#5E000B] hover:from-[#5E000B] hover:to-[#C40116] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 text-sm sm:text-base"
+                      className="w-full sm:w-fit px-4 py-3 sm:px-5 sm:py-3.5 bg-gradient-to-r from-[#C40116] to-[#5E000B] hover:from-[#5E000B] hover:to-[#C40116] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 text-sm sm:text-base"
                     >
                       <span>Use This Template</span>
                     </motion.button>
 
                     <button
                       onClick={() => router.back()}
-                      className="w-full sm:w-auto px-4 py-3 sm:px-5 sm:py-3.5 bg-white border border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all duration-300 flex items-center justify-center gap-2 text-sm sm:text-base"
+                      className="w-full sm:w-fit px-4 py-3 sm:px-5 sm:py-3.5 bg-white border border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all duration-300 flex items-center justify-center gap-2 text-sm sm:text-base"
                     >
                       <FiArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                       <span className="">Go Back</span>

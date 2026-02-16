@@ -2783,6 +2783,8 @@ ${filteredSkills.length > 0 ? `
           width: "210mm",
           padding: "5mm",
           boxSizing: "border-box",
+            minHeight: "297mm"
+
         }}
       >
         {/* header */}

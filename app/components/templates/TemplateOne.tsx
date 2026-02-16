@@ -29,10 +29,8 @@ interface Resume4Props {
 const TemplateOne: React.FC<Resume4Props> = ({ alldata }) => {
   const context = useContext(CreateContext);
   const [isGenerating, setIsGenerating] = useState(false);
-    const pathname = usePathname();
-   const lastSegment = pathname.split("/").pop();
-
-
+  const pathname = usePathname();
+  const lastSegment = pathname.split("/").pop();
 
   const contact = alldata?.contact || context.contact || {};
   const educations = alldata?.educations || context?.education || [];
@@ -366,137 +364,10 @@ const TemplateOne: React.FC<Resume4Props> = ({ alldata }) => {
 `;
 
   /* ======================================================
-     GENERATE SINGLE HTML (browser handles pages)
-  ====================================================== */
-//   const generateHTML = () => {
-//     return `
-//       <!DOCTYPE html>
-//       <html>
-//       <head>
-//         <meta charset="UTF-8"/>
-//         <title>Resume - ${contact?.firstName || ""} ${contact?.lastName || ""}</title>
-//         <style>${styles}</style>
-//       </head>
-
-//       <body>
-//         <div class="resume-container">
-
-//           <div class="contact-info">
-//             <h2>${contact?.firstName || ""} ${contact?.lastName || ""}</h2>
-            
-//             <div className="job-title">
-//   {contact?.jobTitle 
-//     ? (typeof contact.jobTitle === 'string' 
-//         ? contact.jobTitle 
-//         : (contact.jobTitle as any)?.name || "")
-//     : ""}
-// </div>
-
-
-//             <div>${addressParts.join(", ")}</div>
-//             <div>
-//               ${contact?.email ? `<span>${contact.email}</span>` : ""}
-//               ${contact?.phone ? `<span>${contact.phone}</span>` : ""}
-//             </div>
-//             ${linkedinUrl ? `<div><a href="${linkedinUrl}" class="link-item">LinkedIn</a></div>` : ""}
-//           </div>
-
-//           ${
-//             summary
-//               ? `<div class="section-content">
-//                    <div class="section-title">Summary</div>
-//                    <div>${summary.replace(/\n/g, "<br>")}</div>
-//                  </div>`
-//               : ""
-//           }
-
-//           ${
-//             experiences.length > 0
-//               ? `<div class="section-content">
-//                    <div class="section-title">Experience</div>
-//                    ${experiences
-//                      .map(
-//                        (e) => `
-//                          <div style="margin-bottom:10px">
-//                            <div class="item-header">
-//                              <div>
-//                                <div class="item-title">${e.jobTitle || ""}</div>
-//                                <div>${e.employer || ""} ${e.location ? `— ${e.location}` : ""}</div>
-//                              </div>
-//                              <div class="item-date">
-//                                ${e.startDate || ""} ${e.endDate ? `- ${e.endDate}` : "- Present"}
-//                              </div>
-//                            </div>
-//                            <div>${e.text?.replace(/\n/g, "<br>") || ""}</div>
-//                          </div>
-//                        `,
-//                      )
-//                      .join("")}
-//                  </div>`
-//               : ""
-//           }
-
-//           ${
-//             educations.length > 0
-//               ? `<div class="section-content">
-//                    <div class="section-title">Education</div>
-//                    ${educations
-//                      .map(
-//                        (e) => `
-//                          <div style="margin-bottom:10px">
-//                            <div class="item-header">
-//                              <div>
-//                                <div class="item-title">${e.schoolname || ""}</div>
-//                                <div>${e.degree || ""} ${e.location ? `— ${e.location}` : ""}</div>
-//                              </div>
-//                              <div class="item-date">
-//                                ${e.startDate || ""} ${e.endDate ? `- ${e.endDate}` : ""}
-//                              </div>
-//                            </div>
-//                            <div>${e.text?.replace(/\n/g, "<br>") || ""}</div>
-//                          </div>
-//                        `,
-//                      )
-//                      .join("")}
-//                  </div>`
-//               : ""
-//           }
-
-//           ${
-//             skills.length > 0
-//               ? `<div class="section-content">
-//                    <div class="section-title">Skills</div>
-//                    <div class="skills-grid">
-//                      ${skills
-//                        .map(
-//                          (s) => `
-//                            <div>
-//                              <div>${s.skill || ""}</div>
-//                              <div class="skill-bar">
-//                                <div class="skill-level" style="width:${(Number(s.level || 0) / 4) * 100}%"></div>
-//                              </div>
-//                            </div>
-//                          `,
-//                        )
-//                        .join("")}
-//                    </div>
-//                  </div>`
-//               : ""
-//           }
-
-          
-
-//         </div>
-//       </body>
-//       </html>
-//     `;
-//   };
-
-/* ======================================================
    GENERATE SINGLE HTML (browser handles pages)
 ====================================================== */
-const generateHTML = () => {
-  return `
+  const generateHTML = () => {
+    return `
     <!DOCTYPE html>
     <html>
     <head>
@@ -616,24 +487,30 @@ const generateHTML = () => {
 
         <!-- LANGUAGES -->
         ${
-          finalize && 
-          !Array.isArray(finalize) && 
-          Array.isArray(finalize.languages) && 
-          finalize.languages.some(lang => lang.name && lang.name.trim() !== "")
+          finalize &&
+          !Array.isArray(finalize) &&
+          Array.isArray(finalize.languages) &&
+          finalize.languages.some(
+            (lang) => lang.name && lang.name.trim() !== "",
+          )
             ? `<div class="section-content">
                  <div class="section-title">Languages</div>
                  <div class="skills-grid languages-grid">
                    ${finalize.languages
-                     .filter(lang => lang.name && lang.name.trim() !== "")
+                     .filter((lang) => lang.name && lang.name.trim() !== "")
                      .map(
                        (lang) => `
                          <div class="skill-item">
                            <div class="skill-name">${lang.name}</div>
-                           ${lang.level ? `
+                           ${
+                             lang.level
+                               ? `
                              <div class="skill-bar">
                                <div class="skill-level" style="width:${(Number(lang.level) / 5) * 100}%"></div>
                              </div>
-                           ` : ''}
+                           `
+                               : ""
+                           }
                          </div>
                        `,
                      )
@@ -645,18 +522,21 @@ const generateHTML = () => {
 
         <!-- CERTIFICATIONS AND LICENSES -->
         ${
-          finalize && 
-          !Array.isArray(finalize) && 
-          Array.isArray(finalize.certificationsAndLicenses) && 
-          finalize.certificationsAndLicenses.some(item => 
-            item.name && item.name.replace(/<[^>]*>/g, "").trim() !== ""
+          finalize &&
+          !Array.isArray(finalize) &&
+          Array.isArray(finalize.certificationsAndLicenses) &&
+          finalize.certificationsAndLicenses.some(
+            (item) =>
+              item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "",
           )
             ? `<div class="section-content">
                  <div class="section-title">Certifications and Licenses</div>
                  <div class="item-content additional-content">
                    ${finalize.certificationsAndLicenses
-                     .filter(item => 
-                       item.name && item.name.replace(/<[^>]*>/g, "").trim() !== ""
+                     .filter(
+                       (item) =>
+                         item.name &&
+                         item.name.replace(/<[^>]*>/g, "").trim() !== "",
                      )
                      .map(
                        (item) => `
@@ -673,18 +553,21 @@ const generateHTML = () => {
 
         <!-- HOBBIES AND INTERESTS -->
         ${
-          finalize && 
-          !Array.isArray(finalize) && 
-          Array.isArray(finalize.hobbiesAndInterests) && 
-          finalize.hobbiesAndInterests.some(item => 
-            item.name && item.name.replace(/<[^>]*>/g, "").trim() !== ""
+          finalize &&
+          !Array.isArray(finalize) &&
+          Array.isArray(finalize.hobbiesAndInterests) &&
+          finalize.hobbiesAndInterests.some(
+            (item) =>
+              item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "",
           )
             ? `<div class="section-content">
                  <div class="section-title">Hobbies and Interests</div>
                  <div class="item-content additional-content">
                    ${finalize.hobbiesAndInterests
-                     .filter(item => 
-                       item.name && item.name.replace(/<[^>]*>/g, "").trim() !== ""
+                     .filter(
+                       (item) =>
+                         item.name &&
+                         item.name.replace(/<[^>]*>/g, "").trim() !== "",
                      )
                      .map(
                        (item) => `
@@ -701,18 +584,21 @@ const generateHTML = () => {
 
         <!-- AWARDS AND HONORS -->
         ${
-          finalize && 
-          !Array.isArray(finalize) && 
-          Array.isArray(finalize.awardsAndHonors) && 
-          finalize.awardsAndHonors.some(item => 
-            item.name && item.name.replace(/<[^>]*>/g, "").trim() !== ""
+          finalize &&
+          !Array.isArray(finalize) &&
+          Array.isArray(finalize.awardsAndHonors) &&
+          finalize.awardsAndHonors.some(
+            (item) =>
+              item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "",
           )
             ? `<div class="section-content">
                  <div class="section-title">Awards and Honors</div>
                  <div class="item-content additional-content">
                    ${finalize.awardsAndHonors
-                     .filter(item => 
-                       item.name && item.name.replace(/<[^>]*>/g, "").trim() !== ""
+                     .filter(
+                       (item) =>
+                         item.name &&
+                         item.name.replace(/<[^>]*>/g, "").trim() !== "",
                      )
                      .map(
                        (item) => `
@@ -729,20 +615,22 @@ const generateHTML = () => {
 
         <!-- WEBSITES AND SOCIAL MEDIA -->
         ${
-          finalize && 
-          !Array.isArray(finalize) && 
-          Array.isArray(finalize.websitesAndSocialMedia) && 
-          finalize.websitesAndSocialMedia.some(item => 
-            (item.websiteUrl && item.websiteUrl.trim() !== "") || 
-            (item.socialMedia && item.socialMedia.trim() !== "")
+          finalize &&
+          !Array.isArray(finalize) &&
+          Array.isArray(finalize.websitesAndSocialMedia) &&
+          finalize.websitesAndSocialMedia.some(
+            (item) =>
+              (item.websiteUrl && item.websiteUrl.trim() !== "") ||
+              (item.socialMedia && item.socialMedia.trim() !== ""),
           )
             ? `<div class="section-content">
                  <div class="section-title">Websites and Social Media</div>
                  <div class="item-content additional-content">
                    ${finalize.websitesAndSocialMedia
-                     .filter(item => 
-                       (item.websiteUrl && item.websiteUrl.trim() !== "") || 
-                       (item.socialMedia && item.socialMedia.trim() !== "")
+                     .filter(
+                       (item) =>
+                         (item.websiteUrl && item.websiteUrl.trim() !== "") ||
+                         (item.socialMedia && item.socialMedia.trim() !== ""),
                      )
                      .map(
                        (item) => `
@@ -760,18 +648,21 @@ const generateHTML = () => {
 
         <!-- REFERENCES -->
         ${
-          finalize && 
-          !Array.isArray(finalize) && 
-          Array.isArray(finalize.references) && 
-          finalize.references.some(item => 
-            item.name && item.name.replace(/<[^>]*>/g, "").trim() !== ""
+          finalize &&
+          !Array.isArray(finalize) &&
+          Array.isArray(finalize.references) &&
+          finalize.references.some(
+            (item) =>
+              item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "",
           )
             ? `<div class="section-content">
                  <div class="section-title">References</div>
                  <div class="item-content additional-content">
                    ${finalize.references
-                     .filter(item => 
-                       item.name && item.name.replace(/<[^>]*>/g, "").trim() !== ""
+                     .filter(
+                       (item) =>
+                         item.name &&
+                         item.name.replace(/<[^>]*>/g, "").trim() !== "",
                      )
                      .map(
                        (item) => `
@@ -788,24 +679,31 @@ const generateHTML = () => {
 
         <!-- CUSTOM SECTIONS -->
         ${
-          finalize && 
-          !Array.isArray(finalize) && 
-          Array.isArray(finalize.customSection) && 
-          finalize.customSection.some(section => 
-            section?.name?.trim() || section?.description?.trim()
+          finalize &&
+          !Array.isArray(finalize) &&
+          Array.isArray(finalize.customSection) &&
+          finalize.customSection.some(
+            (section) => section?.name?.trim() || section?.description?.trim(),
           )
             ? `<div class="section-content">
                  ${finalize.customSection
-                   .filter(section => section?.name?.trim() || section?.description?.trim())
+                   .filter(
+                     (section) =>
+                       section?.name?.trim() || section?.description?.trim(),
+                   )
                    .map(
                      (section) => `
                        <div class="custom-section">
                          ${section.name ? `<div class="section-title custom-section-title">${section.name}</div>` : ""}
-                         ${section.description ? `
+                         ${
+                           section.description
+                             ? `
                            <div class="item-content custom-section-content">
                              ${section.description.replace(/<[^>]*>/g, "")}
                            </div>
-                         ` : ""}
+                         `
+                             : ""
+                         }
                        </div>
                      `,
                    )
@@ -818,7 +716,7 @@ const generateHTML = () => {
     </body>
     </html>
   `;
-};
+  };
   /* ======================================================
      DOWNLOAD PDF
   ====================================================== */
@@ -852,30 +750,27 @@ const generateHTML = () => {
     }
   };
 
-  /* ======================================================
-     UI
-  ====================================================== */
+
   return (
     <div style={{ textAlign: "center", marginTop: 0 }}>
-   
-   {lastSegment ==="download-resume" &&
-      <button
-        onClick={handleDownload}
-        disabled={isGenerating}
-        style={{
-          padding: "10px 20px",
-          backgroundColor: isGenerating ? "#ccc" : "#0077b5",
-          color: "white",
-          border: "none",
-          borderRadius: "4px",
-          cursor: isGenerating ? "not-allowed" : "pointer",
-          fontSize: "16px",
-          marginBottom: "20px",
-        }}
-      >
-        {isGenerating ? "Generating..." : "Download Resume"}
-      </button>
-}
+      {lastSegment === "download-resume" && (
+        <button
+          onClick={handleDownload}
+          disabled={isGenerating}
+          style={{
+            padding: "10px 20px",
+            backgroundColor: isGenerating ? "#ccc" : "#0077b5",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: isGenerating ? "not-allowed" : "pointer",
+            fontSize: "16px",
+            marginBottom: "20px",
+          }}
+        >
+          {isGenerating ? "Generating..." : "Download Resume"}
+        </button>
+      )}
 
       {/* Resume Preview - Single page view for UI */}
       <div

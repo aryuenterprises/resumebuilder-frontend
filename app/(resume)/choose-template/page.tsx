@@ -11,6 +11,8 @@ import { Template } from "@/app/types";
 import Header from "@/app/components/layouts/Header";
 import Footer from "@/app/components/layouts/Footer";
 import { setLocalStorage } from "@/app/utils";
+import { motion, AnimatePresence } from "framer-motion";
+
 
 function Choose_template() {
   const router = useRouter();
@@ -47,7 +49,7 @@ function Choose_template() {
       <Header />
       <div>
         {/* Hero */}
-        <section className="relative max-w-7xl mx-auto px-4 md:px-6 pt-8 sm:pt-20 md:pt-24 pb-7 sm:pb-16 md:pb-20 text-center">
+        {/* <section className="relative max-w-7xl mx-auto px-4 md:px-6 pt-8 sm:pt-20 md:pt-24 pb-7 sm:pb-16 md:pb-20 text-center">
           <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl xl:text-7xl font-bold md:font-extrabold tracking-tight text-gray-900 leading-tight">
             Build a Resume that
             <span className="block bg-clip-text text-transparent bg-linear-to-b from-black to-red-500 sm:mt-2">
@@ -59,7 +61,71 @@ function Choose_template() {
             Choose from beautifully designed ATS-friendly templates crafted by
             hiring experts.
           </p>
-        </section>
+        </section> */}
+
+           {/* Hero Section - Responsive padding and text sizes */}
+      <div className="relative overflow-hidden bg-gradient-to-r from-[#5E000B] to-[#C40116]">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center"
+          >
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 sm:mb-6 tracking-tight px-2">
+              Choose Your Perfect
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-amber-200 mt-2 sm:mt-0">
+                Resume Template
+              </span>
+            </h1>
+
+            <p className="text-base sm:text-lg lg:text-xl text-white/90 max-w-3xl mx-auto px-4">
+              Just pick your favorite and start building!
+            </p>
+
+            {/* Stats - Responsive grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mt-8 sm:mt-10 lg:mt-12 max-w-3xl mx-auto px-4">
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 sm:p-5">
+                <div className="text-2xl sm:text-3xl font-bold text-white">
+                  {templateData.length}+
+                </div>
+                <div className="text-xs sm:text-sm text-white/80">
+                  Professional Templates
+                </div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 sm:p-5">
+                <div className="text-2xl sm:text-3xl font-bold text-white">
+                  100%
+                </div>
+                <div className="text-xs sm:text-sm text-white/80">
+                  ATS Friendly
+                </div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 sm:p-5">
+                <div className="text-2xl sm:text-3xl font-bold text-white">
+                  5min
+                </div>
+                <div className="text-xs sm:text-sm text-white/80">
+                  Quick Setup
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Curved Bottom - Responsive */}
+        <div className="absolute bottom-0 left-0 right-0 h-6 sm:h-8 lg:h-10">
+          <svg
+            viewBox="0 0 1440 100"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            preserveAspectRatio="none"
+            className="w-full h-full"
+          >
+            <path d="M0 100L1440 0V100H0Z" fill="white" fillOpacity="1" />
+          </svg>
+        </div>
+      </div>
 
         {/* Floating Progress Bar */}
         <div className="mt-4 sm:mt-5 max-lg:hidden z-50 max-w-6xl mx-auto px-3 sm:px-4 md:px-6">
