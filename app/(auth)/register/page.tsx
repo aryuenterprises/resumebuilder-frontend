@@ -15,7 +15,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { API_URL } from "@/app/config/api";
 import Link from "next/link";
-import { passwordGenerator } from "@/app/utils";
+import { passwordGenerator, sanitizeNumber } from "@/app/utils";
 
 interface FormValues {
   firstName: string;
@@ -447,7 +447,7 @@ export default function RegisterForm() {
                         id="phone"
                         type="tel"
                         value={values.phone}
-                        onChange={(e) => handleChange("phone", e.target.value)}
+                        onChange={(e) => handleChange("phone", sanitizeNumber(e.target.value))}
                         placeholder="Enter your phone number"
                         className="w-full p-3 sm:p-4 border border-gray-200 text-gray-900 rounded-lg sm:rounded-xl bg-white shadow-sm focus:outline-none focus:border-[#C40116]/50 focus:ring-2 sm:focus:ring-4 focus:ring-[#C40116]/10 transition-all duration-300 group-hover:border-[#C40116]/30 text-sm sm:text-base"
                         aria-invalid={!!errors.phone}

@@ -5,6 +5,7 @@ import Swal from 'sweetalert2';
 import axios from 'axios';
 import { FaEnvelope, FaClock, FaPhone, FaMapMarkerAlt } from 'react-icons/fa';
 import { API_URL } from '@/app/config/api';
+import { sanitizeText } from '@/app/utils';
 
 // Define TypeScript interfaces
 interface FormErrors {
@@ -211,7 +212,7 @@ const Hero = () => {
                 id="name"
                 type="text"
                 value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
+                onChange={(e) => setFirstName(sanitizeText(e.target.value))}
                 placeholder="Your name"
                 className="w-full px-4 py-3 sm:px-4 sm:py-4 rounded-xl border border-gray-200 transition-all shadow-sm outline-none focus:ring-2 focus:ring-[#c40116]/20 focus:border-[#c40116] text-sm sm:text-base bg-gray-50 focus:bg-white"
                 aria-invalid={!!errors.firstName}

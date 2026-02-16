@@ -37,6 +37,11 @@ import Stepper from "../../../components/resume/Steppers";
 import {
   getCroppedImgWithOptions,
   getLocalStorage,
+  sanitizeNumber,
+  sanitizeText,
+  sanitizeTextWithComma,
+  sanitizeTextWithCommaHyphen,
+  sanitizeTextWithDot,
   setLocalStorage,
 } from "@/app/utils";
 import { Template } from "@/app/types";
@@ -77,9 +82,9 @@ const ContactForm = () => {
         ...contact,
         contactId: data?._id || "",
         firstName: data?.firstName || "",
-        lastName: data?.lastName  || "",
+        lastName: data?.lastName || "",
         jobTitle: data?.jobTitle || "",
-        phone: data?.phone  || "",
+        phone: data?.phone || "",
         email: data?.email || "",
         address: data?.address || "",
         city: data?.city || "",
@@ -257,8 +262,6 @@ const ContactForm = () => {
       return updated;
     });
   };
-
-
 
   useEffect(() => {
     return () => {
@@ -634,7 +637,10 @@ const ContactForm = () => {
                     id="firstName"
                     value={contact.firstName}
                     onChange={(e) =>
-                      handleContactChange("firstName", e.target.value)
+                      handleContactChange(
+                        "firstName",
+                        sanitizeTextWithDot(e.target.value),
+                      )
                     }
                     placeholder="Yuvaraj"
                     className="w-full px-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
@@ -656,7 +662,10 @@ const ContactForm = () => {
                     id="lastName"
                     value={contact.lastName}
                     onChange={(e) =>
-                      handleContactChange("lastName", e.target.value)
+                      handleContactChange(
+                        "lastName",
+                        sanitizeTextWithDot(e.target.value),
+                      )
                     }
                     placeholder="Thangaraj"
                     className="w-full px-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
@@ -684,9 +693,11 @@ const ContactForm = () => {
                     id="phone"
                     value={contact.phone}
                     onChange={(e) =>
-                      handleContactChange("phone", e.target.value)
+                      handleContactChange(
+                        "phone",
+                        sanitizeNumber(e.target.value),
+                      )
                     }
-                
                     placeholder="12345-12345"
                     className="w-full pl-10 pr-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
                   />
@@ -738,7 +749,10 @@ const ContactForm = () => {
                     id="jobTitle"
                     value={contact.jobTitle}
                     onChange={(e) =>
-                      handleContactChange("jobTitle", e.target.value)
+                      handleContactChange(
+                        "jobTitle",
+                        sanitizeText(e.target.value),
+                      )
                     }
                     placeholder="Software Engineer"
                     className="w-full pl-10 pr-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
@@ -751,7 +765,7 @@ const ContactForm = () => {
             <button
               type="button"
               onClick={() => setShowAdditional(!showAdditional)}
-              className="w-full p-3 flex items-center justify-between bg-white hover:from-gray-100/80 hover:to-white transition-all duration-300 group rounded-xl"
+              className="w-full p-3 flex items-center justify-between bg-white hover:from-gray-100/80 hover:to-white transition-all duration-300 group rounded-xl cursor-pointer"
             >
               <div className="flex items-center gap-2">
                 <div
@@ -851,7 +865,7 @@ const ContactForm = () => {
                           id="Address"
                           value={contact.address}
                           onChange={(e) =>
-                            handleContactChange("address", e.target.value)
+                            handleContactChange("address", sanitizeTextWithCommaHyphen(e.target.value))
                           }
                           placeholder="123 Main Street, Apt 4B"
                           className="w-full pl-10 pr-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
@@ -889,11 +903,13 @@ const ContactForm = () => {
                           </svg>
                         </div>
                         <input
-                          type="text"
+                          type='tel'
+                          inputMode="numeric"
+                          pattern="[0-9]*"
                           id="Post"
                           value={contact.postcode}
                           onChange={(e) =>
-                            handleContactChange("postcode", e.target.value)
+                            handleContactChange("postcode", sanitizeNumber(e.target.value))
                           }
                           placeholder="10001"
                           className="w-full pl-10 pr-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
@@ -920,7 +936,7 @@ const ContactForm = () => {
                           id="Country"
                           value={contact.country}
                           onChange={(e) =>
-                            handleContactChange("country", e.target.value)
+                            handleContactChange("country",  sanitizeTextWithComma( e.target.value))
                           }
                           placeholder="United States"
                           className="w-full pl-10 pr-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
@@ -944,7 +960,7 @@ const ContactForm = () => {
                           id="City"
                           value={contact.city}
                           onChange={(e) =>
-                            handleContactChange("city", e.target.value)
+                            handleContactChange("city", sanitizeTextWithComma(e.target.value))
                           }
                           placeholder="New York"
                           className="w-full pl-10 pr-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"

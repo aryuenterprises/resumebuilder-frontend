@@ -754,22 +754,38 @@ const TemplateOne: React.FC<Resume4Props> = ({ alldata }) => {
   return (
     <div style={{ textAlign: "center", marginTop: 0 }}>
       {lastSegment === "download-resume" && (
-        <button
-          onClick={handleDownload}
-          disabled={isGenerating}
+        // <button
+        //   onClick={handleDownload}
+        //   disabled={isGenerating}
+        //   style={{
+        //     padding: "10px 20px",
+        //     backgroundColor: isGenerating ? "#ccc" : "#0077b5",
+        //     color: "white",
+        //     border: "none",
+        //     borderRadius: "4px",
+        //     cursor: isGenerating ? "not-allowed" : "pointer",
+        //     fontSize: "16px",
+        //     marginBottom: "20px",
+        //   }}
+        // >
+        //   {isGenerating ? "Generating..." : "Download Resume"}
+        // </button>
+
+         <div
           style={{
-            padding: "10px 20px",
-            backgroundColor: isGenerating ? "#ccc" : "#0077b5",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: isGenerating ? "not-allowed" : "pointer",
-            fontSize: "16px",
+            textAlign: "center",
+            marginTop: "20px",
             marginBottom: "20px",
           }}
         >
-          {isGenerating ? "Generating..." : "Download Resume"}
-        </button>
+          <button
+            onClick={handleDownload}
+            className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors cursor-pointer"
+          >
+            Download Resume
+          </button>
+        </div>
+      
       )}
 
       {/* Resume Preview - Single page view for UI */}
@@ -968,14 +984,16 @@ const TemplateOne: React.FC<Resume4Props> = ({ alldata }) => {
                 <div key={i} className="skill-item">
                   <div className="skill-info">
                     <div className="skill-name">{skill.skill}</div>
-                    <div className="skill-bar">
-                      <div
-                        className="skill-level"
-                        style={{
-                          width: `${(Number(skill.level) / 4) * 100}%`,
-                        }}
-                      />
-                    </div>
+                    {skill.skill && skill.level && (
+                      <div className="skill-bar">
+                        <div
+                          className="skill-level"
+                          style={{
+                            width: `${(Number(skill.level) / 4) * 100}%`,
+                          }}
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}

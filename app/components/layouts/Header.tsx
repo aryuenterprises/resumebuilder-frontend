@@ -49,7 +49,7 @@ const Header: React.FC = () => {
       initial={{ y: -100 }}
       animate={{ y: showHeader ? 0 : -120 }}
       transition={{ duration: 0.4, ease: "easeInOut" }}
-      className="bg-white backdrop-blur-lg border-b  shadow-red-300/10 border-gray-100 sticky top-0 z-50"
+      className="bg-white backdrop-blur-lg border-b overflow-hidden! shadow-red-300/10 border-gray-100 sticky top-0 z-50"
     >
       <div className="flex justify-between items-center px-4 sm:px-6 md:px-8 lg:px-10 py-3 sm:py-4 max-w-7xl mx-auto">
         {/* Logo */}
@@ -83,24 +83,21 @@ const Header: React.FC = () => {
           >
             Create Resume
           </button>
-{/* 
- <button
-             onClick={() => router.push("/login")}
-             className="px-4 lg:px-6 py-1.5 lg:py-2 rounded-lg font-nunito font-semibold text-white bg-linear-to-r from-[#c40116] to-[#c40116]/60 shadow-md  transition text-sm lg:text-base cursor-pointer hover:shadow-lg hover:shadow-[#c40116]/25 hover:scale-[1.02]"
-           >
-             Log in
-           </button> */}
-          {!userLoggedIn && (
-            // <button
-            //   onClick={() => router.push("/login")}
-            //   className="px-4 lg:px-6 py-1.5 lg:py-2 rounded-lg font-nunito font-semibold text-white bg-linear-to-r from-[#c40116] to-[#c40116]/60 shadow-md  transition text-sm lg:text-base cursor-pointer hover:shadow-lg hover:shadow-[#c40116]/25 hover:scale-[1.02]"
-            // >
-            //   Log in
-            // </button>
-            <RedGradientButton
-              text="Log in"
+
+          {userLoggedIn ? (
+            <button
+              onClick={() => router.push("dashboard")}
+              className="px-4 lg:px-6 py-1.5 lg:py-2 rounded-lg font-nunito font-semibold text-white bg-linear-to-r from-[#c40116] to-[#c40116]/60 shadow-md  transition text-sm lg:text-base cursor-pointer hover:shadow-lg hover:shadow-[#c40116]/25 hover:scale-[1.02]"
+            >
+              Dashboard
+            </button>
+          ) : (
+            <button
               onClick={() => router.push("/login")}
-            />
+              className="px-4 lg:px-6 py-1.5 lg:py-2 rounded-lg font-nunito font-semibold text-white bg-linear-to-r from-[#c40116] to-[#c40116]/60 shadow-md  transition text-sm lg:text-base cursor-pointer hover:shadow-lg hover:shadow-[#c40116]/25 hover:scale-[1.02]"
+            >
+              Log in
+            </button>
           )}
         </nav>
 
@@ -117,7 +114,7 @@ const Header: React.FC = () => {
       {/* Mobile Menu */}
       <AnimatePresence>
         {menuOpen && (
-          <div className="h-dvh  md:hidden">
+          <div className="h-dvh overflow-hidden  md:hidden">
             {/* Backdrop Overlay */}
             <motion.div
               className="fixed  inset-0 bg-black/10 backdrop-blur-sm z-400 "
@@ -239,7 +236,33 @@ const Header: React.FC = () => {
                   <div className="my-4 border-t border-gray-100"></div>
 
                   {/* Login Button (if not logged in) */}
-                  {!userLoggedIn && (
+                  {userLoggedIn ? (
+                    <button
+                      onClick={() => {
+                        router.push("/dashboard");
+
+                        setMenuOpen(false);
+                      }}
+                      className="w-full flex items-center gap-3 p-3 sm:p-4 rounded-xl font-nunito font-semibold bg-linear-to-r from-[#c40116] to-[#be0117] text-white shadow-md hover:shadow-lg hover:scale-[1.02] transition-all duration-200 group"
+                    >
+                      <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm group-hover:scale-110 transition-transform">
+                        <svg
+                          className="w-5 h-5 text-white"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                          />
+                        </svg>
+                      </div>
+                      <span className="text-left flex-1">Dashboard</span>
+                    </button>
+                  ) : (
                     <button
                       onClick={() => {
                         router.push("/login");

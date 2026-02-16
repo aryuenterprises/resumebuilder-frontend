@@ -309,29 +309,7 @@ export default function Faq() {
           )}
         </div>
 
-        {/* Additional Help CTA */}
-        <div className="mt-12 sm:mt-16 md:mt-20">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-6 p-6 sm:p-8 bg-gradient-to-r from-[#c40116]/5 to-[#be0117]/5 rounded-2xl sm:rounded-3xl border border-[#c40116]/10">
-            <div className="text-left">
-              <h3 className="font-bold text-lg sm:text-xl text-slate-800">
-                Still have questions?
-              </h3>
-              <p className="text-sm sm:text-base text-gray-600 mt-1 max-w-md">
-                Can't find what you're looking for? Our support team is here to
-                help you 24/7.
-              </p>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <button
-                onClick={() => router.push("/contact-us")}
-                className="px-6 sm:px-8 py-2.5 sm:py-3 rounded-xl font-semibold text-white bg-linear-to-r from-[#c40116] to-[#c40116]/60 shadow hover:scale-105 transition-all duration-200 active:scale-95 text-sm sm:text-base cursor-pointer"
-              >
-                Contact Support
-              </button>
-            
-            </div>
-          </div>
-        </div>
+      
       </div>
 
       {/* Decorative elements */}
