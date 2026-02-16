@@ -48,7 +48,7 @@ const Hero = () => {
           Build job-winning resumes
           <br />
           <span className="bg-clip-text text-transparent bg-linear-to-b from-black to-red-500">
-            with AI in minus.
+            with AI in minutes.
           </span>
         </motion.h1>
 
