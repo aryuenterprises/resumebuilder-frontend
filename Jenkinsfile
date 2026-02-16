@@ -24,9 +24,11 @@ pipeline {
             steps {
                 sh """
                 rsync -av --delete \
-                  --exclude='.git' \
-                  --exclude='node_modules' \
-                  ./ ${DEPLOY_PATH}/
+                --no-group --no-owner \
+                --exclude='.git' \
+                --exclude='node_modules' \
+                ./ ${DEPLOY_PATH}/
+
                 """
             }
         }
