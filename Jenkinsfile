@@ -8,13 +8,6 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                git branch: 'main',
-                    url: 'https://github.com/YOUR_GITHUB_USERNAME/YOUR_FRONTEND_REPO.git'
-            }
-        }
-
         stage('Install Dependencies') {
             steps {
                 sh 'npm ci'
@@ -38,7 +31,7 @@ pipeline {
             }
         }
 
-        stage('Restart via PM2 (Zero Downtime)') {
+        stage('Restart via PM2') {
             steps {
                 sh """
                 cd ${DEPLOY_PATH}
