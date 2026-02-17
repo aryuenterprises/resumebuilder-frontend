@@ -155,9 +155,9 @@ const AboutPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <div className="min-h-screen bg-linear-to-b from-gray-50 to-white">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#c40116] via-[#be0117] to-[#9a0e1a] text-white">
+      <section className="relative overflow-hidden bg-linear-to-br from-[#c40116] via-[#be0117] to-[#9a0e1a] text-white">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div
@@ -171,8 +171,8 @@ const AboutPage = () => {
         </div>
 
         {/* Animated shapes */}
-        <div className="absolute top-20 -left-36 w-80 h-64 bg-white/50 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-20 right-10 w-80 h-80 bg-white rounded-full blur-3xl animate-pulse delay-1000" />
+        <div className="absolute top-20 -left-64 w-100 h-100 bg-white/50 rounded-full blur-3xl animate-pulse" />
+        {/* <div className="absolute bottom-20 right-10 w-80 h-80 bg-white rounded-full blur-3xl animate-pulse delay-1000" /> */}
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
           <motion.div
@@ -196,10 +196,12 @@ const AboutPage = () => {
               transition={{ delay: 0.3 }}
               className="text-4xl md:text-6xl font-bold mb-6"
             >
-              Empowering Careers,
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-100">
-                One Resume at a Time
+              Empowering Future,
+              <span className="block text-transparent bg-clip-text bg-linear-to-r from-yellow-300 to-yellow-100">
+                       Creates      Career Success
+
               </span>
+              
             </motion.h1>
 
             <motion.p
@@ -226,7 +228,7 @@ const AboutPage = () => {
                 Start Building Free
               </Link>
               <Link
-                href="#features"
+                href="/contact-us"
                 className="px-8 py-4 bg-white/20 backdrop-blur-sm text-white font-semibold rounded-xl hover:bg-white/30 transition-all duration-300"
               >
                 Learn More
@@ -267,7 +269,7 @@ const AboutPage = () => {
                 variants={itemVariants}
                 className="text-center group"
               >
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#c40116]/10 to-[#be0117]/10 rounded-2xl mb-4 group-hover:scale-110 transition-transform">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-linear-to-br from-[#c40116]/10 to-[#be0117]/10 rounded-2xl mb-4 group-hover:scale-110 transition-transform">
                   <stat.icon className="w-8 h-8 text-[#c40116]" />
                 </div>
                 <div className="text-3xl font-bold text-gray-900 mb-1">
@@ -320,7 +322,7 @@ const AboutPage = () => {
                   {[1, 2, 3, 4].map((i) => (
                     <div
                       key={i}
-                      className="w-10 h-10 rounded-full bg-gradient-to-br from-[#c40116] to-[#be0117] border-2 border-white flex items-center justify-center text-white text-xs font-bold"
+                      className="w-10 h-10 rounded-full bg-linear-to-br from-[#c40116] to-[#be0117] border-2 border-white flex items-center justify-center text-white text-xs font-bold"
                     >
                       {["SJ", "MC", "ER", "DK"][i - 1]}
                     </div>
@@ -346,7 +348,7 @@ const AboutPage = () => {
                   alt="Team collaboration"
                   className="w-full h-auto"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent" />
               </div>
 
               {/* Floating card */}
@@ -399,11 +401,11 @@ const AboutPage = () => {
                 className="group relative bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100"
               >
                 <div
-                  className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-5 rounded-3xl transition-opacity duration-500`}
+                  className={`absolute inset-0 bg-linear-to-br ${feature.color} opacity-0 group-hover:opacity-5 rounded-3xl transition-opacity duration-500`}
                 />
 
                 <div
-                  className={`inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br ${feature.color} rounded-2xl mb-6 shadow-lg`}
+                  className={`inline-flex items-center justify-center w-16 h-16 bg-linear-to-br ${feature.color} rounded-2xl mb-6 shadow-lg`}
                 >
                   <feature.icon className="w-8 h-8 text-white" />
                 </div>
@@ -417,7 +419,7 @@ const AboutPage = () => {
                 </p>
 
                 <div className="absolute bottom-8 right-8 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <div className="w-8 h-8 bg-gradient-to-br from-[#c40116] to-[#be0117] rounded-full flex items-center justify-center">
+                  <div className="w-8 h-8 bg-linear-to-br from-[#c40116] to-[#be0117] rounded-full flex items-center justify-center">
                     <FiCheckCircle className="w-4 h-4 text-white" />
                   </div>
                 </div>
@@ -428,7 +430,7 @@ const AboutPage = () => {
       </section>
 
       {/* Values Section */}
-      <section className="py-20 bg-gradient-to-br from-[#c40116] to-[#be0117] text-white">
+      <section className="py-20 bg-linear-to-br from-[#c40116] to-[#be0117] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -522,7 +524,7 @@ const AboutPage = () => {
                 </p>
 
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-gradient-to-br from-[#c40116] to-[#be0117] rounded-xl flex items-center justify-center text-white font-bold">
+                  <div className="w-12 h-12 bg-linear-to-br from-[#c40116] to-[#be0117] rounded-xl flex items-center justify-center text-white font-bold">
                     {testimonial.image}
                   </div>
                   <div>
@@ -750,7 +752,7 @@ export default AboutPage;
 //   };
 
 //   return (
-//     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+//     <div className="min-h-screen bg-linear-to-b from-gray-50 to-white">
 //       {/* Hero Section */}
 //       <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
 
@@ -780,11 +782,11 @@ export default AboutPage;
 //             transition={{ delay: 0.3 }}
 //             className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight text-gray-900"
 //           >
-//             <span className="bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+//             <span className="bg-linear-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
 //               Redefining
 //             </span>
 //             <br />
-//             <span className="bg-gradient-to-r from-[#c40116] via-[#be0117] to-[#ff6b6b] bg-clip-text text-transparent">
+//             <span className="bg-linear-to-r from-[#c40116] via-[#be0117] to-[#ff6b6b] bg-clip-text text-transparent">
 //               Career Success
 //             </span>
 //           </motion.h1>
@@ -808,13 +810,13 @@ export default AboutPage;
 //           >
 //             <Link
 //               href="/choose-template"
-//               className="group relative px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-[#c40116] to-[#be0117] text-white font-semibold rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all"
+//               className="group relative px-6 sm:px-8 py-3 sm:py-4 bg-linear-to-r from-[#c40116] to-[#be0117] text-white font-semibold rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all"
 //             >
 //               <span className="relative z-10 flex items-center justify-center gap-2">
 //                 Start Building Free
 //                 <FiArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-2 transition-transform" />
 //               </span>
-//               <div className="absolute inset-0 bg-gradient-to-r from-white to-transparent opacity-0 group-hover:opacity-20 transition-opacity duration-500" />
+//               <div className="absolute inset-0 bg-linear-to-r from-white to-transparent opacity-0 group-hover:opacity-20 transition-opacity duration-500" />
 //             </Link>
 
 //             <Link
@@ -868,7 +870,7 @@ export default AboutPage;
 
 //       {/* Features Section */}
 //       <section className="relative py-16 sm:py-20 lg:py-32 bg-white overflow-hidden">
-//         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#c40116]/5 to-transparent" />
+//         <div className="absolute inset-0 bg-linear-to-b from-transparent via-[#c40116]/5 to-transparent" />
 
 //         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 //           <motion.div
@@ -879,7 +881,7 @@ export default AboutPage;
 //           >
 //             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-gray-900">
 //               Powered by{" "}
-//               <span className="bg-gradient-to-r from-[#c40116] to-[#be0117] bg-clip-text text-transparent">
+//               <span className="bg-linear-to-r from-[#c40116] to-[#be0117] bg-clip-text text-transparent">
 //                 Next-Gen Technology
 //               </span>
 //             </h2>
@@ -902,7 +904,7 @@ export default AboutPage;
 //               >
 //                 <div className="relative bg-white shadow-lg border border-gray-100 rounded-xl sm:rounded-2xl p-6 sm:p-8 hover:border-[#c40116] hover:shadow-xl transition-all h-full">
 //                   {/* Icon */}
-//                   <div className={`inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-xl bg-gradient-to-br ${feature.gradient} mb-4 sm:mb-6 group-hover:scale-110 transition-transform shadow-lg`}>
+//                   <div className={`inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-xl bg-linear-to-br ${feature.gradient} mb-4 sm:mb-6 group-hover:scale-110 transition-transform shadow-lg`}>
 //                     <feature.icon className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
 //                   </div>
 
@@ -936,7 +938,7 @@ export default AboutPage;
 
 //       {/* Timeline Section */}
 //       <section className="relative py-16 sm:py-20 lg:py-32 bg-gray-50">
-//         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#c40116]/5 to-transparent" />
+//         <div className="absolute inset-0 bg-linear-to-b from-transparent via-[#c40116]/5 to-transparent" />
 
 //         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 //           <motion.div
@@ -947,7 +949,7 @@ export default AboutPage;
 //           >
 //             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-gray-900">
 //               Our Journey of{" "}
-//               <span className="bg-gradient-to-r from-[#c40116] to-[#be0117] bg-clip-text text-transparent">
+//               <span className="bg-linear-to-r from-[#c40116] to-[#be0117] bg-clip-text text-transparent">
 //                 Innovation
 //               </span>
 //             </h2>
@@ -958,7 +960,7 @@ export default AboutPage;
 
 //           <div className="relative max-w-3xl mx-auto">
 //             {/* Timeline Line */}
-//             <div className="absolute left-4 sm:left-1/2 transform sm:-translate-x-1/2 w-0.5 h-full bg-gradient-to-b from-transparent via-[#c40116] to-transparent" />
+//             <div className="absolute left-4 sm:left-1/2 transform sm:-translate-x-1/2 w-0.5 h-full bg-linear-to-b from-transparent via-[#c40116] to-transparent" />
 
 //             {timeline.map((item, index) => (
 //               <motion.div
@@ -980,7 +982,7 @@ export default AboutPage;
 //                 <div className={`ml-12 sm:ml-0 sm:w-1/2 ${index % 2 === 0 ? 'sm:pr-12' : 'sm:pl-12'}`}>
 //                   <div className="bg-white shadow-lg border border-gray-100 rounded-xl sm:rounded-2xl p-6 hover:border-[#c40116] hover:shadow-xl transition-all">
 //                     <div className="flex items-center gap-3 mb-3">
-//                       <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#c40116] to-[#be0117] flex items-center justify-center shadow-md">
+//                       <div className="w-10 h-10 rounded-lg bg-linear-to-br from-[#c40116] to-[#be0117] flex items-center justify-center shadow-md">
 //                         <item.icon className="w-5 h-5 text-white" />
 //                       </div>
 //                       <div>
@@ -1013,7 +1015,7 @@ export default AboutPage;
 //           >
 //             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-gray-900">
 //               What Our{" "}
-//               <span className="bg-gradient-to-r from-[#c40116] to-[#be0117] bg-clip-text text-transparent">
+//               <span className="bg-linear-to-r from-[#c40116] to-[#be0117] bg-clip-text text-transparent">
 //                 Community
 //               </span>{" "}
 //               Says
@@ -1034,7 +1036,7 @@ export default AboutPage;
 //                 className="bg-white shadow-xl border border-gray-100 rounded-xl sm:rounded-2xl p-6 sm:p-8"
 //               >
 //                 <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6 mb-6">
-//                   <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-[#c40116] to-[#be0117] rounded-xl flex items-center justify-center text-xl sm:text-2xl font-bold text-white shadow-lg flex-shrink-0">
+//                   <div className="w-16 h-16 sm:w-20 sm:h-20 bg-linear-to-br from-[#c40116] to-[#be0117] rounded-xl flex items-center justify-center text-xl sm:text-2xl font-bold text-white shadow-lg flex-shrink-0">
 //                     {testimonials[activeTestimonial].image}
 //                   </div>
 //                   <div>
@@ -1090,7 +1092,7 @@ export default AboutPage;
 //       {/* CTA Section */}
 //       <section className="relative py-16 sm:py-20 lg:py-32 bg-gray-50">
 //         <div className="absolute inset-0">
-//           <div className="absolute inset-0 bg-gradient-to-r from-[#c40116]/5 to-[#be0117]/5" />
+//           <div className="absolute inset-0 bg-linear-to-r from-[#c40116]/5 to-[#be0117]/5" />
 //           <div className="absolute inset-0" style={{
 //             backgroundImage: "radial-gradient(circle at 2px 2px, #c40116 1px, transparent 0)",
 //             backgroundSize: "40px 40px",
@@ -1106,7 +1108,7 @@ export default AboutPage;
 //           >
 //             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 text-gray-900">
 //               Ready to Transform Your{" "}
-//               <span className="bg-gradient-to-r from-[#c40116] to-[#be0117] bg-clip-text text-transparent">
+//               <span className="bg-linear-to-r from-[#c40116] to-[#be0117] bg-clip-text text-transparent">
 //                 Career?
 //               </span>
 //             </h2>
@@ -1118,7 +1120,7 @@ export default AboutPage;
 //             <div className="flex flex-col sm:flex-row gap-4 justify-center px-4">
 //               <Link
 //                 href="/choose-template"
-//                 className="group px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-[#c40116] to-[#be0117] text-white font-semibold rounded-xl hover:shadow-xl hover:shadow-[#c40116]/25 transition-all"
+//                 className="group px-6 sm:px-8 py-3 sm:py-4 bg-linear-to-r from-[#c40116] to-[#be0117] text-white font-semibold rounded-xl hover:shadow-xl hover:shadow-[#c40116]/25 transition-all"
 //               >
 //                 <span className="flex items-center justify-center gap-2">
 //                   Get Started Free
@@ -1142,7 +1144,7 @@ export default AboutPage;
 //         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 //           <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
 //             <div className="flex items-center gap-2">
-//               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-[#c40116] to-[#be0117] rounded-lg flex items-center justify-center shadow-md">
+//               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-linear-to-br from-[#c40116] to-[#be0117] rounded-lg flex items-center justify-center shadow-md">
 //                 <FiFileText className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
 //               </div>
 //               <span className="text-lg sm:text-xl font-bold text-gray-900">ARYU SmartCV</span>
