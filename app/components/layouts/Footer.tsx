@@ -46,16 +46,19 @@ const Footer = () => {
           <div>
                 <h3 className="text-base sm:text-lg font-bold text-[#5e000b] mb-3 sm:mb-4">Company</h3>
             <ul className="space-y-1 sm:space-y-2 md:space-y-3 text-sm sm:text-base text-gray-600">
-              <li onClick={() => router.push("/contact-us")} className="hover:text-[#c40116] transition-colors duration-200 text-left w-full py-1">
+              <li onClick={() => router.push("/contact-us")} className="hover:text-[#c40116] transition-colors duration-200 text-left w-full py-1 cursor-pointer">
                 Contact Us
               </li>
-              <li onClick={() => router.push("/subscription")} className="hover:text-[#c40116] transition-colors duration-200 text-left w-full py-1">
+                <li onClick={() => router.push("/about-us")} className="hover:text-[#c40116] transition-colors duration-200 text-left w-full py-1 cursor-pointer">
+                About Us
+              </li>
+              <li onClick={() => router.push("/subscription")} className="hover:text-[#c40116] transition-colors duration-200 text-left w-full py-1 cursor-pointer">
                 Subscription
               </li>
-              <li onClick={() => router.push("/terms-conditions")} className="hover:text-[#c40116] transition-colors duration-200 text-left w-full py-1">
+              <li onClick={() => router.push("/terms-conditions")} className="hover:text-[#c40116] transition-colors duration-200 text-left w-full py-1 cursor-pointer">
                 Terms & Conditions
               </li>
-              <li onClick={() => router.push("/privacy-policy")} className="hover:text-[#c40116] transition-colors duration-200 text-left w-full py-1">
+              <li onClick={() => router.push("/privacy-policy")} className="hover:text-[#c40116] transition-colors duration-200 text-left w-full py-1 cursor-pointer">
                 Privacy Policy
               </li>
             </ul>

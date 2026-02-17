@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FiMenu, FiX } from "react-icons/fi";
 import { SiReaddotcv } from "react-icons/si";
 import { RedGradientButton } from "../ui";
+import { IoIosInformationCircleOutline } from "react-icons/io";
 
 const Header: React.FC = () => {
   const router = useRouter();
@@ -71,17 +72,26 @@ const Header: React.FC = () => {
           >
             Home
           </button>
-          <button
-            className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito font-semibold text-[#c40116]  hover:bg-[#c40116]/10 transition text-sm lg:text-base cursor-pointer"
-            onClick={() => router.push("/contact-us")}
-          >
-            Contact Us
-          </button>
+         
           <button
             className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito font-semibold text-[#c40116]  hover:bg-[#c40116]/10 transition text-sm lg:text-base cursor-pointer"
             onClick={() => router.push("/choose-template")}
           >
             Create Resume
+          </button>
+
+           <button
+            className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito font-semibold text-[#c40116]  hover:bg-[#c40116]/10 transition text-sm lg:text-base cursor-pointer"
+            onClick={() => router.push("/contact-us")}
+          >
+            Contact Us
+          </button>
+
+            <button
+            className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito font-semibold text-[#c40116]  hover:bg-[#c40116]/10 transition text-sm lg:text-base cursor-pointer"
+            onClick={() => router.push("/about-us")}
+          >
+            About Us
           </button>
 
           {userLoggedIn ? (
@@ -230,6 +240,20 @@ const Header: React.FC = () => {
                       </svg>
                     </div>
                     <span className="text-left flex-1">Contact Us</span>
+                  </button>
+
+                   <button
+                    onClick={() => {
+                      router.push("/about-us");
+
+                      setMenuOpen(false);
+                    }}
+                    className="w-full flex items-center bg-linear-to-r from-[#c40116]/5 to-[#be0117]/5  gap-3 p-3 sm:p-4 rounded-xl font-nunito font-semibold border border-[#c40116]/20 text-[#c40116] hover:bg-[#c40116]/5 transition-all duration-200 group"
+                  >
+                    <div className="p-2 bg-white rounded-lg group-hover:scale-110 transition-transform">
+                     <IoIosInformationCircleOutline className="font-extrabold text-2xl"/>
+                    </div>
+                    <span className="text-left flex-1">About Us</span>
                   </button>
 
                   {/* Divider */}
