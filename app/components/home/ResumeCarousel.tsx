@@ -143,7 +143,7 @@ function ResumeCarousel() {
             {templates.map((t) => (
               <div key={t.id} className="group relative px-1 sm:px-0 h-full">
                 {/* Card */}
-                <div className="relative bg-white rounded-2xl sm:rounded-3xl overflow-hidden  border border-gray-100 transition-all duration-300 sm:duration-500 hover:-translate-y-2 sm:hover:-translate-y-4   h-full flex flex-col">
+                <div className="relative bg-white rounded-2xl sm:rounded-3xl overflow-hidden  border border-gray-100 transition-all duration-300 sm:duration-500    h-full flex flex-col">
                   {/* Image */}
                   <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden grow">
                     <div className="relative w-full h-70 sm:h-80 md:h-100 lg:h-110 ">
@@ -151,22 +151,24 @@ function ResumeCarousel() {
                         src={t.img}
                         alt={t.name}
                         fill
-                        className="object-cover object-top transition-transform duration-500 sm:duration-700 group-hover:scale-105 rounded-2xl sm:rounded-3xl"
+                        unoptimized
+                        quality={100}
+                        className="object-cover object-top transition-transform duration-500 sm:duration-700  rounded-2xl sm:rounded-3xl"
                       />
                     </div>
 
                     {/* Premium Shine */}
-                    <div className="absolute inset-0 bg-linear-to-t from-red-200 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300" />
+                    {/* <div className="absolute inset-0 bg-linear-to-t from-red-200 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300" /> */}
                   </div>
 
-                  <div className="absolute inset-0 flex items-center justify-center bg-white/50  opacity-0 group-hover:opacity-100 transition-all duration-300 z-10">
+                  {/* <div className="absolute inset-0 flex items-center justify-center bg-white/50  opacity-0 group-hover:opacity-100 transition-all duration-300 z-10">
                     <button
                       onClick={() => router.push('/choose-template')}
                       className="px-6 sm:px-8 md:px-10 py-2.5 sm:py-3 md:py-4 rounded-xl font-bold text-white bg-linear-to-r from-[#c40116] to-[#c40116]/60 shadow-lg sm:shadow-xl hover:scale-105 transition text-sm sm:text-base cursor-pointer"
                     >
                       Use This Template
                     </button>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             ))}

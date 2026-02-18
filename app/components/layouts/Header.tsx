@@ -52,7 +52,7 @@ const Header: React.FC = () => {
       transition={{ duration: 0.4, ease: "easeInOut" }}
       className="bg-white backdrop-blur-lg border-b overflow-hidden! shadow-red-300/10 border-gray-100 sticky top-0 z-50"
     >
-      <div className="flex justify-between items-center px-4 sm:px-6 md:px-8 lg:px-10 py-3 sm:py-4 max-w-7xl mx-auto">
+      <div className="flex justify-between items-center px-4 sm:px-6 md:px-8 lg:px-10 py-3 sm:py-4 mx-auto">
         {/* Logo */}
         <button onClick={() => router.push("/")} className="cursor-pointer">
           <Image
@@ -93,6 +93,15 @@ const Header: React.FC = () => {
           >
             About Us
           </button>
+
+             <button
+            className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito font-semibold text-[#c40116]  hover:bg-[#c40116]/10 transition text-sm lg:text-base cursor-pointer"
+            onClick={() => router.push("/choose-plan")}
+          >
+            Plans
+          </button>
+
+          
 
           {userLoggedIn ? (
             <button
@@ -215,6 +224,19 @@ const Header: React.FC = () => {
                     <span className="text-left flex-1">Create Resume</span>
                   </button>
 
+                      <button
+                    onClick={() => {
+                      router.push("/choose-plan");
+                      setMenuOpen(false);
+                    }}
+                    className="w-full flex items-center gap-3 p-3 sm:p-4 rounded-xl font-nunito font-semibold bg-linear-to-r from-[#c40116]/5 to-[#be0117]/5 text-[#c40116] hover:from-[#c40116]/10 hover:to-[#be0117]/10 transition-all duration-200 group"
+                  >
+                    <div className="p-2 bg-white rounded-lg group-hover:scale-110 transition-transform">
+                      <SiReaddotcv className="text-red-500 font-extrabold" />
+                    </div>
+                    <span className="text-left flex-1">Plans</span>
+                  </button>
+
                   {/* Contact Us Button */}
                   <button
                     onClick={() => {
@@ -255,6 +277,7 @@ const Header: React.FC = () => {
                     </div>
                     <span className="text-left flex-1">About Us</span>
                   </button>
+                  
 
                   {/* Divider */}
                   <div className="my-4 border-t border-gray-100"></div>

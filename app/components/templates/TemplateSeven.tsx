@@ -32,10 +32,8 @@ interface ResumeProps {
 
 
 const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
-  console.log("alldetailscxc", alldata);
 
   const context = useContext(CreateContext);
-  console.log("UseContextdd", context);
 
   const contact = alldata?.contact || context.contact || {};
   const educations = alldata?.educations || context?.education || [];
@@ -44,8 +42,6 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
   const finalize = alldata?.finalize || context?.finalize || {};
   const summary = alldata?.summary || context?.summary || "";
   const linkedinUrl = contact?.linkedin 
-
-  console.log("contact", experiences);
 
   // Helper function to get job title
   const getJobTitle = (jobTitle: any): string => {

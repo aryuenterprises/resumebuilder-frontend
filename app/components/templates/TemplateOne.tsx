@@ -26,18 +26,17 @@ interface Resume4Props {
   alldata?: AllData;
 }
 
-const TemplateOne: React.FC<Resume4Props> = ({ alldata }) => {
+const TemplateOne: React.FC= () => {
   const context = useContext(CreateContext);
-  const [isGenerating, setIsGenerating] = useState(false);
   const pathname = usePathname();
   const lastSegment = pathname.split("/").pop();
 
-  const contact = alldata?.contact || context.contact || {};
-  const educations = alldata?.educations || context?.education || [];
-  const experiences = alldata?.experiences || context?.experiences || [];
-  const skills = alldata?.skills || context?.skills || [];
-  const finalize = alldata?.finalize || context?.finalize || {};
-  const summary = alldata?.summary || context?.summary || "";
+  const contact = context.contact || {};
+  const educations = context?.education || [];
+  const experiences = context?.experiences || [];
+  const skills = context?.skills || [];
+  const finalize = context?.finalize || {};
+  const summary = context?.summary || "";
 
   const addressParts = [
     contact?.address,
@@ -721,8 +720,6 @@ const TemplateOne: React.FC<Resume4Props> = ({ alldata }) => {
      DOWNLOAD PDF
   ====================================================== */
   const handleDownload = async () => {
-    setIsGenerating(true);
-
     try {
       const html = generateHTML();
 
@@ -745,33 +742,28 @@ const TemplateOne: React.FC<Resume4Props> = ({ alldata }) => {
     } catch (error) {
       console.error("Error generating PDF:", error);
       alert("Failed to generate PDF. Please try again.");
-    } finally {
-      setIsGenerating(false);
     }
   };
 
+    const stripHtml = (html: string) => {
+    return html?.replace(/<\/?[^>]+(>|$)/g, "") || "";
+  };
+
+  const textEditorTextsFormat = (text: string) => {
+    return text
+      .replace(/<\/?[^>]+(>|$)/g, "")
+      .replace(/•/g, "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .split(".")
+      .map((s) => s.trim())
+      .filter(Boolean);
+  };
 
   return (
     <div style={{ textAlign: "center", marginTop: 0 }}>
       {lastSegment === "download-resume" && (
-        // <button
-        //   onClick={handleDownload}
-        //   disabled={isGenerating}
-        //   style={{
-        //     padding: "10px 20px",
-        //     backgroundColor: isGenerating ? "#ccc" : "#0077b5",
-        //     color: "white",
-        //     border: "none",
-        //     borderRadius: "4px",
-        //     cursor: isGenerating ? "not-allowed" : "pointer",
-        //     fontSize: "16px",
-        //     marginBottom: "20px",
-        //   }}
-        // >
-        //   {isGenerating ? "Generating..." : "Download Resume"}
-        // </button>
-
-         <div
+        <div
           style={{
             textAlign: "center",
             marginTop: "20px",
@@ -785,7 +777,6 @@ const TemplateOne: React.FC<Resume4Props> = ({ alldata }) => {
             Download Resume
           </button>
         </div>
-      
       )}
 
       {/* Resume Preview - Single page view for UI */}
@@ -933,7 +924,7 @@ const TemplateOne: React.FC<Resume4Props> = ({ alldata }) => {
                       className="item-content education-description"
                       style={{ whiteSpace: "pre-wrap" }}
                     >
-                      {edu.text}
+                      { stripHtml(edu.text)}
                     </div>
                   );
                 }

@@ -336,10 +336,10 @@
 "use client";
 import SimpleCanvasPreview from "../../components/resume/SimpleCanvasPreview";
 import { templateData } from "@/app/data";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { FiChevronRight, FiLayout, FiLogIn, FiEye, FiX } from "react-icons/fi";
-import { getLocalStorage } from "@/app/utils";
+import { getLocalStorage, setLocalStorage } from "@/app/utils";
 import { Template } from "@/app/types";
 import { User } from "@/app/types/user.types";
 import { motion, AnimatePresence } from "framer-motion";
@@ -362,8 +362,24 @@ export default function RootLayout({
   const chosenResumeDetails = getLocalStorage<Template>("chosenTemplate");
 
   const userId = userDetails?.id;
-  const { contact, setContact, fullResumeData, setFullResumeData } =
-    useContext(CreateContext);
+  const initialLoadDone = useRef(false);
+
+  const {
+    contact,
+    setContact,
+    education,
+    setEducation,
+    experiences,
+    setExperiences,
+    skills,
+    setSkills,
+    summary,
+    setSummary,
+    finalize,
+    setFinalize,
+    fullResumeData,
+    setFullResumeData,
+  } = useContext(CreateContext);
 
   const fetchContact = async () => {
     try {
@@ -391,6 +407,7 @@ export default function RootLayout({
       };
 
       setContact(updatedContact);
+      fetchResumeFullData(data?._id);
 
       // Update fullResumeData in context
       if (fullResumeData) {
@@ -409,8 +426,6 @@ export default function RootLayout({
           finalize: {},
         });
       }
-
-      // Mark initial load as complete
     } catch (error) {
       console.log(error);
     }
@@ -419,6 +434,61 @@ export default function RootLayout({
   useEffect(() => {
     fetchContact();
   }, []);
+
+  const fetchResumeFullData = async (id: string) => {
+    try {
+      const response = await axios.get(
+        `${API_URL}/api/experience/get-all-contacts/${id}`,
+      );
+
+      if (response.data?.data?.length > 0) {
+        const data = response.data.data[0];
+
+        const formattedData = {
+          template: chosenResumeDetails || null,
+          contact: data.contact || {},
+          educations: data.educations || [],
+          experience: data.experiences || [],
+          skills: data.skills || [],
+          finalize: data.finalize?.[0] || {},
+          summary: data.summary?.[0] || "", // Extract text from summary array
+        };
+
+
+        // setFullResumeData(formattedData);
+
+        setFullResumeData({
+          template: chosenResumeDetails || null,
+          contact: data.contact,
+          experiences: data.experiences,
+          education: data.educations,
+          skills: data.skills,
+          summary: data.summary[0] || "",
+          finalize: data.finalize?.[0] || {},
+        });
+
+        initialLoadDone.current = true;
+
+        setLocalStorage("fullResumeData", {
+          template: chosenResumeDetails || null,
+          contact: data.contact,
+          experiences: data.experiences,
+          education: data.educations,
+          skills: data.skills,
+          summary: data?.summary,
+          finalize: data?.finalize[0],
+        });
+
+        setEducation(data?.educations || []);
+        setExperiences(data?.experiences || []);
+        setSkills(data?.skills || []);
+        setSummary(data?.summary[0] || "");
+        setFinalize(data?.finalize[0] || {});
+      }
+    } catch (error) {
+      console.log("Error fetching contact:", error);
+    }
+  };
 
   // Check if user is logged in
   useEffect(() => {
@@ -554,7 +624,7 @@ export default function RootLayout({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-[60] p-3 sm:p-4"
+              className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-60 p-3 sm:p-4"
             >
               <motion.div
                 initial={{ scale: 0.9, opacity: 0, y: 20 }}
@@ -708,7 +778,7 @@ export default function RootLayout({
                   className="w-fit flex items-center justify-center gap-2 px-4 py-3 bg-white border border-gray-200 hover:border-[#C40116] text-gray-700 hover:text-[#C40116] font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
                 >
                   <FiLayout className="w-4 h-4" />
-                  <span  className="text-xs">Change Template</span>
+                  <span className="text-xs">Change Template</span>
                   <FiChevronRight className="w-4 h-4" />
                 </button>
                 <button

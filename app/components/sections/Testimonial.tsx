@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React from 'react';
+import React from "react";
 
 // Define TypeScript interfaces
 interface TestimonialItem {
@@ -17,41 +17,41 @@ interface StarProps {
 const Testimonial = () => {
   const testimonials: TestimonialItem[] = [
     {
-      name: 'Aisha Khan',
-      role: 'MBA Graduate',
+      name: "Aisha Khan",
+      role: "MBA Graduate",
       rating: 5,
-      text: 'I got interviews within 2 weeks after using ARYU Better CV\'s AI suggestions.',
+      text: "I got interviews within 2 weeks after using ARYU Better CV's AI suggestions.",
     },
     {
-      name: 'Rohit Mehta',
-      role: 'Software Engineer',
+      name: "Rohit Mehta",
+      role: "Software Engineer",
       rating: 5,
-      text: 'Clean templates and ATS checks made my resume stand out instantly.',
+      text: "Clean templates and ATS checks made my resume stand out instantly.",
     },
     {
-      name: 'Sonia Patel',
-      role: 'Marketing Executive',
+      name: "Sonia Patel",
+      role: "Marketing Executive",
       rating: 4,
-      text: 'ARYU transformed my vague bullets into impact-driven achievements.',
+      text: "ARYU transformed my vague bullets into impact-driven achievements.",
     },
     {
-      name: 'Karan Verma',
-      role: 'Final Year Student',
+      name: "Karan Verma",
+      role: "Final Year Student",
       rating: 5,
-      text: 'The UI feels premium and building my resume was super fast.',
+      text: "The UI feels premium and building my resume was super fast.",
     },
     {
-      name: 'Neha Sharma',
-      role: 'HR Professional',
+      name: "Neha Sharma",
+      role: "HR Professional",
       rating: 5,
-      text: 'Best resume builder I\'ve used. Super clean and recruiter-friendly.',
+      text: "Best resume builder I've used. Super clean and recruiter-friendly.",
     },
   ];
 
   const Star = ({ filled }: StarProps) => (
     <svg
       className={`w-4 h-4 sm:w-5 sm:h-5 ${
-        filled ? 'text-[#c40116]' : 'text-gray-300'
+        filled ? "text-[#c40116]" : "text-gray-300"
       }`}
       fill="currentColor"
       viewBox="0 0 20 20"
@@ -86,7 +86,7 @@ const Testimonial = () => {
             <div className="overflow-x-auto pb-4 -mx-4 px-4 sm:px-6 scrollbar-hide">
               <div
                 className="flex gap-4 sm:gap-6"
-                style={{ minWidth: 'max-content' }}
+                style={{ minWidth: "max-content" }}
               >
                 {testimonials.map((t, i) => (
                   <div

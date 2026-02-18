@@ -688,6 +688,125 @@ ${filteredSkills.length > 0 ? `
     }
   };
 
+//   const[isBlurred,setIsBlurred]=useState<boolean>(false)
+
+//   useEffect(() => {
+//   const handleKeyDown = (e) => {
+//     // Detects PrintScreen key
+//     if (e.key === 'PrintScreen') {
+//       setIsBlurred(true);
+//       navigator.clipboard.writeText(""); // Clear clipboard
+//       alert("Screenshots are disabled for privacy.");
+//     }
+//   };
+
+//   window.addEventListener('keyup', handleKeyDown);
+//   return () => window.removeEventListener('keyup', handleKeyDown);
+// }, []);
+
+
+// // Using the Window Focus API
+// window.onblur = () => {
+//   console.log("Likely screenshot tool opened");
+//   document.getElementById('resume-content').style.filter = 'blur(20px)';
+// };
+
+// window.onfocus = () => {
+//   document.getElementById('resume-content').style.filter = 'none';
+// };
+
+
+const [isBlurred, setIsBlurred] = useState(false);
+
+  // useEffect(() => {
+  //   const handleBlur = () => setIsBlurred(true);
+  //   const handleFocus = () => setIsBlurred(false);
+
+  //   // Listen for the window losing/gaining focus
+  //   window.addEventListener('blur', handleBlur);
+  //   window.addEventListener('focus', handleFocus);
+
+  //   // Also watch for tab switching
+  //   const handleVisibilityChange = () => {
+  //     if (document.hidden) setIsBlurred(true);
+  //   };
+  //   document.addEventListener('visibilitychange', handleVisibilityChange);
+
+  //   return () => {
+  //     window.removeEventListener('blur', handleBlur);
+  //     window.removeEventListener('focus', handleFocus);
+  //     document.removeEventListener('visibilitychange', handleVisibilityChange);
+  //   };
+  // }, []);
+
+//   useEffect(() => {
+//   const handleKeyDown = (e) => {
+
+//     console.log("e",e)
+//     // Check for:
+//     // 1. PrintScreen (Standalone)
+//     // 2. Win + PrintScreen (e.metaKey)
+//     // 3. Win + Shift + S (The Snipping Tool)
+//     if (
+//       e.key === "PrintScreen" || 
+//       (e.metaKey && e.key === "PrintScreen") || 
+//       (e.metaKey && e.shiftKey && e.key === "S")
+//     ) {
+//       setIsBlurred(true);
+      
+//       // Optional: Clean the clipboard so they can't paste it elsewhere
+//       navigator.clipboard.writeText("Content Protected");
+//     }
+//   };
+
+//   window.addEventListener("keydown", handleKeyDown);
+//   return () => window.removeEventListener("keydown", handleKeyDown);
+// }, []);
+
+
+// useEffect(() => {
+//   const handleContextMenu = (e) => e.preventDefault();
+//   window.addEventListener("contextmenu", handleContextMenu);
+//   return () => window.removeEventListener("contextmenu", handleContextMenu);
+// }, []);
+
+
+//   console.log(isBlurred)
+
+//   useEffect(() => {
+//   const handleKeyUp = (e) => {
+//     console.log("eeeeeeeeeeeeeeee",e)
+//     if (e.key === 'PrintScreen'|| e.key==="Enter") {
+//       // Write something else to the clipboard to overwrite the screenshot
+//       navigator.clipboard.writeText("Screenshots are disabled.");
+//       setIsBlurred(true);
+//     }
+//   };
+//   window.addEventListener('keyup', handleKeyUp);
+//   return () => window.removeEventListener('keyup', handleKeyUp);
+// }, []);
+
+// useEffect(() => {
+//   const handleKeyDown = (e) => {
+//     // 1. Detect PrintScreen (Standalone)
+//     // 2. Detect Win + PrintScreen (e.metaKey)
+//     // 3. Detect Win + Shift + S (Common Windows Snipping tool)
+//     if (
+//       e.key === 'PrintScreen' || 
+//       (e.metaKey && e.key === 'PrintScreen') ||
+//       (e.metaKey && e.shiftKey && e.key === 'S')
+//     ) {
+//       setIsBlurred(true);
+//       // Optional: Clear clipboard
+//       navigator.clipboard.writeText(""); 
+//     }
+//   };
+
+//   // Use keydown instead of keyup for faster response
+//   window.addEventListener('keydown', handleKeyDown);
+//   return () => window.removeEventListener('keydown', handleKeyDown);
+// }, []);
+
   return (
     <>
       {lastSegment === "download-resume" && (
@@ -706,8 +825,9 @@ ${filteredSkills.length > 0 ? `
           </button>
         </div>
       )}
+    
       <div
-        className="bg-white border border-gray-100 font-nunito mx-auto"
+        className={`bg-white border border-gray-100 font-nunito mx-auto ${isBlurred && 'blur-3xl'}`}
         style={{
           width: "210mm",
           padding: "5mm",
@@ -1162,6 +1282,7 @@ ${filteredSkills.length > 0 ? `
           </div>
         </div>
       </div>
+
     </>
   );
 };

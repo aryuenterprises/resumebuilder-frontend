@@ -217,9 +217,7 @@ const ResumePreviewModal = ({
                       onClick={() => {
                         if (onUse) {
                           onUse();
-                        } else if (template.id) {
-                          console.log("Use template:", template.id);
-                        }
+                        } 
                       }}
                       className="relative px-6 lg:px-8 py-2.5 lg:py-3 rounded-xl font-semibold text-white overflow-hidden group shadow-xl hover:shadow-2xl transition-all duration-300 cursor-pointer"
                     >

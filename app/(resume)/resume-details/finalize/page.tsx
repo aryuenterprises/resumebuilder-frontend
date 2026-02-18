@@ -2063,22 +2063,9 @@ const FinalizeForm = () => {
     educationDescription: textEditorTextsFormat(item?.text || ""),
   }));
 
-    const chosenResumeDetails = getLocalStorage<Template>("chosenTemplate");
-  
-
-  // Initialize skillsData
-  const initialSkillData: FinalizeType = {
-    languages: [],
-    certificationsAndLicenses: [],
-    hobbiesAndInterests: [],
-    awardsAndHonors: [],
-    websitesAndSocialMedia: [],
-    references: [],
-    customSection: [],
-  };
+  const chosenResumeDetails = getLocalStorage<Template>("chosenTemplate");
 
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
-  // const [skillsData, setSkillsData] = useState<FinalizeType>(initialSkillData);
 
   // Save to localStorage whenever skillsData changes
   useEffect(() => {
@@ -2095,6 +2082,8 @@ const FinalizeForm = () => {
   }, [finalize]);
 
   const saveToAPI = async (finalizeData: typeof finalize) => {
+
+
     if (!contact?.contactId) {
       console.error("Contact ID is required");
       return false;
@@ -2174,9 +2163,8 @@ const FinalizeForm = () => {
       const response = await axios.get(
         `${API_URL}/api/finalize-resume/get-finalize-resume/${contact.contactId}`,
       );
-
       const experienceList = response.data?.resume?.[0]?.skillsData || {};
-
+     
       const formattedData: FinalizeType = {
         languages: experienceList.languages || [],
         certificationsAndLicenses:
@@ -2196,7 +2184,8 @@ const FinalizeForm = () => {
     }
   };
 
-  useEffect(() => {
+
+    useEffect(() => {
     if (contact?.contactId) {
       fetchSkill();
     }
@@ -2412,6 +2401,9 @@ const FinalizeForm = () => {
 
     return () => clearInterval(timer);
   }, [score, showPopup]);
+
+
+
 
   return (
     <section className="relative h-screen overflow-hidden">

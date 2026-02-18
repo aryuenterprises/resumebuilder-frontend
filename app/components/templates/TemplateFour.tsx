@@ -28,7 +28,6 @@ interface ResumeProps {
 }
 
 const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
-  console.log("alldetailscxc", alldata);
 
   const context = useContext(CreateContext);
   const pathname = usePathname();
