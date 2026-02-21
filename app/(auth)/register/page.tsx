@@ -154,33 +154,6 @@ export default function RegisterForm() {
     const password = passwordGenerator();
 
     handleChange("password", password);
-
-    // const lowercase = "abcdefghijklmnopqrstuvwxyz";
-    // const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    // const numbers = "0123456789";
-    // const special = "!@#$%^&*";
-    // const allChars = lowercase + uppercase + numbers + special;
-
-    // let password = "";
-
-    // // Ensure at least one of each character type
-    // password += lowercase[Math.floor(Math.random() * lowercase.length)];
-    // password += uppercase[Math.floor(Math.random() * uppercase.length)];
-    // password += numbers[Math.floor(Math.random() * numbers.length)];
-    // password += special[Math.floor(Math.random() * special.length)];
-
-    // // Fill remaining characters randomly
-    // for (let i = 4; i < 12; i++) {
-    //   password += allChars[Math.floor(Math.random() * allChars.length)];
-    // }
-
-    // // Shuffle the password
-    // password = password
-    //   .split("")
-    //   .sort(() => Math.random() - 0.5)
-    //   .join("");
-
-    // handleChange("password", password);
   };
 
   const validateForm = (): boolean => {
@@ -271,7 +244,7 @@ export default function RegisterForm() {
       setErrors({});
 
       // Redirect to login page
-      router.push("/login");
+      // router.push("/login");
     } catch (err: any) {
       console.error("Registration Error:", err);
 
@@ -447,7 +420,9 @@ export default function RegisterForm() {
                         id="phone"
                         type="tel"
                         value={values.phone}
-                        onChange={(e) => handleChange("phone", sanitizeNumber(e.target.value))}
+                        onChange={(e) =>
+                          handleChange("phone", sanitizeNumber(e.target.value))
+                        }
                         placeholder="Enter your phone number"
                         className="w-full p-3 sm:p-4 border border-gray-200 text-gray-900 rounded-lg sm:rounded-xl bg-white shadow-sm focus:outline-none focus:border-[#C40116]/50 focus:ring-2 sm:focus:ring-4 focus:ring-[#C40116]/10 transition-all duration-300 group-hover:border-[#C40116]/30 text-sm sm:text-base"
                         aria-invalid={!!errors.phone}

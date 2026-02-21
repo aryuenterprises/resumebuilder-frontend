@@ -1,7 +1,7 @@
 import Image from "next/image";
 import BeforeAfter from "../components/home/BeforeAfter";
 import TrustedBy from "../components/home/TrustedBy";
-import ResumeCarousel from "../components/home/ResumeCarousel";
+// import ResumeCarousel from "../components/home/ResumeCarousel";
 import WhyChooseUs from "../components/home/WhyChooseUs";
 import Testimonial from "../components/sections/Testimonial";
 import Faq from "../components/sections/FAQ";
@@ -15,7 +15,7 @@ export default function Home() {
     <Hero/>
     <BeforeAfter/>
     <TrustedBy/>
-    <ResumeCarousel/>
+    {/* <ResumeCarousel/> */}
     <WhyChooseUs/>
     <Testimonial/>
     <Faq/>

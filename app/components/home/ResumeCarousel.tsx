@@ -65,7 +65,7 @@ function ResumeCarousel() {
 
   // Templates data
   const templates: Template[] = [
-    { id: 4, img: "/images/resume1.svg", name: "Free", temp: "free" },
+    { id: 4, img: "/images/resume1.png", name: "Free", temp: "free" },
     { id: 3, img: "/images/resume1.svg", name: "The Innovator", temp: "free" },
     {
       id: 5,

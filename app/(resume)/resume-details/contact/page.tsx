@@ -731,8 +731,7 @@ const ContactForm = () => {
             </div>
 
             {/* Job Title */}
-            <div className={`grid gap-6 mb-6               `}>
-              <div className="mb-6">
+            <div className="group">
                 <label
                   htmlFor="jobTitle"
                   className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
@@ -758,7 +757,6 @@ const ContactForm = () => {
                     className="w-full pl-10 pr-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
                   />
                 </div>
-              </div>
             </div>
 
             {/* Toggle Button - More Compact */}
@@ -865,7 +863,10 @@ const ContactForm = () => {
                           id="Address"
                           value={contact.address}
                           onChange={(e) =>
-                            handleContactChange("address", sanitizeTextWithCommaHyphen(e.target.value))
+                            handleContactChange(
+                              "address",
+                              sanitizeTextWithCommaHyphen(e.target.value),
+                            )
                           }
                           placeholder="123 Main Street, Apt 4B"
                           className="w-full pl-10 pr-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
@@ -903,13 +904,16 @@ const ContactForm = () => {
                           </svg>
                         </div>
                         <input
-                          type='tel'
+                          type="tel"
                           inputMode="numeric"
                           pattern="[0-9]*"
                           id="Post"
                           value={contact.postcode}
                           onChange={(e) =>
-                            handleContactChange("postcode", sanitizeNumber(e.target.value))
+                            handleContactChange(
+                              "postcode",
+                              sanitizeNumber(e.target.value),
+                            )
                           }
                           placeholder="10001"
                           className="w-full pl-10 pr-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
@@ -936,7 +940,10 @@ const ContactForm = () => {
                           id="Country"
                           value={contact.country}
                           onChange={(e) =>
-                            handleContactChange("country",  sanitizeTextWithComma( e.target.value))
+                            handleContactChange(
+                              "country",
+                              sanitizeTextWithComma(e.target.value),
+                            )
                           }
                           placeholder="United States"
                           className="w-full pl-10 pr-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
@@ -960,7 +967,10 @@ const ContactForm = () => {
                           id="City"
                           value={contact.city}
                           onChange={(e) =>
-                            handleContactChange("city", sanitizeTextWithComma(e.target.value))
+                            handleContactChange(
+                              "city",
+                              sanitizeTextWithComma(e.target.value),
+                            )
                           }
                           placeholder="New York"
                           className="w-full pl-10 pr-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"

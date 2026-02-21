@@ -13,7 +13,7 @@ export const templateData: Template[] = [
   {
     id: 1,
     style: "Free",
-    image: "/images/resume1.svg",
+    image: "/images/resume1.png",
     description:
       "A sleek, contemporary design with bold headings and clean lines.",
     temp: "free",

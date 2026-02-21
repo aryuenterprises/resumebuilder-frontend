@@ -1,5 +1,3 @@
-
-
 // "use client";
 
 // import React, { useState } from "react";
@@ -42,7 +40,6 @@
 // export default function ChoosePlanPage() {
 //   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
 //   const [hoveredPlan, setHoveredPlan] = useState<string | null>(null);
-
 
 //   const plans: Plan[] = [
 //     {
@@ -472,20 +469,12 @@
 //   );
 // }
 
-
 "use client";
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  FiStar,
-  FiHeart,
-  FiX,
-} from "react-icons/fi";
-import {
-  IoSparkles,
-  IoCheckmarkCircle,
-} from "react-icons/io5";
+import { FiStar, FiHeart, FiX } from "react-icons/fi";
+import { IoSparkles, IoCheckmarkCircle } from "react-icons/io5";
 import { FaCrown, FaGem } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 
@@ -680,7 +669,6 @@ export default function ChoosePlanPage() {
                 className={`
                   relative group cursor-pointer rounded-xl sm:rounded-2xl transition-all duration-500
                   ${plan.popular ? "lg:-mt-4 lg:mb-4" : ""}
-                  ${isSelected ? "ring-2 ring-[#C40116] ring-offset-2" : ""}
                 `}
                 onClick={() => handleSelectPlan(plan.id)}
               >
@@ -722,7 +710,9 @@ export default function ChoosePlanPage() {
                         )}
                       </div>
 
-                      <h3 className="text-xl sm:text-2xl font-bold mb-1">{plan.name}</h3>
+                      <h3 className="text-xl sm:text-2xl font-bold mb-1">
+                        {plan.name}
+                      </h3>
                       <p className="text-white/80 text-xs sm:text-sm mb-3 sm:mb-4">
                         {plan.description}
                       </p>
@@ -939,8 +929,6 @@ export default function ChoosePlanPage() {
             </span>
           </div>
         </div>
-
-      
       </div>
     </div>
   );
