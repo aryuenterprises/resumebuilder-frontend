@@ -258,7 +258,7 @@ const ContactForm = () => {
   const handleContactChange = (field: keyof typeof contact, value: string) => {
     setContact((prev) => {
       const updated = { ...prev, [field]: value };
-      debouncedSave(updated);
+      // debouncedSave(updated);
       return updated;
     });
   };
@@ -732,31 +732,31 @@ const ContactForm = () => {
 
             {/* Job Title */}
             <div className="group">
-                <label
-                  htmlFor="jobTitle"
-                  className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
-                >
-                  Desired job title
-                </label>
+              <label
+                htmlFor="jobTitle"
+                className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
+              >
+                Desired job title
+              </label>
 
-                <div className="relative">
-                  <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                    <GrUserWorker className="w-4 h-4" />
-                  </div>
-                  <input
-                    type="text"
-                    id="jobTitle"
-                    value={contact.jobTitle}
-                    onChange={(e) =>
-                      handleContactChange(
-                        "jobTitle",
-                        sanitizeText(e.target.value),
-                      )
-                    }
-                    placeholder="Software Engineer"
-                    className="w-full pl-10 pr-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
-                  />
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                  <GrUserWorker className="w-4 h-4" />
                 </div>
+                <input
+                  type="text"
+                  id="jobTitle"
+                  value={contact.jobTitle}
+                  onChange={(e) =>
+                    handleContactChange(
+                      "jobTitle",
+                      sanitizeText(e.target.value),
+                    )
+                  }
+                  placeholder="Software Engineer"
+                  className="w-full pl-10 pr-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
+                />
+              </div>
             </div>
 
             {/* Toggle Button - More Compact */}

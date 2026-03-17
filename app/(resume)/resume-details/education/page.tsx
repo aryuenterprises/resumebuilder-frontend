@@ -66,18 +66,18 @@ const Education_form = () => {
     const initialLoadDone = useRef(false);
 
     // Save to localStorage whenever education changes
-    // useEffect(() => {
-    //   if (!initialLoadDone.current) return;
+    useEffect(() => {
+      if (!initialLoadDone.current) return;
 
-    //   if (fullResumeData) {
-    //     const updatedFullData = {
-    //       ...fullResumeData,
-    //       education: education,
-    //     };
-    //     setFullResumeData(updatedFullData);
-    //     setLocalStorage("fullResumeData", updatedFullData);
-    //   }
-    // }, [education]);
+      if (fullResumeData) {
+        const updatedFullData = {
+          ...fullResumeData,
+          education: education,
+        };
+        setFullResumeData(updatedFullData);
+        setLocalStorage("fullResumeData", updatedFullData);
+      }
+    }, [education]);
 
     const addEducation = () => {
       setEducation((prev) => {

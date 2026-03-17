@@ -82,17 +82,24 @@ const Header: React.FC = () => {
 
            <button
             className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito font-semibold text-[#c40116]  hover:bg-[#c40116]/10 transition text-sm lg:text-base cursor-pointer"
-            onClick={() => router.push("/contact-us")}
+            onClick={() => router.push("/ats-checker")}
           >
-            Contact Us
+            ATS Checker
           </button>
 
-            <button
+          <button
+            className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito font-semibold text-[#c40116]  hover:bg-[#c40116]/10 transition text-sm lg:text-base cursor-pointer"
+            onClick={() => router.push("/cover-letter")}
+          >
+            Cover Letter
+          </button>
+
+            {/* <button
             className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito font-semibold text-[#c40116]  hover:bg-[#c40116]/10 transition text-sm lg:text-base cursor-pointer"
             onClick={() => router.push("/about-us")}
           >
             About Us
-          </button>
+          </button> */}
 
              <button
             className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito font-semibold text-[#c40116]  hover:bg-[#c40116]/10 transition text-sm lg:text-base cursor-pointer"
@@ -100,6 +107,13 @@ const Header: React.FC = () => {
           >
             Plans
           </button>
+
+           {/* <button
+            className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito font-semibold text-[#c40116]  hover:bg-[#c40116]/10 transition text-sm lg:text-base cursor-pointer"
+            onClick={() => router.push("/contact-us")}
+          >
+            Contact Us
+          </button> */}
 
           
 

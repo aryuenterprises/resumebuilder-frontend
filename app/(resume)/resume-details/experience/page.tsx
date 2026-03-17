@@ -59,21 +59,20 @@ const ExperienceForm = () => {
   const initialLoadDone = useRef(false);
 
   // Save to localStorage whenever experiences change
-  // useEffect(() => {
-  //   if (!initialLoadDone.current) return;
+  useEffect(() => {
+    if (!initialLoadDone.current) return;
 
-  //   if (fullResumeData) {
-  //     const updatedFullData = {
-  //       ...fullResumeData,
-  //       experiences: experiences,
-  //     };
-  //     setFullResumeData(updatedFullData);
-  //     setLocalStorage("fullResumeData", updatedFullData);
-  //   }
-  // }, [experiences]);
+    if (fullResumeData) {
+      const updatedFullData = {
+        ...fullResumeData,
+        experiences: experiences,
+      };
+      setFullResumeData(updatedFullData);
+      setLocalStorage("fullResumeData", updatedFullData);
+    }
+  }, [experiences]);
 
   
-
   const addExperience = () => {
     setExperiences([
       ...experiences,
@@ -178,7 +177,7 @@ const ExperienceForm = () => {
         clearTimeout(saveTimeoutRef.current);
       }
       saveTimeoutRef.current = setTimeout(() => {
-        saveToAPI(experiencesData);
+        // saveToAPI(experiencesData);
       }, 1000);
     },
     [Contactid, lastSavedData],
@@ -223,8 +222,6 @@ const ExperienceForm = () => {
   };
 
 
-  console.log("experiences",      experiences[0].text)
-
   const deleteExperience = (id: string | number) => {
     setExperiences((prev) => {
       const updated = prev.filter((exp) => exp.id !== id);
@@ -233,7 +230,6 @@ const ExperienceForm = () => {
     });
   };
 
-  
 
   // Cleanup timeout on unmount
   useEffect(() => {
