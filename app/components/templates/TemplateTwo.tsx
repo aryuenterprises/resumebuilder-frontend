@@ -923,8 +923,8 @@ const [isBlurred, setIsBlurred] = useState(false);
                   Skills
                 </p>
                 <div className="grid grid-cols-2 gap-x-8 gap-y-3">
-                  {filteredSkills.map((skill) => (
-                    <div key={skill.id}>
+                  {filteredSkills.map((skill,index) => (
+                    <div key={index}>
                       <p className="text-sm text-gray-800 mb-1">
                         {skill.skill || ""}
                       </p>

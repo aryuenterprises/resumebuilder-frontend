@@ -37,10 +37,7 @@ border:0
   /* box-shadow: 0 0 0 2px #93c5fd !important; */
 }
 
-/* input::placeholder {
-  text-transform: capitalize !important;
-  color: #a8bdca !important;
-} */
+
 
 
 
@@ -77,11 +74,33 @@ border:0
   animation: fadeIn 0.25s ease-out forwards;
 }
 
+
+
+
+/* ////////   ORDERED LIST UNORDERED LIST     //////// */
+
+
+
+
+
+
+
+
+
+/* ////////  RED SELECTION   /////// */
 ::selection {
   background-color: rgba(190, 1, 23, 0.9);
   color: #ffffff;
 }
 
+
+
+
+
+
+
+
+/* //////////   SCROLL BAR     /////////// */
 .no-scollbar::-webkit-scrollbar{
     width: 0;
     height: 0;

@@ -26,7 +26,7 @@ interface Resume4Props {
   alldata?: AllData;
 }
 
-const TemplateOne: React.FC= () => {
+const TemplateOne: React.FC = () => {
   const context = useContext(CreateContext);
   const pathname = usePathname();
   const lastSegment = pathname.split("/").pop();
@@ -202,7 +202,7 @@ const TemplateOne: React.FC= () => {
 
   .experience-description,
   .education-description {
-    border-left: 2px solid #f0f0f0;
+    // border-left: 2px solid #f0f0f0;
     margin-top: 5px;
   }
 
@@ -745,7 +745,7 @@ const TemplateOne: React.FC= () => {
     }
   };
 
-    const stripHtml = (html: string) => {
+  const stripHtml = (html: string) => {
     return html?.replace(/<\/?[^>]+(>|$)/g, "") || "";
   };
 
@@ -877,12 +877,11 @@ const TemplateOne: React.FC= () => {
                     )}
                   </div>
                 </div>
-                {exp?.text && (
+
+                {exp.text && (
                   <div
-                    className="item-content experience-description"
-                    dangerouslySetInnerHTML={{
-                      __html: exp?.text.replace(/\n/g, "<br>"),
-                    }}
+                    className="item-content experience-description wrap-break-word [&_ol]:list-decimal [&_ul]:list-disc [&_li]:ml-4"
+                    dangerouslySetInnerHTML={{ __html: exp.text }}
                   />
                 )}
               </div>
@@ -924,7 +923,7 @@ const TemplateOne: React.FC= () => {
                       className="item-content education-description"
                       style={{ whiteSpace: "pre-wrap" }}
                     >
-                      { stripHtml(edu.text)}
+                      {stripHtml(edu.text)}
                     </div>
                   );
                 }
