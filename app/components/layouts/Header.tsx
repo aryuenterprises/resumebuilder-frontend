@@ -25,15 +25,22 @@ const Header: React.FC = () => {
 
   // Handle scroll show/hide
   useEffect(() => {
-    const handleScroll = (): void => {
-      const currentScrollY = window.scrollY;
-      setShowHeader(currentScrollY < lastScrollY);
-      setLastScrollY(currentScrollY);
-    };
+  const handleScroll = (): void => {
+    const currentScrollY = window.scrollY;
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
+    // Only trigger after 100px scroll
+    if (currentScrollY > 100) {
+      setShowHeader(currentScrollY < lastScrollY); // scroll up → show
+    } else {
+      setShowHeader(true); // always show at top
+    }
+
+    setLastScrollY(currentScrollY);
+  };
+
+  window.addEventListener("scroll", handleScroll);
+  return () => window.removeEventListener("scroll", handleScroll);
+}, [lastScrollY]);
 
   // Lock body scroll on mobile menu
   useEffect(() => {
