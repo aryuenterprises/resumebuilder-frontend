@@ -97,7 +97,7 @@ const ExperienceForm = () => {
     }
   }, [Contactid]);
 
-  const fetchExp = async () => {
+  const fetchExp = async () => {  
     try {
       const response = await axios.get(
         `${API_URL}/api/experience/get-experience/${Contactid}`,
@@ -177,7 +177,7 @@ const ExperienceForm = () => {
         clearTimeout(saveTimeoutRef.current);
       }
       saveTimeoutRef.current = setTimeout(() => {
-        // saveToAPI(experiencesData);
+        saveToAPI(experiencesData);
       }, 1000);
     },
     [Contactid, lastSavedData],

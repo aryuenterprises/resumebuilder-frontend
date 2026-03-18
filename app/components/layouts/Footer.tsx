@@ -1,12 +1,4 @@
 "use client";
-
-import React from "react";
-import {
-  FaCcMastercard,
-  FaCcVisa,
-  FaCcAmex,
-  FaCcDiscover,
-} from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
@@ -34,12 +26,7 @@ const Footer = () => {
               AI-powered tools. Get noticed. Get hired faster.
             </p>
 
-            <div className="flex gap-3 sm:gap-4 text-xl sm:text-2xl text-gray-400">
-              <FaCcMastercard className="hover:text-[#c40116] transition-colors duration-200 cursor-pointer" />
-              <FaCcVisa className="hover:text-[#c40116] transition-colors duration-200 cursor-pointer" />
-              <FaCcAmex className="hover:text-[#c40116] transition-colors duration-200 cursor-pointer" />
-              <FaCcDiscover className="hover:text-[#c40116] transition-colors duration-200 cursor-pointer" />
-            </div>
+           
           </div>
 
           {/* Company */}

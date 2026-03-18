@@ -258,7 +258,7 @@ const ContactForm = () => {
   const handleContactChange = (field: keyof typeof contact, value: string) => {
     setContact((prev) => {
       const updated = { ...prev, [field]: value };
-      // debouncedSave(updated);
+      debouncedSave(updated);
       return updated;
     });
   };

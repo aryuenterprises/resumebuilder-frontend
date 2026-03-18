@@ -146,7 +146,7 @@ const Education_form = () => {
           clearTimeout(saveTimeoutRef.current);
         }
         saveTimeoutRef.current = setTimeout(() => {
-          // saveToAPI(educationData);
+          saveToAPI(educationData);
         }, 1000);
       },
       [Contactid, lastSavedData],

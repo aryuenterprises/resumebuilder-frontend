@@ -140,7 +140,7 @@ const SummaryForm = () => {
         clearTimeout(saveTimeoutRef.current);
       }
       saveTimeoutRef.current = setTimeout(() => {
-        // saveToAPI(summaryText);
+        saveToAPI(summaryText); 
       }, 1000);
     },
     [Contactid, lastSavedData],

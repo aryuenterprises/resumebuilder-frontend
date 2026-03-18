@@ -13,6 +13,8 @@
     "axios": "^1.13.4",
     "crypto-js": "^4.2.0",
     "framer-motion": "^12.34.0",
+    "html2pdf": "^0.0.11",
+    "js-html2pdf": "^1.1.4",
     "lodash": "^4.17.23",
     "lucide-react": "^0.563.0",
     "next": "16.1.6",

@@ -223,7 +223,7 @@ const FinalizeForm = () => {
         clearTimeout(saveTimeoutRef.current);
       }
       saveTimeoutRef.current = setTimeout(() => {
-        // saveToAPI(finalizeData);
+        saveToAPI(finalizeData);
       }, 1000);
     },
     [contact?.contactId, lastSavedData],

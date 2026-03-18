@@ -120,7 +120,7 @@ const SkillsForm = () => {
         clearTimeout(saveTimeoutRef.current);
       }
       saveTimeoutRef.current = setTimeout(() => {
-        // saveToAPI(skillsData);
+        saveToAPI(skillsData);
       }, 1000);
     },
     [Contactid, lastSavedData],
