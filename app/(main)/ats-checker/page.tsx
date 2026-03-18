@@ -27,9 +27,7 @@ import { FaBrain, FaRocket, FaBuilding, FaGraduationCap } from "react-icons/fa";
 
 import { HiOutlineSparkles, HiOutlineChevronDown } from "react-icons/hi";
 
-// ============================
-//      Interfaces
-// ============================
+// ─── Interfaces ───────────────────────────────────────────────────────────────
 interface Issue {
   message: string;
   severity: "critical" | "high" | "medium" | "low";
@@ -61,9 +59,7 @@ interface ATSResults {
   issues?: Record<string, Issue[]>;
 }
 
-// ============================
-//      Loading Screen Component
-// ============================
+// ─── Loading Screen Component ───────────────────────────────────────────────────────────────
 const LoadingScreen = () => {
   const [progress, setProgress] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
@@ -173,9 +169,7 @@ const LoadingScreen = () => {
   );
 };
 
-// ============================
-//      Section Analysis Component
-// ============================
+// ─── Section Analysis Component ───────────────────────────────────────────────────────────────
 const SectionAnalysisDisplay = ({
   sectionAnalysis,
 }: {
@@ -464,9 +458,7 @@ const SectionAnalysisDisplay = ({
   );
 };
 
-// ============================
-//      Issues Display Component
-// ============================
+// ─── Issues Display Component ───────────────────────────────────────────────────────────────
 const IssuesDisplay = ({ issues }: { issues: Record<string, Issue[]> }) => {
   const [expandedSeverity, setExpandedSeverity] = useState<string | null>(null);
 
@@ -712,9 +704,7 @@ const IssuesDisplay = ({ issues }: { issues: Record<string, Issue[]> }) => {
   );
 };
 
-// ============================
-//      Main Component
-// ============================
+// ─── Main Component ───────────────────────────────────────────────────────────────
 const ATSCheckerPage = () => {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -734,11 +724,9 @@ const ATSCheckerPage = () => {
     "overview",
   );
 
-  console.log("results",results)
+  console.log("results", results);
 
-  // ============================
-  //        Handle file upload - automatically trigger api when file uploaded
-  // ============================
+  // ─── Handle file upload - automatically trigger api when file uploaded ───────────────────────────────
   useEffect(() => {
     if (file && !uploading && !loading) {
       analyzeResume();
@@ -779,9 +767,8 @@ const ATSCheckerPage = () => {
     setActiveTab("overview");
   };
 
-  // ============================
-  //        after file uploaded, call api to analyze resume and get results
-  // ============================
+  // ───  after file uploaded, call api to analyze resume and get results ───────────────────────────────
+
   const analyzeResume = async () => {
     if (!file) return;
 
@@ -834,16 +821,12 @@ const ATSCheckerPage = () => {
     }
   };
 
-  // ============================
-  //      Animation variants
-  // ============================
+  // ───   Animation variants ──────────────────────────────────────────────────────────────
   const fadeInUp = {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
     transition: { duration: 0.6 },
   };
-
- 
 
   return (
     <>
@@ -903,8 +886,6 @@ const ATSCheckerPage = () => {
               </span>{" "}
               to optimize your resume for the algorithms that matter.
             </motion.p>
-
-          
           </motion.div>
 
           <motion.div
@@ -914,7 +895,6 @@ const ATSCheckerPage = () => {
             transition={{ delay: 0.6 }}
             className=" mx-auto"
           >
-            
             {/* Main Upload Card */}
             {!results && !loading ? (
               <div className="bg-white max-w-3xl mx-auto rounded-3xl shadow-2xl border border-gray-100 overflow-hidden">
@@ -1257,17 +1237,19 @@ const ATSCheckerPage = () => {
                               Missing Keywords to Add
                             </h4>
                             <div className="flex flex-wrap gap-2">
-                              {results?.missingKeywords?.map((keyword, index) => (
-                                <motion.span
-                                  key={index}
-                                  initial={{ opacity: 0, scale: 0.9 }}
-                                  animate={{ opacity: 1, scale: 1 }}
-                                  transition={{ delay: index * 0.05 }}
-                                  className="px-4 py-2 bg-linear-to-r from-yellow-50 to-orange-50 text-yellow-700 rounded-xl text-sm font-medium border border-yellow-200 hover:shadow-md hover:scale-105 transition-all cursor-default"
-                                >
-                                  {keyword}
-                                </motion.span>
-                              ))}
+                              {results?.missingKeywords?.map(
+                                (keyword, index) => (
+                                  <motion.span
+                                    key={index}
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ delay: index * 0.05 }}
+                                    className="px-4 py-2 bg-linear-to-r from-yellow-50 to-orange-50 text-yellow-700 rounded-xl text-sm font-medium border border-yellow-200 hover:shadow-md hover:scale-105 transition-all cursor-default"
+                                  >
+                                    {keyword}
+                                  </motion.span>
+                                ),
+                              )}
                             </div>
                           </div>
 

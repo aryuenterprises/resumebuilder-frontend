@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useState, useRef, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 // import SubscriptionPopup from './SubscriptionPopup';
@@ -12,6 +12,25 @@ import Header from "@/app/components/layouts/Header";
 import Footer from "@/app/components/layouts/Footer";
 import { setLocalStorage } from "@/app/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  Sparkles,
+  FileText,
+  Upload,
+  X,
+  CheckCircle,
+  ArrowRight,
+  Star,
+  Zap,
+  Shield,
+  Download,
+  Eye,
+  Clock,
+  Award,
+  Users,
+  TrendingUp,
+} from "lucide-react";
+import { LuUsers } from "react-icons/lu";
+import { PiReadCvLogo } from "react-icons/pi";
 
 function Choose_template() {
   const router = useRouter();
@@ -21,33 +40,365 @@ function Choose_template() {
   const clickresumedetails = (template: Template) => {
     setChosenTemplate(template);
     router.push(`/resume-details/contact`);
-    // localStorage.setItem("chosenTemplate",JSON.stringify(template))
-
     setLocalStorage("chosenTemplate", template);
   };
 
   const steps = [
-    { id: 1, name: "Choose template" },
-    { id: 2, name: "Enter your details" },
-    { id: 3, name: "Download resume" },
+    { id: 1, name: "Choose template", icon: FileText },
+    { id: 2, name: "Enter your details", icon: Sparkles },
+    { id: 3, name: "Download resume", icon: Download },
   ];
 
   const [previewTemplate, setPreviewTemplate] = useState<Template | null>(null);
   const [showPreview, setShowPreview] = useState(false);
 
-  // this will hide main scrollbar
+  const [showInitialPopup, setShowInitialPopup] = useState(true);
+  const [showUploadPopup, setShowUploadPopup] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
+
+  // ─── this will hide main scrollbar ───────────────────────────────────────────────
   useEffect(() => {
-    if (showPreview) document.body.classList.add("overflow-hidden");
+    if (showPreview || showInitialPopup || showUploadPopup)
+      document.body.classList.add("overflow-hidden");
     else document.body.classList.remove("overflow-hidden");
+
     return () => document.body.classList.remove("overflow-hidden");
-  }, [showPreview]);
+  }, [showPreview, showInitialPopup, showUploadPopup]);
+
+  // Handle file upload with progress simulation
+  const handleFileUpload = async (file: File) => {
+    // Check if it's a PDF or DOCX
+    const validTypes = [
+      "application/pdf",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+    const maxSize = 10 * 1024 * 1024; // 10MB
+
+    if (!validTypes.includes(file.type)) {
+      alert("Please upload a PDF or DOCX file");
+      return;
+    }
+
+    if (file.size > maxSize) {
+      alert("File size must be less than 10MB");
+      return;
+    }
+
+    setIsUploading(true);
+    setUploadedFile(file);
+
+    // Simulate upload progress
+    for (let i = 0; i <= 100; i += 10) {
+      setUploadProgress(i);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+
+    // Here you would typically send to your backend
+    console.log("File uploaded:", file);
+
+    setTimeout(() => {
+      setIsUploading(false);
+      setShowUploadPopup(false);
+      // Show success message or redirect to parsing
+    }, 500);
+  };
+
+  // Handle drag events
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files[0];
+    if (file) handleFileUpload(file);
+  };
+
+  // Handle create new resume
+  const handleCreateNew = () => {
+    setShowInitialPopup(false);
+  };
 
   return (
-    <section className="bg-white ">
+    <div className="min-h-screen bg-linear-to-b from-gray-50 to-white">
       <Header />
+
+      {/* Initial Popup */}
+      <AnimatePresence>
+        {showInitialPopup && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-md"
+            onClick={() => setShowInitialPopup(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.9, y: 20, opacity: 0 }}
+              transition={{ type: "spring", duration: 0.5 }}
+              className="bg-white/90 backdrop-blur-xl rounded-3xl max-w-4xl w-full shadow-2xl overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Header with your red linear */}
+              <div className=" bg-linear-to-r from-[#5E000B] to-[#C40116] pt-4 px-6 pb-6 text-white overflow-hidden">
+                {/* Close button */}
+                <div className="flex justify-end">
+                  <button
+                    onClick={() => setShowInitialPopup(false)}
+                    className=" p-2 text-white/80 hover:text-white  cursor-pointer transition-all"
+                  >
+                    <X className="w-6 h-6  cursor-pointer " />
+                  </button>
+                </div>
+
+                <div className=" text-center">
+                  <h2 className="text-3xl md:text-4xl font-bold mb-2">
+                    Welcome to Aryu SmartCV
+                  </h2>
+                  <p className="text-white/80 text-lg max-w-lg mx-auto">
+                    Your journey to the perfect resume starts here
+                  </p>
+                </div>
+              </div>
+
+              {/* Options Grid */}
+              <div className="p-8">
+                <div className="grid md:grid-cols-2 gap-6">
+                  {/* Create New Option - Red themed */}
+                  <motion.div
+                    initial={{ x: -20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                    className="group relative overflow-hidden rounded-2xl bg-linear-to-br from-red-50 to-rose-50 p-1 hover:shadow-xl transition-all duration-500"
+                  >
+                    <div className="relative bg-white rounded-xl p-6 h-full hover:bg-transparent transition-colors duration-500">
+                      <div className="relative z-10">
+                        <div className="w-14 h-14 bg-linear-to-br from-[#5E000B] to-[#C40116] rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-500">
+                          <Sparkles className="w-6 h-6 text-white" />
+                        </div>
+                        <h3 className="text-xl font-bold text-gray-900 mb-2">
+                          Create New Resume
+                        </h3>
+                        <p className="text-gray-600 mb-4 text-start">
+                          Start fresh with our professionally designed templates
+                          and build your perfect resume from scratch
+                        </p>
+                        <button
+                          onClick={handleCreateNew}
+                          className="flex items-center text-[#C40116] font-medium cursor-pointer"
+                        >
+                          <span>Get started</span>
+                          <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" />
+                        </button>
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  {/* Upload Option - Red themed */}
+                  <motion.div
+                    initial={{ x: 20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: 0.4 }}
+                    className="group relative overflow-hidden rounded-2xl bg-linear-to-br from-rose-50 to-red-50 p-1 hover:shadow-xl transition-all duration-500"
+                  >
+                    <div className="relative bg-white rounded-xl p-6 h-full hover:bg-transparent transition-colors duration-500">
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-br from-rose-200 to-red-200 rounded-full blur-3xl opacity-0 group-hover:opacity-50 transition-opacity duration-500" />
+                      <div className="relative z-10">
+                        <div className="w-14 h-14 bg-linear-to-br from-[#C40116] to-[#5E000B] rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-500">
+                          <Upload className="w-6 h-6 text-white" />
+                        </div>
+                        <h3 className="text-xl font-bold text-gray-900 mb-2">
+                          Upload Existing Resume
+                        </h3>
+                        <p className="text-gray-600 mb-4 text-start">
+                          Upload your current resume and let our AI enhance it
+                          with modern templates and formatting for maximum
+                          impact
+                        </p>
+                        <button
+                          onClick={() => {
+                            setShowInitialPopup(false);
+                            setShowUploadPopup(true);
+                          }}
+                          className="flex items-center text-[#C40116] font-medium cursor-pointer"
+                        >
+                          <span>Upload now</span>
+                          <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" />
+                        </button>
+                      </div>
+                    </div>
+                  </motion.div>
+                </div>
+
+                {/* Trust indicators */}
+                <div className="mt-8 pt-6 border-t border-gray-100">
+                  <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-500">
+                    <div className="flex items-center gap-2">
+                      <LuUsers className="w-4 h-4 text-[#C40116]" />
+                      <span>10k+ users</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <PiReadCvLogo className="w-4 h-4 text-[#C40116]" />
+                      <span>20k+ resumes created</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Star className="w-4 h-4 text-[#C40116]" />
+                      <span>4.9/5 rating</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Upload Popup */}
+      <AnimatePresence>
+        {showUploadPopup && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-md"
+            onClick={() => setShowUploadPopup(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.9, y: 20, opacity: 0 }}
+              transition={{ type: "spring", duration: 0.5 }}
+              className="bg-white backdrop-blur-xl rounded-3xl max-w-lg w-full shadow-2xl border border-white/20 overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-8">
+                <div className="text-center mb-6">
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: 0.2, type: "spring" }}
+                    className="w-20 h-20 bg-linear-to-br from-[#5E000B] to-[#C40116] rounded-2xl flex items-center justify-center mx-auto mb-4"
+                  >
+                    <Upload className="w-10 h-10 text-white" />
+                  </motion.div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                    Upload Your Resume
+                  </h2>
+                  <p className="text-gray-600">
+                    Drag and drop or browse to upload your file
+                  </p>
+                </div>
+
+                {/* Upload area */}
+                <div
+                  className="relative border-2 border-dashed rounded-2xl p-8 transition-all duration-300 border-[#C40116] bg-red-50/40 "
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                >
+                  <input
+                    type="file"
+                    id="file-upload"
+                    className="hidden"
+                    accept=".pdf"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleFileUpload(file);
+                    }}
+                  />
+
+                  {isUploading ? (
+                    <div className="text-center">
+                      <div className="w-16 h-16 mx-auto mb-4 relative">
+                        <div className="absolute inset-0 border-4 border-red-200 rounded-full" />
+                        <div
+                          className="absolute inset-0 border-4 border-[#C40116] rounded-full border-t-transparent animate-spin"
+                          style={{
+                            transform: `rotate(${uploadProgress * 3.6}deg)`,
+                          }}
+                        />
+                      </div>
+                      <p className="text-sm font-medium text-gray-900 mb-2">
+                        Uploading... {uploadProgress}%
+                      </p>
+                      <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <motion.div
+                          className="h-full bg-linear-to-r from-[#5E000B] to-[#C40116]"
+                          initial={{ width: 0 }}
+                          animate={{ width: `${uploadProgress}%` }}
+                        />
+                      </div>
+                    </div>
+                  ) : uploadedFile ? (
+                    <div className="text-center">
+                      <div className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
+                        <CheckCircle className="w-8 h-8 text-green-500" />
+                      </div>
+                      <p className="text-sm font-medium text-gray-900 mb-1">
+                        {uploadedFile.name}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="text-center">
+                      <div className="w-20 h-20 mx-auto mb-4 bg-linear-to-br from-red-100 to-rose-100 rounded-full flex items-center justify-center">
+                        <Upload className="w-8 h-8 text-[#C40116]" />
+                      </div>
+                      <p className="text-sm font-medium text-gray-900 mb-1">
+                        Drop your file here
+                      </p>
+                      <p className="text-xs text-gray-500 mb-4">
+                        Supports: PDF, DOCX (Max 10MB)
+                      </p>
+                      <button
+                        onClick={() =>
+                          document.getElementById("file-upload")?.click()
+                        }
+                        className="px-6 py-2 bg-linear-to-r from-[#5E000B] to-[#C40116] text-white rounded-xl font-medium hover:shadow-lg transition-all hover:scale-105 cursor-pointer"
+                      >
+                        Browse Files
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* Action buttons */}
+                <div className="flex gap-3 mt-6">
+                  <button
+                    onClick={() => setShowUploadPopup(false)}
+                    className="flex-1 py-3 border border-gray-200 rounded-xl text-gray-700 font-medium hover:bg-gray-200 transition-all cursor-pointer bg-gray-100"
+                  >
+                    Cancel
+                  </button>
+                  {uploadedFile && !isUploading && (
+                    <button className="flex-1 py-3 bg-linear-to-r from-[#5E000B] to-[#C40116] text-white rounded-xl font-medium hover:shadow-lg transition-all hover:scale-105 cursor-pointer">
+                      Process Resume
+                    </button>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div>
         {/* Hero Section */}
-        <div className="relative overflow-hidden bg-gradient-to-r from-[#5E000B] to-[#C40116]">
+        <div className="relative overflow-hidden bg-linear-to-r from-[#5E000B] to-[#C40116]">
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -57,7 +408,7 @@ function Choose_template() {
             >
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 sm:mb-6 tracking-tight px-2">
                 Choose Your Perfect
-                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-amber-200 mt-2 sm:mt-0">
+                <span className="block text-transparent bg-clip-text bg-linear-to-r from-yellow-300 to-amber-200 mt-2 sm:mt-0">
                   Resume Template
                 </span>
               </h1>
@@ -67,7 +418,7 @@ function Choose_template() {
               </p>
 
               {/* Stats - Responsive grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mt-8 sm:mt-10 lg:mt-12 max-w-3xl mx-auto px-4">
+              <div className="mb-8 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mt-8 sm:mt-10 lg:mt-12 max-w-3xl mx-auto px-4">
                 <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 sm:p-5">
                   <div className="text-2xl sm:text-3xl font-bold text-white">
                     {templateData.length}+
@@ -97,7 +448,7 @@ function Choose_template() {
           </div>
 
           {/* Curved Bottom - Responsive */}
-          <div className="absolute bottom-0 left-0 right-0 h-6 sm:h-8 lg:h-10">
+          {/* <div className="absolute bottom-0 left-0 right-0 h-6 sm:h-8 lg:h-10">
           <svg
             viewBox="0 0 1440 100"
             fill="none"
@@ -107,10 +458,10 @@ function Choose_template() {
           >
             <path d="M0 100L1440 0V100H0Z" fill="white" fillOpacity="1" />
           </svg>
-        </div>
+        </div> */}
 
           {/* Wave divider */}
-   `       <div className="absolute bottom-0 left-0 right-0">
+          <div className="absolute bottom-0 left-0 right-0">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 1440 120"
@@ -122,8 +473,23 @@ function Choose_template() {
                 d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"
               ></path>
             </svg>
-          </div>`
+          </div>
         </div>
+
+        <div className="text-center">
+  <p className="text-gray-600 text-sm mb-3">Already have a resume?</p>
+  <button
+    onClick={() => {
+      setShowInitialPopup(false);
+      setShowUploadPopup(true);
+    }}
+    className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#5E000B] to-[#C40116] text-white rounded-xl font-semibold text-sm hover:shadow-lg transition-all hover:scale-105 group"
+  >
+    <Upload className="w-4 h-4" />
+    <span>Upload Resume</span>
+    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+  </button>
+</div>
 
         {/* Floating Progress Bar */}
         <div className="mt-4 sm:mt-5 max-lg:hidden z-50 max-w-6xl mx-auto px-3 sm:px-4 md:px-6">
@@ -221,7 +587,7 @@ function Choose_template() {
                             onClick={() => {
                               clickresumedetails(template);
                             }}
-                            className="px-3 sm:px-4 md:px-5 lg:px-7 py-1.5 sm:py-2 md:py-2.5 lg:py-3 rounded-lg sm:rounded-xl bg-gradient-to-r from-[#c40116] to-[#be0117] text-white font-semibold text-xs sm:text-sm md:text-base shadow-lg sm:shadow-xl hover:scale-105 transition-transform flex items-center gap-1 sm:gap-2 cursor-default"
+                            className="px-3 sm:px-4 md:px-5 lg:px-7 py-1.5 sm:py-2 md:py-2.5 lg:py-3 rounded-lg sm:rounded-xl bg-linear-to-r from-[#c40116] to-[#be0117] text-white font-semibold text-xs sm:text-sm md:text-base shadow-lg sm:shadow-xl hover:scale-105 transition-transform flex items-center gap-1 sm:gap-2 cursor-default"
                           >
                             Coming Soon
                           </button>
@@ -230,7 +596,7 @@ function Choose_template() {
                             onClick={() => {
                               clickresumedetails(template);
                             }}
-                            className="px-3 sm:px-4 md:px-5 lg:px-7 py-1.5 sm:py-2 md:py-2.5 lg:py-3 rounded-lg sm:rounded-xl bg-gradient-to-r from-[#c40116] to-[#be0117] text-white font-semibold text-xs sm:text-sm md:text-base shadow-lg sm:shadow-xl hover:scale-105 transition-transform"
+                            className="px-3 sm:px-4 md:px-5 lg:px-7 py-1.5 sm:py-2 md:py-2.5 lg:py-3 rounded-lg sm:rounded-xl bg-linear-to-r from-[#c40116] to-[#be0117] text-white font-semibold text-xs sm:text-sm md:text-base shadow-lg sm:shadow-xl hover:scale-105 transition-transform"
                           >
                             Use This Template
                           </button>
@@ -278,18 +644,18 @@ function Choose_template() {
 
             {/* Subscription Popup */}
             {/* <SubscriptionPopup
-              show={showPopup}
-              onClose={() => {
-                setShowPopup(false);
-                setSelectedTemplate(null);
-              }}
-              template={selectedTemplate}
-            /> */}
+             show={showPopup}
+             onClose={() => {
+               setShowPopup(false);
+               setSelectedTemplate(null);
+             }}
+             template={selectedTemplate}
+           /> */}
           </div>
         </section>
       </div>
       <Footer />
-    </section>
+    </div>
   );
 }
 
