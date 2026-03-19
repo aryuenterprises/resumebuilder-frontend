@@ -5,7 +5,8 @@ import axios from "axios";
 import { CreateContext } from "@/app/context/CreateContext";
 import { IoPersonOutline } from "react-icons/io5";
 import { API_URL } from "@/app/config/api";
-import MonthYearDisplay from "@/app/utils/MonthYearDisplay";
+import {MonthYearDisplay } from "@/app/utils";
+
 import { usePathname } from "next/navigation";
 
 import {

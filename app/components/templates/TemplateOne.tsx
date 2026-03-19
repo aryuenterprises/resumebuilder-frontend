@@ -3,7 +3,8 @@ import React, { useContext, useState } from "react";
 import axios from "axios";
 import { CreateContext } from "@/app/context/CreateContext";
 import { API_URL } from "@/app/config/api";
-import MonthYearDisplay from "@/app/utils/MonthYearDisplay";
+// import MonthYearDisplay from "@/app/utils/MonthYearDisplay";
+import {formatMonthYear,MonthYearDisplay } from "@/app/utils";
 import {
   Contact,
   Education,
@@ -202,7 +203,6 @@ const TemplateOne: React.FC = () => {
 
   .experience-description,
   .education-description {
-    // border-left: 2px solid #f0f0f0;
     margin-top: 5px;
   }
 
@@ -362,11 +362,40 @@ const TemplateOne: React.FC = () => {
   }
 `;
 
-  /* ======================================================
-   GENERATE SINGLE HTML (browser handles pages)
-====================================================== */
-  const generateHTML = () => {
-    return `
+
+
+const generateHTML = () => {
+  // Helper: strip HTML tags (mirrors stripHtml used in React preview)
+  const stripHtmlHelper = (html: string) =>
+    html?.replace(/<\/?[^>]+(>|$)/g, "") || "";
+
+  // Helper: render education text exactly as React preview does
+  const renderEducationText = (text: string) => {
+    if (!text) return "";
+    const lines = text.split("\n").filter((line) => line.trim() !== "");
+    if (lines.some((line) => line.trim().startsWith("-"))) {
+      return `
+        <div class="education-content">
+          <ul class="education-list">
+            ${lines
+              .map((line) => {
+                const trimmed = line.trim();
+                if (trimmed.startsWith("-")) {
+                  return `<li>${trimmed.substring(1).trim()}</li>`;
+                } else if (trimmed) {
+                  return `<li>${trimmed}</li>`;
+                }
+                return "";
+              })
+              .join("")}
+          </ul>
+        </div>`;
+    } else {
+      return `<div class="item-content education-description" style="white-space:pre-wrap">${stripHtmlHelper(text)}</div>`;
+    }
+  };
+
+  return `
     <!DOCTYPE html>
     <html>
     <head>
@@ -374,31 +403,46 @@ const TemplateOne: React.FC = () => {
       <title>Resume - ${contact?.firstName || ""} ${contact?.lastName || ""}</title>
       <style>${styles}</style>
     </head>
-
     <body>
       <div class="resume-container">
 
         <!-- HEADER -->
         <div class="contact-info">
           <h2 class="name">${contact?.firstName || ""} ${contact?.lastName || ""}</h2>
-          <div class="job-title">${contact?.jobTitle || ""}</div>
+          <div class="job-title">
+            ${
+              contact?.jobTitle
+                ? typeof contact.jobTitle === "string"
+                  ? contact.jobTitle
+                  : (contact.jobTitle as any)?.name || ""
+                : ""
+            }
+          </div>
           <div class="address">${addressParts.join(", ")}</div>
           <div class="contact-details">
             ${contact?.email ? `<span>${contact.email}</span>` : ""}
             ${contact?.phone ? `<span>${contact.phone}</span>` : ""}
           </div>
           <div class="links">
-            ${linkedinUrl ? `<a href="${linkedinUrl}" class="link-item">LinkedIn</a>` : ""}
-            ${portfolioUrl ? `<a href="${portfolioUrl}" class="link-item">Portfolio</a>` : ""}
+            ${
+              linkedinUrl
+                ? `<a href="${linkedinUrl.startsWith("http") ? linkedinUrl : `https://${linkedinUrl}`}" class="link-item">LinkedIn</a>`
+                : ""
+            }
+            ${
+              portfolioUrl
+                ? `<a href="${portfolioUrl.startsWith("http") ? portfolioUrl : `https://${portfolioUrl}`}" class="link-item">Portfolio</a>`
+                : ""
+            }
           </div>
         </div>
 
         <!-- SUMMARY -->
         ${
           summary
-            ? `<div class="section-content">
+            ? `<div class="section-content resume-section">
                  <div class="section-title">Summary</div>
-                 <div class="item-content">${summary.replace(/\n/g, "<br>")}</div>
+                 <div class="item-content summary-text">${summary.replace(/\n/g, "<br>")}</div>
                </div>`
             : ""
         }
@@ -406,56 +450,70 @@ const TemplateOne: React.FC = () => {
         <!-- EXPERIENCE -->
         ${
           experiences.length > 0
-            ? `<div class="section-content">
+            ? `<div class="section-content resume-section">
                  <div class="section-title">Experience</div>
                  ${experiences
-                   .map(
-                     (e) => `
+                   .map((exp) => {
+                     const startFormatted = formatMonthYear(exp.startDate, true);
+                     const endFormatted = exp.endDate
+                       ? formatMonthYear(exp.endDate, true)
+                       : "Present";
+                     return `
                        <div class="experience-item" style="margin-bottom:16px">
-                         <div class="item-header">
+                         <div class="item-header experience-header">
                            <div class="item-title-container">
-                             <div class="item-title">${e.jobTitle || ""}</div>
+                             <div class="item-title">${exp.jobTitle || ""}</div>
                              <div class="item-subtitle">
-                               ${e.employer || ""} ${e.location ? `— ${e.location}` : ""}
+                               ${exp.employer || ""}${exp.location ? ` — ${exp.location}` : ""}
                              </div>
                            </div>
-                           <div class="item-date">
-                             ${e.startDate || ""} ${e.endDate ? `- ${e.endDate}` : "- Present"}
+                           <div class="item-date experience-date">
+                             ${startFormatted} - ${endFormatted}
                            </div>
                          </div>
-                         <div class="item-content">${e.text?.replace(/\n/g, "<br>") || ""}</div>
-                       </div>
-                     `,
-                   )
+                         ${
+                           exp.text
+                             ? `<div class="item-content experience-description" style="word-break:break-word">${exp.text}</div>`
+                             : ""
+                         }
+                       </div>`;
+                   })
                    .join("")}
                </div>`
             : ""
         }
 
-        <!-- EDUCATION -->
+        <!-- EDUCATION (single, no duplicate) -->
         ${
           educations.length > 0
-            ? `<div class="section-content">
+            ? `<div class="section-content resume-section">
                  <div class="section-title">Education</div>
                  ${educations
-                   .map(
-                     (e) => `
+                   .map((edu, index) => {
+                     const dateStr =
+                       edu.startDate || edu.endDate
+                         ? `${edu.startDate || ""}${edu.startDate && edu.endDate ? " - " : ""}${edu.endDate || ""}`
+                         : "";
+                     return `
                        <div class="education-item" style="margin-bottom:16px">
-                         <div class="item-header">
+                         <div class="item-header education-header">
                            <div class="item-title-container">
-                             <div class="item-title">${e.schoolname || ""}</div>
-                             <div class="item-subtitle">
-                               ${e.degree || ""} ${e.location ? `— ${e.location}` : ""}
-                             </div>
+                             <div class="item-title">${edu.schoolname || ""}</div>
+                             ${
+                               edu.degree || edu.location
+                                 ? `<div class="item-subtitle">
+                                      ${edu.degree ? `<span>${edu.degree}</span>` : ""}
+                                      ${edu.degree && edu.location ? " — " : ""}
+                                      ${edu.location ? `<span>${edu.location}</span>` : ""}
+                                    </div>`
+                                 : ""
+                             }
                            </div>
-                           <div class="item-date">
-                             ${e.startDate || ""} ${e.endDate ? `- ${e.endDate}` : ""}
-                           </div>
+                           ${dateStr ? `<div class="item-date education-date">${dateStr}</div>` : ""}
                          </div>
-                         <div class="item-content">${e.text?.replace(/\n/g, "<br>") || ""}</div>
-                       </div>
-                     `,
-                   )
+                         ${renderEducationText(edu.text || "")}
+                       </div>`;
+                   })
                    .join("")}
                </div>`
             : ""
@@ -464,19 +522,24 @@ const TemplateOne: React.FC = () => {
         <!-- SKILLS -->
         ${
           skills.length > 0
-            ? `<div class="section-content">
+            ? `<div class="section-content resume-section">
                  <div class="section-title">Skills</div>
                  <div class="skills-grid">
                    ${skills
                      .map(
                        (s) => `
                          <div class="skill-item">
-                           <div class="skill-name">${s.skill || ""}</div>
-                           <div class="skill-bar">
-                             <div class="skill-level" style="width:${(Number(s.level || 0) / 5) * 100}%"></div>
+                           <div class="skill-info">
+                             <div class="skill-name">${s.skill || ""}</div>
+                             ${
+                               s.skill && s.level
+                                 ? `<div class="skill-bar">
+                                      <div class="skill-level" style="width:${(Number(s.level) / 4) * 100}%"></div>
+                                    </div>`
+                                 : ""
+                             }
                            </div>
-                         </div>
-                       `,
+                         </div>`
                      )
                      .join("")}
                  </div>
@@ -489,10 +552,8 @@ const TemplateOne: React.FC = () => {
           finalize &&
           !Array.isArray(finalize) &&
           Array.isArray(finalize.languages) &&
-          finalize.languages.some(
-            (lang) => lang.name && lang.name.trim() !== "",
-          )
-            ? `<div class="section-content">
+          finalize.languages.some((lang) => lang.name && lang.name.trim() !== "")
+            ? `<div class="section-content resume-section">
                  <div class="section-title">Languages</div>
                  <div class="skills-grid languages-grid">
                    ${finalize.languages
@@ -503,15 +564,12 @@ const TemplateOne: React.FC = () => {
                            <div class="skill-name">${lang.name}</div>
                            ${
                              lang.level
-                               ? `
-                             <div class="skill-bar">
-                               <div class="skill-level" style="width:${(Number(lang.level) / 5) * 100}%"></div>
-                             </div>
-                           `
+                               ? `<div class="skill-bar">
+                                    <div class="skill-level" style="width:${(Number(lang.level) / 4) * 100}%"></div>
+                                  </div>`
                                : ""
                            }
-                         </div>
-                       `,
+                         </div>`
                      )
                      .join("")}
                  </div>
@@ -519,125 +577,83 @@ const TemplateOne: React.FC = () => {
             : ""
         }
 
-        <!-- CERTIFICATIONS AND LICENSES -->
+        <!-- CERTIFICATIONS -->
         ${
-          finalize &&
-          !Array.isArray(finalize) &&
+          finalize && !Array.isArray(finalize) &&
           Array.isArray(finalize.certificationsAndLicenses) &&
           finalize.certificationsAndLicenses.some(
-            (item) =>
-              item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "",
+            (item) => item.name && item.name.replace(/<[^>]*>/g, "").trim() !== ""
           )
-            ? `<div class="section-content">
+            ? `<div class="section-content resume-section">
                  <div class="section-title">Certifications and Licenses</div>
                  <div class="item-content additional-content">
                    ${finalize.certificationsAndLicenses
-                     .filter(
-                       (item) =>
-                         item.name &&
-                         item.name.replace(/<[^>]*>/g, "").trim() !== "",
-                     )
-                     .map(
-                       (item) => `
-                         <div class="additional-item">
-                           ${item.name.replace(/<[^>]*>/g, "")}
-                         </div>
-                       `,
-                     )
+                     .filter((item) => item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "")
+                     .map((item) => `<div class="additional-item">${item.name}</div>`)
                      .join("")}
                  </div>
                </div>`
             : ""
         }
 
-        <!-- HOBBIES AND INTERESTS -->
+        <!-- HOBBIES -->
         ${
-          finalize &&
-          !Array.isArray(finalize) &&
+          finalize && !Array.isArray(finalize) &&
           Array.isArray(finalize.hobbiesAndInterests) &&
           finalize.hobbiesAndInterests.some(
-            (item) =>
-              item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "",
+            (item) => item.name && item.name.replace(/<[^>]*>/g, "").trim() !== ""
           )
-            ? `<div class="section-content">
+            ? `<div class="section-content resume-section">
                  <div class="section-title">Hobbies and Interests</div>
                  <div class="item-content additional-content">
                    ${finalize.hobbiesAndInterests
-                     .filter(
-                       (item) =>
-                         item.name &&
-                         item.name.replace(/<[^>]*>/g, "").trim() !== "",
-                     )
-                     .map(
-                       (item) => `
-                         <div class="additional-item">
-                           ${item.name.replace(/<[^>]*>/g, "")}
-                         </div>
-                       `,
-                     )
+                     .filter((item) => item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "")
+                     .map((item) => `<div class="additional-item">${item.name}</div>`)
                      .join("")}
                  </div>
                </div>`
             : ""
         }
 
-        <!-- AWARDS AND HONORS -->
+        <!-- AWARDS -->
         ${
-          finalize &&
-          !Array.isArray(finalize) &&
+          finalize && !Array.isArray(finalize) &&
           Array.isArray(finalize.awardsAndHonors) &&
           finalize.awardsAndHonors.some(
-            (item) =>
-              item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "",
+            (item) => item.name && item.name.replace(/<[^>]*>/g, "").trim() !== ""
           )
-            ? `<div class="section-content">
+            ? `<div class="section-content resume-section">
                  <div class="section-title">Awards and Honors</div>
                  <div class="item-content additional-content">
                    ${finalize.awardsAndHonors
-                     .filter(
-                       (item) =>
-                         item.name &&
-                         item.name.replace(/<[^>]*>/g, "").trim() !== "",
-                     )
-                     .map(
-                       (item) => `
-                         <div class="additional-item">
-                           ${item.name.replace(/<[^>]*>/g, "")}
-                         </div>
-                       `,
-                     )
+                     .filter((item) => item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "")
+                     .map((item) => `<div class="additional-item">${item.name}</div>`)
                      .join("")}
                  </div>
                </div>`
             : ""
         }
 
-        <!-- WEBSITES AND SOCIAL MEDIA -->
+        <!-- WEBSITES -->
         ${
-          finalize &&
-          !Array.isArray(finalize) &&
+          finalize && !Array.isArray(finalize) &&
           Array.isArray(finalize.websitesAndSocialMedia) &&
           finalize.websitesAndSocialMedia.some(
             (item) =>
               (item.websiteUrl && item.websiteUrl.trim() !== "") ||
-              (item.socialMedia && item.socialMedia.trim() !== ""),
+              (item.socialMedia && item.socialMedia.trim() !== "")
           )
-            ? `<div class="section-content">
+            ? `<div class="section-content resume-section">
                  <div class="section-title">Websites and Social Media</div>
                  <div class="item-content additional-content">
                    ${finalize.websitesAndSocialMedia
-                     .filter(
-                       (item) =>
-                         (item.websiteUrl && item.websiteUrl.trim() !== "") ||
-                         (item.socialMedia && item.socialMedia.trim() !== ""),
-                     )
+                     .filter((item) => item.websiteUrl || item.socialMedia)
                      .map(
                        (item) => `
                          <div class="additional-item">
                            ${item.websiteUrl ? `<div>Website: ${item.websiteUrl}</div>` : ""}
                            ${item.socialMedia ? `<div>Social Media: ${item.socialMedia}</div>` : ""}
-                         </div>
-                       `,
+                         </div>`
                      )
                      .join("")}
                  </div>
@@ -647,29 +663,17 @@ const TemplateOne: React.FC = () => {
 
         <!-- REFERENCES -->
         ${
-          finalize &&
-          !Array.isArray(finalize) &&
+          finalize && !Array.isArray(finalize) &&
           Array.isArray(finalize.references) &&
           finalize.references.some(
-            (item) =>
-              item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "",
+            (item) => item.name && item.name.replace(/<[^>]*>/g, "").trim() !== ""
           )
-            ? `<div class="section-content">
+            ? `<div class="section-content resume-section">
                  <div class="section-title">References</div>
                  <div class="item-content additional-content">
                    ${finalize.references
-                     .filter(
-                       (item) =>
-                         item.name &&
-                         item.name.replace(/<[^>]*>/g, "").trim() !== "",
-                     )
-                     .map(
-                       (item) => `
-                         <div class="additional-item">
-                           ${item.name.replace(/<[^>]*>/g, "")}
-                         </div>
-                       `,
-                     )
+                     .filter((item) => item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "")
+                     .map((item) => `<div class="additional-item">${item.name}</div>`)
                      .join("")}
                  </div>
                </div>`
@@ -678,33 +682,20 @@ const TemplateOne: React.FC = () => {
 
         <!-- CUSTOM SECTIONS -->
         ${
-          finalize &&
-          !Array.isArray(finalize) &&
+          finalize && !Array.isArray(finalize) &&
           Array.isArray(finalize.customSection) &&
           finalize.customSection.some(
-            (section) => section?.name?.trim() || section?.description?.trim(),
+            (section) => section?.name?.trim() || section?.description?.trim()
           )
-            ? `<div class="section-content">
+            ? `<div class="section-content resume-section">
                  ${finalize.customSection
-                   .filter(
-                     (section) =>
-                       section?.name?.trim() || section?.description?.trim(),
-                   )
+                   .filter((section) => section?.name?.trim() || section?.description?.trim())
                    .map(
                      (section) => `
                        <div class="custom-section">
                          ${section.name ? `<div class="section-title custom-section-title">${section.name}</div>` : ""}
-                         ${
-                           section.description
-                             ? `
-                           <div class="item-content custom-section-content">
-                             ${section.description.replace(/<[^>]*>/g, "")}
-                           </div>
-                         `
-                             : ""
-                         }
-                       </div>
-                     `,
+                         ${section.description ? `<div class="item-content custom-section-content">${section.description}</div>` : ""}
+                       </div>`
                    )
                    .join("")}
                </div>`
@@ -715,7 +706,403 @@ const TemplateOne: React.FC = () => {
     </body>
     </html>
   `;
-  };
+};
+
+
+  /* ======================================================
+   GENERATE SINGLE HTML (browser handles pages)
+====================================================== */
+  // const generateHTML = () => {
+  //   return `
+  //   <!DOCTYPE html>
+  //   <html>
+  //   <head>
+  //     <meta charset="UTF-8"/>
+  //     <title>Resume - ${contact?.firstName || ""} ${contact?.lastName || ""}</title>
+  //     <style>${styles}</style>
+  //   </head>
+
+  //   <body>
+  //     <div class="resume-container">
+
+  //       <!-- HEADER -->
+  //       <div class="contact-info">
+  //         <h2 class="name">${contact?.firstName || ""} ${contact?.lastName || ""}</h2>
+  //         <div class="job-title">${contact?.jobTitle || ""}</div>
+  //         <div class="address">${addressParts.join(", ")}</div>
+  //         <div class="contact-details">
+  //           ${contact?.email ? `<span>${contact.email}</span>` : ""}
+  //           ${contact?.phone ? `<span>${contact.phone}</span>` : ""}
+  //         </div>
+  //         <div class="links">
+  //           ${linkedinUrl ? `<a href="${linkedinUrl}" class="link-item">LinkedIn</a>` : ""}
+  //           ${portfolioUrl ? `<a href="${portfolioUrl}" class="link-item">Portfolio</a>` : ""}
+  //         </div>
+  //       </div>
+
+  //       <!-- SUMMARY -->
+  //       ${
+  //         summary
+  //           ? `<div class="section-content">
+  //                <div class="section-title">Summary</div>
+  //                <div class="item-content">${summary.replace(/\n/g, "<br>")}</div>
+  //              </div>`
+  //           : ""
+  //       }
+
+  //       <!-- EXPERIENCE -->
+  //       ${
+  //         experiences.length > 0
+  //           ? `<div class="section-content">
+  //                <div class="section-title">Experience</div>
+  //                ${experiences
+  //                  .map(
+  //                    (e) => {
+  //                      const startDateFormatted = formatMonthYear(e.startDate, true);
+  //                      const endDateFormatted = e.endDate ? formatMonthYear(e.endDate, true) : "Present";
+                       
+  //                      return `
+  //                        <div class="experience-item" style="margin-bottom:16px">
+  //                          <div class="item-header">
+  //                            <div class="item-title-container">
+  //                              <div class="item-title">${e.jobTitle || ""}</div>
+  //                              <div class="item-subtitle">
+  //                                ${e.employer || ""} ${e.location ? `— ${e.location}` : ""}
+  //                              </div>
+  //                            </div>
+  //                            <div class="item-date experience-date">
+  //                              ${startDateFormatted} - ${endDateFormatted}
+  //                            </div>
+  //                          </div>
+  //                          <div class="item-content">${e.text || ""}</div>
+  //                        </div>
+  //                      `;
+  //                    }
+  //                  )
+  //                  .join("")}
+  //              </div>`
+  //           : ""
+  //       }
+
+  //       <!-- EDUCATION -->
+  //       ${
+  //         educations.length > 0
+  //           ? `<div class="section-content">
+  //                <div class="section-title">Education</div>
+  //                ${educations
+  //                  .map(
+  //                    (e) => {
+  //                      const startDateFormatted = formatMonthYear(e.startDate, true);
+  //                      const endDateFormatted = e.endDate ? formatMonthYear(e.endDate, true) : "";
+                       
+  //                      return `
+  //                        <div class="education-item" style="margin-bottom:16px">
+  //                          <div class="item-header">
+  //                            <div class="item-title-container">
+  //                              <div class="item-title">${e.schoolname || ""}</div>
+  //                              <div class="item-subtitle">
+  //                                ${e.degree || ""} ${e.location ? `— ${e.location}` : ""}
+  //                              </div>
+  //                            </div>
+  //                            <div class="item-date education-date">
+  //                              ${startDateFormatted} ${endDateFormatted ? `- ${endDateFormatted}` : ""}
+  //                            </div>
+  //                          </div>
+  //                          <div class="item-content">${e.text?.replace(/\n/g, "<br>") || ""}</div>
+  //                        </div>
+  //                      `;
+  //                    }
+  //                  )
+  //                  .join("")}
+  //              </div>`
+  //           : ""
+  //       }
+
+  //       <!-- EDUCATION -->
+  //       ${
+  //         educations.length > 0
+  //           ? `<div class="section-content">
+  //                <div class="section-title">Education</div>
+  //                ${educations
+  //                  .map(
+  //                    (e) => `
+  //                      <div class="education-item" style="margin-bottom:16px">
+  //                        <div class="item-header">
+  //                          <div class="item-title-container">
+  //                            <div class="item-title">${e.schoolname || ""}</div>
+  //                            <div class="item-subtitle">
+  //                              ${e.degree || ""} ${e.location ? `— ${e.location}` : ""}
+  //                            </div>
+  //                          </div>
+  //                          <div class="item-date">
+  //                            ${e.startDate || ""} ${e.endDate ? `- ${e.endDate}` : ""}
+  //                          </div>
+  //                        </div>
+  //                        <div class="item-content">${e.text?.replace(/\n/g, "<br>") || ""}</div>
+  //                      </div>
+  //                    `,
+  //                  )
+  //                  .join("")}
+  //              </div>`
+  //           : ""
+  //       }
+
+  //       <!-- SKILLS -->
+  //       ${
+  //         skills.length > 0
+  //           ? `<div class="section-content">
+  //                <div class="section-title">Skills</div>
+  //                <div class="skills-grid">
+  //                  ${skills
+  //                    .map(
+  //                      (s) => `
+  //                        <div class="skill-item">
+  //                          <div class="skill-name">${s.skill || ""}</div>
+  //                          <div class="skill-bar">
+  //                            <div class="skill-level" style="width:${(Number(s.level || 0) / 5) * 100}%"></div>
+  //                          </div>
+  //                        </div>
+  //                      `,
+  //                    )
+  //                    .join("")}
+  //                </div>
+  //              </div>`
+  //           : ""
+  //       }
+
+  //       <!-- LANGUAGES -->
+  //       ${
+  //         finalize &&
+  //         !Array.isArray(finalize) &&
+  //         Array.isArray(finalize.languages) &&
+  //         finalize.languages.some(
+  //           (lang) => lang.name && lang.name.trim() !== "",
+  //         )
+  //           ? `<div class="section-content">
+  //                <div class="section-title">Languages</div>
+  //                <div class="skills-grid languages-grid">
+  //                  ${finalize.languages
+  //                    .filter((lang) => lang.name && lang.name.trim() !== "")
+  //                    .map(
+  //                      (lang) => `
+  //                        <div class="skill-item">
+  //                          <div class="skill-name">${lang.name}</div>
+  //                          ${
+  //                            lang.level
+  //                              ? `
+  //                            <div class="skill-bar">
+  //                              <div class="skill-level" style="width:${(Number(lang.level) / 5) * 100}%"></div>
+  //                            </div>
+  //                          `
+  //                              : ""
+  //                          }
+  //                        </div>
+  //                      `,
+  //                    )
+  //                    .join("")}
+  //                </div>
+  //              </div>`
+  //           : ""
+  //       }
+
+  //       <!-- CERTIFICATIONS AND LICENSES -->
+  //       ${
+  //         finalize &&
+  //         !Array.isArray(finalize) &&
+  //         Array.isArray(finalize.certificationsAndLicenses) &&
+  //         finalize.certificationsAndLicenses.some(
+  //           (item) =>
+  //             item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "",
+  //         )
+  //           ? `<div class="section-content">
+  //                <div class="section-title">Certifications and Licenses</div>
+  //                <div class="item-content additional-content">
+  //                  ${finalize.certificationsAndLicenses
+  //                    .filter(
+  //                      (item) =>
+  //                        item.name &&
+  //                        item.name.replace(/<[^>]*>/g, "").trim() !== "",
+  //                    )
+  //                    .map(
+  //                      (item) => `
+  //                        <div class="additional-item">
+  //                          ${item.name.replace(/<[^>]*>/g, "")}
+  //                        </div>
+  //                      `,
+  //                    )
+  //                    .join("")}
+  //                </div>
+  //              </div>`
+  //           : ""
+  //       }
+
+  //       <!-- HOBBIES AND INTERESTS -->
+  //       ${
+  //         finalize &&
+  //         !Array.isArray(finalize) &&
+  //         Array.isArray(finalize.hobbiesAndInterests) &&
+  //         finalize.hobbiesAndInterests.some(
+  //           (item) =>
+  //             item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "",
+  //         )
+  //           ? `<div class="section-content">
+  //                <div class="section-title">Hobbies and Interests</div>
+  //                <div class="item-content additional-content">
+  //                  ${finalize.hobbiesAndInterests
+  //                    .filter(
+  //                      (item) =>
+  //                        item.name &&
+  //                        item.name.replace(/<[^>]*>/g, "").trim() !== "",
+  //                    )
+  //                    .map(
+  //                      (item) => `
+  //                        <div class="additional-item">
+  //                          ${item.name.replace(/<[^>]*>/g, "")}
+  //                        </div>
+  //                      `,
+  //                    )
+  //                    .join("")}
+  //                </div>
+  //              </div>`
+  //           : ""
+  //       }
+
+  //       <!-- AWARDS AND HONORS -->
+  //       ${
+  //         finalize &&
+  //         !Array.isArray(finalize) &&
+  //         Array.isArray(finalize.awardsAndHonors) &&
+  //         finalize.awardsAndHonors.some(
+  //           (item) =>
+  //             item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "",
+  //         )
+  //           ? `<div class="section-content">
+  //                <div class="section-title">Awards and Honors</div>
+  //                <div class="item-content additional-content">
+  //                  ${finalize.awardsAndHonors
+  //                    .filter(
+  //                      (item) =>
+  //                        item.name &&
+  //                        item.name.replace(/<[^>]*>/g, "").trim() !== "",
+  //                    )
+  //                    .map(
+  //                      (item) => `
+  //                        <div class="additional-item">
+  //                          ${item.name.replace(/<[^>]*>/g, "")}
+  //                        </div>
+  //                      `,
+  //                    )
+  //                    .join("")}
+  //                </div>
+  //              </div>`
+  //           : ""
+  //       }
+
+  //       <!-- WEBSITES AND SOCIAL MEDIA -->
+  //       ${
+  //         finalize &&
+  //         !Array.isArray(finalize) &&
+  //         Array.isArray(finalize.websitesAndSocialMedia) &&
+  //         finalize.websitesAndSocialMedia.some(
+  //           (item) =>
+  //             (item.websiteUrl && item.websiteUrl.trim() !== "") ||
+  //             (item.socialMedia && item.socialMedia.trim() !== ""),
+  //         )
+  //           ? `<div class="section-content">
+  //                <div class="section-title">Websites and Social Media</div>
+  //                <div class="item-content additional-content">
+  //                  ${finalize.websitesAndSocialMedia
+  //                    .filter(
+  //                      (item) =>
+  //                        (item.websiteUrl && item.websiteUrl.trim() !== "") ||
+  //                        (item.socialMedia && item.socialMedia.trim() !== ""),
+  //                    )
+  //                    .map(
+  //                      (item) => `
+  //                        <div class="additional-item">
+  //                          ${item.websiteUrl ? `<div>Website: ${item.websiteUrl}</div>` : ""}
+  //                          ${item.socialMedia ? `<div>Social Media: ${item.socialMedia}</div>` : ""}
+  //                        </div>
+  //                      `,
+  //                    )
+  //                    .join("")}
+  //                </div>
+  //              </div>`
+  //           : ""
+  //       }
+
+  //       <!-- REFERENCES -->
+  //       ${
+  //         finalize &&
+  //         !Array.isArray(finalize) &&
+  //         Array.isArray(finalize.references) &&
+  //         finalize.references.some(
+  //           (item) =>
+  //             item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "",
+  //         )
+  //           ? `<div class="section-content">
+  //                <div class="section-title">References</div>
+  //                <div class="item-content additional-content">
+  //                  ${finalize.references
+  //                    .filter(
+  //                      (item) =>
+  //                        item.name &&
+  //                        item.name.replace(/<[^>]*>/g, "").trim() !== "",
+  //                    )
+  //                    .map(
+  //                      (item) => `
+  //                        <div class="additional-item">
+  //                          ${item.name.replace(/<[^>]*>/g, "")}
+  //                        </div>
+  //                      `,
+  //                    )
+  //                    .join("")}
+  //                </div>
+  //              </div>`
+  //           : ""
+  //       }
+
+  //       <!-- CUSTOM SECTIONS -->
+  //       ${
+  //         finalize &&
+  //         !Array.isArray(finalize) &&
+  //         Array.isArray(finalize.customSection) &&
+  //         finalize.customSection.some(
+  //           (section) => section?.name?.trim() || section?.description?.trim(),
+  //         )
+  //           ? `<div class="section-content">
+  //                ${finalize.customSection
+  //                  .filter(
+  //                    (section) =>
+  //                      section?.name?.trim() || section?.description?.trim(),
+  //                  )
+  //                  .map(
+  //                    (section) => `
+  //                      <div class="custom-section">
+  //                        ${section.name ? `<div class="section-title custom-section-title">${section.name}</div>` : ""}
+  //                        ${
+  //                          section.description
+  //                            ? `
+  //                          <div class="item-content custom-section-content">
+  //                            ${section.description.replace(/<[^>]*>/g, "")}
+  //                          </div>
+  //                        `
+  //                            : ""
+  //                        }
+  //                      </div>
+  //                    `,
+  //                  )
+  //                  .join("")}
+  //              </div>`
+  //           : ""
+  //       }
+
+  //     </div>
+  //   </body>
+  //   </html>
+  // `;
+  // };
+
   /* ======================================================
      DOWNLOAD PDF
   ====================================================== */
@@ -749,16 +1136,7 @@ const TemplateOne: React.FC = () => {
     return html?.replace(/<\/?[^>]+(>|$)/g, "") || "";
   };
 
-  const textEditorTextsFormat = (text: string) => {
-    return text
-      .replace(/<\/?[^>]+(>|$)/g, "")
-      .replace(/•/g, "")
-      .replace(/\s+/g, " ")
-      .trim()
-      .split(".")
-      .map((s) => s.trim())
-      .filter(Boolean);
-  };
+  console.log("experiences",experiences[0].text)
 
   return (
     <div style={{ textAlign: "center", marginTop: 0 }}>

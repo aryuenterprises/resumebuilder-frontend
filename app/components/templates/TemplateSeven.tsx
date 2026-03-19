@@ -7,7 +7,8 @@ import { CgPhone } from "react-icons/cg";
 import { CreateContext } from "@/app/context/CreateContext"; // Updated import
 import { IoPersonOutline } from "react-icons/io5";
 import { API_URL } from "@/app/config/api";
-import MonthYearDisplay from "@/app/utils/MonthYearDisplay"
+import {MonthYearDisplay } from "@/app/utils";
+
 
 import {
   Contact,

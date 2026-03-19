@@ -141,7 +141,6 @@ function Choose_template() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-md"
-            onClick={() => setShowInitialPopup(false)}
           >
             <motion.div
               initial={{ scale: 0.9, y: 20, opacity: 0 }}
@@ -149,7 +148,6 @@ function Choose_template() {
               exit={{ scale: 0.9, y: 20, opacity: 0 }}
               transition={{ type: "spring", duration: 0.5 }}
               className="bg-white/90 backdrop-blur-xl rounded-3xl max-w-4xl w-full shadow-2xl overflow-hidden"
-              onClick={(e) => e.stopPropagation()}
             >
               {/* Header with your red linear */}
               <div className=" bg-linear-to-r from-[#5E000B] to-[#C40116] pt-4 px-6 pb-6 text-white overflow-hidden">

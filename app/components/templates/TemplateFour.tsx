@@ -4,7 +4,9 @@ import React, { useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { CreateContext } from "@/app/context/CreateContext";
 import { API_URL } from "@/app/config/api";
-import MonthYearDisplay from "@/app/utils/MonthYearDisplay";
+// import MonthYearDisplay from "@/app/utils/MonthYearDisplay";
+import {MonthYearDisplay } from "@/app/utils";
+
 import {
   Contact,
   Education,

@@ -10,7 +10,8 @@ import dynamic from "next/dynamic";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { AnimatePresence, motion } from "framer-motion";
-import MonthYearDisplay from "../../../utils/MonthYearDisplay";
+import {MonthYearDisplay } from "@/app/utils";
+
 import { IoMdAdd, IoIosArrowDown } from "react-icons/io";
 import {
   FiCheckCircle,
@@ -72,7 +73,6 @@ const ExperienceForm = () => {
     }
   }, [experiences]);
 
-  
   const addExperience = () => {
     setExperiences([
       ...experiences,
@@ -97,7 +97,7 @@ const ExperienceForm = () => {
     }
   }, [Contactid]);
 
-  const fetchExp = async () => {  
+  const fetchExp = async () => {
     try {
       const response = await axios.get(
         `${API_URL}/api/experience/get-experience/${Contactid}`,
@@ -207,11 +207,6 @@ const ExperienceForm = () => {
     field: keyof Experience,
     value: string | number | boolean,
   ) => {
-
-  console.log("id",id)
-  console.log("field",field)
-  console.log("value",value)
-
     setExperiences((prev) => {
       const updated = prev.map((exp) =>
         exp.id === id ? { ...exp, [field]: value } : exp,
@@ -221,7 +216,6 @@ const ExperienceForm = () => {
     });
   };
 
-
   const deleteExperience = (id: string | number) => {
     setExperiences((prev) => {
       const updated = prev.filter((exp) => exp.id !== id);
@@ -229,7 +223,6 @@ const ExperienceForm = () => {
       return updated;
     });
   };
-
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -320,6 +313,7 @@ const ExperienceForm = () => {
         {/* Scrollable Main Content */}
         <div className="flex-1 overflow-y-auto pb-5 mt-3">
           <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-3 sm:gap-4 mb-3">
+            {/* // ─── header ─────────────────────────────────────────────── */}
             <div className="flex items-center gap-2 sm:gap-3">
               <div className="p-1.5 sm:p-2 bg-linear-to-br from-[#c40116]/10 to-[#be0117]/10 rounded-lg">
                 <svg
@@ -341,6 +335,7 @@ const ExperienceForm = () => {
               </h1>
             </div>
 
+            {/* // ─── Experience Tips Button ─────────────────────────────────────────────── */}
             <div className="flex justify-end me-5">
               <button
                 onClick={() => setExperienceTipsButtonClicked((prev) => !prev)}
@@ -372,6 +367,7 @@ const ExperienceForm = () => {
             List your work experience starting with the most recent position
             first.
           </p>
+         
           {/* Experience Toggle */}
           <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
             <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
@@ -410,6 +406,8 @@ const ExperienceForm = () => {
               </div>
             </div>
           </div>
+      
+      
           {isExperienced && (
             <div className="space-y-3 sm:space-y-4 pb-8 sm:pb-10">
               {experiences.map((exp, index) => (
@@ -562,7 +560,6 @@ const ExperienceForm = () => {
                               }
                               className="w-full px-3 sm:px-4 py-2.5 sm:py-3.5 bg-linear-to-b from-white to-gray-50/50 border border-gray-200 rounded-xl text-gray-800 text-xs sm:text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
                             />
-                           
                           </div>
                         </div>
                       </div>
@@ -680,7 +677,6 @@ const ExperienceForm = () => {
                             background: "white",
                           }}
                         />
-     
                       </div>
                     </div>
                   </div>
@@ -882,7 +878,7 @@ const ExperienceForm = () => {
         )}
 
         {/* Fixed Footer - Always visible at bottom */}
-         <div className="shrink-0 pt-4 mt-4 border-t border-gray-200">
+        <div className="shrink-0 pt-4 mt-4 border-t border-gray-200">
           <div className="flex justify-between">
             <button
               className="bg-gray-200 text-[#374151] border border-gray-300 text-sm md:text-base px-4 py-2 md:px-6 md:py-2.5 rounded-lg font-nunito font-semibold hover:bg-gray-100 transition-colors duration-300 cursor-pointer"

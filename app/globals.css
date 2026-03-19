@@ -34,14 +34,7 @@ border:0
 
 .p-dropdown-header {
   border: 1px solid #05a2ff !important; /* Darker blue on focus */
-  /* box-shadow: 0 0 0 2px #93c5fd !important; */
 }
-
-
-
-
-
-
 
 
 @keyframes marquee {
@@ -77,12 +70,30 @@ border:0
 
 
 
-/* ////////   ORDERED LIST UNORDERED LIST     //////// */
+
+/* Handle Quill's data-list attributes */
+/* .experience-description [data-list="bullet"] {
+  list-style-type: disc;
+  display: list-item;
+}
+
+.experience-description [data-list="ordered"] {
+  list-style-type: decimal;
+  display: list-item;
+} */
 
 
+/* .experience-description [data-list="bullet"] [data-list="bullet"],
+.experience-description [data-list="ordered"] [data-list="bullet"] {
+  list-style-type: circle;
+  margin-left: 2.5rem;
+}
 
-
-
+.experience-description [data-list="bullet"] [data-list="ordered"],
+.experience-description [data-list="ordered"] [data-list="ordered"] {
+  list-style-type: lower-alpha;
+  margin-left: 2.5rem;
+} */
 
 
 

@@ -102,7 +102,6 @@ const Education_form = () => {
       });
     };
 
-
     const saveToAPI = async (educationData: typeof education) => {
       if (!Contactid) {
         console.error("Contact ID is required");
@@ -386,7 +385,7 @@ const Education_form = () => {
             </p>
             {education?.map((exp:Education, index:number) => (
               <div
-                key={exp.id}
+                key={index}
                 className="bg-[#f3f4f6]/80 rounded-xl sm:rounded-2xl border border-gray-100 overflow-hidden shadow-subtle transition-all duration-300 hover:shadow-md"
               >
                 {/* Header */}

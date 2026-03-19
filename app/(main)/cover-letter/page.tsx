@@ -3527,6 +3527,34 @@
 
 // // export default CoverLetterGeneratorPage;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // "use client";
 
 // import React, { useState } from "react";
@@ -3537,8 +3565,7 @@
 // } from "lucide-react";
 // import axios from "axios";
 
-// // ─── Types ────────────────────────────────────────────────────────────────────
-// // ColorScheme: "red" | "blue" | "green" | "purple" | "orange" | "black"
+
 
 // const colorSchemes = {
 //   red:    { primary: "#c40116", light: "#fee2e2" },
@@ -4355,6 +4382,10 @@
 //     </div>
 //   );
 // }
+
+
+
+
 
 
 import React from 'react'

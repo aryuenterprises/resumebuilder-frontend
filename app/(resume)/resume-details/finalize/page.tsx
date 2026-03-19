@@ -976,6 +976,7 @@ const FinalizeForm = () => {
                 }
                 saveToAPI(finalize).then(() => {
                   router.push("/download-resume");
+                  // window.open("/download-resume", "_blank");
                 });
               }}
             >
