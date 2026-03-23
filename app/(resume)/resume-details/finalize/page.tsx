@@ -507,7 +507,7 @@ const FinalizeForm = () => {
         )}
 
         {/* Scrollable Main Content */}
-        <div className="flex-1 overflow-y-auto pb-5 mt-3">
+        <div className="flex-1 overflow-y-auto pb-5 mt-5">
           <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
             <div className="p-1.5 sm:p-2 bg-linear-to-br from-[#c40116]/10 to-[#be0117]/10 rounded-lg">
               <svg

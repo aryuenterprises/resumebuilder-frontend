@@ -311,7 +311,7 @@ const ExperienceForm = () => {
         )}
 
         {/* Scrollable Main Content */}
-        <div className="flex-1 overflow-y-auto pb-5 mt-3">
+        <div className="flex-1 overflow-y-auto pb-5 mt-5">
           <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-3 sm:gap-4 mb-3">
             {/* // ─── header ─────────────────────────────────────────────── */}
             <div className="flex items-center gap-2 sm:gap-3">

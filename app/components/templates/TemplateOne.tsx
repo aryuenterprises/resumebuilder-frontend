@@ -1,31 +1,11 @@
+// ─── Section Name ───────────────────────────────────────────────
 "use client";
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import axios from "axios";
 import { CreateContext } from "@/app/context/CreateContext";
 import { API_URL } from "@/app/config/api";
-// import MonthYearDisplay from "@/app/utils/MonthYearDisplay";
-import {formatMonthYear,MonthYearDisplay } from "@/app/utils";
-import {
-  Contact,
-  Education,
-  Experience,
-  Finalize,
-  Skill,
-} from "@/app/types/context.types";
+import { formatMonthYear, MonthYearDisplay } from "@/app/utils";
 import { usePathname } from "next/navigation";
-
-interface AllData {
-  contact?: Contact;
-  educations?: Education[];
-  experiences?: Experience[];
-  skills?: Skill[];
-  finalize?: Finalize;
-  summary?: string;
-}
-
-interface Resume4Props {
-  alldata?: AllData;
-}
 
 const TemplateOne: React.FC = () => {
   const context = useContext(CreateContext);
@@ -206,7 +186,48 @@ const TemplateOne: React.FC = () => {
     margin-top: 5px;
   }
 
-  /* Education List - Improved Alignment */
+  /* List Styles - CRITICAL for bullet points */
+  .experience-description ul,
+  .education-description ul,
+  .experience-list ul,
+  .education-list ul {
+    list-style-type: disc !important;
+    padding-left: 20px !important;
+    margin: 5px 0 !important;
+  }
+
+  .experience-description ol,
+  .education-description ol,
+  .experience-list ol,
+  .education-list ol {
+    list-style-type: decimal !important;
+    padding-left: 20px !important;
+    margin: 5px 0 !important;
+  }
+
+  .experience-description li,
+  .education-description li,
+  .experience-list li,
+  .education-list li {
+    margin-bottom: 4px !important;
+    line-height: 1.5 !important;
+    list-style-position: outside !important;
+  }
+
+  /* Force disc bullets for unordered lists */
+  ul, .ul, [class*="ul"] {
+    list-style-type: disc !important;
+  }
+
+  ul ul, .ul .ul {
+    list-style-type: circle !important;
+  }
+
+  ul ul ul, .ul .ul .ul {
+    list-style-type: square !important;
+  }
+
+  /* Education List */
   .education-content {
     margin-top: 5px;
   }
@@ -362,46 +383,138 @@ const TemplateOne: React.FC = () => {
   }
 `;
 
+  const generateHTML = () => {
+    // Helper: strip HTML tags (mirrors stripHtml used in React preview)
+    const stripHtmlHelper = (html: string) =>
+      html?.replace(/<\/?[^>]+(>|$)/g, "") || "";
 
+    // Helper: render experience text exactly as React preview does
+    const renderExperienceText = (text: string) => {
+      if (!text) return "";
+      
+      // Check if text contains HTML (has tags)
+      if (text.includes('<') && text.includes('>')) {
+        // If it already has list items, ensure they have proper styling
+        if (text.includes('<ul>') || text.includes('<ol>') || text.includes('<li>')) {
+          return `<div class="item-content experience-description" style="list-style-type: disc !important;">${text}</div>`;
+        }
+        return `<div class="item-content experience-description">${text}</div>`;
+      }
+      
+      // Check for bullet points in plain text
+      const lines = text.split("\n").filter((line) => line.trim() !== "");
+      if (lines.some((line) => line.trim().startsWith("-") || line.trim().startsWith("•"))) {
+        return `
+          <div class="item-content experience-description">
+            <ul class="experience-list" style="list-style-type: disc !important; padding-left: 20px; margin: 5px 0;">
+              ${lines
+                .map((line) => {
+                  const trimmed = line.trim();
+                  if (trimmed.startsWith("-") || trimmed.startsWith("•")) {
+                    return `<li style="margin-bottom: 4px; line-height: 1.5; list-style-type: disc !important;">${trimmed.substring(1).trim()}</li>`;
+                  } else if (trimmed) {
+                    return `<li style="margin-bottom: 4px; line-height: 1.5; list-style-type: disc !important;">${trimmed}</li>`;
+                  }
+                  return "";
+                })
+                .join("")}
+            </ul>
+          </div>`;
+      } else {
+        return `<div class="item-content experience-description" style="white-space:pre-wrap">${stripHtmlHelper(text)}</div>`;
+      }
+    };
 
-const generateHTML = () => {
-  // Helper: strip HTML tags (mirrors stripHtml used in React preview)
-  const stripHtmlHelper = (html: string) =>
-    html?.replace(/<\/?[^>]+(>|$)/g, "") || "";
+    // Helper: render education text exactly as React preview does
+    const renderEducationText = (text: string) => {
+      if (!text) return "";
+      
+      // Check if text contains HTML
+      if (text.includes('<') && text.includes('>')) {
+        if (text.includes('<ul>') || text.includes('<ol>') || text.includes('<li>')) {
+          return `<div class="item-content education-description" style="list-style-type: disc !important;">${text}</div>`;
+        }
+        return `<div class="item-content education-description">${text}</div>`;
+      }
+      
+      const lines = text.split("\n").filter((line) => line.trim() !== "");
+      if (lines.some((line) => line.trim().startsWith("-") || line.trim().startsWith("•"))) {
+        return `
+          <div class="education-content">
+            <ul class="education-list" style="list-style-type: disc !important; padding-left: 20px; margin: 5px 0;">
+              ${lines
+                .map((line) => {
+                  const trimmed = line.trim();
+                  if (trimmed.startsWith("-") || trimmed.startsWith("•")) {
+                    return `<li style="margin-bottom: 4px; line-height: 1.5; list-style-type: disc !important;">${trimmed.substring(1).trim()}</li>`;
+                  } else if (trimmed) {
+                    return `<li style="margin-bottom: 4px; line-height: 1.5; list-style-type: disc !important;">${trimmed}</li>`;
+                  }
+                  return "";
+                })
+                .join("")}
+            </ul>
+          </div>`;
+      } else {
+        return `<div class="item-content education-description" style="white-space:pre-wrap">${stripHtmlHelper(text)}</div>`;
+      }
+    };
 
-  // Helper: render education text exactly as React preview does
-  const renderEducationText = (text: string) => {
-    if (!text) return "";
-    const lines = text.split("\n").filter((line) => line.trim() !== "");
-    if (lines.some((line) => line.trim().startsWith("-"))) {
-      return `
-        <div class="education-content">
-          <ul class="education-list">
-            ${lines
-              .map((line) => {
-                const trimmed = line.trim();
-                if (trimmed.startsWith("-")) {
-                  return `<li>${trimmed.substring(1).trim()}</li>`;
-                } else if (trimmed) {
-                  return `<li>${trimmed}</li>`;
-                }
-                return "";
-              })
-              .join("")}
-          </ul>
-        </div>`;
-    } else {
-      return `<div class="item-content education-description" style="white-space:pre-wrap">${stripHtmlHelper(text)}</div>`;
-    }
-  };
-
-  return `
+    return `
     <!DOCTYPE html>
     <html>
     <head>
       <meta charset="UTF-8"/>
       <title>Resume - ${contact?.firstName || ""} ${contact?.lastName || ""}</title>
       <style>${styles}</style>
+      <style>
+        /* Critical list styles to ensure bullets display correctly */
+        .experience-description ul, 
+        .education-description ul,
+        .experience-list ul,
+        .education-list ul,
+        ul.experience-list,
+        ul.education-list {
+          list-style-type: disc !important;
+          padding-left: 20px !important;
+          margin: 5px 0 !important;
+        }
+        
+        .experience-description ol, 
+        .education-description ol,
+        .experience-list ol,
+        .education-list ol,
+        ol.experience-list,
+        ol.education-list {
+          list-style-type: decimal !important;
+          padding-left: 20px !important;
+          margin: 5px 0 !important;
+        }
+        
+        .experience-description li, 
+        .education-description li,
+        .experience-list li,
+        .education-list li {
+          margin-bottom: 4px !important;
+          line-height: 1.5 !important;
+          list-style-position: outside !important;
+        }
+        
+        /* Force disc for any ul */
+        ul {
+          list-style-type: disc !important;
+        }
+        
+        /* Override any potential browser defaults */
+        .item-content ul {
+          list-style-type: disc !important;
+        }
+        
+        .wrap-break-word {
+          word-wrap: break-word;
+          overflow-wrap: break-word;
+        }
+      </style>
     </head>
     <body>
       <div class="resume-container">
@@ -428,6 +541,7 @@ const generateHTML = () => {
               linkedinUrl
                 ? `<a href="${linkedinUrl.startsWith("http") ? linkedinUrl : `https://${linkedinUrl}`}" class="link-item">LinkedIn</a>`
                 : ""
+                
             }
             ${
               portfolioUrl
@@ -454,7 +568,10 @@ const generateHTML = () => {
                  <div class="section-title">Experience</div>
                  ${experiences
                    .map((exp) => {
-                     const startFormatted = formatMonthYear(exp.startDate, true);
+                     const startFormatted = formatMonthYear(
+                       exp.startDate,
+                       true,
+                     );
                      const endFormatted = exp.endDate
                        ? formatMonthYear(exp.endDate, true)
                        : "Present";
@@ -473,7 +590,7 @@ const generateHTML = () => {
                          </div>
                          ${
                            exp.text
-                             ? `<div class="item-content experience-description" style="word-break:break-word">${exp.text}</div>`
+                             ? renderExperienceText(exp.text)
                              : ""
                          }
                        </div>`;
@@ -483,7 +600,7 @@ const generateHTML = () => {
             : ""
         }
 
-        <!-- EDUCATION (single, no duplicate) -->
+        <!-- EDUCATION -->
         ${
           educations.length > 0
             ? `<div class="section-content resume-section">
@@ -539,7 +656,7 @@ const generateHTML = () => {
                                  : ""
                              }
                            </div>
-                         </div>`
+                         </div>`,
                      )
                      .join("")}
                  </div>
@@ -552,7 +669,9 @@ const generateHTML = () => {
           finalize &&
           !Array.isArray(finalize) &&
           Array.isArray(finalize.languages) &&
-          finalize.languages.some((lang) => lang.name && lang.name.trim() !== "")
+          finalize.languages.some(
+            (lang) => lang.name && lang.name.trim() !== "",
+          )
             ? `<div class="section-content resume-section">
                  <div class="section-title">Languages</div>
                  <div class="skills-grid languages-grid">
@@ -569,7 +688,7 @@ const generateHTML = () => {
                                   </div>`
                                : ""
                            }
-                         </div>`
+                         </div>`,
                      )
                      .join("")}
                  </div>
@@ -579,17 +698,26 @@ const generateHTML = () => {
 
         <!-- CERTIFICATIONS -->
         ${
-          finalize && !Array.isArray(finalize) &&
+          finalize &&
+          !Array.isArray(finalize) &&
           Array.isArray(finalize.certificationsAndLicenses) &&
           finalize.certificationsAndLicenses.some(
-            (item) => item.name && item.name.replace(/<[^>]*>/g, "").trim() !== ""
+            (item) =>
+              item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "",
           )
             ? `<div class="section-content resume-section">
                  <div class="section-title">Certifications and Licenses</div>
                  <div class="item-content additional-content">
                    ${finalize.certificationsAndLicenses
-                     .filter((item) => item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "")
-                     .map((item) => `<div class="additional-item">${item.name}</div>`)
+                     .filter(
+                       (item) =>
+                         item.name &&
+                         item.name.replace(/<[^>]*>/g, "").trim() !== "",
+                     )
+                     .map(
+                       (item) =>
+                         `<div class="additional-item">${item.name}</div>`,
+                     )
                      .join("")}
                  </div>
                </div>`
@@ -598,17 +726,26 @@ const generateHTML = () => {
 
         <!-- HOBBIES -->
         ${
-          finalize && !Array.isArray(finalize) &&
+          finalize &&
+          !Array.isArray(finalize) &&
           Array.isArray(finalize.hobbiesAndInterests) &&
           finalize.hobbiesAndInterests.some(
-            (item) => item.name && item.name.replace(/<[^>]*>/g, "").trim() !== ""
+            (item) =>
+              item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "",
           )
             ? `<div class="section-content resume-section">
                  <div class="section-title">Hobbies and Interests</div>
                  <div class="item-content additional-content">
                    ${finalize.hobbiesAndInterests
-                     .filter((item) => item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "")
-                     .map((item) => `<div class="additional-item">${item.name}</div>`)
+                     .filter(
+                       (item) =>
+                         item.name &&
+                         item.name.replace(/<[^>]*>/g, "").trim() !== "",
+                     )
+                     .map(
+                       (item) =>
+                         `<div class="additional-item">${item.name}</div>`,
+                     )
                      .join("")}
                  </div>
                </div>`
@@ -617,17 +754,26 @@ const generateHTML = () => {
 
         <!-- AWARDS -->
         ${
-          finalize && !Array.isArray(finalize) &&
+          finalize &&
+          !Array.isArray(finalize) &&
           Array.isArray(finalize.awardsAndHonors) &&
           finalize.awardsAndHonors.some(
-            (item) => item.name && item.name.replace(/<[^>]*>/g, "").trim() !== ""
+            (item) =>
+              item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "",
           )
             ? `<div class="section-content resume-section">
                  <div class="section-title">Awards and Honors</div>
                  <div class="item-content additional-content">
                    ${finalize.awardsAndHonors
-                     .filter((item) => item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "")
-                     .map((item) => `<div class="additional-item">${item.name}</div>`)
+                     .filter(
+                       (item) =>
+                         item.name &&
+                         item.name.replace(/<[^>]*>/g, "").trim() !== "",
+                     )
+                     .map(
+                       (item) =>
+                         `<div class="additional-item">${item.name}</div>`,
+                     )
                      .join("")}
                  </div>
                </div>`
@@ -636,12 +782,13 @@ const generateHTML = () => {
 
         <!-- WEBSITES -->
         ${
-          finalize && !Array.isArray(finalize) &&
+          finalize &&
+          !Array.isArray(finalize) &&
           Array.isArray(finalize.websitesAndSocialMedia) &&
           finalize.websitesAndSocialMedia.some(
             (item) =>
               (item.websiteUrl && item.websiteUrl.trim() !== "") ||
-              (item.socialMedia && item.socialMedia.trim() !== "")
+              (item.socialMedia && item.socialMedia.trim() !== ""),
           )
             ? `<div class="section-content resume-section">
                  <div class="section-title">Websites and Social Media</div>
@@ -653,7 +800,7 @@ const generateHTML = () => {
                          <div class="additional-item">
                            ${item.websiteUrl ? `<div>Website: ${item.websiteUrl}</div>` : ""}
                            ${item.socialMedia ? `<div>Social Media: ${item.socialMedia}</div>` : ""}
-                         </div>`
+                         </div>`,
                      )
                      .join("")}
                  </div>
@@ -663,17 +810,26 @@ const generateHTML = () => {
 
         <!-- REFERENCES -->
         ${
-          finalize && !Array.isArray(finalize) &&
+          finalize &&
+          !Array.isArray(finalize) &&
           Array.isArray(finalize.references) &&
           finalize.references.some(
-            (item) => item.name && item.name.replace(/<[^>]*>/g, "").trim() !== ""
+            (item) =>
+              item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "",
           )
             ? `<div class="section-content resume-section">
                  <div class="section-title">References</div>
                  <div class="item-content additional-content">
                    ${finalize.references
-                     .filter((item) => item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "")
-                     .map((item) => `<div class="additional-item">${item.name}</div>`)
+                     .filter(
+                       (item) =>
+                         item.name &&
+                         item.name.replace(/<[^>]*>/g, "").trim() !== "",
+                     )
+                     .map(
+                       (item) =>
+                         `<div class="additional-item">${item.name}</div>`,
+                     )
                      .join("")}
                  </div>
                </div>`
@@ -682,20 +838,24 @@ const generateHTML = () => {
 
         <!-- CUSTOM SECTIONS -->
         ${
-          finalize && !Array.isArray(finalize) &&
+          finalize &&
+          !Array.isArray(finalize) &&
           Array.isArray(finalize.customSection) &&
           finalize.customSection.some(
-            (section) => section?.name?.trim() || section?.description?.trim()
+            (section) => section?.name?.trim() || section?.description?.trim(),
           )
             ? `<div class="section-content resume-section">
                  ${finalize.customSection
-                   .filter((section) => section?.name?.trim() || section?.description?.trim())
+                   .filter(
+                     (section) =>
+                       section?.name?.trim() || section?.description?.trim(),
+                   )
                    .map(
                      (section) => `
                        <div class="custom-section">
                          ${section.name ? `<div class="section-title custom-section-title">${section.name}</div>` : ""}
                          ${section.description ? `<div class="item-content custom-section-content">${section.description}</div>` : ""}
-                       </div>`
+                       </div>`,
                    )
                    .join("")}
                </div>`
@@ -706,406 +866,8 @@ const generateHTML = () => {
     </body>
     </html>
   `;
-};
+  };
 
-
-  /* ======================================================
-   GENERATE SINGLE HTML (browser handles pages)
-====================================================== */
-  // const generateHTML = () => {
-  //   return `
-  //   <!DOCTYPE html>
-  //   <html>
-  //   <head>
-  //     <meta charset="UTF-8"/>
-  //     <title>Resume - ${contact?.firstName || ""} ${contact?.lastName || ""}</title>
-  //     <style>${styles}</style>
-  //   </head>
-
-  //   <body>
-  //     <div class="resume-container">
-
-  //       <!-- HEADER -->
-  //       <div class="contact-info">
-  //         <h2 class="name">${contact?.firstName || ""} ${contact?.lastName || ""}</h2>
-  //         <div class="job-title">${contact?.jobTitle || ""}</div>
-  //         <div class="address">${addressParts.join(", ")}</div>
-  //         <div class="contact-details">
-  //           ${contact?.email ? `<span>${contact.email}</span>` : ""}
-  //           ${contact?.phone ? `<span>${contact.phone}</span>` : ""}
-  //         </div>
-  //         <div class="links">
-  //           ${linkedinUrl ? `<a href="${linkedinUrl}" class="link-item">LinkedIn</a>` : ""}
-  //           ${portfolioUrl ? `<a href="${portfolioUrl}" class="link-item">Portfolio</a>` : ""}
-  //         </div>
-  //       </div>
-
-  //       <!-- SUMMARY -->
-  //       ${
-  //         summary
-  //           ? `<div class="section-content">
-  //                <div class="section-title">Summary</div>
-  //                <div class="item-content">${summary.replace(/\n/g, "<br>")}</div>
-  //              </div>`
-  //           : ""
-  //       }
-
-  //       <!-- EXPERIENCE -->
-  //       ${
-  //         experiences.length > 0
-  //           ? `<div class="section-content">
-  //                <div class="section-title">Experience</div>
-  //                ${experiences
-  //                  .map(
-  //                    (e) => {
-  //                      const startDateFormatted = formatMonthYear(e.startDate, true);
-  //                      const endDateFormatted = e.endDate ? formatMonthYear(e.endDate, true) : "Present";
-                       
-  //                      return `
-  //                        <div class="experience-item" style="margin-bottom:16px">
-  //                          <div class="item-header">
-  //                            <div class="item-title-container">
-  //                              <div class="item-title">${e.jobTitle || ""}</div>
-  //                              <div class="item-subtitle">
-  //                                ${e.employer || ""} ${e.location ? `— ${e.location}` : ""}
-  //                              </div>
-  //                            </div>
-  //                            <div class="item-date experience-date">
-  //                              ${startDateFormatted} - ${endDateFormatted}
-  //                            </div>
-  //                          </div>
-  //                          <div class="item-content">${e.text || ""}</div>
-  //                        </div>
-  //                      `;
-  //                    }
-  //                  )
-  //                  .join("")}
-  //              </div>`
-  //           : ""
-  //       }
-
-  //       <!-- EDUCATION -->
-  //       ${
-  //         educations.length > 0
-  //           ? `<div class="section-content">
-  //                <div class="section-title">Education</div>
-  //                ${educations
-  //                  .map(
-  //                    (e) => {
-  //                      const startDateFormatted = formatMonthYear(e.startDate, true);
-  //                      const endDateFormatted = e.endDate ? formatMonthYear(e.endDate, true) : "";
-                       
-  //                      return `
-  //                        <div class="education-item" style="margin-bottom:16px">
-  //                          <div class="item-header">
-  //                            <div class="item-title-container">
-  //                              <div class="item-title">${e.schoolname || ""}</div>
-  //                              <div class="item-subtitle">
-  //                                ${e.degree || ""} ${e.location ? `— ${e.location}` : ""}
-  //                              </div>
-  //                            </div>
-  //                            <div class="item-date education-date">
-  //                              ${startDateFormatted} ${endDateFormatted ? `- ${endDateFormatted}` : ""}
-  //                            </div>
-  //                          </div>
-  //                          <div class="item-content">${e.text?.replace(/\n/g, "<br>") || ""}</div>
-  //                        </div>
-  //                      `;
-  //                    }
-  //                  )
-  //                  .join("")}
-  //              </div>`
-  //           : ""
-  //       }
-
-  //       <!-- EDUCATION -->
-  //       ${
-  //         educations.length > 0
-  //           ? `<div class="section-content">
-  //                <div class="section-title">Education</div>
-  //                ${educations
-  //                  .map(
-  //                    (e) => `
-  //                      <div class="education-item" style="margin-bottom:16px">
-  //                        <div class="item-header">
-  //                          <div class="item-title-container">
-  //                            <div class="item-title">${e.schoolname || ""}</div>
-  //                            <div class="item-subtitle">
-  //                              ${e.degree || ""} ${e.location ? `— ${e.location}` : ""}
-  //                            </div>
-  //                          </div>
-  //                          <div class="item-date">
-  //                            ${e.startDate || ""} ${e.endDate ? `- ${e.endDate}` : ""}
-  //                          </div>
-  //                        </div>
-  //                        <div class="item-content">${e.text?.replace(/\n/g, "<br>") || ""}</div>
-  //                      </div>
-  //                    `,
-  //                  )
-  //                  .join("")}
-  //              </div>`
-  //           : ""
-  //       }
-
-  //       <!-- SKILLS -->
-  //       ${
-  //         skills.length > 0
-  //           ? `<div class="section-content">
-  //                <div class="section-title">Skills</div>
-  //                <div class="skills-grid">
-  //                  ${skills
-  //                    .map(
-  //                      (s) => `
-  //                        <div class="skill-item">
-  //                          <div class="skill-name">${s.skill || ""}</div>
-  //                          <div class="skill-bar">
-  //                            <div class="skill-level" style="width:${(Number(s.level || 0) / 5) * 100}%"></div>
-  //                          </div>
-  //                        </div>
-  //                      `,
-  //                    )
-  //                    .join("")}
-  //                </div>
-  //              </div>`
-  //           : ""
-  //       }
-
-  //       <!-- LANGUAGES -->
-  //       ${
-  //         finalize &&
-  //         !Array.isArray(finalize) &&
-  //         Array.isArray(finalize.languages) &&
-  //         finalize.languages.some(
-  //           (lang) => lang.name && lang.name.trim() !== "",
-  //         )
-  //           ? `<div class="section-content">
-  //                <div class="section-title">Languages</div>
-  //                <div class="skills-grid languages-grid">
-  //                  ${finalize.languages
-  //                    .filter((lang) => lang.name && lang.name.trim() !== "")
-  //                    .map(
-  //                      (lang) => `
-  //                        <div class="skill-item">
-  //                          <div class="skill-name">${lang.name}</div>
-  //                          ${
-  //                            lang.level
-  //                              ? `
-  //                            <div class="skill-bar">
-  //                              <div class="skill-level" style="width:${(Number(lang.level) / 5) * 100}%"></div>
-  //                            </div>
-  //                          `
-  //                              : ""
-  //                          }
-  //                        </div>
-  //                      `,
-  //                    )
-  //                    .join("")}
-  //                </div>
-  //              </div>`
-  //           : ""
-  //       }
-
-  //       <!-- CERTIFICATIONS AND LICENSES -->
-  //       ${
-  //         finalize &&
-  //         !Array.isArray(finalize) &&
-  //         Array.isArray(finalize.certificationsAndLicenses) &&
-  //         finalize.certificationsAndLicenses.some(
-  //           (item) =>
-  //             item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "",
-  //         )
-  //           ? `<div class="section-content">
-  //                <div class="section-title">Certifications and Licenses</div>
-  //                <div class="item-content additional-content">
-  //                  ${finalize.certificationsAndLicenses
-  //                    .filter(
-  //                      (item) =>
-  //                        item.name &&
-  //                        item.name.replace(/<[^>]*>/g, "").trim() !== "",
-  //                    )
-  //                    .map(
-  //                      (item) => `
-  //                        <div class="additional-item">
-  //                          ${item.name.replace(/<[^>]*>/g, "")}
-  //                        </div>
-  //                      `,
-  //                    )
-  //                    .join("")}
-  //                </div>
-  //              </div>`
-  //           : ""
-  //       }
-
-  //       <!-- HOBBIES AND INTERESTS -->
-  //       ${
-  //         finalize &&
-  //         !Array.isArray(finalize) &&
-  //         Array.isArray(finalize.hobbiesAndInterests) &&
-  //         finalize.hobbiesAndInterests.some(
-  //           (item) =>
-  //             item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "",
-  //         )
-  //           ? `<div class="section-content">
-  //                <div class="section-title">Hobbies and Interests</div>
-  //                <div class="item-content additional-content">
-  //                  ${finalize.hobbiesAndInterests
-  //                    .filter(
-  //                      (item) =>
-  //                        item.name &&
-  //                        item.name.replace(/<[^>]*>/g, "").trim() !== "",
-  //                    )
-  //                    .map(
-  //                      (item) => `
-  //                        <div class="additional-item">
-  //                          ${item.name.replace(/<[^>]*>/g, "")}
-  //                        </div>
-  //                      `,
-  //                    )
-  //                    .join("")}
-  //                </div>
-  //              </div>`
-  //           : ""
-  //       }
-
-  //       <!-- AWARDS AND HONORS -->
-  //       ${
-  //         finalize &&
-  //         !Array.isArray(finalize) &&
-  //         Array.isArray(finalize.awardsAndHonors) &&
-  //         finalize.awardsAndHonors.some(
-  //           (item) =>
-  //             item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "",
-  //         )
-  //           ? `<div class="section-content">
-  //                <div class="section-title">Awards and Honors</div>
-  //                <div class="item-content additional-content">
-  //                  ${finalize.awardsAndHonors
-  //                    .filter(
-  //                      (item) =>
-  //                        item.name &&
-  //                        item.name.replace(/<[^>]*>/g, "").trim() !== "",
-  //                    )
-  //                    .map(
-  //                      (item) => `
-  //                        <div class="additional-item">
-  //                          ${item.name.replace(/<[^>]*>/g, "")}
-  //                        </div>
-  //                      `,
-  //                    )
-  //                    .join("")}
-  //                </div>
-  //              </div>`
-  //           : ""
-  //       }
-
-  //       <!-- WEBSITES AND SOCIAL MEDIA -->
-  //       ${
-  //         finalize &&
-  //         !Array.isArray(finalize) &&
-  //         Array.isArray(finalize.websitesAndSocialMedia) &&
-  //         finalize.websitesAndSocialMedia.some(
-  //           (item) =>
-  //             (item.websiteUrl && item.websiteUrl.trim() !== "") ||
-  //             (item.socialMedia && item.socialMedia.trim() !== ""),
-  //         )
-  //           ? `<div class="section-content">
-  //                <div class="section-title">Websites and Social Media</div>
-  //                <div class="item-content additional-content">
-  //                  ${finalize.websitesAndSocialMedia
-  //                    .filter(
-  //                      (item) =>
-  //                        (item.websiteUrl && item.websiteUrl.trim() !== "") ||
-  //                        (item.socialMedia && item.socialMedia.trim() !== ""),
-  //                    )
-  //                    .map(
-  //                      (item) => `
-  //                        <div class="additional-item">
-  //                          ${item.websiteUrl ? `<div>Website: ${item.websiteUrl}</div>` : ""}
-  //                          ${item.socialMedia ? `<div>Social Media: ${item.socialMedia}</div>` : ""}
-  //                        </div>
-  //                      `,
-  //                    )
-  //                    .join("")}
-  //                </div>
-  //              </div>`
-  //           : ""
-  //       }
-
-  //       <!-- REFERENCES -->
-  //       ${
-  //         finalize &&
-  //         !Array.isArray(finalize) &&
-  //         Array.isArray(finalize.references) &&
-  //         finalize.references.some(
-  //           (item) =>
-  //             item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "",
-  //         )
-  //           ? `<div class="section-content">
-  //                <div class="section-title">References</div>
-  //                <div class="item-content additional-content">
-  //                  ${finalize.references
-  //                    .filter(
-  //                      (item) =>
-  //                        item.name &&
-  //                        item.name.replace(/<[^>]*>/g, "").trim() !== "",
-  //                    )
-  //                    .map(
-  //                      (item) => `
-  //                        <div class="additional-item">
-  //                          ${item.name.replace(/<[^>]*>/g, "")}
-  //                        </div>
-  //                      `,
-  //                    )
-  //                    .join("")}
-  //                </div>
-  //              </div>`
-  //           : ""
-  //       }
-
-  //       <!-- CUSTOM SECTIONS -->
-  //       ${
-  //         finalize &&
-  //         !Array.isArray(finalize) &&
-  //         Array.isArray(finalize.customSection) &&
-  //         finalize.customSection.some(
-  //           (section) => section?.name?.trim() || section?.description?.trim(),
-  //         )
-  //           ? `<div class="section-content">
-  //                ${finalize.customSection
-  //                  .filter(
-  //                    (section) =>
-  //                      section?.name?.trim() || section?.description?.trim(),
-  //                  )
-  //                  .map(
-  //                    (section) => `
-  //                      <div class="custom-section">
-  //                        ${section.name ? `<div class="section-title custom-section-title">${section.name}</div>` : ""}
-  //                        ${
-  //                          section.description
-  //                            ? `
-  //                          <div class="item-content custom-section-content">
-  //                            ${section.description.replace(/<[^>]*>/g, "")}
-  //                          </div>
-  //                        `
-  //                            : ""
-  //                        }
-  //                      </div>
-  //                    `,
-  //                  )
-  //                  .join("")}
-  //              </div>`
-  //           : ""
-  //       }
-
-  //     </div>
-  //   </body>
-  //   </html>
-  // `;
-  // };
-
-  /* ======================================================
-     DOWNLOAD PDF
-  ====================================================== */
   const handleDownload = async () => {
     try {
       const html = generateHTML();
@@ -1135,8 +897,6 @@ const generateHTML = () => {
   const stripHtml = (html: string) => {
     return html?.replace(/<\/?[^>]+(>|$)/g, "") || "";
   };
-
-  console.log("experiences",experiences[0].text)
 
   return (
     <div style={{ textAlign: "center", marginTop: 0 }}>
@@ -1228,7 +988,7 @@ const generateHTML = () => {
           </div>
         )}
 
-        {/* EXPERIENCE - IMPROVED ALIGNMENT */}
+        {/* EXPERIENCE  */}
         {experiences.length > 0 && (
           <div className="section-content resume-section">
             <div className="section-title">Experience</div>
@@ -1258,7 +1018,7 @@ const generateHTML = () => {
 
                 {exp.text && (
                   <div
-                    className="item-content experience-description wrap-break-word [&_ol]:list-decimal [&_ul]:list-disc [&_li]:ml-4"
+                    className="item-content experience-description wrap-break-word"
                     dangerouslySetInnerHTML={{ __html: exp.text }}
                   />
                 )}
@@ -1267,7 +1027,7 @@ const generateHTML = () => {
           </div>
         )}
 
-        {/* EDUCATION - IMPROVED ALIGNMENT */}
+        {/* EDUCATION */}
         {educations?.length > 0 && (
           <div className="section-content resume-section">
             <div className="section-title">Education</div>
@@ -1343,7 +1103,7 @@ const generateHTML = () => {
           </div>
         )}
 
-        {/* SKILLS - IMPROVED ALIGNMENT */}
+        {/* SKILLS  */}
         {skills.length > 0 && (
           <div className="section-content resume-section">
             <div className="section-title">Skills</div>

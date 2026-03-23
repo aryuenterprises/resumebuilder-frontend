@@ -311,7 +311,7 @@ const Education_form = () => {
           )}
 
           {/* Education List */}
-          <div className="flex-1 overflow-y-auto pb-5 mt-3">
+          <div className="flex-1 overflow-y-auto pb-5 mt-5">
             <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-3 sm:gap-4 mb-3">
               <div className="flex items-center gap-2 sm:gap-3">
                 <div className="p-1.5 sm:p-2 bg-linear-to-br from-[#c40116]/10 to-[#be0117]/10 rounded-lg">
@@ -352,7 +352,7 @@ const Education_form = () => {
                 </h1>
               </div>
 
-              <div className="flex justify-end">
+              <div className="flex justify-end me-5">
                 <button
                   onClick={() => setSkillTipsClicked((prev) => !prev)}
                   className="flex items-center justify-center xs:justify-start gap-2 bg-linear-to-r from-white to-gray-50/80 border border-gray-200 rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 text-gray-700 text-xs sm:text-sm font-medium hover:border-[#c40116] hover:text-[#c40116] hover:shadow-md transition-all duration-200 w-fit"

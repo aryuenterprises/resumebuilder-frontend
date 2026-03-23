@@ -446,7 +446,7 @@ function Choose_template() {
           </div>
 
           {/* Curved Bottom - Responsive */}
-          {/* <div className="absolute bottom-0 left-0 right-0 h-6 sm:h-8 lg:h-10">
+          <div className="absolute bottom-0 left-0 right-0 h-6 sm:h-8 lg:h-10">
           <svg
             viewBox="0 0 1440 100"
             fill="none"
@@ -456,32 +456,20 @@ function Choose_template() {
           >
             <path d="M0 100L1440 0V100H0Z" fill="white" fillOpacity="1" />
           </svg>
-        </div> */}
-
-          {/* Wave divider */}
-          <div className="absolute bottom-0 left-0 right-0">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 1440 120"
-              className="w-full h-auto"
-            >
-              <path
-                fill="#ffffff"
-                fillOpacity="1"
-                d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"
-              ></path>
-            </svg>
-          </div>
         </div>
 
-        <div className="text-center">
+          {/* Wave divider */}
+     
+        </div>
+
+        <div className="text-center mt-8">
   <p className="text-gray-600 text-sm mb-3">Already have a resume?</p>
   <button
     onClick={() => {
       setShowInitialPopup(false);
       setShowUploadPopup(true);
     }}
-    className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#5E000B] to-[#C40116] text-white rounded-xl font-semibold text-sm hover:shadow-lg transition-all hover:scale-105 group"
+    className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#5E000B] to-[#C40116] text-white rounded-xl cursor-pointer font-semibold text-sm hover:shadow-lg transition-all hover:scale-105 group"
   >
     <Upload className="w-4 h-4" />
     <span>Upload Resume</span>
