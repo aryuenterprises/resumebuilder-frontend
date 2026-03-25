@@ -482,7 +482,7 @@ const ContactForm = () => {
             Add your up-to-date contact information so employers and recruiters
             can easily reach you.
           </p>
-          <form className="space-y-5 sm:space-y-6 bg-[#f3f4f6]/80 p-2 sm:p-3 md:p-4 rounded-xl sm:rounded-2xl ">
+          <form className="space-y-5 sm:space-y-6 mt-2 bg-[#f3f4f6]/80 p-2 sm:p-3 md:p-4 rounded-xl sm:rounded-2xl ">
             {/* Profile Photo Section */}
             {chosenResumeDetails?.pic === "true" && (
               <div className="bg-linear-to-r from-gray-50 to-white p-3 sm:p-4 rounded-xl border border-gray-100 shadow-subtle">
@@ -629,7 +629,7 @@ const ContactForm = () => {
                   htmlFor="firstName"
                   className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
                 >
-                  First Name
+                  First Name 
                 </label>
                 <div className="relative">
                   <input

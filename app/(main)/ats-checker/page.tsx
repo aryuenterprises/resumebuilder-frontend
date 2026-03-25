@@ -780,7 +780,7 @@ const ATSCheckerPage = () => {
 
     try {
       const response = await axios.post(
-        `https://ai.aryuacademy.com/api/v1/ats/scan`,
+        `https://ai.aryuacademy.com/api/v1/ats/scan-file`,
         formData,
         {
           headers: {

@@ -494,8 +494,7 @@ const ExperienceForm = () => {
 
                         <div className="group">
                           <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2 group-hover:text-[#c40116] transition-colors">
-                            Employer
-                          </label>
+Company name                          </label>
                           <div className="relative">
                             <input
                               type="text"

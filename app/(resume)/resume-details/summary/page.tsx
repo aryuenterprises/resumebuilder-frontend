@@ -304,6 +304,47 @@ const SummaryForm = () => {
                 className="mt-3 md:mt-4 lg:mt-5 bg-white"
                 value={summary}
                 onTextChange={(e: any) => handleTextChange(e.htmlValue)}
+                  headerTemplate={
+                            <div className="flex gap-1 p-2  flex-wrap items-center bg-gray-50">
+                              <button
+                                type="button"
+                                className="ql-bold p-2 hover:bg-gray-200 rounded transition-colors duration-200"
+                                aria-label="Bold"
+                                title="Bold"
+                              >
+                                <span className="font-bold">B</span>
+                              </button>
+
+                              <button
+                                type="button"
+                                className="ql-italic p-2 hover:bg-gray-200 rounded transition-colors duration-200"
+                                aria-label="Italic"
+                                title="Italic"
+                              >
+                                <span className="italic">I</span>
+                              </button>
+
+                              <button
+                                type="button"
+                                className="ql-underline p-2 hover:bg-gray-200 rounded transition-colors duration-200"
+                                aria-label="Underline"
+                                title="Underline"
+                              >
+                                <span className="underline">U</span>
+                              </button>
+
+                             
+
+                              <button
+                                type="button"
+                                className="ql-clean p-2 hover:bg-gray-200 rounded transition-colors duration-200"
+                                aria-label="Clear Formatting"
+                                title="Clear Formatting"
+                              >
+                                <span>⌫</span>
+                              </button>
+                            </div>
+                          }
                 style={{
                   height: "150px",
                   minHeight: "150px",

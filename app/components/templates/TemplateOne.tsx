@@ -39,7 +39,6 @@ console.log("context",context)
   const styles = `
   body {
     margin: 0;
-    font-family: Helvetica, Arial, sans-serif;
     background-color: white;
   }
 

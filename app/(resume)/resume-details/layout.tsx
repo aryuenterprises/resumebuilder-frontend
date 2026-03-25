@@ -173,7 +173,7 @@ export default function RootLayout({
   // If user is not logged in, show the login modal overlay
   if (!userDetails) {
     return (
-      <div className="flex h-screen bg-gray-100 gap-5 relative">
+      <div className="flex h-screen bg-gray-100 gap-5 relative ">
         <aside className="lg:w-1/2 overflow-y-auto">{children}</aside>
 
         <section className="max-lg:hidden w-1/2 bg-gray-100">
