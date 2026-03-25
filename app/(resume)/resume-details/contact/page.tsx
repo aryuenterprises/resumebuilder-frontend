@@ -874,7 +874,41 @@ const ContactForm = () => {
                       </div>
                     </div>
 
-                    <div className="group">
+                       <div className="group">
+                      <label
+                        htmlFor="City"
+                        className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
+                      >
+                        City
+                      </label>
+                      <div className="relative">
+                        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                          <IoLocationOutline className="w-4 h-4" />
+                        </div>
+                        <input
+                          type="text"
+                          id="City"
+                          value={contact.city}
+                          onChange={(e) =>
+                            handleContactChange(
+                              "city",
+                              sanitizeTextWithComma(e.target.value),
+                            )
+                          }
+                          placeholder="New York"
+                          className="w-full pl-10 pr-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
+                        />
+                      </div>
+                    </div>
+
+                    
+                  </div>
+
+                  {/* Location Information - Compact */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
+                 
+                 
+                        <div className="group">
                       <label
                         htmlFor="Post"
                         className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
@@ -904,15 +938,15 @@ const ContactForm = () => {
                           </svg>
                         </div>
                         <input
-                          type="tel"
-                          inputMode="numeric"
-                          pattern="[0-9]*"
+                          type="text"
+                          // inputMode="numeric"
+                          // pattern="[0-9]*"
                           id="Post"
                           value={contact.postcode}
                           onChange={(e) =>
                             handleContactChange(
                               "postcode",
-                              sanitizeNumber(e.target.value),
+                            e.target.value,
                             )
                           }
                           placeholder="10001"
@@ -920,10 +954,9 @@ const ContactForm = () => {
                         />
                       </div>
                     </div>
-                  </div>
 
-                  {/* Location Information - Compact */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
+
+
                     <div className="group">
                       <label
                         htmlFor="Country"
@@ -951,32 +984,8 @@ const ContactForm = () => {
                       </div>
                     </div>
 
-                    <div className="group">
-                      <label
-                        htmlFor="City"
-                        className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
-                      >
-                        City
-                      </label>
-                      <div className="relative">
-                        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                          <IoLocationOutline className="w-4 h-4" />
-                        </div>
-                        <input
-                          type="text"
-                          id="City"
-                          value={contact.city}
-                          onChange={(e) =>
-                            handleContactChange(
-                              "city",
-                              sanitizeTextWithComma(e.target.value),
-                            )
-                          }
-                          placeholder="New York"
-                          className="w-full pl-10 pr-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
-                        />
-                      </div>
-                    </div>
+             
+                 
                   </div>
                 </div>
               </div>

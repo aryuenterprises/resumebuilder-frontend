@@ -520,7 +520,7 @@ const TemplateSix: React.FC<ResumeProps> = ({ alldata }) => {
                 <FaMapMarkerAlt className='text-white w-3 h-3' />
               </div>
               <p className='text-sm text-gray-600 wrap-break-word'>
-                {contact?.address || ""}, {contact?.city || ""}, {contact?.country || ""}, {contact?.postcode || ""}
+                {contact?.address || ""}, {contact?.city || ""}, {contact?.postcode || ""}, {contact?.country || ""}, 
               </p>
             </div>
           </div>

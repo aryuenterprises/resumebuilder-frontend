@@ -573,7 +573,7 @@ const TemplateThree: React.FC<ResumeProps> = ({ alldata }) => {
             </p>
             <p className="text-end wrap-break-word">
               {contact?.address || ""}, {contact?.city || ""},{" "}
-              {contact?.country || ""}, {contact?.postcode || ""}
+             {contact?.postcode || ""}, {contact?.country || ""}
             </p>
           </div>
         </div>

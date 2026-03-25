@@ -2,7 +2,7 @@ import {
   TemplateFive,
   TemplateFour,
   TemplateOne,
-  TemplateSeven,
+  // TemplateSeven,
   TemplateSix,
   TemplateThree,
   TemplateTwo,
@@ -63,12 +63,12 @@ export const templateData: Template[] = [
     component: TemplateSix,
   },
 
-  {
-    id: 7,
-    style: "The Analyst",
-    image: "/images/resume8.svg",
-    description: "Creative design with eye-catching sections.",
-    temp: "paid",
-    component: TemplateSeven,
-  },
+  // {
+  //   id: 7,
+  //   style: "The Analyst",
+  //   image: "/images/resume8.svg",
+  //   description: "Creative design with eye-catching sections.",
+  //   temp: "paid",
+  //   component: TemplateSeven,
+  // },
 ];

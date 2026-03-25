@@ -494,7 +494,7 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
               </h2>
               <p className="text-gray-700 text-sm">
                 {contact?.address || ""}, {contact?.city || ""},{" "}
-                {contact?.country || ""}, {contact?.postcode || ""}
+             {contact?.postcode || ""},   {contact?.country || ""}
               </p>
               <p className="text-gray-700 text-sm">{contact?.phone || ""}</p>
               <p className="text-gray-700 text-sm">{contact?.email || ""}</p>

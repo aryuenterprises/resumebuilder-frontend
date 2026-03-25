@@ -5,10 +5,11 @@ import Footer from "../../components/layouts/Footer";
 import { templateData } from "@/app/data";
 import { getLocalStorage } from "@/app/utils";
 import { Template } from "@/app/types";
+import ProtectedRoute from "@/app/utils/ProtectedRoute";
 
 const page = () => {
   const chosenTemplate = getLocalStorage<Template>("chosenTemplate");
-  
+
   const selectedResume = templateData.find(
     (resume) => resume.id === chosenTemplate?.id,
   );
@@ -16,13 +17,13 @@ const page = () => {
   const SelectedComponent = selectedResume?.component;
 
   return (
-    <div>
+    <ProtectedRoute>
       <Header />
 
       {SelectedComponent && <SelectedComponent />}
 
       <Footer />
-    </div>
+    </ProtectedRoute>
   );
 };
 

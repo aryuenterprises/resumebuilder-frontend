@@ -860,8 +860,8 @@ const [isBlurred, setIsBlurred] = useState(false);
               {[
                 contact?.address,
                 contact?.city,
+                                contact?.postcode,
                 contact?.country,
-                contact?.postcode,
               ]
                 .filter(Boolean)
                 .join(", ")}

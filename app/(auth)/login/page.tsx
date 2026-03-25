@@ -63,10 +63,6 @@ const Login = () => {
       if (response.data && response.data.token) {
         const { user, token } = response.data;
 
-        // Store user and token
-        // localStorage.setItem("user_details", JSON.stringify(user));
-        // localStorage.setItem("user_token", token);
-
         setLocalStorage("user_details",user)
         setLocalStorage("user_token",token)
 
@@ -84,7 +80,7 @@ const Login = () => {
         setErrors({});
         setIsLoading(false);
 
-        router.push("/choose-template");
+        router.push("/");
       } else {
         await Swal.fire({
           icon: "error",

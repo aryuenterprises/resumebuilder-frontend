@@ -14,7 +14,7 @@ const Footer = () => {
           <div className="sm:col-span-2 lg:col-span-1">
             <Image
             src='/icons/logo.png'
-              alt="ResumeMint"
+              alt="Aryu SmartCV"
               width={180}
               height={60}
               className="cursor-pointer"

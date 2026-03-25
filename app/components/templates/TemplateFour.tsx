@@ -479,10 +479,10 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
 
         <hr className="border-2 border-black" />
 
-        <div className="flex justify-center gap-1 text-[13px] p-1 flex-wrap">
+        <div className="flex justify-center gap-2 text-[13px] p-1 flex-wrap">
           <p>
             {contact?.address || ""}, {contact?.city || ""},{" "}
-            {contact?.country || ""}, {contact?.postcode || ""}
+          {contact?.postcode || ""},  {contact?.country || ""}
           </p>
           {contact?.phone && <p> • {contact?.phone}</p>}
           {contact?.email && <p> • {contact?.email}</p>}

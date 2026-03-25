@@ -9,6 +9,9 @@ import { usePathname } from "next/navigation";
 
 const TemplateOne: React.FC = () => {
   const context = useContext(CreateContext);
+
+console.log("context",context)
+
   const pathname = usePathname();
   const lastSegment = pathname.split("/").pop();
 
@@ -22,8 +25,9 @@ const TemplateOne: React.FC = () => {
   const addressParts = [
     contact?.address,
     contact?.city,
+        contact?.postcode,
+
     contact?.country,
-    contact?.postcode,
   ].filter(Boolean);
 
   const linkedinUrl = contact?.linkedin || contact?.linkedin;

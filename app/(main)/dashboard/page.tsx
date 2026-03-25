@@ -718,6 +718,7 @@ import {
   MdOutlinePublishedWithChanges,
   MdOutlineReceipt,
 } from "react-icons/md";
+import ProtectedRoute from "@/app/utils/ProtectedRoute";
 
 const currentPlan = {
   name: "Premium",
@@ -1148,6 +1149,8 @@ const DashboardPage = () => {
   };
 
   return (
+    <ProtectedRoute>
+
     <div className="min-h-screen bg-linear-to-br from-slate-50 via-white to-slate-50">
       {/* Logout Confirmation Modal */}
       <AnimatePresence>
@@ -1746,7 +1749,10 @@ const DashboardPage = () => {
         />
       </div>
     </div>
+    </ProtectedRoute>
+
   );
+
 };
 
 export default DashboardPage;
