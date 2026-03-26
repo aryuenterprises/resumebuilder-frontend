@@ -3847,7 +3847,10 @@ const ATSCheckerPage = () => {
 
     } finally {
       setUploading(false);
-      setLoading(false);
+      // setLoading(false);
+       setTimeout(() => {
+       setLoading(false);
+       }, 3000);
     }
   };
 
