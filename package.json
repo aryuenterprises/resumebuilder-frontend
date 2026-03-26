@@ -13,7 +13,7 @@
     "axios": "^1.13.4",
     "crypto-js": "^4.2.0",
     "framer-motion": "^12.34.0",
-    "html-react-parser": "^5.2.17",
+       "html-react-parser": "^5.2.17",
     "lucide-react": "^0.563.0",
     "next": "16.1.6",
     "primereact": "^10.9.7",

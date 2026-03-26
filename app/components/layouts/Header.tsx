@@ -99,13 +99,13 @@ const Header: React.FC = () => {
             onClick={() => router.push("/cover-letter")}
           >
             Cover Letter
-          </button>
+          </button> */}
 
            <button
             className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito font-semibold text-[#c40116]  hover:bg-[#c40116]/10 transition text-sm lg:text-base cursor-pointer"
             onClick={() => router.push("/voice-to-text")}
           >
-Speech-to-CV          </button> */}
+Speech-to-CV          </button>
 
             {/* <button
             className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito font-semibold text-[#c40116]  hover:bg-[#c40116]/10 transition text-sm lg:text-base cursor-pointer"
