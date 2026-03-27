@@ -1,83 +1,13 @@
-
-
 // import React, { useState } from "react";
 // import axios from "axios";
-// import { API_URL } from "../Config";
-// import { RAZORPAY_KEY_ID } from "../Config";
+// import { API_URL } from "@/app/config/api";
+// import { RAZORPAY_KEY_ID } from "@/app/config/razorpay";
 // import Swal from "sweetalert2";
 
 // const CheckoutForm = ({ amount, email, planId, userId, onSuccess }) => {
 //   const [loading, setLoading] = useState(false);
 
-//   // const handlePayment = async () => {
-//   //   try {
-//   //     setLoading(true);
 
-  
-//   //     const { data: order } = await axios.post(
-//   //       `${API_URL}/api/payment-razor/create-order`,
-//   //       {
-//   //         amount,
-//   //         email,
-//   //         planId,
-//   //         userId,
-//   //       }
-//   //     );
-//   //     console.log("order response:", order);
-
-//   //     const options = {
-//   //       key: RAZORPAY_KEY_ID,
-//   //       amount: order.amount,
-//   //       currency: order.currency,
-//   //       name: "Your Company Name",
-//   //       description: "Plan Subscription Payment",
-//   //       order_id: order.id,
-
-//   //       handler: async function (response) {
-//   //         try {
-//   //           await axios.post(`${API_URL}/api/payment-razor/verify-payment`, {
-//   //             razorpay_order_id: response.razorpay_order_id,
-//   //             razorpay_payment_id: response.razorpay_payment_id,
-//   //             razorpay_signature: response.razorpay_signature,
-//   //           });
-
-//   //           Swal.fire({
-//   //             title: "Payment Successful!",
-//   //             text: "Your subscription is now active.",
-//   //             icon: "success",
-//   //             confirmButtonText: "OK",
-//   //           }).then(() => {
-//   //             if (onSuccess) onSuccess();
-//   //           });
-//   //         } catch (err) {
-//   //           Swal.fire("Verification Failed", "Payment verification failed", "error");
-//   //         }
-//   //       },
-
-//   //       prefill: {
-//   //         email: email,
-//   //       },
-
-//   //       theme: {
-//   //         color: "#2563eb",
-//   //       },
-
-//   //       modal: {
-//   //         ondismiss: function () {
-//   //           setLoading(false);
-//   //         },
-//   //       },
-//   //     };
-
-//   //     const rzp = new window.Razorpay(options);
-//   //     rzp.open();
-//   //     setLoading(false);
-//   //   } catch (error) {
-//   //     console.error("Payment error:", error);
-//   //     Swal.fire("Payment Failed", "Unable to initiate payment", "error");
-//   //     setLoading(false);
-//   //   }
-//   // };
 
 //   const handlePayment = async () => {
 //   try {

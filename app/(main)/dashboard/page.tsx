@@ -719,6 +719,8 @@ import {
   MdOutlineReceipt,
 } from "react-icons/md";
 import ProtectedRoute from "@/app/utils/ProtectedRoute";
+import axios from "axios";
+import { API_URL } from "@/app/config/api";
 
 const currentPlan = {
   name: "Premium",
@@ -802,69 +804,83 @@ const resumes = [
 ];
 
 interface BillingRecord {
-  date: string;
-  description: string;
+  length: number;
+  createdAt: string;
   amount: number;
   status: "paid" | "pending" | "failed";
+  plan: string;
+  planId: {
+    name: string;
+  };
+}
+
+interface usersCurrentPlan {
+  amount: number;
   plan: string;
 }
 
 const DashboardPage = () => {
   const router = useRouter();
   const [greeting, setGreeting] = useState("");
+  const [usersCurrentPlan, setusersCurrentPlan] =
+    useState<usersCurrentPlan | null>(null);
   const [showBillingHistory, setShowBillingHistory] = useState(false);
-  const [billingRecords, setBillingRecords] = useState<BillingRecord[]>([
-    {
-      date: "2024-02-15",
-      description: "Premium Plan - Monthly Subscription",
-      amount: 10.99,
-      status: "paid",
-      plan: "Premium",
-    },
-    {
-      date: "2024-01-15",
-      description: "Premium Plan - Monthly Subscription",
-      amount: 10.99,
-      status: "paid",
-      plan: "Premium",
-    },
-    {
-      date: "2023-12-15",
-      description: "Premium Plan - Monthly Subscription",
-      amount: 10.99,
-      status: "paid",
-      plan: "Premium",
-    },
-    {
-      date: "2023-11-15",
-      description: "Premium Plan - Monthly Subscription",
-      amount: 10.99,
-      status: "paid",
-      plan: "Premium",
-    },
-    {
-      date: "2023-10-15",
-      description: "Premium Plan - Monthly Subscription",
-      amount: 10.99,
-      status: "paid",
-      plan: "Premium",
-    },
-  ]);
+
+  const [paymentRecords, setPaymentRecords] = useState<BillingRecord[] | null>(
+    null,
+  );
   const [showResumeMenu, setShowResumeMenu] = useState<string | null>(null);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("All Resumes");
-  const [stats, setStats] = useState({
-    totalViews: 0,
-    totalDownloads: 0,
-    completedResumes: 0,
-  });
 
   const userDetails = getLocalStorage<User>("user_details");
+  const userId = userDetails?.id;
   const userName = `${userDetails?.firstName} ${userDetails?.lastName}`;
   const userEmail = userDetails?.email;
   const userPhone = userDetails?.phone;
   const userLocation =
     userDetails?.city && `${userDetails.city}, ${userDetails.country}`;
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/api/users/dashboard`, {
+          params: {
+            userId: userId,
+          },
+        });
+
+        setusersCurrentPlan(response?.data?.payments?.[0]);
+        console.log(response?.data?.payments?.[0]);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  useEffect(() => {
+    const fetchPaymentRecords = async () => {
+      try {
+        const response = await axios.get(
+          `${API_URL}/api/payment-razor/payment-all-records`,
+          {
+            params: {
+              userId: userId,
+            },
+          },
+        );
+
+        // console.log("response",response?.data?.paymentRecord);
+        setPaymentRecords(response?.data?.paymentRecord);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchPaymentRecords();
+  }, []);
 
   useEffect(() => {
     const hour = new Date().getHours();
@@ -880,25 +896,22 @@ const DashboardPage = () => {
   }, []);
 
   useEffect(() => {
-    // Calculate stats from resumes
-    const totalViews = resumes.reduce((acc, curr) => acc + curr.views, 0);
-    const totalDownloads = resumes.reduce(
-      (acc, curr) => acc + curr.downloads,
-      0,
-    );
-    const completedResumes = resumes.filter(
-      (r) => r.status === "completed",
-    ).length;
-    setStats({ totalViews, totalDownloads, completedResumes });
-  }, []);
-
-  useEffect(() => {
     const handleClickOutside = () => {
       if (showResumeMenu) setShowResumeMenu(null);
     };
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
   }, [showResumeMenu]);
+
+  useEffect(() => {
+    if (showBillingHistory) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+
+    return () => document.body.classList.remove("overflow-hidden");
+  }, [showBillingHistory]);
 
   const handleLogout = () => {
     removeLocalStorage("user_details");
@@ -975,7 +988,7 @@ const DashboardPage = () => {
       }
     };
 
-    const totalSpent = records.reduce((acc, curr) => acc + curr.amount, 0);
+    // const totalSpent = records.reduce((acc, curr) => acc + curr.amount, 0);
 
     return (
       <AnimatePresence>
@@ -992,7 +1005,7 @@ const DashboardPage = () => {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-x-hidden overflow-y-auto mx-4"
+              className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-x-hidden overflow-y-hidden mx-4"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
@@ -1038,13 +1051,13 @@ const DashboardPage = () => {
                   <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
                     <p className="text-sm text-gray-500 mb-1">Total Spent</p>
                     <p className="text-2xl font-bold text-gray-900">
-                      ${totalSpent.toFixed(2)}
+                      {/* ${totalSpent.toFixed(2)} */}
                     </p>
                   </div>
                   <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
                     <p className="text-sm text-gray-500 mb-1">Current Plan</p>
                     <p className="text-2xl font-bold text-transparent bg-clip-text bg-linear-to-r from-[#c40116] to-[#be0117]">
-                      Premium
+                      {usersCurrentPlan?.plan}
                     </p>
                   </div>
                 </div>
@@ -1053,14 +1066,12 @@ const DashboardPage = () => {
               {/* Billing Records Table */}
               <div className="overflow-y-auto max-h-100 p-6">
                 <table className="w-full">
-                  <thead className="sticky top-0 bg-white">
-                    <tr className="border-b border-gray-200">
+                  <thead className=" bg-white">
+                    <tr className="border-b bg-white border-gray-200">
                       <th className="pb-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                         Date
                       </th>
-                      <th className="pb-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                        Description
-                      </th>
+
                       <th className="pb-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                         Plan
                       </th>
@@ -1085,7 +1096,7 @@ const DashboardPage = () => {
                           <div className="flex items-center gap-2">
                             <FiCalendar className="w-4 h-4 text-gray-400" />
                             <span className="text-sm text-gray-600">
-                              {new Date(record.date).toLocaleDateString(
+                              {new Date(record.createdAt).toLocaleDateString(
                                 "en-US",
                                 {
                                   year: "numeric",
@@ -1096,21 +1107,17 @@ const DashboardPage = () => {
                             </span>
                           </div>
                         </td>
-                        <td className="py-4">
-                          <span className="text-sm text-gray-600">
-                            {record.description}
-                          </span>
-                        </td>
+
                         <td className="py-4">
                           <span className="text-sm font-medium text-gray-900">
-                            {record.plan}
+                            {record.planId.name}
                           </span>
                         </td>
                         <td className="py-4">
                           <div className="flex items-center gap-1">
-                            <FiDollarSign className="w-4 h-4 text-gray-400" />
+                            <span className="">₹</span>
                             <span className="text-sm font-semibold text-gray-900">
-                              {record.amount.toFixed(2)}
+                              {record.amount}
                             </span>
                           </div>
                         </td>
@@ -1148,611 +1155,614 @@ const DashboardPage = () => {
     );
   };
 
+  console.log("paymentRecords", paymentRecords);
+
   return (
     <ProtectedRoute>
-
-    <div className="min-h-screen bg-linear-to-br from-slate-50 via-white to-slate-50">
-      {/* Logout Confirmation Modal */}
-      <AnimatePresence>
-        {showLogoutModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center z-50 p-4"
-            onClick={() => setShowLogoutModal(false)}
-          >
+      <div className="min-h-screen bg-linear-to-br from-slate-50 via-white to-slate-50">
+        {/* Logout Confirmation Modal */}
+        <AnimatePresence>
+          {showLogoutModal && (
             <motion.div
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden mx-4"
-              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center z-50 p-4"
+              onClick={() => setShowLogoutModal(false)}
             >
-              <div className="h-2 bg-linear-to-r from-[#c40116] via-[#be0117] to-[#9a0e1a]"></div>
-              <div className="p-8 text-center">
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.2, type: "spring", damping: 10 }}
-                  className="relative mx-auto w-20 h-20 mb-6"
-                >
-                  <div className="absolute inset-0 bg-linear-to-r from-[#c40116]/20 to-[#be0117]/20 rounded-full blur-xl"></div>
-                  <div className="relative w-20 h-20 bg-linear-to-br from-[#c40116] to-[#be0117] rounded-2xl shadow-xl flex items-center justify-center transform hover:rotate-6 transition-transform">
-                    <FiLogOut className="w-10 h-10 text-white" />
-                  </div>
-                </motion.div>
-
-                <motion.h2
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                  className="text-2xl font-bold text-gray-900 mb-3"
-                >
-                  Ready to Leave?
-                </motion.h2>
-
-                <motion.p
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                  className="text-gray-600 mb-8"
-                >
-                  Are you sure you want to logout? You can always sign back in.
-                </motion.p>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 }}
-                  className="flex flex-col sm:flex-row gap-3"
-                >
-                  <button
-                    onClick={() => setShowLogoutModal(false)}
-                    className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 transition-colors cursor-pointer"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleLogout}
-                    className="flex-1 px-4 py-3 bg-linear-to-r from-[#c40116] to-[#be0117] text-white font-medium rounded-xl hover:shadow-lg hover:shadow-[#c40116]/25 transform hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    <FiLogOut className="w-4 h-4" />
-                    Logout
-                  </button>
-                </motion.div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Welcome Section  */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8 relative overflow-hidden rounded-3xl "
-        >
-          {/* Background Pattern */}
-          <div className="absolute inset-0 bg-linear-to-r from-[#c40116]/5 via-[#be0117]/5 to-transparent rounded-3xl"></div>
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[#c40116] rounded-full blur-3xl"></div>
-            <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#be0117] rounded-full blur-3xl"></div>
-          </div>
-
-          <div className="relative bg-white/80 backdrop-blur-xl rounded-3xl p-8 border border-gray-200/50 shadow-xl">
-            <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-              <div>
-                <div className="flex items-center gap-3 mb-3">
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden mx-4"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="h-2 bg-linear-to-r from-[#c40116] via-[#be0117] to-[#9a0e1a]"></div>
+                <div className="p-8 text-center">
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    transition={{ delay: 0.2, type: "spring" }}
-                    className="px-4 py-1.5 bg-linear-to-r from-[#c40116]/10 to-[#be0117]/10 rounded-full"
+                    transition={{ delay: 0.2, type: "spring", damping: 10 }}
+                    className="relative mx-auto w-20 h-20 mb-6"
                   >
-                    <span className="text-sm font-medium text-[#c40116]">
-                      Welcome Back!
-                    </span>
+                    <div className="absolute inset-0 bg-linear-to-r from-[#c40116]/20 to-[#be0117]/20 rounded-full blur-xl"></div>
+                    <div className="relative w-20 h-20 bg-linear-to-br from-[#c40116] to-[#be0117] rounded-2xl shadow-xl flex items-center justify-center transform hover:rotate-6 transition-transform">
+                      <FiLogOut className="w-10 h-10 text-white" />
+                    </div>
                   </motion.div>
-                </div>
-                <motion.h2
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-2"
-                >
-                  {greeting},{" "}
-                  <span className="bg-linear-to-r from-[#c40116] to-[#be0117] bg-clip-text text-transparent">
-                    {userName}
-                  </span>
-                </motion.h2>
-              </div>
-              <motion.div
-                initial={{ scale: 0, rotate: -180 }}
-                animate={{ scale: 1, rotate: 0 }}
-                transition={{ delay: 0.4, type: "spring", damping: 10 }}
-                className="relative"
-              >
-                <div className="absolute inset-0 bg-linear-to-r from-[#c40116] to-[#be0117] rounded-3xl blur-xl opacity-30"></div>
-                <div className="relative w-20 h-20 lg:w-24 lg:h-24 bg-linear-to-br from-[#c40116] to-[#be0117] rounded-2xl shadow-2xl flex items-center justify-center transform hover:rotate-12 transition-transform">
-                  <FiFileText className="w-10 h-10 lg:w-12 lg:h-12 text-white" />
+
+                  <motion.h2
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="text-2xl font-bold text-gray-900 mb-3"
+                  >
+                    Ready to Leave?
+                  </motion.h2>
+
+                  <motion.p
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 }}
+                    className="text-gray-600 mb-8"
+                  >
+                    Are you sure you want to logout? You can always sign back
+                    in.
+                  </motion.p>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 }}
+                    className="flex flex-col sm:flex-row gap-3"
+                  >
+                    <button
+                      onClick={() => setShowLogoutModal(false)}
+                      className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 transition-colors cursor-pointer"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleLogout}
+                      className="flex-1 px-4 py-3 bg-linear-to-r from-[#c40116] to-[#be0117] text-white font-medium rounded-xl hover:shadow-lg hover:shadow-[#c40116]/25 transform hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <FiLogOut className="w-4 h-4" />
+                      Logout
+                    </button>
+                  </motion.div>
                 </div>
               </motion.div>
-            </div>
-          </div>
-        </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        {/* Profile and Plan Section */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8"
-        >
-          {/* Profile Card - Enhanced */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Welcome Section  */}
           <motion.div
-            variants={itemVariants}
-            whileHover={{ y: -5 }}
-            className="lg:col-span-1 group"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-8 relative overflow-hidden rounded-3xl "
           >
-            <div className="h-full bg-white rounded-3xl shadow-xl border border-gray-200/50 overflow-hidden hover:shadow-2xl transition-all duration-500">
-              {/* Card Header with Animated Gradient */}
-              <div className="relative h-32 bg-linear-to-r from-[#c40116] via-[#be0117] to-[#9a0e1a] overflow-hidden">
-                <div className="absolute inset-0 bg-white/10 transform -skew-y-12 translate-y-full group-hover:translate-y-0 transition-transform duration-700"></div>
-                <div className="absolute -bottom-12 -right-12 w-32 h-32 bg-white/10 rounded-full"></div>
-                <div className="absolute -top-12 -left-12 w-32 h-32 bg-black/10 rounded-full"></div>
+            {/* Background Pattern */}
+            <div className="absolute inset-0 bg-linear-to-r from-[#c40116]/5 via-[#be0117]/5 to-transparent rounded-3xl"></div>
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-[#c40116] rounded-full blur-3xl"></div>
+              <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#be0117] rounded-full blur-3xl"></div>
+            </div>
+
+            <div className="relative bg-white/80 backdrop-blur-xl rounded-3xl p-8 border border-gray-200/50 shadow-xl">
+              <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+                <div>
+                  <div className="flex items-center gap-3 mb-3">
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ delay: 0.2, type: "spring" }}
+                      className="px-4 py-1.5 bg-linear-to-r from-[#c40116]/10 to-[#be0117]/10 rounded-full"
+                    >
+                      <span className="text-sm font-medium text-[#c40116]">
+                        Welcome Back!
+                      </span>
+                    </motion.div>
+                  </div>
+                  <motion.h2
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-2"
+                  >
+                    {greeting},{" "}
+                    <span className="bg-linear-to-r from-[#c40116] to-[#be0117] bg-clip-text text-transparent">
+                      {userName}
+                    </span>
+                  </motion.h2>
+                </div>
+                <motion.div
+                  initial={{ scale: 0, rotate: -180 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ delay: 0.4, type: "spring", damping: 10 }}
+                  className="relative"
+                >
+                  <div className="absolute inset-0 bg-linear-to-r from-[#c40116] to-[#be0117] rounded-3xl blur-xl opacity-30"></div>
+                  <div className="relative w-20 h-20 lg:w-24 lg:h-24 bg-linear-to-br from-[#c40116] to-[#be0117] rounded-2xl shadow-2xl flex items-center justify-center transform hover:rotate-12 transition-transform">
+                    <FiFileText className="w-10 h-10 lg:w-12 lg:h-12 text-white" />
+                  </div>
+                </motion.div>
               </div>
+            </div>
+          </motion.div>
 
-              {/* Profile Info */}
-              <div className="p-6 pt-12">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">
-                  {userName}
-                </h3>
-
-                <div className="space-y-3">
-                  <motion.div
-                    whileHover={{ x: 5 }}
-                    className="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 transition-colors"
-                  >
-                    <div className="p-2 bg-blue-50 rounded-lg">
-                      <FiMail className="w-4 h-4 text-blue-500" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Email</p>
-                      <p className="text-sm font-medium text-gray-900 break-all">
-                        {userEmail}
-                      </p>
-                    </div>
-                  </motion.div>
-
-                  <motion.div
-                    whileHover={{ x: 5 }}
-                    className="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 transition-colors"
-                  >
-                    <div className="p-2 bg-emerald-50 rounded-lg">
-                      <FiPhone className="w-4 h-4 text-emerald-500" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Phone</p>
-                      <p className="text-sm font-medium text-gray-900">
-                        {userPhone || "Not provided"}
-                      </p>
-                    </div>
-                  </motion.div>
-
-                  <motion.div
-                    whileHover={{ x: 5 }}
-                    className="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 transition-colors"
-                  >
-                    <div className="p-2 bg-purple-50 rounded-lg">
-                      <FiMapPin className="w-4 h-4 text-purple-500" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Location</p>
-                      <p className="text-sm font-medium text-gray-900">
-                        {userLocation || "Not specified"}
-                      </p>
-                    </div>
-                  </motion.div>
+          {/* Profile and Plan Section */}
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8"
+          >
+            {/* Profile Card -  */}
+            <motion.div
+              variants={itemVariants}
+              whileHover={{ y: -5 }}
+              className="lg:col-span-1 group"
+            >
+              <div className="h-full bg-white rounded-3xl shadow-xl border border-gray-200/50 overflow-hidden hover:shadow-2xl transition-all duration-500">
+                {/* Card Header with Animated Gradient */}
+                <div className="relative h-32 bg-linear-to-r from-[#c40116] via-[#be0117] to-[#9a0e1a] overflow-hidden">
+                  <div className="absolute inset-0 bg-white/10 transform -skew-y-12 translate-y-full group-hover:translate-y-0 transition-transform duration-700"></div>
+                  <div className="absolute -bottom-12 -right-12 w-32 h-32 bg-white/10 rounded-full"></div>
+                  <div className="absolute -top-12 -left-12 w-32 h-32 bg-black/10 rounded-full"></div>
                 </div>
 
-                {/* Logout Button */}
+                {/* Profile Info */}
+                <div className="p-6 pt-12">
+                  <h3 className="text-xl font-bold text-gray-900 mb-4">
+                    {userName}
+                  </h3>
+
+                  <div className="space-y-3">
+                    <motion.div
+                      whileHover={{ x: 5 }}
+                      className="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 transition-colors"
+                    >
+                      <div className="p-2 bg-blue-50 rounded-lg">
+                        <FiMail className="w-4 h-4 text-blue-500" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Email</p>
+                        <p className="text-sm font-medium text-gray-900 break-all">
+                          {userEmail}
+                        </p>
+                      </div>
+                    </motion.div>
+
+                    <motion.div
+                      whileHover={{ x: 5 }}
+                      className="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 transition-colors"
+                    >
+                      <div className="p-2 bg-emerald-50 rounded-lg">
+                        <FiPhone className="w-4 h-4 text-emerald-500" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Phone</p>
+                        <p className="text-sm font-medium text-gray-900">
+                          {userPhone || "Not provided"}
+                        </p>
+                      </div>
+                    </motion.div>
+
+                    <motion.div
+                      whileHover={{ x: 5 }}
+                      className="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 transition-colors"
+                    >
+                      <div className="p-2 bg-purple-50 rounded-lg">
+                        <FiMapPin className="w-4 h-4 text-purple-500" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Location</p>
+                        <p className="text-sm font-medium text-gray-900">
+                          {userLocation || "Not specified"}
+                        </p>
+                      </div>
+                    </motion.div>
+                  </div>
+
+                  {/* Logout Button */}
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => setShowLogoutModal(true)}
+                    className="w-full mt-6 px-4 py-3 bg-linear-to-r from-[#c40116] to-[#be0117] text-white font-medium rounded-xl hover:shadow-lg hover:shadow-[#c40116]/25 transition-all duration-300 flex items-center justify-center gap-2 group/btn cursor-pointer"
+                  >
+                    <FiLogOut className="w-4 h-4 group-hover/btn:rotate-180 transition-transform duration-500" />
+                    <span>Logout</span>
+                  </motion.button>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Current Plan Card  */}
+            <motion.div
+              variants={itemVariants}
+              whileHover={{ y: -5 }}
+              className="lg:col-span-2"
+            >
+              <div className="h-full bg-white rounded-3xl shadow-xl border border-gray-200/50 overflow-hidden hover:shadow-2xl transition-all duration-500">
+                {/* Plan Header */}
+                <div className="relative bg-linear-to-r from-[#c40116] via-[#be0117] to-[#9a0e1a] p-6 overflow-hidden">
+                  <div className="absolute inset-0 bg-white/10 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-8 -mt-8"></div>
+                  <div className="absolute bottom-0 left-0 w-32 h-32 bg-black/10 rounded-full -ml-8 -mb-8"></div>
+
+                  <div className="relative flex items-start justify-between">
+                    <div>
+                      <div className="flex items-center gap-3 mb-2">
+                        <span className="px-3 py-1 bg-white/20 backdrop-blur-sm text-white text-xs font-semibold rounded-full border border-white/30">
+                          ACTIVE
+                        </span>
+                        <HiOutlineBadgeCheck className="w-5 h-5 text-yellow-300" />
+                      </div>
+                      <h3 className="text-2xl font-bold text-white mb-1">
+                        {usersCurrentPlan?.plan} Plan
+                      </h3>
+                      <p className="text-white/80 text-sm">
+                        Your current subscription
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-3xl font-bold text-white">
+                        <span className="font-sans">₹</span>{" "}
+                        {usersCurrentPlan?.amount}
+                      </p>
+                      {/* <p className="text-white/80 text-sm">
+                        /{currentPlan.interval}
+                      </p> */}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Plan Features */}
+                <div className="p-6">
+                  <h4 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <FiAward className="w-4 h-4 text-[#c40116]" />
+                    Included Features
+                  </h4>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {currentPlan.features.map((feature, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 hover:border-[#c40116]/20 hover:bg-linear-to-r hover:from-[#c40116]/5 hover:to-transparent transition-all"
+                      >
+                        <div className="p-2 bg-linear-to-br from-[#c40116]/10 to-[#be0117]/10 rounded-lg">
+                          <feature.icon className="w-4 h-4 text-[#c40116]" />
+                        </div>
+                        <span className="text-sm font-medium text-gray-700">
+                          {feature.name}
+                        </span>
+                        <FiCheckCircle className="w-4 h-4 text-emerald-500 ml-auto" />
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="mt-6 pt-6 border-t border-gray-200 flex flex-col sm:flex-row gap-3">
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => router.push("/choose-plan")}
+                      className="flex-1 px-4 py-3 bg-linear-to-r from-[#c40116] to-[#be0117] text-white font-medium rounded-xl hover:shadow-lg hover:shadow-[#c40116]/25 transition-all duration-300 flex items-center justify-center gap-2 group/btn cursor-pointer"
+                    >
+                      <MdOutlinePublishedWithChanges className="w-4 h-4 group-hover/btn:rotate-90 transition-transform duration-500" />
+                      <span>Change Plan</span>
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => setShowBillingHistory(true)}
+                      className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <FiCreditCard className="w-4 h-4" />
+                      <span>Billing History</span>
+                    </motion.button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+
+          {/* Resumes Section  */}
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            {/* Section Header */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+              <div>
+                <h3 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                  <FiFileText className="w-5 h-5 text-[#c40116]" />
+                  Your Resumes
+                </h3>
+                <p className="text-sm text-gray-600 mt-1">
+                  Manage and track your resume performance
+                </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+                <select
+                  value={selectedFilter}
+                  onChange={(e) => setSelectedFilter(e.target.value)}
+                  className="w-full sm:w-48 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm text-gray-700 focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 shadow-sm"
+                >
+                  <option>All Resumes</option>
+                  <option>Completed</option>
+                  <option>In Progress</option>
+                  <option>Draft</option>
+                </select>
+
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={() => setShowLogoutModal(true)}
-                  className="w-full mt-6 px-4 py-3 bg-linear-to-r from-[#c40116] to-[#be0117] text-white font-medium rounded-xl hover:shadow-lg hover:shadow-[#c40116]/25 transition-all duration-300 flex items-center justify-center gap-2 group/btn cursor-pointer"
+                  onClick={() => router.push("/choose-template")}
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 bg-linear-to-r from-[#c40116] to-[#be0117] text-white text-sm font-medium rounded-xl hover:shadow-lg hover:shadow-[#c40116]/25 transition-all duration-300 group"
                 >
-                  <FiLogOut className="w-4 h-4 group-hover/btn:rotate-180 transition-transform duration-500" />
-                  <span>Logout</span>
+                  <FiPlus className="w-4 h-4 group-hover:rotate-90 transition-transform" />
+                  New Resume
                 </motion.button>
               </div>
             </div>
-          </motion.div>
 
-          {/* Current Plan Card - Enhanced */}
-          <motion.div
-            variants={itemVariants}
-            whileHover={{ y: -5 }}
-            className="lg:col-span-2"
-          >
-            <div className="h-full bg-white rounded-3xl shadow-xl border border-gray-200/50 overflow-hidden hover:shadow-2xl transition-all duration-500">
-              {/* Plan Header */}
-              <div className="relative bg-linear-to-r from-[#c40116] via-[#be0117] to-[#9a0e1a] p-6 overflow-hidden">
-                <div className="absolute inset-0 bg-white/10 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-8 -mt-8"></div>
-                <div className="absolute bottom-0 left-0 w-32 h-32 bg-black/10 rounded-full -ml-8 -mb-8"></div>
-
-                <div className="relative flex items-start justify-between">
-                  <div>
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="px-3 py-1 bg-white/20 backdrop-blur-sm text-white text-xs font-semibold rounded-full border border-white/30">
-                        ACTIVE
-                      </span>
-                      <HiOutlineBadgeCheck className="w-5 h-5 text-yellow-300" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-white mb-1">
-                      {currentPlan.name} Plan
-                    </h3>
-                    <p className="text-white/80 text-sm">
-                      Your current subscription
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-3xl font-bold text-white">
-                      {currentPlan.price}
-                    </p>
-                    <p className="text-white/80 text-sm">
-                      /{currentPlan.interval}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Plan Features */}
-              <div className="p-6">
-                <h4 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <FiAward className="w-4 h-4 text-[#c40116]" />
-                  Included Features
-                </h4>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {currentPlan.features.map((feature, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 hover:border-[#c40116]/20 hover:bg-linear-to-r hover:from-[#c40116]/5 hover:to-transparent transition-all"
-                    >
-                      <div className="p-2 bg-linear-to-br from-[#c40116]/10 to-[#be0117]/10 rounded-lg">
-                        <feature.icon className="w-4 h-4 text-[#c40116]" />
-                      </div>
-                      <span className="text-sm font-medium text-gray-700">
-                        {feature.name}
-                      </span>
-                      <FiCheckCircle className="w-4 h-4 text-emerald-500 ml-auto" />
-                    </motion.div>
-                  ))}
-                </div>
-
-                {/* Action Buttons */}
-                <div className="mt-6 pt-6 border-t border-gray-200 flex flex-col sm:flex-row gap-3">
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => router.push("/choose-plan")}
-                    className="flex-1 px-4 py-3 bg-linear-to-r from-[#c40116] to-[#be0117] text-white font-medium rounded-xl hover:shadow-lg hover:shadow-[#c40116]/25 transition-all duration-300 flex items-center justify-center gap-2 group/btn cursor-pointer"
+            {/* Resumes Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredResumes.map((resume) => {
+                const StatusIcon = getStatusIcon(resume.status);
+                return (
+                  <motion.div
+                    key={resume.id}
+                    variants={itemVariants}
+                    whileHover={{ y: -5 }}
+                    className="group relative"
                   >
-                    <MdOutlinePublishedWithChanges className="w-4 h-4 group-hover/btn:rotate-90 transition-transform duration-500" />
-                    <span>Change Plan</span>
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => setShowBillingHistory(true)}
-                    className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    <FiCreditCard className="w-4 h-4" />
-                    <span>Billing History</span>
-                  </motion.button>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </motion.div>
+                    <div className="absolute inset-0 bg-linear-to-r from-[#c40116]/5 to-[#be0117]/5 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl"></div>
 
-        {/* Resumes Section  */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          {/* Section Header */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-            <div>
-              <h3 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                <FiFileText className="w-5 h-5 text-[#c40116]" />
-                Your Resumes
-              </h3>
-              <p className="text-sm text-gray-600 mt-1">
-                Manage and track your resume performance
-              </p>
-            </div>
-
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
-              <select
-                value={selectedFilter}
-                onChange={(e) => setSelectedFilter(e.target.value)}
-                className="w-full sm:w-48 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm text-gray-700 focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 shadow-sm"
-              >
-                <option>All Resumes</option>
-                <option>Completed</option>
-                <option>In Progress</option>
-                <option>Draft</option>
-              </select>
-
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => router.push("/choose-template")}
-                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 bg-linear-to-r from-[#c40116] to-[#be0117] text-white text-sm font-medium rounded-xl hover:shadow-lg hover:shadow-[#c40116]/25 transition-all duration-300 group"
-              >
-                <FiPlus className="w-4 h-4 group-hover:rotate-90 transition-transform" />
-                New Resume
-              </motion.button>
-            </div>
-          </div>
-
-          {/* Resumes Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredResumes.map((resume) => {
-              const StatusIcon = getStatusIcon(resume.status);
-              return (
-                <motion.div
-                  key={resume.id}
-                  variants={itemVariants}
-                  whileHover={{ y: -5 }}
-                  className="group relative"
-                >
-                  <div className="absolute inset-0 bg-linear-to-r from-[#c40116]/5 to-[#be0117]/5 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl"></div>
-
-                  <div className="relative bg-white rounded-2xl shadow-lg border border-gray-200/50 overflow-hidden hover:shadow-xl transition-all duration-500">
-                    {/* Thumbnail with Gradient Overlay */}
-                    <div className="relative h-40 bg-linear-to-br from-gray-900 to-gray-700 overflow-hidden">
-                      {/* Animated Pattern */}
-                      <div className="absolute inset-0 opacity-20">
-                        <div
-                          className="absolute inset-0"
-                          style={{
-                            backgroundImage:
-                              "radial-gradient(circle at 2px 2px, white 1px, transparent 0)",
-                            backgroundSize: "20px 20px",
-                          }}
-                        ></div>
-                      </div>
-
-                      {/* Status Badge */}
-                      <div className="absolute top-3 left-3">
-                        <span
-                          className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(resume.status)} backdrop-blur-sm`}
-                        >
-                          {resume.status}
-                        </span>
-                      </div>
-
-                      {/* Action Buttons Overlay */}
-                      <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-                        <div className="absolute bottom-3 left-3 right-3 flex items-center justify-center gap-2">
-                          <motion.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                            className="p-2 bg-white/90 backdrop-blur-sm rounded-lg hover:bg-white transition-colors shadow-lg"
-                          >
-                            <FiEye className="w-4 h-4 text-gray-700" />
-                          </motion.button>
-                          <motion.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                            className="p-2 bg-white/90 backdrop-blur-sm rounded-lg hover:bg-white transition-colors shadow-lg"
-                          >
-                            <FiDownload className="w-4 h-4 text-gray-700" />
-                          </motion.button>
-                          <motion.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                            className="p-2 bg-white/90 backdrop-blur-sm rounded-lg hover:bg-white transition-colors shadow-lg"
-                          >
-                            <FiEdit className="w-4 h-4 text-gray-700" />
-                          </motion.button>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Content */}
-                    <div className="p-5">
-                      {/* Header with Menu */}
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex-1 min-w-0">
-                          <h4 className="text-base font-semibold text-gray-900 group-hover:text-[#c40116] transition-colors truncate">
-                            {resume.name}
-                          </h4>
-                          <p className="text-xs text-gray-500 mt-1 truncate">
-                            Template: {resume.template}
-                          </p>
-                        </div>
-
-                        {/* Menu Dropdown */}
-                        <div className="relative shrink-0 ml-2">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setShowResumeMenu(
-                                showResumeMenu === resume.id ? null : resume.id,
-                              );
+                    <div className="relative bg-white rounded-2xl shadow-lg border border-gray-200/50 overflow-hidden hover:shadow-xl transition-all duration-500">
+                      {/* Thumbnail with Gradient Overlay */}
+                      <div className="relative h-40 bg-linear-to-br from-gray-900 to-gray-700 overflow-hidden">
+                        {/* Animated Pattern */}
+                        <div className="absolute inset-0 opacity-20">
+                          <div
+                            className="absolute inset-0"
+                            style={{
+                              backgroundImage:
+                                "radial-gradient(circle at 2px 2px, white 1px, transparent 0)",
+                              backgroundSize: "20px 20px",
                             }}
-                            className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+                          ></div>
+                        </div>
+
+                        {/* Status Badge */}
+                        <div className="absolute top-3 left-3">
+                          <span
+                            className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(resume.status)} backdrop-blur-sm`}
                           >
-                            <FiMoreVertical className="w-4 h-4 text-gray-500" />
-                          </button>
+                            {resume.status}
+                          </span>
+                        </div>
 
-                          {showResumeMenu === resume.id && (
-                            <motion.div
-                              initial={{ opacity: 0, scale: 0.95 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              exit={{ opacity: 0, scale: 0.95 }}
-                              className="absolute right-0 mt-2 w-40 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-10"
+                        {/* Action Buttons Overlay */}
+                        <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="absolute bottom-3 left-3 right-3 flex items-center justify-center gap-2">
+                            <motion.button
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
+                              className="p-2 bg-white/90 backdrop-blur-sm rounded-lg hover:bg-white transition-colors shadow-lg"
                             >
-                              {[
-                                {
-                                  icon: FiEdit,
-                                  label: "Edit",
-                                  color: "text-gray-700",
-                                },
-                                {
-                                  icon: FiEye,
-                                  label: "View",
-                                  color: "text-gray-700",
-                                },
-                                {
-                                  icon: FiDownload,
-                                  label: "Download",
-                                  color: "text-gray-700",
-                                },
-                                {
-                                  icon: FiCopy,
-                                  label: "Duplicate",
-                                  color: "text-gray-700",
-                                },
-                                {
-                                  icon: FiTrash2,
-                                  label: "Delete",
-                                  color: "text-red-500",
-                                },
-                              ].map((action) => (
-                                <button
-                                  key={action.label}
-                                  className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center gap-2"
-                                  onClick={() => setShowResumeMenu(null)}
-                                >
-                                  <action.icon
-                                    className={`w-4 h-4 ${action.color}`}
-                                  />
-                                  <span className={action.color}>
-                                    {action.label}
-                                  </span>
-                                </button>
-                              ))}
-                            </motion.div>
-                          )}
+                              <FiEye className="w-4 h-4 text-gray-700" />
+                            </motion.button>
+                            <motion.button
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
+                              className="p-2 bg-white/90 backdrop-blur-sm rounded-lg hover:bg-white transition-colors shadow-lg"
+                            >
+                              <FiDownload className="w-4 h-4 text-gray-700" />
+                            </motion.button>
+                            <motion.button
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
+                              className="p-2 bg-white/90 backdrop-blur-sm rounded-lg hover:bg-white transition-colors shadow-lg"
+                            >
+                              <FiEdit className="w-4 h-4 text-gray-700" />
+                            </motion.button>
+                          </div>
                         </div>
                       </div>
 
-                      {/* Stats */}
-                      <div className="flex items-center gap-4 mt-4">
-                        <div className="flex items-center gap-1.5">
-                          <FiEye className="w-3.5 h-3.5 text-gray-400" />
-                          <span className="text-xs text-gray-600">
-                            {resume.views}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <FiDownload className="w-3.5 h-3.5 text-gray-400" />
-                          <span className="text-xs text-gray-600">
-                            {resume.downloads}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <FiClock className="w-3.5 h-3.5 text-gray-400" />
-                          <span className="text-xs text-gray-600">
-                            {resume.lastEdited}
-                          </span>
-                        </div>
-                      </div>
+                      {/* Content */}
+                      <div className="p-5">
+                        {/* Header with Menu */}
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-base font-semibold text-gray-900 group-hover:text-[#c40116] transition-colors truncate">
+                              {resume.name}
+                            </h4>
+                            <p className="text-xs text-gray-500 mt-1 truncate">
+                              Template: {resume.template}
+                            </p>
+                          </div>
 
-                      {/* Progress Bar */}
-                      <div className="mt-4">
-                        <div className="flex items-center justify-between mb-2">
+                          {/* Menu Dropdown */}
+                          <div className="relative shrink-0 ml-2">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setShowResumeMenu(
+                                  showResumeMenu === resume.id
+                                    ? null
+                                    : resume.id,
+                                );
+                              }}
+                              className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+                            >
+                              <FiMoreVertical className="w-4 h-4 text-gray-500" />
+                            </button>
+
+                            {showResumeMenu === resume.id && (
+                              <motion.div
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.95 }}
+                                className="absolute right-0 mt-2 w-40 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-10"
+                              >
+                                {[
+                                  {
+                                    icon: FiEdit,
+                                    label: "Edit",
+                                    color: "text-gray-700",
+                                  },
+                                  {
+                                    icon: FiEye,
+                                    label: "View",
+                                    color: "text-gray-700",
+                                  },
+                                  {
+                                    icon: FiDownload,
+                                    label: "Download",
+                                    color: "text-gray-700",
+                                  },
+                                  {
+                                    icon: FiCopy,
+                                    label: "Duplicate",
+                                    color: "text-gray-700",
+                                  },
+                                  {
+                                    icon: FiTrash2,
+                                    label: "Delete",
+                                    color: "text-red-500",
+                                  },
+                                ].map((action) => (
+                                  <button
+                                    key={action.label}
+                                    className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center gap-2"
+                                    onClick={() => setShowResumeMenu(null)}
+                                  >
+                                    <action.icon
+                                      className={`w-4 h-4 ${action.color}`}
+                                    />
+                                    <span className={action.color}>
+                                      {action.label}
+                                    </span>
+                                  </button>
+                                ))}
+                              </motion.div>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Stats */}
+                        <div className="flex items-center gap-4 mt-4">
                           <div className="flex items-center gap-1.5">
-                            <StatusIcon
-                              className={`w-4 h-4 ${
-                                resume.status === "completed"
-                                  ? "text-emerald-500"
-                                  : resume.status === "in-progress"
-                                    ? "text-amber-500"
-                                    : "text-gray-500"
-                              }`}
-                            />
-                            <span className="text-xs font-medium text-gray-600">
-                              {resume.status === "completed"
-                                ? "Completed"
-                                : resume.status === "in-progress"
-                                  ? "In Progress"
-                                  : "Draft"}
+                            <FiEye className="w-3.5 h-3.5 text-gray-400" />
+                            <span className="text-xs text-gray-600">
+                              {resume.views}
                             </span>
                           </div>
-                          <span className="text-xs font-semibold text-gray-900">
-                            {resume.progress}%
-                          </span>
+                          <div className="flex items-center gap-1.5">
+                            <FiDownload className="w-3.5 h-3.5 text-gray-400" />
+                            <span className="text-xs text-gray-600">
+                              {resume.downloads}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <FiClock className="w-3.5 h-3.5 text-gray-400" />
+                            <span className="text-xs text-gray-600">
+                              {resume.lastEdited}
+                            </span>
+                          </div>
                         </div>
-                        <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                          <motion.div
-                            initial={{ width: 0 }}
-                            animate={{ width: `${resume.progress}%` }}
-                            transition={{ duration: 1, delay: 0.5 }}
-                            className="h-full bg-linear-to-r from-[#c40116] to-[#be0117] rounded-full relative"
-                          >
-                            <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
-                          </motion.div>
+
+                        {/* Progress Bar */}
+                        <div className="mt-4">
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center gap-1.5">
+                              <StatusIcon
+                                className={`w-4 h-4 ${
+                                  resume.status === "completed"
+                                    ? "text-emerald-500"
+                                    : resume.status === "in-progress"
+                                      ? "text-amber-500"
+                                      : "text-gray-500"
+                                }`}
+                              />
+                              <span className="text-xs font-medium text-gray-600">
+                                {resume.status === "completed"
+                                  ? "Completed"
+                                  : resume.status === "in-progress"
+                                    ? "In Progress"
+                                    : "Draft"}
+                              </span>
+                            </div>
+                            <span className="text-xs font-semibold text-gray-900">
+                              {resume.progress}%
+                            </span>
+                          </div>
+                          <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              animate={{ width: `${resume.progress}%` }}
+                              transition={{ duration: 1, delay: 0.5 }}
+                              className="h-full bg-linear-to-r from-[#c40116] to-[#be0117] rounded-full relative"
+                            >
+                              <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+                            </motion.div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        </motion.div>
-
-        {/* Empty State */}
-        {filteredResumes.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center py-16"
-          >
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-2xl mb-4">
-              <HiOutlineDocumentDuplicate className="w-10 h-10 text-gray-400" />
+                  </motion.div>
+                );
+              })}
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              No resumes found
-            </h3>
-            <p className="text-gray-600 mb-6">
-              Create your first resume to get started
-            </p>
-            <button
-              onClick={() => router.push("/choose-template")}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-[#c40116] to-[#be0117] text-white font-medium rounded-xl hover:shadow-lg hover:shadow-[#c40116]/25 transition-all duration-300"
-            >
-              <FiPlus className="w-5 h-5" />
-              Create Resume
-            </button>
           </motion.div>
-        )}
 
-        <BillingHistoryModal
-          isOpen={showBillingHistory}
-          onClose={() => setShowBillingHistory(false)}
-          records={billingRecords}
-        />
+          {/* Empty State */}
+          {filteredResumes.length === 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center py-16"
+            >
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-2xl mb-4">
+                <HiOutlineDocumentDuplicate className="w-10 h-10 text-gray-400" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                No resumes found
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Create your first resume to get started
+              </p>
+              <button
+                onClick={() => router.push("/choose-template")}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-[#c40116] to-[#be0117] text-white font-medium rounded-xl hover:shadow-lg hover:shadow-[#c40116]/25 transition-all duration-300"
+              >
+                <FiPlus className="w-5 h-5" />
+                Create Resume
+              </button>
+            </motion.div>
+          )}
+
+          <BillingHistoryModal
+            isOpen={showBillingHistory}
+            onClose={() => setShowBillingHistory(false)}
+            records={paymentRecords || []}
+          />
+        </div>
       </div>
-    </div>
     </ProtectedRoute>
-
   );
-
 };
 
 export default DashboardPage;
