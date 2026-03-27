@@ -18,33 +18,33 @@ const Testimonial = () => {
   const testimonials: TestimonialItem[] = [
     {
       name: "Aisha Khan",
-      role: "MBA Graduate",
+      role: "MBA Fresher",
       rating: 5,
-      text: "I got interviews within 2 weeks after using ARYU Better CV's AI suggestions.",
+      text:"I had zero experience. This tool built my entire resume  got 3 interview calls in 10 days.",
     },
     {
       name: "Rohit Mehta",
       role: "Software Engineer",
       rating: 5,
-      text: "Clean templates and ATS checks made my resume stand out instantly.",
+      text: "ATS score feature showed what I was missing. Fixed it and finally started getting responses.",
     },
     {
       name: "Sonia Patel",
-      role: "Marketing Executive",
+      role: "Marketing Fresher",
       rating: 4,
-      text: "ARYU transformed my vague bullets into impact-driven achievements.",
+      text: "Before: blank resume. After: professional CV with projects & skills added automatically.",
     },
     {
       name: "Karan Verma",
       role: "Final Year Student",
       rating: 5,
-      text: "The UI feels premium and building my resume was super fast.",
+      text: "Super fast. I created and downloaded my resume in under 5 minutes.",
     },
     {
       name: "Neha Sharma",
-      role: "HR Professional",
+      role: "HR Executive",
       rating: 5,
-      text: "Best resume builder I've used. Super clean and recruiter-friendly.",
+      text: "Better than Canva. This actually helps you get shortlisted.",
     },
   ];
 
@@ -66,10 +66,10 @@ const Testimonial = () => {
         {/* Header */}
         <div className="text-center max-w-2xl sm:max-w-3xl mx-auto px-2 sm:px-0">
           <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold lg:font-extrabold text-slate-800">
-            Loved by Career Changers & Students
+Trusted by students & professionals across India
           </h3>
           <p className="mt-2 sm:mt-3 text-sm sm:text-base md:text-lg text-gray-500">
-            120,000+ professionals trust ARYU SmartCV to land interviews faster
+From first time job seekers to experienced professionals see how ARYU SmartCV helped them build resumes that got results.
           </p>
         </div>
 

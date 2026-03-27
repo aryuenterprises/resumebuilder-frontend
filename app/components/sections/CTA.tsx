@@ -11,28 +11,32 @@ const CTA = () => {
           {/* Left Content */}
           <div className="">
             <span className="inline-block mb-3 sm:mb-4 text-xs sm:text-sm font-semibold tracking-wide text-[#c40116] uppercase">
-              Resume Builder Platform
+              {/* Resume Builder Platform */}
+              AI RESUME BUILDER FOR FRESHERS & JOB SEEKERS
+
             </span>
 
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold lg:font-extrabold text-slate-900 leading-tight">
-              Your resume deserves <br className="hidden sm:block" />
-              better than boring templates.
+              Get a Job-Winning Resume in 3 Minutes <br className="hidden sm:block" />
+                Even With No Experience
+
+
+
             </h2>
 
             <p className="mt-4 sm:mt-5 md:mt-6 text-sm sm:text-base md:text-lg text-gray-600 leading-relaxed max-w-xl">
-              Build a professional, ATS-optimized resume that recruiters
-              actually read. Designed for speed, clarity, and real hiring
-              impact.
+             AI builds, writes, and optimizes your resume for real job roles so you get shortlisted faster. No experience? No problem.
+
             </p>
 
             {/* CTA Buttons */}
             <div className="mt-6 sm:mt-8 md:mt-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
               <button onClick={()=>router.push('/choose-template')} className="px-6 sm:px-8 md:px-10 py-3 sm:py-3.5 md:py-4 rounded-xl bg-linear-to-r from-[#c40116] to-[#c40116]/60 text-white font-semibold text-sm sm:text-base md:text-lg hover:bg-[#a80013] transition-all shadow-sm hover:shadow-md active:scale-95 ">
-                Start Building Free
+Create My Resume Now Free
               </button>
 
               <button className="px-6 sm:px-8 md:px-10 py-3 sm:py-3.5 md:py-4 rounded-xl border border-gray-300 text-gray-700 font-semibold text-sm sm:text-base md:text-lg hover:border-gray-400 transition-all hover:bg-gray-50 active:scale-95">
-                Browse Templates
+See Sample Resumes
               </button>
             </div>
 
@@ -50,7 +54,7 @@ const CTA = () => {
                     clipRule="evenodd"
                   />
                 </svg>
-                ATS Friendly
+No experience needed
               </span>
               <span className="inline-flex items-center gap-1.5">
                 <svg
@@ -64,7 +68,7 @@ const CTA = () => {
                     clipRule="evenodd"
                   />
                 </svg>
-                No Design Skills Needed
+ATS-friendly & recruiter-ready
               </span>
               <span className="inline-flex items-center gap-1.5">
                 <svg
@@ -78,7 +82,7 @@ const CTA = () => {
                     clipRule="evenodd"
                   />
                 </svg>
-                Instant Download
+Download in seconds
               </span>
             </div>
           </div>

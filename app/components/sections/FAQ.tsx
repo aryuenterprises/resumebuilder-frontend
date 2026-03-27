@@ -26,91 +26,28 @@ const faqCategories: FAQCategory[] = [
     description: "Basic questions about ARYU SmartCV",
     faqs: [
       {
-        question: "What does ATS-friendly mean?",
+        question: "Can I create a resume without any experience?",
         answer:
-          "ATS-friendly refers to a resume that is designed to be easily read and understood by an Applicant Tracking System (ATS) — the software many employers use to scan and filter resumes before a human even sees them.",
+          "Yes. This tool is built for freshers. The AI automatically creates projects, skills, and experience-style content so your resume doesn’t look empty.",
       },
       {
-        question: "What makes ARYU SmartCV the best resume tool?",
+        question: "Will my resume pass ATS (Applicant Tracking Systems)?",
         answer:
-          "ARYU SmartCV is fast, easy to use, and packed with professional, customizable templates. It helps you create a polished, ATS-friendly resume that gets noticed — all in just a few minutes.",
+"Yes. Every resume is optimized with the right format and keywords to pass ATS and get shortlisted by recruiters."
       },
       {
-        question: "Is my data safe with ARYU SmartCV?",
+        question: "How long does it take to build a resume",
         answer:
-          "Yes! Your data is completely safe with ARYU SmartCV. We use secure systems to protect your personal information and never share it with third parties without your consent.",
+          "Less than 2 minutes. You enter basic details and the AI generates a complete, job-ready resume instantly.",
+      },
+      {
+        question: "Will this help me get interview calls?",
+        answer:
+          "Yes. The resume is designed to improve your chances of getting shortlisted, and many users start receiving interview calls within 7 to 14 days.",
       },
     ],
   },
-  {
-    id: "templates",
-    name: "Templates & Customization",
-    icon: "🎨",
-    description: "Questions about templates and customization options",
-    faqs: [
-      {
-        question: "Can I customize the resume templates?",
-        answer:
-          "Yes! All our resume templates are fully customizable. You can easily change text, layout, colors, and sections to create a resume that perfectly fits your style and experience.",
-      },
-      {
-        question: "How many templates are available?",
-        answer:
-          "We offer 8+ professionally designed templates that cater to different industries and career levels. All templates are ATS-optimized and mobile-responsive.",
-      },
-      {
-        question: "Can I create a cover letter too?",
-        answer:
-          "Yes! You can create a professional cover letter along with your resume. Our platform makes it easy to customize it to match your resume and highlight your strengths.",
-      },
-    ],
-  },
-  {
-    id: "features",
-    name: "Features & Functionality",
-    icon: "⚡",
-    description: "Questions about features and how to use them",
-    faqs: [
-      {
-        question: "Can I build my resume from my phone?",
-        answer:
-          "Absolutely! ARYU SmartCV works perfectly on mobile, tablet, and desktop. Our mobile-optimized interface makes it easy to create and edit your resume on the go.",
-      },
-      {
-        question: "How can I download my resume in PDF?",
-        answer:
-          "Once you've finished creating your resume, just click the 'Download' button and choose PDF format. You can download high-quality PDFs ready for printing or emailing.",
-      },
-      {
-        question: "Is there an AI writing assistant?",
-        answer:
-          "Yes! Our AI writing assistant helps you create compelling bullet points, suggests improvements, and ensures your resume uses industry-standard terminology.",
-      },
-    ],
-  },
-  {
-    id: "pricing",
-    name: "Pricing & Plans",
-    icon: "💰",
-    description: "Questions about pricing, plans, and subscriptions",
-    faqs: [
-      {
-        question: "Is there a free plan?",
-        answer:
-          "Yes! We offer a free plan that includes one resume template and basic features. You can upgrade to premium plans for more templates and advanced features.",
-      },
-      {
-        question: "What payment methods do you accept?",
-        answer:
-          "We accept all major credit cards, debit cards, and PayPal. All payments are processed securely through Stripe.",
-      },
-      {
-        question: "Can I cancel my subscription anytime?",
-        answer:
-          "Yes, you can cancel your subscription at any time. Your premium features will remain active until the end of your billing period.",
-      },
-    ],
-  },
+ 
 ];
 
 export default function Faq() {
@@ -156,17 +93,17 @@ export default function Faq() {
           </span>
 
           <h2 className="font-bold md:font-extrabold text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-slate-900 tracking-tight leading-tight">
-            Frequently Asked Questions
+Still Doubting? Let’s Clear That 
           </h2>
 
           <p className="mt-3 sm:mt-4 md:mt-5 text-sm sm:text-base md:text-lg text-gray-600 leading-relaxed">
-            Everything you need to know about ARYU SmartCV and how it helps you
-            get hired faster.
+           Quick answers before you build your resume and start getting interview calls
+
           </p>
         </div>
 
         {/* Category Tabs */}
-        <div className="mb-8 sm:mb-12 md:mb-16">
+        {/* <div className="mb-8 sm:mb-12 md:mb-16">
           <div className="flex flex-wrap gap-2 sm:gap-3 justify-center">
             {faqCategories.map((category) => (
               <button
@@ -200,10 +137,10 @@ export default function Faq() {
               </button>
             ))}
           </div>
-        </div>
+        </div> */}
 
         {/* Current Category Header */}
-        <div className="mb-6 sm:mb-8">
+        {/* <div className="mb-6 sm:mb-8">
           <div className="flex items-center gap-3 sm:gap-4">
             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#c40116]/10 flex items-center justify-center">
               <span className="text-lg sm:text-xl">
@@ -219,7 +156,7 @@ export default function Faq() {
               </p>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* FAQ Cards */}
         <div className="space-y-3 sm:space-y-4 md:space-y-6">

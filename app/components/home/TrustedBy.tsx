@@ -14,19 +14,22 @@ const TrustedBy = () => {
       <div className="relative text-center">
         {/* Tag */}
         <span className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[#c40116]/10 text-[#c40116] font-semibold text-xs sm:text-sm mb-4 sm:mb-6">
-          Trusted by 10,000+ job seekers
+          ATS optimized by AI  98% pass rate
         </span>
 
         {/* Headline */}
         <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold md:font-extrabold text-slate-900 leading-tight sm:leading-tight md:leading-tight">
-          Build a resume that gets <br className="hidden sm:block" />
-          you hired faster
+         Your resume should open doors, <br className="hidden sm:block" />
+not get filtered out.
+
+          
+
         </h2>
 
         {/* Subtitle */}
         <p className="mt-4 sm:mt-6 text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 max-w-2xl sm:max-w-3xl mx-auto px-2 sm:px-0">
-          ARYU SmartCV helps you create stunning, ATS-friendly resumes in minutes.
-          No design skills. No stress. Just results.
+        Over 75% of resumes never reach a human recruiter. ARYU SmartCV's AI engine ensures yours passes every ATS filter and lands in front of the right people.
+
         </p>
 
         {/* CTA Buttons */}
@@ -50,7 +53,7 @@ const TrustedBy = () => {
         <div className="mt-10 sm:mt-12 md:mt-14 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 md:gap-8 px-2 sm:px-0">
           <div className="flex flex-col items-center gap-1 sm:gap-2 p-2 sm:p-0">
             <span className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-800">
-              10K+
+              10,000+
             </span>
             <span className="text-xs sm:text-sm md:text-base text-gray-500">
               Resumes Created
@@ -68,7 +71,7 @@ const TrustedBy = () => {
 
           <div className="flex flex-col items-center gap-1 sm:gap-2 p-2 sm:p-0">
             <span className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-800">
-              4.9★
+              4.3★
             </span>
             <span className="text-xs sm:text-sm md:text-base text-gray-500">
               User Rating
@@ -77,10 +80,10 @@ const TrustedBy = () => {
 
           <div className="flex flex-col items-center gap-1 sm:gap-2 p-2 sm:p-0">
             <span className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-800">
-              24/7
+              3 min
             </span>
             <span className="text-xs sm:text-sm md:text-base text-gray-500">
-              AI Assistance
+Avg. build time
             </span>
           </div>
         </div>

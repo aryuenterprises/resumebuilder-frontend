@@ -489,7 +489,7 @@ interface Plan {
   id: string;
   name: string;
   price: number;
-  interval: "month" | "year" | "one-time";
+  interval: "month" | "year" | "one-time" | "3 months";
   description: string;
   features: PlanFeature[];
   popular?: boolean;
@@ -505,9 +505,9 @@ export default function ChoosePlanPage() {
 
   const plans: Plan[] = [
     {
-      id: "free",
-      name: "Free",
-      price: 0,
+      id: "basic",
+      name: "Basic",
+      price: 1,
       interval: "one-time",
       description: "Perfect for getting started with basic resume creation",
       color: "from-purple-500 to-indigo-500",
@@ -517,14 +517,14 @@ export default function ChoosePlanPage() {
         { name: "Basic ATS Optimization", included: true },
         { name: "PDF Download", included: true },
         { name: "AI-Powered Suggestions", included: true },
-        { name: "Multiple Templates", included: false },
-        { name: "Photo Upload", included: false },
+        // { name: "Multiple Templates", included: false },
+        // { name: "Photo Upload", included: false },
       ],
     },
     {
       id: "pro",
       name: "Pro",
-      price: 5.99,
+      price: 2,
       interval: "month",
       description: "Ideal for professionals looking to stand out",
       popular: true,
@@ -532,18 +532,18 @@ export default function ChoosePlanPage() {
       icon: <FaCrown className="w-5 h-5 sm:w-6 sm:h-6" />,
       badge: "Most Popular",
       features: [
-        { name: "5 Resume Templates", included: true, highlight: true },
-        { name: "Advanced ATS Optimization", included: true, highlight: true },
-        { name: "AI-Powered Suggestions", included: true, highlight: true },
+        { name: "3 Resume Templates", included: true, highlight: true },
+        { name: "Basic  ATS Optimization", included: true, highlight: true },
+        { name: "AI Content Suggestions", included: true, highlight: true },
         { name: "Photo Upload", included: true },
-        { name: "Cover Letter Builder", included: true },
-        { name: "Interview Prep Kit", included: false },
+        // { name: "Cover Letter Builder", included: true },
+        // { name: "Interview Prep Kit", included: false },
       ],
     },
     {
-      id: "premium",
-      name: "Premium",
-      price: 10.99,
+      id: "pro plus",
+      name: "Pro Plus",
+      price: 3,
       interval: "month",
       description: "Complete career toolkit for serious job seekers",
       color: "from-amber-500 to-orange-500",
@@ -551,7 +551,7 @@ export default function ChoosePlanPage() {
       badge: "Best Value",
       features: [
         { name: "All Templates", included: true, highlight: true },
-        { name: "Premium ATS Optimization", included: true, highlight: true },
+        { name: "Advanced ATS Optimization", included: true, highlight: true },
         { name: "Unlimited AI Suggestions", included: true, highlight: true },
         { name: "Photo Upload", included: true },
         { name: "Cover Letter Builder", included: true },
@@ -619,20 +619,20 @@ export default function ChoosePlanPage() {
             <div className="inline-flex items-center justify-center p-1.5 sm:p-2 bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl mb-4 sm:mb-6">
               <div className="px-3 sm:px-4 py-1.5 sm:py-2 bg-linear-to-r from-yellow-600 to-amber-500 text-white rounded-lg sm:rounded-xl font-semibold flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
                 <IoSparkles className="w-3 h-3 sm:w-4 sm:h-4" />
-                <span>Special Launch Offer - Save up to 30%</span>
+                <span> Launch Offer Get Premium at a Lower Price</span>
               </div>
             </div>
 
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 sm:mb-6 tracking-tight px-4">
-              Choose Your Perfect
+              Upgrade Your Resume.
+
               <span className="block text-transparent bg-clip-text bg-linear-to-r from-yellow-300 to-amber-200 mt-2">
-                Career Growth Plan
-              </span>
+ Get More Interview Calls.              </span>
             </h1>
 
             <p className="text-base sm:text-lg md:text-xl text-white/90 max-w-3xl mx-auto px-4">
-              Unlock premium features, AI-powered suggestions, and professional
-              templates to land your dream job faster.
+            Get better resumes, smarter AI suggestions, and tools that increase your chances of getting shortlisted.
+
             </p>
           </motion.div>
         </div>
@@ -864,27 +864,27 @@ export default function ChoosePlanPage() {
             {[
               {
                 q: "Can I switch plans later?",
-                a: "Yes, you can upgrade or downgrade your plan at any time. Changes will be reflected in your next billing cycle.",
+                a: "Yes. You can upgrade from ₹49 to ₹199 or lifetime anytime. Your access updates instantly.",
               },
               {
                 q: "What payment methods do you accept?",
-                a: "We accept all major credit cards, debit cards, and UPI payments.",
+                a: "We accept UPI, debit cards, credit cards, and all major Indian payment methods.",
               },
               {
-                q: "Is there a free trial?",
-                a: "Yes! All paid plans come with a 7-day free trial. No credit card required.",
+                q: "Is there a free plan?",
+                a: "Yes. You can create and download a basic resume for free.",
               },
               {
-                q: "Can I cancel anytime?",
-                a: "Absolutely. You can cancel your subscription at any time from your account settings.",
+                q: "What do I get in the ₹49 plan?",
+                a: "You get templates, ATS optimization, AI suggestions, and photo upload to improve your resume.",
               },
               {
                 q: "What's included in the free plan?",
                 a: "The free plan includes 1 template, basic ATS optimization, and PDF downloads forever.",
               },
               {
-                q: "Do you offer refunds?",
-                a: "Yes, we offer a 30-day money-back guarantee on all paid plans.",
+                q: "What’s included in the ₹199 plan?",
+                a: "You unlock advanced ATS optimization, better templates, AI improvements, and cover letter builder.",
               },
             ].map((faq, idx) => (
               <motion.div

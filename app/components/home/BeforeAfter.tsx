@@ -12,12 +12,11 @@ const BeforeAfter = () => {
         {/* Left Content */}
         <div className="">
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
-            Meet ARYU SmartCV — your AI resume assistant
+Stop guessing what recruiters want. Let AI do it.
           </h2>
           <p className="mt-4 md:mt-6 text-base sm:text-lg text-slate-600 leading-relaxed">
-            ARYU SmartCV helps polish your language, suggests role-specific
-            skills, and converts achievements into measurable bullets that
-            recruiters love.
+          ARYU SmartCV analyzes your experience, suggests powerful industry specific skills, and rewrites your achievements as measurable impact statements, the kind that pass ATS filters and get callbacks.
+
           </p>
 
           <div className="mt-6 md:mt-8 lg:mt-10">
@@ -29,7 +28,7 @@ const BeforeAfter = () => {
                 color: '#fff',
               }}
             >
-              Try ARYU SmartCV
+              Try Now
             </button>
           </div>
         </div>

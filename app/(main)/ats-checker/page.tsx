@@ -3924,10 +3924,8 @@ const ATSCheckerPage = () => {
             </motion.h1>
 
             <motion.p variants={fadeInUp} className="text-lg text-gray-600 mb-10 max-w-2xl mx-auto">
-              95% of applicants are filtered out before a recruiter even looks.
-              Use our{" "}
-              <span className="font-semibold text-[#c40116]">advanced ATS checker</span>{" "}
-              to optimize your resume for the algorithms that matter.
+           Most resumes get rejected before HR even sees them. Upload yours and let AI fix what’s stopping you from getting shortlisted.
+
             </motion.p>
           </motion.div>
 
@@ -3979,13 +3977,10 @@ const ATSCheckerPage = () => {
                       </p>
 
                       <div className="flex items-center justify-center gap-4 mb-8">
-                        <div className="flex -space-x-3">
-                          <img src="/icons/ats-circleimage1.svg" alt="" className="w-10 h-10 rounded-full border-2 border-white" />
-                          <img src="/icons/ats-circleimage2.svg" alt="" className="w-10 h-10 rounded-full border-2 border-white" />
-                          <img src="/icons/ats-circleimage3.svg" alt="" className="w-10 h-10 rounded-full border-2 border-white" />
-                        </div>
+                       
                         <span className="text-sm text-gray-500">
-                          <span className="font-semibold text-[#c40116]">10,000+</span> resumes analyzed
+AI analyzing resumes instantly
+
                         </span>
                       </div>
 
@@ -3997,7 +3992,7 @@ const ATSCheckerPage = () => {
                           <FiUpload className="w-5 h-5" />
                           Choose File
                         </label>
-                        <p className="text-xs text-gray-500">Supports PDF only</p>
+                        <p className="text-xs text-gray-500">Upload PDF only</p>
                       </div>
                     </div>
                   </div>

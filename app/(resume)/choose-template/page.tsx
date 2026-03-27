@@ -31,6 +31,8 @@ import {
 } from "lucide-react";
 import { LuUsers } from "react-icons/lu";
 import { PiReadCvLogo } from "react-icons/pi";
+import { AiOutlineThunderbolt } from "react-icons/ai";
+
 
 function Choose_template() {
   const router = useRouter();
@@ -44,10 +46,13 @@ function Choose_template() {
   };
 
   const steps = [
-    { id: 1, name: "Choose template", icon: FileText },
-    { id: 2, name: "Enter your details", icon: Sparkles },
-    { id: 3, name: "Download resume", icon: Download },
+    { id: 1, name: "Pick a template", icon: FileText },
+    { id: 2, name: "Add your details", icon: Sparkles },
+    { id: 3, name: "Download & apply", icon: Download },
   ];
+
+
+
 
   const [previewTemplate, setPreviewTemplate] = useState<Template | null>(null);
   const [showPreview, setShowPreview] = useState(false);
@@ -163,10 +168,11 @@ function Choose_template() {
 
                 <div className=" text-center">
                   <h2 className="text-3xl md:text-4xl font-bold mb-2">
-                    Welcome to Aryu SmartCV
+Let’s Build Your Job Winning Resume
                   </h2>
                   <p className="text-white/80 text-lg max-w-lg mx-auto">
-                    Your journey to the perfect resume starts here
+                    Choose how you want to create your resume and get interview ready in minutes
+
                   </p>
                 </div>
               </div>
@@ -190,8 +196,9 @@ function Choose_template() {
                           Create New Resume
                         </h3>
                         <p className="text-gray-600 mb-4 text-start">
-                          Start fresh with our professionally designed templates
-                          and build your perfect resume from scratch
+                          No experience? No problem. AI will build your resume with the right skills, projects, and format
+Create Resume 
+
                         </p>
                         <button
                           onClick={handleCreateNew}
@@ -218,12 +225,12 @@ function Choose_template() {
                           <Upload className="w-6 h-6 text-white" />
                         </div>
                         <h3 className="text-xl font-bold text-gray-900 mb-2">
-                          Upload Existing Resume
+Improve My Existing Resume
+
                         </h3>
                         <p className="text-gray-600 mb-4 text-start">
-                          Upload your current resume and let our AI enhance it
-                          with modern templates and formatting for maximum
-                          impact
+                      Already have a resume? Upload it and let AI rewrite, fix, and optimize it for better results
+Upload & Improve
                         </p>
                         <button
                           onClick={() => {
@@ -245,15 +252,15 @@ function Choose_template() {
                   <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-500">
                     <div className="flex items-center gap-2">
                       <LuUsers className="w-4 h-4 text-[#C40116]" />
-                      <span>10k+ users</span>
+                      <span>Built for freshers & experienced</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <AiOutlineThunderbolt className="w-4 h-4 text-[#C40116]" />
+                      <span>AI powered </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <PiReadCvLogo className="w-4 h-4 text-[#C40116]" />
-                      <span>20k+ resumes created</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Star className="w-4 h-4 text-[#C40116]" />
-                      <span>4.9/5 rating</span>
+                      <span> Ready in 3 minutes</span>
                     </div>
                   </div>
                 </div>
@@ -405,24 +412,24 @@ function Choose_template() {
               className="text-center"
             >
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 sm:mb-6 tracking-tight px-2">
-                Choose Your Perfect
+                Pick a Resume That 
+
                 <span className="block text-transparent bg-clip-text bg-linear-to-r from-yellow-300 to-amber-200 mt-2 sm:mt-0">
-                  Resume Template
-                </span>
+Gets You Shortlisted                </span>
               </h1>
 
               <p className="text-base sm:text-lg lg:text-xl text-white/90 max-w-3xl mx-auto px-4">
-                Just pick your favorite and start building!
+Choose a template and let AI build your job-ready resume in minutes
               </p>
 
               {/* Stats - Responsive grid */}
               <div className="mb-8 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mt-8 sm:mt-10 lg:mt-12 max-w-3xl mx-auto px-4">
                 <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 sm:p-5">
                   <div className="text-2xl sm:text-3xl font-bold text-white">
-                    {templateData.length}+
+                    {templateData.length}
                   </div>
                   <div className="text-xs sm:text-sm text-white/80">
-                    Professional Templates
+ Job Ready Templates
                   </div>
                 </div>
                 <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 sm:p-5">
@@ -430,15 +437,15 @@ function Choose_template() {
                     100%
                   </div>
                   <div className="text-xs sm:text-sm text-white/80">
-                    ATS Friendly
+ATS-Friendly Format
                   </div>
                 </div>
                 <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 sm:p-5">
                   <div className="text-2xl sm:text-3xl font-bold text-white">
-                    5min
+                    3min
                   </div>
                   <div className="text-xs sm:text-sm text-white/80">
-                    Quick Setup
+Ready in 3 Minutes
                   </div>
                 </div>
               </div>
@@ -447,35 +454,34 @@ function Choose_template() {
 
           {/* Curved Bottom - Responsive */}
           <div className="absolute bottom-0 left-0 right-0 h-6 sm:h-8 lg:h-10">
-          <svg
-            viewBox="0 0 1440 100"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            preserveAspectRatio="none"
-            className="w-full h-full"
-          >
-            <path d="M0 100L1440 0V100H0Z" fill="white" fillOpacity="1" />
-          </svg>
-        </div>
+            <svg
+              viewBox="0 0 1440 100"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              preserveAspectRatio="none"
+              className="w-full h-full"
+            >
+              <path d="M0 100L1440 0V100H0Z" fill="white" fillOpacity="1" />
+            </svg>
+          </div>
 
           {/* Wave divider */}
-     
         </div>
 
         <div className="text-center mt-8">
-  <p className="text-gray-600 text-sm mb-3">Already have a resume?</p>
-  <button
-    onClick={() => {
-      setShowInitialPopup(false);
-      setShowUploadPopup(true);
-    }}
-    className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#5E000B] to-[#C40116] text-white rounded-xl cursor-pointer font-semibold text-sm hover:shadow-lg transition-all hover:scale-105 group"
-  >
-    <Upload className="w-4 h-4" />
-    <span>Upload Resume</span>
-    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-  </button>
-</div>
+          <p className="text-gray-600 text-sm mb-3">Have a resume already? Improve it instantly</p>
+          <button
+            onClick={() => {
+              setShowInitialPopup(false);
+              setShowUploadPopup(true);
+            }}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#5E000B] to-[#C40116] text-white rounded-xl cursor-pointer font-semibold text-sm hover:shadow-lg transition-all hover:scale-105 group"
+          >
+            <Upload className="w-4 h-4" />
+            <span>Upload & Improve </span>
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </button>
+        </div>
 
         {/* Floating Progress Bar */}
         <div className="mt-4 sm:mt-5 max-lg:hidden z-50 max-w-6xl mx-auto px-3 sm:px-4 md:px-6">
@@ -515,11 +521,11 @@ function Choose_template() {
             {/* Header */}
             <div className="mb-8 sm:mb-10 md:mb-14 text-center">
               <h2 className="text-lg sm:text-2xl md:text-3xl font-semibold text-gray-900">
-                Choose Your Resume Template
+Select Your Resume Style
               </h2>
               <p className="mt-2 sm:mt-3 md:mt-4 text-gray-600 text-sm sm:text-base md:text-lg max-w-lg sm:max-w-xl md:max-w-2xl mx-auto px-2">
-                Beautifully crafted, recruiter-approved resume templates built
-                for success.
+               Simple, clean, and ATS-friendly templates designed to get you interview calls
+
               </p>
             </div>
 

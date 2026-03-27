@@ -22,8 +22,8 @@ const Footer = () => {
             />
 
                <p className="text-sm sm:text-base text-gray-600 leading-relaxed max-w-xs mb-4 sm:mb-6">
-              Build professional, ATS-friendly resumes in minutes with
-              AI-powered tools. Get noticed. Get hired faster.
+             Create an ATS-friendly resume in minutes with AI. Get shortlisted. Get hired faster.
+
             </p>
 
            

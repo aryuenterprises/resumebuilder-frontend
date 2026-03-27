@@ -45,11 +45,14 @@ const Hero = () => {
           transition={{ delay: 0.1 }}
           className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-black tracking-tight mb-6 leading-tight"
         >
-          Build job-winning resumes
+          {/* Build job-winning resumes */}
+          Your next Job opportunity
           <br />
           <span className="bg-clip-text text-transparent bg-linear-to-b from-black to-red-500">
-            with AI in minutes.
-          </span>
+ starts with the right resume          </span>
+
+          
+
         </motion.h1>
 
         {/* Sub Text */}
@@ -74,7 +77,9 @@ const Hero = () => {
             onClick={() => router.push("/choose-template")}
             className="group relative px-5 md:px-8 py-3 md:py-4 bg-white text-black font-semibold md:font-bold rounded-full overflow-hidden transition-all hover:scale-105 active:scale-95 flex items-center gap-2 cursor-pointer"
           >
-            Start Building Free
+            {/* Start Building Free */}
+            Create My Resume Free
+
             <FiArrowRight className="transition-transform group-hover:translate-x-1" />
           </button>
 
@@ -82,7 +87,7 @@ const Hero = () => {
             onClick={() => router.push("/choose-template")}
             className="max-md:hidden px-5 md:px-8 py-3 md:py-4 bg-red-500/10 border border-black/10 text-black font-bold rounded-full backdrop-blur-sm hover:bg-black/5 transition-all cursor-pointer"
           >
-            Browse Templates
+View Templates
           </button>
         </motion.div>
 

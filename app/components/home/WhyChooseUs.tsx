@@ -19,39 +19,39 @@ interface Feature{
 const features:Feature[] = [
   {
     icon: <FaFileAlt className="w-5 h-5 sm:w-6 sm:h-6" />,
-    title: 'Professional Templates',
+    title: 'Recruiter approved templates',
     description:
-      'Choose from beautifully designed, modern templates for every career level.',
+      'Choose from clean, modern designs built for every career level fresher to senior.',
   },
   {
     icon: <FaCheckCircle className="w-5 h-5 sm:w-6 sm:h-6" />,
-    title: 'ATS-Optimized',
+    title: 'ATS-optimized by default',
     description:
-      'Built to pass applicant tracking systems used by top recruiters.',
+      'Every resume is structured to pass applicant tracking systems at top Indian and global companies.',
   },
   {
     icon: <FaFileAlt className="w-5 h-5 sm:w-6 sm:h-6" />,
-    title: 'Ready-Made Content',
+    title: 'AI-written bullet points',
     description:
-      'Create your resume fast using professionally written bullet points.',
+      'Instantly generate powerful, role-specific bullet points no writing experience needed.',
   },
   {
     icon: <FaMagic className="w-5 h-5 sm:w-6 sm:h-6" />,
-    title: 'AI-Powered Writing',
+    title: 'Smart AI writing assistant',
     description:
-      'Get intelligent suggestions tailored to your job role and experience.',
+      'Get real-time suggestions tailored to your job title, skills, and industry as you build.',
   },
   {
     icon: <FaMountain className="w-5 h-5 sm:w-6 sm:h-6" />,
-    title: 'Stand Out Instantly',
+    title: 'Highlight what makes you unique',
     description:
-      'Highlight your strengths with a resume that beats the competition.',
+      'Our AI surfaces your strongest achievements and presents them the way recruiters want to see them.',
   },
   {
     icon: <FaHandHoldingUsd className="w-5 h-5 sm:w-6 sm:h-6" />,
-    title: 'Land Better Offers',
+    title: 'More interviews. Better offers.',
     description:
-      'Build a resume that leads to more interviews and better salary offers.',
+      'A well-crafted, ATS-ready resume leads directly to more callbacks and stronger salary conversations.',
   },
 ];
 
@@ -68,17 +68,18 @@ const WhyChooseUs = () => {
         {/* Header */}
         <div className="text-center max-w-2xl sm:max-w-3xl mx-auto px-2 sm:px-0">
           <span className="inline-block mb-3 sm:mb-4 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm font-semibold bg-[#c40116]/10 text-[#c40116]">
-            Why ARYU SmartCV?
+Built for India's job market
           </span>
 
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold md:font-extrabold leading-tight text-slate-800">
-            Everything you need to build a{' '}
-            <span className="text-[#c40116]">job-winning resume</span>
+                      Everything you need to land{' '}
+            <span className="text-[#c40116]">your next interview.</span>
+
           </h2>
 
           <p className="mt-3 sm:mt-4 md:mt-5 text-sm sm:text-base md:text-lg text-gray-600 leading-relaxed">
-            Trusted by thousands of job seekers to create professional,
-            ATS-friendly resumes with AI-powered guidance.
+           From fresh graduates to working professionals ARYU SmartCV gives you the tools, templates, and AI assistance to build a resume that actually gets responses.
+
           </p>
         </div>
 
@@ -109,18 +110,19 @@ const WhyChooseUs = () => {
         {/* CTA */}
         <div className="mt-12 sm:mt-16 md:mt-20 text-center px-2 sm:px-0">
           <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-800">
-            Start building your resume in minutes
+Your next opportunity is one resume away.
           </h3>
 
           <p className="mt-1 sm:mt-2 text-sm sm:text-base text-gray-600 max-w-xl mx-auto">
-            Join 120,000+ professionals who landed interviews faster
+Build yours Resume free no signup required. Ready in under 3 minutes.
           </p>
 
           <button
             onClick={() => router.push('/choose-template')}
             className="mt-4 sm:mt-6 px-6 sm:px-8 md:px-10 py-3 sm:py-3.5 md:py-4 rounded-xl font-bold text-white bg-gradient-to-r from-[#c40116] to-[#c40116]/60 shadow-lg sm:shadow-xl hover:scale-105 transition-all duration-200 active:scale-95 text-sm sm:text-base md:text-lg w-full sm:w-auto cursor-pointer"
           >
-            Build My Resume Free
+            Create My Resume Now 
+
           </button>
         </div>
       </div>
