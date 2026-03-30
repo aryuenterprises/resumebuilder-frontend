@@ -117,7 +117,7 @@ const ResumePreviewModal = ({
                     className="relative flex-1 min-h-100 md:min-h-screen w-full group"
                   >
                     {/* Animated glow rings when hover*/}
-                    <div className="absolute -inset-1 sm:-inset-2 lg:-inset-3 bg-linear-to-r from-red-500/10 via-purple-500/10 to-red-50/10 rounded-2xl sm:rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                    <div className="absolute -inset-1 sm:-inset-2 lg:-inset-3 bg-linear-to-r from-red-500/10 via-purple-500/10 to-red-50/10 rounded-2xl sm:rounded-3xl blur-xl  transition-opacity duration-700" />
 
                     {/* Resume Image Container */}
 

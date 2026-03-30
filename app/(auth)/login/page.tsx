@@ -80,7 +80,7 @@ const Login = () => {
         setErrors({});
         setIsLoading(false);
 
-        router.push("/");
+        router.back();
       } else {
         await Swal.fire({
           icon: "error",
