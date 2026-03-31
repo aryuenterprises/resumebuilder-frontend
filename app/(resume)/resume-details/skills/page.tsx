@@ -151,7 +151,7 @@ const SkillsForm = () => {
         UseContext?.experiences?.map((item: any) => item.jobTitle) || [];
 
       const formData = {
-        job_title: experienceTitlesList,
+        job_titles: experienceTitlesList,
       };
 
       const response = await axios.post(
