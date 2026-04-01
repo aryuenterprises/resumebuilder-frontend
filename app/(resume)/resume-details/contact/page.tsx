@@ -865,7 +865,7 @@ const ContactForm = () => {
                           onChange={(e) =>
                             handleContactChange(
                               "address",
-                              sanitizeTextWithCommaHyphen(e.target.value),
+                              e.target.value,
                             )
                           }
                           placeholder="123 Main Street, Apt 4B"

@@ -92,7 +92,7 @@ View Templates
         </motion.div>
 
         {/* Preview Image */}
-        <motion.div
+        {/* <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 1 }}
@@ -100,14 +100,12 @@ View Templates
         >
           <div className="relative p-px rounded-3xl sm:rounded-4xl bg-linear-to-b from-white/20 to-transparent shadow-[0_0_40px_-12px_rgba(0,0,0,0.4)]">
             <div className="bg-[#0b0f1a] rounded-3xl sm:rounded-4xl overflow-hidden">
-              {/* Decorative Window Buttons */}
               <div className="absolute top-4 left-6 flex gap-2 z-20">
                 <div className="w-3 h-3 rounded-full bg-white/10" />
                 <div className="w-3 h-3 rounded-full bg-white/10" />
                 <div className="w-3 h-3 rounded-full bg-white/10" />
               </div>
 
-              {/* Replace with your actual image path */}
               <div className="relative w-full h-75 sm:h-112.5 md:h-[80vh]">
                 <Image
                   src="/images/home-resume.svg" // Update this path to your actual image
@@ -121,7 +119,6 @@ View Templates
             </div>
           </div>
 
-          {/* Floating Cards — Hidden on Mobile */}
           <motion.div
             animate={{ y: [0, -10, 0] }}
             transition={{ duration: 4, repeat: Infinity }}
@@ -154,7 +151,7 @@ View Templates
               </p>
             </div>
           </motion.div>
-        </motion.div>
+        </motion.div> */}
 
         {/* Logos */}
         <div className="mt-10 sm:mt-16 md:mt-24 md:pt-10">

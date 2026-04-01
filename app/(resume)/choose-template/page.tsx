@@ -47,38 +47,40 @@ interface usersCurrentPlan {
 
 // Define plan limits with required plan for each template index
 const PLAN_CONFIG = {
-  free: { 
-    maxTemplates: 1, 
-    label: "Free", 
+  free: {
+    maxTemplates: 1,
+    label: "Free",
     color: "from-gray-500 to-gray-600",
     badgeColor: "bg-gray-100 text-gray-700",
-    icon: Unlock
+    icon: Unlock,
   },
-  pro: { 
-    maxTemplates: 3, 
-    label: "Pro", 
+  pro: {
+    maxTemplates: 3,
+    label: "Pro",
     color: "from-blue-500 to-blue-600",
     badgeColor: "bg-blue-100 text-blue-700",
-    icon: Star
+    icon: Star,
   },
-  proplus: { 
-    maxTemplates: 5, 
-    label: "Pro Plus", 
+  proplus: {
+    maxTemplates: 5,
+    label: "Pro Plus",
     color: "from-purple-500 to-purple-600",
     badgeColor: "bg-purple-100 text-purple-700",
-    icon: Crown
+    icon: Crown,
   },
-  premium: { 
-    maxTemplates: Infinity, 
-    label: "Premium", 
+  premium: {
+    maxTemplates: Infinity,
+    label: "Premium",
     color: "from-amber-500 to-amber-600",
     badgeColor: "bg-amber-100 text-amber-700",
-    icon: Crown
+    icon: Crown,
   },
 };
 
 // Helper function to get required plan for a template index
-const getRequiredPlanForTemplate = (index: number): keyof typeof PLAN_CONFIG => {
+const getRequiredPlanForTemplate = (
+  index: number,
+): keyof typeof PLAN_CONFIG => {
   if (index < PLAN_CONFIG.free.maxTemplates) return "free";
   if (index < PLAN_CONFIG.pro.maxTemplates) return "pro";
   if (index < PLAN_CONFIG.proplus.maxTemplates) return "proplus";
@@ -89,10 +91,13 @@ function Choose_template() {
   const router = useRouter();
   const { setChosenTemplate } = useContext(CreateContext);
 
-  
-  const [usersCurrentPlan, setUsersCurrentPlan] = useState<usersCurrentPlan | null>(null);
+  const [usersCurrentPlan, setUsersCurrentPlan] =
+    useState<usersCurrentPlan | null>(null);
   const [showUpgradePopup, setShowUpgradePopup] = useState(false);
-  const [selectedLockedTemplate, setSelectedLockedTemplate] = useState<{template: Template, requiredPlan: string} | null>(null);
+  const [selectedLockedTemplate, setSelectedLockedTemplate] = useState<{
+    template: Template;
+    requiredPlan: string;
+  } | null>(null);
   const [previewTemplate, setPreviewTemplate] = useState<Template | null>(null);
   const [showPreview, setShowPreview] = useState(false);
   const [showInitialPopup, setShowInitialPopup] = useState(false);
@@ -139,7 +144,7 @@ function Choose_template() {
       const requiredPlan = getRequiredPlanForTemplate(index);
       setSelectedLockedTemplate({
         template,
-        requiredPlan: PLAN_CONFIG[requiredPlan].label
+        requiredPlan: PLAN_CONFIG[requiredPlan].label,
       });
       setShowUpgradePopup(true);
     }
@@ -223,21 +228,19 @@ function Choose_template() {
     //   setIsUploading(false);
     //   setShowUploadPopup(false);
     // }, 500);
-const formData = new FormData();
+    const formData = new FormData();
     formData.append("file", file);
 
     try {
       const response = await axios.post(
         `https://ai.aryuacademy.com/api/v1/resume/parse-resume`,
         formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
+        { headers: { "Content-Type": "multipart/form-data" } },
       );
 
-      console.log("response",response)
-    }
-
-    catch(err){
-      console.log(err)
+      console.log("response", response);
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -265,7 +268,6 @@ const formData = new FormData();
   return (
     <div className="min-h-screen bg-linear-to-b from-gray-50 to-white">
       <Header />
-
 
       {/* Initial Popup */}
       <AnimatePresence>
@@ -518,8 +520,6 @@ const formData = new FormData();
         )}
       </AnimatePresence>
 
-   
-
       <div>
         {/* Hero Section */}
         <div className="relative overflow-hidden bg-linear-to-r from-[#5E000B] to-[#C40116]">
@@ -547,7 +547,8 @@ const formData = new FormData();
                 <div className="mt-6 inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
                   <Crown className="w-4 h-4 text-yellow-300" />
                   <span className="text-sm text-white capitalize">
-                    {currentPlan} Plan • {availableTemplates} Templates Available
+                    {currentPlan} Plan • {availableTemplates} Templates
+                    Available
                   </span>
                 </div>
               )}
@@ -677,28 +678,35 @@ const formData = new FormData();
                   >
                     {/* Image Section */}
                     <div className="relative bg-[#fff5f6] p-4 sm:p-6 md:p-8">
-                      
-
                       {/* Required Plan Badge */}
                       {isPremium ? (
-                        <div className={`absolute top-2 sm:top-3 md:top-4 left-2 sm:left-3 md:left-4 ${PLAN_CONFIG[requiredPlan].badgeColor} px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs font-bold shadow-sm z-10 flex items-center gap-1`}>
-                          {requiredPlan === "premium" ? <Crown className="w-3 h-3" /> : <Star className="w-3 h-3" />}
+                        <div
+                          className={`absolute top-2 sm:top-3 md:top-4 left-2 sm:left-3 md:left-4 ${PLAN_CONFIG[requiredPlan].badgeColor} px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs font-bold shadow-sm z-10 flex items-center gap-1`}
+                        >
+                          {requiredPlan === "premium" ? (
+                            <Crown className="w-3 h-3" />
+                          ) : (
+                            <Star className="w-3 h-3" />
+                          )}
                           <span>{requiredPlanLabel}</span>
                         </div>
-                      ) : <div className={`absolute top-2 sm:top-3 md:top-4 left-2 sm:left-3 md:left-4 ${PLAN_CONFIG[requiredPlan].badgeColor} px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs font-bold shadow-sm z-10 flex items-center gap-1`}>
-                        
+                      ) : (
+                        <div
+                          className={`absolute top-2 sm:top-3 md:top-4 left-2 sm:left-3 md:left-4 ${PLAN_CONFIG[requiredPlan].badgeColor} px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs font-bold shadow-sm z-10 flex items-center gap-1`}
+                        >
                           <span>Free</span>
-                        </div>}
+                        </div>
+                      )}
 
                       <div className="relative w-full h-50 sm:h-62.5 md:h-75 lg:h-85">
                         <Image
                           src={template.image}
                           alt={template.style}
                           fill
-                          className={`object-contain transition-transform duration-500 ${
+                          className={`object-contain w-full scale-115 transition-transform duration-500 scale ${
                             isAccessible ? "group-hover:scale-105" : ""
                           }`}
-                          sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+                          // sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
                         />
                       </div>
 
@@ -714,7 +722,9 @@ const formData = new FormData();
 
                         {isAccessible ? (
                           <button
-                            onClick={() => handleTemplateSelect(template, index)}
+                            onClick={() =>
+                              handleTemplateSelect(template, index)
+                            }
                             className="px-4 py-2 rounded-lg bg-linear-to-r from-[#c40116] to-[#be0117] text-white font-semibold text-sm shadow-lg hover:scale-105 transition-transform cursor-pointer flex items-center gap-2"
                           >
                             <Sparkles className="w-4 h-4" />
@@ -733,7 +743,7 @@ const formData = new FormData();
                     </div>
 
                     {/* Info Section */}
-                    <div className="p-4 sm:p-5 md:p-6">
+                    {/* <div className="p-4 sm:p-5 md:p-6">
                       <div className="flex items-center justify-between mb-2">
                         <h3 className="text-lg sm:text-xl font-bold text-gray-900">
                           {template.style}
@@ -759,7 +769,7 @@ const formData = new FormData();
                           Upgrade to {requiredPlanLabel} to use this template
                         </button>
                       )}
-                    </div>
+                    </div> */}
                   </div>
                 );
               })}
@@ -782,7 +792,8 @@ const formData = new FormData();
                         Unlock All {totalTemplates} Templates
                       </h3>
                       <p className="text-sm text-gray-600">
-                        Upgrade to Premium to access all templates and premium features
+                        Upgrade to Premium to access all templates and premium
+                        features
                       </p>
                     </div>
                   </div>
@@ -804,20 +815,19 @@ const formData = new FormData();
                 setShowPreview(false);
                 setPreviewTemplate(null);
               }}
-
-              
               onUse={() => {
                 if (previewTemplate) {
                   const templateIndex = templateData.findIndex(
-                    (t) => t.id === previewTemplate.id
+                    (t) => t.id === previewTemplate.id,
                   );
                   if (isTemplateAccessible(templateIndex)) {
                     clickresumedetails(previewTemplate);
                   } else {
-                    const requiredPlan = getRequiredPlanForTemplate(templateIndex);
+                    const requiredPlan =
+                      getRequiredPlanForTemplate(templateIndex);
                     setSelectedLockedTemplate({
                       template: previewTemplate,
-                      requiredPlan: PLAN_CONFIG[requiredPlan].label
+                      requiredPlan: PLAN_CONFIG[requiredPlan].label,
                     });
                     setShowPreview(false);
                     setShowUpgradePopup(true);
@@ -838,12 +848,31 @@ export default Choose_template;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // "use client";
 
 // import { useContext, useState, useEffect } from "react";
 // import Image from "next/image";
 // import { useRouter } from "next/navigation";
-// // import SubscriptionPopup from './SubscriptionPopup';
 // import ResumePreviewModal from "../../components/resume/ResumePreviewModal";
 // import { CreateContext } from "@/app/context/CreateContext";
 // import { templateData } from "@/app/data";
@@ -932,8 +961,6 @@ export default Choose_template;
 //     fetchUserData();
 //   }, []);
 
-//   console.log("usersCurrentPlan",usersCurrentPlan?.plan)
-
 //   // ─── this will hide main scrollbar ───────────────────────────────────────────────
 //   useEffect(() => {
 //     if (showPreview || showInitialPopup || showUploadPopup)
@@ -946,7 +973,6 @@ export default Choose_template;
 //   // Handle file upload with progress simulation
 //   const handleFileUpload = async (file: File) => {
 //       if (!file) return;
-    
 
 //     const formData = new FormData();
 //     formData.append("file", file);
@@ -961,7 +987,7 @@ export default Choose_template;
 //       console.log(response)
 //     } catch (error) {
 //       console.error(error);
-//     } 
+//     }
 //   };
 
 //   // Handle drag events
@@ -1404,16 +1430,16 @@ export default Choose_template;
 //                         </div>
 //                       )} */}
 
-//                       <div className="absolute top-2 sm:top-3 md:top-4 right-2 sm:right-3 md:right-4 bg-white border border-gray-200 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs font-semibold text-gray-700 shadow-sm">
+//                       {/* <div className="absolute top-2 sm:top-3 md:top-4 right-2 sm:right-3 md:right-4 bg-white border border-gray-200 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs font-semibold text-gray-700 shadow-sm">
 //                         ATS Friendly
-//                       </div>
+//                       </div> */}
 
 //                       <div className="relative w-full h-50 sm:h-62.5 md:h-75 lg:h-85">
 //                         <Image
 //                           src={template.image}
 //                           alt={template.style}
 //                           fill
-//                           className="object-contain group-hover:scale-105 transition-transform duration-500"
+//                           className="object-contain scale-115  transition-transform duration-500"
 //                           sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
 //                         />
 //                       </div>
@@ -1490,15 +1516,7 @@ export default Choose_template;
 //               }}
 //             />
 
-//             {/* Subscription Popup */}
-//             {/* <SubscriptionPopup
-//              show={showPopup}
-//              onClose={() => {
-//                setShowPopup(false);
-//                setSelectedTemplate(null);
-//              }}
-//              template={selectedTemplate}
-//            /> */}
+           
 //           </div>
 //         </section>
 //       </div>

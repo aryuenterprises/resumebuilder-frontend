@@ -1,5 +1,6 @@
 import {
   TemplateEight,
+  TemplateEighteen,
   TemplateEleven,
   TemplateFifteen,
   TemplateFive,
@@ -23,7 +24,7 @@ export const templateData: Template[] = [
   {
     id: 1,
     style: "Free",
-    image: "/images/resume1.png",
+    image: "/images/resume1.jpg",
     description:
       "A sleek, contemporary design with bold headings and clean lines.",
     temp: "free",
@@ -32,7 +33,7 @@ export const templateData: Template[] = [
   {
     id: 2,
     style: "Corporate",
-    image: "/images/resume2.svg",
+    image: "/images/resume2.jpg",
     description: "Elegant design with professional fonts and spacing.",
     pic: "true",
     temp: "paid",
@@ -42,7 +43,7 @@ export const templateData: Template[] = [
   {
     id: 3,
     style: "The Global Starter",
-    image: "/images/resume3.svg",
+    image: "/images/resume3.jpg",
     description: "Minimalist style emphasizing clarity and simplicity.",
     temp: "paid",
     component: TemplateThree,
@@ -50,7 +51,7 @@ export const templateData: Template[] = [
   {
     id: 4,
     style: "The Scholar",
-    image: "/images/resume4.svg",
+    image: "/images/resume4.jpg",
     description: "Creative design with eye-catching sections.",
     temp: "paid",
     component: TemplateFour,
@@ -58,7 +59,7 @@ export const templateData: Template[] = [
   {
     id: 5,
     style: "The Creator",
-    image: "/images/resume5.svg",
+    image: "/images/resume5.jpg",
     description: "Structured layout with clear hierarchy.",
     pic: "true",
     temp: "paid",
@@ -67,7 +68,7 @@ export const templateData: Template[] = [
   {
     id: 6,
     style: "The Innovator",
-    image: "/images/resume6.svg",
+    image: "/images/resume6.jpg",
     description: "Professional layout with modern typography.",
     temp: "paid",
     component: TemplateSix,
@@ -156,4 +157,11 @@ export const templateData: Template[] = [
     // description: "Creative design with eye-catching sections.",
     // temp: "paid",
     // component: TemplateSeventeen  },
+  //  {  id: 18,
+  //   style: "The Analyst",
+  //   image: "/images/resume17.png",
+  //   description: "Creative design with eye-catching sections.",
+  //   temp: "paid",
+  //       pic: "true",
+  //   component: TemplateEighteen  },
 ];

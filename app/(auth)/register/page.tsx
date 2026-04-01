@@ -244,7 +244,7 @@ export default function RegisterForm() {
       setErrors({});
 
       // Redirect to login page
-      // router.push("/login");
+      router.push("/login");
     } catch (err: any) {
       console.error("Registration Error:", err);
 

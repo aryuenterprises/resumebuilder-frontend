@@ -71,6 +71,9 @@ export default function RootLayout({
         croppedImage: data?.photo || null,
       };
 
+
+      
+
       setContact(updatedContact);
       fetchResumeFullData(data?._id);
 
@@ -130,6 +133,9 @@ export default function RootLayout({
           summary: data.summary[0] || "",
           finalize: data.finalize?.[0] || {},
         });
+
+
+        
 
         initialLoadDone.current = true;
 
