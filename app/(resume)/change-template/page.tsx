@@ -510,6 +510,7 @@ import { getLocalStorage, setLocalStorage } from "@/app/utils";
 import axios from "axios";
 import { User } from "@/app/types/user.types";
 import { API_URL } from "@/app/config/api";
+import ProtectedRoute from "@/app/utils/ProtectedRoute";
 
 interface usersCurrentPlan {
   amount: number;
@@ -583,7 +584,7 @@ export default function ChangeTemplate() {
   // Get current plan name (normalized)
   const getCurrentPlan = (): keyof typeof PLAN_CONFIG => {
     const plan = usersCurrentPlan?.plan?.toLowerCase() || "";
-    if (plan.includes("proplus")) return "proplus";
+    if (plan.includes("pro plus")) return "proplus";
     if (plan.includes("pro")) return "pro";
     if (plan.includes("premium")) return "premium";
     return "free";
@@ -735,6 +736,8 @@ export default function ChangeTemplate() {
 
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-gray-50">
+      <ProtectedRoute>
+
       <Header />
 
       {/* Mobile Sidebar Toggle */}
@@ -1301,6 +1304,8 @@ export default function ChangeTemplate() {
           }
         }
       `}</style>
+      </ProtectedRoute>
+
     </div>
   );
 }
