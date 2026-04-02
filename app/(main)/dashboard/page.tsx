@@ -158,6 +158,18 @@ const DashboardPage = () => {
         });
 
         setusersCurrentPlan(response?.data?.payments?.[0]);
+        fetchOldResumeData();
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    const fetchOldResumeData = async () => {
+      try {
+        const response = await axios.get(
+          `${API_URL}/api/contact-resume/all-contact/${userId}`,
+        );
+
       } catch (err) {
         console.log(err);
       }
@@ -308,11 +320,10 @@ const DashboardPage = () => {
       }
     };
 
-
-    console.log(records)
-const totalSpent = records.reduce((acc, curr) => {
-  return curr.status === "paid" ? acc + curr.amount : acc;
-}, 0);
+    console.log(records);
+    const totalSpent = records.reduce((acc, curr) => {
+      return curr.status === "paid" ? acc + curr.amount : acc;
+    }, 0);
 
     return (
       <AnimatePresence>
@@ -360,8 +371,8 @@ const totalSpent = records.reduce((acc, curr) => {
                 </div>
               </div>
 
- {/* Summary Cards */}
-      <div className="p-6 border-b border-gray-200 bg-gray-50/50">
+              {/* Summary Cards */}
+              <div className="p-6 border-b border-gray-200 bg-gray-50/50">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
                     <p className="text-sm text-gray-500 mb-1">
@@ -385,8 +396,6 @@ const totalSpent = records.reduce((acc, curr) => {
                   </div>
                 </div>
               </div>
-
-            
 
               {/* Billing Records Table */}
               <div className="overflow-y-auto max-h-100 p-6">
@@ -480,7 +489,7 @@ const totalSpent = records.reduce((acc, curr) => {
     );
   };
 
-  const parseApiData = (htmlString:string) => {
+  const parseApiData = (htmlString: string) => {
     const parser = new DOMParser();
     const doc = parser.parseFromString(htmlString, "text/html");
     const listItems = doc.querySelectorAll("li");
@@ -711,13 +720,10 @@ const totalSpent = records.reduce((acc, curr) => {
                 <div className="h-full bg-white rounded-3xl shadow-xl border border-gray-200/50 overflow-hidden hover:shadow-2xl transition-all duration-500">
                   {/* Plan Header */}
                   <div className="relative bg-linear-to-r from-[rgb(196,1,22)] via-[#be0117] to-[#9a0e1a] p-6 overflow-hidden ">
-                   
+                    <div className="absolute inset-0 bg-white/10 transform -skew-y-12 translate-y-full group-hover:translate-y-0 transition-transform duration-700"></div>
+                    <div className="absolute -bottom-12 -right-12 w-32 h-32 bg-white/10 rounded-full"></div>
+                    <div className="absolute -top-12 -left-12 w-32 h-32 bg-black/10 rounded-full"></div>
 
-                  <div className="absolute inset-0 bg-white/10 transform -skew-y-12 translate-y-full group-hover:translate-y-0 transition-transform duration-700"></div>
-                  <div className="absolute -bottom-12 -right-12 w-32 h-32 bg-white/10 rounded-full"></div>
-                  <div className="absolute -top-12 -left-12 w-32 h-32 bg-black/10 rounded-full"></div>
-                
-                   
                     {/* <div className="absolute inset-0 bg-white/10 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                     <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-8 -mt-8"></div>
                     <div className="absolute bottom-0 left-0 w-32 h-32 bg-black/10 rounded-full -ml-8 -mb-8"></div> */}
@@ -872,7 +878,7 @@ const totalSpent = records.reduce((acc, curr) => {
           </motion.div>
 
           {/* Resumes Section  */}
-          {/* <motion.div
+          <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -1112,7 +1118,7 @@ const totalSpent = records.reduce((acc, curr) => {
                 );
               })}
             </div>
-          </motion.div> */}
+          </motion.div>
 
           {/* Empty State */}
           {/* {filteredResumes.length === 0 && (

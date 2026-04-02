@@ -125,7 +125,7 @@ const ExperienceForm = () => {
         setExperiences(formattedData);
         setLastSavedData(JSON.stringify(formattedData));
       } else {
-        console.log("No experience data found for user");
+        console.error("No experience data found for user");
       }
 
       initialLoadDone.current = true;

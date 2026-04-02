@@ -36,9 +36,7 @@
 //   ====================================================== */
 //   const styles = `
 
-
 // @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap');
-
 
 //   body {
 //     margin: 0;
@@ -397,7 +395,7 @@
 //     // Helper: render experience text exactly as React preview does
 //     const renderExperienceText = (text: string) => {
 //       if (!text) return "";
-      
+
 //       // Check if text contains HTML (has tags)
 //       if (text.includes('<') && text.includes('>')) {
 //         // If it already has list items, ensure they have proper styling
@@ -406,7 +404,7 @@
 //         }
 //         return `<div class="item-content experience-description">${text}</div>`;
 //       }
-      
+
 //       // Check for bullet points in plain text
 //       const lines = text.split("\n").filter((line) => line.trim() !== "");
 //       if (lines.some((line) => line.trim().startsWith("-") || line.trim().startsWith("•"))) {
@@ -434,7 +432,7 @@
 //     // Helper: render education text exactly as React preview does
 //     const renderEducationText = (text: string) => {
 //       if (!text) return "";
-      
+
 //       // Check if text contains HTML
 //       if (text.includes('<') && text.includes('>')) {
 //         if (text.includes('<ul>') || text.includes('<ol>') || text.includes('<li>')) {
@@ -442,7 +440,7 @@
 //         }
 //         return `<div class="item-content education-description">${text}</div>`;
 //       }
-      
+
 //       const lines = text.split("\n").filter((line) => line.trim() !== "");
 //       if (lines.some((line) => line.trim().startsWith("-") || line.trim().startsWith("•"))) {
 //         return `
@@ -476,7 +474,7 @@
 //       <style>${styles}</style>
 //       <style>
 //         /* Critical list styles to ensure bullets display correctly */
-//         .experience-description ul, 
+//         .experience-description ul,
 //         .education-description ul,
 //         .experience-list ul,
 //         .education-list ul,
@@ -486,8 +484,8 @@
 //           padding-left: 20px !important;
 //           margin: 5px 0 !important;
 //         }
-        
-//         .experience-description ol, 
+
+//         .experience-description ol,
 //         .education-description ol,
 //         .experience-list ol,
 //         .education-list ol,
@@ -497,8 +495,8 @@
 //           padding-left: 20px !important;
 //           margin: 5px 0 !important;
 //         }
-        
-//         .experience-description li, 
+
+//         .experience-description li,
 //         .education-description li,
 //         .experience-list li,
 //         .education-list li {
@@ -506,23 +504,23 @@
 //           line-height: 1.5 !important;
 //           list-style-position: outside !important;
 //         }
-        
+
 //         /* Force disc for any ul */
 //         ul {
 //           list-style-type: disc !important;
 //         }
-        
+
 //         /* Override any potential browser defaults */
 //         .item-content ul {
 //           list-style-type: disc !important;
 //         }
-        
+
 //         .wrap-break-word {
 //           word-wrap: break-word;
 //           overflow-wrap: break-word;
 //         }
 //       </style>
-     
+
 //     </head>
 //     <body>
 //       <div class="resume-container">
@@ -549,7 +547,7 @@
 //               linkedinUrl
 //                 ? `<a href="${linkedinUrl.startsWith("http") ? linkedinUrl : `https://${linkedinUrl}`}" class="link-item">LinkedIn</a>`
 //                 : ""
-                
+
 //             }
 //             ${
 //               portfolioUrl
@@ -1340,16 +1338,10 @@
 
 // export default TemplateOne;
 
-
-
-
-
-
-
 // ─── Template One (Fixed) ───────────────────────────────────────────────
 "use client";
 import React, { useContext } from "react";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { CreateContext } from "@/app/context/CreateContext";
 import { API_URL } from "@/app/config/api";
 import { formatMonthYear, MonthYearDisplay } from "@/app/utils";
@@ -1829,14 +1821,21 @@ resume-container  p {
         return `<div class="item-content experience-description wrap-break-word">${text}</div>`;
       }
       const lines = text.split("\n").filter((l) => l.trim() !== "");
-      if (lines.some((l) => l.trim().startsWith("-") || l.trim().startsWith("•"))) {
+      if (
+        lines.some((l) => l.trim().startsWith("-") || l.trim().startsWith("•"))
+      ) {
         return `<div class="item-content experience-description">
           <ul class="experience-list">
-            ${lines.map((l) => {
-              const t = l.trim();
-              const c = t.startsWith("-") || t.startsWith("•") ? t.substring(1).trim() : t;
-              return c ? `<li>${c}</li>` : "";
-            }).join("")}
+            ${lines
+              .map((l) => {
+                const t = l.trim();
+                const c =
+                  t.startsWith("-") || t.startsWith("•")
+                    ? t.substring(1).trim()
+                    : t;
+                return c ? `<li>${c}</li>` : "";
+              })
+              .join("")}
           </ul>
         </div>`;
       }
@@ -1849,14 +1848,21 @@ resume-container  p {
         return `<div class="item-content education-description">${text}</div>`;
       }
       const lines = text.split("\n").filter((l) => l.trim() !== "");
-      if (lines.some((l) => l.trim().startsWith("-") || l.trim().startsWith("•"))) {
+      if (
+        lines.some((l) => l.trim().startsWith("-") || l.trim().startsWith("•"))
+      ) {
         return `<div class="education-content">
           <ul class="education-list">
-            ${lines.map((l) => {
-              const t = l.trim();
-              const c = t.startsWith("-") || t.startsWith("•") ? t.substring(1).trim() : t;
-              return c ? `<li>${c}</li>` : "";
-            }).join("")}
+            ${lines
+              .map((l) => {
+                const t = l.trim();
+                const c =
+                  t.startsWith("-") || t.startsWith("•")
+                    ? t.substring(1).trim()
+                    : t;
+                return c ? `<li>${c}</li>` : "";
+              })
+              .join("")}
           </ul>
         </div>`;
       }
@@ -1879,7 +1885,7 @@ resume-container  p {
   <!-- HEADER -->
   <div class="contact-info">
     <h2 class="name">${contact?.firstName || ""} ${contact?.lastName || ""}</h2>
-    <div class="job-title">${contact?.jobTitle ? typeof contact.jobTitle === "string" ? contact.jobTitle : (contact.jobTitle as any)?.name || "" : ""}</div>
+    <div class="job-title">${contact?.jobTitle ? (typeof contact.jobTitle === "string" ? contact.jobTitle : (contact.jobTitle as any)?.name || "") : ""}</div>
     <div class="address">${addressParts.join(", ")}</div>
     <div class="contact-details">
       ${contact?.email ? `<span>${contact.email}</span>` : ""}
@@ -1892,18 +1898,25 @@ resume-container  p {
   </div>
 
   <!-- SUMMARY -->
-  ${summary ? `<div class="section-content">
+  ${
+    summary
+      ? `<div class="section-content">
     <div class="section-title">Summary</div>
     <div class="item-content summary-text">${summary.replace(/\n/g, "<br>")}</div>
-  </div>` : ""}
+  </div>`
+      : ""
+  }
 
   <!-- EXPERIENCE -->
-  ${experiences.length > 0 ? `<div class="section-content">
+  ${
+    experiences.length > 0
+      ? `<div class="section-content">
     <div class="section-title">Experience</div>
-    ${experiences.map((exp) => {
-      const s = formatMonthYear(exp.startDate, true);
-      const e = exp.endDate ? formatMonthYear(exp.endDate, true) : "Present";
-      return `<div class="experience-item" style="margin-bottom:16px">
+    ${experiences
+      .map((exp) => {
+        const s = formatMonthYear(exp.startDate, true);
+        const e = exp.endDate ? formatMonthYear(exp.endDate, true) : "Present";
+        return `<div class="experience-item" style="margin-bottom:16px">
         <div class="item-header experience-header">
           <div class="item-title-container">
             <div class="item-title">${exp.jobTitle || ""}</div>
@@ -1913,15 +1926,24 @@ resume-container  p {
         </div>
         ${exp.text ? renderExperienceText(exp.text) : ""}
       </div>`;
-    }).join("")}
-  </div>` : ""}
+      })
+      .join("")}
+  </div>`
+      : ""
+  }
 
   <!-- EDUCATION -->
-  ${educations.length > 0 ? `<div class="section-content">
+  ${
+    educations.length > 0
+      ? `<div class="section-content">
     <div class="section-title">Education</div>
-    ${educations.map((edu) => {
-      const dateStr = edu.startDate || edu.endDate ? `${edu.startDate || ""}${edu.startDate && edu.endDate ? " - " : ""}${edu.endDate || ""}` : "";
-      return `<div class="education-item" style="margin-bottom:16px">
+    ${educations
+      .map((edu) => {
+        const dateStr =
+          edu.startDate || edu.endDate
+            ? `${edu.startDate || ""}${edu.startDate && edu.endDate ? " - " : ""}${edu.endDate || ""}`
+            : "";
+        return `<div class="education-item" style="margin-bottom:16px">
         <div class="item-header education-header">
           <div class="item-title-container">
             <div class="item-title">${edu.schoolname || ""}</div>
@@ -1931,78 +1953,180 @@ resume-container  p {
         </div>
         ${renderEducationText(edu.text || "")}
       </div>`;
-    }).join("")}
-  </div>` : ""}
+      })
+      .join("")}
+  </div>`
+      : ""
+  }
 
   <!-- SKILLS -->
-  ${skills.length > 0 ? `<div class="section-content">
+  ${
+    skills.length > 0
+      ? `<div class="section-content">
     <div class="section-title">Skills</div>
     <div class="skills-grid">
-      ${skills.map((s) => `<div class="skill-item"><div class="skill-info">
+      ${skills
+        .map(
+          (s) => `<div class="skill-item"><div class="skill-info">
         <div class="skill-name">${s.skill || ""}</div>
         ${s.skill && s.level ? `<div class="skill-bar"><div class="skill-level" style="width:${(Number(s.level) / 4) * 100}%"></div></div>` : ""}
-      </div></div>`).join("")}
+      </div></div>`,
+        )
+        .join("")}
     </div>
-  </div>` : ""}
+  </div>`
+      : ""
+  }
 
   <!-- LANGUAGES -->
-  ${finalize && !Array.isArray(finalize) && Array.isArray(finalize.languages) && finalize.languages.some((l) => l.name && l.name.trim() !== "") ? `<div class="section-content">
+  ${
+    finalize &&
+    !Array.isArray(finalize) &&
+    Array.isArray(finalize.languages) &&
+    finalize.languages.some((l) => l.name && l.name.trim() !== "")
+      ? `<div class="section-content">
     <div class="section-title">Languages</div>
     <div class="skills-grid languages-grid">
-      ${finalize.languages.filter((l) => l.name && l.name.trim() !== "").map((l) => `<div class="skill-item">
+      ${finalize.languages
+        .filter((l) => l.name && l.name.trim() !== "")
+        .map(
+          (l) => `<div class="skill-item">
         <div class="skill-name">${l.name}</div>
         ${l.level ? `<div class="skill-bar"><div class="skill-level" style="width:${(Number(l.level) / 4) * 100}%"></div></div>` : ""}
-      </div>`).join("")}
+      </div>`,
+        )
+        .join("")}
     </div>
-  </div>` : ""}
+  </div>`
+      : ""
+  }
 
   <!-- CERTIFICATIONS -->
-  ${finalize && !Array.isArray(finalize) && Array.isArray(finalize.certificationsAndLicenses) && finalize.certificationsAndLicenses.some((i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "") ? `<div class="section-content">
+  ${
+    finalize &&
+    !Array.isArray(finalize) &&
+    Array.isArray(finalize.certificationsAndLicenses) &&
+    finalize.certificationsAndLicenses.some(
+      (i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "",
+    )
+      ? `<div class="section-content">
     <div class="section-title">Certifications and Licenses</div>
     <div class="item-content additional-content">
-      ${finalize.certificationsAndLicenses.filter((i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "").map((i) => `<div class="additional-item">${i.name}</div>`).join("")}
+      ${finalize.certificationsAndLicenses
+        .filter((i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "")
+        .map((i) => `<div class="additional-item">${i.name}</div>`)
+        .join("")}
     </div>
-  </div>` : ""}
+  </div>`
+      : ""
+  }
 
   <!-- HOBBIES -->
-  ${finalize && !Array.isArray(finalize) && Array.isArray(finalize.hobbiesAndInterests) && finalize.hobbiesAndInterests.some((i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "") ? `<div class="section-content">
+  ${
+    finalize &&
+    !Array.isArray(finalize) &&
+    Array.isArray(finalize.hobbiesAndInterests) &&
+    finalize.hobbiesAndInterests.some(
+      (i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "",
+    )
+      ? `<div class="section-content">
     <div class="section-title">Hobbies and Interests</div>
     <div class="item-content additional-content">
-      ${finalize.hobbiesAndInterests.filter((i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "").map((i) => `<div class="additional-item">${i.name}</div>`).join("")}
+      ${finalize.hobbiesAndInterests
+        .filter((i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "")
+        .map((i) => `<div class="additional-item">${i.name}</div>`)
+        .join("")}
     </div>
-  </div>` : ""}
+  </div>`
+      : ""
+  }
 
   <!-- AWARDS -->
-  ${finalize && !Array.isArray(finalize) && Array.isArray(finalize.awardsAndHonors) && finalize.awardsAndHonors.some((i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "") ? `<div class="section-content">
+  ${
+    finalize &&
+    !Array.isArray(finalize) &&
+    Array.isArray(finalize.awardsAndHonors) &&
+    finalize.awardsAndHonors.some(
+      (i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "",
+    )
+      ? `<div class="section-content">
     <div class="section-title">Awards and Honors</div>
     <div class="item-content additional-content">
-      ${finalize.awardsAndHonors.filter((i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "").map((i) => `<div class="additional-item">${i.name}</div>`).join("")}
+      ${finalize.awardsAndHonors
+        .filter((i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "")
+        .map((i) => `<div class="additional-item">${i.name}</div>`)
+        .join("")}
     </div>
-  </div>` : ""}
+  </div>`
+      : ""
+  }
 
   <!-- WEBSITES -->
-  ${finalize && !Array.isArray(finalize) && Array.isArray(finalize.websitesAndSocialMedia) && finalize.websitesAndSocialMedia.some((i) => (i.websiteUrl && i.websiteUrl.trim() !== "") || (i.socialMedia && i.socialMedia.trim() !== "")) ? `<div class="section-content">
+  ${
+    finalize &&
+    !Array.isArray(finalize) &&
+    Array.isArray(finalize.websitesAndSocialMedia) &&
+    finalize.websitesAndSocialMedia.some(
+      (i) =>
+        (i.websiteUrl && i.websiteUrl.trim() !== "") ||
+        (i.socialMedia && i.socialMedia.trim() !== ""),
+    )
+      ? `<div class="section-content">
     <div class="section-title">Websites and Social Media</div>
     <div class="item-content additional-content">
-      ${finalize.websitesAndSocialMedia.filter((i) => i.websiteUrl || i.socialMedia).map((i) => `<div class="additional-item">${i.websiteUrl ? `<div>Website: ${i.websiteUrl}</div>` : ""}${i.socialMedia ? `<div>Social Media: ${i.socialMedia}</div>` : ""}</div>`).join("")}
+      ${finalize.websitesAndSocialMedia
+        .filter((i) => i.websiteUrl || i.socialMedia)
+        .map(
+          (i) =>
+            `<div class="additional-item">${i.websiteUrl ? `<div>Website: ${i.websiteUrl}</div>` : ""}${i.socialMedia ? `<div>Social Media: ${i.socialMedia}</div>` : ""}</div>`,
+        )
+        .join("")}
     </div>
-  </div>` : ""}
+  </div>`
+      : ""
+  }
 
   <!-- REFERENCES -->
-  ${finalize && !Array.isArray(finalize) && Array.isArray(finalize.references) && finalize.references.some((i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "") ? `<div class="section-content">
+  ${
+    finalize &&
+    !Array.isArray(finalize) &&
+    Array.isArray(finalize.references) &&
+    finalize.references.some(
+      (i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "",
+    )
+      ? `<div class="section-content">
     <div class="section-title">References</div>
     <div class="item-content additional-content">
-      ${finalize.references.filter((i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "").map((i) => `<div class="additional-item">${i.name}</div>`).join("")}
+      ${finalize.references
+        .filter((i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "")
+        .map((i) => `<div class="additional-item">${i.name}</div>`)
+        .join("")}
     </div>
-  </div>` : ""}
+  </div>`
+      : ""
+  }
 
   <!-- CUSTOM SECTIONS -->
-  ${finalize && !Array.isArray(finalize) && Array.isArray(finalize.customSection) && finalize.customSection.some((s) => s?.name?.trim() || s?.description?.trim()) ? `<div class="section-content">
-    ${finalize.customSection.filter((s) => s?.name?.trim() || s?.description?.trim()).map((s) => `<div class="custom-section">
+  ${
+    finalize &&
+    !Array.isArray(finalize) &&
+    Array.isArray(finalize.customSection) &&
+    finalize.customSection.some(
+      (s) => s?.name?.trim() || s?.description?.trim(),
+    )
+      ? `<div class="section-content">
+    ${finalize.customSection
+      .filter((s) => s?.name?.trim() || s?.description?.trim())
+      .map(
+        (s) => `<div class="custom-section">
       ${s.name ? `<div class="section-title custom-section-title">${s.name}</div>` : ""}
       ${s.description ? `<div class="item-content custom-section-content">${s.description}</div>` : ""}
-    </div>`).join("")}
-  </div>` : ""}
+    </div>`,
+      )
+      .join("")}
+  </div>`
+      : ""
+  }
 
 </div>
 </body>
@@ -2012,27 +2136,248 @@ resume-container  p {
   /* ======================================================
      PDF DOWNLOAD
   ====================================================== */
-  const handleDownload = async () => {
-    try {
-      const html = generateHTML();
-      const res = await axios.post(
-        `${API_URL}/api/candidates/generate-pdf`,
-        { html },
-        { responseType: "blob" },
-      );
-      const url = URL.createObjectURL(res.data);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("Error generating PDF:", error);
-      alert("Failed to generate PDF. Please try again.");
-    }
-  };
+  // const handleDownload = async () => {
+  //   try {
+  //     const html = generateHTML();
+  //     const res = await axios.post(
+  //       `${API_URL}/api/candidates/generate-pdf`,
+  //       { html },
+  //       { responseType: "blob" },
+  //     );
+  //     const url = URL.createObjectURL(res.data);
+  //     const a = document.createElement("a");
+
+  //     console.log(a)
+
+  //     a.href = url;
+  //     a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
+  //     document.body.appendChild(a);
+  //     a.click();
+  //     document.body.removeChild(a);
+  //     URL.revokeObjectURL(url);
+  //       fetchOldResumeData()
+
+  //   } catch (error) {
+  //     console.error("Error generating PDF:", error);
+  //     alert("Failed to generate PDF. Please try again.");
+  //   }
+  // };
+
+  // const fetchOldResumeData = async () => {
+  //   try {
+  //     const response = await axios.post(`${API_URL}/api/users/download-resume`, {
+  //       userId: "69ccd736435d1233e16e79a6",
+  //       message: "success",
+  //       contactId: "69ccdd1e435d1233e16e7afb",
+  //     });
+
+  //     console.log("response", response);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
+
+
+
+
+
+
+
+
+
+
+
+
+interface Contact {
+  firstName?: string;
+  lastName?: string;
+
+}
+
+
+
+const handleDownload = async (): Promise<void> => {
+  try {
+    const html: string = generateHTML(); // Assuming this returns a string
+
+    const res: AxiosResponse<Blob> = await axios.post(
+      `${API_URL}/api/candidates/generate-pdf`,
+      { html },
+      { responseType: "blob" }
+    );
+
+    const pdfBlob: Blob = res.data;
+
+    const url: string = URL.createObjectURL(pdfBlob);
+    const a: HTMLAnchorElement = document.createElement("a");
+
+    a.href = url;
+    a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    // --- Server Upload Logic ---
+    // We pass the pdfBlob directly to the next function
+    // await fetchOldResumeData(pdfBlob);
+
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    alert("Failed to generate PDF. Please try again.");
+  }
+};
+
+
+// const fetchOldResumeData = async (pdfBlob: Blob): Promise<void> => {
+//   try {
+//     const formData = new FormData();
+    
+//     // Append metadata
+//     formData.append("userId", "69ccd736435d1233e16e79a6");
+//     formData.append("message", "success");
+//     formData.append("contactId", "69ccdd1e435d1233e16e7afb");
+    
+//     // Append the actual file
+//     // The third parameter provides the filename to the server
+//     formData.append("resumeFile", pdfBlob, "resume.pdf");
+
+//     console.log("formData",formData)
+
+//     const response: AxiosResponse = await axios.post(
+//       `${API_URL}/api/users/download-resume`, 
+//       formData, 
+//       {
+//         headers: {
+//           "Content-Type": "multipart/form-data",
+//         },
+//       }
+//     );
+
+//     console.log("Upload success:", response.data);
+//   } catch (err) {
+//     console.error("Upload error:", err);
+//   }
+// }
+
+
+
+
+
+
+
+
+// const fetchOldResumeData = async (pdfBlob: Blob): Promise<void> => {
+
+//   console.log("pdfBlob", pdfBlob);
+
+//   try {
+//     // 1. Initialize the Class
+//     const formData = new FormData();
+    
+//       console.log("formData", formData);
+
+
+//     // 2. Append values
+//     formData.append("userId", "69ccd736435d1233e16e79a6");
+//     formData.append("message", "success");
+//     formData.append("contactId", "69ccdd1e435d1233e16e7afb");
+    
+//     // 3. Append the Blob (Crucial: add the filename)
+//     // formData.append("resumeFile", pdfBlob);
+
+//           console.log("formData", formData);
+
+//     // 4. The Axios call
+//     // IMPORTANT: Pass 'formData' directly. Do NOT do { formData }
+//     const response = await axios.post(
+//       `${API_URL}/api/users/download-resume`, 
+//       formData, 
+//       {
+//         headers: {
+//           // It is often better to NOT set Content-Type manually with FormData.
+//           // Axios/Browser will automatically set it with the correct "boundary".
+//           "Content-Type": "multipart/form-data",
+//         },
+//       }
+//     );
+
+//     console.log("Success:", response.data);
+//   } catch (err) {
+//     console.error("Upload error:", err);
+//   }
+// };
+
+
+
+  
+
+
+
+// const fetchOldResumeData = async (pdfBlob: Blob): Promise<void> => {
+//   const formData = new FormData();
+  
+//   // 1. Add your text fields
+  
+//   formData.append("file", pdfBlob, "resume.pdf");
+//   formData.append("userId", "69ccd736435d1233e16e79a6");
+//   formData.append("message", "success");
+//   formData.append("contactId", "69ccdd1e435d1233e16e7afb");
+  
+//   // 2. Add the Blob with a filename (Required for many backends)
+
+//   try {
+//     const response = await axios({
+//       method: "post",
+//       url: `${API_URL}/api/users/download-resume`,
+//       data: formData,
+//       headers: {
+//         // IMPORTANT: Do NOT set Content-Type here. 
+//         // Letting it be undefined allows the browser to auto-generate 
+//         // the header WITH the essential 'boundary' string.
+//         "Content-Type": undefined, 
+//       },
+//     });
+
+//     console.log("Response:", response.data);
+//   } catch (err) {
+//     // If you get a 400/500 error here, the problem is 100% the Backend 
+//     // not having 'multer' or a similar multipart parser.
+//     console.error("Upload failed:", err);
+//   }
+// };
+
+
+// const fetchOldResumeData = async (pdfBlob: Blob): Promise<void> => {
+//   const formData = new FormData();
+//   formData.append("resume", pdfBlob, "resume.pdf");
+//   formData.append("userId", "69ccd736435d1233e16e79a6");
+//   formData.append("message", "success");
+//   formData.append("contactId", "69ccdd1e435d1233e16e7afb");
+
+//   try {
+//     const response = await axios.post(
+//       `${API_URL}/api/users/download-resume`,
+//       formData
+//       // No headers config at all — browser auto-sets multipart/form-data + boundary
+//     );
+//     console.log("Response:", response.data);
+//   } catch (err) {
+//     console.error("Upload failed:", err);
+//   }
+// };
+
+
+
+
+
+
+
+
+
+
+
+
 
   const stripHtml = (html: string) =>
     html?.replace(/<\/?[^>]+(>|$)/g, "") || "";
@@ -2043,7 +2388,13 @@ resume-container  p {
   return (
     <div style={{ textAlign: "center", marginTop: 0 }}>
       {lastSegment === "download-resume" && (
-        <div style={{ textAlign: "center", marginTop: "20px", marginBottom: "20px" }}>
+        <div
+          style={{
+            textAlign: "center",
+            marginTop: "20px",
+            marginBottom: "20px",
+          }}
+        >
           <button
             onClick={handleDownload}
             className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors cursor-pointer"
@@ -2062,9 +2413,15 @@ resume-container  p {
 
         {/* HEADER */}
         <div className="contact-info">
-          <div className="name">{contact?.firstName} {contact?.lastName}</div>
+          <div className="name">
+            {contact?.firstName} {contact?.lastName}
+          </div>
           <div className="job-title">
-            {contact?.jobTitle ? typeof contact.jobTitle === "string" ? contact.jobTitle : (contact.jobTitle as any)?.name || "" : ""}
+            {contact?.jobTitle
+              ? typeof contact.jobTitle === "string"
+                ? contact.jobTitle
+                : (contact.jobTitle as any)?.name || ""
+              : ""}
           </div>
           <div className="address">{addressParts.join(", ")}</div>
           <div className="contact-details">
@@ -2073,10 +2430,32 @@ resume-container  p {
           </div>
           <div className="links">
             {linkedinUrl && (
-              <a href={linkedinUrl.startsWith("http") ? linkedinUrl : `https://${linkedinUrl}`} className="link-item" target="_blank" rel="noreferrer">LinkedIn</a>
+              <a
+                href={
+                  linkedinUrl.startsWith("http")
+                    ? linkedinUrl
+                    : `https://${linkedinUrl}`
+                }
+                className="link-item"
+                target="_blank"
+                rel="noreferrer"
+              >
+                LinkedIn
+              </a>
             )}
             {portfolioUrl && (
-              <a href={portfolioUrl.startsWith("http") ? portfolioUrl : `https://${portfolioUrl}`} className="link-item" target="_blank" rel="noreferrer">Portfolio</a>
+              <a
+                href={
+                  portfolioUrl.startsWith("http")
+                    ? portfolioUrl
+                    : `https://${portfolioUrl}`
+                }
+                className="link-item"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Portfolio
+              </a>
             )}
           </div>
         </div>
@@ -2085,7 +2464,12 @@ resume-container  p {
         {summary && (
           <div className="section-content">
             <div className="section-title">Summary</div>
-            <div className="item-content summary-text" dangerouslySetInnerHTML={{ __html: summary.replace(/\n/g, "<br>") }} />
+            <div
+              className="item-content summary-text"
+              dangerouslySetInnerHTML={{
+                __html: summary.replace(/\n/g, "<br>"),
+              }}
+            />
           </div>
         )}
 
@@ -2094,20 +2478,34 @@ resume-container  p {
           <div className="section-content">
             <div className="section-title">Experience</div>
             {experiences.map((exp, i) => (
-              <div key={i} className="experience-item" style={{ marginBottom: "16px" }}>
+              <div
+                key={i}
+                className="experience-item"
+                style={{ marginBottom: "16px" }}
+              >
                 <div className="item-header experience-header">
                   <div className="item-title-container">
                     <div className="item-title">{exp.jobTitle}</div>
-                    <div className="item-subtitle">{exp.employer}{exp.location && ` — ${exp.location}`}</div>
+                    <div className="item-subtitle">
+                      {exp.employer}
+                      {exp.location && ` — ${exp.location}`}
+                    </div>
                   </div>
                   <div className="item-date experience-date">
                     <MonthYearDisplay value={exp.startDate} shortYear />
                     {" - "}
-                    {exp.endDate ? <MonthYearDisplay value={exp.endDate} shortYear /> : "Present"}
+                    {exp.endDate ? (
+                      <MonthYearDisplay value={exp.endDate} shortYear />
+                    ) : (
+                      "Present"
+                    )}
                   </div>
                 </div>
                 {exp.text && (
-                  <div className="item-content experience-description wrap-break-word" dangerouslySetInnerHTML={{ __html: exp.text }} />
+                  <div
+                    className="item-content experience-description wrap-break-word"
+                    dangerouslySetInnerHTML={{ __html: exp.text }}
+                  />
                 )}
               </div>
             ))}
@@ -2122,41 +2520,68 @@ resume-container  p {
               let textContent = null;
               if (edu.text) {
                 if (edu.text.includes("<") && edu.text.includes(">")) {
-                  textContent = <div className="item-content education-description" dangerouslySetInnerHTML={{ __html: edu.text }} />;
+                  textContent = (
+                    <div
+                      className="item-content education-description"
+                      dangerouslySetInnerHTML={{ __html: edu.text }}
+                    />
+                  );
                 } else {
-                  const lines = edu.text.split("\n").filter((l) => l.trim() !== "");
+                  const lines = edu.text
+                    .split("\n")
+                    .filter((l) => l.trim() !== "");
                   if (lines.some((l) => l.trim().startsWith("-"))) {
                     textContent = (
                       <div className="education-content">
                         <ul className="education-list">
                           {lines.map((l, li) => {
                             const t = l.trim();
-                            const c = t.startsWith("-") ? t.substring(1).trim() : t;
+                            const c = t.startsWith("-")
+                              ? t.substring(1).trim()
+                              : t;
                             return c ? <li key={li}>{c}</li> : null;
                           })}
                         </ul>
                       </div>
                     );
                   } else {
-                    textContent = <div className="item-content education-description" style={{ whiteSpace: "pre-wrap" }}>{stripHtml(edu.text)}</div>;
+                    textContent = (
+                      <div
+                        className="item-content education-description"
+                        style={{ whiteSpace: "pre-wrap" }}
+                      >
+                        {stripHtml(edu.text)}
+                      </div>
+                    );
                   }
                 }
               }
               return (
-                <div key={edu.id || index} className="education-item" style={{ marginBottom: "16px" }}>
+                <div
+                  key={edu.id || index}
+                  className="education-item"
+                  style={{ marginBottom: "16px" }}
+                >
                   <div className="item-header education-header">
                     <div className="item-title-container">
                       <div className="item-title">{edu.schoolname || ""}</div>
                       {(edu.degree || edu.location) && (
                         <div className="item-subtitle">
                           {edu.degree && <span>{edu.degree}</span>}
-                          {edu.location && <>{edu.degree && " — "}<span>{edu.location}</span></>}
+                          {edu.location && (
+                            <>
+                              {edu.degree && " — "}
+                              <span>{edu.location}</span>
+                            </>
+                          )}
                         </div>
                       )}
                     </div>
                     {(edu.startDate || edu.endDate) && (
                       <div className="item-date education-date">
-                        {edu.startDate || ""}{edu.startDate && edu.endDate && " - "}{edu.endDate || ""}
+                        {edu.startDate || ""}
+                        {edu.startDate && edu.endDate && " - "}
+                        {edu.endDate || ""}
                       </div>
                     )}
                   </div>
@@ -2178,7 +2603,12 @@ resume-container  p {
                     <div className="skill-name">{skill.skill}</div>
                     {skill.skill && skill.level && (
                       <div className="skill-bar">
-                        <div className="skill-level" style={{ width: `${(Number(skill.level) / 4) * 100}%` }} />
+                        <div
+                          className="skill-level"
+                          style={{
+                            width: `${(Number(skill.level) / 4) * 100}%`,
+                          }}
+                        />
                       </div>
                     )}
                   </div>
@@ -2189,107 +2619,194 @@ resume-container  p {
         )}
 
         {/* LANGUAGES */}
-        {finalize && !Array.isArray(finalize) && Array.isArray(finalize.languages) && finalize.languages.some((l) => l.name && l.name.trim() !== "") && (
-          <div className="section-content">
-            <div className="section-title">Languages</div>
-            <div className="skills-grid languages-grid">
-              {finalize.languages.map((lang, index) =>
-                lang.name && lang.name.trim() !== "" && (
-                  <div key={lang._id || index} className="skill-item">
-                    <div className="skill-name">{lang.name}</div>
-                    {lang.level && <div className="skill-bar"><div className="skill-level" style={{ width: `${(Number(lang.level) / 4) * 100}%` }} /></div>}
-                  </div>
-                )
-              )}
+        {finalize &&
+          !Array.isArray(finalize) &&
+          Array.isArray(finalize.languages) &&
+          finalize.languages.some((l) => l.name && l.name.trim() !== "") && (
+            <div className="section-content">
+              <div className="section-title">Languages</div>
+              <div className="skills-grid languages-grid">
+                {finalize.languages.map(
+                  (lang, index) =>
+                    lang.name &&
+                    lang.name.trim() !== "" && (
+                      <div key={lang._id || index} className="skill-item">
+                        <div className="skill-name">{lang.name}</div>
+                        {lang.level && (
+                          <div className="skill-bar">
+                            <div
+                              className="skill-level"
+                              style={{
+                                width: `${(Number(lang.level) / 4) * 100}%`,
+                              }}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    ),
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
         {/* CERTIFICATIONS */}
-        {finalize && !Array.isArray(finalize) && Array.isArray(finalize?.certificationsAndLicenses) && finalize.certificationsAndLicenses.some((i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "") && (
-          <div className="section-content">
-            <div className="section-title">Certifications and Licenses</div>
-            <div className="item-content additional-content">
-              {finalize.certificationsAndLicenses.map((item, index) =>
-                item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "" && (
-                  <div key={item.id || index} className="additional-item" dangerouslySetInnerHTML={{ __html: item.name }} />
-                )
-              )}
+        {finalize &&
+          !Array.isArray(finalize) &&
+          Array.isArray(finalize?.certificationsAndLicenses) &&
+          finalize.certificationsAndLicenses.some(
+            (i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "",
+          ) && (
+            <div className="section-content">
+              <div className="section-title">Certifications and Licenses</div>
+              <div className="item-content additional-content">
+                {finalize.certificationsAndLicenses.map(
+                  (item, index) =>
+                    item.name &&
+                    item.name.replace(/<[^>]*>/g, "").trim() !== "" && (
+                      <div
+                        key={item.id || index}
+                        className="additional-item"
+                        dangerouslySetInnerHTML={{ __html: item.name }}
+                      />
+                    ),
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
         {/* HOBBIES */}
-        {finalize && !Array.isArray(finalize) && Array.isArray(finalize?.hobbiesAndInterests) && finalize.hobbiesAndInterests.some((i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "") && (
-          <div className="section-content">
-            <div className="section-title">Hobbies and Interests</div>
-            <div className="item-content additional-content">
-              {finalize.hobbiesAndInterests.map((item, index) =>
-                item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "" && (
-                  <div key={item.id || index} className="additional-item" dangerouslySetInnerHTML={{ __html: item.name }} />
-                )
-              )}
+        {finalize &&
+          !Array.isArray(finalize) &&
+          Array.isArray(finalize?.hobbiesAndInterests) &&
+          finalize.hobbiesAndInterests.some(
+            (i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "",
+          ) && (
+            <div className="section-content">
+              <div className="section-title">Hobbies and Interests</div>
+              <div className="item-content additional-content">
+                {finalize.hobbiesAndInterests.map(
+                  (item, index) =>
+                    item.name &&
+                    item.name.replace(/<[^>]*>/g, "").trim() !== "" && (
+                      <div
+                        key={item.id || index}
+                        className="additional-item"
+                        dangerouslySetInnerHTML={{ __html: item.name }}
+                      />
+                    ),
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
         {/* AWARDS */}
-        {finalize && !Array.isArray(finalize) && Array.isArray(finalize?.awardsAndHonors) && finalize.awardsAndHonors.some((i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "") && (
-          <div className="section-content">
-            <div className="section-title">Awards and Honors</div>
-            <div className="item-content additional-content">
-              {finalize.awardsAndHonors.map((item, index) =>
-                item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "" && (
-                  <div key={item.id || index} className="additional-item" dangerouslySetInnerHTML={{ __html: item.name }} />
-                )
-              )}
+        {finalize &&
+          !Array.isArray(finalize) &&
+          Array.isArray(finalize?.awardsAndHonors) &&
+          finalize.awardsAndHonors.some(
+            (i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "",
+          ) && (
+            <div className="section-content">
+              <div className="section-title">Awards and Honors</div>
+              <div className="item-content additional-content">
+                {finalize.awardsAndHonors.map(
+                  (item, index) =>
+                    item.name &&
+                    item.name.replace(/<[^>]*>/g, "").trim() !== "" && (
+                      <div
+                        key={item.id || index}
+                        className="additional-item"
+                        dangerouslySetInnerHTML={{ __html: item.name }}
+                      />
+                    ),
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
         {/* WEBSITES */}
-        {finalize && !Array.isArray(finalize) && Array.isArray(finalize?.websitesAndSocialMedia) && finalize.websitesAndSocialMedia.some((i) => (i.websiteUrl && i.websiteUrl.trim() !== "") || (i.socialMedia && i.socialMedia.trim() !== "")) && (
-          <div className="section-content">
-            <div className="section-title">Websites and Social Media</div>
-            <div className="item-content additional-content">
-              {finalize.websitesAndSocialMedia.map((item, index) =>
-                (item.websiteUrl || item.socialMedia) && (
-                  <div key={item.id || index} className="additional-item">
-                    {item.websiteUrl && <div>Website: {item.websiteUrl}</div>}
-                    {item.socialMedia && <div>Social Media: {item.socialMedia}</div>}
-                  </div>
-                )
-              )}
+        {finalize &&
+          !Array.isArray(finalize) &&
+          Array.isArray(finalize?.websitesAndSocialMedia) &&
+          finalize.websitesAndSocialMedia.some(
+            (i) =>
+              (i.websiteUrl && i.websiteUrl.trim() !== "") ||
+              (i.socialMedia && i.socialMedia.trim() !== ""),
+          ) && (
+            <div className="section-content">
+              <div className="section-title">Websites and Social Media</div>
+              <div className="item-content additional-content">
+                {finalize.websitesAndSocialMedia.map(
+                  (item, index) =>
+                    (item.websiteUrl || item.socialMedia) && (
+                      <div key={item.id || index} className="additional-item">
+                        {item.websiteUrl && (
+                          <div>Website: {item.websiteUrl}</div>
+                        )}
+                        {item.socialMedia && (
+                          <div>Social Media: {item.socialMedia}</div>
+                        )}
+                      </div>
+                    ),
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
         {/* REFERENCES */}
-        {finalize && !Array.isArray(finalize) && Array.isArray(finalize?.references) && finalize.references.some((i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "") && (
-          <div className="section-content">
-            <div className="section-title">References</div>
-            <div className="item-content additional-content">
-              {finalize.references.map((item, index) =>
-                item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "" && (
-                  <div key={item.id || index} className="additional-item" dangerouslySetInnerHTML={{ __html: item.name }} />
-                )
-              )}
+        {finalize &&
+          !Array.isArray(finalize) &&
+          Array.isArray(finalize?.references) &&
+          finalize.references.some(
+            (i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "",
+          ) && (
+            <div className="section-content">
+              <div className="section-title">References</div>
+              <div className="item-content additional-content">
+                {finalize.references.map(
+                  (item, index) =>
+                    item.name &&
+                    item.name.replace(/<[^>]*>/g, "").trim() !== "" && (
+                      <div
+                        key={item.id || index}
+                        className="additional-item"
+                        dangerouslySetInnerHTML={{ __html: item.name }}
+                      />
+                    ),
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
         {/* CUSTOM SECTIONS */}
-        {finalize && !Array.isArray(finalize) && Array.isArray(finalize?.customSection) && finalize.customSection.some((s) => s?.name?.trim() || s?.description?.trim()) && (
-          <div className="section-content">
-            {finalize.customSection.filter((s) => s?.name?.trim() || s?.description?.trim()).map((section, index) => (
-              <div key={section.id || index} className="custom-section">
-                {section.name && <div className="section-title custom-section-title">{section.name}</div>}
-                {section.description && <div className="item-content custom-section-content" dangerouslySetInnerHTML={{ __html: section.description }} />}
-              </div>
-            ))}
-          </div>
-        )}
-
+        {finalize &&
+          !Array.isArray(finalize) &&
+          Array.isArray(finalize?.customSection) &&
+          finalize.customSection.some(
+            (s) => s?.name?.trim() || s?.description?.trim(),
+          ) && (
+            <div className="section-content">
+              {finalize.customSection
+                .filter((s) => s?.name?.trim() || s?.description?.trim())
+                .map((section, index) => (
+                  <div key={section.id || index} className="custom-section">
+                    {section.name && (
+                      <div className="section-title custom-section-title">
+                        {section.name}
+                      </div>
+                    )}
+                    {section.description && (
+                      <div
+                        className="item-content custom-section-content"
+                        dangerouslySetInnerHTML={{
+                          __html: section.description,
+                        }}
+                      />
+                    )}
+                  </div>
+                ))}
+            </div>
+          )}
       </div>
     </div>
   );

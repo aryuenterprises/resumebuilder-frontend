@@ -656,7 +656,6 @@ export default function ChangeTemplate() {
           },
         });
 
-        console.log("response", response?.data?.payments);
         setUsersCurrentPlan(response?.data?.payments?.[0]);
       } catch (err) {
         console.log(err);

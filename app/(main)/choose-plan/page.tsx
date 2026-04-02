@@ -444,7 +444,6 @@ export default function ChoosePlanPage() {
           },
         );
 
-        console.log("response", response);
 
         Swal.fire({
           icon: "success",

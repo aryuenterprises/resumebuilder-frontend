@@ -238,7 +238,6 @@ function Choose_template() {
         { headers: { "Content-Type": "multipart/form-data" } },
       );
 
-      console.log("response", response);
     } catch (err) {
       console.log(err);
     }
