@@ -57,22 +57,19 @@ export default function RootLayout({
       const updatedContact = {
         ...contact,
         contactId: data?._id || "",
-        firstName: data?.firstName || userDetails?.firstName || "",
-        lastName: data?.lastName || userDetails?.lastName || "",
+        firstName: data?.firstName || "",
+        lastName: data?.lastName || "",
         jobTitle: data?.jobTitle || "",
-        phone: data?.phone || userDetails?.phone || "",
-        email: data?.email || userDetails?.email || "",
+        phone: data?.phone || "",
+        email: data?.email || "",
         address: data?.address || "",
-        city: data?.city || userDetails?.city || "",
-        country: data?.country || userDetails?.country || "",
+        city: data?.city || "",
+        country: data?.country || "",
         postcode: data?.postCode || "",
         linkedin: data?.linkedIn || "",
         portfolio: data?.portfolio || "",
         croppedImage: data?.photo || null,
       };
-
-
-      
 
       setContact(updatedContact);
       fetchResumeFullData(data?._id);
@@ -134,9 +131,6 @@ export default function RootLayout({
           finalize: data.finalize?.[0] || {},
         });
 
-
-        
-
         initialLoadDone.current = true;
 
         setLocalStorage("fullResumeData", {
@@ -168,7 +162,6 @@ export default function RootLayout({
 
   return (
     <div className="flex h-screen bg-gray-100 gap-5 relative">
-     
       <LoginModel />
 
       <aside className="w-full lg:w-1/2 overflow-y-auto">{children}</aside>

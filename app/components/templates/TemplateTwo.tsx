@@ -2186,34 +2186,26 @@
 
 "use client";
 import React, { useContext, useState, useEffect } from "react";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { CreateContext } from "@/app/context/CreateContext";
 import { API_URL } from "@/app/config/api";
-import { MonthYearDisplay, formatMonthYear } from "@/app/utils";
+import { MonthYearDisplay, formatMonthYear, getLocalStorage } from "@/app/utils";
 import { IoPersonOutline } from "react-icons/io5";
-import {
-  Contact,
-  Education,
-  Experience,
-  Finalize,
-  Skill,
-} from "@/app/types/context.types";
+
 import { usePathname } from "next/navigation";
+import { User } from "@/app/types/user.types";
+import { AllData } from "@/app/types";
 
-interface AllData {
-  contact?: Contact;
-  educations?: Education[];
-  experiences?: Experience[];
-  skills?: Skill[];
-  finalize?: Finalize;
-  summary?: string;
-}
 
-interface Resume4Props {
+
+interface ResumeProps {
   alldata?: AllData;
 }
 
-const TemplateTwo: React.FC<Resume4Props> = ({ alldata }) => {
+const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
+
+  console.log("alldata",alldata)
+
   const UseContext = useContext(CreateContext);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const pathname = usePathname();
@@ -2890,27 +2882,79 @@ const TemplateTwo: React.FC<Resume4Props> = ({ alldata }) => {
   /* ======================================================
      PDF DOWNLOAD
   ====================================================== */
-  const handleDownload = async () => {
+  const handleDownload = async (): Promise<void> => {
     try {
-      const html = generateHTML();
-      const res = await axios.post(
+      const html: string = generateHTML(); // Assuming this returns a string
+  
+      const res: AxiosResponse<Blob> = await axios.post(
         `${API_URL}/api/candidates/generate-pdf`,
         { html },
-        { responseType: "blob" },
+        { responseType: "blob" }
       );
-      const url = window.URL.createObjectURL(res.data);
-      const a = document.createElement("a");
+  
+      const pdfBlob: Blob = res.data;
+  
+      const url: string = URL.createObjectURL(pdfBlob);
+      const a: HTMLAnchorElement = document.createElement("a");
+  
       a.href = url;
       a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
+      URL.revokeObjectURL(url);
+  
+      // --- Server Upload Logic ---
+      // We pass the pdfBlob directly to the next function
+      await fetchOldResumeData(pdfBlob);
+  
     } catch (error) {
       console.error("Error generating PDF:", error);
       alert("Failed to generate PDF. Please try again.");
     }
   };
+
+
+    const Contactid = UseContext?.contact.contactId;
+     const userDetails = getLocalStorage <User>("user_details");
+      const userId = userDetails?.id; 
+
+  const fetchOldResumeData = async (pdfBlob: Blob): Promise<void> => {
+
+     if (!userId || !Contactid) {
+    console.error("Missing userId or Contactid");
+    return;
+  }
+  
+  try {
+    const formData = new FormData();
+    
+    // Append metadata
+    formData.append("userId", userId);
+    formData.append("message", "success");
+    formData.append("contactId", Contactid);
+    
+    // Append the actual file
+    // The third parameter provides the filename to the server
+    formData.append("resume", pdfBlob, "resume.pdf");
+
+    console.log("formData",formData)
+
+    const response: AxiosResponse = await axios.post(
+      `${API_URL}/api/users/download-resume`, 
+      formData, 
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    console.log("Upload success:", response.data);
+  } catch (err) {
+    console.error("Upload error:", err);
+  }
+}
 
   /* ======================================================
      JSX PREVIEW — uses same CSS classes as generateHTML

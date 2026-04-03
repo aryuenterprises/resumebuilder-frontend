@@ -133,7 +133,6 @@ export interface Template {
   component?: ComponentType<any>;
 }
 
-
 export interface FullResumeData {
   template: Template | null;
   contact: Contact;
@@ -142,7 +141,19 @@ export interface FullResumeData {
   skills: Skill[];
   summary: string;
   finalize: Finalize;
+
 }
+
+
+export interface AllData {
+  contact?: Contact;
+  educations?: Education[];
+  experiences?: Experience[];
+  skills?: Skill[];
+  finalize?: Finalize;
+  summary?: string;
+}
+
 
 export interface CreateContextType {
   chosenTemplate: Template | null;
@@ -188,6 +199,8 @@ export interface CreateContextType {
   logoPreview: string | null;
   setLogoPreview: (value: string | null) => void;
 
-fullResumeData: FullResumeData | null;
-setFullResumeData: React.Dispatch<React.SetStateAction<FullResumeData | null>>;
+  fullResumeData: FullResumeData | null;
+  setFullResumeData: React.Dispatch<
+    React.SetStateAction<FullResumeData | null>
+  >;
 }

@@ -118,7 +118,7 @@ const ExperienceForm = () => {
           touched: {},
           showPicker: false,
           year: item.startDate
-            ? new Date(item.startDate).getFullYear()
+            ? new Date(item.startDate).getFullYear() 
             : new Date().getFullYear(),
         }));
 

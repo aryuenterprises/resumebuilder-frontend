@@ -45,6 +45,7 @@ import {
 import ProtectedRoute from "@/app/utils/ProtectedRoute";
 import axios from "axios";
 import { API_URL } from "@/app/config/api";
+import { TemplateOne, TemplateTwo } from "@/app/components/templates";
 
 const resumes = [
   {
@@ -139,6 +140,7 @@ const DashboardPage = () => {
   const [showResumeMenu, setShowResumeMenu] = useState<string | null>(null);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("All Resumes");
+  const [oldResumeData, setOldResumeData] = useState([]);
 
   const userDetails = getLocalStorage<User>("user_details");
   const userId = userDetails?.id;
@@ -169,7 +171,8 @@ const DashboardPage = () => {
         const response = await axios.get(
           `${API_URL}/api/contact-resume/all-contact/${userId}`,
         );
-
+        console.log("Old Resume Data:", response.data);
+        setOldResumeData(response.data);
       } catch (err) {
         console.log(err);
       }
@@ -190,6 +193,7 @@ const DashboardPage = () => {
           },
         );
 
+        console.log(response?.data?.paymentRecord);
         setPaymentRecords(response?.data?.paymentRecord);
       } catch (err) {
         console.log(err);
@@ -918,8 +922,8 @@ const DashboardPage = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredResumes.map((resume) => {
+            {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* {filteredResumes.map((resume) => {
                 const StatusIcon = getStatusIcon(resume.status);
                 return (
                   <motion.div
@@ -1116,7 +1120,18 @@ const DashboardPage = () => {
                     </div>
                   </motion.div>
                 );
-              })}
+              })} */}
+
+            {/* </div> */}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {oldResumeData.map((item, index) => (
+                // <div className="w-50 h-50">
+
+                <TemplateTwo alldata={item} />
+                // </div>
+
+              ))}
             </div>
           </motion.div>
 

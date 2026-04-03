@@ -1344,21 +1344,34 @@ import React, { useContext } from "react";
 import axios, { AxiosResponse } from "axios";
 import { CreateContext } from "@/app/context/CreateContext";
 import { API_URL } from "@/app/config/api";
-import { formatMonthYear, MonthYearDisplay } from "@/app/utils";
+import {
+  formatMonthYear,
+  getLocalStorage,
+  MonthYearDisplay,
+} from "@/app/utils";
 import { usePathname } from "next/navigation";
+import { User } from "@/app/types/user.types";
+import { AllData } from "@/app/types";
 
-const TemplateOne: React.FC = () => {
+interface ResumeProps {
+  alldata?: AllData;
+}
+
+const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
+  console.log("alldata", alldata);
+
   const context = useContext(CreateContext);
+  console.log("context,", context);
 
   const pathname = usePathname();
   const lastSegment = pathname.split("/").pop();
 
-  const contact = context.contact || {};
-  const educations = context?.education || [];
-  const experiences = context?.experiences || [];
-  const skills = context?.skills || [];
-  const finalize = context?.finalize || {};
-  const summary = context?.summary || "";
+  const contact = alldata?.contact || context.contact || {};
+  const educations = alldata?.educations || context?.education || [];
+  const experiences = alldata?.experiences || context?.experiences || [];
+  const skills = alldata?.skills || context?.skills || [];
+  const finalize = alldata?.finalize || context?.finalize || {};
+  const summary = alldata?.summary || context?.summary || "";
 
   const addressParts = [
     contact?.address,
@@ -1808,7 +1821,7 @@ resume-container  p {
   }
 `;
 
-  /* ======================================================
+  /* =====================================================
      HTML GENERATION — mirrors JSX preview exactly
   ====================================================== */
   const generateHTML = () => {
@@ -2177,205 +2190,76 @@ resume-container  p {
   //   }
   // };
 
-
-
-
-
-
-
-
-
-
-
-
-interface Contact {
-  firstName?: string;
-  lastName?: string;
-
-}
-
-
-
-const handleDownload = async (): Promise<void> => {
-  try {
-    const html: string = generateHTML(); // Assuming this returns a string
-
-    const res: AxiosResponse<Blob> = await axios.post(
-      `${API_URL}/api/candidates/generate-pdf`,
-      { html },
-      { responseType: "blob" }
-    );
-
-    const pdfBlob: Blob = res.data;
-
-    const url: string = URL.createObjectURL(pdfBlob);
-    const a: HTMLAnchorElement = document.createElement("a");
-
-    a.href = url;
-    a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-
-    // --- Server Upload Logic ---
-    // We pass the pdfBlob directly to the next function
-    // await fetchOldResumeData(pdfBlob);
-
-  } catch (error) {
-    console.error("Error generating PDF:", error);
-    alert("Failed to generate PDF. Please try again.");
+  interface Contact {
+    firstName?: string;
+    lastName?: string;
   }
-};
 
+  const UseContext = useContext(CreateContext);
+  const Contactid = UseContext?.contact.contactId;
+  const userDetails = getLocalStorage<User>("user_details");
+  const userId = userDetails?.id;
 
-// const fetchOldResumeData = async (pdfBlob: Blob): Promise<void> => {
-//   try {
-//     const formData = new FormData();
-    
-//     // Append metadata
-//     formData.append("userId", "69ccd736435d1233e16e79a6");
-//     formData.append("message", "success");
-//     formData.append("contactId", "69ccdd1e435d1233e16e7afb");
-    
-//     // Append the actual file
-//     // The third parameter provides the filename to the server
-//     formData.append("resumeFile", pdfBlob, "resume.pdf");
+  const handleDownload = async (): Promise<void> => {
+    try {
+      const html: string = generateHTML(); // Assuming this returns a string
 
-//     console.log("formData",formData)
+      const res: AxiosResponse<Blob> = await axios.post(
+        `${API_URL}/api/candidates/generate-pdf`,
+        { html },
+        { responseType: "blob" },
+      );
 
-//     const response: AxiosResponse = await axios.post(
-//       `${API_URL}/api/users/download-resume`, 
-//       formData, 
-//       {
-//         headers: {
-//           "Content-Type": "multipart/form-data",
-//         },
-//       }
-//     );
+      const pdfBlob: Blob = res.data;
 
-//     console.log("Upload success:", response.data);
-//   } catch (err) {
-//     console.error("Upload error:", err);
-//   }
-// }
+      const url: string = URL.createObjectURL(pdfBlob);
+      const a: HTMLAnchorElement = document.createElement("a");
 
+      a.href = url;
+      a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
 
+      // We pass the pdfBlob directly to the next function
+      await fetchOldResumeData(pdfBlob);
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      alert("Failed to generate PDF. Please try again.");
+    }
+  };
 
+  const fetchOldResumeData = async (pdfBlob: Blob): Promise<void> => {
 
+  if (!userId || !Contactid) {
+    console.error("Missing userId or Contactid");
+    return;
+  }
 
+    try {
+      const formData = new FormData();
 
+      formData.append("userId", userId);
+      formData.append("message", "success");
+      formData.append("contactId", Contactid);
+      formData.append("resume", pdfBlob, "resume.pdf");
 
+      const response: AxiosResponse = await axios.post(
+        `${API_URL}/api/users/download-resume`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
+      );
 
-// const fetchOldResumeData = async (pdfBlob: Blob): Promise<void> => {
-
-//   console.log("pdfBlob", pdfBlob);
-
-//   try {
-//     // 1. Initialize the Class
-//     const formData = new FormData();
-    
-//       console.log("formData", formData);
-
-
-//     // 2. Append values
-//     formData.append("userId", "69ccd736435d1233e16e79a6");
-//     formData.append("message", "success");
-//     formData.append("contactId", "69ccdd1e435d1233e16e7afb");
-    
-//     // 3. Append the Blob (Crucial: add the filename)
-//     // formData.append("resumeFile", pdfBlob);
-
-//           console.log("formData", formData);
-
-//     // 4. The Axios call
-//     // IMPORTANT: Pass 'formData' directly. Do NOT do { formData }
-//     const response = await axios.post(
-//       `${API_URL}/api/users/download-resume`, 
-//       formData, 
-//       {
-//         headers: {
-//           // It is often better to NOT set Content-Type manually with FormData.
-//           // Axios/Browser will automatically set it with the correct "boundary".
-//           "Content-Type": "multipart/form-data",
-//         },
-//       }
-//     );
-
-//     console.log("Success:", response.data);
-//   } catch (err) {
-//     console.error("Upload error:", err);
-//   }
-// };
-
-
-
-  
-
-
-
-// const fetchOldResumeData = async (pdfBlob: Blob): Promise<void> => {
-//   const formData = new FormData();
-  
-//   // 1. Add your text fields
-  
-//   formData.append("file", pdfBlob, "resume.pdf");
-//   formData.append("userId", "69ccd736435d1233e16e79a6");
-//   formData.append("message", "success");
-//   formData.append("contactId", "69ccdd1e435d1233e16e7afb");
-  
-//   // 2. Add the Blob with a filename (Required for many backends)
-
-//   try {
-//     const response = await axios({
-//       method: "post",
-//       url: `${API_URL}/api/users/download-resume`,
-//       data: formData,
-//       headers: {
-//         // IMPORTANT: Do NOT set Content-Type here. 
-//         // Letting it be undefined allows the browser to auto-generate 
-//         // the header WITH the essential 'boundary' string.
-//         "Content-Type": undefined, 
-//       },
-//     });
-
-//     console.log("Response:", response.data);
-//   } catch (err) {
-//     // If you get a 400/500 error here, the problem is 100% the Backend 
-//     // not having 'multer' or a similar multipart parser.
-//     console.error("Upload failed:", err);
-//   }
-// };
-
-
-// const fetchOldResumeData = async (pdfBlob: Blob): Promise<void> => {
-//   const formData = new FormData();
-//   formData.append("resume", pdfBlob, "resume.pdf");
-//   formData.append("userId", "69ccd736435d1233e16e79a6");
-//   formData.append("message", "success");
-//   formData.append("contactId", "69ccdd1e435d1233e16e7afb");
-
-//   try {
-//     const response = await axios.post(
-//       `${API_URL}/api/users/download-resume`,
-//       formData
-//       // No headers config at all — browser auto-sets multipart/form-data + boundary
-//     );
-//     console.log("Response:", response.data);
-//   } catch (err) {
-//     console.error("Upload failed:", err);
-//   }
-// };
-
-
-
-
-
-
-
-
-
-
+      console.log("Upload success:", response.data);
+    } catch (err) {
+      console.error("Upload error:", err);
+    }
+  };
 
 
 

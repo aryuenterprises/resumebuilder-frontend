@@ -56,7 +56,10 @@ const ContactForm = () => {
   const { contact, setContact, fullResumeData, setFullResumeData } =
     useContext(CreateContext);
 
+
+    
   const [showAdditional, setShowAdditional] = useState<boolean>(false);
+
   const [open, setOpen] = useState(false);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
