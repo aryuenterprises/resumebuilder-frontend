@@ -908,21 +908,9 @@ import {
   Education,
   Experience,
   Finalize,
+  ResumeProps,
   Skill,
 } from "@/app/types/context.types";
-
-interface AllData {
-  contact?: Contact;
-  educations?: Education[];
-  experiences?: Experience[];
-  skills?: Skill[];
-  finalize?: Finalize;
-  summary?: string;
-}
-
-interface ResumeProps {
-  alldata?: AllData;
-}
 
 /* ======================================================
    SHARED CSS — scoped to .t6-resume, no leaks.
@@ -941,10 +929,15 @@ const styles = `
     line-height: 1.5;
     color: #374151;
     display: flex;
-              min-Height: 297mm;
-
-
+    min-height: 297mm;
   }
+
+    .t6-resume.is-preview {
+    scale: 0.3;
+    max-height: 297mm;
+    overflow: hidden;
+    transform-origin: top left; /* Ensures it scales from the corner */
+}
 
   .t6-resume * {
     box-sizing: border-box;
@@ -953,7 +946,7 @@ const styles = `
   }
 
   /* ── LEFT COLUMN ── */
-  .t6-left {
+ .t6-resume .t6-left {
     width: 40%;
     padding: 20px;
     background-color: #f3f4f6;
@@ -961,7 +954,7 @@ const styles = `
     flex-shrink: 0;
   }
 
-  .t6-name {
+  .t6-resume .t6-name {
     font-size: 28px;
     text-transform: uppercase;
     color: #4b5563;
@@ -971,7 +964,7 @@ const styles = `
     line-height: 1.2;
   }
 
-  .t6-jobtitle {
+  .t6-resume .t6-jobtitle {
     font-size: 14px;
     color: #4b5563;
     margin-bottom: 8px;
@@ -979,14 +972,14 @@ const styles = `
     overflow-wrap: break-word;
   }
 
-  .t6-links {
+  .t6-resume .t6-links {
     display: flex;
     align-items: center;
     gap: 16px;
     margin-bottom: 8px;
   }
 
-  .t6-link {
+  .t6-resume .t6-link {
     font-size: 14px;
     font-weight: 600;
     text-decoration: underline;
@@ -994,7 +987,7 @@ const styles = `
   }
 
   /* ── LEFT SECTION HEADING ── */
-  .t6-lsection {
+  .t6-resume .t6-lsection {
     font-size: 13px;
     font-weight: 500;
     text-transform: uppercase;
@@ -1004,21 +997,21 @@ const styles = `
     margin-top: 12px;
   }
 
-  .t6-divider-sm {
+ .t6-resume .t6-divider-sm {
     border: none;
     border-top: 1px solid #6b7280;
     margin-bottom: 8px;
   }
 
   /* ── CONTACT ITEMS ── */
-  .t6-contact-row {
+ .t6-resume .t6-contact-row {
     display: flex;
     align-items: flex-start;
     gap: 6px;
     padding: 4px 0;
   }
 
-  .t6-icon-wrap {
+  .t6-resume .t6-icon-wrap {
     width: 20px;
     height: 20px;
     background: #111827;
@@ -1032,7 +1025,7 @@ const styles = `
     margin-top: 1px;
   }
 
-  .t6-contact-text {
+  .t6-resume .t6-contact-text {
     font-size: 13px;
     color: #4b5563;
     word-wrap: break-word;
@@ -1041,7 +1034,7 @@ const styles = `
   }
 
   /* ── SKILL BARS ── */
-  .t6-skill-name {
+    .t6-resume .t6-skill-name {
     font-size: 13px;
     color: #1f2937;
     margin-bottom: 3px;
@@ -1049,7 +1042,7 @@ const styles = `
     overflow-wrap: break-word;
   }
 
-  .t6-bar-track {
+ .t6-resume .t6-bar-track {
     height: 4px;
     width: 100%;
     background: #d1d5db;
@@ -1058,14 +1051,14 @@ const styles = `
     margin-bottom: 8px;
   }
 
-  .t6-bar-fill {
+ .t6-resume .t6-bar-fill {
     height: 100%;
     background: #0c0c1e;
     border-radius: 9999px;
   }
 
   /* ── LANG GRID ── */
-  .t6-lang-grid {
+ .t6-resume .t6-lang-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     column-gap: 16px;
@@ -1073,12 +1066,12 @@ const styles = `
     margin-top: 8px;
   }
 
-  .t6-lang-grid > div {
+ .t6-resume .t6-lang-grid > div {
     min-width: 0;
   }
 
   /* ── EXTRA TEXT (certs, hobbies, awards) ── */
-  .t6-extra {
+  .t6-resume .t6-extra {
     padding-top: 6px;
     padding-bottom: 4px;
     color: #374151;
@@ -1088,14 +1081,14 @@ const styles = `
   }
 
   /* ── RIGHT COLUMN ── */
-  .t6-right {
+  .t6-resume .t6-right {
     width: 60%;
     padding-left: 16px;
     padding-right: 4px;
   }
 
   /* ── RIGHT SECTION HEADING ── */
-  .t6-rsection {
+  .t6-resume .t6-rsection {
     font-size: 13px;
     font-weight: 500;
     text-transform: uppercase;
@@ -1105,18 +1098,18 @@ const styles = `
     margin-top: 10px;
   }
 
-  .t6-divider-md {
+  .t6-resume .t6-divider-md {
     border: none;
     border-top: 2px solid #d1d5db;
     margin-bottom: 8px;
   }
 
   /* ── ENTRY ── */
-  .t6-entry {
+  .t6-resume .t6-entry {
     margin-bottom: 14px;
   }
 
-  .t6-entry-title {
+  .t6-resume .t6-entry-title {
     font-size: 15px;
     font-weight: 600;
     color: #111827;
@@ -1125,18 +1118,18 @@ const styles = `
     margin-top: 6px;
   }
 
-  .t6-entry-title-muted {
+  .t6-resume .t6-entry-title-muted {
     font-weight: 400;
     color: #6b7280;
   }
 
-  .t6-entry-date {
+  .t6-resume .t6-entry-date {
     font-size: 13px;
     color: #4b5563;
     margin-top: 3px;
   }
 
-  .t6-entry-content {
+  .t6-resume .t6-entry-content {
     padding-top: 6px;
     padding-bottom: 4px;
     color: #374151;
@@ -1145,13 +1138,13 @@ const styles = `
     overflow-wrap: break-word;
   }
 
-  .t6-entry-content p  { margin: 0 !important; padding: 0 !important; line-height: 1.5 !important; }
-  .t6-entry-content ul { list-style-type: disc   !important; padding-left: 16px !important; margin: 0 !important; }
-  .t6-entry-content ol { list-style-type: decimal !important; padding-left: 16px !important; margin: 0 !important; }
-  .t6-entry-content li { margin: 0 !important; padding: 0 !important; line-height: 1.5 !important; margin-bottom: 1px !important; }
+  .t6-resume .t6-entry-content p  { margin: 0 !important; padding: 0 !important; line-height: 1.5 !important; }
+  .t6-resume .t6-entry-content ul { list-style-type: disc   !important; padding-left: 16px !important; margin: 0 !important; }
+  .t6-resume .t6-entry-content ol { list-style-type: decimal !important; padding-left: 16px !important; margin: 0 !important; }
+  .t6-resume .t6-entry-content li { margin: 0 !important; padding: 0 !important; line-height: 1.5 !important; margin-bottom: 1px !important; }
 
   /* ── SUMMARY ── */
-  .t6-summary {
+  .t6-resume .t6-summary {
     padding-top: 8px;
     padding-bottom: 10px;
     color: #374151;
@@ -1160,20 +1153,20 @@ const styles = `
     overflow-wrap: break-word;
   }
 
-  .t6-summary p { margin: 0 !important; padding: 0 !important; line-height: 1.5 !important; }
+  .t6-resume .t6-summary p { margin: 0 !important; padding: 0 !important; line-height: 1.5 !important; }
 
   /* ── WEBSITES ── */
-  .t6-website-item {
+  .t6-resume .t6-website-item {
     margin-bottom: 8px;
   }
 
-  .t6-website-label {
+  .t6-resume .t6-website-label {
     font-size: 13px;
     font-weight: 600;
     color: #111827;
   }
 
-  .t6-website-link {
+  .t6-resume .t6-website-link {
     font-size: 13px;
     color: #111827;
     text-decoration: underline;
@@ -1189,12 +1182,12 @@ const styles = `
       padding: 0 !important;
       box-shadow: none !important;
     }
-    .t6-left {
+    .t6-resume .t6-left {
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
     }
-    .t6-entry { page-break-inside: avoid; break-inside: avoid; }
-    .t6-rsection { page-break-after: avoid; break-after: avoid; }
+    .t6-resume .t6-entry { page-break-inside: avoid; break-inside: avoid; }
+    .t6-resume .t6-rsection { page-break-after: avoid; break-after: avoid; }
   }
 `;
 
@@ -1588,7 +1581,8 @@ const TemplateSix: React.FC<ResumeProps> = ({ alldata }) => {
         <style>{`@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap');`}</style>
         <style>{styles}</style>
 
-        <div className="t6-resume">
+        <div className={`t6-resume ${alldata ? 'is-preview' : ''}`}
+>
           {/* LEFT COLUMN */}
           <div className="t6-left">
             <div className="t6-name">

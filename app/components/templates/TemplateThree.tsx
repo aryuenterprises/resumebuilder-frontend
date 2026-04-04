@@ -1919,22 +1919,10 @@ import {
   Education,
   Experience,
   Finalize,
+  ResumeProps,
   Skill,
 } from "@/app/types/context.types";
 import { usePathname } from "next/navigation";
-
-interface AllData {
-  contact?: Contact;
-  educations?: Education[];
-  experiences?: Experience[];
-  skills?: Skill[];
-  finalize?: Finalize;
-  summary?: string;
-}
-
-interface ResumeProps {
-  alldata?: AllData;
-}
 
 /* ======================================================
    SHARED CSS
@@ -1968,6 +1956,13 @@ const styles = `
     line-height: 1.5;
     color: #374151;
   }
+
+    .t3-resume.is-preview {
+    scale: 0.3;
+    max-height: 297mm;
+    overflow: hidden;
+    transform-origin: top left; /* Ensures it scales from the corner */
+}
 
   .t3-resume * {
     box-sizing: border-box;
@@ -2524,12 +2519,13 @@ const TemplateThree: React.FC<ResumeProps> = ({ alldata }) => {
           width: "210mm",
           minHeight: "297mm",
           boxShadow: "0 0 10px rgba(0,0,0,0.08)",
-          backgroundColor:'white'
+          backgroundColor: "white",
         }}
       >
         <style>{styles}</style>
 
-        <div className="t3-resume">
+        <div        className={`t3-resume bg-white ${alldata ? 'is-preview' : ''}`}
+>
           {/* HEADER */}
           <div className="t3-header">
             <div className="t3-header-left">

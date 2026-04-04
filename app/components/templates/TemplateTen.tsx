@@ -6,19 +6,20 @@ import { CreateContext } from "@/app/context/CreateContext";
 import { API_URL } from "@/app/config/api";
 import { formatMonthYear, MonthYearDisplay } from "@/app/utils";
 import { usePathname } from "next/navigation";
+import { ResumeProps } from "@/app/types";
 
-const TemplateTen: React.FC = () => {
+// const TemplateTen: React.FC = () => {
+const TemplateTen: React.FC<ResumeProps> = ({ alldata }) => {
   const context = useContext(CreateContext);
-
   const pathname = usePathname();
   const lastSegment = pathname.split("/").pop();
 
-  const contact = context.contact || {};
-  const educations = context?.education || [];
-  const experiences = context?.experiences || [];
-  const skills = context?.skills || [];
-  const finalize = context?.finalize || {};
-  const summary = context?.summary || "";
+  const contact = alldata?.contact || context.contact || {};
+  const educations = alldata?.educations || context?.education || [];
+  const experiences = alldata?.experiences || context?.experiences || [];
+  const skills = alldata?.skills || context?.skills || [];
+  const finalize = alldata?.finalize || context?.finalize || {};
+  const summary = alldata?.summary || context?.summary || "";
 
   const addressParts = [
     contact?.address,
@@ -42,7 +43,7 @@ const TemplateTen: React.FC = () => {
     text-align: left;
   }
 
-  .resume-container {
+  .t10-resume  {
     width: 210mm;
     min-height: 297mm;
     box-sizing: border-box;
@@ -52,15 +53,21 @@ const TemplateTen: React.FC = () => {
     text-align: left;
   }
 
-  /* ── HEADER ── */
-  .header-block {
+    .t10-resume.is-preview {
+    scale: 0.3;
+    max-height: 297mm;
+    overflow: hidden;
+    transform-origin: top left; /* Ensures it scales from the corner */
+}
+
+  .t10-resume  .header-block {
     padding: 32px 32px 0px 32px;
     position: relative;
     border-bottom: 6px solid #111;
     padding-bottom: 20px;
   }
 
-  .header-name {
+  .t10-resume  .header-name {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 72px;
     line-height: 0.9;
@@ -71,11 +78,11 @@ const TemplateTen: React.FC = () => {
     text-align: left;
   }
 
-  .header-name span {
+ .t10-resume .header-name span {
     display: block;
   }
 
-  .header-jobtitle {
+  .t10-resume  .header-jobtitle {
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 4px;
@@ -85,7 +92,7 @@ const TemplateTen: React.FC = () => {
     text-align: left;
   }
 
-  .header-meta-row {
+ .t10-resume .header-meta-row {
     display: flex;
     flex-wrap: wrap;
     gap: 0;
@@ -97,39 +104,39 @@ const TemplateTen: React.FC = () => {
     padding-top: 12px;
   }
 
-  .header-meta-item {
+  .t10-resume .header-meta-item {
     display: flex;
     align-items: center;
     color: #444;
     text-align: left;
   }
 
-  .header-meta-item:not(:last-child)::after {
+  .t10-resume .header-meta-item:not(:last-child)::after {
     content: '/';
     margin: 0 10px;
     color: #bbb;
     font-weight: 300;
   }
 
-  .header-meta-item a {
+  .t10-resume .header-meta-item a {
     color: #111;
     text-decoration: underline;
     text-underline-offset: 2px;
   }
 
   /* ── BODY ── */
-  .resume-body {
+  .t10-resume .resume-body {
     padding: 24px 32px 32px;
     text-align: left;
   }
 
   /* ── SECTION ── */
-  .section-block {
+  .t10-resume .section-block {
     margin-bottom: 26px;
     text-align: left;
   }
 
-  .section-header {
+  .t10-resume .section-header {
     display: flex;
     align-items: center;
     margin-bottom: 16px;
@@ -139,7 +146,7 @@ const TemplateTen: React.FC = () => {
 
   
 
-  .section-title {
+  .t10-resume .section-title {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 22px;
     letter-spacing: 3px;
@@ -149,7 +156,7 @@ const TemplateTen: React.FC = () => {
     text-align: left;
   }
 
-  .section-title-bar {
+  .t10-resume .section-title-bar {
     flex: 1;
     height: 2px;
     background: #111;
@@ -157,7 +164,7 @@ const TemplateTen: React.FC = () => {
   }
 
   /* ── SUMMARY ── */
-  .summary-text {
+  .t10-resume .summary-text {
     font-size: 13.5px;
     line-height: 1.8;
     color: #333;
@@ -168,20 +175,20 @@ const TemplateTen: React.FC = () => {
   }
 
   /* ── ENTRY BLOCKS ── */
-  .entry-block {
+  .t10-resume .entry-block {
     margin-bottom: 20px;
     padding-bottom: 20px;
     border-bottom: 1px dashed #ddd;
     text-align: left;
   }
 
-  .entry-block:last-child {
+  .t10-resume .entry-block:last-child {
     border-bottom: none;
     padding-bottom: 0;
     margin-bottom: 0;
   }
 
-  .entry-top-row {
+  .t10-resume .entry-top-row {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -191,7 +198,7 @@ const TemplateTen: React.FC = () => {
     text-align: left;
   }
 
-  .entry-title {
+  .t10-resume .entry-title {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 20px;
     letter-spacing: 1.5px;
@@ -200,7 +207,7 @@ const TemplateTen: React.FC = () => {
     text-align: left;
   }
 
-  .entry-date {
+  .t10-resume .entry-date {
     font-size: 10.5px;
     font-weight: 600;
     letter-spacing: 1.5px;
@@ -211,7 +218,7 @@ const TemplateTen: React.FC = () => {
     text-align: left;
   }
 
-  .entry-subtitle {
+  .t10-resume .entry-subtitle {
     font-size: 12px;
     color: #555;
     font-weight: 500;
@@ -221,7 +228,7 @@ const TemplateTen: React.FC = () => {
     text-align: left;
   }
 
-  .entry-content {
+  .t10-resume .entry-content {
     font-size: 13px;
     line-height: 1.65;
     color: #444;
@@ -229,47 +236,47 @@ const TemplateTen: React.FC = () => {
     text-align: left;
   }
 
-  .entry-content ul,
-  .entry-content-desc ul {
+  .t10-resume .entry-content ul,
+  .t10-resume .entry-content-desc ul {
     list-style-type: disc !important;
     padding-left: 18px !important;
     margin: 4px 0 !important;
   }
 
-  .entry-content ol,
-  .entry-content-desc ol {
+  .t10-resume .entry-content ol,
+  .t10-resume .entry-content-desc ol {
     list-style-type: decimal !important;
     padding-left: 18px !important;
     margin: 4px 0 !important;
   }
 
-  .entry-content li,
-  .entry-content-desc li {
+  .t10-resume .entry-content li,
+  .t10-resume .entry-content-desc li {
     margin-bottom: 3px !important;
     line-height: 1.6 !important;
     list-style-position: outside !important;
   }
 
-  ul {
+  .t10-resume ul {
     list-style-type: disc !important;
   }
 
   /* ── SKILLS ── */
-  .skills-grid {
+  .t10-resume .skills-grid {
     display: flex;
     flex-direction: column;
     gap: 10px;
     text-align: left;
   }
 
-  .skill-row {
+  .t10-resume .skill-row {
     display: flex;
     align-items: center;
     gap: 14px;
     text-align: left;
   }
 
-  .skill-name-label {
+  .t10-resume .skill-name-label {
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 1px;
@@ -279,7 +286,7 @@ const TemplateTen: React.FC = () => {
     text-align: left;
   }
 
-  .skill-track {
+  .t10-resume .skill-track {
     flex: 1;
     height: 3px;
     background: #e8e8e8;
@@ -287,13 +294,13 @@ const TemplateTen: React.FC = () => {
     max-width: 200px;
   }
 
-  .skill-fill {
+  .t10-resume .skill-fill {
     height: 100%;
     background: #111;
   }
 
   /* ── LANGUAGES ── */
-  .lang-row {
+  .t10-resume .lang-row {
     display: flex;
     align-items: center;
     gap: 14px;
@@ -301,7 +308,7 @@ const TemplateTen: React.FC = () => {
     text-align: left;
   }
 
-  .lang-name {
+  .t10-resume .lang-name {
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 1px;
@@ -312,7 +319,7 @@ const TemplateTen: React.FC = () => {
   }
 
   /* ── ADDITIONAL ── */
-  .additional-content {
+  .t10-resume .additional-content {
     font-size: 13px;
     color: #444;
     line-height: 1.7;
@@ -320,7 +327,7 @@ const TemplateTen: React.FC = () => {
     text-align: left;
   }
 
-  .additional-item {
+  .t10-resume .additional-item {
     display: flex;
     align-items: flex-start;
     gap: 10px;
@@ -328,7 +335,7 @@ const TemplateTen: React.FC = () => {
     text-align: left;
   }
 
-  .additional-tick {
+  .t10-resume .additional-tick {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 14px;
     color: #111;
@@ -337,7 +344,7 @@ const TemplateTen: React.FC = () => {
   }
 
   /* ── EDU CONTENT ── */
-  .edu-content {
+  .t10-resume .edu-content {
     font-size: 13px;
     line-height: 1.65;
     color: #444;
@@ -345,20 +352,20 @@ const TemplateTen: React.FC = () => {
     text-align: left;
   }
 
-  .edu-list {
+  .t10-resume .edu-list {
     list-style-type: disc !important;
     padding-left: 18px !important;
     margin: 4px 0 !important;
   }
 
-  .edu-list li {
+  .t10-resume .edu-list li {
     margin-bottom: 3px;
     line-height: 1.6;
     list-style-position: outside !important;
   }
 
   /* ── CUSTOM ── */
-  .custom-section-content {
+  .t10-resume .custom-section-content {
     font-size: 13px;
     line-height: 1.65;
     color: #444;
@@ -382,7 +389,7 @@ const TemplateTen: React.FC = () => {
       print-color-adjust: exact;
     }
 
-    .resume-container {
+    .t10-resume  {
       width: 100% !important;
       box-shadow: none !important;
     }
@@ -412,29 +419,29 @@ const TemplateTen: React.FC = () => {
   }
 
   @media (max-width: 768px) {
-    .resume-container {
+    .t10-resume  {
       width: 100%;
     }
 
-    .header-block {
+   .t10-resume .header-block {
       padding: 20px 20px 16px;
     }
 
-    .header-name {
+    .t10-resume .header-name {
       font-size: 48px;
     }
 
-    .resume-body {
+    .t10-resume .resume-body {
       padding: 16px 20px;
     }
 
-    .entry-top-row {
+    .t10-resume .entry-top-row {
       flex-direction: column;
       align-items: flex-start;
     }
 
-    .skill-name-label,
-    .lang-name {
+    .t10-resume .skill-name-label,
+    .t10-resume .lang-name {
       min-width: 120px;
     }
   }
@@ -453,19 +460,24 @@ const TemplateTen: React.FC = () => {
         return `<div class="entry-content entry-content-desc">${text}</div>`;
       }
       const lines = text.split("\n").filter((l) => l.trim() !== "");
-      if (lines.some((l) => l.trim().startsWith("-") || l.trim().startsWith("•"))) {
+      if (
+        lines.some((l) => l.trim().startsWith("-") || l.trim().startsWith("•"))
+      ) {
         return `<div class="entry-content entry-content-desc"><ul style="list-style-type:disc!important;padding-left:18px;margin:4px 0;">${lines
           .map((l) => {
             const t = l.trim();
-            const c = t.startsWith("-") || t.startsWith("•") ? t.substring(1).trim() : t;
-            return c ? `<li style="margin-bottom:3px;line-height:1.6;list-style-type:disc!important;">${c}</li>` : "";
+            const c =
+              t.startsWith("-") || t.startsWith("•")
+                ? t.substring(1).trim()
+                : t;
+            return c
+              ? `<li style="margin-bottom:3px;line-height:1.6;list-style-type:disc!important;">${c}</li>`
+              : "";
           })
           .join("")}</ul></div>`;
       }
       return `<div class="entry-content entry-content-desc" style="white-space:pre-wrap">${stripHtmlHelper(text)}</div>`;
     };
-
-   
 
     return `
     <!DOCTYPE html>
@@ -477,7 +489,7 @@ const TemplateTen: React.FC = () => {
       <style>${styles}</style>
     </head>
     <body>
-      <div class="resume-container">
+      <div class="t10-resume ">
 
         <!-- HEADER -->
         <div class="header-block">
@@ -486,11 +498,13 @@ const TemplateTen: React.FC = () => {
             <span>${contact?.lastName || ""}</span>
           </div>
           <div class="header-jobtitle">
-            ${contact?.jobTitle
-              ? typeof contact.jobTitle === "string"
-                ? contact.jobTitle
-                : (contact.jobTitle as any)?.name || ""
-              : ""}
+            ${
+              contact?.jobTitle
+                ? typeof contact.jobTitle === "string"
+                  ? contact.jobTitle
+                  : (contact.jobTitle as any)?.name || ""
+                : ""
+            }
           </div>
           <div class="header-meta-row">
             ${addressParts.length > 0 ? `<span class="header-meta-item">${addressParts.join(", ")}</span>` : ""}
@@ -505,26 +519,35 @@ const TemplateTen: React.FC = () => {
         <div class="resume-body">
 
           <!-- SUMMARY -->
-          ${summary ? `
+          ${
+            summary
+              ? `
           <div class="section-block">
             <div class="section-header">
               <span class="section-title">Profile</span>
               <div class="section-title-bar"></div>
             </div>
             <div class="summary-text">${summary.replace(/\n/g, "<br>")}</div>
-          </div>` : ""}
+          </div>`
+              : ""
+          }
 
           <!-- EXPERIENCE -->
-          ${experiences.length > 0 ? `
+          ${
+            experiences.length > 0
+              ? `
           <div class="section-block">
             <div class="section-header">
               <span class="section-title">Experience</span>
               <div class="section-title-bar"></div>
             </div>
-            ${experiences.map((exp) => {
-              const startFormatted = formatMonthYear(exp.startDate, true);
-              const endFormatted = exp.endDate ? formatMonthYear(exp.endDate, true) : "Present";
-              return `
+            ${experiences
+              .map((exp) => {
+                const startFormatted = formatMonthYear(exp.startDate, true);
+                const endFormatted = exp.endDate
+                  ? formatMonthYear(exp.endDate, true)
+                  : "Present";
+                return `
               <div class="entry-block">
                 <div class="entry-top-row">
                   <div class="entry-title">${exp.jobTitle || ""}</div>
@@ -533,38 +556,51 @@ const TemplateTen: React.FC = () => {
                 <div class="entry-subtitle">${exp.employer || ""}${exp.location ? ` / ${exp.location}` : ""}</div>
                 ${exp.text ? renderEntryText(exp.text) : ""}
               </div>`;
-            }).join("")}
-          </div>` : ""}
+              })
+              .join("")}
+          </div>`
+              : ""
+          }
 
           <!-- EDUCATION -->
-          ${educations.length > 0 ? `
+          ${
+            educations.length > 0
+              ? `
           <div class="section-block">
             <div class="section-header">
               <span class="section-title">Education</span>
               <div class="section-title-bar"></div>
             </div>
-            ${educations.map((edu) => {
-              const dateStr = edu.startDate || edu.endDate
-                ? `${edu.startDate || ""}${edu.startDate && edu.endDate ? " – " : ""}${edu.endDate || ""}`
-                : "";
-              let textHtml = "";
-              if (edu.text) {
-                if (edu.text.includes("<") && edu.text.includes(">")) {
-                  textHtml = `<div class="edu-content">${edu.text}</div>`;
-                } else {
-                  const lines = edu.text.split("\n").filter((l: string) => l.trim() !== "");
-                  if (lines.some((l: string) => l.trim().startsWith("-"))) {
-                    textHtml = `<ul class="edu-list">${lines.map((l: string) => {
-                      const t = l.trim();
-                      const c = t.startsWith("-") ? t.substring(1).trim() : t;
-                      return c ? `<li>${c}</li>` : "";
-                    }).join("")}</ul>`;
+            ${educations
+              .map((edu) => {
+                const dateStr =
+                  edu.startDate || edu.endDate
+                    ? `${edu.startDate || ""}${edu.startDate && edu.endDate ? " – " : ""}${edu.endDate || ""}`
+                    : "";
+                let textHtml = "";
+                if (edu.text) {
+                  if (edu.text.includes("<") && edu.text.includes(">")) {
+                    textHtml = `<div class="edu-content">${edu.text}</div>`;
                   } else {
-                    textHtml = `<div class="edu-content" style="white-space:pre-wrap">${stripHtmlHelper(edu.text)}</div>`;
+                    const lines = edu.text
+                      .split("\n")
+                      .filter((l: string) => l.trim() !== "");
+                    if (lines.some((l: string) => l.trim().startsWith("-"))) {
+                      textHtml = `<ul class="edu-list">${lines
+                        .map((l: string) => {
+                          const t = l.trim();
+                          const c = t.startsWith("-")
+                            ? t.substring(1).trim()
+                            : t;
+                          return c ? `<li>${c}</li>` : "";
+                        })
+                        .join("")}</ul>`;
+                    } else {
+                      textHtml = `<div class="edu-content" style="white-space:pre-wrap">${stripHtmlHelper(edu.text)}</div>`;
+                    }
                   }
                 }
-              }
-              return `
+                return `
               <div class="entry-block">
                 <div class="entry-top-row">
                   <div class="entry-title">${edu.schoolname || ""}</div>
@@ -573,123 +609,237 @@ const TemplateTen: React.FC = () => {
                 ${edu.degree || edu.location ? `<div class="entry-subtitle">${edu.degree || ""}${edu.degree && edu.location ? " / " : ""}${edu.location || ""}</div>` : ""}
                 ${textHtml}
               </div>`;
-            }).join("")}
-          </div>` : ""}
+              })
+              .join("")}
+          </div>`
+              : ""
+          }
 
           <!-- SKILLS -->
-          ${skills.length > 0 ? `
+          ${
+            skills.length > 0
+              ? `
           <div class="section-block">
             <div class="section-header">
               <span class="section-title">Skills</span>
               <div class="section-title-bar"></div>
             </div>
             <div class="skills-grid">
-              ${skills.map((s) => `
+              ${skills
+                .map(
+                  (s) => `
               <div class="skill-row">
                 <span class="skill-name-label">${s.skill || ""}</span>
                 ${s.level ? `<div class="skill-track"><div class="skill-fill" style="width:${(Number(s.level) / 4) * 100}%"></div></div>` : ""}
-              </div>`).join("")}
+              </div>`,
+                )
+                .join("")}
             </div>
-          </div>` : ""}
+          </div>`
+              : ""
+          }
 
           <!-- LANGUAGES -->
-          ${finalize && !Array.isArray(finalize) && Array.isArray(finalize.languages) && finalize.languages.some((l) => l.name && l.name.trim() !== "") ? `
+          ${
+            finalize &&
+            !Array.isArray(finalize) &&
+            Array.isArray(finalize.languages) &&
+            finalize.languages.some((l) => l.name && l.name.trim() !== "")
+              ? `
           <div class="section-block">
             <div class="section-header">
               <span class="section-title">Languages</span>
               <div class="section-title-bar"></div>
             </div>
             <div class="skills-grid">
-              ${finalize.languages.filter((l) => l.name && l.name.trim() !== "").map((l) => `
+              ${finalize.languages
+                .filter((l) => l.name && l.name.trim() !== "")
+                .map(
+                  (l) => `
               <div class="lang-row">
                 <span class="lang-name">${l.name}</span>
                 ${l.level ? `<div class="skill-track"><div class="skill-fill" style="width:${(Number(l.level) / 4) * 100}%"></div></div>` : ""}
-              </div>`).join("")}
+              </div>`,
+                )
+                .join("")}
             </div>
-          </div>` : ""}
+          </div>`
+              : ""
+          }
 
           <!-- CERTIFICATIONS -->
-          ${finalize && !Array.isArray(finalize) && Array.isArray(finalize.certificationsAndLicenses) && finalize.certificationsAndLicenses.some((i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "") ? `
+          ${
+            finalize &&
+            !Array.isArray(finalize) &&
+            Array.isArray(finalize.certificationsAndLicenses) &&
+            finalize.certificationsAndLicenses.some(
+              (i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "",
+            )
+              ? `
           <div class="section-block">
             <div class="section-header">
               <span class="section-title">Certifications &amp; Licenses</span>
               <div class="section-title-bar"></div>
             </div>
             <div class="additional-content">
-              ${finalize.certificationsAndLicenses.filter((i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "").map((i) =>
-                `<div class="additional-item"><span class="additional-tick">→</span><div>${i.name}</div></div>`
-              ).join("")}
+              ${finalize.certificationsAndLicenses
+                .filter(
+                  (i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "",
+                )
+                .map(
+                  (i) =>
+                    `<div class="additional-item"><span class="additional-tick">→</span><div>${i.name}</div></div>`,
+                )
+                .join("")}
             </div>
-          </div>` : ""}
+          </div>`
+              : ""
+          }
 
           <!-- HOBBIES -->
-          ${finalize && !Array.isArray(finalize) && Array.isArray(finalize.hobbiesAndInterests) && finalize.hobbiesAndInterests.some((i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "") ? `
+          ${
+            finalize &&
+            !Array.isArray(finalize) &&
+            Array.isArray(finalize.hobbiesAndInterests) &&
+            finalize.hobbiesAndInterests.some(
+              (i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "",
+            )
+              ? `
           <div class="section-block">
             <div class="section-header">
               <span class="section-title">Hobbies &amp; Interests</span>
               <div class="section-title-bar"></div>
             </div>
             <div class="additional-content">
-              ${finalize.hobbiesAndInterests.filter((i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "").map((i) =>
-                `<div class="additional-item"><span class="additional-tick">→</span><div>${i.name}</div></div>`
-              ).join("")}
+              ${finalize.hobbiesAndInterests
+                .filter(
+                  (i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "",
+                )
+                .map(
+                  (i) =>
+                    `<div class="additional-item"><span class="additional-tick">→</span><div>${i.name}</div></div>`,
+                )
+                .join("")}
             </div>
-          </div>` : ""}
+          </div>`
+              : ""
+          }
 
           <!-- AWARDS -->
-          ${finalize && !Array.isArray(finalize) && Array.isArray(finalize.awardsAndHonors) && finalize.awardsAndHonors.some((i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "") ? `
+          ${
+            finalize &&
+            !Array.isArray(finalize) &&
+            Array.isArray(finalize.awardsAndHonors) &&
+            finalize.awardsAndHonors.some(
+              (i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "",
+            )
+              ? `
           <div class="section-block">
             <div class="section-header">
               <span class="section-title">Awards &amp; Honors</span>
               <div class="section-title-bar"></div>
             </div>
             <div class="additional-content">
-              ${finalize.awardsAndHonors.filter((i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "").map((i) =>
-                `<div class="additional-item"><span class="additional-tick">→</span><div>${i.name}</div></div>`
-              ).join("")}
+              ${finalize.awardsAndHonors
+                .filter(
+                  (i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "",
+                )
+                .map(
+                  (i) =>
+                    `<div class="additional-item"><span class="additional-tick">→</span><div>${i.name}</div></div>`,
+                )
+                .join("")}
             </div>
-          </div>` : ""}
+          </div>`
+              : ""
+          }
 
           <!-- WEBSITES -->
-          ${finalize && !Array.isArray(finalize) && Array.isArray(finalize.websitesAndSocialMedia) && finalize.websitesAndSocialMedia.some((i) => (i.websiteUrl && i.websiteUrl.trim() !== "") || (i.socialMedia && i.socialMedia.trim() !== "")) ? `
+          ${
+            finalize &&
+            !Array.isArray(finalize) &&
+            Array.isArray(finalize.websitesAndSocialMedia) &&
+            finalize.websitesAndSocialMedia.some(
+              (i) =>
+                (i.websiteUrl && i.websiteUrl.trim() !== "") ||
+                (i.socialMedia && i.socialMedia.trim() !== ""),
+            )
+              ? `
           <div class="section-block">
             <div class="section-header">
               <span class="section-title">Websites &amp; Social Media</span>
               <div class="section-title-bar"></div>
             </div>
             <div class="additional-content">
-              ${finalize.websitesAndSocialMedia.filter((i) => i.websiteUrl || i.socialMedia).map((i) =>
-                `<div class="additional-item"><span class="additional-tick">→</span><div>${i.websiteUrl ? `Website: ${i.websiteUrl}` : ""}${i.websiteUrl && i.socialMedia ? " · " : ""}${i.socialMedia ? `Social: ${i.socialMedia}` : ""}</div></div>`
-              ).join("")}
+              ${finalize.websitesAndSocialMedia
+                .filter((i) => i.websiteUrl || i.socialMedia)
+                .map(
+                  (i) =>
+                    `<div class="additional-item"><span class="additional-tick">→</span><div>${i.websiteUrl ? `Website: ${i.websiteUrl}` : ""}${i.websiteUrl && i.socialMedia ? " · " : ""}${i.socialMedia ? `Social: ${i.socialMedia}` : ""}</div></div>`,
+                )
+                .join("")}
             </div>
-          </div>` : ""}
+          </div>`
+              : ""
+          }
 
           <!-- REFERENCES -->
-          ${finalize && !Array.isArray(finalize) && Array.isArray(finalize.references) && finalize.references.some((i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "") ? `
+          ${
+            finalize &&
+            !Array.isArray(finalize) &&
+            Array.isArray(finalize.references) &&
+            finalize.references.some(
+              (i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "",
+            )
+              ? `
           <div class="section-block">
             <div class="section-header">
               <span class="section-title">References</span>
               <div class="section-title-bar"></div>
             </div>
             <div class="additional-content">
-              ${finalize.references.filter((i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "").map((i) =>
-                `<div class="additional-item"><span class="additional-tick">→</span><div>${i.name}</div></div>`
-              ).join("")}
+              ${finalize.references
+                .filter(
+                  (i) => i.name && i.name.replace(/<[^>]*>/g, "").trim() !== "",
+                )
+                .map(
+                  (i) =>
+                    `<div class="additional-item"><span class="additional-tick">→</span><div>${i.name}</div></div>`,
+                )
+                .join("")}
             </div>
-          </div>` : ""}
+          </div>`
+              : ""
+          }
 
           <!-- CUSTOM SECTIONS -->
-          ${finalize && !Array.isArray(finalize) && Array.isArray(finalize.customSection) && finalize.customSection.some((s) => s?.name?.trim() || s?.description?.trim())
-            ? finalize.customSection.filter((s) => s?.name?.trim() || s?.description?.trim()).map((s) => `
+          ${
+            finalize &&
+            !Array.isArray(finalize) &&
+            Array.isArray(finalize.customSection) &&
+            finalize.customSection.some(
+              (s) => s?.name?.trim() || s?.description?.trim(),
+            )
+              ? finalize.customSection
+                  .filter((s) => s?.name?.trim() || s?.description?.trim())
+                  .map(
+                    (s) => `
             <div class="section-block">
-              ${s.name ? `
+              ${
+                s.name
+                  ? `
               <div class="section-header">
                 <span class="section-title">${s.name}</span>
                 <div class="section-title-bar"></div>
-              </div>` : ""}
+              </div>`
+                  : ""
+              }
               ${s.description ? `<div class="custom-section-content">${s.description}</div>` : ""}
-            </div>`).join("")
-            : ""}
+            </div>`,
+                  )
+                  .join("")
+              : ""
+          }
 
         </div>
       </div>
@@ -726,14 +876,19 @@ const TemplateTen: React.FC = () => {
   const stripHtml = (html: string) =>
     html?.replace(/<\/?[^>]+(>|$)/g, "") || "";
 
- 
   /* ======================================================
      JSX PREVIEW
   ====================================================== */
   return (
     <div style={{ textAlign: "center", marginTop: 0 }}>
       {lastSegment === "download-resume" && (
-        <div style={{ textAlign: "center", marginTop: "20px", marginBottom: "20px" }}>
+        <div
+          style={{
+            textAlign: "center",
+            marginTop: "20px",
+            marginBottom: "20px",
+          }}
+        >
           <button
             onClick={handleDownload}
             className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors cursor-pointer"
@@ -744,7 +899,9 @@ const TemplateTen: React.FC = () => {
       )}
 
       <div
-        className="resume-container bg-white"
+        // className="t10-resume  bg-white"
+                className={`t10-resume ${alldata ? 'is-preview' : ''}`}
+
         style={{ margin: "0 auto", boxShadow: "0 0 12px rgba(0,0,0,0.1)" }}
       >
         <style>{styles}</style>
@@ -764,7 +921,9 @@ const TemplateTen: React.FC = () => {
           </div>
           <div className="header-meta-row">
             {addressParts.length > 0 && (
-              <span className="header-meta-item">{addressParts.join(", ")}</span>
+              <span className="header-meta-item">
+                {addressParts.join(", ")}
+              </span>
             )}
             {contact?.email && (
               <span className="header-meta-item">{contact.email}</span>
@@ -774,14 +933,30 @@ const TemplateTen: React.FC = () => {
             )}
             {linkedinUrl && (
               <span className="header-meta-item">
-                <a href={linkedinUrl.startsWith("http") ? linkedinUrl : `https://${linkedinUrl}`} target="_blank" rel="noreferrer">
+                <a
+                  href={
+                    linkedinUrl.startsWith("http")
+                      ? linkedinUrl
+                      : `https://${linkedinUrl}`
+                  }
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   LinkedIn
                 </a>
               </span>
             )}
             {portfolioUrl && (
               <span className="header-meta-item">
-                <a href={portfolioUrl.startsWith("http") ? portfolioUrl : `https://${portfolioUrl}`} target="_blank" rel="noreferrer">
+                <a
+                  href={
+                    portfolioUrl.startsWith("http")
+                      ? portfolioUrl
+                      : `https://${portfolioUrl}`
+                  }
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   Portfolio
                 </a>
               </span>
@@ -791,7 +966,6 @@ const TemplateTen: React.FC = () => {
 
         {/* BODY */}
         <div className="resume-body">
-
           {/* SUMMARY */}
           {summary && (
             <div className="section-block">
@@ -801,7 +975,9 @@ const TemplateTen: React.FC = () => {
               </div>
               <div
                 className="summary-text"
-                dangerouslySetInnerHTML={{ __html: summary.replace(/\n/g, "<br>") }}
+                dangerouslySetInnerHTML={{
+                  __html: summary.replace(/\n/g, "<br>"),
+                }}
               />
             </div>
           )}
@@ -820,11 +996,16 @@ const TemplateTen: React.FC = () => {
                     <div className="entry-date">
                       <MonthYearDisplay value={exp.startDate} shortYear />
                       {" – "}
-                      {exp.endDate ? <MonthYearDisplay value={exp.endDate} shortYear /> : "Present"}
+                      {exp.endDate ? (
+                        <MonthYearDisplay value={exp.endDate} shortYear />
+                      ) : (
+                        "Present"
+                      )}
                     </div>
                   </div>
                   <div className="entry-subtitle">
-                    {exp.employer}{exp.location && ` / ${exp.location}`}
+                    {exp.employer}
+                    {exp.location && ` / ${exp.location}`}
                   </div>
                   {exp.text && (
                     <div
@@ -849,23 +1030,33 @@ const TemplateTen: React.FC = () => {
                 if (edu.text) {
                   if (edu.text.includes("<") && edu.text.includes(">")) {
                     textContent = (
-                      <div className="edu-content" dangerouslySetInnerHTML={{ __html: edu.text }} />
+                      <div
+                        className="edu-content"
+                        dangerouslySetInnerHTML={{ __html: edu.text }}
+                      />
                     );
                   } else {
-                    const lines = edu.text.split("\n").filter((l: string) => l.trim() !== "");
+                    const lines = edu.text
+                      .split("\n")
+                      .filter((l: string) => l.trim() !== "");
                     if (lines.some((l: string) => l.trim().startsWith("-"))) {
                       textContent = (
                         <ul className="edu-list">
                           {lines.map((l: string, li: number) => {
                             const t = l.trim();
-                            const c = t.startsWith("-") ? t.substring(1).trim() : t;
+                            const c = t.startsWith("-")
+                              ? t.substring(1).trim()
+                              : t;
                             return c ? <li key={li}>{c}</li> : null;
                           })}
                         </ul>
                       );
                     } else {
                       textContent = (
-                        <div className="edu-content" style={{ whiteSpace: "pre-wrap" }}>
+                        <div
+                          className="edu-content"
+                          style={{ whiteSpace: "pre-wrap" }}
+                        >
                           {stripHtml(edu.text)}
                         </div>
                       );
@@ -878,13 +1069,17 @@ const TemplateTen: React.FC = () => {
                       <div className="entry-title">{edu.schoolname || ""}</div>
                       {(edu.startDate || edu.endDate) && (
                         <div className="entry-date">
-                          {edu.startDate || ""}{edu.startDate && edu.endDate && " – "}{edu.endDate || ""}
+                          {edu.startDate || ""}
+                          {edu.startDate && edu.endDate && " – "}
+                          {edu.endDate || ""}
                         </div>
                       )}
                     </div>
                     {(edu.degree || edu.location) && (
                       <div className="entry-subtitle">
-                        {edu.degree || ""}{edu.degree && edu.location && " / "}{edu.location || ""}
+                        {edu.degree || ""}
+                        {edu.degree && edu.location && " / "}
+                        {edu.location || ""}
                       </div>
                     )}
                     {textContent}
@@ -907,7 +1102,12 @@ const TemplateTen: React.FC = () => {
                     <span className="skill-name-label">{skill.skill}</span>
                     {skill.level && (
                       <div className="skill-track">
-                        <div className="skill-fill" style={{ width: `${(Number(skill.level) / 4) * 100}%` }} />
+                        <div
+                          className="skill-fill"
+                          style={{
+                            width: `${(Number(skill.level) / 4) * 100}%`,
+                          }}
+                        />
                       </div>
                     )}
                   </div>
@@ -929,12 +1129,18 @@ const TemplateTen: React.FC = () => {
                 <div className="skills-grid">
                   {finalize.languages.map(
                     (lang, index) =>
-                      lang.name && lang.name.trim() !== "" && (
+                      lang.name &&
+                      lang.name.trim() !== "" && (
                         <div key={lang._id || index} className="lang-row">
                           <span className="lang-name">{lang.name}</span>
                           {lang.level && (
                             <div className="skill-track">
-                              <div className="skill-fill" style={{ width: `${(Number(lang.level) / 4) * 100}%` }} />
+                              <div
+                                className="skill-fill"
+                                style={{
+                                  width: `${(Number(lang.level) / 4) * 100}%`,
+                                }}
+                              />
                             </div>
                           )}
                         </div>
@@ -953,16 +1159,21 @@ const TemplateTen: React.FC = () => {
             ) && (
               <div className="section-block">
                 <div className="section-header">
-                  <span className="section-title">Certifications &amp; Licenses</span>
+                  <span className="section-title">
+                    Certifications &amp; Licenses
+                  </span>
                   <div className="section-title-bar" />
                 </div>
                 <div className="additional-content">
                   {finalize.certificationsAndLicenses.map(
                     (item, index) =>
-                      item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "" && (
+                      item.name &&
+                      item.name.replace(/<[^>]*>/g, "").trim() !== "" && (
                         <div key={item.id || index} className="additional-item">
                           <span className="additional-tick">→</span>
-                          <div dangerouslySetInnerHTML={{ __html: item.name }} />
+                          <div
+                            dangerouslySetInnerHTML={{ __html: item.name }}
+                          />
                         </div>
                       ),
                   )}
@@ -985,10 +1196,13 @@ const TemplateTen: React.FC = () => {
                 <div className="additional-content">
                   {finalize.hobbiesAndInterests.map(
                     (item, index) =>
-                      item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "" && (
+                      item.name &&
+                      item.name.replace(/<[^>]*>/g, "").trim() !== "" && (
                         <div key={item.id || index} className="additional-item">
                           <span className="additional-tick">→</span>
-                          <div dangerouslySetInnerHTML={{ __html: item.name }} />
+                          <div
+                            dangerouslySetInnerHTML={{ __html: item.name }}
+                          />
                         </div>
                       ),
                   )}
@@ -1011,10 +1225,13 @@ const TemplateTen: React.FC = () => {
                 <div className="additional-content">
                   {finalize.awardsAndHonors.map(
                     (item, index) =>
-                      item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "" && (
+                      item.name &&
+                      item.name.replace(/<[^>]*>/g, "").trim() !== "" && (
                         <div key={item.id || index} className="additional-item">
                           <span className="additional-tick">→</span>
-                          <div dangerouslySetInnerHTML={{ __html: item.name }} />
+                          <div
+                            dangerouslySetInnerHTML={{ __html: item.name }}
+                          />
                         </div>
                       ),
                   )}
@@ -1033,7 +1250,9 @@ const TemplateTen: React.FC = () => {
             ) && (
               <div className="section-block">
                 <div className="section-header">
-                  <span className="section-title">Websites &amp; Social Media</span>
+                  <span className="section-title">
+                    Websites &amp; Social Media
+                  </span>
                   <div className="section-title-bar" />
                 </div>
                 <div className="additional-content">
@@ -1043,9 +1262,13 @@ const TemplateTen: React.FC = () => {
                         <div key={item.id || index} className="additional-item">
                           <span className="additional-tick">→</span>
                           <div>
-                            {item.websiteUrl && <span>Website: {item.websiteUrl}</span>}
+                            {item.websiteUrl && (
+                              <span>Website: {item.websiteUrl}</span>
+                            )}
                             {item.websiteUrl && item.socialMedia && " · "}
-                            {item.socialMedia && <span>Social: {item.socialMedia}</span>}
+                            {item.socialMedia && (
+                              <span>Social: {item.socialMedia}</span>
+                            )}
                           </div>
                         </div>
                       ),
@@ -1069,10 +1292,13 @@ const TemplateTen: React.FC = () => {
                 <div className="additional-content">
                   {finalize.references.map(
                     (item, index) =>
-                      item.name && item.name.replace(/<[^>]*>/g, "").trim() !== "" && (
+                      item.name &&
+                      item.name.replace(/<[^>]*>/g, "").trim() !== "" && (
                         <div key={item.id || index} className="additional-item">
                           <span className="additional-tick">→</span>
-                          <div dangerouslySetInnerHTML={{ __html: item.name }} />
+                          <div
+                            dangerouslySetInnerHTML={{ __html: item.name }}
+                          />
                         </div>
                       ),
                   )}
@@ -1105,14 +1331,11 @@ const TemplateTen: React.FC = () => {
                   )}
                 </div>
               ))}
-
-        </div>{/* /resume-body */}
+        </div>
+        {/* /resume-body */}
       </div>
     </div>
   );
 };
 
 export default TemplateTen;
-
-
-

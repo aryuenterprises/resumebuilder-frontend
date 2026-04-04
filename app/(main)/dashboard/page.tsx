@@ -46,6 +46,7 @@ import ProtectedRoute from "@/app/utils/ProtectedRoute";
 import axios from "axios";
 import { API_URL } from "@/app/config/api";
 import { TemplateOne, TemplateTwo } from "@/app/components/templates";
+import { templateData } from "@/app/data";
 
 const resumes = [
   {
@@ -127,6 +128,14 @@ interface usersCurrentPlan {
   description: string;
 }
 
+interface ResumeItem {
+  component: React.ComponentType<any>; // Or a more specific prop type
+  templateId: string | number;
+  [key: string]: any; // Allows for the rest of your data fields
+}
+
+
+
 const DashboardPage = () => {
   const router = useRouter();
   const [greeting, setGreeting] = useState("");
@@ -140,7 +149,11 @@ const DashboardPage = () => {
   const [showResumeMenu, setShowResumeMenu] = useState<string | null>(null);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("All Resumes");
-  const [oldResumeData, setOldResumeData] = useState([]);
+  // const [filteredOldResumeData, setFilteredOldResumeData] = useState([]);
+  
+
+
+const [filteredOldResumeData, setFilteredOldResumeData] = useState<ResumeItem[]>([]);
 
   const userDetails = getLocalStorage<User>("user_details");
   const userId = userDetails?.id;
@@ -171,8 +184,21 @@ const DashboardPage = () => {
         const response = await axios.get(
           `${API_URL}/api/contact-resume/all-contact/${userId}`,
         );
-        console.log("Old Resume Data:", response.data);
-        setOldResumeData(response.data);
+
+        // const filter = response.data.flatMap((data1) => {
+
+          const filter = response.data.flatMap((data1: { templateId: string | number }) => {
+          const templateMatch = templateData.find(
+            (t) => t.id == data1.templateId,
+          );
+
+          // Return an array with the transformed object if found, otherwise an empty array
+          return templateMatch
+            ? [{ ...data1, component: templateMatch.component }]
+            : [];
+        });
+
+        setFilteredOldResumeData(filter);
       } catch (err) {
         console.log(err);
       }
@@ -180,6 +206,8 @@ const DashboardPage = () => {
 
     fetchUserData();
   }, []);
+
+  console.log("filteredOldResumeData", filteredOldResumeData);
 
   useEffect(() => {
     const fetchPaymentRecords = async () => {
@@ -499,6 +527,9 @@ const DashboardPage = () => {
     const listItems = doc.querySelectorAll("li");
     return Array.from(listItems).map((li) => li.textContent.trim());
   };
+
+  // console.log("filteredOldResumeData",filteredOldResumeData)
+  // console.log("templateData",templateData)
 
   return (
     <ProtectedRoute>
@@ -829,7 +860,7 @@ const DashboardPage = () => {
               >
                 <div className="h-full bg-white rounded-3xl shadow-xl border border-gray-200/50 overflow-hidden hover:shadow-2xl transition-all duration-500">
                   {/* No Plan Header */}
-                  <div className="relative bg-gradient-to-r from-gray-600 via-gray-500 to-gray-700 p-8 overflow-hidden">
+                  <div className="relative bg-linear-to-r from-gray-600 via-gray-500 to-gray-700 p-8 overflow-hidden">
                     <div className="absolute inset-0 bg-white/10 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                     <div className="relative text-center">
                       <div className="inline-flex p-4 bg-white/20 rounded-full mb-4">
@@ -870,7 +901,7 @@ const DashboardPage = () => {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => router.push("/choose-plan")}
-                      className="px-6 py-3 bg-gradient-to-r from-[#c40116] to-[#be0117] text-white font-medium rounded-xl hover:shadow-lg hover:shadow-[#c40116]/25 transition-all duration-300 flex items-center justify-center gap-2 mx-auto cursor-pointer"
+                      className="px-6 py-3 bg-linear-to-r from-[#c40116] to-[#be0117] text-white font-medium rounded-xl hover:shadow-lg hover:shadow-[#c40116]/25 transition-all duration-300 flex items-center justify-center gap-2 mx-auto cursor-pointer"
                     >
                       <MdOutlinePublishedWithChanges className="w-4 h-4" />
                       <span>Choose a Plan</span>
@@ -1124,15 +1155,14 @@ const DashboardPage = () => {
 
             {/* </div> */}
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {oldResumeData.map((item, index) => (
-                // <div className="w-50 h-50">
+            {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredOldResumeData.map((item, index) => {
+                // 1. Assign the component to a Capitalized variable
+                const ComponentToRender = item.component;
 
-                <TemplateTwo alldata={item} />
-                // </div>
-
-              ))}
-            </div>
+                return <ComponentToRender alldata={item} />;
+              })}
+            </div> */}
           </motion.div>
 
           {/* Empty State */}

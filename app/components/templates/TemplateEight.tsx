@@ -5,19 +5,35 @@ import { CreateContext } from "@/app/context/CreateContext";
 import { API_URL } from "@/app/config/api";
 import { formatMonthYear, MonthYearDisplay } from "@/app/utils";
 import { usePathname } from "next/navigation";
+import { ResumeProps } from "@/app/types";
 
-const TemplateEight: React.FC = () => {
+// const TemplateEight: React.FC = () => {
+
+const TemplateEight: React.FC<ResumeProps> = ({ alldata }) => {
+  // const context = useContext(CreateContext);
+
+  // const pathname = usePathname();
+  // const lastSegment = pathname.split("/").pop();
+
+  // const contact = context.contact || {};
+  // const educations = context?.education || [];
+  // const experiences = context?.experiences || [];
+  // const skills = context?.skills || [];
+  // const finalize = context?.finalize || {};
+  // const summary = context?.summary || "";
+
   const context = useContext(CreateContext);
+  console.log("context,", context);
 
   const pathname = usePathname();
   const lastSegment = pathname.split("/").pop();
 
-  const contact = context.contact || {};
-  const educations = context?.education || [];
-  const experiences = context?.experiences || [];
-  const skills = context?.skills || [];
-  const finalize = context?.finalize || {};
-  const summary = context?.summary || "";
+  const contact = alldata?.contact || context.contact || {};
+  const educations = alldata?.educations || context?.education || [];
+  const experiences = alldata?.experiences || context?.experiences || [];
+  const skills = alldata?.skills || context?.skills || [];
+  const finalize = alldata?.finalize || context?.finalize || {};
+  const summary = alldata?.summary || context?.summary || "";
 
   const addressParts = [
     contact?.address,
@@ -35,13 +51,13 @@ const TemplateEight: React.FC = () => {
   const styles = `
   @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Barlow:wght@300;400;500;600&display=swap');
 
-  body {
+ .t8-resume  body {
     margin: 0;
     background-color: white;
     text-align: left;
   }
 
-  .resume-container {
+  .t8-resume  {
     width: 210mm;
     min-height: 297mm;
     padding: 18mm 20mm;
@@ -52,14 +68,21 @@ const TemplateEight: React.FC = () => {
     text-align: left;
   }
 
+    .t-resume.is-preview {
+    scale: 0.3;
+    max-height: 297mm;
+    overflow: hidden;
+    transform-origin: top left; /* Ensures it scales from the corner */
+}
+
   /* ── HEADER ── */
-  .header-block {
+   .t8-resume  .header-block {
     margin-bottom: 22px;
     padding-bottom: 16px;
     border-bottom: 2px solid #111;
   }
 
-  .header-name {
+  .t8-resume  .header-name {
     font-family: 'EB Garamond', serif;
     font-size: 36px;
     font-weight: 600;
@@ -69,7 +92,7 @@ const TemplateEight: React.FC = () => {
     color: #000;
   }
 
-  .header-jobtitle {
+  .t8-resume  .header-jobtitle {
     font-family: 'Barlow', sans-serif;
     font-size: 13px;
     font-weight: 500;
@@ -79,7 +102,7 @@ const TemplateEight: React.FC = () => {
     margin-bottom: 12px;
   }
 
-  .header-meta {
+  .t8-resume  .header-meta {
     display: flex;
     flex-wrap: wrap;
     gap: 0;
@@ -88,31 +111,31 @@ const TemplateEight: React.FC = () => {
     line-height: 1.6;
   }
 
-  .header-meta-item {
+  .t8-resume  .header-meta-item {
     display: flex;
     align-items: center;
     color: #333;
   }
 
-  .header-meta-item:not(:last-child)::after {
+  .t8-resume  .header-meta-item:not(:last-child)::after {
     content: '·';
     margin: 0 8px;
     color: #999;
     font-weight: 300;
   }
 
-  .header-meta a {
+  .t8-resume  .header-meta a {
     color: #111;
     text-decoration: underline;
     text-underline-offset: 2px;
   }
 
   /* ── SECTION TITLES ── */
-  .section-block {
+  .t8-resume  .section-block {
     margin-bottom: 20px;
   }
 
-  .section-title {
+  .t8-resume  .section-title {
     font-family: 'Barlow', sans-serif;
     font-size: 10px;
     font-weight: 600;
@@ -125,7 +148,7 @@ const TemplateEight: React.FC = () => {
   }
 
   /* ── SUMMARY ── */
-  .summary-text {
+  .t8-resume  .summary-text {
     font-size: 13.5px;
     line-height: 1.75;
     color: #222;
@@ -133,18 +156,18 @@ const TemplateEight: React.FC = () => {
   }
 
   /* ── EXPERIENCE ── */
-  .entry-block {
+  .t8-resume  .entry-block {
     margin-bottom: 16px;
     padding-bottom: 14px;
     border-bottom: 1px solid #e8e8e8;
   }
 
-  .entry-block:last-child {
+  .t8-resume  .entry-block:last-child {
     border-bottom: none;
     padding-bottom: 0;
   }
 
-  .entry-top-row {
+  .t8-resume  .entry-top-row {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
@@ -153,7 +176,7 @@ const TemplateEight: React.FC = () => {
     gap: 6px;
   }
 
-  .entry-title {
+  .t8-resume  .entry-title {
     font-family: 'EB Garamond', serif;
     font-size: 17px;
     font-weight: 600;
@@ -161,7 +184,7 @@ const TemplateEight: React.FC = () => {
     line-height: 1.3;
   }
 
-  .entry-date {
+  .t8-resume  .entry-date {
     font-size: 11.5px;
     color: #555;
     font-weight: 400;
@@ -170,7 +193,7 @@ const TemplateEight: React.FC = () => {
     letter-spacing: 0.3px;
   }
 
-  .entry-subtitle {
+  .t8-resume  .entry-subtitle {
     font-size: 12.5px;
     color: #444;
     margin-bottom: 7px;
@@ -179,57 +202,57 @@ const TemplateEight: React.FC = () => {
     letter-spacing: 0.2px;
   }
 
-  .entry-subtitle em {
+  .t8-resume  .entry-subtitle em {
     font-style: normal;
     color: #777;
   }
 
-  .entry-content {
+  .t8-resume  .entry-content {
     font-size: 13px;
     line-height: 1.65;
     color: #333;
     font-family: 'Barlow', sans-serif;
   }
 
-  .entry-content ul,
-  .entry-content-description ul {
+  .t8-resume  .entry-content ul,
+  .t8-resume  .entry-content-description ul {
     list-style-type: disc !important;
     padding-left: 18px !important;
     margin: 4px 0 !important;
   }
 
-  .entry-content ol,
-  .entry-content-description ol {
+  .t8-resume  .entry-content ol,
+  .t8-resume  .entry-content-description ol {
     list-style-type: decimal !important;
     padding-left: 18px !important;
     margin: 4px 0 !important;
   }
 
-  .entry-content li,
-  .entry-content-description li {
+  .t8-resume  .entry-content li,
+  .t8-resume  .entry-content-description li {
     margin-bottom: 3px !important;
     line-height: 1.6 !important;
     list-style-position: outside !important;
   }
 
-  ul {
+  .t8-resume  ul {
     list-style-type: disc !important;
   }
 
   /* ── SKILLS ── */
-  .skills-list {
+ .t8-resume .skills-list {
     display: flex;
     flex-direction: column;
     gap: 10px;
   }
 
-  .skill-row {
+ .t8-resume .skill-row {
     display: flex;
     align-items: center;
     gap: 14px;
   }
 
-  .skill-name-label {
+ .t8-resume .skill-name-label {
     font-size: 13px;
     color: #111;
     min-width: 160px;
@@ -237,13 +260,13 @@ const TemplateEight: React.FC = () => {
     font-weight: 400;
   }
 
-  .skill-dots {
+ .t8-resume .skill-dots {
     display: flex;
     gap: 5px;
     align-items: center;
   }
 
-  .skill-dot {
+ .t8-resume .skill-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
@@ -251,19 +274,19 @@ const TemplateEight: React.FC = () => {
     background: transparent;
   }
 
-  .skill-dot.filled {
+.t8-resume  .skill-dot.filled {
     background: #111;
   }
 
   /* ── LANGUAGES ── */
-  .lang-row {
+  .t8-resume  .lang-row {
     display: flex;
     align-items: center;
     gap: 14px;
     margin-bottom: 10px;
   }
 
-  .lang-name {
+ .t8-resume .lang-name {
     font-size: 13px;
     color: #111;
     min-width: 160px;
@@ -271,20 +294,20 @@ const TemplateEight: React.FC = () => {
   }
 
   /* ── ADDITIONAL CONTENT ── */
-  .additional-content {
+  .t8-resume  .additional-content {
     font-size: 13px;
     color: #333;
     line-height: 1.7;
     font-family: 'Barlow', sans-serif;
   }
 
-  .additional-item {
+  .t8-resume  .additional-item {
     margin-bottom: 5px;
     padding-left: 12px;
     position: relative;
   }
 
-  .additional-item::before {
+  .t8-resume  .additional-item::before {
     content: '—';
     position: absolute;
     left: 0;
@@ -294,26 +317,26 @@ const TemplateEight: React.FC = () => {
   }
 
   /* ── EDUCATION ── */
-  .edu-content {
+  .t8-resume  .edu-content {
     font-size: 13px;
     line-height: 1.65;
     color: #333;
     font-family: 'Barlow', sans-serif;
   }
 
-  .edu-list {
+  .t8-resume  .edu-list {
     list-style-type: disc !important;
     padding-left: 18px !important;
     margin: 4px 0 !important;
   }
 
-  .edu-list li {
+  .t8-resume  .edu-list li {
     margin-bottom: 3px;
     line-height: 1.6;
   }
 
   /* ── CUSTOM SECTIONS ── */
-  .custom-section-content {
+  .t8-resume  .custom-section-content {
     font-size: 13px;
     line-height: 1.65;
     color: #333;
@@ -332,39 +355,39 @@ const TemplateEight: React.FC = () => {
       print-color-adjust: exact;
     }
 
-    .resume-container {
+    .t8-resume  {
       width: 100% !important;
       padding: 0 !important;
       margin: 0 !important;
       box-shadow: none !important;
     }
 
-    .no-print {
+    .t8-resume  .no-print {
       display: none !important;
     }
 
-    .entry-block,{
+    .t8-resume  .entry-block,{
       page-break-inside: avoid;
     }
 
-    .entry-date {
+    .t8-resume  .entry-date {
       white-space: nowrap;
     }
   }
 
   @media (max-width: 768px) {
-    .resume-container {
+    .t8-resume  {
       width: 100%;
       padding: 10mm;
     }
 
-    .entry-top-row {
+    .t8-resume  .entry-top-row {
       flex-direction: column;
       align-items: flex-start;
     }
 
-    .skill-name-label,
-    .lang-name {
+    .t8-resume  .skill-name-label,
+    .t8-resume  .lang-name {
       min-width: 120px;
     }
   }
@@ -394,9 +417,7 @@ const TemplateEight: React.FC = () => {
       }
       const lines = text.split("\n").filter((l) => l.trim() !== "");
       if (
-        lines.some(
-          (l) => l.trim().startsWith("-") || l.trim().startsWith("•"),
-        )
+        lines.some((l) => l.trim().startsWith("-") || l.trim().startsWith("•"))
       ) {
         return `<div class="entry-content ${className}"><ul style="list-style-type:disc!important;padding-left:18px;margin:4px 0;">${lines
           .map((l) => {
@@ -424,7 +445,7 @@ const TemplateEight: React.FC = () => {
       <style>${styles}</style>
     </head>
     <body>
-      <div class="resume-container">
+      <div class="t8-resume ">
 
         <!-- HEADER -->
         <div class="header-block">
@@ -509,9 +530,7 @@ const TemplateEight: React.FC = () => {
                       const lines = edu.text
                         .split("\n")
                         .filter((l: string) => l.trim() !== "");
-                      if (
-                        edu.text.includes("<") && edu.text.includes(">")
-                      ) {
+                      if (edu.text.includes("<") && edu.text.includes(">")) {
                         textHtml = `<div class="edu-content">${edu.text}</div>`;
                       } else if (
                         lines.some((l: string) => l.trim().startsWith("-"))
@@ -805,7 +824,13 @@ const TemplateEight: React.FC = () => {
   return (
     <div style={{ textAlign: "center", marginTop: 0 }}>
       {lastSegment === "download-resume" && (
-        <div style={{ textAlign: "center", marginTop: "20px", marginBottom: "20px" }}>
+        <div
+          style={{
+            textAlign: "center",
+            marginTop: "20px",
+            marginBottom: "20px",
+          }}
+        >
           <button
             onClick={handleDownload}
             className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors cursor-pointer"
@@ -816,7 +841,9 @@ const TemplateEight: React.FC = () => {
       )}
 
       <div
-        className="resume-container bg-white"
+        // className="t8-resume  bg-white"
+                className={`t8-resume ${alldata ? 'is-preview' : ''}`}
+
         style={{ margin: "0 auto", boxShadow: "0 0 10px rgba(0,0,0,0.08)" }}
       >
         <style>{styles}</style>
@@ -835,7 +862,9 @@ const TemplateEight: React.FC = () => {
           </div>
           <div className="header-meta">
             {addressParts.length > 0 && (
-              <span className="header-meta-item">{addressParts.join(", ")}</span>
+              <span className="header-meta-item">
+                {addressParts.join(", ")}
+              </span>
             )}
             {contact?.email && (
               <span className="header-meta-item">{contact.email}</span>
@@ -846,7 +875,11 @@ const TemplateEight: React.FC = () => {
             {linkedinUrl && (
               <span className="header-meta-item">
                 <a
-                  href={linkedinUrl.startsWith("http") ? linkedinUrl : `https://${linkedinUrl}`}
+                  href={
+                    linkedinUrl.startsWith("http")
+                      ? linkedinUrl
+                      : `https://${linkedinUrl}`
+                  }
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -857,7 +890,11 @@ const TemplateEight: React.FC = () => {
             {portfolioUrl && (
               <span className="header-meta-item">
                 <a
-                  href={portfolioUrl.startsWith("http") ? portfolioUrl : `https://${portfolioUrl}`}
+                  href={
+                    portfolioUrl.startsWith("http")
+                      ? portfolioUrl
+                      : `https://${portfolioUrl}`
+                  }
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -874,7 +911,9 @@ const TemplateEight: React.FC = () => {
             <div className="section-title">Profile</div>
             <div
               className="summary-text"
-              dangerouslySetInnerHTML={{ __html: summary.replace(/\n/g, "<br>") }}
+              dangerouslySetInnerHTML={{
+                __html: summary.replace(/\n/g, "<br>"),
+              }}
             />
           </div>
         )}
@@ -935,14 +974,19 @@ const TemplateEight: React.FC = () => {
                       <ul className="edu-list">
                         {lines.map((l: string, li: number) => {
                           const t = l.trim();
-                          const c = t.startsWith("-") ? t.substring(1).trim() : t;
+                          const c = t.startsWith("-")
+                            ? t.substring(1).trim()
+                            : t;
                           return c ? <li key={li}>{c}</li> : null;
                         })}
                       </ul>
                     );
                   } else {
                     textContent = (
-                      <div className="edu-content" style={{ whiteSpace: "pre-wrap" }}>
+                      <div
+                        className="edu-content"
+                        style={{ whiteSpace: "pre-wrap" }}
+                      >
                         {stripHtml(edu.text)}
                       </div>
                     );
@@ -1108,8 +1152,12 @@ const TemplateEight: React.FC = () => {
                   (item, index) =>
                     (item.websiteUrl || item.socialMedia) && (
                       <div key={item.id || index} className="additional-item">
-                        {item.websiteUrl && <div>Website: {item.websiteUrl}</div>}
-                        {item.socialMedia && <div>Social Media: {item.socialMedia}</div>}
+                        {item.websiteUrl && (
+                          <div>Website: {item.websiteUrl}</div>
+                        )}
+                        {item.socialMedia && (
+                          <div>Social Media: {item.socialMedia}</div>
+                        )}
                       </div>
                     ),
                 )}

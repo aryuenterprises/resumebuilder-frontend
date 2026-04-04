@@ -141,9 +141,7 @@ export interface FullResumeData {
   skills: Skill[];
   summary: string;
   finalize: Finalize;
-
 }
-
 
 export interface AllData {
   contact?: Contact;
@@ -154,7 +152,9 @@ export interface AllData {
   summary?: string;
 }
 
-
+export interface ResumeProps {
+  alldata?: AllData;
+}
 export interface CreateContextType {
   chosenTemplate: Template | null;
   setChosenTemplate: React.Dispatch<React.SetStateAction<Template | null>>;

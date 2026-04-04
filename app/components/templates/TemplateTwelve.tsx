@@ -9,19 +9,36 @@ import { CreateContext } from "@/app/context/CreateContext";
 import { API_URL } from "@/app/config/api";
 import { formatMonthYear, MonthYearDisplay } from "@/app/utils";
 import { usePathname } from "next/navigation";
+import { ResumeProps } from "@/app/types";
 
-const TemplateTwelve: React.FC = () => {
-  const context = useContext(CreateContext);
+// const TemplateTwelve: React.FC = () => {
+const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
 
-  const pathname = usePathname();
-  const lastSegment = pathname.split("/").pop();
+  // const context = useContext(CreateContext);
 
-  const contact = context.contact || {};
-  const educations = context?.education || [];
-  const experiences = context?.experiences || [];
-  const skills = context?.skills || [];
-  const finalize = context?.finalize || {};
-  const summary = context?.summary || "";
+  // const pathname = usePathname();
+  // const lastSegment = pathname.split("/").pop();
+
+  // const contact = context.contact || {};
+  // const educations = context?.education || [];
+  // const experiences = context?.experiences || [];
+  // const skills = context?.skills || [];
+  // const finalize = context?.finalize || {};
+  // const summary = context?.summary || "";
+
+
+   const context = useContext(CreateContext);
+    console.log("context,", context);
+  
+    const pathname = usePathname();
+    const lastSegment = pathname.split("/").pop();
+  
+    const contact = alldata?.contact || context.contact || {};
+    const educations = alldata?.educations || context?.education || [];
+    const experiences = alldata?.experiences || context?.experiences || [];
+    const skills = alldata?.skills || context?.skills || [];
+    const finalize = alldata?.finalize || context?.finalize || {};
+    const summary = alldata?.summary || context?.summary || "";
 
   const addressParts = [
     contact?.address,
@@ -39,13 +56,12 @@ const TemplateTwelve: React.FC = () => {
   const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Sans+3:wght@300;400;600&display=swap');
 
-  body {
-    margin: 0;
+  
+
+  .t12-resume  {
+   margin: 0;
     background-color: white;
     text-align: left;
-  }
-
-  .resume-container {
     width: 210mm;
     min-height: 297mm;
     padding: 20mm 22mm 20mm 22mm;
@@ -56,13 +72,20 @@ const TemplateTwelve: React.FC = () => {
     text-align: left;
   }
 
+    .t12-resume.is-preview {
+    scale: 0.3;
+    max-height: 297mm;
+    overflow: hidden;
+    transform-origin: top left; /* Ensures it scales from the corner */
+}
+
   /* ── HEADER ── */
-  .header-block {
+  .t12-resume .header-block {
     margin-bottom: 28px;
     text-align: left;
   }
 
-  .header-name {
+  .t12-resume .header-name {
     font-family: 'Playfair Display', serif;
     font-size: 44px;
     font-weight: 700;
@@ -73,7 +96,7 @@ const TemplateTwelve: React.FC = () => {
     text-align: left;
   }
 
-  .header-jobtitle {
+  .t12-resume .header-jobtitle {
     font-family: 'Source Sans 3', sans-serif;
     font-size: 12px;
     font-weight: 600;
@@ -84,14 +107,14 @@ const TemplateTwelve: React.FC = () => {
     text-align: left;
   }
 
-  .header-divider {
+ .t12-resume .header-divider {
     width: 100%;
     height: 1px;
     background: #111;
     margin-bottom: 12px;
   }
 
-  .header-meta-row {
+  .t12-resume .header-meta-row {
     display: flex;
     flex-wrap: wrap;
     gap: 0;
@@ -101,31 +124,31 @@ const TemplateTwelve: React.FC = () => {
     text-align: left;
   }
 
-  .header-meta-item {
+  .t12-resume .header-meta-item {
     display: flex;
     align-items: center;
     text-align: left;
   }
 
-  .header-meta-item:not(:last-child)::after {
+  .t12-resume .header-meta-item:not(:last-child)::after {
     content: '·';
     margin: 0 9px;
     color: #bbb;
   }
 
-  .header-meta-item a {
+.t12-resume  .header-meta-item a {
     color: #111;
     text-decoration: none;
     border-bottom: 1px solid #bbb;
   }
 
   /* ── SECTION ── */
-  .section-block {
+ .t12-resume .section-block {
     margin-bottom: 22px;
     text-align: left;
   }
 
-  .section-title {
+  .t12-resume .section-title {
     font-family: 'Source Sans 3', sans-serif;
     font-size: 9.5px;
     font-weight: 600;
@@ -139,7 +162,7 @@ const TemplateTwelve: React.FC = () => {
   }
 
   /* ── SUMMARY ── */
-  .summary-text {
+  .t12-resume .summary-text {
   
     font-size: 14px;
     line-height: 1.85;
@@ -149,7 +172,7 @@ const TemplateTwelve: React.FC = () => {
   }
 
   /* ── ENTRY BLOCKS ── */
-  .entry-block {
+  .t12-resume .entry-block {
     display: grid;
     grid-template-columns: 110px 1fr;
     gap: 0 20px;
@@ -157,16 +180,16 @@ const TemplateTwelve: React.FC = () => {
     text-align: left;
   }
 
-  .entry-block:last-child {
+  .t12-resume .entry-block:last-child {
     margin-bottom: 0;
   }
 
-  .entry-left {
+  .t12-resume .entry-left {
     text-align: left;
     padding-top: 2px;
   }
 
-  .entry-date {
+  .t12-resume .entry-date {
     font-size: 10.5px;
     color: #999;
     font-weight: 400;
@@ -175,13 +198,13 @@ const TemplateTwelve: React.FC = () => {
     white-space: pre-line;
   }
 
-  .entry-right {
+  .t12-resume .entry-right {
     text-align: left;
     border-left: 1px solid #e5e5e5;
     padding-left: 20px;
   }
 
-  .entry-title {
+  .t12-resume .entry-title {
     font-family: 'Playfair Display', serif;
     font-size: 16px;
     font-weight: 700;
@@ -191,7 +214,7 @@ const TemplateTwelve: React.FC = () => {
     text-align: left;
   }
 
-  .entry-subtitle {
+  .t12-resume .entry-subtitle {
     font-size: 11.5px;
     color: #777;
     font-weight: 400;
@@ -200,7 +223,7 @@ const TemplateTwelve: React.FC = () => {
     letter-spacing: 0.2px;
   }
 
-  .entry-content {
+  .t12-resume .entry-content {
     font-size: 12.5px;
     line-height: 1.7;
     color: #444;
@@ -208,103 +231,103 @@ const TemplateTwelve: React.FC = () => {
     text-align: left;
   }
 
-  .entry-content ul,
-  .entry-content-desc ul {
+  .t12-resume .entry-content ul,
+  .t12-resume .entry-content-desc ul {
     list-style-type: disc !important;
     padding-left: 16px !important;
     margin: 4px 0 !important;
   }
 
-  .entry-content ol,
-  .entry-content-desc ol {
+  .t12-resume .entry-content ol,
+  .t12-resume .entry-content-desc ol {
     list-style-type: decimal !important;
     padding-left: 16px !important;
     margin: 4px 0 !important;
   }
 
-  .entry-content li,
-  .entry-content-desc li {
+  .t12-resume .entry-content li,
+  .t12-resume .entry-content-desc li {
     margin-bottom: 3px !important;
     line-height: 1.6 !important;
     list-style-position: outside !important;
   }
 
-  ul {
+  .t12-resume ul {
     list-style-type: disc !important;
   }
 
   /* ── SKILLS ── */
-  .skills-block {
+  .t12-resume .skills-block {
     display: grid;
     grid-template-columns: 110px 1fr;
     gap: 0 20px;
     text-align: left;
   }
 
-  .skills-left {
+  .t12-resume .skills-left {
     text-align: left;
   }
 
-  .skills-right {
+  .t12-resume .skills-right {
     border-left: 1px solid #e5e5e5;
     padding-left: 20px;
     text-align: left;
   }
 
-  .skills-list {
+  .t12-resume .skills-list {
     display: flex;
     flex-direction: column;
     gap: 7px;
     text-align: left;
   }
 
-  .skill-row {
+  .t12-resume .skill-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
     text-align: left;
   }
 
-  .skill-name-label {
+  .t12-resume .skill-name-label {
     font-size: 12.5px;
     color: #222;
     font-weight: 400;
     text-align: left;
   }
 
-  .skill-pips {
+  .t12-resume .skill-pips {
     display: flex;
     gap: 3px;
     align-items: center;
   }
 
-  .skill-pip {
+  .t12-resume .skill-pip {
     width: 6px;
     height: 6px;
     border-radius: 50%;
     background: #ddd;
   }
 
-  .skill-pip.on {
+  .t12-resume .skill-pip.on {
     background: #111;
   }
 
   /* ── LANGUAGES ── */
-  .lang-list {
+  .t12-resume .lang-list {
     display: flex;
     flex-direction: column;
     gap: 7px;
     text-align: left;
   }
 
-  .lang-row {
+  .t12-resume .lang-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
     text-align: left;
   }
 
-  .lang-name {
+  .t12-resume .lang-name {
     font-size: 12.5px;
     color: #222;
     font-weight: 400;
@@ -312,20 +335,20 @@ const TemplateTwelve: React.FC = () => {
   }
 
   /* ── ADDITIONAL ── */
-  .additional-block {
+  .t12-resume .additional-block {
     display: grid;
     grid-template-columns: 110px 1fr;
     gap: 0 20px;
     text-align: left;
   }
 
-  .additional-right {
+  .t12-resume .additional-right {
     border-left: 1px solid #e5e5e5;
     padding-left: 20px;
     text-align: left;
   }
 
-  .additional-item {
+  .t12-resume .additional-item {
     font-size: 12.5px;
     color: #444;
     font-weight: 300;
@@ -335,7 +358,7 @@ const TemplateTwelve: React.FC = () => {
   }
 
   /* ── EDU ── */
-  .edu-content {
+  .t12-resume .edu-content {
     font-size: 12.5px;
     line-height: 1.7;
     color: #444;
@@ -343,20 +366,20 @@ const TemplateTwelve: React.FC = () => {
     text-align: left;
   }
 
-  .edu-list {
+  .t12-resume .edu-list {
     list-style-type: disc !important;
     padding-left: 16px !important;
     margin: 4px 0 !important;
   }
 
-  .edu-list li {
+  .t12-resume .edu-list li {
     margin-bottom: 3px;
     line-height: 1.6;
     list-style-position: outside !important;
   }
 
   /* ── CUSTOM ── */
-  .custom-section-content {
+  .t12-resume .custom-section-content {
     font-size: 12.5px;
     line-height: 1.7;
     color: #444;
@@ -380,7 +403,7 @@ const TemplateTwelve: React.FC = () => {
       print-color-adjust: exact;
     }
 
-    .resume-container {
+    .t12-resume  {
       width: 100% !important;
       box-shadow: none !important;
     }
@@ -389,47 +412,47 @@ const TemplateTwelve: React.FC = () => {
       display: none !important;
     }
 
-    .entry-block {
+    .t12-resume .entry-block {
       page-break-inside: avoid;
       break-inside: avoid;
     }
 
-    .section-title {
+    .t12-resume .section-title {
       page-break-after: avoid;
       break-after: avoid;
     }
 
-    .resume-container {
+    .t12-resume  {
       padding-top: 20px;
     }
   }
 
   @media (max-width: 768px) {
-    .resume-container {
+    .t12-resume  {
       width: 100%;
       padding: 10mm;
     }
 
-    .header-name {
+    .t12-resume .header-name {
       font-size: 32px;
     }
 
-    .entry-block,
-    .skills-block,
-    .additional-block {
+    .t12-resume .entry-block,
+    .t12-resume .skills-block,
+    .t12-resume .additional-block {
       grid-template-columns: 1fr;
     }
 
-    .entry-right,
-    .skills-right,
-    .additional-right {
+    .t12-resume .entry-right,
+    .t12-resume .skills-right,
+    .t12-resume .additional-right {
       border-left: none;
       padding-left: 0;
       border-top: 1px solid #e5e5e5;
       padding-top: 8px;
     }
 
-    .entry-left {
+    .t12-resume .entry-left {
       margin-bottom: 4px;
     }
   }
@@ -480,7 +503,7 @@ const TemplateTwelve: React.FC = () => {
       <style>${styles}</style>
     </head>
     <body>
-      <div class="resume-container">
+      <div class="t12-resume ">
 
         <!-- HEADER -->
         <div class="header-block">
@@ -752,7 +775,7 @@ const TemplateTwelve: React.FC = () => {
       )}
 
       <div
-        className="resume-container bg-white"
+        className={`t12-resume ${alldata ? 'is-preview' : ''} `}
         style={{ margin: "0 auto", boxShadow: "0 0 12px rgba(0,0,0,0.08)" }}
       >
         <style>{styles}</style>

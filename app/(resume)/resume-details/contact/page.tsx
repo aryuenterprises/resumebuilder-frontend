@@ -29,8 +29,8 @@ import {
 import { GrUserWorker } from "react-icons/gr";
 import { FiTrash2 } from "react-icons/fi";
 import { FaLinkedin, FaGlobeAmericas } from "react-icons/fa";
-import "primereact/resources/themes/lara-light-indigo/theme.css";
-import "primereact/resources/primereact.min.css";
+// import "primereact/resources/themes/lara-light-indigo/theme.css";
+// import "primereact/resources/primereact.min.css";
 import { API_URL } from "@/app/config/api";
 import { CreateContext } from "@/app/context/CreateContext";
 import Stepper from "../../../components/resume/Steppers";
@@ -64,7 +64,11 @@ const ContactForm = () => {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
+
+
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
+
+  
   const [showPhotoViewer, setShowPhotoViewer] = useState<boolean>(false);
 
   const [isSaving, setIsSaving] = useState<boolean>(false);

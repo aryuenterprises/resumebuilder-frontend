@@ -6,19 +6,35 @@ import { CreateContext } from "@/app/context/CreateContext";
 import { API_URL } from "@/app/config/api";
 import { formatMonthYear, MonthYearDisplay } from "@/app/utils";
 import { usePathname } from "next/navigation";
+import { ResumeProps } from "@/app/types";
 
-const TemplateThirteen: React.FC = () => {
-  const context = useContext(CreateContext);
+// const TemplateThirteen: React.FC = () => {
+  const TemplateThirteen: React.FC<ResumeProps> = ({ alldata }) => {
 
-  const pathname = usePathname();
-  const lastSegment = pathname.split("/").pop();
+  // const context = useContext(CreateContext);
 
-  const contact = context.contact || {};
-  const educations = context?.education || [];
-  const experiences = context?.experiences || [];
-  const skills = context?.skills || [];
-  const finalize = context?.finalize || {};
-  const summary = context?.summary || "";
+  // const pathname = usePathname();
+  // const lastSegment = pathname.split("/").pop();
+
+  // const contact = context.contact || {};
+  // const educations = context?.education || [];
+  // const experiences = context?.experiences || [];
+  // const skills = context?.skills || [];
+  // const finalize = context?.finalize || {};
+  // const summary = context?.summary || "";
+
+   const context = useContext(CreateContext);
+    console.log("context,", context);
+  
+    const pathname = usePathname();
+    const lastSegment = pathname.split("/").pop();
+  
+    const contact = alldata?.contact || context.contact || {};
+    const educations = alldata?.educations || context?.education || [];
+    const experiences = alldata?.experiences || context?.experiences || [];
+    const skills = alldata?.skills || context?.skills || [];
+    const finalize = alldata?.finalize || context?.finalize || {};
+    const summary = alldata?.summary || context?.summary || "";
 
   const addressParts = [
     contact?.address,
@@ -44,21 +60,28 @@ const TemplateThirteen: React.FC = () => {
       -moz-osx-font-smoothing: grayscale;
     }
 
-    .resume-container {
+    .t13-resume  {
       max-width: 850px;
       margin: 40px auto;
       background: white;
       box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
 
+      .t13-resume.is-preview {
+    scale: 0.3;
+    max-height: 297mm;
+    overflow: hidden;
+    transform-origin: top left; /* Ensures it scales from the corner */
+}
+
     /* Header Section - BOLD */
-    .resume-header {
+    .t13-resume .resume-header {
       padding: 50px 50px 35px 50px;
       background: #111111;
       color: white;
     }
 
-    .name {
+   .t13-resume .name {
       font-size: 52px;
       font-weight: 800;
       font-style: normal;
@@ -69,7 +92,7 @@ const TemplateThirteen: React.FC = () => {
       line-height: 1.2;
     }
 
-    .job-title {
+   .t13-resume .job-title {
       font-size: 18px;
       font-weight: 600;
       font-style: normal;
@@ -81,7 +104,7 @@ const TemplateThirteen: React.FC = () => {
       border-bottom: 3px solid rgba(255,255,255,0.2);
     }
 
-    .contact-section {
+   .t13-resume .contact-section {
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
@@ -89,12 +112,12 @@ const TemplateThirteen: React.FC = () => {
       margin-top: 15px;
     }
 
-    .contact-block {
+    .t13-resume .contact-block {
       flex: 1;
       min-width: 200px;
     }
 
-    .contact-label {
+    .t13-resume .contact-label {
       font-size: 11px;
       font-weight: 700;
       font-style: normal;
@@ -104,7 +127,7 @@ const TemplateThirteen: React.FC = () => {
       margin-bottom: 8px;
     }
 
-    .contact-value {
+    .t13-resume .contact-value {
       font-size: 14px;
       font-weight: 500;
       font-style: normal;
@@ -113,13 +136,13 @@ const TemplateThirteen: React.FC = () => {
       word-break: break-word;
     }
 
-    .contact-value a {
+    .t13-resume .contact-value a {
       color: white;
       text-decoration: none;
       font-weight: 500;
     }
 
-    .address-value {
+    .t13-resume .address-value {
       font-size: 14px;
       font-weight: 500;
       font-style: normal;
@@ -128,21 +151,21 @@ const TemplateThirteen: React.FC = () => {
     }
 
     /* Main Content */
-    .resume-main {
+    .t13-resume .resume-main {
       padding: 40px 50px 50px 50px;
       background: white;
     }
 
     /* Section Styles - BOLD */
-    .section {
+    .t13-resume .section {
       margin-bottom: 35px;
     }
 
-    .section:last-child {
+    .t13-resume .section:last-child {
       margin-bottom: 0;
     }
 
-    .section-title {
+    .t13-resume .section-title {
       font-size: 20px;
       font-weight: 800;
       font-style: normal;
@@ -156,7 +179,7 @@ const TemplateThirteen: React.FC = () => {
     }
 
     /* Summary */
-    .summary-text {
+    .t13-resume .summary-text {
       font-size: 14px;
       line-height: 1.7;
       color: #333333;
@@ -165,19 +188,19 @@ const TemplateThirteen: React.FC = () => {
     }
 
     /* Experience Items */
-    .experience-item {
+    .t13-resume .experience-item {
       margin-bottom: 32px;
     }
 
-    .experience-item:last-child {
+    .t13-resume .experience-item:last-child {
       margin-bottom: 0;
     }
 
-    .experience-header {
+    .t13-resume .experience-header {
       margin-bottom: 12px;
     }
 
-    .experience-title-row {
+    .t13-resume .experience-title-row {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
@@ -186,14 +209,14 @@ const TemplateThirteen: React.FC = () => {
       margin-bottom: 6px;
     }
 
-    .experience-title {
+    .t13-resume .experience-title {
       font-size: 18px;
       font-weight: 800;
       font-style: normal;
       color: #111111;
     }
 
-    .experience-date {
+    .t13-resume .experience-date {
       font-size: 12px;
       font-weight: 600;
       font-style: normal;
@@ -201,7 +224,7 @@ const TemplateThirteen: React.FC = () => {
       letter-spacing: 0.5px;
     }
 
-    .experience-company {
+    .t13-resume .experience-company {
       font-size: 15px;
       font-weight: 600;
       font-style: normal;
@@ -209,7 +232,7 @@ const TemplateThirteen: React.FC = () => {
       margin-top: 4px;
     }
 
-    .experience-location {
+    .t13-resume .experience-location {
       font-size: 12px;
       font-weight: 500;
       font-style: normal;
@@ -217,19 +240,19 @@ const TemplateThirteen: React.FC = () => {
       margin-top: 3px;
     }
 
-    .experience-description {
+    .t13-resume .experience-description {
       margin-top: 12px;
     }
 
     /* Bullet points */
-    .experience-description ul,
-    .education-description ul {
+    .t13-resume .experience-description ul,
+    .t13-resume .education-description ul {
       list-style-type: none;
       padding-left: 0;
     }
 
-    .experience-description li,
-    .education-description li {
+    .t13-resume .experience-description li,
+    .t13-resume .education-description li {
       position: relative;
       padding-left: 24px;
       margin-bottom: 10px;
@@ -240,8 +263,8 @@ const TemplateThirteen: React.FC = () => {
       line-height: 1.6;
     }
 
-    .experience-description li::before,
-    .education-description li::before {
+    .t13-resume .experience-description li::before,
+    .t13-resume .education-description li::before {
       content: "◆";
       position: absolute;
       left: 4px;
@@ -251,19 +274,19 @@ const TemplateThirteen: React.FC = () => {
     }
 
     /* Education Items */
-    .education-item {
+    .t13-resume .education-item {
       margin-bottom: 28px;
     }
 
-    .education-item:last-child {
+    .t13-resume .education-item:last-child {
       margin-bottom: 0;
     }
 
-    .education-header {
+    .t13-resume .education-header {
       margin-bottom: 10px;
     }
 
-    .education-title-row {
+    .t13-resume .education-title-row {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
@@ -272,21 +295,21 @@ const TemplateThirteen: React.FC = () => {
       margin-bottom: 6px;
     }
 
-    .education-school {
+    .t13-resume .education-school {
       font-size: 18px;
       font-weight: 800;
       font-style: normal;
       color: #111111;
     }
 
-    .education-date {
+    .t13-resume .education-date {
       font-size: 12px;
       font-weight: 600;
       font-style: normal;
       color: #666666;
     }
 
-    .education-degree {
+    .t13-resume .education-degree {
       font-size: 14px;
       font-weight: 600;
       font-style: normal;
@@ -294,19 +317,19 @@ const TemplateThirteen: React.FC = () => {
       margin-top: 4px;
     }
 
-    .education-description {
+    .t13-resume .education-description {
       margin-top: 10px;
     }
 
     /* Skills - BOLD TAGS */
-    .skills-container {
+    .t13-resume .skills-container {
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
       margin-top: 10px;
     }
 
-    .skill-item {
+    .t13-resume .skill-item {
       font-size: 13px;
       font-weight: 700;
       font-style: normal;
@@ -319,14 +342,14 @@ const TemplateThirteen: React.FC = () => {
     }
 
     /* Additional content - BOLD STYLE */
-    .additional-container {
+    .t13-resume .additional-container {
       margin-top: 10px;
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
     }
 
-    .additional-item {
+    .t13-resume .additional-item {
       font-size: 13px;
       font-weight: 600;
       font-style: normal;
@@ -338,15 +361,15 @@ const TemplateThirteen: React.FC = () => {
     }
 
     /* Custom Sections */
-    .custom-section {
+    .t13-resume .custom-section {
       margin-bottom: 24px;
     }
 
-    .custom-section:last-child {
+    .t13-resume .custom-section:last-child {
       margin-bottom: 0;
     }
 
-    .custom-section-title {
+    .t13-resume .custom-section-title {
       font-size: 16px;
       font-weight: 800;
       font-style: normal;
@@ -356,7 +379,7 @@ const TemplateThirteen: React.FC = () => {
       letter-spacing: 1px;
     }
 
-    .custom-section-content {
+    .t13-resume .custom-section-content {
       font-size: 14px;
       font-weight: 500;
       font-style: normal;
@@ -372,7 +395,18 @@ const TemplateThirteen: React.FC = () => {
         margin: 0;
       }
 
-      body {
+      // body {
+      //   background: white;
+      //   margin: 0;
+      //   padding: 0;
+      //   -webkit-print-color-adjust: exact;
+      //   print-color-adjust: exact;
+      // }
+
+      .t13-resume  {
+        margin: 0;
+        max-width: 100%;
+        box-shadow: none;
         background: white;
         margin: 0;
         padding: 0;
@@ -380,131 +414,125 @@ const TemplateThirteen: React.FC = () => {
         print-color-adjust: exact;
       }
 
-      .resume-container {
-        margin: 0;
-        max-width: 100%;
-        box-shadow: none;
-      }
-
       /* EXACT SAME PADDING AND STYLES */
-      .resume-header {
+     .t13-resume  .resume-header {
         background: #111111 !important;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
         padding: 50px 50px 35px 50px !important;
       }
 
-      .resume-main {
+      .t13-resume .resume-main {
         padding: 40px 50px 50px 50px !important;
       }
 
-      .section-title {
+      .t13-resume .section-title {
         border-bottom: 4px solid #111111 !important;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
       }
 
-      .skill-item {
+      .t13-resume .skill-item {
         background: #f5f5f5 !important;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
       }
 
-      .additional-item {
+      .t13-resume .additional-item {
         background: #f5f5f5 !important;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
       }
 
       /* FIX FONT WEIGHTS FOR PRINT */
-      .name {
+      .t13-resume .name {
         font-weight: 800 !important;
       }
       
-      .job-title {
+      .t13-resume .job-title {
         font-weight: 600 !important;
       }
       
-      .section-title {
+      .t13-resume .section-title {
         font-weight: 800 !important;
       }
       
-      .experience-title {
+      .t13-resume .experience-title {
         font-weight: 800 !important;
       }
       
-      .experience-company {
+      .t13-resume .experience-company {
         font-weight: 600 !important;
       }
       
-      .education-school {
+      .t13-resume .education-school {
         font-weight: 800 !important;
       }
       
-      .skill-item {
+      .t13-resume .skill-item {
         font-weight: 700 !important;
       }
       
-      .additional-item {
+      .t13-resume .additional-item {
         font-weight: 600 !important;
       }
       
-      .section {
+     .t13-resume .section {
         page-break-inside: avoid;
       }
 
-      .experience-item {
+     .t13-resume .experience-item {
         page-break-inside: avoid;
       }
     }
 
     /* Responsive - CONSISTENT PADDING */
     @media (max-width: 600px) {
-      .resume-container {
+      .t13-resume  {
         margin: 15px;
       }
 
-      .resume-header {
+     .t13-resume .resume-header {
         padding: 30px 25px 25px 25px !important;
       }
 
-      .resume-main {
+      .t13-resume .resume-main {
         padding: 25px 25px 35px 25px !important;
       }
 
-      .name {
+      .t13-resume .name {
         font-size: 32px;
       }
 
-      .job-title {
+      .t13-resume .job-title {
         font-size: 14px;
       }
 
-      .contact-section {
+      .t13-resume .contact-section {
         flex-direction: column;
         gap: 12px;
       }
 
-      .section-title {
+      .t13-resume .section-title {
         font-size: 18px;
       }
 
-      .experience-title-row {
+      .t13-resume .experience-title-row {
         flex-direction: column;
         gap: 5px;
       }
 
-      .education-title-row {
+      .t13-resume .education-title-row {
         flex-direction: column;
         gap: 5px;
       }
 
-      .skill-item {
+      .t13-resume .skill-item {
         font-size: 11px;
         padding: 6px 14px;
       }
 
-      .additional-item {
+      .t13-resume .additional-item {
         font-size: 11px;
         padding: 6px 14px;
       }
@@ -556,7 +584,7 @@ const TemplateThirteen: React.FC = () => {
         <style>${styles}</style>
       </head>
       <body>
-        <div class="resume-container">
+        <div class="t13-resume ">
           <!-- HEADER - BOLD DARK -->
           <div class="resume-header">
             <h1 class="name">${contact?.firstName || ""} ${contact?.lastName || ""}</h1>
@@ -788,7 +816,8 @@ const TemplateThirteen: React.FC = () => {
       )}
 
       {/* Resume Preview - EXACT SAME AS DOWNLOAD */}
-      <div className="resume-container" style={{ margin: "0 auto" }}>
+      <div className={`t13-resume ${alldata ? 'is-preview' : ''}`}
+       style={{ margin: "0 auto" }}>
         <style>{styles}</style>
 
         {/* HEADER - BOLD DARK */}

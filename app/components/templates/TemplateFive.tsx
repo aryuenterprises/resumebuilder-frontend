@@ -967,21 +967,10 @@ import {
   Education,
   Experience,
   Finalize,
+  ResumeProps,
   Skill,
 } from "@/app/types/context.types";
 
-interface AllData {
-  contact?: Contact;
-  educations?: Education[];
-  experiences?: Experience[];
-  skills?: Skill[];
-  finalize?: Finalize;
-  summary?: string;
-}
-
-interface ResumeProps {
-  alldata?: AllData;
-}
 
 const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
   const context = useContext(CreateContext);
@@ -1069,6 +1058,13 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
       text-align: left;
     }
 
+      .resume-t5.is-preview {
+    scale: 0.3;
+    max-height: 297mm;
+    overflow: hidden;
+    transform-origin: top left; /* Ensures it scales from the corner */
+}
+
     /* Scoped resets — only inside resume */
     .resume-t5 p {
       margin: 0 !important;
@@ -1099,26 +1095,26 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
     }
 
     /* ── HEADER ── */
-    .t5-header {
+    .resume-t5 .t5-header {
       background-color: #facc15;
       padding: 8px 40px;
       border-radius: 6px;
       margin-bottom: 10px;
     }
 
-    .t5-header-top {
+      .resume-t5 .t5-header-top {
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
 
-    .t5-header-left {
+     .resume-t5 .t5-header-left {
       display: flex;
       align-items: center;
       gap: 12px;
     }
 
-    .t5-photo {
+    .resume-t5 .t5-photo {
       width: 96px;
       height: 96px;
       border-radius: 6px;
@@ -1127,7 +1123,7 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
       flex-shrink: 0;
     }
 
-    .t5-photo-placeholder {
+    .resume-t5 .t5-photo-placeholder {
       width: 96px;
       height: 96px;
       border-radius: 6px;
@@ -1139,7 +1135,7 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
       flex-shrink: 0;
     }
 
-    .t5-name {
+    .resume-t5 .t5-name {
       font-size: 22px;
       font-weight: 700;
       text-transform: uppercase;
@@ -1149,18 +1145,18 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
       margin-bottom: 3px;
     }
 
-    .t5-jobtitle {
+    .resume-t5 .t5-jobtitle {
       font-size: 13px;
       color: #374151;
       font-family: 'Nunito', Arial, sans-serif;
       line-height: 1.5;
     }
 
-    .t5-details-block {
+    .resume-t5 .t5-details-block {
       padding-left: 40px;
     }
 
-    .t5-details-label {
+    .resume-t5 .t5-details-label {
       display: inline-block;
       background: #000;
       color: #fff;
@@ -1173,21 +1169,21 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
       line-height: 1.4;
     }
 
-    .t5-details-text {
+    .resume-t5 .t5-details-text {
       font-size: 13px;
       color: #374151;
       font-family: 'Nunito', Arial, sans-serif;
       line-height: 1.5;
     }
 
-    .t5-links {
+    .resume-t5 .t5-links {
       display: flex;
       align-items: center;
       gap: 12px;
       margin-top: 10px;
     }
 
-    .t5-link-btn {
+    .resume-t5 .t5-link-btn {
       display: inline-flex;
       align-items: center;
       padding: 4px 12px;
@@ -1200,16 +1196,16 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
       line-height: 1.5;
     }
 
-    .t5-link-linkedin { background-color: #2563eb; }
-    .t5-link-portfolio { background-color: #1f2937; }
+     .resume-t5 .t5-link-linkedin { background-color: #2563eb; }
+    .resume-t5 .t5-link-portfolio { background-color: #1f2937; }
 
     /* ── SECTION ── */
-    .t5-section {
+    .resume-t5 .t5-section {
       margin-top: 10px;
       padding: 0 40px;
     }
 
-    .t5-section-title {
+    .resume-t5 .t5-section-title {
       display: inline-block;
       background: #000;
       color: #fff;
@@ -1224,11 +1220,11 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
     }
 
     /* ── ENTRY ── */
-    .t5-entry {
+    .resume-t5 .t5-entry {
       margin-bottom: 14px;
     }
 
-    .t5-entry-heading {
+    .resume-t5 .t5-entry-heading {
       font-size: 16px;
       font-weight: 600;
       color: #111827;
@@ -1238,21 +1234,21 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
       word-wrap: break-word;
     }
 
-    .t5-entry-heading-muted {
+    .resume-t5 .t5-entry-heading-muted {
       font-size: 16px;
       font-weight: 400;
       color: #6b7280;
       font-family: 'Nunito', Arial, sans-serif;
     }
 
-    .t5-entry-sub {
+    .resume-t5 .t5-entry-sub {
       font-size: 14px;
       color: #6b7280;
       font-family: 'Nunito', Arial, sans-serif;
       line-height: 1.5;
     }
 
-    .t5-entry-date {
+    .resume-t5 .t5-entry-date {
       font-size: 13px;
       color: #4b5563;
       font-family: 'Nunito', Arial, sans-serif;
@@ -1263,7 +1259,7 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
       margin-top: 2px;
     }
 
-    .t5-entry-content {
+    .resume-t5 .t5-entry-content {
       font-size: 14px;
       color: #374151;
       font-family: 'Nunito', Arial, sans-serif;
@@ -1274,26 +1270,26 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
       overflow-wrap: break-word;
     }
 
-    .t5-entry-content p {
+    .resume-t5 .t5-entry-content p {
       margin: 0 !important;
       padding: 0 !important;
       line-height: 1.5 !important;
       font-size: 14px !important;
     }
 
-    .t5-entry-content ul {
+    .resume-t5 .t5-entry-content ul {
       list-style-type: disc !important;
       padding-left: 20px !important;
       margin: 0 !important;
     }
 
-    .t5-entry-content ol {
+    .resume-t5 .t5-entry-content ol {
       list-style-type: decimal !important;
       padding-left: 20px !important;
       margin: 0 !important;
     }
 
-    .t5-entry-content li {
+    .resume-t5 .t5-entry-content li {
       margin: 0 !important;
       margin-bottom: 1px !important;
       line-height: 1.5 !important;
@@ -1301,7 +1297,7 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
     }
 
     /* ── SKILLS GRID ── */
-    .t5-skills-grid {
+    .resume-t5 .t5-skills-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       column-gap: 32px;
@@ -1309,7 +1305,7 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
       margin-top: 4px;
     }
 
-    .t5-skill-name {
+    .resume-t5 .t5-skill-name {
       font-size: 13px;
       color: #1f2937;
       font-family: 'Nunito', Arial, sans-serif;
@@ -1318,7 +1314,7 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
       word-wrap: break-word;
     }
 
-    .t5-skill-bar-wrap {
+    .resume-t5 .t5-skill-bar-wrap {
       height: 4px;
       width: 100%;
       background: #d1d5db;
@@ -1326,14 +1322,14 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
       overflow: hidden;
     }
 
-    .t5-skill-bar-fill {
+    .resume-t5 .t5-skill-bar-fill {
       height: 100%;
       background: #0c0c1e;
       border-radius: 9999px;
     }
 
     /* ── EXTRA CONTENT ── */
-    .t5-extra {
+    .resume-t5 .t5-extra {
       font-size: 14px;
       color: #374151;
       font-family: 'Nunito', Arial, sans-serif;
@@ -1342,18 +1338,18 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
       overflow-wrap: break-word;
     }
 
-    .t5-extra p { margin: 0 !important; padding: 0 !important; line-height: 1.5 !important; }
-    .t5-extra div { line-height: 1.5 !important; }
+    .resume-t5 .t5-extra p { margin: 0 !important; padding: 0 !important; line-height: 1.5 !important; }
+    .resume-t5 .t5-extra div { line-height: 1.5 !important; }
 
     /* ── WEBSITES ── */
-    .t5-website-label {
+    .resume-t5 .t5-website-label {
       font-size: 13px;
       font-weight: 600;
       font-family: 'Nunito', Arial, sans-serif;
       line-height: 1.5;
     }
 
-    .t5-website-link {
+    .resume-t5 .t5-website-link {
       font-size: 13px;
       color: #2563eb;
       text-decoration: underline;
@@ -1373,14 +1369,14 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
         box-shadow: none !important;
       }
 
-      .t5-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      .t5-section-title { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      .t5-details-label { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      .t5-link-btn { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      .t5-skill-bar-fill { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .resume-t5 .t5-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .resume-t5 .t5-section-title { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .resume-t5 .t5-details-label { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .resume-t5 .t5-link-btn { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .resume-t5 .t5-skill-bar-fill { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
-      .t5-entry { page-break-inside: avoid; break-inside: avoid; }
-      .t5-section-title { page-break-after: avoid; break-after: avoid; }
+      .resume-t5 .t5-entry { page-break-inside: avoid; break-inside: avoid; }
+      .resume-t5 .t5-section-title { page-break-after: avoid; break-after: avoid; }
     }
   `;
 
@@ -1591,7 +1587,10 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
         </div>
       )}
 
-      <div className="resume-t5" style={{ margin: "0 auto", boxShadow: "0 0 10px rgba(0,0,0,0.08)" }}>
+      <div 
+              className={`resume-t5  ${alldata ? 'is-preview' : ''}`}
+
+      style={{ margin: "0 auto", boxShadow: "0 0 10px rgba(0,0,0,0.08)" }}>
         <style>{`@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap');`}</style>
         <style>{styles}</style>
 

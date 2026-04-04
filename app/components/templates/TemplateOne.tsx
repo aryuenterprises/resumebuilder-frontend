@@ -1338,7 +1338,6 @@
 
 // export default TemplateOne;
 
-// ─── Template One (Fixed) ───────────────────────────────────────────────
 "use client";
 import React, { useContext } from "react";
 import axios, { AxiosResponse } from "axios";
@@ -1351,17 +1350,10 @@ import {
 } from "@/app/utils";
 import { usePathname } from "next/navigation";
 import { User } from "@/app/types/user.types";
-import { AllData } from "@/app/types";
-
-interface ResumeProps {
-  alldata?: AllData;
-}
+import { ResumeProps } from "@/app/types";
 
 const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
-  console.log("alldata", alldata);
-
   const context = useContext(CreateContext);
-  console.log("context,", context);
 
   const pathname = usePathname();
   const lastSegment = pathname.split("/").pop();
@@ -1390,7 +1382,7 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
      padding on .resume-container drives all spacing
   ====================================================== */
   const styles = `
-  body {
+ .t1-resume  body {
     margin: 0;
     padding: 0;
     background-color: white;
@@ -1400,7 +1392,7 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
     line-height: 1.5;
   }
 
-  .resume-container {
+  .t1-resume  {
     width: 210mm;
     min-height: 297mm;
     padding: 15mm;
@@ -1410,24 +1402,33 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
     font-family: 'Poppins', Arial, sans-serif;
     font-size: 14px;
     line-height: 1.5;
+    
+    
   }
 
+  .t1-resume.is-preview {
+    scale: 0.3;
+    max-height: 297mm;
+    overflow: hidden;
+    transform-origin: top left; /* Ensures it scales from the corner */
+}
+
   /* Global <p> reset — PDF renderers add 1em top+bottom margin by default */
-resume-container  p {
+.t1-resume   p {
     margin: 0 !important;
     padding: 0 !important;
     line-height: 1.5 !important;
   }
 
   /* ── HEADER ── */
-  .contact-info {
+  .t1-resume .contact-info {
     text-align: center;
     margin-bottom: 20px;
     padding-bottom: 15px;
     border-bottom: 1px solid #eee;
   }
 
-  .contact-info .name {
+  .t1-resume .contact-info .name {
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 4px;
@@ -1435,7 +1436,7 @@ resume-container  p {
     font-family: 'Poppins', Arial, sans-serif;
   }
 
-  .contact-info .job-title {
+  .t1-resume .contact-info .job-title {
     font-size: 16px;
     color: #333;
     margin-bottom: 8px;
@@ -1443,7 +1444,7 @@ resume-container  p {
     font-family: 'Poppins', Arial, sans-serif;
   }
 
-  .contact-info .address {
+  .t1-resume .contact-info .address {
     font-size: 14px;
     color: #666;
     margin-bottom: 10px;
@@ -1451,7 +1452,7 @@ resume-container  p {
     font-family: 'Poppins', Arial, sans-serif;
   }
 
-  .contact-details {
+  .t1-resume .contact-details {
     font-size: 14px;
     color: #444;
     margin-bottom: 10px;
@@ -1461,16 +1462,16 @@ resume-container  p {
     gap: 12px;
   }
 
-  .contact-details span {
+  .t1-resume .contact-details span {
     padding: 2px 8px;
   }
 
-  .links {
+  .t1-resume .links {
     margin-top: 5px;
     text-align: center;
   }
 
-  .link-item {
+  .t1-resume .link-item {
     color: #0077b5;
     text-decoration: none;
     font-size: 14px;
@@ -1478,11 +1479,11 @@ resume-container  p {
   }
 
   /* ── SECTIONS ── */
-  .section-content {
+  .t1-resume .section-content {
     margin-bottom: 20px;
   }
 
-  .section-title {
+  .t1-resume .section-title {
     background: #f0f0f0;
     padding: 6px 10px;
     text-align: left;
@@ -1495,7 +1496,7 @@ resume-container  p {
   }
 
   /* ── ITEM HEADERS ── */
-  .item-header {
+  .t1-resume .item-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -1504,16 +1505,16 @@ resume-container  p {
     gap: 10px;
   }
 
-  .experience-header,
-  .education-header {
+  .t1-resume .experience-header,
+  .t1-resume .education-header {
     align-items: baseline;
   }
 
-  .item-title-container {
+  .t1-resume .item-title-container {
     min-width: 200px;
   }
 
-  .item-title {
+  .t1-resume .item-title {
     font-weight: 700;
     font-size: 16px;
     line-height: 1.4;
@@ -1522,7 +1523,7 @@ resume-container  p {
     font-family: 'Poppins', Arial, sans-serif;
   }
 
-  .item-subtitle {
+  .t1-resume .item-subtitle {
     font-size: 14px;
     color: #555;
     margin-top: 2px;
@@ -1531,7 +1532,7 @@ resume-container  p {
     font-family: 'Poppins', Arial, sans-serif;
   }
 
-  .item-date {
+  .t1-resume .item-date {
     white-space: nowrap;
     font-size: 12px;
     color: #777;
@@ -1539,8 +1540,8 @@ resume-container  p {
     text-align: right;
   }
 
-  .experience-date,
-  .education-date {
+  .t1-resume .experience-date,
+  .t1-resume .education-date {
     font-size: 13px;
     color: #666;
     padding: 2px 6px;
@@ -1551,7 +1552,7 @@ resume-container  p {
   }
 
   /* ── CONTENT ── */
-  .item-content {
+  .t1-resume .item-content {
     font-size: 14px;
     line-height: 1.5;
     color: #444;
@@ -1560,12 +1561,12 @@ resume-container  p {
   }
 
   /* Reset <p> margins inside content so PDF renderer doesn't add extra spacing */
-  .item-content p,
-  .experience-description p,
-  .education-description p,
-  .summary-text p,
-  .custom-section-content p,
-  .additional-content p {
+  .t1-resume .item-content p,
+  .t1-resume .experience-description p,
+  .t1-resume .education-description p,
+  .t1-resume .summary-text p,
+  .t1-resume .custom-section-content p,
+  .t1-resume .additional-content p {
     margin: 0 !important;
     padding: 0 !important;
     line-height: 1.5 !important;
@@ -1574,13 +1575,13 @@ resume-container  p {
   }
 
   /* Reset <br> spacing — PDF renderers sometimes double-space after <br> */
-  .item-content br,
-  .experience-description br,
-  .education-description br {
+  .t1-resume .item-content br,
+  .t1-resume .experience-description br,
+  .t1-resume .education-description br {
     line-height: 1.5 !important;
   }
 
-  .summary-text {
+  .t1-resume .summary-text {
     padding: 0 5px;
     font-size: 14px;
     line-height: 1.5;
@@ -1588,8 +1589,8 @@ resume-container  p {
     font-family: 'Poppins', Arial, sans-serif;
   }
 
-  .experience-description,
-  .education-description {
+  .t1-resume .experience-description,
+  .t1-resume .education-description {
     margin-top: 5px;
     text-align: left;
     font-size: 14px;
@@ -1598,26 +1599,26 @@ resume-container  p {
   }
 
   /* ── LIST STYLES ── */
-  .experience-description ul,
-  .education-description ul,
-  .experience-list,
-  .education-list {
+  .t1-resume .experience-description ul,
+  .t1-resume .education-description ul,
+  .t1-resume .experience-list,
+  .t1-resume .education-list {
     list-style-type: disc !important;
     padding-left: 20px !important;
     margin: 5px 0 !important;
   }
 
-  .experience-description ol,
-  .education-description ol {
+  .t1-resume .experience-description ol,
+  .t1-resume .education-description ol {
     list-style-type: decimal !important;
     padding-left: 20px !important;
     margin: 5px 0 !important;
   }
 
-  .experience-description li,
-  .education-description li,
-  .experience-list li,
-  .education-list li {
+  .t1-resume .experience-description li,
+  .t1-resume .education-description li,
+  .t1-resume .experience-list li,
+  .t1-resume .education-list li {
     margin-top: 0 !important;
     margin-bottom: 2px !important;
     padding-top: 0 !important;
@@ -1628,22 +1629,22 @@ resume-container  p {
     font-family: 'Poppins', Arial, sans-serif !important;
   }
 
-  ul, ol {
+  .t1-resume ul, .t1-resume ol {
     margin-top: 2px !important;
     margin-bottom: 2px !important;
     padding-top: 0 !important;
     padding-bottom: 0 !important;
   }
 
-  ul {
+  .t1-resume ul {
     list-style-type: disc !important;
   }
 
-  ul ul { list-style-type: circle !important; }
-  ul ul ul { list-style-type: square !important; }
+  .t1-resume ul ul { list-style-type: circle !important; }
+  .t1-resume ul ul ul { list-style-type: square !important; }
 
   /* Global li reset — PDF renderer adds margin to li by default */
-  li {
+  .t1-resume li {
     margin-top: 0 !important;
     margin-bottom: 2px !important;
     padding-top: 0 !important;
@@ -1651,30 +1652,30 @@ resume-container  p {
     line-height: 1.5 !important;
   }
 
-  .education-content {
+   .t1-resume .education-content {
     margin-top: 5px;
     text-align: left;
   }
 
   /* ── SKILLS ── */
-  .skills-grid {
+   .t1-resume .skills-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
     margin-top: 10px;
   }
 
-  .skill-item {
+  .t1-resume .skill-item {
     margin-bottom: 12px;
   }
 
-  .skill-info {
+  .t1-resume .skill-info {
     display: flex;
     flex-direction: column;
     gap: 4px;
   }
 
-  .skill-name {
+  .t1-resume .skill-name {
     font-size: 14px;
     margin-bottom: 4px;
     font-weight: 500;
@@ -1683,7 +1684,7 @@ resume-container  p {
     font-family: 'Poppins', Arial, sans-serif;
   }
 
-  .skill-bar {
+  .t1-resume .skill-bar {
     height: 4px;
     background: #e0e0e0;
     border-radius: 2px;
@@ -1691,18 +1692,18 @@ resume-container  p {
     width: 100%;
   }
 
-  .skill-level {
+  .t1-resume .skill-level {
     height: 100%;
     background: #333;
     border-radius: 2px;
   }
 
-  .languages-grid {
+  .t1-resume .languages-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 
   /* ── ADDITIONAL ── */
-  .additional-content {
+  .t1-resume .additional-content {
     padding-left: 10px;
     text-align: left;
     font-family: 'Poppins', Arial, sans-serif;
@@ -1710,7 +1711,7 @@ resume-container  p {
     line-height: 1.5;
   }
 
-  .additional-item {
+  .t1-resume .additional-item {
     margin-bottom: 8px;
     line-height: 1.5;
     font-size: 14px;
@@ -1718,26 +1719,26 @@ resume-container  p {
     font-family: 'Poppins', Arial, sans-serif;
   }
 
-  .additional-item:last-child {
+  .t1-resume .additional-item:last-child {
     margin-bottom: 0;
   }
 
   /* ── CUSTOM SECTIONS ── */
-  .custom-section {
+  .t1-resume .custom-section {
     margin-bottom: 20px;
   }
 
-  .custom-section-title {
+  .t1-resume .custom-section-title {
     margin-top: 20px;
     margin-bottom: 10px;
   }
 
-  .custom-section-content {
+  .t1-resume .custom-section-content {
     padding-left: 10px;
     text-align: left;
   }
 
-  .wrap-break-word {
+  .t1-resume .wrap-break-word {
     word-wrap: break-word;
     overflow-wrap: break-word;
   }
@@ -1754,14 +1755,14 @@ resume-container  p {
       margin-top: 0;
     }
 
-    body {
+    .t1-resume body {
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
       margin: 0;
       padding: 0;
     }
 
-    .resume-container {
+    .t1-resume  {
       width: 210mm !important;
       padding: 15mm !important;
       margin: 0 !important;
@@ -1773,47 +1774,47 @@ resume-container  p {
       display: none !important;
     }
 
-    .experience-item,
-    .education-item {
+     .t1-resume .experience-item,
+    .t1-resume .education-item {
       page-break-inside: avoid;
       break-inside: avoid;
     }
 
-    .section-title {
+    .t1-resume .section-title {
       page-break-after: avoid;
       break-after: avoid;
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
     }
 
-    .item-date {
+    .t1-resume .item-date {
       white-space: nowrap;
     }
   }
 
   /* ── RESPONSIVE ── */
   @media (max-width: 768px) {
-    .resume-container {
+    .t1-resume  {
       width: 100%;
       padding: 10mm;
     }
 
-    .skills-grid {
+    .t1-resume .skills-grid {
       grid-template-columns: 1fr;
       gap: 12px;
     }
 
-    .item-header {
+    .t1-resume .item-header {
       flex-direction: column;
       align-items: flex-start;
     }
 
-    .item-date {
+    .t1-resume .item-date {
       text-align: left;
       margin-top: 2px;
     }
 
-    .contact-details {
+    .t1-resume .contact-details {
       flex-direction: column;
       align-items: center;
       gap: 6px;
@@ -1893,7 +1894,7 @@ resume-container  p {
   <style>${styles}</style>
 </head>
 <body>
-<div class="resume-container">
+<div class="t1-resume ">
 
   <!-- HEADER -->
   <div class="contact-info">
@@ -2146,60 +2147,14 @@ resume-container  p {
 </html>`;
   };
 
-  /* ======================================================
-     PDF DOWNLOAD
-  ====================================================== */
-  // const handleDownload = async () => {
-  //   try {
-  //     const html = generateHTML();
-  //     const res = await axios.post(
-  //       `${API_URL}/api/candidates/generate-pdf`,
-  //       { html },
-  //       { responseType: "blob" },
-  //     );
-  //     const url = URL.createObjectURL(res.data);
-  //     const a = document.createElement("a");
-
-  //     console.log(a)
-
-  //     a.href = url;
-  //     a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
-  //     document.body.appendChild(a);
-  //     a.click();
-  //     document.body.removeChild(a);
-  //     URL.revokeObjectURL(url);
-  //       fetchOldResumeData()
-
-  //   } catch (error) {
-  //     console.error("Error generating PDF:", error);
-  //     alert("Failed to generate PDF. Please try again.");
-  //   }
-  // };
-
-  // const fetchOldResumeData = async () => {
-  //   try {
-  //     const response = await axios.post(`${API_URL}/api/users/download-resume`, {
-  //       userId: "69ccd736435d1233e16e79a6",
-  //       message: "success",
-  //       contactId: "69ccdd1e435d1233e16e7afb",
-  //     });
-
-  //     console.log("response", response);
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
-
-  interface Contact {
-    firstName?: string;
-    lastName?: string;
-  }
-
   const UseContext = useContext(CreateContext);
   const Contactid = UseContext?.contact.contactId;
   const userDetails = getLocalStorage<User>("user_details");
   const userId = userDetails?.id;
 
+  /* ======================================================
+     PDF DOWNLOAD
+  ====================================================== */
   const handleDownload = async (): Promise<void> => {
     try {
       const html: string = generateHTML(); // Assuming this returns a string
@@ -2231,11 +2186,10 @@ resume-container  p {
   };
 
   const fetchOldResumeData = async (pdfBlob: Blob): Promise<void> => {
-
-  if (!userId || !Contactid) {
-    console.error("Missing userId or Contactid");
-    return;
-  }
+    if (!userId || !Contactid) {
+      console.error("Missing userId or Contactid");
+      return;
+    }
 
     try {
       const formData = new FormData();
@@ -2260,8 +2214,6 @@ resume-container  p {
       console.error("Upload error:", err);
     }
   };
-
-
 
   const stripHtml = (html: string) =>
     html?.replace(/<\/?[^>]+(>|$)/g, "") || "";
@@ -2289,7 +2241,8 @@ resume-container  p {
       )}
 
       <div
-        className="resume-container bg-white"
+        // className="t1-resume  bg-white"
+        className={`t1-resume bg-white ${alldata ? 'is-preview' : ''}`}
         style={{ margin: "0 auto", boxShadow: "0 0 10px rgba(0,0,0,0.1)" }}
       >
         <style>{`@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');`}</style>

@@ -8,19 +8,35 @@ import { CreateContext } from "@/app/context/CreateContext";
 import { API_URL } from "@/app/config/api";
 import { formatMonthYear, MonthYearDisplay } from "@/app/utils";
 import { usePathname } from "next/navigation";
+import { ResumeProps } from "@/app/types";
 
-const TemplateEleven: React.FC = () => {
-  const context = useContext(CreateContext);
+// const TemplateEleven: React.FC = () => {
+const TemplateEleven: React.FC<ResumeProps> = ({ alldata }) => {
 
-  const pathname = usePathname();
-  const lastSegment = pathname.split("/").pop();
+  // const context = useContext(CreateContext);
 
-  const contact = context.contact || {};
-  const educations = context?.education || [];
-  const experiences = context?.experiences || [];
-  const skills = context?.skills || [];
-  const finalize = context?.finalize || {};
-  const summary = context?.summary || "";
+  // const pathname = usePathname();
+  // const lastSegment = pathname.split("/").pop();
+
+  // const contact = context.contact || {};
+  // const educations = context?.education || [];
+  // const experiences = context?.experiences || [];
+  // const skills = context?.skills || [];
+  // const finalize = context?.finalize || {};
+  // const summary = context?.summary || "";
+
+   const context = useContext(CreateContext);
+    console.log("context,", context);
+  
+    const pathname = usePathname();
+    const lastSegment = pathname.split("/").pop();
+  
+    const contact = alldata?.contact || context.contact || {};
+    const educations = alldata?.educations || context?.education || [];
+    const experiences = alldata?.experiences || context?.experiences || [];
+    const skills = alldata?.skills || context?.skills || [];
+    const finalize = alldata?.finalize || context?.finalize || {};
+    const summary = alldata?.summary || context?.summary || "";
 
   const addressParts = [
     contact?.address,
@@ -37,28 +53,33 @@ const TemplateEleven: React.FC = () => {
   ====================================================== */
   const styles = `
    
-
-    body {
-      font-family: 'Lato', 'Helvetica Neue', 'Segoe UI', sans-serif;
+    .t11-resume  {
+       width: 210mm;
+    min-height: 297mm;
+      background: white;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+       font-family: 'Lato', 'Helvetica Neue', 'Segoe UI', sans-serif;
       background-color: #ffffff;
       line-height: 1.5;
       color: #2c3e50;
     }
 
-    .resume-container {
-      max-width: 780px;
-      margin: 35px auto;
-      background: white;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-    }
+      .t11-resume.is-preview {
+    scale: 0.3;
+    max-height: 297mm;
+    overflow: hidden;
+    transform-origin: top left; /* Ensures it scales from the corner */
+}
+
+
 
     /* Header Section - Consistent Padding */
-    .resume-header {
+    .t11-resume .resume-header {
       padding: 45px 45px 30px 45px;
       text-align: left;
     }
 
-    .name {
+    .t11-resume .name {
       font-size: 42px;
       font-weight: 300;
       letter-spacing: 1px;
@@ -67,7 +88,7 @@ const TemplateEleven: React.FC = () => {
       text-transform: uppercase;
     }
 
-    .job-title {
+    .t11-resume .job-title {
       font-size: 15px;
       font-weight: 400;
       color: #6c7a89;
@@ -76,14 +97,14 @@ const TemplateEleven: React.FC = () => {
       margin-bottom: 20px;
     }
 
-    .divider {
+    .t11-resume .divider {
       width: 50px;
       height: 2px;
       background: #2c3e50;
       margin: 18px 0;
     }
 
-    .contact-row {
+    .t11-resume .contact-row {
       display: flex;
       flex-wrap: wrap;
       gap: 20px;
@@ -92,26 +113,26 @@ const TemplateEleven: React.FC = () => {
       margin-top: 15px;
     }
 
-    .contact-item {
+    .t11-resume .contact-item {
       display: inline-flex;
       align-items: center;
       gap: 6px;
     }
 
-    .address {
+    .t11-resume .address {
       font-size: 12px;
       color: #6c7a89;
       margin-top: 10px;
     }
 
-    .links {
+    .t11-resume .links {
       margin-top: 12px;
       display: flex;
       flex-wrap: wrap;
       gap: 20px;
     }
 
-    .link-item {
+    .t11-resume .link-item {
       color: #2c3e50;
       text-decoration: none;
       font-size: 12px;
@@ -119,27 +140,27 @@ const TemplateEleven: React.FC = () => {
       transition: border-color 0.2s;
     }
 
-    .link-item:hover {
+    .t11-resume .link-item:hover {
       border-bottom-color: #2c3e50;
     }
 
     /* Main Content - Consistent Padding */
-    .resume-main {
+    .t11-resume .resume-main {
       padding: 20px 45px 50px 45px;
       text-align: left;
     }
 
     /* Section Styles */
-    .section {
+    .t11-resume .section {
       margin-bottom: 32px;
       text-align: left;
     }
 
-    .section:last-child {
+    .t11-resume .section:last-child {
       margin-bottom: 0;
     }
 
-    .section-title {
+    .t11-resume .section-title {
       font-size: 14px;
       font-weight: 700;
       text-transform: uppercase;
@@ -152,7 +173,7 @@ const TemplateEleven: React.FC = () => {
     }
 
     /* Summary */
-    .summary-text {
+   .t11-resume .summary-text {
       font-size: 13px;
       line-height: 1.6;
       color: #4a5b6e;
@@ -160,21 +181,21 @@ const TemplateEleven: React.FC = () => {
     }
 
     /* Experience Items */
-    .experience-item {
+    .t11-resume .experience-item {
       margin-bottom: 28px;
       text-align: left;
     }
 
-    .experience-item:last-child {
+    .t11-resume .experience-item:last-child {
       margin-bottom: 0;
     }
 
-    .experience-header {
+    .t11-resume .experience-header {
       margin-bottom: 10px;
       text-align: left;
     }
 
-    .experience-title-row {
+    .t11-resume .experience-title-row {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
@@ -184,14 +205,14 @@ const TemplateEleven: React.FC = () => {
       text-align: left;
     }
 
-    .experience-title {
+    .t11-resume .experience-title {
       font-size: 16px;
       font-weight: 600;
       color: #1a2a3a;
       text-align: left;
     }
 
-    .experience-date {
+    .t11-resume .experience-date {
       font-size: 11px;
       color: #8e9aab;
       font-weight: 400;
@@ -199,7 +220,7 @@ const TemplateEleven: React.FC = () => {
       text-align: right;
     }
 
-    .experience-company {
+    .t11-resume .experience-company {
       font-size: 13px;
       font-weight: 400;
       color: #6c7a89;
@@ -207,28 +228,28 @@ const TemplateEleven: React.FC = () => {
       text-align: left;
     }
 
-    .experience-location {
+    .t11-resume .experience-location {
       font-size: 11px;
       color: #9aa9b9;
       margin-top: 3px;
       text-align: left;
     }
 
-    .experience-description {
+    .t11-resume .experience-description {
       margin-top: 12px;
       text-align: left;
     }
 
     /* Bullet points */
-    .experience-description ul,
-    .education-description ul {
+    .t11-resume .experience-description ul,
+    .t11-resume .education-description ul {
       list-style-type: none;
       padding-left: 0;
       text-align: left;
     }
 
-    .experience-description li,
-    .education-description li {
+    .t11-resume .experience-description li,
+    .t11-resume .education-description li {
       position: relative;
       padding-left: 20px;
       margin-bottom: 8px;
@@ -238,8 +259,8 @@ const TemplateEleven: React.FC = () => {
       text-align: left;
     }
 
-    .experience-description li::before,
-    .education-description li::before {
+    .t11-resume .experience-description li::before,
+    .t11-resume .education-description li::before {
       content: "—";
       position: absolute;
       left: 2px;
@@ -247,21 +268,21 @@ const TemplateEleven: React.FC = () => {
     }
 
     /* Education Items */
-    .education-item {
+    .t11-resume .education-item {
       margin-bottom: 24px;
       text-align: left;
     }
 
-    .education-item:last-child {
+    .t11-resume .education-item:last-child {
       margin-bottom: 0;
     }
 
-    .education-header {
+    .t11-resume .education-header {
       margin-bottom: 8px;
       text-align: left;
     }
 
-    .education-title-row {
+    .t11-resume .education-title-row {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
@@ -271,33 +292,33 @@ const TemplateEleven: React.FC = () => {
       text-align: left;
     }
 
-    .education-school {
+    .t11-resume .education-school {
       font-size: 16px;
       font-weight: 600;
       color: #1a2a3a;
       text-align: left;
     }
 
-    .education-date {
+    .t11-resume .education-date {
       font-size: 11px;
       color: #8e9aab;
       text-align: right;
     }
 
-    .education-degree {
+    .t11-resume .education-degree {
       font-size: 13px;
       color: #6c7a89;
       margin-top: 4px;
       text-align: left;
     }
 
-    .education-description {
+    .t11-resume .education-description {
       margin-top: 10px;
       text-align: left;
     }
 
     /* Skills */
-    .skills-container {
+    .t11-resume .skills-container {
       display: flex;
       flex-wrap: wrap;
       gap: 12px 20px;
@@ -305,7 +326,7 @@ const TemplateEleven: React.FC = () => {
       text-align: left;
     }
 
-    .skill-item {
+    .t11-resume .skill-item {
       font-size: 13px;
       color: #4a5b6e;
       position: relative;
@@ -313,7 +334,7 @@ const TemplateEleven: React.FC = () => {
       text-align: left;
     }
 
-    .skill-item::before {
+    .t11-resume .skill-item::before {
       content: "▹";
       position: absolute;
       left: 2px;
@@ -322,12 +343,12 @@ const TemplateEleven: React.FC = () => {
     }
 
     /* Additional content */
-    .additional-container {
+    .t11-resume .additional-container {
       margin-top: 5px;
       text-align: left;
     }
 
-    .additional-item {
+    .t11-resume .additional-item {
       font-size: 13px;
       color: #4a5b6e;
       margin-bottom: 8px;
@@ -336,7 +357,7 @@ const TemplateEleven: React.FC = () => {
       text-align: left;
     }
 
-    .additional-item::before {
+    .t11-resume .additional-item::before {
       content: "▹";
       position: absolute;
       left: 2px;
@@ -345,16 +366,16 @@ const TemplateEleven: React.FC = () => {
     }
 
     /* Custom Sections */
-    .custom-section {
+    .t11-resume .custom-section {
       margin-bottom: 20px;
       text-align: left;
     }
 
-    .custom-section:last-child {
+    .t11-resume .custom-section:last-child {
       margin-bottom: 0;
     }
 
-    .custom-section-title {
+    .t11-resume .custom-section-title {
       font-size: 13px;
       font-weight: 700;
       text-transform: uppercase;
@@ -364,7 +385,7 @@ const TemplateEleven: React.FC = () => {
       text-align: left;
     }
 
-    .custom-section-content {
+    .t11-resume .custom-section-content {
       font-size: 13px;
       color: #4a5b6e;
       line-height: 1.55;
@@ -385,7 +406,7 @@ const TemplateEleven: React.FC = () => {
         padding: 0;
       }
 
-      .resume-container {
+      .t11-resume  {
         margin: 0;
         max-width: 100%;
         box-shadow: none;
@@ -393,23 +414,23 @@ const TemplateEleven: React.FC = () => {
       }
 
       /* KEEP EXACT SAME PADDING AS SCREEN */
-      .resume-header {
+      .t11-resume .resume-header {
         padding: 45px 45px 30px 45px !important;
       }
 
-      .resume-main {
+      .t11-resume .resume-main {
         padding: 20px 45px 50px 45px !important;
       }
 
-      .section {
+     .t11-resume .section {
         page-break-inside: avoid;
       }
 
-      .experience-item {
+      .t11-resume .experience-item {
         page-break-inside: avoid;
       }
 
-      .divider {
+      .t11-resume .divider {
         background: #2c3e50;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
@@ -418,46 +439,46 @@ const TemplateEleven: React.FC = () => {
 
     /* Responsive - ADJUST PADDING FOR MOBILE BUT KEEP CONSISTENT */
     @media (max-width: 600px) {
-      .resume-container {
+      .t11-resume  {
         margin: 15px;
       }
 
-      .resume-header {
+      .t11-resume .resume-header {
         padding: 30px 25px 20px 25px !important;
       }
 
-      .resume-main {
+      .t11-resume .resume-main {
         padding: 15px 25px 35px 25px !important;
       }
 
-      .name {
+      .t11-resume .name {
         font-size: 32px;
       }
 
-      .job-title {
+      .t11-resume .job-title {
         font-size: 13px;
       }
 
-      .contact-row {
+      .t11-resume .contact-row {
         flex-direction: column;
         gap: 6px;
       }
 
-      .experience-title-row {
+      .t11-resume .experience-title-row {
         flex-direction: column;
         gap: 4px;
       }
 
-      .experience-date {
+      .t11-resume .experience-date {
         text-align: left;
       }
 
-      .education-title-row {
+      .t11-resume .education-title-row {
         flex-direction: column;
         gap: 4px;
       }
 
-      .education-date {
+      .t11-resume .education-date {
         text-align: left;
       }
     }
@@ -508,7 +529,7 @@ const TemplateEleven: React.FC = () => {
         <style>${styles}</style>
       </head>
       <body>
-        <div class="resume-container">
+        <div class="t11-resume ">
           <!-- HEADER -->
           <div class="resume-header">
             <h1 class="name">${contact?.firstName || ""} ${contact?.lastName || ""}</h1>
@@ -715,7 +736,8 @@ const TemplateEleven: React.FC = () => {
       )}
 
       {/* Resume Preview - EXACT SAME PADDING AS DOWNLOAD */}
-      <div className="resume-container" style={{ margin: "0 auto" }}>
+      <div         className={`t11-resume ${alldata ? 'is-preview' : ''}`}
+ style={{ margin: "0 auto" }}>
         <style>{styles}</style>
 
         {/* HEADER */}

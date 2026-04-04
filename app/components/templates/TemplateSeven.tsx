@@ -6,19 +6,35 @@ import { CreateContext } from "@/app/context/CreateContext";
 import { API_URL } from "@/app/config/api";
 import { formatMonthYear, MonthYearDisplay } from "@/app/utils";
 import { usePathname } from "next/navigation";
+import { AllData, ResumeProps } from "@/app/types";
 
-const TemplateSeven: React.FC = () => {
+const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
+  // const context = useContext(CreateContext);
+
+  // const pathname = usePathname();
+  // const lastSegment = pathname.split("/").pop();
+
+  // const contact = context.contact || {};
+  // const educations = context?.education || [];
+  // const experiences = context?.experiences || [];
+  // const skills = context?.skills || [];
+  // const finalize = context?.finalize || {};
+  // const summary = context?.summary || "";
+
+  //   console.log("alldata", alldata);
+
   const context = useContext(CreateContext);
+  console.log("context,", context);
 
   const pathname = usePathname();
   const lastSegment = pathname.split("/").pop();
 
-  const contact = context.contact || {};
-  const educations = context?.education || [];
-  const experiences = context?.experiences || [];
-  const skills = context?.skills || [];
-  const finalize = context?.finalize || {};
-  const summary = context?.summary || "";
+  const contact = alldata?.contact || context.contact || {};
+  const educations = alldata?.educations || context?.education || [];
+  const experiences = alldata?.experiences || context?.experiences || [];
+  const skills = alldata?.skills || context?.skills || [];
+  const finalize = alldata?.finalize || context?.finalize || {};
+  const summary = alldata?.summary || context?.summary || "";
 
   const addressParts = [
     contact?.address,
@@ -35,14 +51,14 @@ const TemplateSeven: React.FC = () => {
   ====================================================== */
   const styles = `
 
-  body{
+ .t7-resume  body{
   margin:0;
   padding:0;
   
   }
    
 
-    .resume-container {
+    .t7-resume  {
       max-width: 850px;
       margin: 30px auto;
       background: white;
@@ -50,14 +66,22 @@ const TemplateSeven: React.FC = () => {
       border: 1px solid #e0e0e0;
     }
 
+      .t7-resume.is-preview {
+    scale: 0.3;
+    max-height: 297mm;
+    overflow: hidden;
+    transform-origin: top left; /* Ensures it scales from the corner */
+}
+
+
     /* Header Section */
-    .resume-header {
+    .t7-resume .resume-header {
       padding: 40px 50px 25px 50px;
       border-bottom: 2px solid #000000;
       text-align: center;
     }
 
-    .name {
+   .t7-resume .name {
       font-size: 32px;
       font-weight: 700;
       letter-spacing: 2px;
@@ -66,7 +90,7 @@ const TemplateSeven: React.FC = () => {
       color: #000000;
     }
 
-    .job-title {
+   .t7-resume .job-title {
       font-size: 16px;
       font-weight: 500;
       letter-spacing: 1px;
@@ -76,7 +100,7 @@ const TemplateSeven: React.FC = () => {
       border-bottom: 1px solid #cccccc;
     }
 
-    .contact-row {
+   .t7-resume .contact-row {
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
@@ -86,19 +110,19 @@ const TemplateSeven: React.FC = () => {
       margin-bottom: 8px;
     }
 
-    .contact-item {
+   .t7-resume .contact-item {
       display: inline-flex;
       align-items: center;
       gap: 5px;
     }
 
-    .address {
+   .t7-resume .address {
       font-size: 12px;
       color: #444444;
       margin-top: 6px;
     }
 
-    .links {
+   .t7-resume .links {
       margin-top: 10px;
       display: flex;
       justify-content: center;
@@ -106,7 +130,7 @@ const TemplateSeven: React.FC = () => {
       gap: 16px;
     }
 
-    .link-item {
+  .t7-resume  .link-item {
       color: #000000;
       text-decoration: none;
       font-size: 12px;
@@ -114,20 +138,20 @@ const TemplateSeven: React.FC = () => {
     }
 
     /* Main Content */
-    .resume-main {
+    .t7-resume .resume-main {
       padding: 30px 50px 45px 50px;
     }
 
     /* Section Styles */
-    .section {
+    .t7-resume .section {
       margin-bottom: 25px;
     }
 
-    .section:last-child {
+    .t7-resume  .section:last-child {
       margin-bottom: 0;
     }
 
-    .section-title {
+    .t7-resume  .section-title {
       font-size: 16px;
       font-weight: 700;
       text-transform: uppercase;
@@ -139,7 +163,7 @@ const TemplateSeven: React.FC = () => {
     }
 
     /* Summary */
-    .summary-text {
+    .t7-resume .summary-text {
       font-size: 13px;
       line-height: 1.5;
       color: #222222;
@@ -147,15 +171,15 @@ const TemplateSeven: React.FC = () => {
     }
 
     /* Experience Items */
-    .experience-item {
+    .t7-resume .experience-item {
       margin-bottom: 20px;
     }
 
-    .experience-item:last-child {
+    .t7-resume .experience-item:last-child {
       margin-bottom: 0;
     }
 
-    .experience-header {
+    .t7-resume .experience-header {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
@@ -166,14 +190,14 @@ const TemplateSeven: React.FC = () => {
 
   
 
-    .experience-title {
+    .t7-resume .experience-title {
       font-size: 15px;
       font-weight: 700;
       color: #000000;
           text-align: start;
     }
 
-    .experience-company {
+    .t7-resume .experience-company {
       font-size: 13px;
       font-weight: 500;
       font-style: italic;
@@ -183,14 +207,14 @@ const TemplateSeven: React.FC = () => {
 
     }
 
-    .experience-date {
+    .t7-resume .experience-date {
       font-size: 12px;
       color: #555555;
       font-weight: normal;
       white-space: nowrap;
     }
 
-    .experience-description {
+    .t7-resume .experience-description {
       margin-top: 8px;
       padding-left: 0;
                       text-align: start;
@@ -198,16 +222,16 @@ const TemplateSeven: React.FC = () => {
     }
 
     /* Bullet points */
-    .experience-description ul,
-    .education-description ul {
+    .t7-resume .experience-description ul,
+    .t7-resume .education-description ul {
       list-style-type: none;
       padding-left: 0;
                 text-align: start;
 
     }
 
-    .experience-description li,
-    .education-description li {
+    .t7-resume .experience-description li,
+    .t7-resume .education-description li {
       position: relative;
       padding-left: 18px;
       margin-bottom: 5px;
@@ -218,8 +242,8 @@ const TemplateSeven: React.FC = () => {
 
     }
 
-    .experience-description li::before,
-    .education-description li::before {
+    .t7-resume .experience-description li::before,
+    .t7-resume .education-description li::before {
       content: "•";
       position: absolute;
       left: 4px;
@@ -228,15 +252,15 @@ const TemplateSeven: React.FC = () => {
     }
 
     /* Education Items */
-    .education-item {
+    .t7-resume .education-item {
       margin-bottom: 18px;
     }
 
-    .education-item:last-child {
+    .t7-resume .education-item:last-child {
       margin-bottom: 0;
     }
 
-    .education-header {
+    .t7-resume .education-header {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
@@ -247,7 +271,7 @@ const TemplateSeven: React.FC = () => {
 
 
 
-    .education-school {
+    .t7-resume .education-school {
       font-size: 15px;
       font-weight: 700;
       color: #000000;
@@ -255,7 +279,7 @@ const TemplateSeven: React.FC = () => {
 
     }
 
-    .education-degree {
+    .t7-resume .education-degree {
       font-size: 13px;
       color: #333333;
       margin-top: 2px;
@@ -263,34 +287,34 @@ const TemplateSeven: React.FC = () => {
 
     }
 
-    .education-date {
+    .t7-resume .education-date {
       font-size: 12px;
       color: #555555;
       white-space: nowrap;
     }
 
-    .education-description {
+    .t7-resume .education-description {
       margin-top: 6px;
                       text-align: start;
 
     }
 
     /* Skills */
-    .skills-container {
+    .t7-resume .skills-container {
       display: flex;
       flex-wrap: wrap;
       gap: 8px 20px;
       margin-top: 8px;
     }
 
-    .skill-item {
+    .t7-resume .skill-item {
       font-size: 13px;
       color: #222222;
       position: relative;
       padding-left: 14px;
     }
 
-    .skill-item::before {
+    .t7-resume .skill-item::before {
       content: "•";
       position: absolute;
       left: 2px;
@@ -298,11 +322,11 @@ const TemplateSeven: React.FC = () => {
     }
 
     /* Additional content */
-    .additional-content {
+    .t7-resume .additional-content {
       margin-top: 8px;
     }
 
-    .additional-item {
+    .t7-resume .additional-item {
       font-size: 13px;
       color: #222222;
       margin-bottom: 6px;
@@ -312,7 +336,7 @@ const TemplateSeven: React.FC = () => {
 
     }
 
-    .additional-item::before {
+    .t7-resume .additional-item::before {
       content: "•";
       position: absolute;
       left: 4px;
@@ -320,15 +344,15 @@ const TemplateSeven: React.FC = () => {
     }
 
     /* Custom Sections */
-    .custom-section {
+    .t7-resume .custom-section {
       margin-bottom: 16px;
     }
 
-    .custom-section:last-child {
+    .t7-resume .custom-section:last-child {
       margin-bottom: 0;
     }
 
-    .custom-section-title {
+    .t7-resume .custom-section-title {
      
 
        font-size: 16px;
@@ -341,7 +365,7 @@ const TemplateSeven: React.FC = () => {
       border-bottom: 1px solid #000000;
     }
 
-    .custom-section-content {
+    .t7-resume .custom-section-content {
       font-size: 13px;
       color: #222222;
       line-height: 1.45;
@@ -357,67 +381,67 @@ const TemplateSeven: React.FC = () => {
         margin: 0.5in;
       }
 
-      body {
+   .t7-resume   body {
         background: white;
         margin: 0;
         padding: 0;
       }
 
-      .resume-container {
+      .t7-resume  {
         margin: 0 auto;
         max-width: 100%;
         border: none;
         box-shadow: none;
       }
 
-      .resume-header {
+     ..t7-resume .resume-header {
         border-bottom: 2px solid #000;
       }
 
-      .section {
+     .t7-resume .section {
         page-break-inside: avoid;
       }
 
-      .experience-item {
+      .t7-resume .experience-item {
         page-break-inside: avoid;
       }
     }
 
     /* Responsive */
     @media (max-width: 768px) {
-      .resume-container {
+      .t7-resume  {
         margin: 15px;
       }
 
-      .resume-header {
+      .t7-resume .resume-header {
         padding: 25px 25px 18px 25px;
       }
 
-      .resume-main {
+      .t7-resume .resume-main {
         padding: 20px 25px 30px 25px;
       }
 
-      .name {
+      .t7-resume .name {
         font-size: 26px;
       }
 
-      .contact-row {
+      .t7-resume .contact-row {
         gap: 12px;
         flex-direction: column;
         align-items: center;
         gap: 5px;
       }
 
-      .experience-header {
+      .t7-resume .experience-header {
         flex-direction: column;
         gap: 4px;
       }
 
-      .experience-date {
+      .t7-resume .experience-date {
         white-space: normal;
       }
 
-      .education-date {
+      .t7-resume .education-date {
         white-space: normal;
       }
     }
@@ -471,7 +495,7 @@ const TemplateSeven: React.FC = () => {
         <style>${styles}</style>
       </head>
       <body>
-        <div class="resume-container">
+        <div class="t7-resume ">
           <!-- HEADER -->
           <div class="resume-header">
             <h1 class="name">${contact?.firstName || ""} ${contact?.lastName || ""}</h1>
@@ -801,7 +825,7 @@ const TemplateSeven: React.FC = () => {
       )}
 
       {/* Resume Preview - EXACT SAME AS DOWNLOAD */}
-      <div className="resume-container" style={{ margin: "0 auto" }}>
+      <div className={`t7-resume ${alldata ? 'is-preview' : ''}`}    style={{ margin: "0 auto" }}>
         <style>{styles}</style>
 
         {/* HEADER */}

@@ -7,19 +7,36 @@ import { CreateContext } from "@/app/context/CreateContext";
 import { API_URL } from "@/app/config/api";
 import { formatMonthYear, MonthYearDisplay } from "@/app/utils";
 import { usePathname } from "next/navigation";
+import { ResumeProps } from "@/app/types";
 
-const TemplateFourteen: React.FC = () => {
-  const context = useContext(CreateContext);
+// const TemplateFourteen: React.FC = () => {
+const TemplateFourteen: React.FC<ResumeProps> = ({ alldata }) => {
 
-  const pathname = usePathname();
-  const lastSegment = pathname.split("/").pop();
+  // const context = useContext(CreateContext);
 
-  const contact = context.contact || {};
-  const educations = context?.education || [];
-  const experiences = context?.experiences || [];
-  const skills = context?.skills || [];
-  const finalize = context?.finalize || {};
-  const summary = context?.summary || "";
+  // const pathname = usePathname();
+  // const lastSegment = pathname.split("/").pop();
+
+  // const contact = context.contact || {};
+  // const educations = context?.education || [];
+  // const experiences = context?.experiences || [];
+  // const skills = context?.skills || [];
+  // const finalize = context?.finalize || {};
+  // const summary = context?.summary || "";
+
+
+   const context = useContext(CreateContext);
+    console.log("context,", context);
+  
+    const pathname = usePathname();
+    const lastSegment = pathname.split("/").pop();
+  
+    const contact = alldata?.contact || context.contact || {};
+    const educations = alldata?.educations || context?.education || [];
+    const experiences = alldata?.experiences || context?.experiences || [];
+    const skills = alldata?.skills || context?.skills || [];
+    const finalize = alldata?.finalize || context?.finalize || {};
+    const summary = alldata?.summary || context?.summary || "";
 
   const addressParts = [
     contact?.address,
@@ -37,13 +54,12 @@ const TemplateFourteen: React.FC = () => {
   const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap');
 
-  body {
-    margin: 0;
+ 
+
+   .t14-resume .resume-container {
+     margin: 0;
     background-color: white;
     text-align: left;
-  }
-
-  .resume-container {
     width: 210mm;
     min-height: 297mm;
     box-sizing: border-box;
@@ -53,15 +69,22 @@ const TemplateFourteen: React.FC = () => {
     text-align: left;
   }
 
+    .t14-resume.is-preview {
+    scale: 0.3;
+    max-height: 297mm;
+    overflow: hidden;
+    transform-origin: top left; /* Ensures it scales from the corner */
+}
+
   /* ── HEADER ── */
-  .header-block {
+  .t14-resume .header-block {
     background: linear-gradient(135deg, #1a2a4a 0%, #2e4a7a 100%);
     padding: 32px 36px 28px;
     position: relative;
     text-align: left;
   }
 
-  .header-block::after {
+  .t14-resume .header-block::after {
     content: '';
     position: absolute;
     bottom: 0;
@@ -71,7 +94,7 @@ const TemplateFourteen: React.FC = () => {
     background: linear-gradient(90deg, #c9a84c, #e8c97a, #c9a84c);
   }
 
-  .header-name {
+  .t14-resume .header-name {
     font-family: 'Playfair Display', serif;
     font-size: 40px;
     font-weight: 700;
@@ -82,7 +105,7 @@ const TemplateFourteen: React.FC = () => {
     text-align: left;
   }
 
-  .header-jobtitle {
+  .t14-resume .header-jobtitle {
     font-size: 12px;
     font-weight: 500;
     letter-spacing: 3px;
@@ -92,14 +115,14 @@ const TemplateFourteen: React.FC = () => {
     text-align: left;
   }
 
-  .header-meta-grid {
+  .t14-resume .header-meta-grid {
     display: flex;
     flex-wrap: wrap;
     gap: 8px 24px;
     text-align: left;
   }
 
-  .header-meta-item {
+  .t14-resume .header-meta-item {
     display: flex;
     align-items: center;
     gap: 6px;
@@ -109,35 +132,35 @@ const TemplateFourteen: React.FC = () => {
     text-align: left;
   }
 
-  .header-meta-item .meta-icon {
+  .t14-resume .header-meta-item .meta-icon {
     width: 14px;
     height: 14px;
     opacity: 0.7;
     flex-shrink: 0;
   }
 
-  .header-meta-item a {
+  .t14-resume .header-meta-item a {
     color: #c9a84c;
     text-decoration: none;
   }
 
-  .header-meta-item a:hover {
+  .t14-resume .header-meta-item a:hover {
     text-decoration: underline;
   }
 
   /* ── BODY ── */
-  .resume-body {
+  .t14-resume .resume-body {
     padding: 28px 36px 36px;
     text-align: left;
   }
 
   /* ── SECTION ── */
-  .section-block {
+  .t14-resume .section-block {
     margin-bottom: 26px;
     text-align: left;
   }
 
-  .section-header {
+  .t14-resume .section-header {
     display: flex;
     align-items: center;
     margin-bottom: 16px;
@@ -145,7 +168,7 @@ const TemplateFourteen: React.FC = () => {
     text-align: left;
   }
 
-  .section-title {
+  .t14-resume .section-title {
     font-family: 'Playfair Display', serif;
     font-size: 16px;
     font-weight: 600;
@@ -154,40 +177,36 @@ const TemplateFourteen: React.FC = () => {
     text-align: left;
   }
 
-  .section-accent-bar {
+  .t14-resume .section-accent-bar {
     height: 2px;
     flex: 1;
     background: linear-gradient(90deg, #2e4a7a, #e8e8f0);
   }
 
   /* ── SUMMARY ── */
-  .summary-text {
+  .t14-resume .summary-text {
     font-size: 13.5px;
     line-height: 1.8;
     color: #333;
-    font-weight: 400;
-    padding: 14px 18px;
-    background: #f4f6fb;
-    border-left: 3px solid #2e4a7a;
-    border-radius: 0 4px 4px 0;
+    font-weight: 400;  
     text-align: left;
   }
 
   /* ── ENTRY BLOCKS ── */
-  .entry-block {
+  .t14-resume .entry-block {
     margin-bottom: 18px;
     padding-bottom: 18px;
     border-bottom: 1px solid #eaedf5;
     text-align: left;
   }
 
-  .entry-block:last-child {
+  .t14-resume .entry-block:last-child {
     border-bottom: none;
     padding-bottom: 0;
     margin-bottom: 0;
   }
 
-  .entry-top-row {
+  .t14-resume .entry-top-row {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -197,7 +216,7 @@ const TemplateFourteen: React.FC = () => {
     text-align: left;
   }
 
-  .entry-title {
+  .t14-resume .entry-title {
     font-family: 'Playfair Display', serif;
     font-size: 16px;
     font-weight: 600;
@@ -206,7 +225,7 @@ const TemplateFourteen: React.FC = () => {
     text-align: left;
   }
 
-  .entry-date {
+  .t14-resume .entry-date {
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 1px;
@@ -219,7 +238,7 @@ const TemplateFourteen: React.FC = () => {
     text-align: left;
   }
 
-  .entry-subtitle {
+  .t14-resume .entry-subtitle {
     font-size: 12.5px;
     color: #4a6491;
     font-weight: 500;
@@ -227,7 +246,7 @@ const TemplateFourteen: React.FC = () => {
     text-align: left;
   }
 
-  .entry-content {
+  .t14-resume .entry-content {
     font-size: 13px;
     line-height: 1.7;
     color: #444;
@@ -235,47 +254,47 @@ const TemplateFourteen: React.FC = () => {
     text-align: left;
   }
 
-  .entry-content ul,
-  .entry-content-desc ul {
+  .t14-resume .entry-content ul,
+  .t14-resume .entry-content-desc ul {
     list-style-type: disc !important;
     padding-left: 18px !important;
     margin: 4px 0 !important;
   }
 
-  .entry-content ol,
-  .entry-content-desc ol {
+  .t14-resume .entry-content ol,
+  .t14-resume .entry-content-desc ol {
     list-style-type: decimal !important;
     padding-left: 18px !important;
     margin: 4px 0 !important;
   }
 
-  .entry-content li,
-  .entry-content-desc li {
+  .t14-resume .entry-content li,
+  .t14-resume .entry-content-desc li {
     margin-bottom: 3px !important;
     line-height: 1.65 !important;
     list-style-position: outside !important;
   }
 
-  ul {
+  .t14-resume ul {
     list-style-type: disc !important;
   }
 
   /* ── SKILLS ── */
-  .skills-list {
+  .t14-resume .skills-list {
     display: flex;
     flex-direction: column;
     gap: 10px;
     text-align: left;
   }
 
-  .skill-row {
+  .t14-resume .skill-row {
     display: flex;
     align-items: center;
     gap: 14px;
     text-align: left;
   }
 
-  .skill-name-label {
+  .t14-resume .skill-name-label {
     font-size: 13px;
     font-weight: 500;
     color: #1a2a4a;
@@ -283,7 +302,7 @@ const TemplateFourteen: React.FC = () => {
     text-align: left;
   }
 
-  .skill-track {
+  .t14-resume .skill-track {
     flex: 1;
     height: 5px;
     background: #e8edf5;
@@ -292,14 +311,14 @@ const TemplateFourteen: React.FC = () => {
     max-width: 220px;
   }
 
-  .skill-fill {
+  .t14-resume .skill-fill {
     height: 100%;
     background: linear-gradient(90deg, #1a2a4a, #4a7ab5);
     border-radius: 3px;
   }
 
   /* ── LANGUAGES ── */
-  .lang-row {
+  .t14-resume .lang-row {
     display: flex;
     align-items: center;
     gap: 14px;
@@ -307,7 +326,7 @@ const TemplateFourteen: React.FC = () => {
     text-align: left;
   }
 
-  .lang-name {
+  .t14-resume .lang-name {
     font-size: 13px;
     font-weight: 500;
     color: #1a2a4a;
@@ -316,7 +335,7 @@ const TemplateFourteen: React.FC = () => {
   }
 
   /* ── ADDITIONAL ── */
-  .additional-content {
+  .t14-resume .additional-content {
     font-size: 13px;
     color: #444;
     line-height: 1.7;
@@ -324,7 +343,7 @@ const TemplateFourteen: React.FC = () => {
     text-align: left;
   }
 
-  .additional-item {
+  .t14-resume .additional-item {
     display: flex;
     align-items: flex-start;
     gap: 10px;
@@ -332,7 +351,7 @@ const TemplateFourteen: React.FC = () => {
     text-align: left;
   }
 
-  .additional-diamond {
+  .t14-resume .additional-diamond {
     width: 6px;
     height: 6px;
     background: #2e4a7a;
@@ -342,7 +361,7 @@ const TemplateFourteen: React.FC = () => {
   }
 
   /* ── EDU CONTENT ── */
-  .edu-content {
+  .t14-resume .edu-content {
     font-size: 13px;
     line-height: 1.65;
     color: #444;
@@ -350,20 +369,20 @@ const TemplateFourteen: React.FC = () => {
     text-align: left;
   }
 
-  .edu-list {
+  .t14-resume .edu-list {
     list-style-type: disc !important;
     padding-left: 18px !important;
     margin: 4px 0 !important;
   }
 
-  .edu-list li {
+  .t14-resume .edu-list li {
     margin-bottom: 3px;
     line-height: 1.6;
     list-style-position: outside !important;
   }
 
   /* ── CUSTOM ── */
-  .custom-section-content {
+  .t14-resume .custom-section-content {
     font-size: 13px;
     line-height: 1.65;
     color: #444;
@@ -382,12 +401,12 @@ const TemplateFourteen: React.FC = () => {
       margin-top: 0;
     }
 
-    body {
+    .t14-resume body {
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
     }
 
-    .resume-container {
+    .t14-resume .resume-container {
       width: 100% !important;
       box-shadow: none !important;
     }
@@ -396,38 +415,38 @@ const TemplateFourteen: React.FC = () => {
       display: none !important;
     }
 
-    .entry-block {
+    .t14-resume .entry-block {
       page-break-inside: avoid;
       break-inside: avoid;
     }
 
-    .section-header {
+    .t14-resume .section-header {
       page-break-after: avoid;
       break-after: avoid;
     }
 
-    .resume-body {
+    .t14-resume .resume-body {
       padding-top: 24px;
     }
 
-    .header-block {
+    .t14-resume .header-block {
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
     }
 
-    .skill-fill,
-    .section-accent-bar {
+    .t14-resume .skill-fill,
+    .t14-resume .section-accent-bar {
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
     }
   }
 
   @media (max-width: 768px) {
-    .resume-container { width: 100%; }
-    .header-block { padding: 20px; }
-    .resume-body { padding: 16px 20px; }
-    .entry-top-row { flex-direction: column; align-items: flex-start; }
-    .skill-name-label, .lang-name { min-width: 120px; }
+    .t14-resume .resume-container { width: 100%; }
+    .t14-resume .header-block { padding: 20px; }
+    .t14-resume .resume-body { padding: 16px 20px; }
+    .t14-resume .entry-top-row { flex-direction: column; align-items: flex-start; }
+    .t14-resume .skill-name-label, .t14-resume .lang-name { min-width: 120px; }
   }
 `;
 
@@ -472,7 +491,7 @@ const TemplateFourteen: React.FC = () => {
       <style>${styles}</style>
     </head>
     <body>
-      <div class="resume-container">
+      <div class="t14-resume ">
 
         <!-- HEADER -->
         <div class="header-block">
@@ -689,7 +708,7 @@ const TemplateFourteen: React.FC = () => {
       )}
 
       <div
-        className="resume-container bg-white"
+        className={`t14-resume ${alldata ? 'is-preview' : ''}`}
         style={{ margin: "0 auto", boxShadow: "0 0 16px rgba(0,0,0,0.12)" }}
       >
         <style>{styles}</style>

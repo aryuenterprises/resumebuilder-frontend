@@ -6,19 +6,36 @@ import { CreateContext } from "@/app/context/CreateContext";
 import { API_URL } from "@/app/config/api";
 import { formatMonthYear, MonthYearDisplay } from "@/app/utils";
 import { usePathname } from "next/navigation";
+import { ResumeProps } from "@/app/types";
 
-const TemplateNine: React.FC = () => {
-  const context = useContext(CreateContext);
+// const TemplateNine: React.FC = () => {
+  const TemplateNine: React.FC<ResumeProps> = ({ alldata }) => {
 
-  const pathname = usePathname();
-  const lastSegment = pathname.split("/").pop();
+  // const context = useContext(CreateContext);
 
-  const contact = context.contact || {};
-  const educations = context?.education || [];
-  const experiences = context?.experiences || [];
-  const skills = context?.skills || [];
-  const finalize = context?.finalize || {};
-  const summary = context?.summary || "";
+  // const pathname = usePathname();
+  // const lastSegment = pathname.split("/").pop();
+
+  // const contact = context.contact || {};
+  // const educations = context?.education || [];
+  // const experiences = context?.experiences || [];
+  // const skills = context?.skills || [];
+  // const finalize = context?.finalize || {};
+  // const summary = context?.summary || "";
+
+
+   const context = useContext(CreateContext);
+    console.log("context,", context);
+  
+    const pathname = usePathname();
+    const lastSegment = pathname.split("/").pop();
+  
+    const contact = alldata?.contact || context.contact || {};
+    const educations = alldata?.educations || context?.education || [];
+    const experiences = alldata?.experiences || context?.experiences || [];
+    const skills = alldata?.skills || context?.skills || [];
+    const finalize = alldata?.finalize || context?.finalize || {};
+    const summary = alldata?.summary || context?.summary || "";
 
   const addressParts = [
     contact?.address,
@@ -36,13 +53,13 @@ const TemplateNine: React.FC = () => {
   const styles = `
   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap');
 
-  body {
+.t9-resume  body {
     margin: 0;
     background-color: white;
     text-align: left;
   }
 
-  .resume-container {
+  .t9-resume  {
     width: 210mm;
     min-height: 297mm;
     padding: 0;
@@ -53,14 +70,22 @@ const TemplateNine: React.FC = () => {
     text-align: left;
   }
 
+    .t9-resume.is-preview {
+    scale: 0.3;
+    max-height: 297mm;
+    overflow: hidden;
+    transform-origin: top left; /* Ensures it scales from the corner */
+}
+
+
   /* ── TOP BANNER HEADER ── */
-  .header-banner {
+  .t9-resume  .header-banner {
     background-color: #111111;
     padding: 28px 32px 24px;
     color: #ffffff;
   }
 
-  .header-name {
+  .t9-resume  .header-name {
     font-size: 32px;
     font-weight: 700;
     letter-spacing: -0.5px;
@@ -70,7 +95,7 @@ const TemplateNine: React.FC = () => {
     text-align: left;
   }
 
-  .header-jobtitle {
+  .t9-resume  .header-jobtitle {
     font-size: 13px;
     font-weight: 400;
     letter-spacing: 1.8px;
@@ -80,7 +105,7 @@ const TemplateNine: React.FC = () => {
     text-align: left;
   }
 
-  .header-meta-row {
+  .t9-resume  .header-meta-row {
     display: flex;
     flex-wrap: wrap;
     gap: 6px 20px;
@@ -90,29 +115,29 @@ const TemplateNine: React.FC = () => {
     text-align: left;
   }
 
-  .header-meta-row a {
+  .t9-resume  .header-meta-row a {
     color: #cccccc;
     text-decoration: underline;
     text-underline-offset: 2px;
   }
 
-  .meta-divider {
+  .t9-resume  .meta-divider {
     color: #555555;
   }
 
   /* ── MAIN BODY AREA ── */
-  .resume-body {
+  .t9-resume  .resume-body {
     padding: 24px 32px 32px;
     text-align: left;
   }
 
   /* ── SECTION ── */
-  .section-block {
+  .t9-resume  .section-block {
     margin-bottom: 24px;
     text-align: left;
   }
 
-  .section-title-row {
+  .t9-resume  .section-title-row {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -120,7 +145,7 @@ const TemplateNine: React.FC = () => {
     text-align: left;
   }
 
-  .section-title {
+  .t9-resume  .section-title {
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 2.5px;
@@ -130,14 +155,14 @@ const TemplateNine: React.FC = () => {
     text-align: left;
   }
 
-  .section-title-line {
+  .t9-resume  .section-title-line {
     flex: 1;
     height: 1px;
     background-color: #e0e0e0;
   }
 
   /* ── SUMMARY ── */
-  .summary-text {
+  .t9-resume  .summary-text {
     font-size: 13.5px;
     line-height: 1.75;
     color: #333333;
@@ -146,7 +171,7 @@ const TemplateNine: React.FC = () => {
   }
 
   /* ── ENTRY BLOCKS ── */
-  .entry-block {
+  .t9-resume  .entry-block {
     display: grid;
     grid-template-columns: 1fr;
     margin-bottom: 18px;
@@ -155,11 +180,11 @@ const TemplateNine: React.FC = () => {
     text-align: left;
   }
 
-  .entry-block:last-child {
+  .t9-resume  .entry-block:last-child {
     margin-bottom: 0;
   }
 
-  .entry-top-row {
+  .t9-resume  .entry-top-row {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -169,7 +194,7 @@ const TemplateNine: React.FC = () => {
     text-align: left;
   }
 
-  .entry-title {
+  .t9-resume  .entry-title {
     font-size: 15px;
     font-weight: 600;
     color: #111111;
@@ -177,7 +202,7 @@ const TemplateNine: React.FC = () => {
     text-align: left;
   }
 
-  .entry-date {
+  .t9-resume  .entry-date {
     font-size: 11.5px;
     color: #777777;
     font-weight: 400;
@@ -188,7 +213,7 @@ const TemplateNine: React.FC = () => {
     text-align: left;
   }
 
-  .entry-subtitle {
+  .t9-resume  .entry-subtitle {
     font-size: 12.5px;
     color: #555555;
     font-weight: 400;
@@ -196,7 +221,7 @@ const TemplateNine: React.FC = () => {
     text-align: left;
   }
 
-  .entry-content {
+  .t9-resume  .entry-content {
     font-size: 13px;
     line-height: 1.65;
     color: #444444;
@@ -204,40 +229,40 @@ const TemplateNine: React.FC = () => {
     text-align: left;
   }
 
-  .entry-content ul,
-  .entry-content-desc ul {
+  .t9-resume  .entry-content ul,
+  .t9-resume  .entry-content-desc ul {
     list-style-type: disc !important;
     padding-left: 18px !important;
     margin: 4px 0 !important;
   }
 
-  .entry-content ol,
-  .entry-content-desc ol {
+  .t9-resume  .entry-content ol,
+  .t9-resume  .entry-content-desc ol {
     list-style-type: decimal !important;
     padding-left: 18px !important;
     margin: 4px 0 !important;
   }
 
-  .entry-content li,
-  .entry-content-desc li {
+  .t9-resume  .entry-content li,
+  .t9-resume  .entry-content-desc li {
     margin-bottom: 3px !important;
     line-height: 1.6 !important;
     list-style-position: outside !important;
   }
 
-  ul {
+  .t9-resume  ul {
     list-style-type: disc !important;
   }
 
   /* ── SKILLS ── */
-  .skills-list {
+  .t9-resume  .skills-list {
     display: flex;
     flex-direction: column;
     gap: 8px;
     text-align: left;
   }
 
-  .skill-row {
+  .t9-resume  .skill-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -247,32 +272,32 @@ const TemplateNine: React.FC = () => {
     text-align: left;
   }
 
-  .skill-name-label {
+  .t9-resume  .skill-name-label {
     font-size: 13px;
     color: #1a1a1a;
     font-weight: 400;
     text-align: left;
   }
 
-  .skill-bar-wrap {
+  .t9-resume  .skill-bar-wrap {
     display: flex;
     gap: 4px;
     align-items: center;
   }
 
-  .skill-seg {
+  .t9-resume  .skill-seg {
     width: 18px;
     height: 4px;
     border-radius: 2px;
     background: #dddddd;
   }
 
-  .skill-seg.active {
+  .t9-resume  .skill-seg.active {
     background: #111111;
   }
 
   /* ── LANGUAGES ── */
-  .lang-row {
+  .t9-resume  .lang-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -283,7 +308,7 @@ const TemplateNine: React.FC = () => {
     text-align: left;
   }
 
-  .lang-name {
+  .t9-resume  .lang-name {
     font-size: 13px;
     color: #1a1a1a;
     font-weight: 400;
@@ -291,7 +316,7 @@ const TemplateNine: React.FC = () => {
   }
 
   /* ── ADDITIONAL ── */
-  .additional-content {
+  .t9-resume  .additional-content {
     font-size: 13px;
     color: #444444;
     line-height: 1.7;
@@ -299,7 +324,7 @@ const TemplateNine: React.FC = () => {
     text-align: left;
   }
 
-  .additional-item {
+  .t9-resume  .additional-item {
     display: flex;
     align-items: flex-start;
     gap: 8px;
@@ -307,7 +332,7 @@ const TemplateNine: React.FC = () => {
     text-align: left;
   }
 
-  .additional-bullet {
+  .t9-resume  .additional-bullet {
     width: 5px;
     height: 5px;
     border-radius: 50%;
@@ -317,7 +342,7 @@ const TemplateNine: React.FC = () => {
   }
 
   /* ── EDU CONTENT ── */
-  .edu-content {
+  .t9-resume  .edu-content {
     font-size: 13px;
     line-height: 1.65;
     color: #444444;
@@ -325,20 +350,20 @@ const TemplateNine: React.FC = () => {
     text-align: left;
   }
 
-  .edu-list {
+  .t9-resume  .edu-list {
     list-style-type: disc !important;
     padding-left: 18px !important;
     margin: 4px 0 !important;
   }
 
-  .edu-list li {
+  .t9-resume  .edu-list li {
     margin-bottom: 3px;
     line-height: 1.6;
     list-style-position: outside !important;
   }
 
   /* ── CUSTOM ── */
-  .custom-section-content {
+  .t9-resume  .custom-section-content {
     font-size: 13px;
     line-height: 1.65;
     color: #444444;
@@ -357,58 +382,58 @@ const TemplateNine: React.FC = () => {
       margin-top: 0;
     }
 
-    body {
+  body {
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
     }
 
-    .resume-container {
+    .t9-resume  {
       width: 100% !important;
       box-shadow: none !important;
     }
 
-    .no-print {
+    .t9-resume .no-print {
       display: none !important;
     }
 
     /* Only avoid breaking inside individual entries, NOT entire sections.
        This prevents large blank gaps when a section is pushed wholesale to page 2. */
-    .entry-block {
+    .t9-resume .entry-block {
       page-break-inside: avoid;
       break-inside: avoid;
     }
 
     /* Section titles should stay with at least one entry below them */
-    .section-title-row {
+    .t9-resume .section-title-row {
       page-break-after: avoid;
       break-after: avoid;
     }
 
     /* When content flows to page 2+, @page margin provides top spacing. */
-    .resume-body {
+    .t9-resume .resume-body {
       padding-top: 24px;
     }
 
-    .header-banner {
+    .t9-resume .header-banner {
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
     }
   }
 
   @media (max-width: 768px) {
-    .resume-container {
+    .t9-resume  {
       width: 100%;
     }
 
-    .header-banner {
+    .t9-resume .header-banner {
       padding: 20px;
     }
 
-    .resume-body {
+    .t9-resume .resume-body {
       padding: 16px 20px;
     }
 
-    .entry-top-row {
+    .t9-resume .entry-top-row {
       flex-direction: column;
       align-items: flex-start;
     }
@@ -469,7 +494,7 @@ const TemplateNine: React.FC = () => {
       <style>${styles}</style>
     </head>
     <body>
-      <div class="resume-container">
+      <div class="t9-resume ">
 
         <!-- HEADER BANNER -->
         <div class="header-banner">
@@ -899,7 +924,9 @@ const TemplateNine: React.FC = () => {
       )}
 
       <div
-        className="resume-container bg-white"
+        // className="t9-resume  bg-white"
+                className={`t9-resume ${alldata ? 'is-preview' : ''}`}
+
         style={{ margin: "0 auto", boxShadow: "0 0 12px rgba(0,0,0,0.1)" }}
       >
         <style>{styles}</style>

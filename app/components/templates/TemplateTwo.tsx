@@ -110,7 +110,7 @@
 //             line-height: 1.5;
 //           }
 
-//           .resume-container {
+//           .t2-resume  {
 //             width: 210mm;
 //             padding: 5mm;
 //             box-sizing: border-box;
@@ -129,10 +129,10 @@
 //           .gap-4 { gap: 1rem; }
 //           .gap-x-8 { column-gap: 2rem; }
 //           .gap-y-3 { row-gap: 0.75rem; }
-          
+
 //           .grid { display: grid; }
 //           .grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
-          
+
 //           .w-full { width: 100%; }
 //           .w-1 { width: 0.25rem; }
 //           .w-32 { width: 8rem; }
@@ -141,7 +141,7 @@
 //           .w-\\[68\\%\\] { width: 68%; }
 //           .w-\\[40\\%\\] { width: 40%; }
 //           .w-\\[60\\%\\] { width: 60%; }
-          
+
 //           .p-0 { padding: 0; }
 //           .p-2 { padding: 0.5rem; }
 //           .p-4 { padding: 1rem; }
@@ -155,7 +155,7 @@
 //           .pl-5 { padding-left: 1.25rem; }
 //           .pr-5 { padding-right: 1.25rem; }
 //           .pl-10 { padding-left: 2.5rem; }
-          
+
 //           .mt-1 { margin-top: 0.25rem; }
 //           .mt-2 { margin-top: 0.5rem; }
 //           .mt-4 { margin-top: 1rem; }
@@ -165,7 +165,7 @@
 //           .mx-1 { margin-left: 0.25rem; margin-right: 0.25rem; }
 //           .mx-2 { margin-left: 0.5rem; margin-right: 0.5rem; }
 //           .mx-auto { margin-left: auto; margin-right: auto; }
-          
+
 //           .border { border-width: 1px; border-style: solid; }
 //           .border-b { border-bottom-width: 1px; border-bottom-style: solid; }
 //           .border-l { border-left-width: 1px; border-left-style: solid; }
@@ -173,17 +173,17 @@
 //           .border-gray-200 { border-color: #e5e7eb; }
 //           .border-gray-300 { border-color: #d1d5db; }
 //           .border-black { border-color: #000; }
-          
+
 //           .rounded-md { border-radius: 0.375rem; }
 //           .rounded-full { border-radius: 9999px; }
 //           .rounded-tl-3xl { border-top-left-radius: 1.5rem; }
 //           .rounded-tr-3xl { border-top-right-radius: 1.5rem; }
-          
+
 //           .bg-\\[\\#EADCCE\\] { background-color: #EADCCE; }
 //           .bg-\\[\\#0c0c1e\\] { background-color: #0c0c1e; }
 //           .bg-gray-300 { background-color: #d1d5db; }
 //           .bg-white { background-color: white; }
-          
+
 //           .text-xs { font-size: 0.75rem; }
 //           .text-sm { font-size: 0.875rem; }
 //           .text-base { font-size: 1rem; }
@@ -194,20 +194,20 @@
 //           .text-\\[12px\\] { font-size: 12px; }
 //           .text-\\[13px\\] { font-size: 13px; }
 //           .text-\\[15px\\] { font-size: 15px; }
-          
+
 //           .font-normal { font-weight: 400; }
 //           .font-medium { font-weight: 500; }
 //           .font-semibold { font-weight: 600; }
 //           .font-bold { font-weight: 700; }
 //           .font-serif { font-family: serif; }
-          
+
 //           .text-gray-400 { color: #9ca3af; }
 //           .text-gray-500 { color: #6b7280; }
 //           .text-gray-600 { color: #4b5563; }
 //           .text-gray-700 { color: #374151; }
 //           .text-gray-800 { color: #1f2937; }
 //           .text-black { color: #000; }
-          
+
 //           .tracking-wide { letter-spacing: 0.025em; }
 //           .leading-tight { line-height: 1.25; }
 //           .leading-snug { line-height: 1.375; }
@@ -217,12 +217,12 @@
 //           .underline-offset-4 { text-underline-offset: 4px; }
 //           .decoration-2 { text-decoration-thickness: 2px; }
 //           .decoration-gray-800 { text-decoration-color: #1f2937; }
-          
+
 //           .object-cover { object-fit: cover; }
 //           .overflow-hidden { overflow: hidden; }
 //           .h-1 { height: 0.25rem; }
 //           .wrap-break-word { word-wrap: break-word; overflow-wrap: break-word; }
-          
+
 //           /* List styles */
 //           .list-disc { list-style-type: disc; }
 //           .list-decimal { list-style-type: decimal; }
@@ -234,16 +234,16 @@
 //     background: #333;
 //     border-radius: 2px;
 //   }
-          
+
 //           /* Print styles */
 //           @media print {
 //             body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-//             .resume-container { width: 100%; padding: 0; }
+//             .t2-resume  { width: 100%; padding: 0; }
 //           }
 //         </style>
 //       </head>
 //       <body>
-//         <div class="resume-container">
+//         <div class="t2-resume ">
 
 //           <!-- HEADER -->
 //           <div class="flex bg-[#EADCCE] py-2 rounded-tl-3xl rounded-tr-3xl border-b border-gray-300 mx-auto">
@@ -325,7 +325,6 @@
 //           ` : ""}
 //         </div>
 
-        
 //       `).join("")}
 //     </div>
 //   </div>
@@ -690,8 +689,6 @@
 //     }
 //   };
 
-
-
 //   return (
 //     <>
 //       {lastSegment === "download-resume" && (
@@ -710,7 +707,7 @@
 //           </button>
 //         </div>
 //       )}
-    
+
 //       <div
 //         className={`bg-white border border-gray-100 font-nunito mx-auto `}
 //         style={{
@@ -1174,31 +1171,6 @@
 
 // export default TemplateTwo;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
 // import React, { useContext, useState, useEffect } from "react";
 // import axios from "axios";
@@ -1287,7 +1259,6 @@
 //      - line-height locked to 1.5 everywhere
 //   ====================================================== */
 //   const styles = `
-  
 
 //     body {
 //       font-family: 'Nunito', Arial, sans-serif;
@@ -1324,7 +1295,7 @@
 //     ol { list-style-type: decimal !important; padding-left: 16px !important; }
 
 //     /* ── CONTAINER ── */
-//     .resume-container {
+//     .t2-resume  {
 //       width: 210mm;
 //       min-height: 297mm;
 //       padding: 5mm;
@@ -1686,7 +1657,7 @@
 //         print-color-adjust: exact;
 //       }
 
-//       .resume-container {
+//       .t2-resume  {
 //         width: 100% !important;
 //         padding: 0 !important;
 //         box-shadow: none !important;
@@ -1740,7 +1711,7 @@
 //   <style>${styles}</style>
 // </head>
 // <body>
-// <div class="resume-container">
+// <div class="t2-resume ">
 
 //   <!-- HEADER -->
 //   <div class="header-wrap">
@@ -1929,7 +1900,7 @@
 //         </div>
 //       )}
 
-//       <div className="resume-container" style={{ margin: "0 auto", boxShadow: "0 0 10px rgba(0,0,0,0.08)" }}>
+//       <div className="t2-resume " style={{ margin: "0 auto", boxShadow: "0 0 10px rgba(0,0,0,0.08)" }}>
 //         <style>{`@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap');`}</style>
 //         <style>{styles}</style>
 
@@ -2159,53 +2130,23 @@
 
 // export default TemplateTwo;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 import React, { useContext, useState, useEffect } from "react";
 import axios, { AxiosResponse } from "axios";
 import { CreateContext } from "@/app/context/CreateContext";
 import { API_URL } from "@/app/config/api";
-import { MonthYearDisplay, formatMonthYear, getLocalStorage } from "@/app/utils";
+import {
+  MonthYearDisplay,
+  formatMonthYear,
+  getLocalStorage,
+} from "@/app/utils";
 import { IoPersonOutline } from "react-icons/io5";
 
 import { usePathname } from "next/navigation";
 import { User } from "@/app/types/user.types";
-import { AllData } from "@/app/types";
-
-
-
-interface ResumeProps {
-  alldata?: AllData;
-}
+import { ResumeProps } from "@/app/types";
 
 const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
-
-  console.log("alldata",alldata)
-
   const UseContext = useContext(CreateContext);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const pathname = usePathname();
@@ -2256,14 +2197,14 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
 
   /* ======================================================
      SHARED CSS
-     FIX 1: All selectors are scoped to .resume-container
+     FIX 1: All selectors are scoped to .t2-resume 
              to prevent leaking into the rest of the website.
      FIX 2: Reduced padding/spacing/photo size so the resume
              fits on a single A4 page when exported to PDF.
   ====================================================== */
   const styles = `
     /* ── CONTAINER ── */
-    .resume-container {
+    .t2-resume  {
       width: 210mm;
       padding: 5mm;
       box-sizing: border-box;
@@ -2275,27 +2216,34 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
       text-align: left;
     }
 
+      .t2-resume.is-preview {
+    scale: 0.3;
+    max-height: 297mm;
+    overflow: hidden;
+    transform-origin: top left; /* Ensures it scales from the corner */
+}
+
     /* ── SCOPED GLOBAL RESETS (FIX 1) ── */
     /* These used to be bare "p, div, span, i, a { ... }" selectors
        which applied to the entire page. Now they are scoped. */
-    .resume-container p,
-    .resume-container div,
-    .resume-container span,
-    .resume-container i,
-    .resume-container a {
+    .t2-resume  p,
+    .t2-resume  div,
+    .t2-resume  span,
+    .t2-resume  i,
+    .t2-resume  a {
       margin: 0;
       padding: 0;
       font-family: 'Nunito', Arial, sans-serif;
       line-height: 1.5;
     }
 
-    .resume-container ul,
-    .resume-container ol {
+    .t2-resume  ul,
+    .t2-resume  ol {
       margin: 0 !important;
       padding: 0 !important;
     }
 
-    .resume-container li {
+    .t2-resume  li {
       margin-top: 0 !important;
       margin-bottom: 1px !important;
       padding: 0 !important;
@@ -2304,11 +2252,11 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
       font-family: 'Nunito', Arial, sans-serif !important;
     }
 
-    .resume-container ul { list-style-type: disc !important; padding-left: 16px !important; }
-    .resume-container ol { list-style-type: decimal !important; padding-left: 16px !important; }
+    .t2-resume  ul { list-style-type: disc !important; padding-left: 16px !important; }
+    .t2-resume  ol { list-style-type: decimal !important; padding-left: 16px !important; }
 
     /* ── HEADER ── */
-    .resume-container .header-wrap {
+    .t2-resume  .header-wrap {
       display: flex;
       background-color: #EADCCE;
       padding: 4px 0;
@@ -2316,7 +2264,7 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
       border-bottom: 1px solid #d1d5db;
     }
 
-    .resume-container .header-photo-col {
+    .t2-resume  .header-photo-col {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -2325,7 +2273,7 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
     }
 
     /* FIX 2: Reduced photo from 128px → 100px to save vertical space */
-    .resume-container .header-photo {
+    .t2-resume  .header-photo {
       width: 100px;
       height: 100px;
       border-radius: 6px;
@@ -2333,7 +2281,7 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
       border: 1px solid #e5e7eb;
     }
 
-    .resume-container .header-photo-placeholder {
+    .t2-resume  .header-photo-placeholder {
       width: 100px;
       height: 100px;
       border-radius: 6px;
@@ -2344,13 +2292,13 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
       background: #f9fafb;
     }
 
-    .resume-container .header-photo-placeholder span {
+    .t2-resume  .header-photo-placeholder span {
       color: #9ca3af;
       font-size: 12px;
       font-family: 'Nunito', Arial, sans-serif;
     }
 
-    .resume-container .header-info-col {
+    .t2-resume  .header-info-col {
       width: 78%;
       padding-left: 40px;
       padding-right: 12px;
@@ -2359,7 +2307,7 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
       justify-content: center;
     }
 
-    .resume-container .header-name {
+    .t2-resume  .header-name {
       font-size: 26px;
       font-weight: 400;
       letter-spacing: 0.025em;
@@ -2370,7 +2318,7 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
       margin-bottom: 2px;
     }
 
-    .resume-container .header-address {
+    .t2-resume  .header-address {
       font-size: 11px;
       color: #374151;
       line-height: 1.5;
@@ -2378,7 +2326,7 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
       margin-bottom: 1px;
     }
 
-    .resume-container .header-email {
+    .t2-resume  .header-email {
       font-size: 11px;
       color: #374151;
       font-family: serif, 'Nunito', Arial;
@@ -2386,7 +2334,7 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
       margin-bottom: 1px;
     }
 
-    .resume-container .header-phone {
+    .t2-resume  .header-phone {
       font-size: 11px;
       color: #374151;
       line-height: 1.5;
@@ -2394,13 +2342,13 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
       margin-bottom: 3px;
     }
 
-    .resume-container .header-links {
+    .t2-resume  .header-links {
       display: flex;
       gap: 16px;
       align-items: center;
     }
 
-    .resume-container .header-link {
+    .t2-resume  .header-link {
       font-size: 12px;
       font-weight: 700;
       color: #000;
@@ -2410,21 +2358,21 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
     }
 
     /* ── BODY ── */
-    .resume-container .body-wrap {
+    .t2-resume  .body-wrap {
       display: flex;
       gap: 12px;
     }
 
     /* ── LEFT COLUMN ── */
     /* FIX 2: Reduced padding-top 8px → 4px */
-    .resume-container .left-col {
+    .t2-resume  .left-col {
       width: 40%;
       padding-top: 4px;
       padding-left: 20px;
     }
 
     /* ── DIVIDER ── */
-    .resume-container .col-divider {
+    .t2-resume  .col-divider {
       width: 1px;
       border-left: 1px solid #d1d5db;
       margin: 0 4px;
@@ -2433,14 +2381,14 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
 
     /* ── RIGHT COLUMN ── */
     /* FIX 2: Reduced padding-top 8px → 4px */
-    .resume-container .right-col {
+    .t2-resume  .right-col {
       width: 60%;
       padding-top: 4px;
       padding-right: 20px;
     }
 
     /* ── SECTION TITLE ── */
-    .resume-container .section-title {
+    .t2-resume  .section-title {
       font-size: 13px;
       font-weight: 700;
       text-decoration: underline;
@@ -2457,11 +2405,11 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
 
     /* ── SUMMARY ── */
     /* FIX 2: Reduced margin-bottom 10px → 6px */
-    .resume-container .summary-block {
+    .t2-resume  .summary-block {
       margin-bottom: 6px;
     }
 
-    .resume-container .summary-text {
+    .t2-resume  .summary-text {
       font-size: 13px;
       color: #374151;
       line-height: 1.5;
@@ -2470,22 +2418,22 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
       overflow-wrap: break-word;
     }
 
-    .resume-container .summary-text p { margin: 0 !important; padding: 0 !important; line-height: 1.5 !important; }
+    .t2-resume  .summary-text p { margin: 0 !important; padding: 0 !important; line-height: 1.5 !important; }
 
     /* ── SKILLS ── */
     /* FIX 2: Reduced margin-bottom 12px → 8px */
-    .resume-container .skills-block {
+    .t2-resume  .skills-block {
       margin-bottom: 8px;
     }
 
-    .resume-container .skills-grid {
+    .t2-resume  .skills-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       column-gap: 20px;
       row-gap: 6px;
     }
 
-    .resume-container .skill-name {
+    .t2-resume  .skill-name {
       font-size: 12px;
       color: #1f2937;
       font-family: 'Nunito', Arial, sans-serif;
@@ -2493,7 +2441,7 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
       margin-bottom: 2px;
     }
 
-    .resume-container .skill-bar-wrap {
+    .t2-resume  .skill-bar-wrap {
       height: 4px;
       width: 100%;
       background: #d1d5db;
@@ -2501,7 +2449,7 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
       overflow: hidden;
     }
 
-    .resume-container .skill-bar-fill {
+    .t2-resume  .skill-bar-fill {
       height: 100%;
       background: #0c0c1e;
       border-radius: 9999px;
@@ -2509,19 +2457,19 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
 
     /* ── LANGUAGES ── */
     /* FIX 2: Reduced margins */
-    .resume-container .lang-block {
+    .t2-resume  .lang-block {
       margin-top: 4px;
       margin-bottom: 6px;
     }
 
     /* ── ADDITIONAL SECTIONS ── */
     /* FIX 2: Reduced margins */
-    .resume-container .extra-block {
+    .t2-resume  .extra-block {
       margin-top: 4px;
       margin-bottom: 6px;
     }
 
-    .resume-container .extra-text {
+    .t2-resume  .extra-text {
       font-size: 13px;
       color: #374151;
       line-height: 1.5;
@@ -2530,10 +2478,10 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
       overflow-wrap: break-word;
     }
 
-    .resume-container .extra-text p { margin: 0 !important; padding: 0 !important; line-height: 1.5 !important; }
-    .resume-container .extra-text div { margin: 0 !important; padding: 0 !important; line-height: 1.5 !important; }
+    .t2-resume  .extra-text p { margin: 0 !important; padding: 0 !important; line-height: 1.5 !important; }
+    .t2-resume  .extra-text div { margin: 0 !important; padding: 0 !important; line-height: 1.5 !important; }
 
-    .resume-container .extra-text-muted {
+    .t2-resume  .extra-text-muted {
       font-size: 13px;
       color: #6b7280;
       line-height: 1.5;
@@ -2544,18 +2492,18 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
 
     /* ── EXPERIENCE / EDUCATION ENTRIES ── */
     /* FIX 2: Reduced margin-bottom 10px → 6px */
-    .resume-container .entry-block {
+    .t2-resume  .entry-block {
       margin-bottom: 6px;
     }
 
-    .resume-container .entry-top-row {
+    .t2-resume  .entry-top-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1px;
     }
 
-    .resume-container .entry-title {
+    .t2-resume  .entry-title {
       font-size: 11.5px;
       font-weight: 700;
       font-style: italic;
@@ -2564,7 +2512,7 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
       line-height: 1.5;
     }
 
-    .resume-container .entry-date {
+    .t2-resume  .entry-date {
       display: flex;
       align-items: center;
       gap: 3px;
@@ -2576,7 +2524,7 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
       white-space: nowrap;
     }
 
-    .resume-container .entry-subtitle {
+    .t2-resume  .entry-subtitle {
       font-size: 11px;
       color: #374151;
       font-family: 'Nunito', Arial, sans-serif;
@@ -2584,7 +2532,7 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
       margin-bottom: 2px;
     }
 
-    .resume-container .entry-content {
+    .t2-resume  .entry-content {
       font-size: 13px;
       color: #374151;
       line-height: 1.5;
@@ -2593,7 +2541,7 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
       overflow-wrap: break-word;
     }
 
-    .resume-container .entry-content p {
+    .t2-resume  .entry-content p {
       margin: 0 !important;
       padding: 0 !important;
       line-height: 1.5 !important;
@@ -2601,19 +2549,19 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
       font-family: 'Nunito', Arial, sans-serif !important;
     }
 
-    .resume-container .entry-content ul {
+    .t2-resume  .entry-content ul {
       list-style-type: disc !important;
       padding-left: 16px !important;
       margin: 0 !important;
     }
 
-    .resume-container .entry-content ol {
+    .t2-resume  .entry-content ol {
       list-style-type: decimal !important;
       padding-left: 16px !important;
       margin: 0 !important;
     }
 
-    .resume-container .entry-content li {
+    .t2-resume  .entry-content li {
       margin: 0 !important;
       padding: 0 !important;
       line-height: 1.5 !important;
@@ -2623,22 +2571,22 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
     }
 
     /* ── WEBSITES ── */
-    .resume-container .website-block {
+    .t2-resume  .website-block {
       margin-top: 8px;
     }
 
-    .resume-container .website-item {
+    .t2-resume  .website-item {
       margin-bottom: 4px;
     }
 
-    .resume-container .website-label {
+    .t2-resume  .website-label {
       font-size: 13px;
       font-weight: 700;
       font-family: 'Nunito', Arial, sans-serif;
       line-height: 1.5;
     }
 
-    .resume-container .website-link {
+    .t2-resume  .website-link {
       font-size: 13px;
       color: #6b7280;
       text-decoration: underline;
@@ -2664,23 +2612,23 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
         print-color-adjust: exact;
       }
 
-      .resume-container {
+      .t2-resume  {
         width: 100% !important;
         padding: 0 !important;
         box-shadow: none !important;
       }
 
-      .resume-container .header-wrap {
+      .t2-resume  .header-wrap {
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
       }
 
-      .resume-container .entry-block {
+      .t2-resume  .entry-block {
         page-break-inside: avoid;
         break-inside: avoid;
       }
 
-      .resume-container .section-title {
+      .t2-resume  .section-title {
         page-break-after: avoid;
         break-after: avoid;
       }
@@ -2731,7 +2679,7 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
   </style>
 </head>
 <body>
-<div class="resume-container">
+<div class="t2-resume ">
 
   <!-- HEADER -->
   <div class="header-wrap">
@@ -2756,59 +2704,119 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
     <!-- LEFT COLUMN -->
     <div class="left-col">
 
-      ${summary ? `
+      ${
+        summary
+          ? `
       <div class="summary-block">
         <div class="section-title">Summary</div>
         <div class="summary-text">${summary.replace(/<[^>]*>/g, "").replace(/\n/g, "<br/>")}</div>
-      </div>` : ""}
+      </div>`
+          : ""
+      }
 
-      ${filteredSkills.length > 0 ? `
+      ${
+        filteredSkills.length > 0
+          ? `
       <div class="skills-block">
         <div class="section-title">Skills</div>
         <div class="skills-grid">
-          ${filteredSkills.map((skill) => `
+          ${filteredSkills
+            .map(
+              (skill) => `
           <div>
             <div class="skill-name">${skill.skill || ""}</div>
             ${skill.level ? `<div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:${skillLevelPct(Number(skill.level))}"></div></div>` : ""}
-          </div>`).join("")}
+          </div>`,
+            )
+            .join("")}
         </div>
-      </div>` : ""}
+      </div>`
+          : ""
+      }
 
-      ${Array.isArray(finalize?.languages) && finalize.languages.some((l) => l.name?.trim()) ? `
+      ${
+        Array.isArray(finalize?.languages) &&
+        finalize.languages.some((l) => l.name?.trim())
+          ? `
       <div class="lang-block">
         <div class="section-title">Languages</div>
         <div class="skills-grid">
-          ${finalize.languages.filter((l) => l.name?.trim()).map((l) => `
+          ${finalize.languages
+            .filter((l) => l.name?.trim())
+            .map(
+              (l) => `
           <div>
             <div class="skill-name">${l.name}</div>
             ${l.level ? `<div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:${skillLevelPct(Number(l.level))}"></div></div>` : ""}
-          </div>`).join("")}
+          </div>`,
+            )
+            .join("")}
         </div>
-      </div>` : ""}
+      </div>`
+          : ""
+      }
 
-      ${Array.isArray(finalize?.certificationsAndLicenses) && finalize.certificationsAndLicenses.some((i) => i.name?.replace(/<[^>]*>/g, "").trim()) ? `
+      ${
+        Array.isArray(finalize?.certificationsAndLicenses) &&
+        finalize.certificationsAndLicenses.some((i) =>
+          i.name?.replace(/<[^>]*>/g, "").trim(),
+        )
+          ? `
       <div class="extra-block">
         <div class="section-title">Certifications &amp; Licenses</div>
-        <div class="extra-text">${finalize.certificationsAndLicenses.filter((i) => i.name?.replace(/<[^>]*>/g, "").trim()).map((i) => `<div>${i.name?.replace(/<[^>]*>/g, "")}</div>`).join("")}</div>
-      </div>` : ""}
+        <div class="extra-text">${finalize.certificationsAndLicenses
+          .filter((i) => i.name?.replace(/<[^>]*>/g, "").trim())
+          .map((i) => `<div>${i.name?.replace(/<[^>]*>/g, "")}</div>`)
+          .join("")}</div>
+      </div>`
+          : ""
+      }
 
-      ${Array.isArray(finalize?.hobbiesAndInterests) && finalize.hobbiesAndInterests.some((i) => i.name?.replace(/<[^>]*>/g, "").trim()) ? `
+      ${
+        Array.isArray(finalize?.hobbiesAndInterests) &&
+        finalize.hobbiesAndInterests.some((i) =>
+          i.name?.replace(/<[^>]*>/g, "").trim(),
+        )
+          ? `
       <div class="extra-block">
         <div class="section-title">Hobbies &amp; Interests</div>
-        <div class="extra-text-muted">${finalize.hobbiesAndInterests.filter((i) => i.name?.replace(/<[^>]*>/g, "").trim()).map((i) => `<div>${i.name?.replace(/<[^>]*>/g, "")}</div>`).join("")}</div>
-      </div>` : ""}
+        <div class="extra-text-muted">${finalize.hobbiesAndInterests
+          .filter((i) => i.name?.replace(/<[^>]*>/g, "").trim())
+          .map((i) => `<div>${i.name?.replace(/<[^>]*>/g, "")}</div>`)
+          .join("")}</div>
+      </div>`
+          : ""
+      }
 
-      ${Array.isArray(finalize?.awardsAndHonors) && finalize.awardsAndHonors.some((i) => i.name?.replace(/<[^>]*>/g, "").trim()) ? `
+      ${
+        Array.isArray(finalize?.awardsAndHonors) &&
+        finalize.awardsAndHonors.some((i) =>
+          i.name?.replace(/<[^>]*>/g, "").trim(),
+        )
+          ? `
       <div class="extra-block">
         <div class="section-title">Awards &amp; Honors</div>
-        <div class="extra-text">${finalize.awardsAndHonors.filter((i) => i.name?.replace(/<[^>]*>/g, "").trim()).map((i) => `<div>${i.name?.replace(/<[^>]*>/g, "")}</div>`).join("")}</div>
-      </div>` : ""}
+        <div class="extra-text">${finalize.awardsAndHonors
+          .filter((i) => i.name?.replace(/<[^>]*>/g, "").trim())
+          .map((i) => `<div>${i.name?.replace(/<[^>]*>/g, "")}</div>`)
+          .join("")}</div>
+      </div>`
+          : ""
+      }
 
-      ${Array.isArray(finalize?.references) && finalize.references.some((i) => i.name?.replace(/<[^>]*>/g, "").trim()) ? `
+      ${
+        Array.isArray(finalize?.references) &&
+        finalize.references.some((i) => i.name?.replace(/<[^>]*>/g, "").trim())
+          ? `
       <div class="extra-block">
         <div class="section-title">References</div>
-        <div class="extra-text-muted">${finalize.references.filter((i) => i.name?.replace(/<[^>]*>/g, "").trim()).map((i) => `<div>${i.name?.replace(/<[^>]*>/g, "")}</div>`).join("")}</div>
-      </div>` : ""}
+        <div class="extra-text-muted">${finalize.references
+          .filter((i) => i.name?.replace(/<[^>]*>/g, "").trim())
+          .map((i) => `<div>${i.name?.replace(/<[^>]*>/g, "")}</div>`)
+          .join("")}</div>
+      </div>`
+          : ""
+      }
 
     </div>
 
@@ -2818,13 +2826,20 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
     <!-- RIGHT COLUMN -->
     <div class="right-col">
 
-      ${experiences?.length > 0 ? `
+      ${
+        experiences?.length > 0
+          ? `
       <div>
         <div class="section-title">Experience</div>
-        ${experiences.map((exp) => {
-          const start = formatMonthYear(exp.startDate, true);
-          const end = exp.endDate ? formatMonthYear(exp.endDate, true) : (exp.startDate ? "Present" : "");
-          return `
+        ${experiences
+          .map((exp) => {
+            const start = formatMonthYear(exp.startDate, true);
+            const end = exp.endDate
+              ? formatMonthYear(exp.endDate, true)
+              : exp.startDate
+                ? "Present"
+                : "";
+            return `
         <div class="entry-block">
           <div class="entry-top-row">
             ${exp.jobTitle ? `<div class="entry-title">${exp.jobTitle}</div>` : "<div></div>"}
@@ -2833,15 +2848,23 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
           ${exp.location || exp.employer ? `<div class="entry-subtitle">${[exp.location, exp.employer].filter(Boolean).join(" - ")}</div>` : ""}
           ${exp.text ? `<div class="entry-content">${exp.text.replace(/<[^>]*>/g, "").replace(/\n/g, "<br/>")}</div>` : ""}
         </div>`;
-        }).join("")}
-      </div>` : ""}
+          })
+          .join("")}
+      </div>`
+          : ""
+      }
 
-      ${educations?.length > 0 ? `
+      ${
+        educations?.length > 0
+          ? `
       <div style="margin-top:6px">
         <div class="section-title">Education</div>
-        ${educations.map((edu) => {
-          const dateStr = [edu.startDate || "", edu.endDate || ""].filter(Boolean).join(" - ");
-          return `
+        ${educations
+          .map((edu) => {
+            const dateStr = [edu.startDate || "", edu.endDate || ""]
+              .filter(Boolean)
+              .join(" - ");
+            return `
         <div class="entry-block">
           <div class="entry-top-row">
             <div class="entry-title">${edu.schoolname || ""}</div>
@@ -2850,27 +2873,54 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
           ${edu.location || edu.degree ? `<div class="entry-subtitle">${[edu.location, edu.degree].filter(Boolean).join(" - ")}</div>` : ""}
           ${edu.text ? `<div class="entry-content">${edu.text.replace(/<[^>]*>/g, "").replace(/\n/g, "<br/>")}</div>` : ""}
         </div>`;
-        }).join("")}
-      </div>` : ""}
+          })
+          .join("")}
+      </div>`
+          : ""
+      }
 
-      ${Array.isArray(finalize?.websitesAndSocialMedia) && finalize.websitesAndSocialMedia.some((i) => i.websiteUrl?.trim() || i.socialMedia?.trim()) ? `
+      ${
+        Array.isArray(finalize?.websitesAndSocialMedia) &&
+        finalize.websitesAndSocialMedia.some(
+          (i) => i.websiteUrl?.trim() || i.socialMedia?.trim(),
+        )
+          ? `
       <div class="website-block">
         <div class="section-title">Websites &amp; Social Media</div>
-        ${finalize.websitesAndSocialMedia.filter((i) => i.websiteUrl?.trim() || i.socialMedia?.trim()).map((i) => `
+        ${finalize.websitesAndSocialMedia
+          .filter((i) => i.websiteUrl?.trim() || i.socialMedia?.trim())
+          .map(
+            (i) => `
         <div class="website-item">
           ${i.websiteUrl ? `<div class="website-label">Website:</div><a href="${i.websiteUrl.startsWith("http") ? i.websiteUrl : `https://${i.websiteUrl}`}" class="website-link">${i.websiteUrl}</a>` : ""}
           ${i.socialMedia ? `<div class="website-label" style="margin-top:4px">Social Media:</div><a href="${i.socialMedia.startsWith("http") ? i.socialMedia : `https://${i.socialMedia}`}" class="website-link">${i.socialMedia}</a>` : ""}
-        </div>`).join("")}
-      </div>` : ""}
+        </div>`,
+          )
+          .join("")}
+      </div>`
+          : ""
+      }
 
-      ${Array.isArray(finalize?.customSection) && finalize.customSection.some((s) => s?.name?.trim() || s?.description?.trim()) ? `
+      ${
+        Array.isArray(finalize?.customSection) &&
+        finalize.customSection.some(
+          (s) => s?.name?.trim() || s?.description?.trim(),
+        )
+          ? `
       <div style="margin-top:6px">
-        ${finalize.customSection.filter((s) => s?.name?.trim() || s?.description?.trim()).map((s) => `
+        ${finalize.customSection
+          .filter((s) => s?.name?.trim() || s?.description?.trim())
+          .map(
+            (s) => `
         <div style="margin-bottom:6px">
           ${s.name ? `<div class="section-title">${s.name}</div>` : ""}
           ${s.description ? `<div class="entry-content">${s.description.replace(/<[^>]*>/g, "")}</div>` : ""}
-        </div>`).join("")}
-      </div>` : ""}
+        </div>`,
+          )
+          .join("")}
+      </div>`
+          : ""
+      }
 
     </div>
   </div>
@@ -2885,76 +2935,73 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
   const handleDownload = async (): Promise<void> => {
     try {
       const html: string = generateHTML(); // Assuming this returns a string
-  
+
       const res: AxiosResponse<Blob> = await axios.post(
         `${API_URL}/api/candidates/generate-pdf`,
         { html },
-        { responseType: "blob" }
+        { responseType: "blob" },
       );
-  
+
       const pdfBlob: Blob = res.data;
-  
+
       const url: string = URL.createObjectURL(pdfBlob);
       const a: HTMLAnchorElement = document.createElement("a");
-  
+
       a.href = url;
       a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-  
+
       // --- Server Upload Logic ---
       // We pass the pdfBlob directly to the next function
       await fetchOldResumeData(pdfBlob);
-  
     } catch (error) {
       console.error("Error generating PDF:", error);
       alert("Failed to generate PDF. Please try again.");
     }
   };
 
-
-    const Contactid = UseContext?.contact.contactId;
-     const userDetails = getLocalStorage <User>("user_details");
-      const userId = userDetails?.id; 
+  const Contactid = UseContext?.contact.contactId;
+  const userDetails = getLocalStorage<User>("user_details");
+  const userId = userDetails?.id;
 
   const fetchOldResumeData = async (pdfBlob: Blob): Promise<void> => {
+    if (!userId || !Contactid) {
+      console.error("Missing userId or Contactid");
+      return;
+    }
 
-     if (!userId || !Contactid) {
-    console.error("Missing userId or Contactid");
-    return;
-  }
-  
-  try {
-    const formData = new FormData();
-    
-    // Append metadata
-    formData.append("userId", userId);
-    formData.append("message", "success");
-    formData.append("contactId", Contactid);
-    
-    // Append the actual file
-    // The third parameter provides the filename to the server
-    formData.append("resume", pdfBlob, "resume.pdf");
+    try {
+      const formData = new FormData();
 
-    console.log("formData",formData)
+      // Append metadata
+      formData.append("userId", userId);
+      formData.append("message", "success");
+      formData.append("contactId", Contactid);
 
-    const response: AxiosResponse = await axios.post(
-      `${API_URL}/api/users/download-resume`, 
-      formData, 
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
+      // Append the actual file
+      // The third parameter provides the filename to the server
+      formData.append("resume", pdfBlob, "resume.pdf");
+
+      console.log("formData", formData);
+
+      const response: AxiosResponse = await axios.post(
+        `${API_URL}/api/users/download-resume`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         },
-      }
-    );
+      );
 
-    console.log("Upload success:", response.data);
-  } catch (err) {
-    console.error("Upload error:", err);
-  }
-}
+      console.log("Upload success:", response.data);
+    } catch (err) {
+      console.error("Upload error:", err);
+    }
+  };
 
   /* ======================================================
      JSX PREVIEW — uses same CSS classes as generateHTML
@@ -2962,7 +3009,13 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
   return (
     <>
       {lastSegment === "download-resume" && (
-        <div style={{ textAlign: "center", marginTop: "20px", marginBottom: "20px" }}>
+        <div
+          style={{
+            textAlign: "center",
+            marginTop: "20px",
+            marginBottom: "20px",
+          }}
+        >
           <button
             onClick={handleDownload}
             className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
@@ -2972,7 +3025,16 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
         </div>
       )}
 
-      <div className="resume-container" style={{ margin: "0 auto", boxShadow: "0 0 10px rgba(0,0,0,0.08)",    minHeight: "297mm", }}>
+      <div
+        // className="t2-resume "
+                className={`t2-resume  ${alldata ? 'is-preview' : ''}`}
+
+        style={{
+          margin: "0 auto",
+          boxShadow: "0 0 10px rgba(0,0,0,0.08)",
+          minHeight: "297mm",
+        }}
+      >
         {/* Font import — only applies inside this component's shadow, not globally */}
         <style>{`@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap');`}</style>
         <style>{styles}</style>
@@ -2984,7 +3046,9 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
               <img src={previewUrl} alt="Profile" className="header-photo" />
             ) : (
               <div className="header-photo-placeholder">
-                <IoPersonOutline style={{ width: 40, height: 40, color: "#9ca3af" }} />
+                <IoPersonOutline
+                  style={{ width: 40, height: 40, color: "#9ca3af" }}
+                />
               </div>
             )}
           </div>
@@ -2992,19 +3056,57 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
             <div className="header-name">
               {contact?.firstName || ""} {contact?.lastName || ""}
             </div>
-            {[contact?.address, contact?.city, contact?.postcode, contact?.country].filter(Boolean).length > 0 && (
+            {[
+              contact?.address,
+              contact?.city,
+              contact?.postcode,
+              contact?.country,
+            ].filter(Boolean).length > 0 && (
               <div className="header-address">
-                {[contact?.address, contact?.city, contact?.postcode, contact?.country].filter(Boolean).join(", ")}
+                {[
+                  contact?.address,
+                  contact?.city,
+                  contact?.postcode,
+                  contact?.country,
+                ]
+                  .filter(Boolean)
+                  .join(", ")}
               </div>
             )}
-            {contact?.email && <div className="header-email">{contact.email}</div>}
-            {contact?.phone && <div className="header-phone">{contact.phone}</div>}
+            {contact?.email && (
+              <div className="header-email">{contact.email}</div>
+            )}
+            {contact?.phone && (
+              <div className="header-phone">{contact.phone}</div>
+            )}
             <div className="header-links">
               {linkedinUrl && linkedinUrl.trim() && (
-                <a href={linkedinUrl.startsWith("http") ? linkedinUrl : `https://${linkedinUrl}`} target="_blank" rel="noreferrer" className="header-link">LinkedIn</a>
+                <a
+                  href={
+                    linkedinUrl.startsWith("http")
+                      ? linkedinUrl
+                      : `https://${linkedinUrl}`
+                  }
+                  target="_blank"
+                  rel="noreferrer"
+                  className="header-link"
+                >
+                  LinkedIn
+                </a>
               )}
               {portfolioUrl && portfolioUrl.trim() && (
-                <a href={portfolioUrl.startsWith("http") ? portfolioUrl : `https://${portfolioUrl}`} target="_blank" rel="noreferrer" className="header-link">Portfolio</a>
+                <a
+                  href={
+                    portfolioUrl.startsWith("http")
+                      ? portfolioUrl
+                      : `https://${portfolioUrl}`
+                  }
+                  target="_blank"
+                  rel="noreferrer"
+                  className="header-link"
+                >
+                  Portfolio
+                </a>
               )}
             </div>
           </div>
@@ -3012,14 +3114,17 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
 
         {/* BODY */}
         <div className="body-wrap">
-
           {/* LEFT COLUMN */}
           <div className="left-col">
-
             {summary && (
               <div className="summary-block">
                 <div className="section-title">Summary</div>
-                <div className="summary-text" dangerouslySetInnerHTML={{ __html: summary.replace(/<[^>]*>/g, "") }} />
+                <div
+                  className="summary-text"
+                  dangerouslySetInnerHTML={{
+                    __html: summary.replace(/<[^>]*>/g, ""),
+                  }}
+                />
               </div>
             )}
 
@@ -3032,7 +3137,12 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
                       <div className="skill-name">{skill.skill || ""}</div>
                       {skill.level && (
                         <div className="skill-bar-wrap">
-                          <div className="skill-bar-fill" style={{ width: `${(Number(skill.level) / 5) * 100}%` }} />
+                          <div
+                            className="skill-bar-fill"
+                            style={{
+                              width: `${(Number(skill.level) / 5) * 100}%`,
+                            }}
+                          />
                         </div>
                       )}
                     </div>
@@ -3041,68 +3151,117 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
               </div>
             )}
 
-            {Array.isArray(finalize?.languages) && finalize.languages.some((l) => l.name?.trim()) && (
-              <div className="lang-block">
-                <div className="section-title">Languages</div>
-                <div className="skills-grid">
-                  {finalize.languages.filter((l) => l.name?.trim()).map((l, i) => (
-                    <div key={l._id || i}>
-                      <div className="skill-name">{l.name}</div>
-                      {l.level && (
-                        <div className="skill-bar-wrap">
-                          <div className="skill-bar-fill" style={{ width: `${(Number(l.level) / 5) * 100}%` }} />
+            {Array.isArray(finalize?.languages) &&
+              finalize.languages.some((l) => l.name?.trim()) && (
+                <div className="lang-block">
+                  <div className="section-title">Languages</div>
+                  <div className="skills-grid">
+                    {finalize.languages
+                      .filter((l) => l.name?.trim())
+                      .map((l, i) => (
+                        <div key={l._id || i}>
+                          <div className="skill-name">{l.name}</div>
+                          {l.level && (
+                            <div className="skill-bar-wrap">
+                              <div
+                                className="skill-bar-fill"
+                                style={{
+                                  width: `${(Number(l.level) / 5) * 100}%`,
+                                }}
+                              />
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
-                  ))}
+                      ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {Array.isArray(finalize?.certificationsAndLicenses) && finalize.certificationsAndLicenses.some((i) => i.name?.replace(/<[^>]*>/g, "").trim()) && (
-              <div className="extra-block">
-                <div className="section-title">Certifications &amp; Licenses</div>
-                <div className="extra-text">
-                  {finalize.certificationsAndLicenses.filter((i) => i.name?.replace(/<[^>]*>/g, "").trim()).map((item, i) => (
-                    <div key={item.id || i} dangerouslySetInnerHTML={{ __html: item.name?.replace(/<[^>]*>/g, "") || "" }} />
-                  ))}
+            {Array.isArray(finalize?.certificationsAndLicenses) &&
+              finalize.certificationsAndLicenses.some((i) =>
+                i.name?.replace(/<[^>]*>/g, "").trim(),
+              ) && (
+                <div className="extra-block">
+                  <div className="section-title">
+                    Certifications &amp; Licenses
+                  </div>
+                  <div className="extra-text">
+                    {finalize.certificationsAndLicenses
+                      .filter((i) => i.name?.replace(/<[^>]*>/g, "").trim())
+                      .map((item, i) => (
+                        <div
+                          key={item.id || i}
+                          dangerouslySetInnerHTML={{
+                            __html: item.name?.replace(/<[^>]*>/g, "") || "",
+                          }}
+                        />
+                      ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {Array.isArray(finalize?.hobbiesAndInterests) && finalize.hobbiesAndInterests.some((i) => i.name?.replace(/<[^>]*>/g, "").trim()) && (
-              <div className="extra-block">
-                <div className="section-title">Hobbies &amp; Interests</div>
-                <div className="extra-text-muted">
-                  {finalize.hobbiesAndInterests.filter((i) => i.name?.replace(/<[^>]*>/g, "").trim()).map((item, i) => (
-                    <div key={item.id || i} dangerouslySetInnerHTML={{ __html: item.name?.replace(/<[^>]*>/g, "") || "" }} />
-                  ))}
+            {Array.isArray(finalize?.hobbiesAndInterests) &&
+              finalize.hobbiesAndInterests.some((i) =>
+                i.name?.replace(/<[^>]*>/g, "").trim(),
+              ) && (
+                <div className="extra-block">
+                  <div className="section-title">Hobbies &amp; Interests</div>
+                  <div className="extra-text-muted">
+                    {finalize.hobbiesAndInterests
+                      .filter((i) => i.name?.replace(/<[^>]*>/g, "").trim())
+                      .map((item, i) => (
+                        <div
+                          key={item.id || i}
+                          dangerouslySetInnerHTML={{
+                            __html: item.name?.replace(/<[^>]*>/g, "") || "",
+                          }}
+                        />
+                      ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {Array.isArray(finalize?.awardsAndHonors) && finalize.awardsAndHonors.some((i) => i.name?.replace(/<[^>]*>/g, "").trim()) && (
-              <div className="extra-block">
-                <div className="section-title">Awards &amp; Honors</div>
-                <div className="extra-text">
-                  {finalize.awardsAndHonors.filter((i) => i.name?.replace(/<[^>]*>/g, "").trim()).map((item, i) => (
-                    <div key={item.id || i} dangerouslySetInnerHTML={{ __html: item.name?.replace(/<[^>]*>/g, "") || "" }} />
-                  ))}
+            {Array.isArray(finalize?.awardsAndHonors) &&
+              finalize.awardsAndHonors.some((i) =>
+                i.name?.replace(/<[^>]*>/g, "").trim(),
+              ) && (
+                <div className="extra-block">
+                  <div className="section-title">Awards &amp; Honors</div>
+                  <div className="extra-text">
+                    {finalize.awardsAndHonors
+                      .filter((i) => i.name?.replace(/<[^>]*>/g, "").trim())
+                      .map((item, i) => (
+                        <div
+                          key={item.id || i}
+                          dangerouslySetInnerHTML={{
+                            __html: item.name?.replace(/<[^>]*>/g, "") || "",
+                          }}
+                        />
+                      ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {Array.isArray(finalize?.references) && finalize.references.some((i) => i.name?.replace(/<[^>]*>/g, "").trim()) && (
-              <div className="extra-block">
-                <div className="section-title">References</div>
-                <div className="extra-text-muted">
-                  {finalize.references.filter((i) => i.name?.replace(/<[^>]*>/g, "").trim()).map((item, i) => (
-                    <div key={item.id || i} dangerouslySetInnerHTML={{ __html: item.name?.replace(/<[^>]*>/g, "") || "" }} />
-                  ))}
+            {Array.isArray(finalize?.references) &&
+              finalize.references.some((i) =>
+                i.name?.replace(/<[^>]*>/g, "").trim(),
+              ) && (
+                <div className="extra-block">
+                  <div className="section-title">References</div>
+                  <div className="extra-text-muted">
+                    {finalize.references
+                      .filter((i) => i.name?.replace(/<[^>]*>/g, "").trim())
+                      .map((item, i) => (
+                        <div
+                          key={item.id || i}
+                          dangerouslySetInnerHTML={{
+                            __html: item.name?.replace(/<[^>]*>/g, "") || "",
+                          }}
+                        />
+                      ))}
+                  </div>
                 </div>
-              </div>
-            )}
-
+              )}
           </div>
 
           {/* DIVIDER */}
@@ -3110,27 +3269,49 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
 
           {/* RIGHT COLUMN */}
           <div className="right-col">
-
             {experiences?.length > 0 && (
               <div>
                 <div className="section-title">Experience</div>
                 {experiences.map((exp, index) => (
                   <div key={exp.id || index} className="entry-block">
                     <div className="entry-top-row">
-                      {exp.jobTitle ? <div className="entry-title">{exp.jobTitle}</div> : <div />}
+                      {exp.jobTitle ? (
+                        <div className="entry-title">{exp.jobTitle}</div>
+                      ) : (
+                        <div />
+                      )}
                       <div className="entry-date">
-                        <MonthYearDisplay value={exp.startDate} shortYear={true} />
-                        {exp.startDate && (exp.endDate || true) && <span> - </span>}
-                        {exp.endDate
-                          ? <MonthYearDisplay value={exp.endDate} shortYear={true} />
-                          : exp.startDate && <span>Present</span>}
+                        <MonthYearDisplay
+                          value={exp.startDate}
+                          shortYear={true}
+                        />
+                        {exp.startDate && (exp.endDate || true) && (
+                          <span> - </span>
+                        )}
+                        {exp.endDate ? (
+                          <MonthYearDisplay
+                            value={exp.endDate}
+                            shortYear={true}
+                          />
+                        ) : (
+                          exp.startDate && <span>Present</span>
+                        )}
                       </div>
                     </div>
                     {(exp.location || exp.employer) && (
-                      <div className="entry-subtitle">{[exp.location, exp.employer].filter(Boolean).join(" - ")}</div>
+                      <div className="entry-subtitle">
+                        {[exp.location, exp.employer]
+                          .filter(Boolean)
+                          .join(" - ")}
+                      </div>
                     )}
                     {exp.text && (
-                      <div className="entry-content" dangerouslySetInnerHTML={{ __html: exp.text.replace(/<[^>]*>/g, "") }} />
+                      <div
+                        className="entry-content"
+                        dangerouslySetInnerHTML={{
+                          __html: exp.text.replace(/<[^>]*>/g, ""),
+                        }}
+                      />
                     )}
                   </div>
                 ))}
@@ -3145,55 +3326,112 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
                     <div className="entry-top-row">
                       <div className="entry-title">{edu.schoolname || ""}</div>
                       <div className="entry-date">
-                        {[edu.startDate, edu.endDate].filter(Boolean).join(" - ")}
+                        {[edu.startDate, edu.endDate]
+                          .filter(Boolean)
+                          .join(" - ")}
                       </div>
                     </div>
                     {(edu.location || edu.degree) && (
-                      <div className="entry-subtitle">{[edu.location, edu.degree].filter(Boolean).join(" - ")}</div>
+                      <div className="entry-subtitle">
+                        {[edu.location, edu.degree].filter(Boolean).join(" - ")}
+                      </div>
                     )}
                     {edu.text && (
-                      <div className="entry-content" dangerouslySetInnerHTML={{ __html: edu.text.replace(/<[^>]*>/g, "") }} />
+                      <div
+                        className="entry-content"
+                        dangerouslySetInnerHTML={{
+                          __html: edu.text.replace(/<[^>]*>/g, ""),
+                        }}
+                      />
                     )}
                   </div>
                 ))}
               </div>
             )}
 
-            {Array.isArray(finalize?.websitesAndSocialMedia) && finalize.websitesAndSocialMedia.some((i) => i.websiteUrl?.trim() || i.socialMedia?.trim()) && (
-              <div className="website-block">
-                <div className="section-title">Websites &amp; Social Media</div>
-                {finalize.websitesAndSocialMedia.filter((i) => i.websiteUrl?.trim() || i.socialMedia?.trim()).map((item, i) => (
-                  <div key={item.id || i} className="website-item">
-                    {item.websiteUrl && (
-                      <div>
-                        <div className="website-label">Website:</div>
-                        <a href={item.websiteUrl.startsWith("http") ? item.websiteUrl : `https://${item.websiteUrl}`} target="_blank" rel="noreferrer" className="website-link">{item.websiteUrl}</a>
+            {Array.isArray(finalize?.websitesAndSocialMedia) &&
+              finalize.websitesAndSocialMedia.some(
+                (i) => i.websiteUrl?.trim() || i.socialMedia?.trim(),
+              ) && (
+                <div className="website-block">
+                  <div className="section-title">
+                    Websites &amp; Social Media
+                  </div>
+                  {finalize.websitesAndSocialMedia
+                    .filter(
+                      (i) => i.websiteUrl?.trim() || i.socialMedia?.trim(),
+                    )
+                    .map((item, i) => (
+                      <div key={item.id || i} className="website-item">
+                        {item.websiteUrl && (
+                          <div>
+                            <div className="website-label">Website:</div>
+                            <a
+                              href={
+                                item.websiteUrl.startsWith("http")
+                                  ? item.websiteUrl
+                                  : `https://${item.websiteUrl}`
+                              }
+                              target="_blank"
+                              rel="noreferrer"
+                              className="website-link"
+                            >
+                              {item.websiteUrl}
+                            </a>
+                          </div>
+                        )}
+                        {item.socialMedia && (
+                          <div style={{ marginTop: "4px" }}>
+                            <div className="website-label">Social Media:</div>
+                            <a
+                              href={
+                                item.socialMedia.startsWith("http")
+                                  ? item.socialMedia
+                                  : `https://${item.socialMedia}`
+                              }
+                              target="_blank"
+                              rel="noreferrer"
+                              className="website-link"
+                            >
+                              {item.socialMedia}
+                            </a>
+                          </div>
+                        )}
                       </div>
-                    )}
-                    {item.socialMedia && (
-                      <div style={{ marginTop: "4px" }}>
-                        <div className="website-label">Social Media:</div>
-                        <a href={item.socialMedia.startsWith("http") ? item.socialMedia : `https://${item.socialMedia}`} target="_blank" rel="noreferrer" className="website-link">{item.socialMedia}</a>
+                    ))}
+                </div>
+              )}
+
+            {Array.isArray(finalize?.customSection) &&
+              finalize.customSection.some(
+                (s) => s?.name?.trim() || s?.description?.trim(),
+              ) && (
+                <div style={{ marginTop: "6px" }}>
+                  {finalize.customSection
+                    .filter((s) => s?.name?.trim() || s?.description?.trim())
+                    .map((section, i) => (
+                      <div
+                        key={section.id || i}
+                        style={{ marginBottom: "6px" }}
+                      >
+                        {section.name && (
+                          <div className="section-title">{section.name}</div>
+                        )}
+                        {section.description && (
+                          <div
+                            className="entry-content"
+                            dangerouslySetInnerHTML={{
+                              __html: section.description.replace(
+                                /<[^>]*>/g,
+                                "",
+                              ),
+                            }}
+                          />
+                        )}
                       </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {Array.isArray(finalize?.customSection) && finalize.customSection.some((s) => s?.name?.trim() || s?.description?.trim()) && (
-              <div style={{ marginTop: "6px" }}>
-                {finalize.customSection.filter((s) => s?.name?.trim() || s?.description?.trim()).map((section, i) => (
-                  <div key={section.id || i} style={{ marginBottom: "6px" }}>
-                    {section.name && <div className="section-title">{section.name}</div>}
-                    {section.description && (
-                      <div className="entry-content" dangerouslySetInnerHTML={{ __html: section.description.replace(/<[^>]*>/g, "") }} />
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-
+                    ))}
+                </div>
+              )}
           </div>
         </div>
       </div>

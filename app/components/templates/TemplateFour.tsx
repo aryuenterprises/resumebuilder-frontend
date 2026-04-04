@@ -120,7 +120,7 @@
 //         </style>
 //       </head>
 //       <body class="bg-white">
-//         <div class="resume-container bg-white border border-gray-100 font-nunito mx-auto" style="width: 210mm; padding: 5mm; box-sizing: border-box; margin: 0 auto;">
+//         <div class="t4-resume  bg-white border border-gray-100 font-nunito mx-auto" style="width: 210mm; padding: 5mm; box-sizing: border-box; margin: 0 auto;">
 //           <!-- Header -->
 //           <div class="text-center font-bold mt-1 mb-2">
 //             <p class="text-[27px] uppercase">
@@ -886,26 +886,13 @@ import { CreateContext } from "@/app/context/CreateContext";
 import { API_URL } from "@/app/config/api";
 import { MonthYearDisplay, formatMonthYear } from "@/app/utils";
 import {
-  Contact,
-  Education,
-  Experience,
+  
   Finalize,
-  Skill,
+  ResumeProps,
 } from "@/app/types/context.types";
 import { usePathname } from "next/navigation";
 
-interface AllData {
-  contact?: Contact;
-  educations?: Education[];
-  experiences?: Experience[];
-  skills?: Skill[];
-  finalize?: Finalize;
-  summary?: string;
-}
 
-interface ResumeProps {
-  alldata?: AllData;
-}
 
 const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
   const context = useContext(CreateContext);
@@ -972,45 +959,45 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
      global p/li reset to prevent PDF spacing blowout
   ====================================================== */
   const styles = `
-    /* All rules scoped to .resume-container so nothing leaks to the host website */
+    /* All rules scoped to .t4-resume  so nothing leaks to the host website */
 
     /* body styles intentionally omitted — applied in generateHTML only to avoid leaking into host website */
 
     /* Scoped resets — only affect elements inside the resume */
-    .resume-container * {
+    .t4-resume  * {
       box-sizing: border-box;
     }
 
-    .resume-container p,
-    .resume-container div,
-    .resume-container span,
-    .resume-container h2,
-    .resume-container h3,
-    .resume-container i,
-    .resume-container a {
+    .t4-resume  p,
+    .t4-resume  div,
+    .t4-resume  span,
+    .t4-resume  h2,
+    .t4-resume  h3,
+    .t4-resume  i,
+    .t4-resume  a {
       font-family: 'Nunito', Arial, sans-serif;
       line-height: 1.5;
     }
 
     /* Reset <p> margins inside resume only */
-    .resume-container p {
+    .t4-resume  p {
       margin: 0 !important;
       padding: 0 !important;
     }
 
-    .resume-container ul {
+    .t4-resume  ul {
       list-style-type: disc !important;
       padding-left: 20px !important;
       margin: 0 !important;
     }
 
-    .resume-container ol {
+    .t4-resume  ol {
       list-style-type: decimal !important;
       padding-left: 20px !important;
       margin: 0 !important;
     }
 
-    .resume-container li {
+    .t4-resume  li {
       margin-top: 0 !important;
       margin-bottom: 1px !important;
       padding: 0 !important;
@@ -1020,7 +1007,7 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
     }
 
     /* ── CONTAINER ── */
-    .resume-container {
+    .t4-resume  {
       width: 210mm;
       min-height: 297mm;
       padding: 5mm;
@@ -1032,13 +1019,21 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
       text-align: left;
     }
 
+
+      .t4-resume.is-preview {
+    scale: 0.3;
+    max-height: 297mm;
+    overflow: hidden;
+    transform-origin: top left; /* Ensures it scales from the corner */
+}
+
     /* ── HEADER ── */
-    .header-block {
+     .t4-resume .header-block {
       text-align: center;
       margin-bottom: 6px;
     }
 
-    .header-name {
+    .t4-resume .header-name {
       font-size: 27px;
       font-weight: 700;
       text-transform: uppercase;
@@ -1049,7 +1044,7 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
       margin-bottom: 3px;
     }
 
-    .header-jobtitle {
+    .t4-resume .header-jobtitle {
       font-size: 12px;
       font-weight: 400;
       color: #374151;
@@ -1058,7 +1053,7 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
       margin-bottom: 4px;
     }
 
-    .header-links {
+    .t4-resume .header-links {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -1066,7 +1061,7 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
       margin-bottom: 4px;
     }
 
-    .header-link {
+    .t4-resume .header-link {
       font-size: 13px;
       font-weight: 600;
       color: #000;
@@ -1076,13 +1071,13 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
       line-height: 1.5;
     }
 
-    .header-divider {
+    .t4-resume .header-divider {
       border: none;
       border-top: 2px solid #000;
       margin: 4px 0;
     }
 
-    .header-contact-row {
+    .t4-resume .header-contact-row {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -1096,7 +1091,7 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
     }
 
     /* ── SECTION TITLE ── */
-    .section-title {
+    .t4-resume .section-title {
       font-size: 17px;
       font-weight: 700;
       color: #111827;
@@ -1107,11 +1102,11 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
     }
 
     /* ── ENTRY ── */
-    .entry-block {
+    .t4-resume .entry-block {
       margin-bottom: 12px;
     }
 
-    .entry-heading {
+    .t4-resume .entry-heading {
       font-size: 15px;
       font-weight: 600;
       color: #111827;
@@ -1123,14 +1118,14 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
       overflow-wrap: break-word;
     }
 
-    .entry-heading-muted {
+    .t4-resume .entry-heading-muted {
       font-size: 15px;
       font-weight: 400;
       color: #6b7280;
       font-family: 'Nunito', Arial, sans-serif;
     }
 
-    .entry-date {
+    .t4-resume .entry-date {
       font-size: 13px;
       color: #4b5563;
       font-family: 'Nunito', Arial, sans-serif;
@@ -1141,7 +1136,7 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
       gap: 6px;
     }
 
-    .entry-content {
+    .t4-resume .entry-content {
       font-size: 14px;
       color: #374151;
       font-family: 'Nunito', Arial, sans-serif;
@@ -1153,7 +1148,7 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
       overflow-wrap: break-word;
     }
 
-    .entry-content p {
+    .t4-resume .entry-content p {
       margin: 0 !important;
       padding: 0 !important;
       line-height: 1.5 !important;
@@ -1161,19 +1156,19 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
       font-family: 'Nunito', Arial, sans-serif !important;
     }
 
-    .entry-content ul {
+    .t4-resume .entry-content ul {
       list-style-type: disc !important;
       padding-left: 20px !important;
       margin: 0 !important;
     }
 
-    .entry-content ol {
+    .t4-resume .entry-content ol {
       list-style-type: decimal !important;
       padding-left: 20px !important;
       margin: 0 !important;
     }
 
-    .entry-content li {
+    .t4-resume .entry-content li {
       margin: 0 !important;
       margin-bottom: 1px !important;
       padding: 0 !important;
@@ -1183,7 +1178,7 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
     }
 
     /* ── SKILLS GRID ── */
-    .skills-grid {
+    .t4-resume .skills-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       column-gap: 32px;
@@ -1191,7 +1186,7 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
       margin-top: 6px;
     }
 
-    .skill-name {
+    .t4-resume .skill-name {
       font-size: 13px;
       color: #4b5563;
       font-family: 'Nunito', Arial, sans-serif;
@@ -1200,7 +1195,7 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
       word-wrap: break-word;
     }
 
-    .skill-bar-wrap {
+    .t4-resume .skill-bar-wrap {
       height: 4px;
       width: 100%;
       background: #d1d5db;
@@ -1208,14 +1203,14 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
       overflow: hidden;
     }
 
-    .skill-bar-fill {
+    .t4-resume .skill-bar-fill {
       height: 100%;
       background: #0c0c1e;
       border-radius: 9999px;
     }
 
     /* ── EXTRA CONTENT ── */
-    .extra-content {
+    .t4-resume .extra-content {
       font-size: 14px;
       color: #374151;
       font-family: 'Nunito', Arial, sans-serif;
@@ -1225,27 +1220,27 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
       overflow-wrap: break-word;
     }
 
-    .extra-content p {
+    .t4-resume .extra-content p {
       margin: 0 !important;
       padding: 0 !important;
       line-height: 1.5 !important;
     }
 
-    .extra-content div {
+    .t4-resume .extra-content div {
       margin: 0 !important;
       padding: 0 !important;
       line-height: 1.5 !important;
     }
 
     /* ── WEBSITES ── */
-    .website-label {
+    .t4-resume .website-label {
       font-size: 13px;
       font-weight: 600;
       font-family: 'Nunito', Arial, sans-serif;
       line-height: 1.5;
     }
 
-    .website-link {
+    .t4-resume .website-link {
       font-size: 13px;
       color: #374151;
       text-decoration: underline;
@@ -1267,18 +1262,18 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
         print-color-adjust: exact;
       }
 
-      .resume-container {
+      .t4-resume  {
         width: 100% !important;
         padding: 0 !important;
         box-shadow: none !important;
       }
 
-      .entry-block {
+      .t4-resume .entry-block {
         page-break-inside: avoid;
         break-inside: avoid;
       }
 
-      .section-title {
+      .t4-resume .section-title {
         page-break-after: avoid;
         break-after: avoid;
       }
@@ -1312,7 +1307,7 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
   <style>${styles}</style>
 </head>
 <body>
-<div class="resume-container">
+<div class="t4-resume ">
 
   <!-- HEADER -->
   <div class="header-block">
@@ -1492,7 +1487,11 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
         </div>
       )}
 
-      <div className="resume-container" style={{ margin: "0 auto", boxShadow: "0 0 10px rgba(0,0,0,0.08)" }}>
+      <div 
+      // className="t4-resume"
+              className={`t4-resume  ${alldata ? 'is-preview' : ''}`}
+
+      style={{ margin: "0 auto", boxShadow: "0 0 10px rgba(0,0,0,0.08)" }}>
         <style>{`@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap');`}</style>
         <style>{styles}</style>
 
