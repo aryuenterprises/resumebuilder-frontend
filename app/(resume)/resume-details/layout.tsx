@@ -54,43 +54,43 @@ export default function RootLayout({
 
       const data = response.data[0] || response.data;
 
-      const updatedContact = {
-        ...contact,
-        contactId: data?._id || "",
-        firstName: data?.firstName || "",
-        lastName: data?.lastName || "",
-        jobTitle: data?.jobTitle || "",
-        phone: data?.phone || "",
-        email: data?.email || "",
-        address: data?.address || "",
-        city: data?.city || "",
-        country: data?.country || "",
-        postcode: data?.postCode || "",
-        linkedin: data?.linkedIn || "",
-        portfolio: data?.portfolio || "",
-        croppedImage: data?.photo || null,
-      };
+      // const updatedContact = {
+      //   ...contact,
+      //   contactId: data?._id || "",
+      //   firstName: data?.firstName || "",
+      //   lastName: data?.lastName || "",
+      //   jobTitle: data?.jobTitle || "",
+      //   phone: data?.phone || "",
+      //   email: data?.email || "",
+      //   address: data?.address || "",
+      //   city: data?.city || "",
+      //   country: data?.country || "",
+      //   postcode: data?.postCode || "",
+      //   linkedin: data?.linkedIn || "",
+      //   portfolio: data?.portfolio || "",
+      //   croppedImage: data?.photo || null,
+      // };
 
-      setContact(updatedContact);
-      fetchResumeFullData(data?._id);
+      // setContact(updatedContact);
+      // fetchResumeFullData(data?._id);
 
       // Update fullResumeData in context
-      if (fullResumeData) {
-        setFullResumeData({
-          ...fullResumeData,
-          contact: updatedContact,
-        });
-      } else {
-        setFullResumeData({
-          template: chosenResumeDetails || null,
-          contact: updatedContact,
-          experiences: [],
-          education: [],
-          skills: [],
-          summary: "",
-          finalize: {},
-        });
-      }
+      // if (fullResumeData) {
+      //   setFullResumeData({
+      //     ...fullResumeData,
+      //     contact: updatedContact,
+      //   });
+      // } else {
+      //   setFullResumeData({
+      //     template: chosenResumeDetails || null,
+      //     contact: updatedContact,
+      //     experiences: [],
+      //     education: [],
+      //     skills: [],
+      //     summary: "",
+      //     finalize: {},
+      //   });
+      // }
     } catch (error) {
       console.log(error);
     }
@@ -109,15 +109,15 @@ export default function RootLayout({
       if (response.data?.data?.length > 0) {
         const data = response.data.data[0];
 
-        const formattedData = {
-          template: chosenResumeDetails || null,
-          contact: data.contact || {},
-          educations: data.educations || [],
-          experience: data.experiences || [],
-          skills: data.skills || [],
-          finalize: data.finalize?.[0] || {},
-          summary: data.summary?.[0] || "", // Extract text from summary array
-        };
+        // const formattedData = {
+        //   template: chosenResumeDetails || null,
+        //   contact: data.contact || {},
+        //   educations: data.educations || [],
+        //   experience: data.experiences || [],
+        //   skills: data.skills || [],
+        //   finalize: data.finalize?.[0] || {},
+        //   summary: data.summary?.[0] || "", // Extract text from summary array
+        // };
 
         // setFullResumeData(formattedData);
 
@@ -143,6 +143,7 @@ export default function RootLayout({
           finalize: data?.finalize[0],
         });
 
+              setContact(data?.contact);
         setEducation(data?.educations || []);
         setExperiences(data?.experiences || []);
         setSkills(data?.skills || []);
@@ -155,7 +156,7 @@ export default function RootLayout({
   };
 
   const selectedResume = templateData.find(
-    (resume) => resume.id === chosenTemplate?.id,
+    (resume) => resume.id == (chosenTemplate?.id || chosenTemplate?.templateId),
   );
 
   const SelectedComponent = selectedResume?.component;

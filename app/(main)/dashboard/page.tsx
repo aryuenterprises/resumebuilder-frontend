@@ -35,8 +35,15 @@ import {
   HiOutlineDocumentDuplicate,
   HiOutlineReceiptRefund,
 } from "react-icons/hi";
+import { IoEyeOutline } from "react-icons/io5";
+// or import { FaEye } from "react-icons/fa";
+// or import { AiOutlineEye } from "react-icons/ai";
 import { useRouter } from "next/navigation";
-import { getLocalStorage, removeLocalStorage } from "@/app/utils";
+import {
+  getLocalStorage,
+  removeLocalStorage,
+  setLocalStorage,
+} from "@/app/utils";
 import { User } from "@/app/types/user.types";
 import {
   MdOutlinePublishedWithChanges,
@@ -47,69 +54,6 @@ import axios from "axios";
 import { API_URL } from "@/app/config/api";
 import { TemplateOne, TemplateTwo } from "@/app/components/templates";
 import { templateData } from "@/app/data";
-
-const resumes = [
-  {
-    id: "1",
-    name: "Software Engineer Resume",
-    template: "Modern Professional",
-    lastEdited: "2 hours ago",
-    progress: 100,
-    views: 34,
-    downloads: 12,
-    status: "completed",
-  },
-  {
-    id: "2",
-    name: "Frontend Developer Resume",
-    template: "Creative Minimal",
-    lastEdited: "Yesterday",
-    progress: 75,
-    views: 18,
-    downloads: 5,
-    status: "in-progress",
-  },
-  {
-    id: "3",
-    name: "Full Stack Developer Resume",
-    template: "Executive",
-    lastEdited: "3 days ago",
-    progress: 30,
-    views: 8,
-    downloads: 2,
-    status: "draft",
-  },
-  {
-    id: "4",
-    name: "UI/UX Designer Resume",
-    template: "Creative Portfolio",
-    lastEdited: "1 week ago",
-    progress: 100,
-    views: 45,
-    downloads: 18,
-    status: "completed",
-  },
-  {
-    id: "5",
-    name: "Product Manager Resume",
-    template: "Executive",
-    lastEdited: "2 weeks ago",
-    progress: 60,
-    views: 12,
-    downloads: 4,
-    status: "in-progress",
-  },
-  {
-    id: "6",
-    name: "DevOps Engineer Resume",
-    template: "Technical",
-    lastEdited: "3 weeks ago",
-    progress: 20,
-    views: 5,
-    downloads: 1,
-    status: "draft",
-  },
-];
 
 interface BillingRecord {
   length: number;
@@ -134,7 +78,23 @@ interface ResumeItem {
   [key: string]: any; // Allows for the rest of your data fields
 }
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
 
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+  },
+};
 
 const DashboardPage = () => {
   const router = useRouter();
@@ -149,11 +109,9 @@ const DashboardPage = () => {
   const [showResumeMenu, setShowResumeMenu] = useState<string | null>(null);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("All Resumes");
-  // const [filteredOldResumeData, setFilteredOldResumeData] = useState([]);
-  
-
-
-const [filteredOldResumeData, setFilteredOldResumeData] = useState<ResumeItem[]>([]);
+  const [filteredOldResumeData, setFilteredOldResumeData] = useState<
+    ResumeItem[]
+  >([]);
 
   const userDetails = getLocalStorage<User>("user_details");
   const userId = userDetails?.id;
@@ -187,16 +145,18 @@ const [filteredOldResumeData, setFilteredOldResumeData] = useState<ResumeItem[]>
 
         // const filter = response.data.flatMap((data1) => {
 
-          const filter = response.data.flatMap((data1: { templateId: string | number }) => {
-          const templateMatch = templateData.find(
-            (t) => t.id == data1.templateId,
-          );
+        const filter = response.data.flatMap(
+          (data1: { templateId: string | number }) => {
+            const templateMatch = templateData.find(
+              (t) => t.id == data1.templateId,
+            );
 
-          // Return an array with the transformed object if found, otherwise an empty array
-          return templateMatch
-            ? [{ ...data1, component: templateMatch.component }]
-            : [];
-        });
+            // Return an array with the transformed object if found, otherwise an empty array
+            return templateMatch
+              ? [{ ...data1, component: templateMatch.component }]
+              : [];
+          },
+        );
 
         setFilteredOldResumeData(filter);
       } catch (err) {
@@ -262,72 +222,12 @@ const [filteredOldResumeData, setFilteredOldResumeData] = useState<ResumeItem[]>
     return () => document.body.classList.remove("overflow-hidden");
   }, [showBillingHistory]);
 
-  // useEffect(()=>{
-
-  //   const fetchUserResumeData = async () => {
-  //     try {
-  //       const response = await axios.get(`${API_URL}/api/contact-resume/all-contact/${userId}`);
-
-  //       console.log(response)
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   };
-
-  //   fetchUserResumeData();
-  // },[])
-
   const handleLogout = () => {
     removeLocalStorage("user_details");
     removeLocalStorage("fullResumeData");
     removeLocalStorage("chosenTemplate");
     removeLocalStorage("accessToken");
     router.push("/login");
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "completed":
-        return "text-emerald-600 bg-emerald-50 border-emerald-200";
-      case "in-progress":
-        return "text-amber-600 bg-amber-50 border-amber-200";
-      default:
-        return "text-slate-600 bg-slate-50 border-slate-200";
-    }
-  };
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "completed":
-        return FiCheckCircle;
-      case "in-progress":
-        return FiClock;
-      default:
-        return FiFileText;
-    }
-  };
-
-  const filteredResumes =
-    selectedFilter === "All Resumes"
-      ? resumes
-      : resumes.filter((r) => r.status === selectedFilter.toLowerCase());
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-    },
   };
 
   const BillingHistoryModal = ({
@@ -929,244 +829,80 @@ const [filteredOldResumeData, setFilteredOldResumeData] = useState<ResumeItem[]>
                 </p>
               </div>
 
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
-                <select
-                  value={selectedFilter}
-                  onChange={(e) => setSelectedFilter(e.target.value)}
-                  className="w-full sm:w-48 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm text-gray-700 focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 shadow-sm"
-                >
-                  <option>All Resumes</option>
-                  <option>Completed</option>
-                  <option>In Progress</option>
-                  <option>Draft</option>
-                </select>
-
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => router.push("/choose-template")}
-                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 bg-linear-to-r from-[#c40116] to-[#be0117] text-white text-sm font-medium rounded-xl hover:shadow-lg hover:shadow-[#c40116]/25 transition-all duration-300 group"
-                >
-                  <FiPlus className="w-4 h-4 group-hover:rotate-90 transition-transform" />
-                  New Resume
-                </motion.button>
-              </div>
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => router.push("/choose-template")}
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 bg-linear-to-r from-[#c40116] to-[#be0117] text-white text-sm font-medium rounded-xl hover:shadow-lg hover:shadow-[#c40116]/25 transition-all duration-300 group"
+              >
+                <FiPlus className="w-4 h-4 group-hover:rotate-90 transition-transform" />
+                New Resume
+              </motion.button>
             </div>
 
-            {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* {filteredResumes.map((resume) => {
-                const StatusIcon = getStatusIcon(resume.status);
-                return (
-                  <motion.div
-                    key={resume.id}
-                    variants={itemVariants}
-                    whileHover={{ y: -5 }}
-                    className="group relative"
-                  >
-                    <div className="absolute inset-0 bg-linear-to-r from-[#c40116]/5 to-[#be0117]/5 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl"></div>
-
-                    <div className="relative bg-white rounded-2xl shadow-lg border border-gray-200/50 overflow-hidden hover:shadow-xl transition-all duration-500">
-                      <div className="relative h-40 bg-linear-to-br from-gray-900 to-gray-700 overflow-hidden">
-                        <div className="absolute inset-0 opacity-20">
-                          <div
-                            className="absolute inset-0"
-                            style={{
-                              backgroundImage:
-                                "radial-gradient(circle at 2px 2px, white 1px, transparent 0)",
-                              backgroundSize: "20px 20px",
-                            }}
-                          ></div>
-                        </div>
-
-                        <div className="absolute top-3 left-3">
-                          <span
-                            className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(resume.status)} backdrop-blur-sm`}
-                          >
-                            {resume.status}
-                          </span>
-                        </div>
-
-                        <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-                          <div className="absolute bottom-3 left-3 right-3 flex items-center justify-center gap-2">
-                            <motion.button
-                              whileHover={{ scale: 1.1 }}
-                              whileTap={{ scale: 0.9 }}
-                              className="p-2 bg-white/90 backdrop-blur-sm rounded-lg hover:bg-white transition-colors shadow-lg"
-                            >
-                              <FiEye className="w-4 h-4 text-gray-700" />
-                            </motion.button>
-                            <motion.button
-                              whileHover={{ scale: 1.1 }}
-                              whileTap={{ scale: 0.9 }}
-                              className="p-2 bg-white/90 backdrop-blur-sm rounded-lg hover:bg-white transition-colors shadow-lg"
-                            >
-                              <FiDownload className="w-4 h-4 text-gray-700" />
-                            </motion.button>
-                            <motion.button
-                              whileHover={{ scale: 1.1 }}
-                              whileTap={{ scale: 0.9 }}
-                              className="p-2 bg-white/90 backdrop-blur-sm rounded-lg hover:bg-white transition-colors shadow-lg"
-                            >
-                              <FiEdit className="w-4 h-4 text-gray-700" />
-                            </motion.button>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="p-5">
-                        <div className="flex items-start justify-between mb-3">
-                          <div className="flex-1 min-w-0">
-                            <h4 className="text-base font-semibold text-gray-900 group-hover:text-[#c40116] transition-colors truncate">
-                              {resume.name}
-                            </h4>
-                            <p className="text-xs text-gray-500 mt-1 truncate">
-                              Template: {resume.template}
-                            </p>
-                          </div>
-
-                          <div className="relative shrink-0 ml-2">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setShowResumeMenu(
-                                  showResumeMenu === resume.id
-                                    ? null
-                                    : resume.id,
-                                );
-                              }}
-                              className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
-                            >
-                              <FiMoreVertical className="w-4 h-4 text-gray-500" />
-                            </button>
-
-                            {showResumeMenu === resume.id && (
-                              <motion.div
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.95 }}
-                                className="absolute right-0 mt-2 w-40 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-10"
-                              >
-                                {[
-                                  {
-                                    icon: FiEdit,
-                                    label: "Edit",
-                                    color: "text-gray-700",
-                                  },
-                                  {
-                                    icon: FiEye,
-                                    label: "View",
-                                    color: "text-gray-700",
-                                  },
-                                  {
-                                    icon: FiDownload,
-                                    label: "Download",
-                                    color: "text-gray-700",
-                                  },
-                                  {
-                                    icon: FiCopy,
-                                    label: "Duplicate",
-                                    color: "text-gray-700",
-                                  },
-                                  {
-                                    icon: FiTrash2,
-                                    label: "Delete",
-                                    color: "text-red-500",
-                                  },
-                                ].map((action) => (
-                                  <button
-                                    key={action.label}
-                                    className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center gap-2"
-                                    onClick={() => setShowResumeMenu(null)}
-                                  >
-                                    <action.icon
-                                      className={`w-4 h-4 ${action.color}`}
-                                    />
-                                    <span className={action.color}>
-                                      {action.label}
-                                    </span>
-                                  </button>
-                                ))}
-                              </motion.div>
-                            )}
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-4 mt-4">
-                          <div className="flex items-center gap-1.5">
-                            <FiEye className="w-3.5 h-3.5 text-gray-400" />
-                            <span className="text-xs text-gray-600">
-                              {resume.views}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-1.5">
-                            <FiDownload className="w-3.5 h-3.5 text-gray-400" />
-                            <span className="text-xs text-gray-600">
-                              {resume.downloads}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-1.5">
-                            <FiClock className="w-3.5 h-3.5 text-gray-400" />
-                            <span className="text-xs text-gray-600">
-                              {resume.lastEdited}
-                            </span>
-                          </div>
-                        </div>
-
-                        <div className="mt-4">
-                          <div className="flex items-center justify-between mb-2">
-                            <div className="flex items-center gap-1.5">
-                              <StatusIcon
-                                className={`w-4 h-4 ${
-                                  resume.status === "completed"
-                                    ? "text-emerald-500"
-                                    : resume.status === "in-progress"
-                                      ? "text-amber-500"
-                                      : "text-gray-500"
-                                }`}
-                              />
-                              <span className="text-xs font-medium text-gray-600">
-                                {resume.status === "completed"
-                                  ? "Completed"
-                                  : resume.status === "in-progress"
-                                    ? "In Progress"
-                                    : "Draft"}
-                              </span>
-                            </div>
-                            <span className="text-xs font-semibold text-gray-900">
-                              {resume.progress}%
-                            </span>
-                          </div>
-                          <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                            <motion.div
-                              initial={{ width: 0 }}
-                              animate={{ width: `${resume.progress}%` }}
-                              transition={{ duration: 1, delay: 0.5 }}
-                              className="h-full bg-linear-to-r from-[#c40116] to-[#be0117] rounded-full relative"
-                            >
-                              <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
-                            </motion.div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                );
-              })} */}
-
-            {/* </div> */}
-
-            {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* <div className="grid grid-cols-4 gap-4">
               {filteredOldResumeData.map((item, index) => {
-                // 1. Assign the component to a Capitalized variable
                 const ComponentToRender = item.component;
 
-                return <ComponentToRender alldata={item} />;
+                return (
+                  <div
+                    key={index}
+                    className="w-full"
+                    style={{
+                      // width: "250px", // Fixed width for preview
+                      height: "350px", // Fixed height for preview
+                      overflow: "hidden",
+                      border: "1px solid #e0e0e0",
+                      borderRadius: "8px",
+                      backgroundColor: "white",
+                    }}
+                  >
+                    <ComponentToRender alldata={item} />
+                  </div>
+                );
               })}
             </div> */}
+
+            <div className="grid grid-cols-4 gap-4">
+              {filteredOldResumeData.length > 0 &&
+                filteredOldResumeData.map((item, index) => {
+                  const ComponentToRender = item.component;
+
+                  return (
+                    <div
+                      key={index}
+                      className="relative group w-full"
+                      style={{
+                        height: "350px",
+                        overflow: "hidden",
+                        border: "1px solid #e0e0e0",
+                        borderRadius: "8px",
+                        backgroundColor: "white",
+                      }}
+                    >
+                      <ComponentToRender alldata={item} />
+
+                      {/* Overlay with View Icon */}
+                      <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            router.push(`/resume-details/contact`);
+                            setLocalStorage("chosenTemplate", item);
+                          }}
+                          className="bg-white rounded-full p-3 hover:bg-gray-100 transition-colors cursor-pointer"
+                        >
+                          <IoEyeOutline className="h-8 w-8 text-gray-700" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
           </motion.div>
 
           {/* Empty State */}
-          {/* {filteredResumes.length === 0 && (
+          {filteredOldResumeData.length === 0 && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -1189,7 +925,7 @@ const [filteredOldResumeData, setFilteredOldResumeData] = useState<ResumeItem[]>
                 Create Resume
               </button>
             </motion.div>
-          )} */}
+          )}
 
           <BillingHistoryModal
             isOpen={showBillingHistory}

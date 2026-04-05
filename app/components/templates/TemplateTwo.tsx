@@ -2217,10 +2217,19 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
     }
 
       .t2-resume.is-preview {
-    scale: 0.3;
-    max-height: 297mm;
+   
+
+    transform: scale(0.36);
+    transform-origin: top left;
+    width: 210mm; 
+        padding:20px;
+
+    height: auto;
+    max-height: none;
+    min-height: auto;
+    max-width: none;
+    min-width: auto;
     overflow: hidden;
-    transform-origin: top left; /* Ensures it scales from the corner */
 }
 
     /* ── SCOPED GLOBAL RESETS (FIX 1) ── */
@@ -3031,8 +3040,8 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
 
         style={{
           margin: "0 auto",
-          boxShadow: "0 0 10px rgba(0,0,0,0.08)",
           minHeight: "297mm",
+          boxShadow: !alldata ? "0 0 10px rgba(0,0,0,0.1)" : "" 
         }}
       >
         {/* Font import — only applies inside this component's shadow, not globally */}

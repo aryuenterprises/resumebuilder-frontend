@@ -1406,11 +1406,20 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
     
   }
 
-  .t1-resume.is-preview {
-    scale: 0.3;
-    max-height: 297mm;
+
+
+.t1-resume.is-preview {
+    transform: scale(0.36);
+    transform-origin: top left;
+    width: 210mm; 
+    padding:20px;
+    height: auto;
+    max-height: none;
+    min-height: auto;
+    max-width: none;
+    min-width: auto;
     overflow: hidden;
-    transform-origin: top left; /* Ensures it scales from the corner */
+
 }
 
   /* Global <p> reset — PDF renderers add 1em top+bottom margin by default */
@@ -2222,7 +2231,7 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
      JSX PREVIEW
   ====================================================== */
   return (
-    <div style={{ textAlign: "center", marginTop: 0 }}>
+    <>
       {lastSegment === "download-resume" && (
         <div
           style={{
@@ -2243,7 +2252,8 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
       <div
         // className="t1-resume  bg-white"
         className={`t1-resume bg-white ${alldata ? 'is-preview' : ''}`}
-        style={{ margin: "0 auto", boxShadow: "0 0 10px rgba(0,0,0,0.1)" }}
+        style={{ margin: "0 auto",  boxShadow: !alldata ? "0 0 10px rgba(0,0,0,0.1)" : "" 
+ }}
       >
         <style>{`@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');`}</style>
         <style>{styles}</style>
@@ -2645,7 +2655,7 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
             </div>
           )}
       </div>
-    </div>
+    </>
   );
 };
 

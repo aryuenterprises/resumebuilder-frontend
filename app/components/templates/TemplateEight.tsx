@@ -68,11 +68,17 @@ const TemplateEight: React.FC<ResumeProps> = ({ alldata }) => {
     text-align: left;
   }
 
-    .t-resume.is-preview {
-    scale: 0.3;
-    max-height: 297mm;
-    overflow: hidden;
-    transform-origin: top left; /* Ensures it scales from the corner */
+    .t8-resume.is-preview {
+      transform: scale(0.36);
+
+    transform-origin: top left;
+    width: 210mm; 
+    height: auto;
+    max-height: none;
+    min-height: auto;
+    max-width: none;
+    min-width: auto;
+    overflow: visible;
 }
 
   /* ── HEADER ── */
@@ -844,7 +850,8 @@ const TemplateEight: React.FC<ResumeProps> = ({ alldata }) => {
         // className="t8-resume  bg-white"
                 className={`t8-resume ${alldata ? 'is-preview' : ''}`}
 
-        style={{ margin: "0 auto", boxShadow: "0 0 10px rgba(0,0,0,0.08)" }}
+        style={{ margin: "0 auto",          boxShadow: !alldata ? "0 0 10px rgba(0,0,0,0.1)" : "" 
+ }}
       >
         <style>{styles}</style>
 

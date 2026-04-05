@@ -9,7 +9,11 @@ import { templateData } from "@/app/data";
 import { Template } from "@/app/types";
 import Header from "@/app/components/layouts/Header";
 import Footer from "@/app/components/layouts/Footer";
-import { getLocalStorage, setLocalStorage } from "@/app/utils";
+import {
+  convertParsedResumeToFrontendFormat,
+  getLocalStorage,
+  setLocalStorage,
+} from "@/app/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles,
@@ -39,6 +43,8 @@ import axios from "axios";
 import { API_URL } from "@/app/config/api";
 import { User } from "@/app/types/user.types";
 import LoginModel from "@/app/components/auth/LoginModel";
+
+import { XCircle, Loader2, AlertCircle } from "lucide-react";
 
 interface usersCurrentPlan {
   amount: number;
@@ -89,7 +95,23 @@ const getRequiredPlanForTemplate = (
 
 function Choose_template() {
   const router = useRouter();
-  const { setChosenTemplate } = useContext(CreateContext);
+  const {
+    contact,
+    setContact,
+    education,
+    setEducation,
+    experiences,
+    setExperiences,
+    skills,
+    setSkills,
+    summary,
+    setSummary,
+    finalize,
+    setFinalize,
+    fullResumeData,
+    setFullResumeData,
+    setChosenTemplate,
+  } = useContext(CreateContext);
 
   const [usersCurrentPlan, setUsersCurrentPlan] =
     useState<usersCurrentPlan | null>(null);
@@ -108,6 +130,7 @@ function Choose_template() {
   const [isUploading, setIsUploading] = useState(false);
 
   const clickresumedetails = (template: Template) => {
+    console.log("template", template);
     setChosenTemplate(template);
     router.push(`/resume-details/contact`);
     setLocalStorage("chosenTemplate", template);
@@ -196,53 +219,6 @@ function Choose_template() {
     return () => document.body.classList.remove("overflow-hidden");
   }, [showPreview, showInitialPopup, showUploadPopup, showUpgradePopup]);
 
-  // Handle file upload with progress simulation
-  const handleFileUpload = async (file: File) => {
-    // const validTypes = [
-    //   "application/pdf",
-    //   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    // ];
-    // const maxSize = 10 * 1024 * 1024;
-
-    // if (!validTypes.includes(file.type)) {
-    //   alert("Please upload a PDF or DOCX file");
-    //   return;
-    // }
-
-    // if (file.size > maxSize) {
-    //   alert("File size must be less than 10MB");
-    //   return;
-    // }
-
-    // setIsUploading(true);
-    // setUploadedFile(file);
-
-    // for (let i = 0; i <= 100; i += 10) {
-    //   setUploadProgress(i);
-    //   await new Promise((resolve) => setTimeout(resolve, 100));
-    // }
-
-    // console.log("File uploaded:", file);
-
-    // setTimeout(() => {
-    //   setIsUploading(false);
-    //   setShowUploadPopup(false);
-    // }, 500);
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const response = await axios.post(
-        `https://ai.aryuacademy.com/api/v1/resume/parse-resume`,
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } },
-      );
-
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(true);
@@ -262,6 +238,146 @@ function Choose_template() {
 
   const handleCreateNew = () => {
     setShowInitialPopup(false);
+  };
+
+  // Add these state variables
+  const [uploadStatus, setUploadStatus] = useState<string>("idle");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleFileUpload = async (file: File) => {
+    const maxSize = 10 * 1024 * 1024;
+
+    if (file.size > maxSize) {
+      alert("File size must be less than 10MB");
+      return;
+    }
+
+    setIsUploading(true);
+    setUploadStatus("uploading");
+    setUploadedFile(file);
+    setErrorMessage("");
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      // Simulate upload progress
+      for (let i = 0; i <= 100; i += 10) {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        setUploadProgress(i);
+      }
+
+      setUploadStatus("processing");
+
+      const response = await axios.post(
+        `https://ai.aryuacademy.com/api/v1/resume/parse-resume`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+          onUploadProgress: (progressEvent) => {
+            if (progressEvent.total) {
+              const percentCompleted = Math.round(
+                (progressEvent.loaded * 100) / progressEvent.total,
+              );
+              setUploadProgress(percentCompleted);
+            } else {
+              // Can't calculate percentage, show indeterminate progress
+              setUploadProgress(50); // or use a loading spinner
+            }
+          },
+        },
+      );
+
+      // Get the parsed data
+      const parsedResumeData = response.data.parsed;
+
+      // Convert to your frontend format
+      const convertedData = convertParsedResumeToFrontendFormat(
+        parsedResumeData,
+        // userId, // Pass userId from your context/localStorage
+        // chosenTemplate?.id || "1"
+      );
+
+      console.log("convertedData", convertedData);
+
+      // Update your context with the converted data
+      if (convertedData.contact) {
+        setContact(convertedData.contact);
+      }
+
+      if (convertedData.experiences) {
+        setExperiences(convertedData.experiences);
+      }
+
+      if (convertedData.educations) {
+        setEducation(convertedData.educations);
+      }
+
+      if (convertedData.skills) {
+        setSkills(convertedData.skills);
+      }
+
+      if (convertedData.summary && convertedData.summary[0]) {
+        setSummary(convertedData.summary[0]);
+      }
+
+      if (convertedData.finalize ) {
+        setFinalize(convertedData.finalize);
+      }
+
+      // Update full resume data
+      setFullResumeData({
+        // template: chosenResumeDetails || null,
+        contact: convertedData.contact,
+        experiences: convertedData.experiences,
+        education: convertedData.educations,
+        skills: convertedData.skills,
+        summary: convertedData.summary[0] ,
+        finalize: convertedData.finalize,
+      });
+
+      setLocalStorage("chosenTemplate", {
+        description:
+          "A sleek, contemporary design with bold headings and clean lines.",
+        id: 1,
+        image: "/images/resume1.jpg",
+        style: "Free",
+        temp: "free",
+      });
+
+      router.push(`/resume-details/contact`);
+      setUploadStatus("success");
+
+      // Show success for 1 second before closing
+      setTimeout(() => {
+        setShowUploadPopup(false);
+        // Reset states
+        setTimeout(() => {
+          setIsUploading(false);
+          setUploadedFile(null);
+          setUploadStatus("idle");
+          setUploadProgress(0);
+        }, 300);
+      }, 3000);
+
+      // Handle your parsed resume data here
+      console.log("Parsed resume data:", response.data);
+    } catch (err) {
+      console.log(err);
+      setUploadStatus("error");
+      setErrorMessage("Failed to parse resume. Please try again.");
+
+      // Auto clear error after 3 seconds
+      setTimeout(() => {
+        setUploadStatus("idle");
+        setErrorMessage("");
+      }, 3000);
+    } finally {
+      // Don't set isUploading to false here if we want to keep success state
+      if (uploadStatus !== "success") {
+        setIsUploading(false);
+      }
+    }
   };
 
   return (
@@ -391,7 +507,7 @@ function Choose_template() {
       </AnimatePresence>
 
       {/* Upload Popup */}
-      <AnimatePresence>
+      {/* <AnimatePresence>
         {showUploadPopup && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -517,6 +633,276 @@ function Choose_template() {
             </motion.div>
           </motion.div>
         )}
+      </AnimatePresence> */}
+
+      {/* Upload Popup */}
+      <AnimatePresence>
+        {showUploadPopup && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-md"
+            onClick={() => {
+              if (
+                uploadStatus !== "uploading" &&
+                uploadStatus !== "processing"
+              ) {
+                setShowUploadPopup(false);
+                // Reset states
+                setTimeout(() => {
+                  setIsUploading(false);
+                  setUploadedFile(null);
+                  setUploadStatus("idle");
+                  setUploadProgress(0);
+                  setErrorMessage("");
+                }, 300);
+              }
+            }}
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.9, y: 20, opacity: 0 }}
+              transition={{ type: "spring", duration: 0.5 }}
+              className="bg-white backdrop-blur-xl rounded-3xl max-w-lg w-full shadow-2xl border border-white/20 overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-8">
+                <div className="text-center mb-6">
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: 0.2, type: "spring" }}
+                    className={`w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 ${
+                      uploadStatus === "success"
+                        ? "bg-green-500"
+                        : uploadStatus === "error"
+                          ? "bg-red-500"
+                          : "bg-linear-to-br from-[#5E000B] to-[#C40116]"
+                    }`}
+                  >
+                    <Upload className="w-10 h-10 text-white" />
+                  </motion.div>
+
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                    {uploadStatus === "uploading" && "Uploading Your Resume"}
+                    {uploadStatus === "processing" && "Processing Your Resume"}
+                    {uploadStatus === "success" && "Upload Complete!"}
+                    {uploadStatus === "error" && "Upload Failed"}
+                    {uploadStatus === "idle" && "Upload Your Resume"}
+                  </h2>
+
+                  <p className="text-gray-600">
+                    {uploadStatus === "uploading" &&
+                      "Please wait while we upload your file..."}
+                    {uploadStatus === "processing" &&
+                      "Parsing your resume data..."}
+                    {uploadStatus === "success" &&
+                      "Your resume has been successfully processed!"}
+                    {(uploadStatus === "error" && errorMessage) ||
+                      "Something went wrong. Please try again."}
+                    {uploadStatus === "idle" &&
+                      "Drag and drop or browse to upload your file"}
+                  </p>
+                </div>
+
+                {/* Error Message Display */}
+                {uploadStatus === "error" && errorMessage && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl flex items-start gap-2"
+                  >
+                    <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                    <p className="text-sm text-red-700">{errorMessage}</p>
+                  </motion.div>
+                )}
+
+                <div
+                  className={`relative border-2 border-dashed rounded-2xl p-8 transition-all duration-300 ${
+                    uploadStatus === "error"
+                      ? "border-red-500 bg-red-50/40"
+                      : uploadStatus === "success"
+                        ? "border-green-500 bg-green-50/40"
+                        : "border-[#C40116] bg-red-50/40"
+                  }`}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                >
+                  <input
+                    type="file"
+                    id="file-upload"
+                    className="hidden"
+                    accept=".pdf,.docx"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleFileUpload(file);
+                    }}
+                    disabled={
+                      uploadStatus === "uploading" ||
+                      uploadStatus === "processing"
+                    }
+                  />
+
+                  {isUploading || uploadStatus === "processing" ? (
+                    <div className="text-center">
+                      <div className="w-20 h-20 mx-auto mb-4 relative">
+                        <div className="absolute inset-0 border-4 border-gray-200 rounded-full" />
+                        <div className="absolute inset-0 border-4 border-[#C40116] rounded-full border-t-transparent animate-spin" />
+                      </div>
+
+                      {/* Progress Bar with Percentage */}
+                      <p className="text-sm font-medium text-gray-900 mb-2">
+                        {uploadStatus === "uploading"
+                          ? "Uploading"
+                          : "Processing"}
+                        ... {uploadProgress}%
+                      </p>
+                      <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <motion.div
+                          className="h-full bg-linear-to-r from-[#5E000B] to-[#C40116]"
+                          initial={{ width: 0 }}
+                          animate={{ width: `${uploadProgress}%` }}
+                          transition={{ duration: 0.3 }}
+                        />
+                      </div>
+
+                      {/* Status messages */}
+                      <p className="text-xs text-gray-500 mt-3">
+                        {uploadStatus === "uploading" &&
+                          "Uploading file to server..."}
+                        {uploadStatus === "processing" &&
+                          "Analyzing and extracting information..."}
+                      </p>
+                    </div>
+                  ) : uploadedFile && uploadStatus === "success" ? (
+                    <div className="text-center">
+                      <div className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
+                        <CheckCircle className="w-8 h-8 text-green-500" />
+                      </div>
+                      <p className="text-sm font-medium text-gray-900 mb-1">
+                        {uploadedFile.name}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
+                      </p>
+                      <p className="text-xs text-green-600 mt-2">
+                        ✓ Successfully processed
+                      </p>
+                    </div>
+                  ) : uploadedFile && uploadStatus === "error" ? (
+                    <div className="text-center">
+                      <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
+                        <FileText className="w-8 h-8 text-red-500" />
+                      </div>
+                      <p className="text-sm font-medium text-gray-900 mb-1">
+                        {uploadedFile.name}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
+                      </p>
+                      <button
+                        onClick={() => {
+                          setUploadedFile(null);
+                          setUploadStatus("idle");
+                          setErrorMessage("");
+                        }}
+                        className="mt-3 text-sm text-[#C40116] hover:underline"
+                      >
+                        Try again
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="text-center">
+                      <div className="w-20 h-20 mx-auto mb-4 bg-linear-to-br from-red-100 to-rose-100 rounded-full flex items-center justify-center">
+                        <Upload className="w-8 h-8 text-[#C40116]" />
+                      </div>
+                      <p className="text-sm font-medium text-gray-900 mb-1">
+                        Drop your file here
+                      </p>
+                      <p className="text-xs text-gray-500 mb-4">
+                        Supports: PDF, DOCX (Max 10MB)
+                      </p>
+                      <button
+                        onClick={() =>
+                          document.getElementById("file-upload")?.click()
+                        }
+                        disabled={
+                          uploadStatus === "uploading" ||
+                          uploadStatus === "processing"
+                        }
+                        className="px-6 py-2 bg-linear-to-r from-[#5E000B] to-[#C40116] text-white rounded-xl font-medium hover:shadow-lg transition-all hover:scale-105 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        Browse Files
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex gap-3 mt-6">
+                  <button
+                    onClick={() => {
+                      if (
+                        uploadStatus !== "uploading" &&
+                        uploadStatus !== "processing"
+                      ) {
+                        setShowUploadPopup(false);
+                        // Reset states
+                        setTimeout(() => {
+                          setIsUploading(false);
+                          setUploadedFile(null);
+                          setUploadStatus("idle");
+                          setUploadProgress(0);
+                          setErrorMessage("");
+                        }, 300);
+                      }
+                    }}
+                    disabled={
+                      uploadStatus === "uploading" ||
+                      uploadStatus === "processing"
+                    }
+                    className="flex-1 py-3 border border-gray-200 rounded-xl text-gray-700 font-medium hover:bg-gray-200 transition-all cursor-pointer bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Cancel
+                  </button>
+
+                  {uploadedFile && uploadStatus === "success" && (
+                    <button
+                      onClick={() => {
+                        setShowUploadPopup(false);
+                        // Reset states
+                        setTimeout(() => {
+                          setIsUploading(false);
+                          setUploadedFile(null);
+                          setUploadStatus("idle");
+                          setUploadProgress(0);
+                        }, 300);
+                      }}
+                      className="flex-1 py-3 bg-green-500 text-white rounded-xl font-medium hover:shadow-lg transition-all hover:scale-105 cursor-pointer"
+                    >
+                      Continue
+                    </button>
+                  )}
+
+                  {uploadedFile && uploadStatus === "error" && (
+                    <button
+                      onClick={() => {
+                        setUploadedFile(null);
+                        setUploadStatus("idle");
+                        setErrorMessage("");
+                      }}
+                      className="flex-1 py-3 bg-red-500 text-white rounded-xl font-medium hover:shadow-lg transition-all hover:scale-105 cursor-pointer"
+                    >
+                      Try Again
+                    </button>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
       </AnimatePresence>
 
       <div>
@@ -604,7 +990,7 @@ function Choose_template() {
               setShowInitialPopup(false);
               setShowUploadPopup(true);
             }}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#5E000B] to-[#C40116] text-white rounded-xl cursor-pointer font-semibold text-sm hover:shadow-lg transition-all hover:scale-105 group"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-[#5E000B] to-[#C40116] text-white rounded-xl cursor-pointer font-semibold text-sm hover:shadow-lg transition-all hover:scale-105 group"
           >
             <Upload className="w-4 h-4" />
             <span>Upload & Improve</span>
@@ -843,29 +1229,6 @@ function Choose_template() {
 }
 
 export default Choose_template;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // "use client";
 
@@ -1515,7 +1878,6 @@ export default Choose_template;
 //               }}
 //             />
 
-           
 //           </div>
 //         </section>
 //       </div>

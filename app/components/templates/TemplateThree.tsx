@@ -1955,13 +1955,21 @@ const styles = `
     font-size: 15px;
     line-height: 1.5;
     color: #374151;
+
   }
 
     .t3-resume.is-preview {
-    scale: 0.3;
-    max-height: 297mm;
-    overflow: hidden;
-    transform-origin: top left; /* Ensures it scales from the corner */
+   
+          transform: scale(0.36);
+
+    transform-origin: top left;
+    width: 210mm; 
+    height: auto;
+    max-height: none;
+    min-height: auto;
+    max-width: none;
+    min-width: auto;
+    overflow: visible;
 }
 
   .t3-resume * {
@@ -2512,360 +2520,341 @@ const TemplateThree: React.FC<ResumeProps> = ({ alldata }) => {
         </div>
       )}
 
-      {/* minHeight on outer wrapper only — never inside .t3-resume so PDF stays 1 page */}
-      <div
-        style={{
-          margin: "0 auto",
-          width: "210mm",
-          minHeight: "297mm",
-          boxShadow: "0 0 10px rgba(0,0,0,0.08)",
-          backgroundColor: "white",
-        }}
-      >
+      <div className={`t3-resume bg-white ${alldata ? "is-preview" : ""}`} style={{          boxShadow: !alldata ? "0 0 10px rgba(0,0,0,0.1)" : "" 
+}}>
         <style>{styles}</style>
 
-        <div        className={`t3-resume bg-white ${alldata ? 'is-preview' : ''}`}
->
-          {/* HEADER */}
-          <div className="t3-header">
-            <div className="t3-header-left">
-              {contact?.firstName || ""} {contact?.lastName || ""}
-              {contact?.jobTitle && (
-                <div className="t3-header-job">
-                  {typeof contact.jobTitle === "string"
-                    ? contact.jobTitle
-                    : (contact.jobTitle as any)?.name || ""}
-                </div>
+        {/* HEADER */}
+        <div className="t3-header">
+          <div className="t3-header-left">
+            {contact?.firstName || ""} {contact?.lastName || ""}
+            {contact?.jobTitle && (
+              <div className="t3-header-job">
+                {typeof contact.jobTitle === "string"
+                  ? contact.jobTitle
+                  : (contact.jobTitle as any)?.name || ""}
+              </div>
+            )}
+            <div className="t3-header-links">
+              {contact?.linkedin?.trim() && (
+                <a
+                  href={
+                    contact.linkedin.startsWith("http")
+                      ? contact.linkedin
+                      : `https://${contact.linkedin}`
+                  }
+                  target="_blank"
+                  rel="noreferrer"
+                  className="t3-header-link"
+                >
+                  LinkedIn
+                </a>
               )}
-              <div className="t3-header-links">
-                {contact?.linkedin?.trim() && (
-                  <a
-                    href={
-                      contact.linkedin.startsWith("http")
-                        ? contact.linkedin
-                        : `https://${contact.linkedin}`
-                    }
-                    target="_blank"
-                    rel="noreferrer"
-                    className="t3-header-link"
-                  >
-                    LinkedIn
-                  </a>
-                )}
-                {contact?.portfolio?.trim() && (
-                  <a
-                    href={
-                      contact.portfolio.startsWith("http")
-                        ? contact.portfolio
-                        : `https://${contact.portfolio}`
-                    }
-                    target="_blank"
-                    rel="noreferrer"
-                    className="t3-header-link"
-                  >
-                    Portfolio
-                  </a>
-                )}
-              </div>
-            </div>
-            <div className="t3-header-right">
-              <div className="t3-header-contact-line">
-                {[contact?.email, contact?.phone].filter(Boolean).join(" • ")}
-              </div>
-              {addressParts && (
-                <div className="t3-header-contact-line">{addressParts}</div>
+              {contact?.portfolio?.trim() && (
+                <a
+                  href={
+                    contact.portfolio.startsWith("http")
+                      ? contact.portfolio
+                      : `https://${contact.portfolio}`
+                  }
+                  target="_blank"
+                  rel="noreferrer"
+                  className="t3-header-link"
+                >
+                  Portfolio
+                </a>
               )}
             </div>
           </div>
-
-          {/* ALL BODY CONTENT — single .t3-body, no margin-left on any child */}
-          <div className="t3-body">
-            {summary && (
-              <>
-                <div className="t3-section-title">Summary</div>
-                <div
-                  className="t3-summary"
-                  dangerouslySetInnerHTML={{ __html: summary }}
-                />
-              </>
+          <div className="t3-header-right">
+            <div className="t3-header-contact-line">
+              {[contact?.email, contact?.phone].filter(Boolean).join(" • ")}
+            </div>
+            {addressParts && (
+              <div className="t3-header-contact-line">{addressParts}</div>
             )}
+          </div>
+        </div>
 
-            {experiences.length > 0 && (
-              <>
-                <div className="t3-section-title">Experience</div>
-                {experiences.map((exp, i) => {
-                  const start = fmtDate(exp.startDate);
-                  const end = exp.endDate
-                    ? fmtDate(exp.endDate)
-                    : exp.startDate
-                      ? "Present"
-                      : "";
-                  return (
-                    <div key={exp.id || i} className="t3-entry">
-                      {(exp.jobTitle || exp.employer || exp.location) && (
-                        <div className="t3-entry-title">
-                          {exp.jobTitle && `${exp.jobTitle} `}
-                          {exp.employer && (
-                            <span className="t3-entry-title-muted">
-                              — {exp.employer}
-                            </span>
-                          )}
-                          {exp.location && (
-                            <span className="t3-entry-title-muted">
-                              — {exp.location}
-                            </span>
-                          )}
-                        </div>
-                      )}
-                      {(start || end) && (
-                        <div className="t3-entry-date">
-                          {start}
-                          {start && end ? " - " : ""}
-                          {end}
-                        </div>
-                      )}
-                      {exp.text && (
-                        <div
-                          className="t3-entry-content"
-                          dangerouslySetInnerHTML={{ __html: exp.text }}
-                        />
-                      )}
-                    </div>
-                  );
-                })}
-              </>
-            )}
+        {/* ALL BODY CONTENT — single .t3-body, no margin-left on any child */}
+        <div className="t3-body">
+          {summary && (
+            <>
+              <div className="t3-section-title">Summary</div>
+              <div
+                className="t3-summary"
+                dangerouslySetInnerHTML={{ __html: summary }}
+              />
+            </>
+          )}
 
-            {educations.length > 0 && (
-              <>
-                <div className="t3-section-title">Education</div>
-                {educations.map((edu, i) => (
-                  <div key={edu.id || i} className="t3-entry">
-                    {(edu.schoolname || edu.degree || edu.location) && (
+          {experiences.length > 0 && (
+            <>
+              <div className="t3-section-title">Experience</div>
+              {experiences.map((exp, i) => {
+                const start = fmtDate(exp.startDate);
+                const end = exp.endDate
+                  ? fmtDate(exp.endDate)
+                  : exp.startDate
+                    ? "Present"
+                    : "";
+                return (
+                  <div key={exp.id || i} className="t3-entry">
+                    {(exp.jobTitle || exp.employer || exp.location) && (
                       <div className="t3-entry-title">
-                        {edu.schoolname || ""}
-                        {edu.degree && (
+                        {exp.jobTitle && `${exp.jobTitle} `}
+                        {exp.employer && (
                           <span className="t3-entry-title-muted">
-                            {" "}
-                            — {edu.degree}
+                            — {exp.employer}
                           </span>
                         )}
-                        {edu.location && (
+                        {exp.location && (
                           <span className="t3-entry-title-muted">
-                            {" "}
-                            — {edu.location}
+                            — {exp.location}
                           </span>
                         )}
                       </div>
                     )}
-                    {(edu.startDate || edu.endDate) && (
+                    {(start || end) && (
                       <div className="t3-entry-date">
-                        {[edu.startDate, edu.endDate]
-                          .filter(Boolean)
-                          .join(" — ")}
+                        {start}
+                        {start && end ? " - " : ""}
+                        {end}
                       </div>
                     )}
-                    {edu.text && (
+                    {exp.text && (
                       <div
                         className="t3-entry-content"
-                        dangerouslySetInnerHTML={{ __html: edu.text }}
+                        dangerouslySetInnerHTML={{ __html: exp.text }}
                       />
                     )}
                   </div>
-                ))}
-              </>
-            )}
+                );
+              })}
+            </>
+          )}
 
-            {skills.filter((s) => s.skill?.trim()).length > 0 && (
-              <>
-                <div className="t3-section-title">Skills</div>
-                <div className="t3-grid">
-                  {skills
-                    .filter((s) => s.skill?.trim())
-                    .map((skill, i) => (
-                      <div key={skill.id || i}>
-                        <div className="t3-skill-name">{skill.skill}</div>
-                        {skill.level && (
-                          <div className="t3-bar-track">
-                            <div
-                              className="t3-bar-fill"
-                              style={{ width: skillPct(Number(skill.level)) }}
-                            />
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                </div>
-              </>
-            )}
-
-            {languages.filter((l) => l.name?.trim()).length > 0 && (
-              <>
-                <div className="t3-section-title">Languages</div>
-                <div className="t3-grid">
-                  {languages
-                    .filter((l) => l.name?.trim())
-                    .map((lang, i) => (
-                      <div key={(lang as any)._id || i}>
-                        <div className="t3-skill-name">{lang.name}</div>
-                        {lang.level && (
-                          <div className="t3-bar-track">
-                            <div
-                              className="t3-bar-fill"
-                              style={{ width: skillPct(Number(lang.level)) }}
-                            />
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                </div>
-              </>
-            )}
-
-            {certificationsAndLicenses.filter((i) => hasText(i.name)).length >
-              0 && (
-              <>
-                <div className="t3-section-title">
-                  Certifications and Licenses
-                </div>
-                <div className="t3-extra">
-                  {certificationsAndLicenses
-                    .filter((i) => hasText(i.name))
-                    .map((item, i) => (
-                      <div
-                        key={(item as any).id || i}
-                        dangerouslySetInnerHTML={{ __html: item.name || "" }}
-                      />
-                    ))}
-                </div>
-              </>
-            )}
-
-            {hobbiesAndInterests.filter((i) => hasText(i.name)).length > 0 && (
-              <>
-                <div className="t3-section-title">Hobbies and Interests</div>
-                <div className="t3-extra">
-                  {hobbiesAndInterests
-                    .filter((i) => hasText(i.name))
-                    .map((item, i) => (
-                      <div
-                        key={(item as any).id || i}
-                        dangerouslySetInnerHTML={{ __html: item.name || "" }}
-                      />
-                    ))}
-                </div>
-              </>
-            )}
-
-            {awardsAndHonors.filter((i) => hasText(i.name)).length > 0 && (
-              <>
-                <div className="t3-section-title">Awards and Honors</div>
-                <div className="t3-extra">
-                  {awardsAndHonors
-                    .filter((i) => hasText(i.name))
-                    .map((item, i) => (
-                      <div
-                        key={(item as any).id || i}
-                        dangerouslySetInnerHTML={{ __html: item.name || "" }}
-                      />
-                    ))}
-                </div>
-              </>
-            )}
-
-            {websitesAndSocialMedia.filter(
-              (i) => i.websiteUrl?.trim() || i.socialMedia?.trim(),
-            ).length > 0 && (
-              <>
-                <div className="t3-section-title">
-                  Websites and Social Media
-                </div>
-                <div className="t3-extra">
-                  {websitesAndSocialMedia
-                    .filter(
-                      (i) => i.websiteUrl?.trim() || i.socialMedia?.trim(),
-                    )
-                    .map((item, i) => (
-                      <div
-                        key={(item as any).id || i}
-                        className="t3-website-item"
-                      >
-                        {item.websiteUrl && (
-                          <div>
-                            <div className="t3-website-label">Website:</div>
-                            <a
-                              href={
-                                item.websiteUrl.startsWith("http")
-                                  ? item.websiteUrl
-                                  : `https://${item.websiteUrl}`
-                              }
-                              target="_blank"
-                              rel="noreferrer"
-                              className="t3-website-link"
-                            >
-                              {item.websiteUrl}
-                            </a>
-                          </div>
-                        )}
-                        {item.socialMedia && (
-                          <div style={{ marginTop: "4px" }}>
-                            <div className="t3-website-label">
-                              Social Media:
-                            </div>
-                            <a
-                              href={
-                                item.socialMedia.startsWith("http")
-                                  ? item.socialMedia
-                                  : `https://${item.socialMedia}`
-                              }
-                              target="_blank"
-                              rel="noreferrer"
-                              className="t3-website-link"
-                            >
-                              {item.socialMedia}
-                            </a>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                </div>
-              </>
-            )}
-
-            {references.filter((i) => hasText(i.name)).length > 0 && (
-              <>
-                <div className="t3-section-title">References</div>
-                <div className="t3-extra">
-                  {references
-                    .filter((i) => hasText(i.name))
-                    .map((item, i) => (
-                      <div
-                        key={(item as any).id || i}
-                        dangerouslySetInnerHTML={{ __html: item.name || "" }}
-                      />
-                    ))}
-                </div>
-              </>
-            )}
-
-            {customSection
-              .filter((s) => s?.name?.trim() || s?.description?.trim())
-              .map((section, i) => (
-                <div key={(section as any).id || i}>
-                  {section.name && (
-                    <div className="t3-section-title">{section.name}</div>
+          {educations.length > 0 && (
+            <>
+              <div className="t3-section-title">Education</div>
+              {educations.map((edu, i) => (
+                <div key={edu.id || i} className="t3-entry">
+                  {(edu.schoolname || edu.degree || edu.location) && (
+                    <div className="t3-entry-title">
+                      {edu.schoolname || ""}
+                      {edu.degree && (
+                        <span className="t3-entry-title-muted">
+                          {" "}
+                          — {edu.degree}
+                        </span>
+                      )}
+                      {edu.location && (
+                        <span className="t3-entry-title-muted">
+                          {" "}
+                          — {edu.location}
+                        </span>
+                      )}
+                    </div>
                   )}
-                  {section.description && (
+                  {(edu.startDate || edu.endDate) && (
+                    <div className="t3-entry-date">
+                      {[edu.startDate, edu.endDate].filter(Boolean).join(" — ")}
+                    </div>
+                  )}
+                  {edu.text && (
                     <div
-                      className="t3-extra"
-                      dangerouslySetInnerHTML={{ __html: section.description }}
+                      className="t3-entry-content"
+                      dangerouslySetInnerHTML={{ __html: edu.text }}
                     />
                   )}
                 </div>
               ))}
-          </div>
-          {/* end .t3-body */}
+            </>
+          )}
+
+          {skills.filter((s) => s.skill?.trim()).length > 0 && (
+            <>
+              <div className="t3-section-title">Skills</div>
+              <div className="t3-grid">
+                {skills
+                  .filter((s) => s.skill?.trim())
+                  .map((skill, i) => (
+                    <div key={skill.id || i}>
+                      <div className="t3-skill-name">{skill.skill}</div>
+                      {skill.level && (
+                        <div className="t3-bar-track">
+                          <div
+                            className="t3-bar-fill"
+                            style={{ width: skillPct(Number(skill.level)) }}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  ))}
+              </div>
+            </>
+          )}
+
+          {languages.filter((l) => l.name?.trim()).length > 0 && (
+            <>
+              <div className="t3-section-title">Languages</div>
+              <div className="t3-grid">
+                {languages
+                  .filter((l) => l.name?.trim())
+                  .map((lang, i) => (
+                    <div key={(lang as any)._id || i}>
+                      <div className="t3-skill-name">{lang.name}</div>
+                      {lang.level && (
+                        <div className="t3-bar-track">
+                          <div
+                            className="t3-bar-fill"
+                            style={{ width: skillPct(Number(lang.level)) }}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  ))}
+              </div>
+            </>
+          )}
+
+          {certificationsAndLicenses.filter((i) => hasText(i.name)).length >
+            0 && (
+            <>
+              <div className="t3-section-title">
+                Certifications and Licenses
+              </div>
+              <div className="t3-extra">
+                {certificationsAndLicenses
+                  .filter((i) => hasText(i.name))
+                  .map((item, i) => (
+                    <div
+                      key={(item as any).id || i}
+                      dangerouslySetInnerHTML={{ __html: item.name || "" }}
+                    />
+                  ))}
+              </div>
+            </>
+          )}
+
+          {hobbiesAndInterests.filter((i) => hasText(i.name)).length > 0 && (
+            <>
+              <div className="t3-section-title">Hobbies and Interests</div>
+              <div className="t3-extra">
+                {hobbiesAndInterests
+                  .filter((i) => hasText(i.name))
+                  .map((item, i) => (
+                    <div
+                      key={(item as any).id || i}
+                      dangerouslySetInnerHTML={{ __html: item.name || "" }}
+                    />
+                  ))}
+              </div>
+            </>
+          )}
+
+          {awardsAndHonors.filter((i) => hasText(i.name)).length > 0 && (
+            <>
+              <div className="t3-section-title">Awards and Honors</div>
+              <div className="t3-extra">
+                {awardsAndHonors
+                  .filter((i) => hasText(i.name))
+                  .map((item, i) => (
+                    <div
+                      key={(item as any).id || i}
+                      dangerouslySetInnerHTML={{ __html: item.name || "" }}
+                    />
+                  ))}
+              </div>
+            </>
+          )}
+
+          {websitesAndSocialMedia.filter(
+            (i) => i.websiteUrl?.trim() || i.socialMedia?.trim(),
+          ).length > 0 && (
+            <>
+              <div className="t3-section-title">Websites and Social Media</div>
+              <div className="t3-extra">
+                {websitesAndSocialMedia
+                  .filter((i) => i.websiteUrl?.trim() || i.socialMedia?.trim())
+                  .map((item, i) => (
+                    <div
+                      key={(item as any).id || i}
+                      className="t3-website-item"
+                    >
+                      {item.websiteUrl && (
+                        <div>
+                          <div className="t3-website-label">Website:</div>
+                          <a
+                            href={
+                              item.websiteUrl.startsWith("http")
+                                ? item.websiteUrl
+                                : `https://${item.websiteUrl}`
+                            }
+                            target="_blank"
+                            rel="noreferrer"
+                            className="t3-website-link"
+                          >
+                            {item.websiteUrl}
+                          </a>
+                        </div>
+                      )}
+                      {item.socialMedia && (
+                        <div style={{ marginTop: "4px" }}>
+                          <div className="t3-website-label">Social Media:</div>
+                          <a
+                            href={
+                              item.socialMedia.startsWith("http")
+                                ? item.socialMedia
+                                : `https://${item.socialMedia}`
+                            }
+                            target="_blank"
+                            rel="noreferrer"
+                            className="t3-website-link"
+                          >
+                            {item.socialMedia}
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+              </div>
+            </>
+          )}
+
+          {references.filter((i) => hasText(i.name)).length > 0 && (
+            <>
+              <div className="t3-section-title">References</div>
+              <div className="t3-extra">
+                {references
+                  .filter((i) => hasText(i.name))
+                  .map((item, i) => (
+                    <div
+                      key={(item as any).id || i}
+                      dangerouslySetInnerHTML={{ __html: item.name || "" }}
+                    />
+                  ))}
+              </div>
+            </>
+          )}
+
+          {customSection
+            .filter((s) => s?.name?.trim() || s?.description?.trim())
+            .map((section, i) => (
+              <div key={(section as any).id || i}>
+                {section.name && (
+                  <div className="t3-section-title">{section.name}</div>
+                )}
+                {section.description && (
+                  <div
+                    className="t3-extra"
+                    dangerouslySetInnerHTML={{ __html: section.description }}
+                  />
+                )}
+              </div>
+            ))}
         </div>
+        {/* end .t3-body */}
       </div>
     </>
   );

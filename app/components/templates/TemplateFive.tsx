@@ -1059,10 +1059,15 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
     }
 
       .resume-t5.is-preview {
-    scale: 0.3;
-    max-height: 297mm;
-    overflow: hidden;
-    transform-origin: top left; /* Ensures it scales from the corner */
+      transform: scale(0.36);
+    transform-origin: top left;
+    width: 210mm; 
+    height: auto;
+    max-height: none;
+    min-height: auto;
+    max-width: none;
+    min-width: auto;
+    overflow: visible;
 }
 
     /* Scoped resets — only inside resume */
@@ -1590,7 +1595,8 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
       <div 
               className={`resume-t5  ${alldata ? 'is-preview' : ''}`}
 
-      style={{ margin: "0 auto", boxShadow: "0 0 10px rgba(0,0,0,0.08)" }}>
+      style={{ margin: "0 auto",           boxShadow: !alldata ? "0 0 10px rgba(0,0,0,0.1)" : "" 
+ }}>
         <style>{`@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap');`}</style>
         <style>{styles}</style>
 

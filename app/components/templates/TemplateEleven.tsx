@@ -57,7 +57,6 @@ const TemplateEleven: React.FC<ResumeProps> = ({ alldata }) => {
        width: 210mm;
     min-height: 297mm;
       background: white;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
        font-family: 'Lato', 'Helvetica Neue', 'Segoe UI', sans-serif;
       background-color: #ffffff;
       line-height: 1.5;
@@ -65,10 +64,16 @@ const TemplateEleven: React.FC<ResumeProps> = ({ alldata }) => {
     }
 
       .t11-resume.is-preview {
-    scale: 0.3;
-    max-height: 297mm;
-    overflow: hidden;
-    transform-origin: top left; /* Ensures it scales from the corner */
+       transform: scale(0.36);
+
+    transform-origin: top left;
+    width: 210mm; 
+    height: auto;
+    max-height: none;
+    min-height: auto;
+    max-width: none;
+    min-width: auto;
+    overflow: visible;
 }
 
 
@@ -737,7 +742,8 @@ const TemplateEleven: React.FC<ResumeProps> = ({ alldata }) => {
 
       {/* Resume Preview - EXACT SAME PADDING AS DOWNLOAD */}
       <div         className={`t11-resume ${alldata ? 'is-preview' : ''}`}
- style={{ margin: "0 auto" }}>
+ style={{ margin: "0 auto",           boxShadow: !alldata ? "0 0 10px rgba(0,0,0,0.1)" : "" 
+}}>
         <style>{styles}</style>
 
         {/* HEADER */}

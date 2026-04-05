@@ -59,18 +59,23 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
    
 
     .t7-resume  {
-      max-width: 850px;
+    width: 210mm;
       margin: 30px auto;
       background: white;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
       border: 1px solid #e0e0e0;
     }
 
       .t7-resume.is-preview {
-    scale: 0.3;
-    max-height: 297mm;
-    overflow: hidden;
-    transform-origin: top left; /* Ensures it scales from the corner */
+       transform: scale(0.36);
+
+    transform-origin: top left;
+    width: 210mm; 
+    height: auto;
+    max-height: none;
+    min-height: auto;
+    max-width: none;
+    min-width: auto;
+    overflow: visible;
 }
 
 
@@ -825,7 +830,13 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
       )}
 
       {/* Resume Preview - EXACT SAME AS DOWNLOAD */}
-      <div className={`t7-resume ${alldata ? 'is-preview' : ''}`}    style={{ margin: "0 auto" }}>
+      <div
+        className={`t7-resume ${alldata ? "is-preview" : ""}`}
+        style={{
+          margin: "0 auto",
+          boxShadow: !alldata ? "0 0 10px rgba(0,0,0,0.1)" : "",
+        }}
+      >
         <style>{styles}</style>
 
         {/* HEADER */}

@@ -56,8 +56,6 @@ const ContactForm = () => {
   const { contact, setContact, fullResumeData, setFullResumeData } =
     useContext(CreateContext);
 
-
-    
   const [showAdditional, setShowAdditional] = useState<boolean>(false);
 
   const [open, setOpen] = useState(false);
@@ -65,10 +63,8 @@ const ContactForm = () => {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
 
-
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
 
-  
   const [showPhotoViewer, setShowPhotoViewer] = useState<boolean>(false);
 
   const [isSaving, setIsSaving] = useState<boolean>(false);
@@ -77,8 +73,6 @@ const ContactForm = () => {
   // Track initial load
   const initialLoadDone = useRef(false);
 
-
-
   const fetchContact = async () => {
     try {
       const response = await axios.get(
@@ -86,7 +80,6 @@ const ContactForm = () => {
       );
 
       const data = response.data[0] || response.data;
-
 
       const updatedContact = {
         ...contact,
@@ -132,9 +125,9 @@ const ContactForm = () => {
     }
   };
 
-  useEffect(() => {
-    fetchContact();
-  }, []);
+  // useEffect(() => {
+  //   fetchContact();
+  // }, []);
 
   useEffect(() => {
     // Don't save until initial data is loaded
@@ -199,10 +192,11 @@ const ContactForm = () => {
       fd.append("firstName", contactData.firstName || "");
       fd.append("lastName", contactData.lastName || "");
       fd.append("email", contactData.email || "");
-      fd.append(
-        "jobTitle",
-        contactData.jobTitle?.length > 0 ? contactData.jobTitle : "",
-      );
+      // fd.append(
+      //   "jobTitle",
+      //   contactData.jobTitle?.length > 0 ? contactData.jobTitle : "",
+      // );
+      fd.append("jobTitle", contactData.jobTitle || "");
       fd.append("phone", contactData.phone || "");
       fd.append("country", contactData.country || "");
       fd.append("city", contactData.city || "");
@@ -639,7 +633,7 @@ const ContactForm = () => {
                   htmlFor="firstName"
                   className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
                 >
-                  First Name 
+                  First Name
                 </label>
                 <div className="relative">
                   <input
@@ -873,10 +867,7 @@ const ContactForm = () => {
                           id="Address"
                           value={contact.address}
                           onChange={(e) =>
-                            handleContactChange(
-                              "address",
-                              e.target.value,
-                            )
+                            handleContactChange("address", e.target.value)
                           }
                           placeholder="123 Main Street, Apt 4B"
                           className="w-full pl-10 pr-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
@@ -884,7 +875,7 @@ const ContactForm = () => {
                       </div>
                     </div>
 
-                       <div className="group">
+                    <div className="group">
                       <label
                         htmlFor="City"
                         className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
@@ -910,15 +901,11 @@ const ContactForm = () => {
                         />
                       </div>
                     </div>
-
-                    
                   </div>
 
                   {/* Location Information - Compact */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
-                 
-                 
-                        <div className="group">
+                    <div className="group">
                       <label
                         htmlFor="Post"
                         className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
@@ -954,18 +941,13 @@ const ContactForm = () => {
                           id="Post"
                           value={contact.postcode}
                           onChange={(e) =>
-                            handleContactChange(
-                              "postcode",
-                            e.target.value,
-                            )
+                            handleContactChange("postcode", e.target.value)
                           }
                           placeholder="10001"
                           className="w-full pl-10 pr-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
                         />
                       </div>
                     </div>
-
-
 
                     <div className="group">
                       <label
@@ -993,9 +975,6 @@ const ContactForm = () => {
                         />
                       </div>
                     </div>
-
-             
-                 
                   </div>
                 </div>
               </div>

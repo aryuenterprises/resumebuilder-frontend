@@ -266,13 +266,13 @@
 //           ` : ""}
 
 //           <!-- Certifications and Licenses -->
-//           ${fixMapCalls.certificationsAndLicenses.length > 0 && fixMapCalls.certificationsAndLicenses.some(item => 
+//           ${fixMapCalls.certificationsAndLicenses.length > 0 && fixMapCalls.certificationsAndLicenses.some(item =>
 //             item.name?.replace(/<[^>]*>/g, "").trim()
 //           ) ? `
 //             <div class="mt-3">
 //               <p class="text-[17px] font-bold">Certifications and Licenses</p>
 //               <div class="pt-2 pb-2 text-gray-700 text-[15px] wrap-break-word">
-//                 ${fixMapCalls.certificationsAndLicenses.filter(item => 
+//                 ${fixMapCalls.certificationsAndLicenses.filter(item =>
 //                   item.name?.replace(/<[^>]*>/g, "").trim()
 //                 ).map((item, index) => `
 //                   <div key="${item.id || index}">${item.name?.replace(/<[^>]*>/g, "")}</div>
@@ -282,13 +282,13 @@
 //           ` : ""}
 
 //           <!-- Hobbies and Interests -->
-//           ${fixMapCalls.hobbiesAndInterests.length > 0 && fixMapCalls.hobbiesAndInterests.some(item => 
+//           ${fixMapCalls.hobbiesAndInterests.length > 0 && fixMapCalls.hobbiesAndInterests.some(item =>
 //             item.name?.replace(/<[^>]*>/g, "").trim()
 //           ) ? `
 //             <div class="mt-2">
 //               <p class="text-[17px] font-bold">Hobbies and Interests</p>
 //               <div class="pt-1 pb-1 text-gray-700 text-[15px] wrap-break-word">
-//                 ${fixMapCalls.hobbiesAndInterests.filter(item => 
+//                 ${fixMapCalls.hobbiesAndInterests.filter(item =>
 //                   item.name?.replace(/<[^>]*>/g, "").trim()
 //                 ).map((item, index) => `
 //                   <div key="${item.id || index}">${item.name?.replace(/<[^>]*>/g, "")}</div>
@@ -298,13 +298,13 @@
 //           ` : ""}
 
 //           <!-- Awards and Honors -->
-//           ${fixMapCalls.awardsAndHonors.length > 0 && fixMapCalls.awardsAndHonors.some(item => 
+//           ${fixMapCalls.awardsAndHonors.length > 0 && fixMapCalls.awardsAndHonors.some(item =>
 //             item.name?.replace(/<[^>]*>/g, "").trim()
 //           ) ? `
 //             <div class="mt-2">
 //               <h2 class="text-[17px] font-bold">Awards and Honors</h2>
 //               <div class="pt-2 pb-2 text-gray-700 text-[15px] wrap-break-word">
-//                 ${fixMapCalls.awardsAndHonors.filter(item => 
+//                 ${fixMapCalls.awardsAndHonors.filter(item =>
 //                   item.name?.replace(/<[^>]*>/g, "").trim()
 //                 ).map((item, index) => `
 //                   <div key="${item.id || index}">${item.name?.replace(/<[^>]*>/g, "")}</div>
@@ -314,13 +314,13 @@
 //           ` : ""}
 
 //           <!-- Websites and Social Media -->
-//           ${fixMapCalls.websitesAndSocialMedia.length > 0 && fixMapCalls.websitesAndSocialMedia.some(item => 
+//           ${fixMapCalls.websitesAndSocialMedia.length > 0 && fixMapCalls.websitesAndSocialMedia.some(item =>
 //             item.websiteUrl?.trim() || item.socialMedia?.trim()
 //           ) ? `
 //             <div class="mt-2">
 //               <p class="text-[17px] font-bold">Websites and Social Media</p>
 //               <div class="pt-1 pb-1 text-[15px] text-gray-700 wrap-break-word">
-//                 ${fixMapCalls.websitesAndSocialMedia.filter(item => 
+//                 ${fixMapCalls.websitesAndSocialMedia.filter(item =>
 //                   item.websiteUrl?.trim() || item.socialMedia?.trim()
 //                 ).map((item, index) => `
 //                   <div key="${item.id || index}" class="mb-2">
@@ -347,13 +347,13 @@
 //           ` : ""}
 
 //           <!-- References -->
-//           ${fixMapCalls.references.length > 0 && fixMapCalls.references.some(item => 
+//           ${fixMapCalls.references.length > 0 && fixMapCalls.references.some(item =>
 //             item.name?.replace(/<[^>]*>/g, "").trim()
 //           ) ? `
 //             <div class="mt-2">
 //               <p class="text-[17px] font-bold">References</p>
 //               <div class="pt-1 pb-2 text-gray-700 text-[15px] wrap-break-word">
-//                 ${fixMapCalls.references.filter(item => 
+//                 ${fixMapCalls.references.filter(item =>
 //                   item.name?.replace(/<[^>]*>/g, "").trim()
 //                 ).map((item, index) => `
 //                   <div key="${item.id || index}">${item.name?.replace(/<[^>]*>/g, "")}</div>
@@ -363,11 +363,11 @@
 //           ` : ""}
 
 //           <!-- Custom Section -->
-//           ${fixMapCalls.customSection.length > 0 && fixMapCalls.customSection.some(section => 
+//           ${fixMapCalls.customSection.length > 0 && fixMapCalls.customSection.some(section =>
 //             section?.name?.trim() || section?.description?.trim()
 //           ) ? `
 //             <div class="mt-3 mb-4">
-//               ${fixMapCalls.customSection.filter(section => 
+//               ${fixMapCalls.customSection.filter(section =>
 //                 section?.name?.trim() || section?.description?.trim()
 //               ).map((section, index) => `
 //                 <div key="${section.id || index}" class="pt-2 pb-3">
@@ -422,7 +422,7 @@
 //           </button>
 //         </div>
 //       )}
-      
+
 //       {/* Preview - using Tailwind classes directly */}
 //       <div
 //         className="bg-white border border-gray-100 font-nunito mx-auto"
@@ -841,43 +841,6 @@
 
 // export default TemplateFour;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 
 import React, { useContext } from "react";
@@ -885,14 +848,8 @@ import axios from "axios";
 import { CreateContext } from "@/app/context/CreateContext";
 import { API_URL } from "@/app/config/api";
 import { MonthYearDisplay, formatMonthYear } from "@/app/utils";
-import {
-  
-  Finalize,
-  ResumeProps,
-} from "@/app/types/context.types";
+import { Finalize, ResumeProps } from "@/app/types/context.types";
 import { usePathname } from "next/navigation";
-
-
 
 const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
   const context = useContext(CreateContext);
@@ -1021,10 +978,15 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
 
 
       .t4-resume.is-preview {
-    scale: 0.3;
-    max-height: 297mm;
-    overflow: hidden;
-    transform-origin: top left; /* Ensures it scales from the corner */
+       transform: scale(0.36);
+    transform-origin: top left;
+    width: 210mm; 
+    height: auto;
+    max-height: none;
+    min-height: auto;
+    max-width: none;
+    min-width: auto;
+    overflow: visible;
 }
 
     /* ── HEADER ── */
@@ -1293,8 +1255,7 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
       .filter(Boolean)
       .join(", ");
 
-    const stripHtml = (html: string) =>
-      html?.replace(/<[^>]*>/g, "") || "";
+    const stripHtml = (html: string) => html?.replace(/<[^>]*>/g, "") || "";
 
     return `<!DOCTYPE html>
 <html>
@@ -1313,11 +1274,15 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
   <div class="header-block">
     <div class="header-name">${contact?.firstName || ""} ${contact?.lastName || ""}</div>
     ${contact?.jobTitle ? `<div class="header-jobtitle">${getJobTitle(contact.jobTitle)}</div>` : ""}
-    ${linkedinUrl?.trim() || contact?.portfolio?.trim() ? `
+    ${
+      linkedinUrl?.trim() || contact?.portfolio?.trim()
+        ? `
     <div class="header-links">
       ${linkedinUrl?.trim() ? `<a href="${linkedinUrl.startsWith("http") ? linkedinUrl : `https://${linkedinUrl}`}" class="header-link">LinkedIn</a>` : ""}
       ${contact?.portfolio?.trim() ? `<a href="${contact.portfolio.startsWith("http") ? contact.portfolio : `https://${contact.portfolio}`}" class="header-link">Portfolio</a>` : ""}
-    </div>` : ""}
+    </div>`
+        : ""
+    }
   </div>
 
   <hr class="header-divider"/>
@@ -1329,114 +1294,201 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
   </div>
 
   <!-- SUMMARY -->
-  ${summary ? `
+  ${
+    summary
+      ? `
   <div class="section-title">Summary</div>
-  <div class="extra-content">${stripHtml(summary)}</div>` : ""}
+  <div class="extra-content">${stripHtml(summary)}</div>`
+      : ""
+  }
 
   <!-- EXPERIENCE -->
-  ${experiences?.length > 0 ? `
+  ${
+    experiences?.length > 0
+      ? `
   <div class="section-title">Experience</div>
-  ${experiences.map((exp) => {
-    const start = formatMonthYear(exp.startDate, true);
-    const end = exp.endDate ? formatMonthYear(exp.endDate, true) : (exp.startDate ? "Present" : "");
-    return `
+  ${experiences
+    .map((exp) => {
+      const start = formatMonthYear(exp.startDate, true);
+      const end = exp.endDate
+        ? formatMonthYear(exp.endDate, true)
+        : exp.startDate
+          ? "Present"
+          : "";
+      return `
   <div class="entry-block">
-    ${exp.jobTitle || exp.employer || exp.location ? `
+    ${
+      exp.jobTitle || exp.employer || exp.location
+        ? `
     <div class="entry-heading">
       ${exp.jobTitle || ""}
       ${exp.employer ? `<span class="entry-heading-muted"> — ${exp.employer}</span>` : ""}
       ${exp.location ? `<span class="entry-heading-muted"> — ${exp.location}</span>` : ""}
-    </div>` : ""}
+    </div>`
+        : ""
+    }
     <div class="entry-date">${start}${start && end ? " - " : ""}${end}</div>
     ${exp.text ? `<div class="entry-content">${stripHtml(exp.text)}</div>` : ""}
   </div>`;
-  }).join("")}` : ""}
+    })
+    .join("")}`
+      : ""
+  }
 
   <!-- EDUCATION -->
-  ${educations?.length > 0 ? `
+  ${
+    educations?.length > 0
+      ? `
   <div class="section-title">Education</div>
-  ${educations.map((edu) => {
-    const dateStr = [edu.startDate, edu.endDate].filter(Boolean).join(" — ");
-    return `
+  ${educations
+    .map((edu) => {
+      const dateStr = [edu.startDate, edu.endDate].filter(Boolean).join(" — ");
+      return `
   <div class="entry-block">
-    ${edu.schoolname || edu.degree || edu.location ? `
+    ${
+      edu.schoolname || edu.degree || edu.location
+        ? `
     <div class="entry-heading">
       ${edu.schoolname || ""}
       ${edu.degree ? `<span class="entry-heading-muted"> — ${edu.degree}</span>` : ""}
       ${edu.location ? `<span class="entry-heading-muted"> — ${edu.location}</span>` : ""}
-    </div>` : ""}
+    </div>`
+        : ""
+    }
     ${dateStr ? `<div class="entry-date">${dateStr}</div>` : ""}
     ${edu.text ? `<div class="entry-content">${stripHtml(edu.text)}</div>` : ""}
   </div>`;
-  }).join("")}` : ""}
+    })
+    .join("")}`
+      : ""
+  }
 
   <!-- SKILLS -->
-  ${skills.length > 0 ? `
+  ${
+    skills.length > 0
+      ? `
   <div class="section-title">Skills</div>
   <div class="skills-grid">
-    ${skills.map((s) => `
+    ${skills
+      .map(
+        (s) => `
     <div>
       <div class="skill-name">${s.skill || ""}</div>
       ${s.level ? `<div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:${skillPct(s.level)}"></div></div>` : ""}
-    </div>`).join("")}
-  </div>` : ""}
+    </div>`,
+      )
+      .join("")}
+  </div>`
+      : ""
+  }
 
   <!-- LANGUAGES -->
-  ${fin.languages.some((l) => l.name?.trim()) ? `
+  ${
+    fin.languages.some((l) => l.name?.trim())
+      ? `
   <div class="section-title">Languages</div>
   <div class="skills-grid">
-    ${fin.languages.filter((l) => l.name?.trim()).map((l) => `
+    ${fin.languages
+      .filter((l) => l.name?.trim())
+      .map(
+        (l) => `
     <div>
       <div class="skill-name">${l.name}</div>
       ${l.level ? `<div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:${skillPct(l.level)}"></div></div>` : ""}
-    </div>`).join("")}
-  </div>` : ""}
+    </div>`,
+      )
+      .join("")}
+  </div>`
+      : ""
+  }
 
   <!-- CERTIFICATIONS -->
-  ${fin.certifications.some((i) => i.name?.replace(/<[^>]*>/g, "").trim()) ? `
+  ${
+    fin.certifications.some((i) => i.name?.replace(/<[^>]*>/g, "").trim())
+      ? `
   <div class="section-title">Certifications and Licenses</div>
   <div class="extra-content">
-    ${fin.certifications.filter((i) => i.name?.replace(/<[^>]*>/g, "").trim()).map((i) => `<div>${stripHtml(i.name || "")}</div>`).join("")}
-  </div>` : ""}
+    ${fin.certifications
+      .filter((i) => i.name?.replace(/<[^>]*>/g, "").trim())
+      .map((i) => `<div>${stripHtml(i.name || "")}</div>`)
+      .join("")}
+  </div>`
+      : ""
+  }
 
   <!-- HOBBIES -->
-  ${fin.hobbies.some((i) => i.name?.replace(/<[^>]*>/g, "").trim()) ? `
+  ${
+    fin.hobbies.some((i) => i.name?.replace(/<[^>]*>/g, "").trim())
+      ? `
   <div class="section-title">Hobbies and Interests</div>
   <div class="extra-content">
-    ${fin.hobbies.filter((i) => i.name?.replace(/<[^>]*>/g, "").trim()).map((i) => `<div>${stripHtml(i.name || "")}</div>`).join("")}
-  </div>` : ""}
+    ${fin.hobbies
+      .filter((i) => i.name?.replace(/<[^>]*>/g, "").trim())
+      .map((i) => `<div>${stripHtml(i.name || "")}</div>`)
+      .join("")}
+  </div>`
+      : ""
+  }
 
   <!-- AWARDS -->
-  ${fin.awards.some((i) => i.name?.replace(/<[^>]*>/g, "").trim()) ? `
+  ${
+    fin.awards.some((i) => i.name?.replace(/<[^>]*>/g, "").trim())
+      ? `
   <div class="section-title">Awards and Honors</div>
   <div class="extra-content">
-    ${fin.awards.filter((i) => i.name?.replace(/<[^>]*>/g, "").trim()).map((i) => `<div>${stripHtml(i.name || "")}</div>`).join("")}
-  </div>` : ""}
+    ${fin.awards
+      .filter((i) => i.name?.replace(/<[^>]*>/g, "").trim())
+      .map((i) => `<div>${stripHtml(i.name || "")}</div>`)
+      .join("")}
+  </div>`
+      : ""
+  }
 
   <!-- WEBSITES -->
-  ${fin.websites.some((i) => i.websiteUrl?.trim() || i.socialMedia?.trim()) ? `
+  ${
+    fin.websites.some((i) => i.websiteUrl?.trim() || i.socialMedia?.trim())
+      ? `
   <div class="section-title">Websites and Social Media</div>
   <div class="extra-content">
-    ${fin.websites.filter((i) => i.websiteUrl?.trim() || i.socialMedia?.trim()).map((i) => `
+    ${fin.websites
+      .filter((i) => i.websiteUrl?.trim() || i.socialMedia?.trim())
+      .map(
+        (i) => `
     <div style="margin-bottom:6px">
       ${i.websiteUrl ? `<div><span class="website-label">Website URL: </span><a href="${i.websiteUrl.startsWith("http") ? i.websiteUrl : `https://${i.websiteUrl}`}" class="website-link">${i.websiteUrl}</a></div>` : ""}
       ${i.socialMedia ? `<div><span class="website-label">Social Media URL: </span><a href="${i.socialMedia.startsWith("http") ? i.socialMedia : `https://${i.socialMedia}`}" class="website-link">${i.socialMedia}</a></div>` : ""}
-    </div>`).join("")}
-  </div>` : ""}
+    </div>`,
+      )
+      .join("")}
+  </div>`
+      : ""
+  }
 
   <!-- REFERENCES -->
-  ${fin.references.some((i) => i.name?.replace(/<[^>]*>/g, "").trim()) ? `
+  ${
+    fin.references.some((i) => i.name?.replace(/<[^>]*>/g, "").trim())
+      ? `
   <div class="section-title">References</div>
   <div class="extra-content">
-    ${fin.references.filter((i) => i.name?.replace(/<[^>]*>/g, "").trim()).map((i) => `<div>${stripHtml(i.name || "")}</div>`).join("")}
-  </div>` : ""}
+    ${fin.references
+      .filter((i) => i.name?.replace(/<[^>]*>/g, "").trim())
+      .map((i) => `<div>${stripHtml(i.name || "")}</div>`)
+      .join("")}
+  </div>`
+      : ""
+  }
 
   <!-- CUSTOM SECTIONS -->
-  ${fin.customSection.filter((s) => s?.name?.trim() || s?.description?.trim()).map((s) => `
+  ${fin.customSection
+    .filter((s) => s?.name?.trim() || s?.description?.trim())
+    .map(
+      (s) => `
   <div>
     ${s.name ? `<div class="section-title">${s.name}</div>` : ""}
     ${s.description ? `<div class="extra-content">${stripHtml(s.description)}</div>` : ""}
-  </div>`).join("")}
+  </div>`,
+    )
+    .join("")}
 
 </div>
 </body>
@@ -1468,8 +1520,7 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
     }
   };
 
-  const stripHtmlJSX = (html: string) =>
-    html?.replace(/<[^>]*>/g, "") || "";
+  const stripHtmlJSX = (html: string) => html?.replace(/<[^>]*>/g, "") || "";
 
   /* ======================================================
      JSX PREVIEW — uses same CSS classes as generateHTML
@@ -1477,7 +1528,13 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
   return (
     <>
       {lastSegment === "download-resume" && (
-        <div style={{ textAlign: "center", marginTop: "20px", marginBottom: "20px" }}>
+        <div
+          style={{
+            textAlign: "center",
+            marginTop: "20px",
+            marginBottom: "20px",
+          }}
+        >
           <button
             onClick={handleDownload}
             className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
@@ -1487,11 +1544,12 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
         </div>
       )}
 
-      <div 
-      // className="t4-resume"
-              className={`t4-resume  ${alldata ? 'is-preview' : ''}`}
-
-      style={{ margin: "0 auto", boxShadow: "0 0 10px rgba(0,0,0,0.08)" }}>
+      <div
+        // className="t4-resume"
+        className={`t4-resume  ${alldata ? "is-preview" : ""}`}
+        style={{ margin: "0 auto",           boxShadow: !alldata ? "0 0 10px rgba(0,0,0,0.1)" : "" 
+}}
+      >
         <style>{`@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap');`}</style>
         <style>{styles}</style>
 
@@ -1501,15 +1559,39 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
             {contact?.firstName || ""} {contact?.lastName || ""}
           </div>
           {contact?.jobTitle && (
-            <div className="header-jobtitle">{getJobTitle(contact.jobTitle)}</div>
+            <div className="header-jobtitle">
+              {getJobTitle(contact.jobTitle)}
+            </div>
           )}
           {(linkedinUrl?.trim() || contact?.portfolio?.trim()) && (
             <div className="header-links">
               {linkedinUrl?.trim() && (
-                <a href={linkedinUrl.startsWith("http") ? linkedinUrl : `https://${linkedinUrl}`} target="_blank" rel="noreferrer" className="header-link">LinkedIn</a>
+                <a
+                  href={
+                    linkedinUrl.startsWith("http")
+                      ? linkedinUrl
+                      : `https://${linkedinUrl}`
+                  }
+                  target="_blank"
+                  rel="noreferrer"
+                  className="header-link"
+                >
+                  LinkedIn
+                </a>
               )}
               {contact?.portfolio?.trim() && (
-                <a href={contact.portfolio.startsWith("http") ? contact.portfolio : `https://${contact.portfolio}`} target="_blank" rel="noreferrer" className="header-link">Portfolio</a>
+                <a
+                  href={
+                    contact.portfolio.startsWith("http")
+                      ? contact.portfolio
+                      : `https://${contact.portfolio}`
+                  }
+                  target="_blank"
+                  rel="noreferrer"
+                  className="header-link"
+                >
+                  Portfolio
+                </a>
               )}
             </div>
           )}
@@ -1518,8 +1600,22 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
         <hr className="header-divider" />
 
         <div className="header-contact-row">
-          {[contact?.address, contact?.city, contact?.postcode, contact?.country].filter(Boolean).length > 0 && (
-            <span>{[contact?.address, contact?.city, contact?.postcode, contact?.country].filter(Boolean).join(", ")}</span>
+          {[
+            contact?.address,
+            contact?.city,
+            contact?.postcode,
+            contact?.country,
+          ].filter(Boolean).length > 0 && (
+            <span>
+              {[
+                contact?.address,
+                contact?.city,
+                contact?.postcode,
+                contact?.country,
+              ]
+                .filter(Boolean)
+                .join(", ")}
+            </span>
           )}
           {contact?.phone && <span> • {contact.phone}</span>}
           {contact?.email && <span> • {contact.email}</span>}
@@ -1542,16 +1638,28 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
                 {(exp.jobTitle || exp.employer || exp.location) && (
                   <div className="entry-heading">
                     {exp.jobTitle || ""}
-                    {exp.employer && <span className="entry-heading-muted"> — {exp.employer}</span>}
-                    {exp.location && <span className="entry-heading-muted"> — {exp.location}</span>}
+                    {exp.employer && (
+                      <span className="entry-heading-muted">
+                        {" "}
+                        — {exp.employer}
+                      </span>
+                    )}
+                    {exp.location && (
+                      <span className="entry-heading-muted">
+                        {" "}
+                        — {exp.location}
+                      </span>
+                    )}
                   </div>
                 )}
                 <div className="entry-date">
                   <MonthYearDisplay value={exp.startDate} shortYear={true} />
                   {exp.startDate && (exp.endDate || true) && <span> - </span>}
-                  {exp.endDate
-                    ? <MonthYearDisplay value={exp.endDate} shortYear={true} />
-                    : exp.startDate && <span>Present</span>}
+                  {exp.endDate ? (
+                    <MonthYearDisplay value={exp.endDate} shortYear={true} />
+                  ) : (
+                    exp.startDate && <span>Present</span>
+                  )}
                 </div>
                 {exp.text && (
                   <div className="entry-content">{stripHtmlJSX(exp.text)}</div>
@@ -1570,8 +1678,18 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
                 {(edu.schoolname || edu.degree || edu.location) && (
                   <div className="entry-heading">
                     {edu.schoolname || ""}
-                    {edu.degree && <span className="entry-heading-muted"> — {edu.degree}</span>}
-                    {edu.location && <span className="entry-heading-muted"> — {edu.location}</span>}
+                    {edu.degree && (
+                      <span className="entry-heading-muted">
+                        {" "}
+                        — {edu.degree}
+                      </span>
+                    )}
+                    {edu.location && (
+                      <span className="entry-heading-muted">
+                        {" "}
+                        — {edu.location}
+                      </span>
+                    )}
                   </div>
                 )}
                 {(edu.startDate || edu.endDate) && (
@@ -1597,7 +1715,10 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
                   <div className="skill-name">{skill.skill || ""}</div>
                   {skill.level && (
                     <div className="skill-bar-wrap">
-                      <div className="skill-bar-fill" style={{ width: skillPct(skill.level) }} />
+                      <div
+                        className="skill-bar-fill"
+                        style={{ width: skillPct(skill.level) }}
+                      />
                     </div>
                   )}
                 </div>
@@ -1611,28 +1732,37 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
           <>
             <div className="section-title">Languages</div>
             <div className="skills-grid">
-              {fin.languages.filter((l) => l.name?.trim()).map((l, i) => (
-                <div key={l._id || i}>
-                  <div className="skill-name">{l.name}</div>
-                  {l.level && (
-                    <div className="skill-bar-wrap">
-                      <div className="skill-bar-fill" style={{ width: skillPct(l.level) }} />
-                    </div>
-                  )}
-                </div>
-              ))}
+              {fin.languages
+                .filter((l) => l.name?.trim())
+                .map((l, i) => (
+                  <div key={l._id || i}>
+                    <div className="skill-name">{l.name}</div>
+                    {l.level && (
+                      <div className="skill-bar-wrap">
+                        <div
+                          className="skill-bar-fill"
+                          style={{ width: skillPct(l.level) }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                ))}
             </div>
           </>
         )}
 
         {/* CERTIFICATIONS */}
-        {fin.certifications.some((i) => i.name?.replace(/<[^>]*>/g, "").trim()) && (
+        {fin.certifications.some((i) =>
+          i.name?.replace(/<[^>]*>/g, "").trim(),
+        ) && (
           <>
             <div className="section-title">Certifications and Licenses</div>
             <div className="extra-content">
-              {fin.certifications.filter((i) => i.name?.replace(/<[^>]*>/g, "").trim()).map((item, i) => (
-                <div key={item.id || i}>{stripHtmlJSX(item.name || "")}</div>
-              ))}
+              {fin.certifications
+                .filter((i) => i.name?.replace(/<[^>]*>/g, "").trim())
+                .map((item, i) => (
+                  <div key={item.id || i}>{stripHtmlJSX(item.name || "")}</div>
+                ))}
             </div>
           </>
         )}
@@ -1642,9 +1772,11 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
           <>
             <div className="section-title">Hobbies and Interests</div>
             <div className="extra-content">
-              {fin.hobbies.filter((i) => i.name?.replace(/<[^>]*>/g, "").trim()).map((item, i) => (
-                <div key={item.id || i}>{stripHtmlJSX(item.name || "")}</div>
-              ))}
+              {fin.hobbies
+                .filter((i) => i.name?.replace(/<[^>]*>/g, "").trim())
+                .map((item, i) => (
+                  <div key={item.id || i}>{stripHtmlJSX(item.name || "")}</div>
+                ))}
             </div>
           </>
         )}
@@ -1654,34 +1786,64 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
           <>
             <div className="section-title">Awards and Honors</div>
             <div className="extra-content">
-              {fin.awards.filter((i) => i.name?.replace(/<[^>]*>/g, "").trim()).map((item, i) => (
-                <div key={item.id || i}>{stripHtmlJSX(item.name || "")}</div>
-              ))}
+              {fin.awards
+                .filter((i) => i.name?.replace(/<[^>]*>/g, "").trim())
+                .map((item, i) => (
+                  <div key={item.id || i}>{stripHtmlJSX(item.name || "")}</div>
+                ))}
             </div>
           </>
         )}
 
         {/* WEBSITES */}
-        {fin.websites.some((i) => i.websiteUrl?.trim() || i.socialMedia?.trim()) && (
+        {fin.websites.some(
+          (i) => i.websiteUrl?.trim() || i.socialMedia?.trim(),
+        ) && (
           <>
             <div className="section-title">Websites and Social Media</div>
             <div className="extra-content">
-              {fin.websites.filter((i) => i.websiteUrl?.trim() || i.socialMedia?.trim()).map((item, i) => (
-                <div key={item.id || i} style={{ marginBottom: "6px" }}>
-                  {item.websiteUrl && (
-                    <div>
-                      <span className="website-label">Website URL: </span>
-                      <a href={item.websiteUrl.startsWith("http") ? item.websiteUrl : `https://${item.websiteUrl}`} target="_blank" rel="noreferrer" className="website-link">{item.websiteUrl}</a>
-                    </div>
-                  )}
-                  {item.socialMedia && (
-                    <div>
-                      <span className="website-label">Social Media URL: </span>
-                      <a href={item.socialMedia.startsWith("http") ? item.socialMedia : `https://${item.socialMedia}`} target="_blank" rel="noreferrer" className="website-link">{item.socialMedia}</a>
-                    </div>
-                  )}
-                </div>
-              ))}
+              {fin.websites
+                .filter((i) => i.websiteUrl?.trim() || i.socialMedia?.trim())
+                .map((item, i) => (
+                  <div key={item.id || i} style={{ marginBottom: "6px" }}>
+                    {item.websiteUrl && (
+                      <div>
+                        <span className="website-label">Website URL: </span>
+                        <a
+                          href={
+                            item.websiteUrl.startsWith("http")
+                              ? item.websiteUrl
+                              : `https://${item.websiteUrl}`
+                          }
+                          target="_blank"
+                          rel="noreferrer"
+                          className="website-link"
+                        >
+                          {item.websiteUrl}
+                        </a>
+                      </div>
+                    )}
+                    {item.socialMedia && (
+                      <div>
+                        <span className="website-label">
+                          Social Media URL:{" "}
+                        </span>
+                        <a
+                          href={
+                            item.socialMedia.startsWith("http")
+                              ? item.socialMedia
+                              : `https://${item.socialMedia}`
+                          }
+                          target="_blank"
+                          rel="noreferrer"
+                          className="website-link"
+                        >
+                          {item.socialMedia}
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                ))}
             </div>
           </>
         )}
@@ -1691,21 +1853,30 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
           <>
             <div className="section-title">References</div>
             <div className="extra-content">
-              {fin.references.filter((i) => i.name?.replace(/<[^>]*>/g, "").trim()).map((item, i) => (
-                <div key={item.id || i}>{stripHtmlJSX(item.name || "")}</div>
-              ))}
+              {fin.references
+                .filter((i) => i.name?.replace(/<[^>]*>/g, "").trim())
+                .map((item, i) => (
+                  <div key={item.id || i}>{stripHtmlJSX(item.name || "")}</div>
+                ))}
             </div>
           </>
         )}
 
         {/* CUSTOM SECTIONS */}
-        {fin.customSection.filter((s) => s?.name?.trim() || s?.description?.trim()).map((section, i) => (
-          <div key={section.id || i}>
-            {section.name && <div className="section-title">{section.name}</div>}
-            {section.description && <div className="extra-content">{stripHtmlJSX(section.description)}</div>}
-          </div>
-        ))}
-
+        {fin.customSection
+          .filter((s) => s?.name?.trim() || s?.description?.trim())
+          .map((section, i) => (
+            <div key={section.id || i}>
+              {section.name && (
+                <div className="section-title">{section.name}</div>
+              )}
+              {section.description && (
+                <div className="extra-content">
+                  {stripHtmlJSX(section.description)}
+                </div>
+              )}
+            </div>
+          ))}
       </div>
     </>
   );

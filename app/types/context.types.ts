@@ -1,13 +1,13 @@
 import { ComponentType } from "react";
 
 export interface Contact {
-  contactId: string;
+  contactId?: string;
   firstName: string;
   lastName: string;
-  jobTitle: string;
-  phone: string;
-  email: string;
-  linkedin: string;
+  jobTitle?: string;
+  phone?: string;
+  email?: string;
+  linkedin?: string;
   portfolio: string;
   address: string;
   city: string;
@@ -18,15 +18,15 @@ export interface Contact {
 }
 export interface Experience {
   id: number | string;
-  jobTitle: string;
-  employer: string;
-  startDate: string;
-  endDate: string;
-  text: string;
-  location: string;
-  isOpen: boolean;
-  showPicker: boolean;
-  year: number;
+  jobTitle?: string;
+  employer?: string;
+  startDate?: string;
+  endDate?: string;
+  text?: string;
+  location?: string;
+  isOpen?: boolean;
+  showPicker?: boolean;
+  year?: number;
 }
 export interface Education {
   id: string | number;
@@ -125,6 +125,7 @@ export interface CustomSection {
 
 export interface Template {
   id: number;
+  templateId?:string;
   style: string;
   image: any;
   description: string;
@@ -134,7 +135,7 @@ export interface Template {
 }
 
 export interface FullResumeData {
-  template: Template | null;
+  template?: Template | null;
   contact: Contact;
   experiences: Experience[];
   education: Education[];

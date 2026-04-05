@@ -61,17 +61,23 @@ import { ResumeProps } from "@/app/types";
     }
 
     .t13-resume  {
-      max-width: 850px;
+          width: 210mm;
+
       margin: 40px auto;
       background: white;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
 
       .t13-resume.is-preview {
-    scale: 0.3;
-    max-height: 297mm;
-    overflow: hidden;
-    transform-origin: top left; /* Ensures it scales from the corner */
+      transform: scale(0.36);
+
+    transform-origin: top left;
+    width: 210mm; 
+    height: auto;
+    max-height: none;
+    min-height: auto;
+    max-width: none;
+    min-width: auto;
+    overflow: visible;
 }
 
     /* Header Section - BOLD */
@@ -817,7 +823,8 @@ import { ResumeProps } from "@/app/types";
 
       {/* Resume Preview - EXACT SAME AS DOWNLOAD */}
       <div className={`t13-resume ${alldata ? 'is-preview' : ''}`}
-       style={{ margin: "0 auto" }}>
+       style={{ margin: "0 auto",          boxShadow: !alldata ? "0 0 10px rgba(0,0,0,0.1)" : "" 
+ }}>
         <style>{styles}</style>
 
         {/* HEADER - BOLD DARK */}
