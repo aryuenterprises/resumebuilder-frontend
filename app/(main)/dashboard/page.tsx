@@ -428,8 +428,7 @@ const DashboardPage = () => {
     return Array.from(listItems).map((li) => li.textContent.trim());
   };
 
-  // console.log("filteredOldResumeData",filteredOldResumeData)
-  // console.log("templateData",templateData)
+
 
   return (
     <ProtectedRoute>

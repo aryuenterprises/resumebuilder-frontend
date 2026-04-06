@@ -222,11 +222,11 @@ const SkillsForm = () => {
     }
   };
 
-  useEffect(() => {
-    if (Contactid) {
-      fetchSkill();
-    }
-  }, [Contactid]);
+  // useEffect(() => {
+  //   if (Contactid) {
+  //     fetchSkill();
+  //   }
+  // }, [Contactid]);
 
   // Cleanup timeout on unmount
   useEffect(() => {

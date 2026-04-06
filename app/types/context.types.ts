@@ -204,4 +204,9 @@ export interface CreateContextType {
   setFullResumeData: React.Dispatch<
     React.SetStateAction<FullResumeData | null>
   >;
+
+  isUploadMode: boolean;
+  setIsUploadMode: (value: boolean) => void;
+  clearUploadMode: () => void;
+
 }

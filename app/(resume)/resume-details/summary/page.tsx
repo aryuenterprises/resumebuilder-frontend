@@ -11,8 +11,8 @@ import React, {
 } from "react";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
-import "primereact/resources/themes/saga-blue/theme.css";
-import "primereact/resources/primereact.min.css";
+// import "primereact/resources/themes/saga-blue/theme.css";
+// import "primereact/resources/primereact.min.css";
 import { CreateContext } from "@/app/context/CreateContext";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -21,7 +21,6 @@ import Stepper from "../../../components/resume/Steppers";
 import { getLocalStorage, setLocalStorage } from "@/app/utils";
 import { Education, Experience, Skill } from "@/app/types";
 import { API_URL } from "@/app/config/api";
-
 
 // Dynamically import Editor to avoid SSR issues
 const Editor = dynamic(
@@ -49,6 +48,8 @@ const SummaryForm = () => {
     fullResumeData,
     setFullResumeData,
   } = UseContext;
+
+  console.log("summary",summary);
 
   const [isSaving, setIsSaving] = useState(false);
   const [lastSavedData, setLastSavedData] = useState<string>("");
@@ -140,7 +141,7 @@ const SummaryForm = () => {
         clearTimeout(saveTimeoutRef.current);
       }
       saveTimeoutRef.current = setTimeout(() => {
-        saveToAPI(summaryText); 
+        saveToAPI(summaryText);
       }, 1000);
     },
     [Contactid, lastSavedData],
@@ -150,7 +151,6 @@ const SummaryForm = () => {
     setSummary(htmlValue);
     debouncedSave(htmlValue);
   };
-
 
   const handleSubmitAi = async (e?: React.MouseEvent) => {
     if (e) e.preventDefault();
@@ -202,11 +202,11 @@ const SummaryForm = () => {
     }
   };
 
-  useEffect(() => {
-    if (Contactid) {
-      fetchSummary();
-    }
-  }, [Contactid]);
+  // useEffect(() => {
+  //   if (Contactid) {
+  //     fetchSummary();
+  //   }
+  // }, [Contactid]);
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -304,47 +304,45 @@ const SummaryForm = () => {
                 className="mt-3 md:mt-4 lg:mt-5 bg-white"
                 value={summary}
                 onTextChange={(e: any) => handleTextChange(e.htmlValue)}
-                  headerTemplate={
-                            <div className="flex gap-1 p-2  flex-wrap items-center bg-gray-50">
-                              <button
-                                type="button"
-                                className="ql-bold p-2 hover:bg-gray-200 rounded transition-colors duration-200"
-                                aria-label="Bold"
-                                title="Bold"
-                              >
-                                <span className="font-bold">B</span>
-                              </button>
+                headerTemplate={
+                  <div className="flex gap-1 p-2  flex-wrap items-center bg-gray-50">
+                    <button
+                      type="button"
+                      className="ql-bold p-2 hover:bg-gray-200 rounded transition-colors duration-200"
+                      aria-label="Bold"
+                      title="Bold"
+                    >
+                      <span className="font-bold">B</span>
+                    </button>
 
-                              <button
-                                type="button"
-                                className="ql-italic p-2 hover:bg-gray-200 rounded transition-colors duration-200"
-                                aria-label="Italic"
-                                title="Italic"
-                              >
-                                <span className="italic">I</span>
-                              </button>
+                    <button
+                      type="button"
+                      className="ql-italic p-2 hover:bg-gray-200 rounded transition-colors duration-200"
+                      aria-label="Italic"
+                      title="Italic"
+                    >
+                      <span className="italic">I</span>
+                    </button>
 
-                              <button
-                                type="button"
-                                className="ql-underline p-2 hover:bg-gray-200 rounded transition-colors duration-200"
-                                aria-label="Underline"
-                                title="Underline"
-                              >
-                                <span className="underline">U</span>
-                              </button>
+                    <button
+                      type="button"
+                      className="ql-underline p-2 hover:bg-gray-200 rounded transition-colors duration-200"
+                      aria-label="Underline"
+                      title="Underline"
+                    >
+                      <span className="underline">U</span>
+                    </button>
 
-                             
-
-                              <button
-                                type="button"
-                                className="ql-clean p-2 hover:bg-gray-200 rounded transition-colors duration-200"
-                                aria-label="Clear Formatting"
-                                title="Clear Formatting"
-                              >
-                                <span>⌫</span>
-                              </button>
-                            </div>
-                          }
+                    <button
+                      type="button"
+                      className="ql-clean p-2 hover:bg-gray-200 rounded transition-colors duration-200"
+                      aria-label="Clear Formatting"
+                      title="Clear Formatting"
+                    >
+                      <span>⌫</span>
+                    </button>
+                  </div>
+                }
                 style={{
                   height: "150px",
                   minHeight: "150px",

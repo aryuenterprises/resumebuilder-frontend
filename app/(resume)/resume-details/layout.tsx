@@ -12,6 +12,8 @@ import axios from "axios";
 import { API_URL } from "@/app/config/api";
 import { CreateContext } from "@/app/context/CreateContext";
 import LoginModel from "@/app/components/auth/LoginModel";
+import { ResumeDataFetcher } from "@/app/components/resume/ResumeDataFetcher";
+import { usePreventReload } from "@/app/hooks";
 
 export default function RootLayout({
   children,
@@ -19,141 +21,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const router = useRouter();
-  const userDetails = getLocalStorage<User>("user_details");
   const chosenTemplate = getLocalStorage<Template>("chosenTemplate");
-
   const [isHovered, setIsHovered] = useState(false);
   const [showMobilePreview, setShowMobilePreview] = useState(false);
-  const chosenResumeDetails = getLocalStorage<Template>("chosenTemplate");
 
-  const userId = userDetails?.id;
-  const initialLoadDone = useRef(false);
 
-  const {
-    contact,
-    setContact,
-    education,
-    setEducation,
-    experiences,
-    setExperiences,
-    skills,
-    setSkills,
-    summary,
-    setSummary,
-    finalize,
-    setFinalize,
-    fullResumeData,
-    setFullResumeData,
-  } = useContext(CreateContext);
+  const { isUploadMode,fullResumeData,summary } = useContext(CreateContext);
 
-  const fetchContact = async () => {
-    try {
-      const response = await axios.get(
-        `${API_URL}/api/contact-resume/get-contact/${userId}`,
-      );
-
-      const data = response.data[0] || response.data;
-
-      // const updatedContact = {
-      //   ...contact,
-      //   contactId: data?._id || "",
-      //   firstName: data?.firstName || "",
-      //   lastName: data?.lastName || "",
-      //   jobTitle: data?.jobTitle || "",
-      //   phone: data?.phone || "",
-      //   email: data?.email || "",
-      //   address: data?.address || "",
-      //   city: data?.city || "",
-      //   country: data?.country || "",
-      //   postcode: data?.postCode || "",
-      //   linkedin: data?.linkedIn || "",
-      //   portfolio: data?.portfolio || "",
-      //   croppedImage: data?.photo || null,
-      // };
-
-      // setContact(updatedContact);
-      // fetchResumeFullData(data?._id);
-
-      // Update fullResumeData in context
-      // if (fullResumeData) {
-      //   setFullResumeData({
-      //     ...fullResumeData,
-      //     contact: updatedContact,
-      //   });
-      // } else {
-      //   setFullResumeData({
-      //     template: chosenResumeDetails || null,
-      //     contact: updatedContact,
-      //     experiences: [],
-      //     education: [],
-      //     skills: [],
-      //     summary: "",
-      //     finalize: {},
-      //   });
-      // }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    fetchContact();
-  }, []);
-
-  const fetchResumeFullData = async (id: string) => {
-    try {
-      const response = await axios.get(
-        `${API_URL}/api/experience/get-all-contacts/${id}`,
-      );
-
-      if (response.data?.data?.length > 0) {
-        const data = response.data.data[0];
-
-        // const formattedData = {
-        //   template: chosenResumeDetails || null,
-        //   contact: data.contact || {},
-        //   educations: data.educations || [],
-        //   experience: data.experiences || [],
-        //   skills: data.skills || [],
-        //   finalize: data.finalize?.[0] || {},
-        //   summary: data.summary?.[0] || "", // Extract text from summary array
-        // };
-
-        // setFullResumeData(formattedData);
-
-        setFullResumeData({
-          template: chosenResumeDetails || null,
-          contact: data.contact,
-          experiences: data.experiences,
-          education: data.educations,
-          skills: data.skills,
-          summary: data.summary[0] || "",
-          finalize: data.finalize?.[0] || {},
-        });
-
-        initialLoadDone.current = true;
-
-        setLocalStorage("fullResumeData", {
-          template: chosenResumeDetails || null,
-          contact: data.contact,
-          experiences: data.experiences,
-          education: data.educations,
-          skills: data.skills,
-          summary: data?.summary,
-          finalize: data?.finalize[0],
-        });
-
-              setContact(data?.contact);
-        setEducation(data?.educations || []);
-        setExperiences(data?.experiences || []);
-        setSkills(data?.skills || []);
-        setSummary(data?.summary[0] || "");
-        setFinalize(data?.finalize[0] || {});
-      }
-    } catch (error) {
-      console.log("Error fetching contact:", error);
-    }
-  };
+  console.log("summary",summary)
+  console.log("fullResumeData",fullResumeData)
 
   const selectedResume = templateData.find(
     (resume) => resume.id == (chosenTemplate?.id || chosenTemplate?.templateId),
@@ -161,11 +37,19 @@ export default function RootLayout({
 
   const SelectedComponent = selectedResume?.component;
 
+  usePreventReload()
+
   return (
     <div className="flex h-screen bg-gray-100 gap-5 relative">
       <LoginModel />
 
-      <aside className="w-full lg:w-1/2 overflow-y-auto">{children}</aside>
+      {/* <aside className="w-full lg:w-1/2 overflow-y-auto">{children}</aside> */}
+
+      <aside className="w-full lg:w-1/2 overflow-y-auto">
+        <ResumeDataFetcher>
+          {children}
+        </ResumeDataFetcher>
+      </aside>
 
       <section className="max-lg:hidden w-1/2 bg-gray-100">
         <div

@@ -91,11 +91,11 @@ const ExperienceForm = () => {
     ]);
   };
 
-  useEffect(() => {
-    if (Contactid && userDetails) {
-      fetchExp();
-    }
-  }, [Contactid]);
+  // useEffect(() => {
+  //   if (Contactid && userDetails) {
+  //     fetchExp();
+  //   }
+  // }, [Contactid]);
 
   const fetchExp = async () => {
     try {

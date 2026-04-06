@@ -1,6 +1,7 @@
 export * from './passwordGenerator'
 export * from './cropImageUtlis'
 export * from './localStorage'
+export * from './sessionStorage'
 export * from './sanitize'
 export * from './formatMonthYear'
 export * from './MonthYearDisplay'

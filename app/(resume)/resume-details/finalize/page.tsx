@@ -12,7 +12,7 @@ import { CreateContext } from "@/app/context/CreateContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
-import "react-circular-progressbar/dist/styles.css";
+// import "react-circular-progressbar/dist/styles.css";
 
 import {
   FaCertificate,
@@ -271,11 +271,11 @@ const FinalizeForm = () => {
   };
 
 
-    useEffect(() => {
-    if (contact?.contactId) {
-      fetchSkill();
-    }
-  }, [contact?.contactId]);
+  //   useEffect(() => {
+  //   if (contact?.contactId) {
+  //     fetchSkill();
+  //   }
+  // }, [contact?.contactId]);
 
   // Cleanup timeout on unmount
   useEffect(() => {

@@ -14,8 +14,8 @@ import { FiChevronDown, FiTrash2 } from "react-icons/fi";
 import { IoMdAdd } from "react-icons/io";
 import dynamic from "next/dynamic";
 import { Calendar } from "primereact/calendar";
-import "primereact/resources/themes/saga-blue/theme.css";
-import "primereact/resources/primereact.min.css";
+// import "primereact/resources/themes/saga-blue/theme.css";
+// import "primereact/resources/primereact.min.css";
 import { CreateContext } from "@/app/context/CreateContext";
 import { FiCheckCircle, FiXCircle, FiX } from "react-icons/fi";
 import { FaRegLightbulb } from "react-icons/fa";
@@ -187,11 +187,11 @@ const Education_form = () => {
     }
   };
 
-  useEffect(() => {
-    if (Contactid) {
-      fetched();
-    }
-  }, [Contactid]);
+  // useEffect(() => {
+  //   if (Contactid) {
+  //     fetched();
+  //   }
+  // }, [Contactid]);
 
   // Cleanup timeout on unmount
   useEffect(() => {
