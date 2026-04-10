@@ -115,18 +115,7 @@ const DashboardPage = () => {
     ResumeItem[]
   >([]);
 
-    const {
-      setContact,
-      setEducation,
-      setExperiences,
-      setSkills,
-      setSummary,
-      setFinalize,
-      setFullResumeData,
-      setChosenTemplate,
-      setIsUploadMode,
-      clearUploadMode
-    } = useContext(CreateContext);
+   
 
   const userDetails = getLocalStorage<User>("user_details");
   const userId = userDetails?.id;
@@ -897,7 +886,8 @@ const DashboardPage = () => {
                             e.stopPropagation();
                             router.push(`/resume-details/contact`);
                             setLocalStorage("chosenTemplate", item);
-                            setSessionStorage("oldRouteNameDashboard", "old");
+                            setSessionStorage("oldRouteNameDashboard", true);
+                          
 
                           }}
                           className="bg-white rounded-full p-3 hover:bg-gray-100 transition-colors cursor-pointer"

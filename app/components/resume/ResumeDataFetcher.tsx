@@ -6,7 +6,13 @@ import { usePathname } from "next/navigation";
 import { CreateContext } from "@/app/context/CreateContext";
 import axios from "axios";
 import { API_URL } from "@/app/config/api";
-import { getLocalStorage, getSessionStorage, removeSessionStorage, setLocalStorage, setSessionStorage } from "@/app/utils";
+import {
+  getLocalStorage,
+  getSessionStorage,
+  removeSessionStorage,
+  setLocalStorage,
+  setSessionStorage,
+} from "@/app/utils";
 import { User } from "@/app/types/user.types";
 import { Template } from "@/app/types/context.types";
 import { resume } from "react-dom/server";
@@ -28,6 +34,7 @@ export function ResumeDataFetcher({ children }: ResumeDataFetcherProps) {
     setSummary,
     setFinalize,
     setFullResumeData,
+    setResumeId,
     // chosenTemplate,
   } = useContext(CreateContext);
 
@@ -58,7 +65,7 @@ export function ResumeDataFetcher({ children }: ResumeDataFetcherProps) {
   }, [pathname, isResumeDetailPage, clearUploadMode]);
 
   // console.log(con)
-  console.log("contact id",contact._id)
+  console.log("contact id", contact._id);
 
   useEffect(() => {
     // Skip data fetching if:
@@ -87,10 +94,7 @@ export function ResumeDataFetcher({ children }: ResumeDataFetcherProps) {
 
     // Fetch existing resume data
     const fetchResumeData = async () => {
-
-        const cameFromDashboard = getSessionStorage("oldRouteNameDashboard");
- 
-      
+      setResumeId(""); // Reset resume ID before fetching new data
 
       try {
         hasFetchedData.current = true;
@@ -101,25 +105,24 @@ export function ResumeDataFetcher({ children }: ResumeDataFetcherProps) {
           `${API_URL}/api/contact-resume/get-contact/${userId}`,
           {
             params: {
-              templateId: chosenTemplate?.templateId || "1",
-              resumeId: chosenTemplate?.contact?._id || "", // Use contact ID if available
+              templateId: chosenTemplate?.templateId || chosenTemplate?.id || "",
+              // resumeId: chosenTemplate?.contact?._id || "", // Use contact ID if available
             },
           },
         );
 
-      
+
+        let a = getSessionStorage("oldRouteNameDashboard");
+        if (a) {
+          setResumeId(contactResponse?.data.resumeId);
+        }
+
         const contactData = contactResponse?.data?._id ?? "";
-        
 
         if (contactData) {
           // Fetch full resume data
           const fullResponse = await axios.get(
-            `${API_URL}/api/experience/get-all-contacts/${contactData}`,{
-              params: {
-                type: cameFromDashboard || "new",
-              },
-            },
-          
+            `${API_URL}/api/experience/get-all-contacts/${contactData}`,
           );
 
           if (fullResponse.data?.data?.length > 0) {

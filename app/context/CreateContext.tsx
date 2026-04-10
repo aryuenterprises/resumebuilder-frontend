@@ -363,6 +363,8 @@ const clearUploadMode = () => {
   // Logo
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
 
+  const[resumeId, setResumeId] = useState<string>("");
+
   return (
     <CreateContext.Provider
       value={{
@@ -418,6 +420,11 @@ const clearUploadMode = () => {
         isUploadMode,
         setIsUploadMode,
         clearUploadMode,
+
+        resumeId,
+        setResumeId,
+
+
       }}
     >
       {children}

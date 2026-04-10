@@ -56,10 +56,9 @@ const ContactForm = () => {
   const userId = userDetails?.id;
   // const Contactid = UseContext.contact.contactId;
 
-  const cameFromDashboard = getSessionStorage("oldRouteNameDashboard");
 
   const chosenResumeDetails = getLocalStorage<Template>("chosenTemplate");
-  const { contact, setContact, fullResumeData, setFullResumeData } =
+  const { contact, setContact, fullResumeData, setFullResumeData,setResumeId,resumeId } =
     useContext(CreateContext);
 
   const contactId = contact._id || contact.contactId;
@@ -191,7 +190,7 @@ const ContactForm = () => {
             userId: userId,
             templateId: chosenResumeDetails?.id,
             id: contactId,
-              type:cameFromDashboard || "new",
+            resume: resumeId || "abc",
           },
           headers: {
             "Content-Type": "multipart/form-data",
@@ -224,14 +223,18 @@ const ContactForm = () => {
         `${API_URL}/api/contact-resume/get-contact/${userId}`,
         {
           params: {
-            templateId: chosenResumeDetails?.templateId || "1",
+            templateId: chosenResumeDetails?.id,
             resumeId: data1 || "",
           },
         },
       );
 
+      console.log("response",response)
       const data = response.data[0] || response.data;
       console.log("Fetched contact data:", data);
+      console.log("resume id:", data.resumeId);
+
+      setResumeId(data.resumeId || "");
 
       const updatedContact = {
         ...contact,
@@ -442,7 +445,7 @@ if (!contact.email || !contact.email.trim()) {
         clearTimeout(saveTimeoutRef.current);
       }
       await saveToAPI(contact);
-      router.push("/resume-details/experience");
+      // router.push("/resume-details/experience");
     }
   };
 

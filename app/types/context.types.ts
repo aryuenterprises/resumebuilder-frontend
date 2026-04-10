@@ -212,4 +212,8 @@ export interface CreateContextType {
   setIsUploadMode: (value: boolean) => void;
   clearUploadMode: () => void;
 
+
+  resumeId: string;
+  setResumeId: (value: string) => void;
+
 }

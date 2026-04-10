@@ -47,8 +47,6 @@ const Education_form = () => {
   const UseContext = useContext(CreateContext);
   const contactId = UseContext?.contact._id;
 
-  // const cameFromDashboard = getSessionStorage("oldRouteNameDashboard");
-
 
   
    

@@ -629,8 +629,7 @@ export default function ChangeTemplate() {
   const handleUseTemplate = () => {
     if (!previewTemplate) return;
 
-    const templateIndex = getTemplateIndex(previewTempla
-      te?.id);
+    const templateIndex = getTemplateIndex(previewTemplate?.id);
 
     if (isTemplateAccessible(templateIndex)) {
       setChosenTemplate(previewTemplate);
