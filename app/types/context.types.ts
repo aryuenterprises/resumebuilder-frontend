@@ -1,6 +1,7 @@
 import { ComponentType } from "react";
 
 export interface Contact {
+  _id?: string;
   contactId?: string;
   firstName: string;
   lastName: string;
@@ -124,18 +125,20 @@ export interface CustomSection {
 }
 
 export interface Template {
-  id: number;
+  id?: number;
   templateId?:string;
-  style: string;
-  image: any;
-  description: string;
+  style?: string;
+  image?: any;
+  description?: string;
   temp?: "free" | "paid";
   pic?: string;
   component?: ComponentType<any>;
+  contact?:{_id:string}
+
 }
 
 export interface FullResumeData {
-  template?: Template | null;
+  template?: Template | null | string;
   contact: Contact;
   experiences: Experience[];
   education: Education[];

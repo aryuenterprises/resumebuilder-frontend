@@ -22,3 +22,9 @@ export const sanitizeNumber = (value: string): string => {
     .replace(/(?!^)\+/g, "");     // allow + only at beginning
 };
 
+
+export const sanitizeName = (value: string): string => {
+  // Allows: Letters (a-z, A-Z), Dots (.), Spaces (\s), 
+  // Hyphens (-), and Apostrophes (')
+  return value.replace(/[^a-zA-Z.\s\-']/g, "");
+};

@@ -43,7 +43,7 @@ const SkillsForm = () => {
   const [skillTipsClicked, setSkillTipsClicked] = useState(false);
   const router = useRouter();
   const UseContext = useContext(CreateContext);
-  const Contactid = UseContext?.contact.contactId;
+  const contactId = UseContext?.contact.contactId;
   const [isActive, setIsActive] = useState(true);
 
   const { skills, setSkills, fullResumeData, setFullResumeData } =
@@ -78,7 +78,7 @@ const SkillsForm = () => {
   }, [skills]);
 
   const saveToAPI = async (skillsData: typeof skills) => {
-    if (!Contactid) {
+    if (!contactId) {
       console.error("Contact ID is required");
       return false;
     }
@@ -99,7 +99,7 @@ const SkillsForm = () => {
       const response = await axios.post(
         `${API_URL}/api/skill/update`,
         formData,
-        { params: { contactId: Contactid } },
+        { params: { contactId: contactId } },
       );
 
       setLastSavedData(currentDataString);
@@ -123,7 +123,7 @@ const SkillsForm = () => {
         saveToAPI(skillsData);
       }, 1000);
     },
-    [Contactid, lastSavedData],
+    [contactId, lastSavedData],
   );
 
   const addExperience = () => {
@@ -196,7 +196,7 @@ const SkillsForm = () => {
   const fetchSkill = async () => {
     try {
       const response = await axios.get(
-        `${API_URL}/api/skill/get-skill/${Contactid}`,
+        `${API_URL}/api/skill/get-skill/${contactId}`,
       );
 
       const skillsList = response.data?.[0]?.skills || [];
@@ -223,10 +223,10 @@ const SkillsForm = () => {
   };
 
   // useEffect(() => {
-  //   if (Contactid) {
+  //   if (contactId) {
   //     fetchSkill();
   //   }
-  // }, [Contactid]);
+  // }, [contactId]);
 
   // Cleanup timeout on unmount
   useEffect(() => {

@@ -228,11 +228,7 @@ export const CreateProvider: React.FC<CreateProviderProps> = ({ children }) => {
     }
   }, [isUploadMode]);
 
-  // const clearUploadMode = () => {
-  //   setIsUploadMode(false);
-  //   removeSessionStorage("resume_upload_mode");
-  // };
-
+  
   // In your CreateProvider
 const clearUploadMode = () => {
   console.log("🔓 Clearing upload mode and resetting all resume data");

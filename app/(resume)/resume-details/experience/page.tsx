@@ -10,7 +10,7 @@ import dynamic from "next/dynamic";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { AnimatePresence, motion } from "framer-motion";
-import {MonthYearDisplay } from "@/app/utils";
+import {MonthYearDisplay, removeSessionStorage, setSessionStorage } from "@/app/utils";
 
 import { IoMdAdd, IoIosArrowDown } from "react-icons/io";
 import {
@@ -48,10 +48,14 @@ const ExperienceForm = () => {
   const router = useRouter();
   const userDetails = getLocalStorage<User>("user_details");
   const UseContext = useContext(CreateContext);
-  const Contactid = UseContext.contact.contactId;
+  const contactId = UseContext.contact._id;
   const [isExperienced, setIsExperienced] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [lastSavedData, setLastSavedData] = useState<string>("");
+
+                                setSessionStorage("oldRouteNameDashboard", "old");
+
+
 
   const { experiences, setExperiences, fullResumeData, setFullResumeData } =
     UseContext;
@@ -92,15 +96,15 @@ const ExperienceForm = () => {
   };
 
   // useEffect(() => {
-  //   if (Contactid && userDetails) {
+  //   if (contactId && userDetails) {
   //     fetchExp();
   //   }
-  // }, [Contactid]);
+  // }, [contactId]);
 
   const fetchExp = async () => {
     try {
       const response = await axios.get(
-        `${API_URL}/api/experience/get-experience/${Contactid}`,
+        `${API_URL}/api/experience/get-experience/${contactId}`,
       );
 
       const experienceList = response.data?.[0]?.experiences || [];
@@ -135,7 +139,7 @@ const ExperienceForm = () => {
   };
 
   const saveToAPI = async (experiencesData: typeof experiences) => {
-    if (!Contactid) {
+    if (!contactId) {
       console.error("Contact ID is required");
       return false;
     }
@@ -156,10 +160,11 @@ const ExperienceForm = () => {
       const response = await axios.post(
         `${API_URL}/api/experience/update`,
         formData,
-        { params: { contactId: Contactid } },
+        { params: { contactId: contactId } },
       );
 
       setLastSavedData(currentDataString);
+      fetchExp()
       return true;
     } catch (err: any) {
       console.error("Error saving experience:", err);
@@ -180,7 +185,7 @@ const ExperienceForm = () => {
         saveToAPI(experiencesData);
       }, 1000);
     },
-    [Contactid, lastSavedData],
+    [contactId, lastSavedData],
   );
 
   const toggleExperienceMode = () => {

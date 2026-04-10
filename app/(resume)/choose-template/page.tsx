@@ -187,8 +187,6 @@
 //   const totalTemplates = templateData.length;
 //   const isUpgradeNeeded = availableTemplates < totalTemplates;
 
- 
-
 //   // Hide scrollbar when modals are open
 //   useEffect(() => {
 //     if (showPreview || showInitialPopup || showUploadPopup || showUpgradePopup)
@@ -1083,8 +1081,6 @@
 
 // export default Choose_template;
 
-
-
 "use client";
 
 import { useContext, useState, useEffect } from "react";
@@ -1099,6 +1095,7 @@ import Footer from "@/app/components/layouts/Footer";
 import {
   convertParsedResumeToFrontendFormat,
   getLocalStorage,
+  removeSessionStorage,
   setLocalStorage,
 } from "@/app/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -1177,8 +1174,10 @@ function Choose_template() {
     setFullResumeData,
     setChosenTemplate,
     setIsUploadMode,
-    clearUploadMode
+    clearUploadMode,
   } = useContext(CreateContext);
+
+  removeSessionStorage("oldRouteNameDashboard");
 
   const [usersCurrentPlan, setUsersCurrentPlan] =
     useState<usersCurrentPlan | null>(null);
@@ -1189,7 +1188,7 @@ function Choose_template() {
   } | null>(null);
   const [previewTemplate, setPreviewTemplate] = useState<Template | null>(null);
   const [showPreview, setShowPreview] = useState(false);
-  const [showInitialPopup, setShowInitialPopup] = useState(true); // Changed to true to show on load
+  const [showInitialPopup, setShowInitialPopup] = useState(false); // Changed to true to show on load
   const [showUploadPopup, setShowUploadPopup] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -1203,7 +1202,6 @@ function Choose_template() {
     setChosenTemplate(template);
     setLocalStorage("chosenTemplate", template);
     router.push(`/resume-details/contact`);
-
   };
 
   // Get current plan name (normalized)
@@ -1233,8 +1231,7 @@ function Choose_template() {
   const handleTemplateSelect = (template: Template, index: number) => {
     if (isTemplateAccessible(index)) {
       clickresumedetails(template);
-        clearUploadMode(); 
-
+      clearUploadMode();
     } else {
       const requiredPlan = getRequiredPlanForTemplate(index);
       setSelectedLockedTemplate({
@@ -1282,7 +1279,12 @@ function Choose_template() {
 
   // Hide scrollbar when modals are open
   useEffect(() => {
-    if (showPreview || showInitialPopup || showUploadPopup || showUpgradePopup) {
+    if (
+      showPreview ||
+      showInitialPopup ||
+      showUploadPopup ||
+      showUpgradePopup
+    ) {
       document.body.classList.add("overflow-hidden");
     } else {
       document.body.classList.remove("overflow-hidden");
@@ -1317,7 +1319,10 @@ function Choose_template() {
   };
 
   const isValidFileType = (file: File): boolean => {
-    const validTypes = ["application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
+    const validTypes = [
+      "application/pdf",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
     return validTypes.includes(file.type);
   };
 
@@ -1352,89 +1357,86 @@ function Choose_template() {
       setUploadStatus("processing");
       setUploadProgress(100);
 
-       const response = await axios.post(
-      `https://ai.aryuacademy.com/api/v1/resume/parse-resume`,
-      formData,
-      {
-        headers: { "Content-Type": "multipart/form-data" },
-        onUploadProgress: (progressEvent) => {
-          if (progressEvent.total) {
-            const percentCompleted = Math.round(
-              (progressEvent.loaded * 100) / progressEvent.total,
-            );
-            setUploadProgress(percentCompleted);
-          }
+      const response = await axios.post(
+        `https://ai.aryuacademy.com/api/v1/resume/parse-resume`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+          onUploadProgress: (progressEvent) => {
+            if (progressEvent.total) {
+              const percentCompleted = Math.round(
+                (progressEvent.loaded * 100) / progressEvent.total,
+              );
+              setUploadProgress(percentCompleted);
+            }
+          },
         },
-      },
-    );
+      );
 
-    const parsedResumeData = response.data.parsed;
-    const convertedData = convertParsedResumeToFrontendFormat(parsedResumeData);
+      const parsedResumeData = response.data.parsed;
+      const convertedData =
+        convertParsedResumeToFrontendFormat(parsedResumeData);
 
-    // Update context with parsed data
-    if (convertedData.contact) {
-      setContact(convertedData.contact);
-    }
+      // Update context with parsed data
+      if (convertedData.contact) {
+        setContact(convertedData.contact);
+      }
 
-    if (convertedData.experiences) {
-      setExperiences(convertedData.experiences);
-    }
+      if (convertedData.experiences) {
+        setExperiences(convertedData.experiences);
+      }
 
-    if (convertedData.educations) {
-      setEducation(convertedData.educations);
-    }
+      if (convertedData.educations) {
+        setEducation(convertedData.educations);
+      }
 
-    if (convertedData.skills) {
-      setSkills(convertedData.skills);
-    }
+      if (convertedData.skills) {
+        setSkills(convertedData.skills);
+      }
 
-    if (convertedData.summary && convertedData.summary[0]) {
-      setSummary(convertedData.summary[0]);
-    }
+      if (convertedData.summary && convertedData.summary[0]) {
+        setSummary(convertedData.summary[0]);
+      }
 
-    if (convertedData.finalize) {
-      setFinalize(convertedData.finalize);
-    }
+      if (convertedData.finalize) {
+        setFinalize(convertedData.finalize);
+      }
 
-    setFullResumeData({
-      contact: convertedData.contact,
-      experiences: convertedData.experiences,
-      education: convertedData.educations,
-      skills: convertedData.skills,
-      summary: convertedData.summary?.[0] || "",
-      finalize: convertedData.finalize || {},
-    });
+      setFullResumeData({
+        contact: convertedData.contact,
+        experiences: convertedData.experiences,
+        education: convertedData.educations,
+        skills: convertedData.skills,
+        summary: convertedData.summary?.[0] || "",
+        finalize: convertedData.finalize || {},
+      });
 
-    // Set default template
-    const defaultTemplate = templateData[0];
-    setLocalStorage("chosenTemplate", defaultTemplate);
-    setChosenTemplate(defaultTemplate);
+      // Set default template
+      const defaultTemplate = templateData[0];
+      setLocalStorage("chosenTemplate", defaultTemplate);
+      setChosenTemplate(defaultTemplate);
+      setIsUploadMode(true);
+      setUploadStatus("success");
 
-    // 🔥 IMPORTANT: Set upload mode to prevent fetching existing data
-    setIsUploadMode(true);
-    
-    setUploadStatus("success");
-
-    setTimeout(() => {
-      setShowUploadPopup(false);
-      router.push(`/resume-details/contact`);
-      
       setTimeout(() => {
-        setIsUploading(false);
-        setUploadedFile(null);
+        setShowUploadPopup(false);
+        router.push(`/resume-details/contact`);
 
-        setUploadStatus("idle");
-        setUploadProgress(0);
-      }, 500);
-    }, 2000);
-    
-  } catch (err) {
-    console.error("Upload error:", err);
-    setUploadStatus("error");
-    setErrorMessage("Failed to parse resume. Please try again.");
-    setIsUploading(false);
-  }
-};
+        setTimeout(() => {
+          setIsUploading(false);
+          setUploadedFile(null);
+
+          setUploadStatus("idle");
+          setUploadProgress(0);
+        }, 500);
+      }, 2000);
+    } catch (err) {
+      console.error("Upload error:", err);
+      setUploadStatus("error");
+      setErrorMessage("Failed to parse resume. Please try again.");
+      setIsUploading(false);
+    }
+  };
 
   const resetUploadPopup = () => {
     if (uploadStatus !== "uploading" && uploadStatus !== "processing") {
@@ -1470,12 +1472,14 @@ function Choose_template() {
               <Lock className="w-12 h-12 mx-auto mb-3" />
               <h3 className="text-2xl font-bold mb-2">Template Locked</h3>
               <p className="text-white/80">
-                This template requires {selectedLockedTemplate.requiredPlan} plan
+                This template requires {selectedLockedTemplate.requiredPlan}{" "}
+                plan
               </p>
             </div>
             <div className="p-6">
               <p className="text-gray-600 text-center mb-6">
-                Upgrade your plan to unlock this template and get access to all premium features
+                Upgrade your plan to unlock this template and get access to all
+                premium features
               </p>
               <div className="flex gap-3">
                 <button
@@ -1721,7 +1725,8 @@ function Choose_template() {
                     onChange={(e) => {
                       const file = e.target.files?.[0];
                       if (file && isValidFileType(file)) handleFileUpload(file);
-                      else if (file) setErrorMessage("Please upload a PDF file");
+                      else if (file)
+                        setErrorMessage("Please upload a PDF file");
                     }}
                     disabled={
                       uploadStatus === "uploading" ||
@@ -1738,7 +1743,9 @@ function Choose_template() {
 
                       {/* Progress Bar with Percentage */}
                       <p className="text-sm font-medium text-gray-900 mb-2">
-                        {uploadStatus === "uploading" ? "Uploading" : "Processing"}
+                        {uploadStatus === "uploading"
+                          ? "Uploading"
+                          : "Processing"}
                         ... {uploadProgress}%
                       </p>
                       <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -2047,7 +2054,7 @@ function Choose_template() {
                       <div className="relative w-full h-50 sm:h-62.5 md:h-75 lg:h-85">
                         <Image
                           src={template.image}
-                          alt={template.style}
+                          alt={template?.style || "Template Image"}
                           fill
                           className={`object-contain w-full transition-transform duration-500 ${
                             isAccessible ? "group-hover:scale-105" : ""
@@ -2145,7 +2152,8 @@ function Choose_template() {
                   if (isTemplateAccessible(templateIndex)) {
                     clickresumedetails(previewTemplate);
                   } else {
-                    const requiredPlan = getRequiredPlanForTemplate(templateIndex);
+                    const requiredPlan =
+                      getRequiredPlanForTemplate(templateIndex);
                     setSelectedLockedTemplate({
                       template: previewTemplate,
                       requiredPlan: PLAN_CONFIG[requiredPlan].label,

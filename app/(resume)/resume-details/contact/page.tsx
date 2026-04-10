@@ -29,22 +29,24 @@ import {
 import { GrUserWorker } from "react-icons/gr";
 import { FiTrash2 } from "react-icons/fi";
 import { FaLinkedin, FaGlobeAmericas } from "react-icons/fa";
-// import "primereact/resources/themes/lara-light-indigo/theme.css";
-// import "primereact/resources/primereact.min.css";
 import { API_URL } from "@/app/config/api";
 import { CreateContext } from "@/app/context/CreateContext";
 import Stepper from "../../../components/resume/Steppers";
 import {
   getCroppedImgWithOptions,
   getLocalStorage,
+  getSessionStorage,
+  removeSessionStorage,
+  sanitizeName,
   sanitizeNumber,
   sanitizeText,
   sanitizeTextWithComma,
   sanitizeTextWithCommaHyphen,
   sanitizeTextWithDot,
   setLocalStorage,
+  setSessionStorage,
 } from "@/app/utils";
-import { Template } from "@/app/types";
+import { Contact, Template } from "@/app/types";
 import { User } from "@/app/types/user.types";
 
 const ContactForm = () => {
@@ -52,10 +54,17 @@ const ContactForm = () => {
 
   const userDetails = getLocalStorage<User>("user_details");
   const userId = userDetails?.id;
+  // const Contactid = UseContext.contact.contactId;
+
+  const cameFromDashboard = getSessionStorage("oldRouteNameDashboard");
+
   const chosenResumeDetails = getLocalStorage<Template>("chosenTemplate");
   const { contact, setContact, fullResumeData, setFullResumeData } =
     useContext(CreateContext);
 
+  const contactId = contact._id || contact.contactId;
+  console.log("contactId", contactId);
+  console.log("use contact", contact);
   const [showAdditional, setShowAdditional] = useState<boolean>(false);
 
   const [open, setOpen] = useState(false);
@@ -72,62 +81,6 @@ const ContactForm = () => {
 
   // Track initial load
   const initialLoadDone = useRef(false);
-
-  const fetchContact = async () => {
-    try {
-      const response = await axios.get(
-        `${API_URL}/api/contact-resume/get-contact/${userId}`,
-      );
-
-      const data = response.data[0] || response.data;
-
-      const updatedContact = {
-        ...contact,
-        contactId: data?._id || "",
-        firstName: data?.firstName || "",
-        lastName: data?.lastName || "",
-        jobTitle: data?.jobTitle || "",
-        phone: data?.phone || "",
-        email: data?.email || "",
-        address: data?.address || "",
-        city: data?.city || "",
-        country: data?.country || "",
-        postcode: data?.postCode || "",
-        linkedin: data?.linkedIn || "",
-        portfolio: data?.portfolio || "",
-        croppedImage: data?.photo || null,
-      };
-
-      setContact(updatedContact);
-
-      // Update fullResumeData in context
-      if (fullResumeData) {
-        setFullResumeData({
-          ...fullResumeData,
-          contact: updatedContact,
-        });
-      } else {
-        setFullResumeData({
-          template: chosenResumeDetails || null,
-          contact: updatedContact,
-          experiences: [],
-          education: [],
-          skills: [],
-          summary: "",
-          finalize: {},
-        });
-      }
-
-      // Mark initial load as complete
-      initialLoadDone.current = true;
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  // useEffect(() => {
-  //   fetchContact();
-  // }, []);
 
   useEffect(() => {
     // Don't save until initial data is loaded
@@ -177,7 +130,11 @@ const ContactForm = () => {
     return new File([u8arr], fileName, { type: mime });
   };
 
+  // const contactId = getSessionStorage("contact_id");
+
   const saveToAPI = async (contactData: typeof contact) => {
+    console.log(contact);
+    console.log(contactId);
     if (!userId) {
       console.error("User ID is required");
       return false;
@@ -192,10 +149,6 @@ const ContactForm = () => {
       fd.append("firstName", contactData.firstName || "");
       fd.append("lastName", contactData.lastName || "");
       fd.append("email", contactData.email || "");
-      // fd.append(
-      //   "jobTitle",
-      //   contactData.jobTitle?.length > 0 ? contactData.jobTitle : "",
-      // );
       fd.append("jobTitle", contactData.jobTitle || "");
       fd.append("phone", contactData.phone || "");
       fd.append("country", contactData.country || "");
@@ -234,13 +187,23 @@ const ContactForm = () => {
         `${API_URL}/api/contact-resume/update`,
         fd,
         {
-          params: { userId: userId, templateId: chosenResumeDetails?.id },
+          params: {
+            userId: userId,
+            templateId: chosenResumeDetails?.id,
+            id: contactId,
+              type:cameFromDashboard || "new",
+          },
           headers: {
             "Content-Type": "multipart/form-data",
           },
         },
       );
-      fetchContact();
+
+
+      console.log(response.data);
+      console.log(response.data.resume._id);
+      setContact((prev) => ({ ...prev, contactId: response.data.resume._id }));
+      fetchContact(response.data.resume._id);
       return true;
     } catch (err) {
       console.error("Error saving contact:", err);
@@ -250,22 +213,86 @@ const ContactForm = () => {
     }
   };
 
+  const fetchContact = async (data1: string | number) => {
+    console.log("data", data1);
+    console.log("111111");
+    console.log("Fetching contact with ID:", contactId);
+    console.log("contact", contact);
+
+    try {
+      const response = await axios.get(
+        `${API_URL}/api/contact-resume/get-contact/${userId}`,
+        {
+          params: {
+            templateId: chosenResumeDetails?.templateId || "1",
+            resumeId: data1 || "",
+          },
+        },
+      );
+
+      const data = response.data[0] || response.data;
+      console.log("Fetched contact data:", data);
+
+      const updatedContact = {
+        ...contact,
+        contactId: data?._id || "",
+        firstName: data?.firstName || "",
+        lastName: data?.lastName || "",
+        jobTitle: data?.jobTitle || "",
+        phone: data?.phone || "",
+        email: data?.email || "",
+        address: data?.address || "",
+        city: data?.city || "",
+        country: data?.country || "",
+        postcode: data?.postCode || "",
+        linkedin: data?.linkedIn || "",
+        portfolio: data?.portfolio || "",
+        croppedImage: data?.photo || null,
+      };
+
+      setContact(updatedContact);
+
+      // Update fullResumeData in context
+      if (fullResumeData) {
+        setFullResumeData({
+          ...fullResumeData,
+          contact: updatedContact,
+        });
+      } else {
+        setFullResumeData({
+          template: chosenResumeDetails || null,
+          contact: updatedContact,
+          experiences: [],
+          education: [],
+          skills: [],
+          summary: "",
+          finalize: {},
+        });
+      }
+
+      // Mark initial load as complete
+      initialLoadDone.current = true;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const debouncedSave = useCallback((contactData: typeof contact) => {
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current);
     }
     saveTimeoutRef.current = setTimeout(() => {
-      saveToAPI(contactData);
+      // saveToAPI(contactData);
     }, 1000);
   }, []);
 
-  const handleContactChange = (field: keyof typeof contact, value: string) => {
-    setContact((prev) => {
-      const updated = { ...prev, [field]: value };
-      debouncedSave(updated);
-      return updated;
-    });
-  };
+  // const handleContactChange = (field: keyof typeof contact, value: string) => {
+  //   setContact((prev) => {
+  //     const updated = { ...prev, [field]: value };
+  //     debouncedSave(updated);
+  //     return updated;
+  //   });
+  // };
 
   useEffect(() => {
     return () => {
@@ -322,6 +349,101 @@ const ContactForm = () => {
       saveToAPI(updated);
       return updated;
     });
+  };
+
+  // Add this validation helper function before your component
+  const validateForm = (contact: Contact) => {
+    const errors: {
+      firstName?: string;
+      lastName?: string;
+      email?: string;
+      phone?: string;
+    } = {};
+
+    // First Name validation - only check if present
+    if (!contact.firstName.trim()) {
+      errors.firstName = "First name is required";
+    }
+
+    // Last Name validation - only check if present
+    if (!contact.lastName.trim()) {
+      errors.lastName = "Last name is required";
+    }
+
+    // Email validation - only check if present
+   // Email validation
+if (!contact.email || !contact.email.trim()) {
+  errors.email = "Email address is required";
+}
+
+    // Phone validation - optional, no validation needed
+    // Only check format if you want, but you said only check if present
+    // So phone remains optional with no validation
+
+    return errors;
+  };
+
+  // Add this state in your component
+  const [validationErrors, setValidationErrors] = useState<{
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    phone?: string;
+  }>({});
+
+  const [touched, setTouched] = useState<{
+    firstName?: boolean;
+    lastName?: boolean;
+    email?: boolean;
+    phone?: boolean;
+  }>({});
+
+  // Add this function to handle field blur
+  const handleBlur = (field: keyof typeof touched) => {
+    setTouched((prev) => ({ ...prev, [field]: true }));
+  };
+
+  // Add this function to validate on form submission
+  const isFormValid = () => {
+    const errors = validateForm(contact);
+    setValidationErrors(errors);
+    // Mark all required fields as touched
+    setTouched({
+      firstName: true,
+      lastName: true,
+      email: true,
+      phone: true,
+    });
+    return Object.keys(errors).length === 0;
+  };
+
+  // Update handleContactChange to validate on change
+  const handleContactChange = (field: keyof typeof contact, value: string) => {
+    setContact((prev) => {
+      const updated = { ...prev, [field]: value };
+      debouncedSave(updated);
+      return updated;
+    });
+
+    // Validate on change if field has been touched
+    if (touched[field as keyof typeof touched]) {
+      const errors = validateForm({ ...contact, [field]: value });
+      setValidationErrors((prev) => ({
+        ...prev,
+        [field]: errors[field as keyof typeof errors],
+      }));
+    }
+  };
+
+  // Update the Next button click handler
+  const handleNext = async () => {
+    if (isFormValid()) {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+      await saveToAPI(contact);
+      router.push("/resume-details/experience");
+    }
   };
 
   return (
@@ -628,7 +750,7 @@ const ContactForm = () => {
             {/* Name Section - Compact for two columns */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
               {/* First Name */}
-              <div className="group">
+              {/* <div className="group">
                 <label
                   htmlFor="firstName"
                   className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
@@ -643,17 +765,17 @@ const ContactForm = () => {
                     onChange={(e) =>
                       handleContactChange(
                         "firstName",
-                        sanitizeTextWithDot(e.target.value),
+                        sanitizeName(e.target.value),
                       )
                     }
                     placeholder="Yuvaraj"
                     className="w-full px-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
                   />
                 </div>
-              </div>
+              </div> */}
 
               {/* Last Name */}
-              <div className="group">
+              {/* <div className="group">
                 <label
                   htmlFor="lastName"
                   className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
@@ -668,20 +790,92 @@ const ContactForm = () => {
                     onChange={(e) =>
                       handleContactChange(
                         "lastName",
-                        sanitizeTextWithDot(e.target.value),
+                        sanitizeName(e.target.value),
                       )
                     }
                     placeholder="Thangaraj"
                     className="w-full px-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
                   />
                 </div>
+              </div> */}
+
+              {/* First Name */}
+              <div className="group">
+                <label
+                  htmlFor="firstName"
+                  className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
+                >
+                  First Name <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    id="firstName"
+                    value={contact.firstName}
+                    onBlur={() => handleBlur("firstName")}
+                    onChange={(e) =>
+                      handleContactChange(
+                        "firstName",
+                        sanitizeName(e.target.value),
+                      )
+                    }
+                    placeholder="Yuvaraj"
+                    className={`w-full px-3 py-2.5 sm:py-3 bg-white border rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:ring-2 transition-all duration-300 ${
+                      validationErrors.firstName && touched.firstName
+                        ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
+                        : "border-gray-200 focus:border-[#c40116] focus:ring-[#c40116]/20"
+                    }`}
+                  />
+                </div>
+                {validationErrors.firstName && touched.firstName && (
+                  <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
+                    <span className="inline-block w-1 h-1 rounded-full bg-red-500"></span>
+                    {validationErrors.firstName}
+                  </p>
+                )}
+              </div>
+
+              {/* Last Name */}
+              <div className="group">
+                <label
+                  htmlFor="lastName"
+                  className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
+                >
+                  Last Name <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    id="lastName"
+                    value={contact.lastName}
+                    onBlur={() => handleBlur("lastName")}
+                    onChange={(e) =>
+                      handleContactChange(
+                        "lastName",
+                        sanitizeName(e.target.value),
+                      )
+                    }
+                    placeholder="Thangaraj"
+                    className={`w-full px-3 py-2.5 sm:py-3 bg-white border rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:ring-2 transition-all duration-300 ${
+                      validationErrors.lastName && touched.lastName
+                        ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
+                        : "border-gray-200 focus:border-[#c40116] focus:ring-[#c40116]/20"
+                    }`}
+                  />
+                </div>
+                {validationErrors.lastName && touched.lastName && (
+                  <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
+                    <span className="inline-block w-1 h-1 rounded-full bg-red-500"></span>
+                    {validationErrors.lastName}
+                  </p>
+                )}
               </div>
             </div>
 
             {/* Phone + Email - Compact for two columns */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
               {/* Phone */}
-              <div className="group">
+              {/* <div className="group">
                 <label
                   htmlFor="phone"
                   className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
@@ -706,10 +900,10 @@ const ContactForm = () => {
                     className="w-full pl-10 pr-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
                   />
                 </div>
-              </div>
+              </div> */}
 
               {/* Email */}
-              <div className="group">
+              {/* <div className="group">
                 <label
                   htmlFor="email"
                   className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
@@ -729,6 +923,69 @@ const ContactForm = () => {
                     }
                     placeholder="youremail@example.com"
                     className="w-full pl-10 pr-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
+                  />
+                </div>
+              </div> */}
+
+              {/* Email */}
+              <div className="group">
+                <label
+                  htmlFor="email"
+                  className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
+                >
+                  Email Address <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                    <IoMailOutline className="w-4 h-4" />
+                  </div>
+                  <input
+                    type="email"
+                    id="email"
+                    value={contact?.email}
+                    onBlur={() => handleBlur("email")}
+                    onChange={(e) =>
+                      handleContactChange("email", e.target.value)
+                    }
+                    placeholder="youremail@example.com"
+                    className={`w-full pl-10 pr-3 py-2.5 sm:py-3 bg-white border rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:ring-2 transition-all duration-300 ${
+                      validationErrors.email && touched.email
+                        ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
+                        : "border-gray-200 focus:border-[#c40116] focus:ring-[#c40116]/20"
+                    }`}
+                  />
+                </div>
+                {validationErrors.email && touched.email && (
+                  <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
+                    <span className="inline-block w-1 h-1 rounded-full bg-red-500"></span>
+                    {validationErrors.email}
+                  </p>
+                )}
+              </div>
+
+              <div className="group">
+                <label
+                  htmlFor="phone"
+                  className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
+                >
+                  Phone Number
+                </label>
+                <div className="relative">
+                  <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                    <IoCallOutline className="w-4 h-4" />
+                  </div>
+                  <input
+                    type="tel"
+                    id="phone"
+                    value={contact.phone}
+                    onChange={(e) =>
+                      handleContactChange(
+                        "phone",
+                        sanitizeNumber(e.target.value),
+                      )
+                    }
+                    placeholder="12345-12345"
+                    className="w-full pl-10 pr-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 transition-all duration-300"
                   />
                 </div>
               </div>
@@ -992,7 +1249,7 @@ const ContactForm = () => {
               Back
             </button>
 
-            <button
+            {/* <button
               className="bg-red-600 hover:bg-red-700 text-white text-sm md:text-base px-4 py-2 md:px-6 md:py-2.5 rounded-lg font-nunito font-semibold transition-colors duration-300 cursor-pointer"
               onClick={() => {
                 if (saveTimeoutRef.current) {
@@ -1002,6 +1259,13 @@ const ContactForm = () => {
                   router.push("/resume-details/experience");
                 });
               }}
+            >
+              Next Experience
+            </button> */}
+
+            <button
+              className="bg-red-600 hover:bg-red-700 text-white text-sm md:text-base px-4 py-2 md:px-6 md:py-2.5 rounded-lg font-nunito font-semibold transition-colors duration-300 cursor-pointer"
+              onClick={handleNext}
             >
               Next Experience
             </button>

@@ -27,7 +27,7 @@ import { BsArrowLeftCircleFill } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 import Stepper from "../../../components/resume/Steppers";
 import { Education } from "@/app/types/context.types";
-import { getLocalStorage, setLocalStorage } from "@/app/utils";
+import { getLocalStorage, getSessionStorage, setLocalStorage, setSessionStorage } from "@/app/utils";
 import { API_URL } from "@/app/config/api";
 
 // Dynamically import Editor to avoid SSR issues
@@ -45,7 +45,14 @@ const Editor = dynamic(
 
 const Education_form = () => {
   const UseContext = useContext(CreateContext);
-  const Contactid = UseContext?.contact.contactId;
+  const contactId = UseContext?.contact._id;
+
+  // const cameFromDashboard = getSessionStorage("oldRouteNameDashboard");
+
+
+  
+   
+
   const { fullResumeData, setFullResumeData } = UseContext || {};
 
   const router = useRouter();
@@ -101,7 +108,7 @@ const Education_form = () => {
   };
 
   const saveToAPI = async (educationData: typeof education) => {
-    if (!Contactid) {
+    if (!contactId) {
       console.error("Contact ID is required");
       return false;
     }
@@ -122,7 +129,7 @@ const Education_form = () => {
       const response = await axios.post(
         `${API_URL}/api/education/update`,
         formData,
-        { params: { contactId: Contactid } },
+        { params: { contactId: contactId } },
       );
 
       setLastSavedData(currentDataString);
@@ -146,13 +153,13 @@ const Education_form = () => {
         saveToAPI(educationData);
       }, 1000);
     },
-    [Contactid, lastSavedData],
+    [contactId, lastSavedData],
   );
 
   const fetched = async () => {
     try {
       const response = await axios.get(
-        `${API_URL}/api/education/get-education/${Contactid}`,
+        `${API_URL}/api/education/get-education/${contactId}`,
       );
 
       const educationList = response.data?.[0]?.education || [];
@@ -188,10 +195,10 @@ const Education_form = () => {
   };
 
   // useEffect(() => {
-  //   if (Contactid) {
+  //   if (contactId) {
   //     fetched();
   //   }
-  // }, [Contactid]);
+  // }, [contactId]);
 
   // Cleanup timeout on unmount
   useEffect(() => {

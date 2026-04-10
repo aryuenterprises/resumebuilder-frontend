@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FiFileText,
@@ -43,6 +43,7 @@ import {
   getLocalStorage,
   removeLocalStorage,
   setLocalStorage,
+  setSessionStorage,
 } from "@/app/utils";
 import { User } from "@/app/types/user.types";
 import {
@@ -54,6 +55,7 @@ import axios from "axios";
 import { API_URL } from "@/app/config/api";
 import { TemplateOne, TemplateTwo } from "@/app/components/templates";
 import { templateData } from "@/app/data";
+import { CreateContext } from "@/app/context/CreateContext";
 
 interface BillingRecord {
   length: number;
@@ -113,6 +115,19 @@ const DashboardPage = () => {
     ResumeItem[]
   >([]);
 
+    const {
+      setContact,
+      setEducation,
+      setExperiences,
+      setSkills,
+      setSummary,
+      setFinalize,
+      setFullResumeData,
+      setChosenTemplate,
+      setIsUploadMode,
+      clearUploadMode
+    } = useContext(CreateContext);
+
   const userDetails = getLocalStorage<User>("user_details");
   const userId = userDetails?.id;
   const userName = `${userDetails?.firstName} ${userDetails?.lastName}`;
@@ -167,8 +182,6 @@ const DashboardPage = () => {
     fetchUserData();
   }, []);
 
-  console.log("filteredOldResumeData", filteredOldResumeData);
-
   useEffect(() => {
     const fetchPaymentRecords = async () => {
       try {
@@ -181,7 +194,6 @@ const DashboardPage = () => {
           },
         );
 
-        console.log(response?.data?.paymentRecord);
         setPaymentRecords(response?.data?.paymentRecord);
       } catch (err) {
         console.log(err);
@@ -252,7 +264,6 @@ const DashboardPage = () => {
       }
     };
 
-    console.log(records);
     const totalSpent = records.reduce((acc, curr) => {
       return curr.status === "paid" ? acc + curr.amount : acc;
     }, 0);
@@ -427,8 +438,6 @@ const DashboardPage = () => {
     const listItems = doc.querySelectorAll("li");
     return Array.from(listItems).map((li) => li.textContent.trim());
   };
-
-
 
   return (
     <ProtectedRoute>
@@ -888,6 +897,8 @@ const DashboardPage = () => {
                             e.stopPropagation();
                             router.push(`/resume-details/contact`);
                             setLocalStorage("chosenTemplate", item);
+                            setSessionStorage("oldRouteNameDashboard", "old");
+
                           }}
                           className="bg-white rounded-full p-3 hover:bg-gray-100 transition-colors cursor-pointer"
                         >

@@ -37,7 +37,7 @@ const Editor = dynamic(
 
 const SummaryForm = () => {
   const UseContext = useContext(CreateContext);
-  const Contactid = UseContext?.contact.contactId;
+  const contactId = UseContext?.contact.contactId;
 
   const {
     summary,
@@ -98,7 +98,7 @@ const SummaryForm = () => {
   }, [summary]);
 
   const saveToAPI = async (summaryText: string) => {
-    if (!Contactid) {
+    if (!contactId) {
       console.error("Contact ID is required");
       return false;
     }
@@ -119,7 +119,7 @@ const SummaryForm = () => {
       const response = await axios.post(
         `${API_URL}/api/summary/update`,
         formData,
-        { params: { contactId: Contactid } },
+        { params: { contactId: contactId } },
       );
 
       setLastSavedData(plainText);
@@ -144,7 +144,7 @@ const SummaryForm = () => {
         saveToAPI(summaryText);
       }, 1000);
     },
-    [Contactid, lastSavedData],
+    [contactId, lastSavedData],
   );
 
   const handleTextChange = (htmlValue: string) => {
@@ -187,7 +187,7 @@ const SummaryForm = () => {
   const fetchSummary = async () => {
     try {
       const response = await axios.get(
-        `${API_URL}/api/summary/get-summary/${Contactid}`,
+        `${API_URL}/api/summary/get-summary/${contactId}`,
       );
 
       const fetchedText = response.data[0]?.text || "";
@@ -203,10 +203,10 @@ const SummaryForm = () => {
   };
 
   // useEffect(() => {
-  //   if (Contactid) {
+  //   if (contactId) {
   //     fetchSummary();
   //   }
-  // }, [Contactid]);
+  // }, [contactId]);
 
   // Cleanup timeout on unmount
   useEffect(() => {
