@@ -62,8 +62,6 @@ const ContactForm = () => {
     useContext(CreateContext);
 
   const contactId = contact._id || contact.contactId;
-  console.log("contactId", contactId);
-  console.log("use contact", contact);
   const [showAdditional, setShowAdditional] = useState<boolean>(false);
 
   const [open, setOpen] = useState(false);
@@ -132,8 +130,7 @@ const ContactForm = () => {
   // const contactId = getSessionStorage("contact_id");
 
   const saveToAPI = async (contactData: typeof contact) => {
-    console.log(contact);
-    console.log(contactId);
+ 
     if (!userId) {
       console.error("User ID is required");
       return false;
@@ -199,8 +196,7 @@ const ContactForm = () => {
       );
 
 
-      console.log(response.data);
-      console.log(response.data.resume._id);
+    
       setContact((prev) => ({ ...prev, contactId: response.data.resume._id }));
       fetchContact(response.data.resume._id);
       return true;
@@ -213,10 +209,7 @@ const ContactForm = () => {
   };
 
   const fetchContact = async (data1: string | number) => {
-    console.log("data", data1);
-    console.log("111111");
-    console.log("Fetching contact with ID:", contactId);
-    console.log("contact", contact);
+   
 
     try {
       const response = await axios.get(
@@ -229,10 +222,8 @@ const ContactForm = () => {
         },
       );
 
-      console.log("response",response)
       const data = response.data[0] || response.data;
-      console.log("Fetched contact data:", data);
-      console.log("resume id:", data.resumeId);
+     
 
       setResumeId(data.resumeId || "");
 

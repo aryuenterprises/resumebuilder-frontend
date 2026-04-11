@@ -28,8 +28,7 @@ export default function RootLayout({
 
   const { isUploadMode,fullResumeData,summary } = useContext(CreateContext);
 
-  console.log("summary",summary)
-  console.log("fullResumeData",fullResumeData)
+
 
   const selectedResume = templateData.find(
     (resume) => resume.id == (chosenTemplate?.id || chosenTemplate?.templateId),

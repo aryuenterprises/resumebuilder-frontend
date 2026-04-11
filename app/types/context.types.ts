@@ -125,7 +125,7 @@ export interface CustomSection {
 }
 
 export interface Template {
-  id?: number;
+  id: number;
   templateId?:string;
   style?: string;
   image?: any;

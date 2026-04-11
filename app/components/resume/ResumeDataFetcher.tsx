@@ -40,7 +40,6 @@ export function ResumeDataFetcher({ children }: ResumeDataFetcherProps) {
 
   const chosenTemplate = getLocalStorage<Template>("chosenTemplate");
 
-  console.log("chosenTemplate", chosenTemplate);
 
   const userDetails = getLocalStorage<User>("user_details");
   const userId = userDetails?.id;

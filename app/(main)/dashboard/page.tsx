@@ -137,7 +137,7 @@ const DashboardPage = () => {
         setusersCurrentPlan(response?.data?.payments?.[0]);
         fetchOldResumeData();
       } catch (err) {
-        console.log(err);
+        console.error(err);
       }
     };
 

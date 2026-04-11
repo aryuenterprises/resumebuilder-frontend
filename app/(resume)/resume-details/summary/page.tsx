@@ -49,7 +49,6 @@ const SummaryForm = () => {
     setFullResumeData,
   } = UseContext;
 
-  console.log("summary",summary);
 
   const [isSaving, setIsSaving] = useState(false);
   const [lastSavedData, setLastSavedData] = useState<string>("");
