@@ -10,7 +10,11 @@ import dynamic from "next/dynamic";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { AnimatePresence, motion } from "framer-motion";
-import {MonthYearDisplay, removeSessionStorage, setSessionStorage } from "@/app/utils";
+import {
+  MonthYearDisplay,
+  removeSessionStorage,
+  setSessionStorage,
+} from "@/app/utils";
 
 import { IoMdAdd, IoIosArrowDown } from "react-icons/io";
 import {
@@ -53,8 +57,6 @@ const ExperienceForm = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [lastSavedData, setLastSavedData] = useState<string>("");
   setSessionStorage("oldRouteNameDashboard", "old");
-
-
 
   const { experiences, setExperiences, fullResumeData, setFullResumeData } =
     UseContext;
@@ -121,7 +123,7 @@ const ExperienceForm = () => {
           touched: {},
           showPicker: false,
           year: item.startDate
-            ? new Date(item.startDate).getFullYear() 
+            ? new Date(item.startDate).getFullYear()
             : new Date().getFullYear(),
         }));
 
@@ -163,7 +165,7 @@ const ExperienceForm = () => {
       );
 
       setLastSavedData(currentDataString);
-      fetchExp()
+      fetchExp();
       return true;
     } catch (err: any) {
       console.error("Error saving experience:", err);
@@ -302,7 +304,7 @@ const ExperienceForm = () => {
 
   return (
     <section className="relative h-screen overflow-hidden">
-      <div className="p-3 md:p-4 lg:p-5 bg-white rounded-xl sm:rounded-2xl shadow-soft h-full flex flex-col">
+      <div className="py-2 lg:py-3 px-3 md:px-4 lg:px-5 bg-white rounded-xl sm:rounded-2xl shadow-soft h-full flex flex-col">
         {/* Header Section */}
         <Stepper />
 
@@ -343,7 +345,7 @@ const ExperienceForm = () => {
             <div className="flex justify-end me-5">
               <button
                 onClick={() => setExperienceTipsButtonClicked((prev) => !prev)}
-                className="flex items-center justify-center xs:justify-start gap-2 bg-linear-to-r from-white to-gray-50/80 border border-gray-200 rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 text-gray-700 text-xs sm:text-sm font-medium hover:border-[#c40116] hover:text-[#c40116] hover:shadow-md transition-all duration-200 w-fit cursor-pointer"
+                className="flex items-center justify-center xs:justify-start gap-2 bg-linear-to-r from-white to-gray-50/80 border border-gray-200 rounded-xl p-2 text-xs sm:text-sm text-gray-700 text-xs sm:text-sm font-medium hover:border-[#c40116] hover:text-[#c40116] hover:shadow-md transition-all duration-200 w-fit cursor-pointer"
               >
                 <motion.div
                   animate={{ opacity: [1, 0.4, 1] }}
@@ -353,7 +355,7 @@ const ExperienceForm = () => {
                     ease: "easeInOut",
                   }}
                 >
-                  <FaRegLightbulb className="text-[#c40116] text-base sm:text-lg" />
+                  <FaRegLightbulb className="text-[#c40116] " />
                 </motion.div>
                 <span className="truncate">Experience Tips</span>
                 <motion.div
@@ -371,7 +373,7 @@ const ExperienceForm = () => {
             List your work experience starting with the most recent position
             first.
           </p>
-         
+
           {/* Experience Toggle */}
           <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
             <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
@@ -410,8 +412,7 @@ const ExperienceForm = () => {
               </div>
             </div>
           </div>
-      
-      
+
           {isExperienced && (
             <div className="space-y-3 sm:space-y-4 pb-8 sm:pb-10">
               {experiences.map((exp, index) => (
@@ -486,28 +487,29 @@ const ExperienceForm = () => {
                           <div className="relative">
                             <input
                               type="text"
-                              value={exp.jobTitle}
+                              value={exp.jobTitle || ""}
                               onChange={(e) =>
                                 handleChange(exp.id, "jobTitle", e.target.value)
                               }
                               placeholder="Enter your job title"
-                              className="w-full px-3 sm:px-4 py-2.5 sm:py-3.5 bg-linear-to-b from-white to-gray-50/50 border border-gray-200 rounded-xl text-gray-800 text-xs sm:text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
+                              className="w-full px-3 sm:px-4 py-2.5 sm:py-3.5 bg-white border border-gray-200 rounded-xl text-gray-800 text-xs sm:text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300 hover:shadow-md"
                             />
                           </div>
                         </div>
 
                         <div className="group">
                           <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2 group-hover:text-[#c40116] transition-colors">
-Company name                          </label>
+                            Company name{" "}
+                          </label>
                           <div className="relative">
                             <input
                               type="text"
-                              value={exp.employer}
+                              value={exp.employer|| ""}
                               onChange={(e) =>
                                 handleChange(exp.id, "employer", e.target.value)
                               }
                               placeholder="Company name"
-                              className="w-full px-3 sm:px-4 py-2.5 sm:py-3.5 bg-linear-to-b from-white to-gray-50/50 border border-gray-200 rounded-xl text-gray-800 text-xs sm:text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
+                              className="w-full px-3 sm:px-4 py-2.5 sm:py-3.5 bg-white border border-gray-200 rounded-xl text-gray-800 text-xs sm:text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300 hover:shadow-md"
                             />
                           </div>
                         </div>
@@ -522,12 +524,12 @@ Company name                          </label>
                           <div className="relative">
                             <input
                               type="text"
-                              value={exp.location}
+                              value={exp.location|| ""}
                               onChange={(e) =>
                                 handleChange(exp.id, "location", e.target.value)
                               }
                               placeholder="City, State or Remote"
-                              className="w-full px-3 sm:px-4 py-2.5 sm:py-3.5 bg-linear-to-b from-white to-gray-50/50 border border-gray-200 rounded-xl text-gray-800 text-xs sm:text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
+                              className="w-full px-3 sm:px-4 py-2.5 sm:py-3.5 bg-white border border-gray-200 rounded-xl text-gray-800 text-xs sm:text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300 hover:shadow-md"
                             />
                           </div>
                         </div>
@@ -539,7 +541,7 @@ Company name                          </label>
                             </label>
                             <input
                               type="month"
-                              value={exp.startDate}
+                              value={exp.startDate|| ""}
                               onChange={(e) =>
                                 handleChange(
                                   exp.id,
@@ -547,7 +549,7 @@ Company name                          </label>
                                   e.target.value,
                                 )
                               }
-                              className="w-full px-3 sm:px-4 py-2.5 sm:py-3.5 bg-linear-to-b from-white to-gray-50/50 border border-gray-200 rounded-xl text-gray-800 text-xs sm:text-sm font-medium placeholder:text-gray-400 focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
+                              className="w-full px-3 sm:px-4 py-2.5 sm:py-3.5 bg-white border border-gray-200 rounded-xl text-gray-800 text-xs sm:text-sm font-medium placeholder:text-gray-400 focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300 hover:shadow-md"
                             />
                           </div>
 
@@ -557,27 +559,30 @@ Company name                          </label>
                             </label>
                             <input
                               type="month"
-                              value={exp.endDate}
+                              value={exp.endDate|| ""}
                               onChange={(e) =>
                                 handleChange(exp.id, "endDate", e.target.value)
                               }
-                              className="w-full px-3 sm:px-4 py-2.5 sm:py-3.5 bg-linear-to-b from-white to-gray-50/50 border border-gray-200 rounded-xl text-gray-800 text-xs sm:text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
+                              className="w-full px-3 sm:px-4 py-2.5 sm:py-3.5 bg-white border border-gray-200 rounded-xl text-gray-800 text-xs sm:text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300 "
                             />
                           </div>
                         </div>
                       </div>
 
-                      {/* Description with AI */}
-                      <div className="group">
-                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2 group-hover:text-[#c40116] transition-colors">
+                     
+
+                      <div className="">
+                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2 group-hover:text-primary-600 transition-colors">
                           Description
                         </label>
 
                         <div className="flex justify-end">
-                          <div className="relative inline-block group ">
+                          <div className="relative inline-block group">
                             <button
                               onClick={() => handleSubmitAi(index)}
                               disabled={loading || !exp.jobTitle}
+                              
+
                               className={`inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg  text-xs sm:text-sm font-medium transition-all duration-300 w-fit ${
                                 !exp.jobTitle
                                   ? "bg-linear-to-r from-gray-300 text-black to-gray-400 cursor-not-allowed opacity-90"
@@ -585,8 +590,13 @@ Company name                          </label>
                               }`}
                               type="button"
                             >
+                              {/* AI Icon with animation */}
                               <svg
-                                className="w-3.5 h-3.5 sm:w-4 sm:h-4"
+                                className={`w-3.5 h-3.5 sm:w-4 sm:h-4 transition-all duration-300 ${
+                                  loading
+                                    ? "animate-spin"
+                                    : "group-hover:rotate-12"
+                                }`}
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -598,12 +608,26 @@ Company name                          </label>
                                   d="M13 10V3L4 14h7v7l9-11h-7z"
                                 />
                               </svg>
-                              {loading ? "Generating..." : "Generate with AI"}
+
+                              {loading ? (
+                                <div className="flex items-center gap-1.5">
+                                  <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                  <span>Generating...</span>
+                                </div>
+                              ) : (
+                                <span>Generate with AI</span>
+                              )}
                             </button>
 
-                            {!exp.jobTitle && (
-                              <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1 w-40 sm:w-48 bg-gray-900 text-white text-[10px] xs:text-xs rounded-lg p-1.5 sm:p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
-                                Enter your job title to use this feature
+                            {/* Tooltip - Now properly positioned as a sibling of the button with group class */}
+                            {!exp.jobTitle && !loading && (
+                              <div className="absolute left-1/2 -translate-x-1/2 -top-2 -translate-y-full mt-1 w-48 bg-gray-900 text-white text-xs rounded-lg py-2 px-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-50 shadow-lg">
+                                <div className="relative text-center">
+                                  <span className="inline-block mr-1">⚠️</span>
+                                  Enter your job title to use this feature
+                                  {/* Tooltip arrow pointing down to button */}
+                                  <div className="absolute left-1/2 -translate-x-1/2 -bottom-1.5 w-2 h-2 bg-gray-900 rotate-45"></div>
+                                </div>
                               </div>
                             )}
                           </div>
@@ -611,9 +635,9 @@ Company name                          </label>
 
                         <Editor
                           className="rounded-lg mt-3 md:mt-4 lg:mt-5 bg-white"
-                          value={exp.text}
+                          value={exp.text || ""}
                           headerTemplate={
-                            <div className="flex gap-1 p-2  flex-wrap items-center bg-gray-50">
+                            <div className="flex gap-1 p-2 flex-wrap items-center bg-gray-50">
                               <button
                                 type="button"
                                 className="ql-bold p-2 hover:bg-gray-200 rounded transition-colors duration-200"
@@ -622,7 +646,6 @@ Company name                          </label>
                               >
                                 <span className="font-bold">B</span>
                               </button>
-
                               <button
                                 type="button"
                                 className="ql-italic p-2 hover:bg-gray-200 rounded transition-colors duration-200"
@@ -631,7 +654,6 @@ Company name                          </label>
                               >
                                 <span className="italic">I</span>
                               </button>
-
                               <button
                                 type="button"
                                 className="ql-underline p-2 hover:bg-gray-200 rounded transition-colors duration-200"
@@ -640,7 +662,6 @@ Company name                          </label>
                               >
                                 <span className="underline">U</span>
                               </button>
-
                               <button
                                 type="button"
                                 className="ql-list p-2 hover:bg-gray-200 rounded transition-colors duration-200"
@@ -650,7 +671,6 @@ Company name                          </label>
                               >
                                 <span>1.</span>
                               </button>
-
                               <button
                                 type="button"
                                 className="ql-list p-2 hover:bg-gray-200 rounded transition-colors duration-200"
@@ -660,7 +680,6 @@ Company name                          </label>
                               >
                                 <span>•</span>
                               </button>
-
                               <button
                                 type="button"
                                 className="ql-clean p-2 hover:bg-gray-200 rounded transition-colors duration-200"
@@ -881,7 +900,7 @@ Company name                          </label>
         )}
 
         {/* Fixed Footer - Always visible at bottom */}
-        <div className="shrink-0 pt-4 mt-4 border-t border-gray-200">
+        <div className="shrink-0 pt-2  lg:pt-3">
           <div className="flex justify-between">
             <button
               className="bg-gray-200 text-[#374151] border border-gray-300 text-sm md:text-base px-4 py-2 md:px-6 md:py-2.5 rounded-lg font-nunito font-semibold hover:bg-gray-100 transition-colors duration-300 cursor-pointer"

@@ -2,6 +2,7 @@
 
 import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
+import { IoHomeOutline } from "react-icons/io5";
 
 const Stepper = () => {
   const router = useRouter();
@@ -13,8 +14,9 @@ const Stepper = () => {
     { id: 1, name: "Experience", path: "/resume-details/experience" },
     { id: 2, name: "Education", path: "/resume-details/education" },
     { id: 3, name: "Skills", path: "/resume-details/skills" },
-    { id: 4, name: "Summary", path: "/resume-details/summary" },
-    { id: 5, name: "Finalize", path: "/resume-details/finalize" },
+    { id: 5, name: "Projects", path: "/resume-details/project" },
+    { id: 6, name: "Summary", path: "/resume-details/summary" },
+    { id: 7, name: "Finalize", path: "/resume-details/finalize" },
   ];
 
   // Check if mobile on mount and on resize
@@ -38,23 +40,26 @@ const Stepper = () => {
 
   const currentStep = steps.findIndex((step) => step.path === pathname);
 
+  const handleHomeClick = () => {
+    router.push("/choose-template"); // Change to your home/dashboard path
+  };
+
   // Mobile view - Compact with icons
   if (isMobile) {
     return (
       <div className="w-full bg-white border-b border-gray-100 ">
-        <div className="">
-          {/* Mobile header - Show current step */}
-          {/* <div className="flex items-center justify-between mb-2">
-            <h2 className="text-sm font-semibold text-gray-700">
-              {currentStep >= 0 ? steps[currentStep].name : "Resume Builder"}
-            </h2>
-            <span className="text-xs text-gray-500">
-              {currentStep + 1}/{steps.length}
-            </span>
-          </div> */}
+        <div className="flex items-center gap-2 overflow-x-auto no-scollbar">
+
+ {/* Home Icon Button */}
+          <button
+            onClick={handleHomeClick}
+            className="px-2 py-1 rounded-xl bg-gradient-to-r from-gray-50 to-gray-100 hover:from-primary-50 hover:to-primary-100 transition-all duration-300 group shrink-0"
+          >
+            <IoHomeOutline className="w-4 h-4 text-gray-600  transition-colors" />
+          </button>
 
           {/* Mobile progress dots */}
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center gap-2">
             {steps.map((step, index) => {
               const isActive = currentStep === index;
               const isCompleted = currentStep > index;
@@ -87,7 +92,9 @@ const Stepper = () => {
                         />
                       </svg>
                     ) : (
-                      <span className="text-xs sm:font-semibold">{index + 1}</span>
+                      <span className="text-xs sm:font-semibold">
+                        {index + 1}
+                      </span>
                     )}
                   </div>
 
@@ -114,11 +121,18 @@ const Stepper = () => {
 
   // Desktop/Tablet view
   return (
-    <div className="w-full bg-white border-b border-gray-100   overflow-hidden">
+    <div className="w-full bg-white border-b border-gray-100   overflow-x-auto">
       <div className="w-full mx-auto px-2 py-1  overflow-x-auto no-scollbar">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3 justify-between">
+          {/* Home Icon Button */}
+          <button
+            onClick={handleHomeClick}
+            className="px-3 py-2 rounded-xl bg-gradient-to-r from-gray-50 to-gray-100 hover:from-primary-50 hover:to-primary-100 transition-all duration-300 group shrink-0"
+          >
+            <IoHomeOutline className="w-5 h-5 text-gray-600  transition-colors" />
+          </button>
           {/* Steps with names always visible */}
-          <div className="flex items-center w-full">
+          <div className="flex items-center w-full gap-3">
             {steps.map((step, index) => {
               const isActive = currentStep === index;
               const isCompleted = currentStep > index;
@@ -176,30 +190,10 @@ const Stepper = () => {
                     </div>
                   </button>
 
-                  {/* Separator line (not after last step) */}
-                  {index < steps.length - 1 && (
-                    <div
-                      className={`flex-1 h-0.5 mx-4 ${
-                        isCompleted ? "bg-emerald-200" : "bg-gray-200"
-                      }`}
-                    />
-                  )}
+                 
                 </div>
               );
             })}
-          </div>
-
-          {/* Progress Text - Desktop only */}
-          <div className="hidden lg:block ml-8 shrink-0">
-            <div className="bg-gray-50 px-4 py-2 rounded-lg">
-              <span className="text-sm font-medium text-gray-700">
-                Step{" "}
-                <span className="text-[#c40116] font-semibold">
-                  {currentStep + 1}
-                </span>{" "}
-                of {steps.length}
-              </span>
-            </div>
           </div>
         </div>
       </div>

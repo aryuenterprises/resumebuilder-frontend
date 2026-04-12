@@ -109,11 +109,7 @@ border:0
 
 
 
-/* ////////  RED SELECTION   /////// */
-::selection {
-  background-color: rgba(190, 1, 23, 0.9);
-  color: #ffffff;
-}
+
 
 
 

@@ -26,9 +26,6 @@ export default function RootLayout({
   const [showMobilePreview, setShowMobilePreview] = useState(false);
 
 
-  const { isUploadMode,fullResumeData,summary } = useContext(CreateContext);
-
-
 
   const selectedResume = templateData.find(
     (resume) => resume.id == (chosenTemplate?.id || chosenTemplate?.templateId),

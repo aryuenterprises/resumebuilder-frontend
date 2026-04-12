@@ -6,6 +6,7 @@ export interface Contact {
   firstName: string;
   lastName: string;
   jobTitle?: string;
+  dateOfBirth?: string;
   phone?: string;
   email?: string;
   linkedin?: string;
@@ -42,11 +43,44 @@ export interface Education {
   year: number;
   error?: Record<string, string>;
 }
-export interface Skill {
+// export interface Skill {
+//   id: string | number;
+//   level: number | null;
+//   skill: string;
+//   error?: Record<string, string>;
+// }
+
+// Simple Skill (no categories)
+export interface SimpleSkill {
+  id: number | string;
+  name: string;
+}
+
+// Category Skill (for categorized mode)
+export interface CategorySkill {
+  id: number | string;
+  name: string;
+}
+
+// Skill Category
+export interface SkillCategory {
+  id: number | string;
+  title: string;
+  skills: CategorySkill[];
+  isOpen?: boolean;
+}
+
+// Combined skills type
+export type SkillsType = SimpleSkill[] | SkillCategory[];
+
+export interface Project {
   id: string | number;
-  level: number | null;
-  skill: string;
-  error?: Record<string, string>;
+  title: string;
+  techStack: string[];
+  description: string;
+  liveUrl: string;
+  githubUrl: string;
+  isOpen: boolean;
 }
 export interface Finalize {
   languages?: Array<{
@@ -126,15 +160,14 @@ export interface CustomSection {
 
 export interface Template {
   id: number;
-  templateId?:string;
+  templateId?: string;
   style?: string;
   image?: any;
   description?: string;
   temp?: "free" | "paid";
   pic?: string;
   component?: ComponentType<any>;
-  contact?:{_id:string}
-
+  contact?: { _id: string };
 }
 
 export interface FullResumeData {
@@ -142,18 +175,20 @@ export interface FullResumeData {
   contact: Contact;
   experiences: Experience[];
   education: Education[];
-  skills: Skill[];
+  skills: SkillsType[];
   summary: string;
   finalize: Finalize;
+  projects?: Project[];
 }
 
 export interface AllData {
   contact?: Contact;
   educations?: Education[];
   experiences?: Experience[];
-  skills?: Skill[];
+  skills?: SkillsType[];
   finalize?: Finalize;
   summary?: string;
+  projects?: Project[];
 }
 
 export interface ResumeProps {
@@ -176,8 +211,11 @@ export interface CreateContextType {
   setEducation: React.Dispatch<React.SetStateAction<Education[]>>;
 
   // Skills
-  skills: Skill[];
-  setSkills: React.Dispatch<React.SetStateAction<Skill[]>>;
+  skills: SkillsType;
+  setSkills: (skills: SkillsType | ((prev: SkillsType) => SkillsType)) => void;
+
+  projects: Project[];
+  setProjects: React.Dispatch<React.SetStateAction<Project[]>>;
 
   // summary
   summary: string;
@@ -212,8 +250,6 @@ export interface CreateContextType {
   setIsUploadMode: (value: boolean) => void;
   clearUploadMode: () => void;
 
-
   resumeId: string;
   setResumeId: (value: string) => void;
-
 }

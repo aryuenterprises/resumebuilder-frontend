@@ -98,13 +98,7 @@ const FinalizeForm = () => {
 
   // Safely destructure context with fallbacks
   const {
-    contact = {
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      contactId: "",
-    },
+    contact ,
     summary = "",
     skills = [],
     experiences = [],
@@ -119,6 +113,8 @@ const FinalizeForm = () => {
   const [lastSavedData, setLastSavedData] = useState<string>("");
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const initialLoadDone = useRef(false);
+
+  console.log("contact",contact)
 
   const stripHtml = (html: string) => {
     return html?.replace(/<\/?[^>]+(>|$)/g, "") || "";
@@ -170,7 +166,7 @@ const FinalizeForm = () => {
   const saveToAPI = async (finalizeData: typeof finalize) => {
 
 
-    if (!contact?.contactId) {
+    if (!contact?._id) {
       console.error("Contact ID is required");
       return false;
     }
@@ -492,7 +488,7 @@ const FinalizeForm = () => {
 
   return (
     <section className="relative h-screen overflow-hidden">
-      <div className="p-3 md:p-4 lg:p-5 bg-white rounded-xl sm:rounded-2xl shadow-soft h-full flex flex-col">
+      <div className="py-2 lg:py-3 px-3 md:px-4 lg:px-5 bg-white rounded-xl sm:rounded-2xl shadow-soft h-full flex flex-col">
         {/* Header Section */}
         <Stepper />
 
@@ -957,7 +953,7 @@ const FinalizeForm = () => {
         </div>
 
         {/* Fixed Footer */}
-        <div className="shrink-0 pt-4 mt-4 border-t border-gray-200">
+        <div className="shrink-0 pt-2  lg:pt-3">
           <div className="flex justify-between">
             <button
               className="bg-gray-200 text-[#374151] border border-gray-300 text-sm md:text-base px-4 py-2 md:px-6 md:py-2.5 rounded-lg font-nunito font-semibold hover:bg-gray-100 transition-colors duration-300 cursor-pointer"

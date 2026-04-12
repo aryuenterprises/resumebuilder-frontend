@@ -1353,6 +1353,7 @@ import { User } from "@/app/types/user.types";
 import { ResumeProps } from "@/app/types";
 
 const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
+  console.log("alldata", alldata);
   const context = useContext(CreateContext);
 
   const pathname = usePathname();
@@ -1364,6 +1365,18 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
   const skills = alldata?.skills || context?.skills || [];
   const finalize = alldata?.finalize || context?.finalize || {};
   const summary = alldata?.summary || context?.summary || "";
+  const projects = alldata?.projects ||
+    context?.projects || [
+      {
+        description: "<p>Illum, officia provi.</p>",
+        githubUrl: "https://www.kapefuliqedetu.com.au",
+        id: 1775990988500,
+        isOpen: true,
+        liveUrl: "https://www.padame.org",
+        techStack: ["Similique do libero", "sd", "sds", "dsa", "das", "dasd"],
+        title: "Facere et atque omni",
+      },
+    ];
 
   const addressParts = [
     contact?.address,
@@ -2251,9 +2264,11 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
 
       <div
         // className="t1-resume  bg-white"
-        className={`t1-resume bg-white ${alldata ? 'is-preview' : ''}`}
-        style={{ margin: "0 auto",  boxShadow: !alldata ? "0 0 10px rgba(0,0,0,0.1)" : "" 
- }}
+        className={`t1-resume bg-white ${alldata ? "is-preview" : ""}`}
+        style={{
+          margin: "0 auto",
+          boxShadow: !alldata ? "0 0 10px rgba(0,0,0,0.1)" : "",
+        }}
       >
         <style>{`@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');`}</style>
         <style>{styles}</style>

@@ -454,11 +454,12 @@ export default function ChoosePlanPage() {
         });
       } catch (error: any) {
         console.error("Error activating free plan:", error);
-        Swal.fire(
-          "Error",
-          error?.response?.data?.message || "Failed to activate free plan",
-          "error",
-        );
+      Swal.fire({
+  title: "Not Applicable",
+  text: error?.response?.data?.message || "Failed to activate free plan",
+  icon: "error",
+  confirmButtonText: "Close" // Change this to your preferred text
+});
       } finally {
         setLoading(false);
       }

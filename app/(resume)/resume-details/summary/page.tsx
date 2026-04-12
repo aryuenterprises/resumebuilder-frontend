@@ -37,7 +37,7 @@ const Editor = dynamic(
 
 const SummaryForm = () => {
   const UseContext = useContext(CreateContext);
-  const contactId = UseContext?.contact.contactId;
+  const contactId = UseContext?.contact._id;
 
   const {
     summary,
@@ -218,7 +218,7 @@ const SummaryForm = () => {
 
   return (
     <section className="relative h-screen overflow-hidden">
-      <div className="p-3 md:p-4 lg:p-5 bg-white rounded-xl sm:rounded-2xl shadow-soft h-full flex flex-col">
+      <div className="py-2 lg:py-3 px-3 md:px-4 lg:px-5 bg-white rounded-xl sm:rounded-2xl shadow-soft h-full flex flex-col">
         {/* Header Section */}
         <Stepper />
 
@@ -378,7 +378,7 @@ const SummaryForm = () => {
           </div>
         </div>
 
-        <div className="shrink-0 pt-4 mt-4 border-t border-gray-200">
+        <div className="shrink-0 pt-2  lg:pt-3">
           <div className="flex justify-between">
             <button
               className="bg-gray-200 text-[#374151] border border-gray-300 text-sm md:text-base px-4 py-1 md:px-6 md:py-2 rounded-lg font-nunito font-semibold hover:bg-gray-100 transition-colors duration-300 cursor-pointer"

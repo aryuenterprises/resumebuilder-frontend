@@ -9,7 +9,7 @@ import React, {
 } from "react";
 import Cropper from "react-easy-crop";
 import { useDropzone } from "react-dropzone";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import {
@@ -27,8 +27,8 @@ import {
   IoEyeOutline,
 } from "react-icons/io5";
 import { GrUserWorker } from "react-icons/gr";
-import { FiTrash2 } from "react-icons/fi";
-import { FaLinkedin, FaGlobeAmericas } from "react-icons/fa";
+import { FiCheckCircle, FiTrash2, FiX, FiXCircle } from "react-icons/fi";
+import { FaLinkedin, FaGlobeAmericas, FaRegLightbulb } from "react-icons/fa";
 import { API_URL } from "@/app/config/api";
 import { CreateContext } from "@/app/context/CreateContext";
 import Stepper from "../../../components/resume/Steppers";
@@ -48,21 +48,27 @@ import {
 } from "@/app/utils";
 import { Contact, Template } from "@/app/types";
 import { User } from "@/app/types/user.types";
+import { IoIosArrowDown } from "react-icons/io";
 
 const ContactForm = () => {
   const router = useRouter();
 
   const userDetails = getLocalStorage<User>("user_details");
   const userId = userDetails?.id;
-  // const Contactid = UseContext.contact.contactId;
-
 
   const chosenResumeDetails = getLocalStorage<Template>("chosenTemplate");
-  const { contact, setContact, fullResumeData, setFullResumeData,setResumeId,resumeId } =
-    useContext(CreateContext);
+  const {
+    contact,
+    setContact,
+    fullResumeData,
+    setFullResumeData,
+    setResumeId,
+    resumeId,
+  } = useContext(CreateContext);
 
-  const contactId = contact._id || contact.contactId;
-  const [showAdditional, setShowAdditional] = useState<boolean>(false);
+  const contactId = contact._id;
+  console.log("contactId", contactId);
+  console.log("use contact", contact);
 
   const [open, setOpen] = useState(false);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
@@ -127,10 +133,9 @@ const ContactForm = () => {
     return new File([u8arr], fileName, { type: mime });
   };
 
-  // const contactId = getSessionStorage("contact_id");
-
   const saveToAPI = async (contactData: typeof contact) => {
- 
+    console.log(contact);
+    console.log(contactId);
     if (!userId) {
       console.error("User ID is required");
       return false;
@@ -146,6 +151,7 @@ const ContactForm = () => {
       fd.append("lastName", contactData.lastName || "");
       fd.append("email", contactData.email || "");
       fd.append("jobTitle", contactData.jobTitle || "");
+      fd.append("dateOfBirth", contactData.dateOfBirth || "");
       fd.append("phone", contactData.phone || "");
       fd.append("country", contactData.country || "");
       fd.append("city", contactData.city || "");
@@ -195,8 +201,8 @@ const ContactForm = () => {
         },
       );
 
-
-    
+      console.log(response.data);
+      console.log(response.data.resume._id);
       setContact((prev) => ({ ...prev, contactId: response.data.resume._id }));
       fetchContact(response.data.resume._id);
       return true;
@@ -209,7 +215,10 @@ const ContactForm = () => {
   };
 
   const fetchContact = async (data1: string | number) => {
-   
+    console.log("data", data1);
+    console.log("111111");
+    console.log("Fetching contact with ID:", contactId);
+    console.log("contact", contact);
 
     try {
       const response = await axios.get(
@@ -222,8 +231,10 @@ const ContactForm = () => {
         },
       );
 
+      console.log("response", response);
       const data = response.data[0] || response.data;
-     
+      console.log("Fetched contact data:", data);
+      console.log("resume id:", data.resumeId);
 
       setResumeId(data.resumeId || "");
 
@@ -276,17 +287,17 @@ const ContactForm = () => {
       clearTimeout(saveTimeoutRef.current);
     }
     saveTimeoutRef.current = setTimeout(() => {
-      // saveToAPI(contactData);
+      saveToAPI(contactData);
     }, 1000);
   }, []);
 
-  // const handleContactChange = (field: keyof typeof contact, value: string) => {
-  //   setContact((prev) => {
-  //     const updated = { ...prev, [field]: value };
-  //     debouncedSave(updated);
-  //     return updated;
-  //   });
-  // };
+  const handleContactChange = (field: keyof typeof contact, value: string) => {
+    setContact((prev) => {
+      const updated = { ...prev, [field]: value };
+      debouncedSave(updated);
+      return updated;
+    });
+  };
 
   useEffect(() => {
     return () => {
@@ -345,104 +356,20 @@ const ContactForm = () => {
     });
   };
 
-  // Add this validation helper function before your component
-  const validateForm = (contact: Contact) => {
-    const errors: {
-      firstName?: string;
-      lastName?: string;
-      email?: string;
-      phone?: string;
-    } = {};
-
-    // First Name validation - only check if present
-    if (!contact.firstName.trim()) {
-      errors.firstName = "First name is required";
-    }
-
-    // Last Name validation - only check if present
-    if (!contact.lastName.trim()) {
-      errors.lastName = "Last name is required";
-    }
-
-    // Email validation - only check if present
-   // Email validation
-if (!contact.email || !contact.email.trim()) {
-  errors.email = "Email address is required";
-}
-
-    // Phone validation - optional, no validation needed
-    // Only check format if you want, but you said only check if present
-    // So phone remains optional with no validation
-
-    return errors;
-  };
-
-  // Add this state in your component
-  const [validationErrors, setValidationErrors] = useState<{
-    firstName?: string;
-    lastName?: string;
-    email?: string;
-    phone?: string;
-  }>({});
-
-  const [touched, setTouched] = useState<{
-    firstName?: boolean;
-    lastName?: boolean;
-    email?: boolean;
-    phone?: boolean;
-  }>({});
-
-  // Add this function to handle field blur
-  const handleBlur = (field: keyof typeof touched) => {
-    setTouched((prev) => ({ ...prev, [field]: true }));
-  };
-
-  // Add this function to validate on form submission
-  const isFormValid = () => {
-    const errors = validateForm(contact);
-    setValidationErrors(errors);
-    // Mark all required fields as touched
-    setTouched({
-      firstName: true,
-      lastName: true,
-      email: true,
-      phone: true,
-    });
-    return Object.keys(errors).length === 0;
-  };
-
-  // Update handleContactChange to validate on change
-  const handleContactChange = (field: keyof typeof contact, value: string) => {
-    setContact((prev) => {
-      const updated = { ...prev, [field]: value };
-      debouncedSave(updated);
-      return updated;
-    });
-
-    // Validate on change if field has been touched
-    if (touched[field as keyof typeof touched]) {
-      const errors = validateForm({ ...contact, [field]: value });
-      setValidationErrors((prev) => ({
-        ...prev,
-        [field]: errors[field as keyof typeof errors],
-      }));
-    }
-  };
-
   // Update the Next button click handler
   const handleNext = async () => {
-    if (isFormValid()) {
-      if (saveTimeoutRef.current) {
-        clearTimeout(saveTimeoutRef.current);
-      }
-      await saveToAPI(contact);
-      // router.push("/resume-details/experience");
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
     }
+    await saveToAPI(contact);
+    router.push("/resume-details/experience");
   };
+
+  const [contactTipsClicked, setContactTipsClicked] = useState(false);
 
   return (
     <section className="relative h-screen overflow-hidden">
-      <div className="p-3 md:p-4 lg:p-5 bg-white shadow-soft h-full flex flex-col">
+      <div className="py-2 lg:py-3 px-3 md:px-4 lg:px-5 bg-white shadow-soft h-full flex flex-col">
         <Stepper />
 
         {/* Photo Viewer Modal */}
@@ -510,7 +437,7 @@ if (!contact.email || !contact.email.trim()) {
                 {!imageSrc ? (
                   <div
                     {...getRootProps()}
-                    className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-[#c40116] hover:bg-gray-50/50 transition-all duration-300"
+                    className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-[#c40116] hover:bg-gray-50/50 transition-all duration-300 hover:shadow-md"
                   >
                     <input {...getInputProps()} />
                     <div className="flex flex-col items-center justify-center gap-3">
@@ -594,11 +521,39 @@ if (!contact.email || !contact.email.trim()) {
             <h1 className="text-xl sm:text-2xl font-semibold bg-linear-to-r from-[#5e000b] to-[#c40116] bg-clip-text text-transparent">
               Contact Details
             </h1>
+
             {isSaving && (
               <span className="ml-auto text-xs text-gray-500">Saving...</span>
             )}
           </div>
-          <p className="text-gray-600 text-xs sm:text-sm font-medium">
+
+          <div className="flex justify-end me-5">
+            <button
+              onClick={() => setContactTipsClicked((prev) => !prev)}
+              className="flex items-center justify-center xs:justify-start gap-2 bg-linear-to-r from-white to-gray-50/80 border border-gray-200 rounded-xl p-2 text-gray-700 text-xs sm:text-sm font-medium hover:border-[#c40116] hover:text-[#c40116] text-sm hover:shadow-md transition-all duration-200 w-fit"
+              type="button"
+            >
+              <motion.div
+                animate={{ opacity: [1, 0.4, 1] }}
+                transition={{
+                  duration: 1,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              >
+                <FaRegLightbulb className="text-[#c40116]  " />
+              </motion.div>
+              <span className="truncate ">Contact Tips</span>
+              <motion.div
+                animate={{ rotate: contactTipsClicked ? 180 : 0 }}
+                transition={{ duration: 0.3 }}
+                className="text-gray-500 shrink-0"
+              >
+                <IoIosArrowDown />
+              </motion.div>
+            </button>
+          </div>
+          <p className="text-gray-600 text-xs sm:text-sm mt-2 font-medium">
             Add your up-to-date contact information so employers and recruiters
             can easily reach you.
           </p>
@@ -609,7 +564,7 @@ if (!contact.email || !contact.email.trim()) {
                 <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
                   {contact.croppedImage ? (
                     <div className="relative group self-start">
-                      <div className="absolute inset-0 bg-linear-to-r from-[#c40116]/20 to-[#be0117]/20 rounded-xl blur-md group-hover:blur-lg transition-all duration-300"></div>
+                      <div className="absolute inset-0 bg-linear-to-r from-[#c40116]/20 to-[#be0117]/20 rounded-xl blur-md group-hover:blur-lg transition-all duration-300 hover:shadow-md"></div>
 
                       {/* Clickable Photo with View/Edit Options */}
                       <div className="relative">
@@ -648,7 +603,7 @@ if (!contact.email || !contact.email.trim()) {
                     </div>
                   ) : (
                     <div
-                      className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-linear-to-br from-gray-50 to-gray-100 flex items-center justify-center cursor-pointer border-2 border-dashed border-gray-200 hover:border-[#c40116] hover:from-[#c40116]/10 hover:to-[#be0117]/10 transition-all duration-300 group self-start"
+                      className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-linear-to-br from-gray-50 to-gray-100 flex items-center justify-center cursor-pointer border-2 border-dashed border-gray-200 hover:border-[#c40116] hover:from-[#c40116]/10 hover:to-[#be0117]/10 transition-all duration-300 hover:shadow-md group self-start"
                       onClick={(e) => {
                         e.preventDefault();
                         setOpen(true);
@@ -662,32 +617,6 @@ if (!contact.email || !contact.email.trim()) {
                     <h3 className="text-sm font-semibold text-gray-700 mb-2">
                       Profile Photo
                     </h3>
-                    {/* <div className="flex flex-wrap gap-2"> */}
-                    {/* <button
-                        type="button"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setOpen(true);
-                        }}
-                        className="inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-linear-to-r from-[#c40116] to-[#be0117] text-white text-xs font-medium rounded-lg hover:shadow-lg hover:shadow-[#c40116]/25 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex-1 sm:flex-none"
-                      >
-                        <IoCloudUploadOutline className="w-3.5 h-3.5" />
-                        <span className="whitespace-nowrap">Upload Photo</span>
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handleDeletePhoto();
-                        }}
-                        className="inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-linear-to-r from-gray-100 to-gray-50 text-gray-700 text-xs font-medium rounded-lg border border-gray-200 hover:border-[#c40116] hover:text-[#c40116] hover:shadow-md transition-all duration-200 flex-1 sm:flex-none"
-                      >
-                        <FiTrash2 className="w-3.5 h-3.5" />
-                        <span className="whitespace-nowrap">Delete Photo</span>
-                      </button> */}
-
-                    {/* </div> */}
 
                     <div className="flex flex-wrap gap-2">
                       {!contact.croppedImage ? (
@@ -744,264 +673,109 @@ if (!contact.email || !contact.email.trim()) {
             {/* Name Section - Compact for two columns */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
               {/* First Name */}
-              {/* <div className="group">
+              <div className="group">
                 <label
                   htmlFor="firstName"
-                  className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
+                  className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5"
                 >
                   First Name
                 </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    id="firstName"
-                    value={contact.firstName}
-                    onChange={(e) =>
-                      handleContactChange(
-                        "firstName",
-                        sanitizeName(e.target.value),
-                      )
-                    }
-                    placeholder="Yuvaraj"
-                    className="w-full px-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
-                  />
-                </div>
-              </div> */}
+                <input
+                  type="text"
+                  id="firstName"
+                  value={contact.firstName || ""}
+                  onChange={(e) =>
+                    handleContactChange(
+                      "firstName",
+                      sanitizeName(e.target.value),
+                    )
+                  }
+                  placeholder="Peter"
+                  className="w-full px-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-gray-300 focus:ring-2 focus:ring-gray-600/20 focus:shadow-lg focus:shadow-gray-600/20 transition-all duration-300  hover:shadow-md"
+                />
+              </div>
 
               {/* Last Name */}
-              {/* <div className="group">
+              <div className="group">
                 <label
                   htmlFor="lastName"
                   className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
                 >
                   Last Name
                 </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    id="lastName"
-                    value={contact.lastName}
-                    onChange={(e) =>
-                      handleContactChange(
-                        "lastName",
-                        sanitizeName(e.target.value),
-                      )
-                    }
-                    placeholder="Thangaraj"
-                    className="w-full px-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
-                  />
-                </div>
-              </div> */}
-
-              {/* First Name */}
-              <div className="group">
-                <label
-                  htmlFor="firstName"
-                  className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
-                >
-                  First Name <span className="text-red-500">*</span>
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    id="firstName"
-                    value={contact.firstName}
-                    onBlur={() => handleBlur("firstName")}
-                    onChange={(e) =>
-                      handleContactChange(
-                        "firstName",
-                        sanitizeName(e.target.value),
-                      )
-                    }
-                    placeholder="Yuvaraj"
-                    className={`w-full px-3 py-2.5 sm:py-3 bg-white border rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:ring-2 transition-all duration-300 ${
-                      validationErrors.firstName && touched.firstName
-                        ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
-                        : "border-gray-200 focus:border-[#c40116] focus:ring-[#c40116]/20"
-                    }`}
-                  />
-                </div>
-                {validationErrors.firstName && touched.firstName && (
-                  <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
-                    <span className="inline-block w-1 h-1 rounded-full bg-red-500"></span>
-                    {validationErrors.firstName}
-                  </p>
-                )}
-              </div>
-
-              {/* Last Name */}
-              <div className="group">
-                <label
-                  htmlFor="lastName"
-                  className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
-                >
-                  Last Name <span className="text-red-500">*</span>
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    id="lastName"
-                    value={contact.lastName}
-                    onBlur={() => handleBlur("lastName")}
-                    onChange={(e) =>
-                      handleContactChange(
-                        "lastName",
-                        sanitizeName(e.target.value),
-                      )
-                    }
-                    placeholder="Thangaraj"
-                    className={`w-full px-3 py-2.5 sm:py-3 bg-white border rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:ring-2 transition-all duration-300 ${
-                      validationErrors.lastName && touched.lastName
-                        ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
-                        : "border-gray-200 focus:border-[#c40116] focus:ring-[#c40116]/20"
-                    }`}
-                  />
-                </div>
-                {validationErrors.lastName && touched.lastName && (
-                  <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
-                    <span className="inline-block w-1 h-1 rounded-full bg-red-500"></span>
-                    {validationErrors.lastName}
-                  </p>
-                )}
+                <input
+                  type="text"
+                  id="lastName"
+                  value={contact.lastName || ""}
+                  onChange={(e) =>
+                    handleContactChange(
+                      "lastName",
+                      sanitizeName(e.target.value),
+                    )
+                  }
+                  placeholder="Khan"
+                  className="w-full px-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300 hover:shadow-md"
+                />
               </div>
             </div>
 
             {/* Phone + Email - Compact for two columns */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
               {/* Phone */}
-              {/* <div className="group">
+              <div className="group">
                 <label
                   htmlFor="phone"
                   className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
                 >
                   Phone Number
                 </label>
-                <div className="relative">
-                  <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                    <IoCallOutline className="w-4 h-4" />
-                  </div>
-                  <input
-                    type="tel"
-                    id="phone"
-                    value={contact.phone}
-                    onChange={(e) =>
-                      handleContactChange(
-                        "phone",
-                        sanitizeNumber(e.target.value),
-                      )
-                    }
-                    placeholder="12345-12345"
-                    className="w-full pl-10 pr-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
-                  />
-                </div>
-              </div> */}
+
+                <input
+                  type="tel"
+                  id="phone"
+                  value={contact.phone || ""}
+                  onChange={(e) =>
+                    handleContactChange("phone", sanitizeNumber(e.target.value))
+                  }
+                  placeholder="12345-12345"
+                  className="w-full px-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300 hover:shadow-md"
+                />
+              </div>
 
               {/* Email */}
-              {/* <div className="group">
+              <div className="group">
                 <label
                   htmlFor="email"
                   className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
                 >
                   Email Address
                 </label>
-                <div className="relative">
-                  <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                    <IoMailOutline className="w-4 h-4" />
-                  </div>
-                  <input
-                    type="email"
-                    id="email"
-                    value={contact.email}
-                    onChange={(e) =>
-                      handleContactChange("email", e.target.value)
-                    }
-                    placeholder="youremail@example.com"
-                    className="w-full pl-10 pr-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
-                  />
-                </div>
-              </div> */}
 
-              {/* Email */}
-              <div className="group">
-                <label
-                  htmlFor="email"
-                  className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
-                >
-                  Email Address <span className="text-red-500">*</span>
-                </label>
-                <div className="relative">
-                  <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                    <IoMailOutline className="w-4 h-4" />
-                  </div>
-                  <input
-                    type="email"
-                    id="email"
-                    value={contact?.email}
-                    onBlur={() => handleBlur("email")}
-                    onChange={(e) =>
-                      handleContactChange("email", e.target.value)
-                    }
-                    placeholder="youremail@example.com"
-                    className={`w-full pl-10 pr-3 py-2.5 sm:py-3 bg-white border rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:ring-2 transition-all duration-300 ${
-                      validationErrors.email && touched.email
-                        ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
-                        : "border-gray-200 focus:border-[#c40116] focus:ring-[#c40116]/20"
-                    }`}
-                  />
-                </div>
-                {validationErrors.email && touched.email && (
-                  <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
-                    <span className="inline-block w-1 h-1 rounded-full bg-red-500"></span>
-                    {validationErrors.email}
-                  </p>
-                )}
-              </div>
-
-              <div className="group">
-                <label
-                  htmlFor="phone"
-                  className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
-                >
-                  Phone Number
-                </label>
-                <div className="relative">
-                  <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                    <IoCallOutline className="w-4 h-4" />
-                  </div>
-                  <input
-                    type="tel"
-                    id="phone"
-                    value={contact.phone}
-                    onChange={(e) =>
-                      handleContactChange(
-                        "phone",
-                        sanitizeNumber(e.target.value),
-                      )
-                    }
-                    placeholder="12345-12345"
-                    className="w-full pl-10 pr-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 transition-all duration-300"
-                  />
-                </div>
+                <input
+                  type="email"
+                  id="email"
+                  value={contact.email || ""}
+                  onChange={(e) => handleContactChange("email", e.target.value)}
+                  placeholder="youremail@example.com"
+                  className="w-full px-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300 hover:shadow-md"
+                />
               </div>
             </div>
 
-            {/* Job Title */}
-            <div className="group">
-              <label
-                htmlFor="jobTitle"
-                className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
-              >
-                Desired job title
-              </label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
+              {/* Job Title */}
+              <div className="group">
+                <label
+                  htmlFor="jobTitle"
+                  className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
+                >
+                  Desired job title
+                </label>
 
-              <div className="relative">
-                <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                  <GrUserWorker className="w-4 h-4" />
-                </div>
                 <input
                   type="text"
                   id="jobTitle"
-                  value={contact.jobTitle}
+                  value={contact.jobTitle || ""}
                   onChange={(e) =>
                     handleContactChange(
                       "jobTitle",
@@ -1009,232 +783,307 @@ if (!contact.email || !contact.email.trim()) {
                     )
                   }
                   placeholder="Software Engineer"
-                  className="w-full pl-10 pr-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
+                  className="w-full px-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300 hover:shadow-md"
+                />
+              </div>
+
+              <div className="group">
+                <label
+                  htmlFor="DOB"
+                  className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
+                >
+                  Date Of Birth
+                </label>
+
+                <input
+                  type="date"
+                  id="DOB"
+                  value={contact.dateOfBirth || ""}
+                  onChange={(e) =>
+                    handleContactChange(
+                      "dateOfBirth",
+                      sanitizeText(e.target.value),
+                    )
+                  }
+                  placeholder="Software Engineer"
+                  className="w-full px-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300 hover:shadow-md"
                 />
               </div>
             </div>
 
-            {/* Toggle Button - More Compact */}
-            <button
-              type="button"
-              onClick={() => setShowAdditional(!showAdditional)}
-              className="w-full p-3 flex items-center justify-between bg-white hover:from-gray-100/80 hover:to-white transition-all duration-300 group rounded-xl cursor-pointer"
-            >
-              <div className="flex items-center gap-2">
-                <div
-                  className={`p-1.5 rounded-lg transition-all duration-300 ${
-                    showAdditional
-                      ? "bg-[#c40116]/10 text-[#c40116]"
-                      : "bg-gray-100 text-gray-600 group-hover:bg-[#c40116]/10 group-hover:text-[#c40116]"
-                  }`}
+            {/* LinkedIn & Portfolio - Compact */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
+              <div className="group">
+                <label
+                  htmlFor="LinkedIn"
+                  className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
                 >
-                  <IoInformationCircleOutline className="w-4 h-4" />
-                </div>
-                <span className="text-xs sm:text-sm font-semibold text-gray-700 group-hover:text-[#c40116] transition-colors whitespace-nowrap">
-                  Additional Information
-                </span>
+                  LinkedIn Profile
+                </label>
+
+                <input
+                  type="url"
+                  id="LinkedIn"
+                  value={contact.linkedin || ""}
+                  onChange={(e) =>
+                    handleContactChange("linkedin", e.target.value)
+                  }
+                  placeholder="linkedin.com"
+                  className="w-full px-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300 hover:shadow-md"
+                />
               </div>
-              <IoChevronDown
-                className={`w-4 h-4 text-gray-500 group-hover:text-[#c40116] transition-all duration-300 ${
-                  showAdditional ? "rotate-180" : ""
-                }`}
-              />
-            </button>
 
-            {/* Additional Information Section - Compact */}
-            <div className="bg-linear-to-br from-gray-50/50 to-white/50 rounded-xl border border-gray-100 overflow-hidden">
-              <div
-                className={`transition-all duration-500 ease-in-out ${
-                  showAdditional ? "max-h-500 opacity-100" : "max-h-0 opacity-0"
-                }`}
-              >
-                <div className="p-3 sm:p-4  space-y-4">
-                  {/* LinkedIn & Portfolio - Compact */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
-                    <div className="group">
-                      <label
-                        htmlFor="LinkedIn"
-                        className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
-                      >
-                        LinkedIn Profile
-                      </label>
-                      <div className="relative">
-                        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                          <FaLinkedin className="w-4 h-4" />
-                        </div>
-                        <input
-                          type="url"
-                          id="LinkedIn"
-                          value={contact.linkedin}
-                          onChange={(e) =>
-                            handleContactChange("linkedin", e.target.value)
-                          }
-                          placeholder="linkedin.com"
-                          className="w-full pl-10 pr-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
-                        />
-                      </div>
-                    </div>
+              <div className="group">
+                <label
+                  htmlFor="Portfolio"
+                  className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
+                >
+                  Portfolio / Website
+                </label>
 
-                    <div className="group">
-                      <label
-                        htmlFor="Portfolio"
-                        className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
-                      >
-                        Portfolio / Website
-                      </label>
-                      <div className="relative">
-                        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                          <FaGlobeAmericas className="w-4 h-4" />
-                        </div>
-                        <input
-                          type="text"
-                          id="Portfolio"
-                          value={contact.portfolio}
-                          onChange={(e) =>
-                            handleContactChange("portfolio", e.target.value)
-                          }
-                          placeholder="yourportfolio.com"
-                          className="w-full pl-10 pr-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
-                        />
-                      </div>
-                    </div>
-                  </div>
+                <input
+                  type="text"
+                  id="Portfolio"
+                  value={contact.portfolio}
+                  onChange={(e) =>
+                    handleContactChange("portfolio", e.target.value)
+                  }
+                  placeholder="yourportfolio.com"
+                  className="w-full px-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300 hover:shadow-md"
+                />
+              </div>
+            </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
-                    {/* Address */}
-                    <div className="group">
-                      <label
-                        htmlFor="Address"
-                        className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
-                      >
-                        Full Address
-                      </label>
-                      <div className="relative">
-                        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                          <IoLocationOutline className="w-4 h-4" />
-                        </div>
-                        <input
-                          type="text"
-                          id="Address"
-                          value={contact.address}
-                          onChange={(e) =>
-                            handleContactChange("address", e.target.value)
-                          }
-                          placeholder="123 Main Street, Apt 4B"
-                          className="w-full pl-10 pr-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
-                        />
-                      </div>
-                    </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
+              {/* Address */}
+              <div className="group">
+                <label
+                  htmlFor="Address"
+                  className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
+                >
+                  Street Name
+                </label>
 
-                    <div className="group">
-                      <label
-                        htmlFor="City"
-                        className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
-                      >
-                        City
-                      </label>
-                      <div className="relative">
-                        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                          <IoLocationOutline className="w-4 h-4" />
-                        </div>
-                        <input
-                          type="text"
-                          id="City"
-                          value={contact.city}
-                          onChange={(e) =>
-                            handleContactChange(
-                              "city",
-                              sanitizeTextWithComma(e.target.value),
-                            )
-                          }
-                          placeholder="New York"
-                          className="w-full pl-10 pr-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
-                        />
-                      </div>
-                    </div>
-                  </div>
+                <input
+                  type="text"
+                  id="Address"
+                  value={contact.address}
+                  onChange={(e) =>
+                    handleContactChange("address", e.target.value)
+                  }
+                  placeholder="123 Main Street, Apt 4B"
+                  className="w-full px-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300 hover:shadow-md"
+                />
+              </div>
 
-                  {/* Location Information - Compact */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
-                    <div className="group">
-                      <label
-                        htmlFor="Post"
-                        className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
-                      >
-                        Postal Code
-                      </label>
-                      <div className="relative">
-                        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"
-                            />
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M9 22V12h6v10"
-                            />
-                          </svg>
-                        </div>
-                        <input
-                          type="text"
-                          // inputMode="numeric"
-                          // pattern="[0-9]*"
-                          id="Post"
-                          value={contact.postcode}
-                          onChange={(e) =>
-                            handleContactChange("postcode", e.target.value)
-                          }
-                          placeholder="10001"
-                          className="w-full pl-10 pr-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
-                        />
-                      </div>
-                    </div>
+              <div className="group">
+                <label
+                  htmlFor="City"
+                  className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
+                >
+                  City
+                </label>
 
-                    <div className="group">
-                      <label
-                        htmlFor="Country"
-                        className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
-                      >
-                        Country
-                      </label>
-                      <div className="relative">
-                        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                          <IoGlobeOutline className="w-4 h-4" />
-                        </div>
-                        <input
-                          type="text"
-                          id="Country"
-                          value={contact.country}
-                          onChange={(e) =>
-                            handleContactChange(
-                              "country",
-                              sanitizeTextWithComma(e.target.value),
-                            )
-                          }
-                          placeholder="United States"
-                          className="w-full pl-10 pr-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <input
+                  type="text"
+                  id="City"
+                  value={contact.city}
+                  onChange={(e) =>
+                    handleContactChange(
+                      "city",
+                      sanitizeTextWithComma(e.target.value),
+                    )
+                  }
+                  placeholder="New York"
+                  className="w-full px-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300 hover:shadow-md"
+                />
+              </div>
+            </div>
+
+            {/* Location Information - Compact */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
+              <div className="group">
+                <label
+                  htmlFor="Post"
+                  className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
+                >
+                  Postal Code
+                </label>
+
+                <input
+                  type="text"
+                  id="Post"
+                  value={contact.postcode || ""}
+                  onChange={(e) =>
+                    handleContactChange("postcode", e.target.value)
+                  }
+                  placeholder="10001"
+                  className="w-full px-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300 hover:shadow-md"
+                />
+              </div>
+
+              <div className="group">
+                <label
+                  htmlFor="Country"
+                  className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
+                >
+                  Country
+                </label>
+
+                <input
+                  type="text"
+                  id="Country"
+                  value={contact.country}
+                  onChange={(e) =>
+                    handleContactChange(
+                      "country",
+                      sanitizeTextWithComma(e.target.value),
+                    )
+                  }
+                  placeholder="United States"
+                  className="w-full px-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300 hover:shadow-md"
+                />
               </div>
             </div>
           </form>
         </div>
 
+        {contactTipsClicked && (
+          <AnimatePresence>
+            <div className="fixed inset-0 z-50 flex items-start justify-center overflow-hidden p-4">
+              <div
+                className="absolute inset-0 backdrop-blur-sm bg-black/30"
+                onClick={() => setContactTipsClicked(false)}
+              />
+              <div className="relative w-full max-w-sm sm:max-w-md md:max-w-lg lg:w-[30vw] h-auto max-h-[80vh] mt-8 sm:mt-20">
+                <motion.div
+                  initial={{ y: 50, opacity: 0, scale: 0.95 }}
+                  animate={{ y: 0, opacity: 1, scale: 1 }}
+                  exit={{ y: 50, opacity: 0, scale: 0.95 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 120,
+                    damping: 18,
+                    duration: 0.4,
+                  }}
+                  className="w-full rounded-xl sm:rounded-2xl bg-white border border-gray-200 shadow-2xl max-h-[inherit] overflow-hidden"
+                >
+                  <div className="flex justify-between items-center p-4 sm:p-6">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <div className="p-1.5 sm:p-2 bg-linear-to-br from-[#c40116]/10 to-[#be0117]/10 rounded-lg">
+                        <FaRegLightbulb className="w-4 h-4 sm:w-5 sm:h-5 text-[#c40116]" />
+                      </div>
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-800">
+                        Tips for Better Resume
+                      </h3>
+                    </div>
+                    <button
+                      onClick={() => setContactTipsClicked(false)}
+                      className="p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
+                      type="button"
+                    >
+                      <FiX size={18} className="sm:w-5 sm:h-5" />
+                    </button>
+                  </div>
+                  <hr className="border-gray-100" />
+
+                  <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 overflow-y-auto max-h-[calc(80vh-100px)]">
+                    {/* Best Practices */}
+                    <div className="space-y-3 sm:space-y-4">
+                      <h4 className="text-xs sm:text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                        Best Practices
+                      </h4>
+                      {[
+                        {
+                          title: "Use a professional email",
+                          desc: "Avoid nicknames or unprofessional handles. Example: firstname.lastname@gmail.com",
+                        },
+                        {
+                          title: "Include a complete name",
+                          desc: "Use your full legal name or the name you professionally go by.",
+                        },
+                        {
+                          title: "Phone number format",
+                          desc: "Include your country code for international opportunities.",
+                        },
+                        {
+                          title: "LinkedIn profile",
+                          desc: "Add your LinkedIn URL to showcase your professional network.",
+                        },
+                        {
+                          title: "Location matters",
+                          desc: "Include city and country to show your work eligibility.",
+                        },
+                      ].map((tip, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-start gap-2 sm:gap-3"
+                        >
+                          <div className="shrink-0 mt-0.5">
+                            <div className="p-1 sm:p-1.5 bg-emerald-100 rounded-lg">
+                              <FiCheckCircle className="text-emerald-500 w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                            </div>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs sm:text-sm font-semibold text-gray-800">
+                              {tip.title}
+                            </p>
+                            <p className="text-xs sm:text-sm text-gray-600 mt-0.5 sm:mt-1">
+                              {tip.desc}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* What to Avoid */}
+                    <div className="space-y-3 sm:space-y-4 pt-3 sm:pt-4 border-t border-gray-100">
+                      <h4 className="text-xs sm:text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                        Common Mistakes
+                      </h4>
+                      {[
+                        {
+                          title: "Wrong email format",
+                          desc: "Double-check your email address for typos.",
+                        },
+                        {
+                          title: "Missing country code",
+                          desc: "Add +1, +44, etc., for international reachability.",
+                        },
+                        {
+                          title: "Outdated information",
+                          desc: "Always keep your contact details current.",
+                        },
+                      ].map((tip, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-start gap-2 sm:gap-3"
+                        >
+                          <div className="shrink-0 mt-0.5">
+                            <div className="p-1 sm:p-1.5 bg-[#c40116]/10 rounded-lg">
+                              <FiXCircle className="text-[#c40116] w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                            </div>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs sm:text-sm font-semibold text-gray-800">
+                              {tip.title}
+                            </p>
+                            <p className="text-xs sm:text-sm text-gray-600 mt-0.5 sm:mt-1">
+                              {tip.desc}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            </div>
+          </AnimatePresence>
+        )}
+
         {/* Fixed Footer - Always visible at bottom */}
-        <div className="shrink-0 pt-4 mt-4 border-t border-gray-200">
+        <div className="shrink-0 pt-2  lg:pt-3 ">
           <div className="flex justify-between">
             <button
               className="bg-gray-200 text-[#374151] border border-gray-300 text-sm md:text-base px-4 py-2 md:px-6 md:py-2.5 rounded-lg font-nunito font-semibold hover:bg-gray-100 transition-colors duration-300 cursor-pointer"

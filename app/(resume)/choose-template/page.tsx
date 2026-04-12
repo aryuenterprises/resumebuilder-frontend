@@ -105,7 +105,7 @@ function Choose_template() {
   } | null>(null);
   const [previewTemplate, setPreviewTemplate] = useState<Template | null>(null);
   const [showPreview, setShowPreview] = useState(false);
-  const [showInitialPopup, setShowInitialPopup] = useState(false); // Changed to true to show on load
+  const [showInitialPopup, setShowInitialPopup] = useState(true); // Changed to true to show on load
   const [showUploadPopup, setShowUploadPopup] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
