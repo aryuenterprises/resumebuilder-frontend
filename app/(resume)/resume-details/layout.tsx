@@ -25,8 +25,6 @@ export default function RootLayout({
   const [isHovered, setIsHovered] = useState(false);
   const [showMobilePreview, setShowMobilePreview] = useState(false);
 
-
-
   const selectedResume = templateData.find(
     (resume) => resume.id == (chosenTemplate?.id || chosenTemplate?.templateId),
   );
@@ -42,9 +40,7 @@ export default function RootLayout({
       {/* <aside className="w-full lg:w-1/2 overflow-y-auto">{children}</aside> */}
 
       <aside className="w-full lg:w-1/2 overflow-y-auto">
-        <ResumeDataFetcher>
-          {children}
-        </ResumeDataFetcher>
+        <ResumeDataFetcher>{children}</ResumeDataFetcher>
       </aside>
 
       <section className="max-lg:hidden w-1/2 bg-gray-100">
@@ -148,8 +144,6 @@ export default function RootLayout({
     </div>
   );
 }
-
-
 
 // "use client";
 // import SimpleCanvasPreview from "../../components/resume/SimpleCanvasPreview";
@@ -329,9 +323,9 @@ export default function RootLayout({
 //           <button
 //             onClick={() => router.push("/change-template")}
 //             className={`
-//               flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 
-//               hover:border-[#C40116] text-gray-700 hover:text-[#C40116] 
-//               font-medium rounded-xl shadow-lg hover:shadow-xl 
+//               flex items-center gap-2 px-3 py-2 bg-white border border-gray-200
+//               hover:border-[#C40116] text-gray-700 hover:text-[#C40116]
+//               font-medium rounded-xl shadow-lg hover:shadow-xl
 //               transition-all duration-300 group cursor-pointer
 //               ${isHovered ? "scale-105" : ""}
 //             `}

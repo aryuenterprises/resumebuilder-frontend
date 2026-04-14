@@ -32,6 +32,7 @@ interface CreateProviderProps {
 }
 
 export const CreateProvider: React.FC<CreateProviderProps> = ({ children }) => {
+  
   // Upload mode state - using sessionStorage to persist across page refreshes within the same tab
   const [isUploadMode, setIsUploadMode] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
@@ -137,7 +138,7 @@ export const CreateProvider: React.FC<CreateProviderProps> = ({ children }) => {
     firstName: "",
     lastName: "",
     jobTitle: "",
-    dateOfBirth: "",
+    dob: "",
     phone: "",
     email: "",
     linkedin: "",
@@ -164,7 +165,6 @@ export const CreateProvider: React.FC<CreateProviderProps> = ({ children }) => {
     },
   ]);
 
-  // Education
   const [education, setEducation] = useState<Education[]>([
     {
       id: Date.now(),
@@ -193,11 +193,6 @@ export const CreateProvider: React.FC<CreateProviderProps> = ({ children }) => {
   ]);
 
   // Skills
-  // const [skills, setSkills] = useState<Skill[]>([
-  //   { skill: "", level: 2, id: Date.now() + Math.random() },
-  // ]);
-
-// Main skills state
   const [skills, setSkills] = useState<SkillsType>([]);
 
 

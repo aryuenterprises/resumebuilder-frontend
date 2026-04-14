@@ -1,225 +1,3 @@
-// // utils/convertResumeData.ts
-
-// interface ParsedExperience {
-//   position: string;
-//   company: string;
-//   location: string;
-//   fromYear: string;
-//   toYear: string;
-//   isOngoing: boolean;
-//   description: string[];
-//   bullets: string[];
-// }
-
-// interface ParsedProject {
-//   title: string;
-//   description: string;
-//   technologies: string[];
-//   bullets: string[];
-// }
-
-// interface ParsedEducation {
-//   degree: string;
-//   institution: string;
-//   location: string;
-//   fromYear: string;
-//   toYear: string;
-// }
-
-// interface ParsedHeader {
-//   name: string;
-//   title: string;
-//   location: string;
-//   email: string;
-//   phone: string;
-//   link: string;
-// }
-
-// interface ParsedSummary {
-//   summary: string;
-// }
-
-// interface ParsedData {
-//   experience: ParsedExperience[];
-//   projects: ParsedProject[];
-//   education: ParsedEducation[];
-//   skills: string[];
-//   summary: ParsedSummary;
-//   header: ParsedHeader;
-//   certifications: any[];
-//   languages: any[];
-// }
-
-// // Split name into first and last name
-// const splitName = (fullName: string) => {
-//   const nameParts = fullName.trim().split(' ');
-//   const firstName = nameParts[0] || '';
-//   const lastName = nameParts.slice(1).join(' ') || '';
-//   return { firstName, lastName };
-// };
-
-// // Format date to ISO string or YYYY-MM format
-// const formatDate = (year: string, isEndDate: boolean = false) => {
-//   if (!year) return null;
-  
-//   // If it's "Present" or ongoing
-//   if (year.toLowerCase() === 'present') {
-//     return null;
-//   }
-  
-//   // Return as YYYY-MM format for end date
-//   if (isEndDate) {
-//     return `${year}-12`; // Default to December if only year is provided
-//   }
-  
-//   // Return as ISO string for start date
-//   return new Date(Number( year), 0, 1).toISOString(); // January 1st of that year
-// };
-
-// // Convert experience bullets to HTML
-// const formatBulletsToHTML = (bullets: string[]) => {
-//   if (!bullets || bullets.length === 0) return '';
-//   return `<ul>${bullets.map(bullet => `<li>${bullet}</li>`).join('')}</ul>`;
-// };
-
-// // Convert parsed data to frontend structure
-// export const convertParsedResumeToFrontendFormat = (
-//   parsedData: ParsedData,
-//   userId?: string,
-//   templateId: string = "1"
-// ) => {
-//   const { firstName, lastName } = splitName(parsedData.header.name || '');
-  
-//   // Extract LinkedIn username from URL
-//   const linkedInUsername = parsedData.header.link?.replace('linkedin.com/in/', '') || '';
-  
-//   // Build contact object
-//   const contact = {
-//     contactId: '', // Empty for new resume
-//     userId: userId || '',
-//     firstName: firstName,
-//     lastName: lastName,
-//     email: parsedData.header.email || '',
-//     phone: parsedData.header.phone || '',
-//     jobTitle: parsedData.header.title || parsedData.experience?.[0]?.position || '',
-//     address: parsedData.header.location?.split(',')[0]?.trim() || '',
-//     city: parsedData.header.location?.split(',')[1]?.trim() || '',
-//     country: parsedData.header.location?.split(',')[2]?.trim() || '',
-//     postcode: parsedData.header.location?.split(',')[2]?.trim() || '', // Add postcode
-//     postCode: parsedData.header.location?.split(',')[2]?.trim() || '', // Keep for compatibility
-//     linkedIn: linkedInUsername ? `https://linkedin.com/in/${linkedInUsername}` : '',
-//     portfolio: '',
-//     templateId: templateId,
-//     resumeStatus: 'success',
-//     croppedImage: null, // Add if your Contact type expects this
-//   };
-
-// // Helper functions
-//  const formatDateField = (year: string, isEndDate: boolean = false): string | undefined => {
-//   if (!year || year.toLowerCase() === 'present') {
-//     return undefined;
-//   }
-  
-//   const yearNum = parseInt(year);
-//   if (isNaN(yearNum)) return undefined;
-  
-//   if (isEndDate) {
-//     return `${year}-12`;
-//   } else {
-//     return new Date(yearNum, 0, 1).toISOString();
-//   }
-// };
-
-//   const parseYearToNumber = (yearString: string): number => {
-//     if (!yearString) return new Date().getFullYear();
-//     const year = parseInt(yearString);
-//     return isNaN(year) ? new Date().getFullYear() : year;
-//   };
-
-//   // Convert experiences
-//   const experiences = parsedData.experience?.map((exp, index) => ({
-//     id: `temp_exp_${index}`,
-//     _id: `temp_exp_${index}`,
-//     jobTitle: exp.position || '',
-//     employer: exp.company || '',
-//     location: exp.location || '',
-//     startDate: formatDateField(exp.fromYear, false),
-//     endDate: exp.isOngoing ? undefined : formatDateField(exp.toYear, true),
-//     text: formatBulletsToHTML(exp.bullets || exp.description),
-//     isOpen: false,
-//     showPicker: false,
-//     year: parseYearToNumber(exp.fromYear),
-//   })) || [];
-
-//   // Convert education
-//   const educations = parsedData.education?.map((edu, index) => ({
-//     id: `temp_edu_${index}`,
-//     _id: `temp_edu_${index}`,
-//     schoolname: edu.institution || '',
-//     location: edu.location || '',
-//     degree: edu.degree || '',
-//     startDate: formatDateField(edu.fromYear, false),
-//     endDate: formatDateField(edu.toYear, true),
-//     text: '',
-//     isOpen: false,
-//     showPicker: false,
-//     year: parseYearToNumber(edu.fromYear),
-//   })) || [];
-
-//   // Convert skills
-//   const skills = parsedData.skills?.map((skill, index) => ({
-//     id: `temp_skill_${index}`,
-//     _id: `temp_skill_${index}`,
-//     skill: skill.charAt(0).toUpperCase() + skill.slice(1),
-//     level: 3,
-//     isOpen: false,
-//     showPicker: false,
-//   })) || [];
-
-//   // Convert summary
-//   const summary = parsedData.summary?.summary 
-//     ? [`<p>${parsedData.summary.summary}</p>`] 
-//     : [];
-
-//   // Build projects as custom sections
-//   const customSections = parsedData.projects?.map((project, index) => ({
-//     name: `Project: ${project.title}`,
-//     description: formatBulletsToHTML(project.bullets || []),
-//     id: `temp_project_${index}`
-//   })) || [];
-
-//   // Build finalize object
-//   const finalize = {
-//     languages: parsedData.languages?.map((lang: any, index: number) => ({
-//       name: lang.name || '',
-//       level: lang.level || '3',
-//       _id: `temp_lang_${index}`
-//     })) || [],
-//     certificationsAndLicenses: parsedData.certifications?.map((cert: any, index: number) => ({
-//       name: cert.name || cert.title || '',
-//       _id: `temp_cert_${index}`
-//     })) || [],
-//     hobbiesAndInterests: [],
-//     awardsAndHonors: [],
-//     websitesAndSocialMedia: [],
-//     references: [],
-//     customSection: customSections
-//   };
-
-//   return {
-//     contact,
-//     experiences,
-//     educations,
-//     skills,
-//     summary,
-//     finalize: [finalize] // Wrap in array as per your structure
-//   };
-// };
-
-
-
-// utils/convertResumeData.ts
-
 interface ParsedExperience {
   position: string;
   company: string;
@@ -381,7 +159,7 @@ export const convertParsedResumeToFrontendFormat = (
   // Convert skills matching your Skill interface
   const skills = parsedData.skills?.map((skill, index) => ({
     id: `temp_skill_${index}`,
-    skill: skill.charAt(0).toUpperCase() + skill.slice(1),
+    name: skill.charAt(0).toUpperCase() + skill.slice(1),
     level: 3, // Default level (1-4 scale, 3 is intermediate)
   })) || [];
 
@@ -391,10 +169,11 @@ export const convertParsedResumeToFrontendFormat = (
     : '';
 
   // Convert projects to custom sections
-  const customSections = parsedData.projects?.map((project, index) => ({
+  const projects = parsedData.projects?.map((project, index) => ({
     id: `temp_project_${index}`,
-    name: `Project: ${project.title}`,
+    name: `${project.title}`,
     description: formatBulletsToHTML(project.bullets || []),
+    techStack:project.technologies
   })) || [];
 
   // Build finalize object matching your Finalize interface
@@ -412,7 +191,6 @@ export const convertParsedResumeToFrontendFormat = (
     awardsAndHonors: [],
     websitesAndSocialMedia: [],
     references: [],
-    customSection: customSections,
   };
 
   return {
@@ -422,5 +200,6 @@ export const convertParsedResumeToFrontendFormat = (
     skills,
     summary,
     finalize,
+    projects
   };
 };

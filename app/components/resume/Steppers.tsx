@@ -48,9 +48,8 @@ const Stepper = () => {
   if (isMobile) {
     return (
       <div className="w-full bg-white border-b border-gray-100 ">
-        <div className="flex items-center gap-2 overflow-x-auto no-scollbar">
-
- {/* Home Icon Button */}
+        <div className="flex items-center gap-2 overflow-x-auto no-scollbar w-full">
+          {/* Home Icon Button */}
           <button
             onClick={handleHomeClick}
             className="px-2 py-1 rounded-xl bg-gradient-to-r from-gray-50 to-gray-100 hover:from-primary-50 hover:to-primary-100 transition-all duration-300 group shrink-0"
@@ -59,7 +58,7 @@ const Stepper = () => {
           </button>
 
           {/* Mobile progress dots */}
-          <div className="flex justify-between items-center gap-2">
+          <div className="flex justify-between items-center gap-2 w-full">
             {steps.map((step, index) => {
               const isActive = currentStep === index;
               const isCompleted = currentStep > index;
@@ -67,7 +66,7 @@ const Stepper = () => {
               return (
                 <button
                   key={step.id}
-                  onClick={() => handleStepClick(step.id)}
+                  // onClick={() => handleStepClick(step.id)}
                   className="flex flex-col items-center"
                 >
                   <div
@@ -140,13 +139,21 @@ const Stepper = () => {
               return (
                 <div key={step.id} className="flex items-center flex-1">
                   <button
-                    onClick={() => handleStepClick(step.id)}
-                    className={`flex items-center cursor-pointer gap-2 transition-all duration-200 w-full ${
+                    // onClick={() => handleStepClick(step.id)}
+                    // className={`flex items-center cursor-pointer gap-2 transition-all duration-200 w-full ${
+                    //   isActive
+                    //     ? "text-[#c40116]"
+                    //     : isCompleted
+                    //       ? "text-gray-800 hover:text-[#c40116]"
+                    //       : "text-gray-400 hover:text-gray-600"
+                    // }`}
+
+                    className={`flex items-center  gap-2 transition-all duration-200 w-full ${
                       isActive
                         ? "text-[#c40116]"
                         : isCompleted
-                          ? "text-gray-800 hover:text-[#c40116]"
-                          : "text-gray-400 hover:text-gray-600"
+                          ? "text-gray-800 "
+                          : "text-gray-400 "
                     }`}
                   >
                     {/* Circle Indicator with number */}
@@ -189,8 +196,6 @@ const Stepper = () => {
                       </span>
                     </div>
                   </button>
-
-                 
                 </div>
               );
             })}

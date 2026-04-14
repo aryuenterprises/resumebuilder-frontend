@@ -88,6 +88,7 @@ function Choose_template() {
     setSkills,
     setSummary,
     setFinalize,
+    setProjects,
     setFullResumeData,
     setChosenTemplate,
     setIsUploadMode,
@@ -293,6 +294,8 @@ function Choose_template() {
       const convertedData =
         convertParsedResumeToFrontendFormat(parsedResumeData);
 
+        console.log("convertedData",convertedData)
+
       // Update context with parsed data
       if (convertedData.contact) {
         setContact(convertedData.contact);
@@ -310,6 +313,10 @@ function Choose_template() {
         setSkills(convertedData.skills);
       }
 
+      if(convertedData.projects){
+        setProjects(convertedData.projects)
+      }
+
       if (convertedData.summary && convertedData.summary[0]) {
         setSummary(convertedData.summary[0]);
       }
@@ -325,6 +332,7 @@ function Choose_template() {
         skills: convertedData.skills,
         summary: convertedData.summary?.[0] || "",
         finalize: convertedData.finalize || {},
+        projects:convertedData.projects || []
       });
 
       // Set default template

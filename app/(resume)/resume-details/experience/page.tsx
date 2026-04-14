@@ -52,7 +52,9 @@ const ExperienceForm = () => {
   const router = useRouter();
   const userDetails = getLocalStorage<User>("user_details");
   const UseContext = useContext(CreateContext);
-  const contactId = UseContext.contact._id;
+  // const contactId = UseContext.contact._id;
+    const contactId = UseContext?.contact._id || UseContext?.contact.contactId;
+
   const [isExperienced, setIsExperienced] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [lastSavedData, setLastSavedData] = useState<string>("");

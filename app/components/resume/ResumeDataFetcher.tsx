@@ -35,6 +35,7 @@ export function ResumeDataFetcher({ children }: ResumeDataFetcherProps) {
     setFinalize,
     setFullResumeData,
     setResumeId,
+    setProjects
     // chosenTemplate,
   } = useContext(CreateContext);
 
@@ -105,7 +106,7 @@ export function ResumeDataFetcher({ children }: ResumeDataFetcherProps) {
           {
             params: {
               templateId: chosenTemplate?.templateId || chosenTemplate?.id || "",
-              // resumeId: chosenTemplate?.contact?._id || "", // Use contact ID if available
+              resumeId: chosenTemplate?.contact?._id || "", 
             },
           },
         );

@@ -115,6 +115,10 @@ const DashboardPage = () => {
     ResumeItem[]
   >([]);
 
+   const {
+      setIsUploadMode
+    } = useContext(CreateContext);
+
    
 
   const userDetails = getLocalStorage<User>("user_details");
@@ -887,6 +891,8 @@ const DashboardPage = () => {
                             router.push(`/resume-details/contact`);
                             setLocalStorage("chosenTemplate", item);
                             setSessionStorage("oldRouteNameDashboard", true);
+                                  setIsUploadMode(false);
+
                           
 
                           }}

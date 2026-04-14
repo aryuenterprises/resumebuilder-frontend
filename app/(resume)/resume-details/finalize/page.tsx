@@ -114,6 +114,9 @@ const FinalizeForm = () => {
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const initialLoadDone = useRef(false);
 
+    const contactId = UseContext?.contact._id || UseContext?.contact.contactId;
+
+
   console.log("contact",contact)
 
   const stripHtml = (html: string) => {
@@ -166,7 +169,7 @@ const FinalizeForm = () => {
   const saveToAPI = async (finalizeData: typeof finalize) => {
 
 
-    if (!contact?._id) {
+    if (!contactId) {
       console.error("Contact ID is required");
       return false;
     }
@@ -197,7 +200,7 @@ const FinalizeForm = () => {
       const response = await axios.post(
         `${API_URL}/api/finalize-resume/update`,
         formData,
-        { params: { contactId: contact.contactId } },
+        { params: { contactId: contactId} },
       );
 
       setLastSavedData(currentDataString);
@@ -221,7 +224,7 @@ const FinalizeForm = () => {
         saveToAPI(finalizeData);
       }, 1000);
     },
-    [contact?.contactId, lastSavedData],
+    [contactId, lastSavedData],
   );
 
   const [deletePopup, setDeletePopup] = useState<DeletePopupState>({
@@ -243,7 +246,7 @@ const FinalizeForm = () => {
   const fetchSkill = async () => {
     try {
       const response = await axios.get(
-        `${API_URL}/api/finalize-resume/get-finalize-resume/${contact.contactId}`,
+        `${API_URL}/api/finalize-resume/get-finalize-resume/${contactId}`,
       );
       const experienceList = response.data?.resume?.[0]?.skillsData || {};
      

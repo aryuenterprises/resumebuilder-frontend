@@ -6,7 +6,7 @@ export interface Contact {
   firstName: string;
   lastName: string;
   jobTitle?: string;
-  dateOfBirth?: string;
+  dob?: string;
   phone?: string;
   email?: string;
   linkedin?: string;
@@ -75,12 +75,12 @@ export type SkillsType = SimpleSkill[] | SkillCategory[];
 
 export interface Project {
   id: string | number;
-  title: string;
-  techStack: string[];
-  description: string;
-  liveUrl: string;
-  githubUrl: string;
-  isOpen: boolean;
+  title?: string;
+  techStack?: string[];
+  description?: string;
+  liveUrl?: string;
+  githubUrl?: string;
+  isOpen?: boolean;
 }
 export interface Finalize {
   languages?: Array<{
@@ -175,7 +175,7 @@ export interface FullResumeData {
   contact: Contact;
   experiences: Experience[];
   education: Education[];
-  skills: SkillsType[];
+  skills: SkillsType;
   summary: string;
   finalize: Finalize;
   projects?: Project[];
@@ -185,7 +185,7 @@ export interface AllData {
   contact?: Contact;
   educations?: Education[];
   experiences?: Experience[];
-  skills?: SkillsType[];
+  skills?: SkillsType;
   finalize?: Finalize;
   summary?: string;
   projects?: Project[];

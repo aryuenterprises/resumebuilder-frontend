@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import Stepper from "../../../components/resume/Steppers";
 import { getLocalStorage, setLocalStorage } from "@/app/utils";
 import { API_URL } from "@/app/config/api";
+import { Project } from "@/app/types";
 
 // Dynamically import Editor to avoid SSR issues
 const Editor = dynamic(
@@ -34,24 +35,18 @@ const Editor = dynamic(
   },
 );
 
-interface Project {
-  id: string | number;
-  title: string;
-  techStack: string[];
-  description: string;
-  liveUrl: string;
-  githubUrl: string;
-  isOpen: boolean;
-  
-}
-
 const ProjectsForm = () => {
   const UseContext = useContext(CreateContext);
-  const contactId = UseContext?.contact._id;
-  const { fullResumeData, setFullResumeData, projects, setProjects } = UseContext || {};
+  // const contactId = UseContext?.contact._id;
 
 
-  console.log("projects",projects)
+      const contactId = UseContext?.contact._id || UseContext?.contact.contactId;
+
+  
+  const { fullResumeData, setFullResumeData, projects, setProjects } =
+    UseContext || {};
+
+  console.log("projects", projects);
 
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
@@ -59,7 +54,9 @@ const ProjectsForm = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [loading, setLoading] = useState(false);
   const [Airesponse, setAiresponse] = useState<string[] | null>(null);
-  const [clickedProjectIndex, setClickedProjectIndex] = useState<number | null>(null);
+  const [clickedProjectIndex, setClickedProjectIndex] = useState<number | null>(
+    null,
+  );
   const [skillTipsClicked, setSkillTipsClicked] = useState(false);
   const [techInput, setTechInput] = useState<{ [key: string]: string }>({});
 
@@ -119,11 +116,12 @@ const ProjectsForm = () => {
         projects: projectsData,
       };
 
-      await axios.post(`${API_URL}/api/projects/update`, formData, {
+      await axios.post(`${API_URL}/api/project-resume/update`, formData, {
         params: { contactId: contactId },
       });
 
       setLastSavedData(currentDataString);
+      fetchProjects();
       return true;
     } catch (err: any) {
       console.error("Error saving projects:", err);
@@ -183,7 +181,7 @@ const ProjectsForm = () => {
     const techValue = techInput[projectId] || "";
     if (techValue.trim()) {
       const project = projects?.find((p: Project) => p.id === projectId);
-      if (project && !project.techStack.includes(techValue.trim())) {
+      if (project && !project?.techStack?.includes(techValue.trim())) {
         handleChange(projectId, "techStack", [
           ...project.techStack,
           techValue.trim(),
@@ -204,72 +202,19 @@ const ProjectsForm = () => {
     }
   };
 
-  const handleSubmitAi = async (index: number) => {
-    const project = projects?.[index];
-    if (!project?.title && project?.techStack.length === 0) {
-      toast.warning("Please enter project title and tech stack first");
-      return;
-    }
-
-    setClickedProjectIndex(index);
-    setLoading(true);
-    setAiresponse(null);
-
-    try {
-      const formData = {
-        projectTitle: project.title,
-        techStack: project.techStack,
-        currentDescription: project.description,
-      };
-
-      const response = await axios.post(
-        `https://ai.aryuacademy.com/api/v1/resume/project-description`,
-        formData,
-      );
-
-      const bullets = response.data.description
-        .split("\n")
-        .map((item: string) => item.replace(/^[-*•]\s*/, "").trim())
-        .filter(Boolean);
-
-      setAiresponse(bullets.length > 0 ? bullets : [response.data.description]);
-      setShowPopup(true);
-    } catch (err: any) {
-      console.error("Error generating AI description:", err);
-      toast.error("Failed to generate AI description");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const insertAIResponse = (item: string, index: number) => {
-    if (clickedProjectIndex === null || !setProjects) return;
-
-    setProjects((prev: Project[]) => {
-      const updated = [...prev];
-      const currentDesc = updated[clickedProjectIndex].description || "";
-      updated[clickedProjectIndex].description =
-        currentDesc + (currentDesc ? "\n" : "") + item;
-      debouncedSave(updated);
-      return updated;
-    });
-
-    if (Airesponse) {
-      const newAiResponse = Airesponse.filter((_, idx) => idx !== index);
-      setAiresponse(newAiResponse.length > 0 ? newAiResponse : null);
-    }
-  };
-
   const fetchProjects = async () => {
     if (!contactId) return;
-    
+
     try {
       const response = await axios.get(
-        `${API_URL}/api/projects/get-projects/${contactId}`,
+        `${API_URL}/api/project-resume/get-project-resume/${contactId}`,
       );
-      const projectsList = response.data?.[0]?.projects || [];
 
-      if (projectsList.length > 0 && setProjects) {
+      console.log("response", response);
+      const projectsList = response.data?.data?.projects || [];
+      console.log("projectsList", projectsList);
+
+      if (projectsList.length > 0) {
         const formattedData = projectsList.map((item: any) => ({
           id: item._id || Date.now(),
           title: item.title || "",
@@ -278,7 +223,6 @@ const ProjectsForm = () => {
           liveUrl: item.liveUrl || "",
           githubUrl: item.githubUrl || "",
           isOpen: true,
-          error: {},
         }));
         setProjects(formattedData);
         setLastSavedData(JSON.stringify(formattedData));
@@ -288,13 +232,6 @@ const ProjectsForm = () => {
       console.log(error);
     }
   };
-
-  // Uncomment to fetch projects on mount
-  // useEffect(() => {
-  //   if (contactId) {
-  //     fetchProjects();
-  //   }
-  // }, [contactId]);
 
   useEffect(() => {
     return () => {
@@ -379,8 +316,8 @@ const ProjectsForm = () => {
           </div>
 
           <p className="text-gray-600 text-xs sm:text-sm font-medium">
-            Showcase your best projects with detailed descriptions,
-            technologies used, and links.
+            Showcase your best projects with detailed descriptions, technologies
+            used, and links.
           </p>
 
           {projects?.map((project: Project, index: number) => (
@@ -430,7 +367,9 @@ const ProjectsForm = () => {
               {/* Content */}
               <div
                 className={`transition-all duration-500 overflow-hidden ${
-                  project.isOpen ? "max-h-[800px] opacity-100" : "max-h-0 opacity-0"
+                  project.isOpen
+                    ? "max-h-[800px] opacity-100"
+                    : "max-h-0 opacity-0"
                 }`}
               >
                 <div className="p-2 sm:p-3 md:p-4 space-y-4 sm:space-y-6 border-t border-gray-100">
@@ -450,7 +389,6 @@ const ProjectsForm = () => {
                         className="w-full px-3 sm:px-4 py-2.5 sm:py-3.5 bg-white border border-gray-200 rounded-xl text-gray-800 text-xs sm:text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300 hover:shadow-md"
                       />
                     </div>
-                  
                   </div>
 
                   {/* Tech Stack */}
@@ -497,14 +435,13 @@ const ProjectsForm = () => {
                         </span>
                       ))}
                     </div>
-                   
                   </div>
 
                   {/* Live URL & GitHub URL */}
                   <div className="flex flex-wrap gap-4 sm:gap-6">
                     <div className="group grow">
                       <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2 group-hover:text-[#c40116] transition-colors">
-                        Live URL 
+                        Live URL
                       </label>
                       <input
                         type="url"
@@ -519,7 +456,7 @@ const ProjectsForm = () => {
 
                     <div className="group grow">
                       <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2 group-hover:text-[#c40116] transition-colors">
-                        GitHub URL 
+                        GitHub URL
                       </label>
                       <input
                         type="url"
@@ -539,47 +476,7 @@ const ProjectsForm = () => {
                       Project Description
                     </label>
 
-                    <div className="flex justify-end">
-                      <div className="relative w-fit group">
-                        <button
-                          onClick={() => handleSubmitAi(index)}
-                          disabled={loading || (!project.title && project.techStack.length === 0)}
-                          className={`inline-flex items-center justify-center gap-2 px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 w-fit hover:shadow-md ${
-                            !project.title && project.techStack.length === 0
-                              ? "bg-linear-to-r from-gray-300 text-black to-gray-400 cursor-not-allowed opacity-90"
-                              : "bg-linear-to-r from-[#c40116] to-[#c40116]/60 text-white hover:shadow-lg hover:shadow-[#c40116]/25 hover:scale-[1.02]"
-                          }`}
-                          type="button"
-                        >
-                          <svg
-                            className="w-3.5 h-3.5 sm:w-4 sm:h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M13 10V3L4 14h7v7l9-11h-7z"
-                            />
-                          </svg>
-                          {loading && clickedProjectIndex === index
-                            ? "Generating..."
-                            : "Generate with AI"}
-                        </button>
-
-                        {(!project.title && project.techStack.length === 0) && !loading && (
-                          <div className="absolute left-1/2 -translate-x-1/2 -top-2 -translate-y-full mt-1 w-48 bg-gray-900 text-white text-xs rounded-lg py-2 px-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-50 shadow-lg">
-                            <div className="relative text-center">
-                              <span className="inline-block mr-1">⚠️</span>
-                              Enter title and tech stack to use this feature
-                              <div className="absolute left-1/2 -translate-x-1/2 -bottom-1.5 w-2 h-2 bg-gray-900 rotate-45"></div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                    
 
                     <Editor
                       className="rounded-lg mt-3 md:mt-4 lg:mt-5 bg-white"
@@ -867,68 +764,7 @@ const ProjectsForm = () => {
           </AnimatePresence>
         )}
 
-        {/* AI Response Popup */}
-        {showPopup && Airesponse && (
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="bg-white rounded-xl sm:rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] sm:max-h-[70vh] overflow-hidden"
-            >
-              <div className="p-1 bg-linear-to-r from-[#c40116] to-[#be0117]"></div>
-
-              <div className="p-4 sm:p-6">
-                <div className="flex items-start justify-between gap-3 mb-4 sm:mb-6">
-                  <div className="flex-1 min-w-0">
-                    <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
-                      AI Suggestions
-                    </h2>
-                    <p className="text-xs sm:text-sm text-gray-500 mt-1">
-                      Click on any suggestion below to add it to your project
-                      description
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => setShowPopup(false)}
-                    className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg transition-colors shrink-0"
-                    type="button"
-                  >
-                    <FiX className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500" />
-                  </button>
-                </div>
-
-                <div className="space-y-2 sm:space-y-3 max-h-[50vh] overflow-y-auto pr-1 sm:pr-2">
-                  {Airesponse?.map((item, idx) => (
-                    <div
-                      key={idx}
-                      onClick={() => insertAIResponse(item, idx)}
-                      className="flex items-start gap-2 sm:gap-3 p-3 sm:p-4 rounded-xl border border-gray-200 hover:border-[#c40116] hover:bg-[#c40116]/5 cursor-pointer group transition-all duration-200"
-                    >
-                      <div className="p-1.5 sm:p-2 bg-linear-to-br from-[#c40116]/10 to-[#be0117]/10 rounded-lg group-hover:from-[#c40116]/20 group-hover:to-[#be0117]/20 transition-all shrink-0">
-                        <svg
-                          className="w-4 h-4 sm:w-5 sm:h-5 text-[#c40116]"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M13 10V3L4 14h7v7l9-11h-7z"
-                          />
-                        </svg>
-                      </div>
-                      <p className="text-gray-700 text-xs sm:text-sm leading-relaxed flex-1">
-                        {item}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        )}
+     
       </div>
     </section>
   );

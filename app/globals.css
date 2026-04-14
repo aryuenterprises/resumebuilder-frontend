@@ -37,6 +37,18 @@ border:0
   border: 1px solid #05a2ff !important; /* Darker blue on focus */
 }
 
+.p-calendar:not(.p-calendar-disabled).p-focus > .p-inputtext {
+box-shadow: none !important;
+}
+
+.p-datepicker .p-yearpicker .p-yearpicker-year.p-highlight {
+  background: rgba(196, 1, 22,0.05);
+  /* border: 8px solid purple; */
+}
+
+.p-calendar {
+height: 50px !important;
+}
 
 @keyframes marquee {
   0% {

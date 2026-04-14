@@ -66,9 +66,19 @@ const ContactForm = () => {
     resumeId,
   } = useContext(CreateContext);
 
-  const contactId = contact._id;
+  const contactId = contact.contactId || contact._id;
+
+
+
+  console.log("chosenResumeDetails",chosenResumeDetails)
   console.log("contactId", contactId);
   console.log("use contact", contact);
+  console.log("resumeId", resumeId);
+
+
+
+
+  console.log("resumeId",resumeId)
 
   const [open, setOpen] = useState(false);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
@@ -146,12 +156,14 @@ const ContactForm = () => {
     try {
       const fd = new FormData();
 
+      console.log("fd",fd)
+
       fd.append("userId", userId);
       fd.append("firstName", contactData.firstName || "");
       fd.append("lastName", contactData.lastName || "");
       fd.append("email", contactData.email || "");
       fd.append("jobTitle", contactData.jobTitle || "");
-      fd.append("dateOfBirth", contactData.dateOfBirth || "");
+      fd.append("dob", contactData.dob || "");
       fd.append("phone", contactData.phone || "");
       fd.append("country", contactData.country || "");
       fd.append("city", contactData.city || "");
@@ -191,8 +203,8 @@ const ContactForm = () => {
         {
           params: {
             userId: userId,
-            templateId: chosenResumeDetails?.id,
-            id: contactId,
+            templateId: chosenResumeDetails?.id || chosenResumeDetails?.templateId,
+            id: contactId || "",
             resume: resumeId || "abc",
           },
           headers: {
@@ -213,13 +225,7 @@ const ContactForm = () => {
       setIsSaving(false);
     }
   };
-
   const fetchContact = async (data1: string | number) => {
-    console.log("data", data1);
-    console.log("111111");
-    console.log("Fetching contact with ID:", contactId);
-    console.log("contact", contact);
-
     try {
       const response = await axios.get(
         `${API_URL}/api/contact-resume/get-contact/${userId}`,
@@ -231,10 +237,7 @@ const ContactForm = () => {
         },
       );
 
-      console.log("response", response);
       const data = response.data[0] || response.data;
-      console.log("Fetched contact data:", data);
-      console.log("resume id:", data.resumeId);
 
       setResumeId(data.resumeId || "");
 
@@ -247,6 +250,7 @@ const ContactForm = () => {
         phone: data?.phone || "",
         email: data?.email || "",
         address: data?.address || "",
+        dob: data?.dob || "",
         city: data?.city || "",
         country: data?.country || "",
         postcode: data?.postCode || "",
@@ -283,15 +287,23 @@ const ContactForm = () => {
   };
 
   const debouncedSave = useCallback((contactData: typeof contact) => {
+
+    console.log("contactData",contactData)
+
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current);
     }
     saveTimeoutRef.current = setTimeout(() => {
-      saveToAPI(contactData);
+      // saveToAPI(contactData);
     }, 1000);
   }, []);
 
   const handleContactChange = (field: keyof typeof contact, value: string) => {
+    
+    console.log("field",field)
+    console.log("value",value)
+
+
     setContact((prev) => {
       const updated = { ...prev, [field]: value };
       debouncedSave(updated);
@@ -325,6 +337,7 @@ const ContactForm = () => {
     setCroppedAreaPixels(croppedPixels);
   }, []);
 
+resumeId
   const handleCropSave = useCallback(async () => {
     try {
       if (!imageSrc || !croppedAreaPixels) return;
@@ -371,146 +384,6 @@ const ContactForm = () => {
     <section className="relative h-screen overflow-hidden">
       <div className="py-2 lg:py-3 px-3 md:px-4 lg:px-5 bg-white shadow-soft h-full flex flex-col">
         <Stepper />
-
-        {/* Photo Viewer Modal */}
-        {showPhotoViewer && contact.croppedImage && (
-          <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="relative max-w-3xl max-h-[80vh]"
-            >
-              {/* Close button */}
-              <button
-                type="button"
-                onClick={() => setShowPhotoViewer(false)}
-                className="absolute -top-10 right-0 bg-black rounded text-white hover:text-gray-300 cursor-pointer transition-all duration-700 group p-2 x backdrop-blur-sm group "
-              >
-                <IoClose className="w-4 h-4 xs:w-5 xs:h-5 transition-all duration-700 group-hover:rotate-90" />
-              </button>
-
-              {/* Image */}
-              {contact.croppedImage.startsWith("blob:") ||
-              contact.croppedImage.startsWith("data:") ? (
-                <img
-                  src={contact.croppedImage}
-                  alt="Profile"
-                  className="max-w-full max-h-[50vh] rounded-lg object-contain"
-                />
-              ) : (
-                <img
-                  src={`${API_URL}/api/uploads/photos/${contact.croppedImage}`}
-                  alt="Profile"
-                  className="max-w-full max-h-[50vh] rounded-lg object-contain"
-                />
-              )}
-            </motion.div>
-          </div>
-        )}
-
-        {/* Photo Upload Modal */}
-        {open && (
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden max-h-[90vh] overflow-y-auto"
-            >
-              <div className="p-4 sm:p-5">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-semibold text-gray-800">
-                    Upload Profile Photo
-                  </h2>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setImageSrc(null);
-                      setOpen(false);
-                    }}
-                    className="p-1 bg-gray-200 rounded-lg transition-colors cursor-pointer"
-                  >
-                    <IoClose className="w-5 h-5 text-gray-500" />
-                  </button>
-                </div>
-
-                {/* Dropzone Area */}
-                {!imageSrc ? (
-                  <div
-                    {...getRootProps()}
-                    className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-[#c40116] hover:bg-gray-50/50 transition-all duration-300 hover:shadow-md"
-                  >
-                    <input {...getInputProps()} />
-                    <div className="flex flex-col items-center justify-center gap-3">
-                      <div className="w-12 h-12 rounded-full bg-linear-to-br from-[#c40116]/10 to-[#be0117]/10 flex items-center justify-center">
-                        <IoCloudUploadOutline className="w-6 h-6 text-[#c40116]" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-700 mb-1">
-                          Drag & drop your photo here
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          or click to browse (JPG, PNG, WEBP)
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    <div className="relative h-64 w-full bg-gray-100 rounded-xl overflow-hidden">
-                      <Cropper
-                        image={imageSrc}
-                        crop={crop}
-                        zoom={zoom}
-                        aspect={1}
-                        onCropChange={setCrop}
-                        onZoomChange={setZoom}
-                        onCropComplete={onCropComplete}
-                      />
-                    </div>
-
-                    <div className="space-y-3">
-                      <div>
-                        <label className="block text-xs font-medium text-gray-700 mb-1">
-                          Zoom
-                        </label>
-                        <input
-                          type="range"
-                          min={1}
-                          max={3}
-                          step={0.1}
-                          value={zoom}
-                          onChange={(e) => setZoom(parseFloat(e.target.value))}
-                          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                        />
-                      </div>
-
-                      <div className="flex gap-2">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setImageSrc(null);
-                            setCrop({ x: 0, y: 0 });
-                            setZoom(1);
-                          }}
-                          className="flex-1 px-4 py-2.5 bg-linear-to-r from-gray-100 to-gray-50 text-gray-700 text-sm font-medium rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200"
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          type="button"
-                          onClick={handleCropSave}
-                          className="flex-1 px-4 py-2.5 bg-linear-to-r from-[#c40116] to-[#be0117] text-white text-sm font-medium rounded-lg hover:shadow-lg hover:shadow-[#c40116]/25 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
-                        >
-                          Save Photo
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          </div>
-        )}
 
         {/* Scrollable Form Content */}
         <div className="flex-1 overflow-y-auto pb-5 mt-5">
@@ -798,11 +671,11 @@ const ContactForm = () => {
                 <input
                   type="date"
                   id="DOB"
-                  value={contact.dateOfBirth || ""}
+                  value={contact.dob?.split('T')[0] || ""}
                   onChange={(e) =>
                     handleContactChange(
-                      "dateOfBirth",
-                      sanitizeText(e.target.value),
+                      "dob",
+                    e.target.value,
                     )
                   }
                   placeholder="Software Engineer"
@@ -948,6 +821,165 @@ const ContactForm = () => {
           </form>
         </div>
 
+        {/* Fixed Footer - Always visible at bottom */}
+        <div className="shrink-0 pt-2  lg:pt-3 ">
+          <div className="flex justify-between">
+            <button
+              className="bg-gray-200 text-[#374151] border border-gray-300 text-sm md:text-base px-4 py-2 md:px-6 md:py-2.5 rounded-lg font-nunito font-semibold hover:bg-gray-100 transition-colors duration-300 cursor-pointer"
+              onClick={() => router.push("/choose-template")}
+            >
+              Back
+            </button>
+
+            <button
+              className="bg-red-600 hover:bg-red-700 text-white text-sm md:text-base px-4 py-2 md:px-6 md:py-2.5 rounded-lg font-nunito font-semibold transition-colors duration-300 cursor-pointer"
+              onClick={handleNext}
+            >
+              Next Experience
+            </button>
+          </div>
+        </div>
+
+        {/* Photo Viewer Modal */}
+        {showPhotoViewer && contact.croppedImage && (
+          <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="relative max-w-3xl max-h-[80vh]"
+            >
+              {/* Close button */}
+              <button
+                type="button"
+                onClick={() => setShowPhotoViewer(false)}
+                className="absolute -top-10 right-0 bg-black rounded text-white hover:text-gray-300 cursor-pointer transition-all duration-700 group p-2 x backdrop-blur-sm group "
+              >
+                <IoClose className="w-4 h-4 xs:w-5 xs:h-5 transition-all duration-700 group-hover:rotate-90" />
+              </button>
+
+              {/* Image */}
+              {contact.croppedImage.startsWith("blob:") ||
+              contact.croppedImage.startsWith("data:") ? (
+                <img
+                  src={contact.croppedImage}
+                  alt="Profile"
+                  className="max-w-full max-h-[50vh] rounded-lg object-contain"
+                />
+              ) : (
+                <img
+                  src={`${API_URL}/api/uploads/photos/${contact.croppedImage}`}
+                  alt="Profile"
+                  className="max-w-full max-h-[50vh] rounded-lg object-contain"
+                />
+              )}
+            </motion.div>
+          </div>
+        )}
+
+        {/* Photo Upload Modal */}
+        {open && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden max-h-[90vh] overflow-y-auto"
+            >
+              <div className="p-4 sm:p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-semibold text-gray-800">
+                    Upload Profile Photo
+                  </h2>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setImageSrc(null);
+                      setOpen(false);
+                    }}
+                    className="p-1 bg-gray-200 rounded-lg transition-colors cursor-pointer"
+                  >
+                    <IoClose className="w-5 h-5 text-gray-500" />
+                  </button>
+                </div>
+
+                {/* Dropzone Area */}
+                {!imageSrc ? (
+                  <div
+                    {...getRootProps()}
+                    className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-[#c40116] hover:bg-gray-50/50 transition-all duration-300 hover:shadow-md"
+                  >
+                    <input {...getInputProps()} />
+                    <div className="flex flex-col items-center justify-center gap-3">
+                      <div className="w-12 h-12 rounded-full bg-linear-to-br from-[#c40116]/10 to-[#be0117]/10 flex items-center justify-center">
+                        <IoCloudUploadOutline className="w-6 h-6 text-[#c40116]" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-700 mb-1">
+                          Drag & drop your photo here
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          or click to browse (JPG, PNG, WEBP)
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="relative h-64 w-full bg-gray-100 rounded-xl overflow-hidden">
+                      <Cropper
+                        image={imageSrc}
+                        crop={crop}
+                        zoom={zoom}
+                        aspect={1}
+                        onCropChange={setCrop}
+                        onZoomChange={setZoom}
+                        onCropComplete={onCropComplete}
+                      />
+                    </div>
+
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-xs font-medium text-gray-700 mb-1">
+                          Zoom
+                        </label>
+                        <input
+                          type="range"
+                          min={1}
+                          max={3}
+                          step={0.1}
+                          value={zoom}
+                          onChange={(e) => setZoom(parseFloat(e.target.value))}
+                          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                        />
+                      </div>
+
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setImageSrc(null);
+                            setCrop({ x: 0, y: 0 });
+                            setZoom(1);
+                          }}
+                          className="flex-1 px-4 py-2.5 bg-linear-to-r from-gray-100 to-gray-50 text-gray-700 text-sm font-medium rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleCropSave}
+                          className="flex-1 px-4 py-2.5 bg-linear-to-r from-[#c40116] to-[#be0117] text-white text-sm font-medium rounded-lg hover:shadow-lg hover:shadow-[#c40116]/25 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+                        >
+                          Save Photo
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </div>
+        )}
+
         {contactTipsClicked && (
           <AnimatePresence>
             <div className="fixed inset-0 z-50 flex items-start justify-center overflow-hidden p-4">
@@ -1081,39 +1113,6 @@ const ContactForm = () => {
             </div>
           </AnimatePresence>
         )}
-
-        {/* Fixed Footer - Always visible at bottom */}
-        <div className="shrink-0 pt-2  lg:pt-3 ">
-          <div className="flex justify-between">
-            <button
-              className="bg-gray-200 text-[#374151] border border-gray-300 text-sm md:text-base px-4 py-2 md:px-6 md:py-2.5 rounded-lg font-nunito font-semibold hover:bg-gray-100 transition-colors duration-300 cursor-pointer"
-              onClick={() => router.push("/choose-template")}
-            >
-              Back
-            </button>
-
-            {/* <button
-              className="bg-red-600 hover:bg-red-700 text-white text-sm md:text-base px-4 py-2 md:px-6 md:py-2.5 rounded-lg font-nunito font-semibold transition-colors duration-300 cursor-pointer"
-              onClick={() => {
-                if (saveTimeoutRef.current) {
-                  clearTimeout(saveTimeoutRef.current);
-                }
-                saveToAPI(contact).then(() => {
-                  router.push("/resume-details/experience");
-                });
-              }}
-            >
-              Next Experience
-            </button> */}
-
-            <button
-              className="bg-red-600 hover:bg-red-700 text-white text-sm md:text-base px-4 py-2 md:px-6 md:py-2.5 rounded-lg font-nunito font-semibold transition-colors duration-300 cursor-pointer"
-              onClick={handleNext}
-            >
-              Next Experience
-            </button>
-          </div>
-        </div>
       </div>
     </section>
   );

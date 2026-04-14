@@ -37,7 +37,10 @@ const Editor = dynamic(
 
 const SummaryForm = () => {
   const UseContext = useContext(CreateContext);
-  const contactId = UseContext?.contact._id;
+  // const contactId = UseContext?.contact._id;
+
+      const contactId = UseContext?.contact._id || UseContext?.contact.contactId;
+
 
   const {
     summary,
