@@ -70,13 +70,16 @@ export interface SkillCategory {
   isOpen?: boolean;
 }
 
+
+
+
 // Combined skills type
 export type SkillsType = SimpleSkill[] | SkillCategory[];
 
 export interface Project {
   id: string | number;
   title?: string;
-  techStack?: string[];
+  techStack: string[];
   description?: string;
   liveUrl?: string;
   githubUrl?: string;

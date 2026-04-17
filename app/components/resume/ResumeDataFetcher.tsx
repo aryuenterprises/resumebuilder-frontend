@@ -128,6 +128,8 @@ export function ResumeDataFetcher({ children }: ResumeDataFetcherProps) {
           if (fullResponse.data?.data?.length > 0) {
             const data = fullResponse.data.data[0];
 
+            console.log("data",data)
+
             // Update all contexts with existing data
             if (data?.contact) {
               setContact(data.contact);
@@ -139,6 +141,10 @@ export function ResumeDataFetcher({ children }: ResumeDataFetcherProps) {
 
             if (data?.experiences) {
               setExperiences(data.experiences);
+            }
+
+               if (data?.projects) {
+              setProjects(data.projects);
             }
 
             if (data?.skills) {

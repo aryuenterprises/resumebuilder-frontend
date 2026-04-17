@@ -26,7 +26,7 @@ import {
 import { BsFileEarmarkText } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 import Stepper from "../../../components/resume/Steppers";
-import { Finalize as FinalizeType, Template } from "@/app/types/context.types";
+import { Finalize as FinalizeType, SimpleSkill, SkillCategory, Template } from "@/app/types/context.types";
 import { getLocalStorage, setLocalStorage } from "@/app/utils";
 import { API_URL } from "@/app/config/api";
 
@@ -135,9 +135,17 @@ const FinalizeForm = () => {
   };
 
   const htmlRemovedSummary = stripHtml(summary);
-  const filteredSkills = skills
-    .map((item) => item?.skill || "")
-    .filter(Boolean);
+
+  // const filteredSkills = skills
+  //   .map((item) => item?.skill || "")
+  //   .filter(Boolean);
+
+    const filteredSkills = skills?.length 
+      ? ('title' in skills[0] 
+          ? (skills as SkillCategory[]).flatMap(c => c.skills.map(s => s.name))
+          : (skills as SimpleSkill[]).map(s => s.name))
+      : [];
+
   const filteredExperiences = experiences.map((item) => ({
     title: item?.jobTitle || "",
     company: item?.employer || "",

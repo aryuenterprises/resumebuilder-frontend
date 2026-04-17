@@ -72,6 +72,7 @@ interface usersCurrentPlan {
   amount: number;
   plan: string;
   description: string;
+  expiry_date: string;
 }
 
 interface ResumeItem {
@@ -100,7 +101,6 @@ const itemVariants = {
 
 const DashboardPage = () => {
   const router = useRouter();
-  const [greeting, setGreeting] = useState("");
   const [usersCurrentPlan, setusersCurrentPlan] =
     useState<usersCurrentPlan | null>(null);
   const [showBillingHistory, setShowBillingHistory] = useState(false);
@@ -108,18 +108,12 @@ const DashboardPage = () => {
   const [paymentRecords, setPaymentRecords] = useState<BillingRecord[] | null>(
     null,
   );
-  const [showResumeMenu, setShowResumeMenu] = useState<string | null>(null);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const [selectedFilter, setSelectedFilter] = useState("All Resumes");
   const [filteredOldResumeData, setFilteredOldResumeData] = useState<
     ResumeItem[]
   >([]);
 
-   const {
-      setIsUploadMode
-    } = useContext(CreateContext);
-
-   
+  const { setIsUploadMode } = useContext(CreateContext);
 
   const userDetails = getLocalStorage<User>("user_details");
   const userId = userDetails?.id;
@@ -129,6 +123,7 @@ const DashboardPage = () => {
   const userLocation =
     userDetails?.city && `${userDetails.city}, ${userDetails.country}`;
 
+  // fetchUserData  &   fetchOldResumeData
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -137,6 +132,8 @@ const DashboardPage = () => {
             userId: userId,
           },
         });
+
+        console.log("response", response);
 
         setusersCurrentPlan(response?.data?.payments?.[0]);
         fetchOldResumeData();
@@ -175,6 +172,9 @@ const DashboardPage = () => {
     fetchUserData();
   }, []);
 
+  console.log("usersCurrentPlan", usersCurrentPlan);
+
+  // fetchPaymentRecords
   useEffect(() => {
     const fetchPaymentRecords = async () => {
       try {
@@ -196,27 +196,7 @@ const DashboardPage = () => {
     fetchPaymentRecords();
   }, []);
 
-  useEffect(() => {
-    const hour = new Date().getHours();
-    if (hour >= 5 && hour < 12) {
-      setGreeting("Good Morning ☀️");
-    } else if (hour >= 12 && hour < 17) {
-      setGreeting("Good Afternoon 🌤️");
-    } else if (hour >= 17 && hour < 21) {
-      setGreeting("Good Evening 🌆");
-    } else {
-      setGreeting("Good Night 🌙");
-    }
-  }, []);
-
-  useEffect(() => {
-    const handleClickOutside = () => {
-      if (showResumeMenu) setShowResumeMenu(null);
-    };
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
-  }, [showResumeMenu]);
-
+  // this will hide scrollbar when model is open
   useEffect(() => {
     if (showBillingHistory) {
       document.body.classList.add("overflow-hidden");
@@ -513,50 +493,6 @@ const DashboardPage = () => {
         </AnimatePresence>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Welcome Section  */}
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-8 relative overflow-hidden rounded-3xl "
-          >
-            {/* Background Pattern */}
-            <div className="absolute inset-0 bg-linear-to-r from-[#c40116]/5 via-[#be0117]/5 to-transparent rounded-3xl"></div>
-            <div className="absolute inset-0 opacity-10">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-[#c40116] rounded-full blur-3xl"></div>
-              <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#be0117] rounded-full blur-3xl"></div>
-            </div>
-
-            <div className="relative bg-white/80 backdrop-blur-xl rounded-3xl p-8 border border-gray-200/50 shadow-xl">
-              <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-                <div>
-                  <div className="flex items-center gap-3 mb-3">
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ delay: 0.2, type: "spring" }}
-                      className="px-4 py-1.5 bg-linear-to-r from-[#c40116]/10 to-[#be0117]/10 rounded-full"
-                    >
-                      <span className="text-sm font-medium text-[#c40116]">
-                        Welcome Back!
-                      </span>
-                    </motion.div>
-                  </div>
-                  <motion.h2
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="text-3xl sm:text-4xl  font-bold text-gray-900 mb-2"
-                  >
-                    {greeting},{" "}
-                    <span className="bg-linear-to-r from-[#c40116] to-[#be0117] bg-clip-text text-transparent">
-                      {userName}
-                    </span>
-                  </motion.h2>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
           {/* Profile and Plan Section */}
           <motion.div
             variants={containerVariants}
@@ -660,10 +596,6 @@ const DashboardPage = () => {
                     <div className="absolute -bottom-12 -right-12 w-32 h-32 bg-white/10 rounded-full"></div>
                     <div className="absolute -top-12 -left-12 w-32 h-32 bg-black/10 rounded-full"></div>
 
-                    {/* <div className="absolute inset-0 bg-white/10 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-8 -mt-8"></div>
-                    <div className="absolute bottom-0 left-0 w-32 h-32 bg-black/10 rounded-full -ml-8 -mb-8"></div> */}
-
                     <div className="relative flex items-start justify-between">
                       <div>
                         <div className="flex items-center gap-3 mb-2">
@@ -684,11 +616,18 @@ const DashboardPage = () => {
                           <span className="font-sans">₹</span>{" "}
                           {usersCurrentPlan?.amount || "0"}
                         </p>
-                        {/* <p className="text-white/80 text-sm">
-                        /{currentPlan.interval}
-                      </p> */}
                       </div>
                     </div>
+
+                    {usersCurrentPlan.plan !== "Premium" && (
+                      <div className="flex gap-2">
+                        <p className="text-white/80 text-sm">Expiry On :</p>
+
+                        <p className="text-white/80 text-sm">
+                          {usersCurrentPlan.expiry_date.split("T")[0]}
+                        </p>
+                      </div>
+                    )}
                   </div>
 
                   {/* Plan Features */}
@@ -842,29 +781,6 @@ const DashboardPage = () => {
             </div>
 
             {/* <div className="grid grid-cols-4 gap-4">
-              {filteredOldResumeData.map((item, index) => {
-                const ComponentToRender = item.component;
-
-                return (
-                  <div
-                    key={index}
-                    className="w-full"
-                    style={{
-                      // width: "250px", // Fixed width for preview
-                      height: "350px", // Fixed height for preview
-                      overflow: "hidden",
-                      border: "1px solid #e0e0e0",
-                      borderRadius: "8px",
-                      backgroundColor: "white",
-                    }}
-                  >
-                    <ComponentToRender alldata={item} />
-                  </div>
-                );
-              })}
-            </div> */}
-
-            <div className="grid grid-cols-4 gap-4">
               {filteredOldResumeData.length > 0 &&
                 filteredOldResumeData.map((item, index) => {
                   const ComponentToRender = item.component;
@@ -883,7 +799,6 @@ const DashboardPage = () => {
                     >
                       <ComponentToRender alldata={item} />
 
-                      {/* Overlay with View Icon */}
                       <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <button
                           onClick={(e) => {
@@ -891,10 +806,7 @@ const DashboardPage = () => {
                             router.push(`/resume-details/contact`);
                             setLocalStorage("chosenTemplate", item);
                             setSessionStorage("oldRouteNameDashboard", true);
-                                  setIsUploadMode(false);
-
-                          
-
+                            setIsUploadMode(false);
                           }}
                           className="bg-white rounded-full p-3 hover:bg-gray-100 transition-colors cursor-pointer"
                         >
@@ -904,34 +816,173 @@ const DashboardPage = () => {
                     </div>
                   );
                 })}
+            </div> */}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 p-3 sm:p-4">
+              {filteredOldResumeData.length > 0 ? (
+                filteredOldResumeData.map((item, index) => {
+                  const ComponentToRender = item.component;
+
+                  return (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: index * 0.05 }}
+                      whileHover={{ y: -4 }}
+                      className="relative group w-full"
+                      style={{
+                        height: "clamp(280px, 45vw, 350px)",
+                        overflow: "hidden",
+                        borderRadius: "12px",
+                        backgroundColor: "white",
+                        boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                      }}
+                    >
+                      {/* Component Container */}
+                      <div className="w-full h-full ">
+                        <ComponentToRender alldata={item} />
+                      </div>
+
+                      {/* Overlay with View and Delete Buttons */}
+                      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                        {/* View Button */}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            router.push(`/resume-details/contact`);
+                            setLocalStorage("chosenTemplate", item);
+                            setSessionStorage("oldRouteNameDashboard", true);
+                            setIsUploadMode(false);
+                          }}
+                          className="bg-white rounded-full p-3 hover:bg-gray-100 hover:scale-110 transition-all duration-300 shadow-lg"
+                          aria-label="View Resume"
+                        >
+                          <IoEyeOutline className="h-6 w-6 text-gray-700" />
+                        </button>
+
+                        {/* Delete Button */}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            // Show confirmation dialog
+                            if (
+                              confirm(
+                                `Are you sure you want to delete "${item.name || "this resume"}"?`,
+                              )
+                            ) {
+                              // Call your delete function here
+                              // Example: handleDeleteResume(item.id);
+                              console.log("Delete resume:", item);
+                            }
+                          }}
+                          className="bg-white rounded-full p-3 hover:bg-red-50 hover:scale-110 transition-all duration-300 shadow-lg"
+                          aria-label="Delete Resume"
+                        >
+                          <svg
+                            className="h-6 w-6 text-red-600"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+
+                      {/* Mobile Touch Optimized - Shows on tap */}
+                      <div className="absolute inset-0 flex items-center justify-center gap-3 bg-black/50 sm:hidden opacity-0 active:opacity-100 transition-opacity duration-150">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            router.push(`/resume-details/contact`);
+                            setLocalStorage("chosenTemplate", item);
+                            setSessionStorage("oldRouteNameDashboard", true);
+                            setIsUploadMode(false);
+                          }}
+                          className="bg-white rounded-full p-2.5 shadow-lg"
+                          aria-label="View Resume"
+                        >
+                          <IoEyeOutline className="h-5 w-5 text-gray-700" />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (
+                              confirm(`Delete "${item.name || "this resume"}"?`)
+                            ) {
+                              // Call delete function
+                            }
+                          }}
+                          className="bg-white rounded-full p-2.5 shadow-lg"
+                          aria-label="Delete Resume"
+                        >
+                          <svg
+                            className="h-5 w-5 text-red-600"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+
+                      {/* Quick Info Bar */}
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                        <p className="text-white text-xs sm:text-sm font-medium truncate px-1">
+                          {item.name || `Resume ${index + 1}`}
+                        </p>
+                      </div>
+                    </motion.div>
+                  );
+                })
+              ) : (
+                /* Empty State */
+                <div className="col-span-full flex flex-col items-center justify-center py-12 sm:py-16">
+                  <div className="text-center">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                      <svg
+                        className="w-8 h-8 sm:w-10 sm:h-10 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={1.5}
+                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                        />
+                      </svg>
+                    </div>
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
+                      No Resumes Found
+                    </h3>
+                    <p className="text-sm text-gray-500 mb-4">
+                      Create your first resume to get started
+                    </p>
+                    <button
+                      onClick={() => router.push("/choose-template")}
+                      className="px-5 sm:px-6 py-2 sm:py-2.5 bg-gradient-to-r from-[#5E000B] to-[#C40116] text-white rounded-lg font-medium hover:shadow-lg transition-all text-sm"
+                    >
+                      Create Resume
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </motion.div>
-
-          {/* Empty State */}
-          {filteredOldResumeData.length === 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-center py-16"
-            >
-              <div className="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-2xl mb-4">
-                <HiOutlineDocumentDuplicate className="w-10 h-10 text-gray-400" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                No resumes found
-              </h3>
-              <p className="text-gray-600 mb-6">
-                Create your first resume to get started
-              </p>
-              <button
-                onClick={() => router.push("/choose-template")}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-[#c40116] to-[#be0117] text-white font-medium rounded-xl hover:shadow-lg hover:shadow-[#c40116]/25 transition-all duration-300"
-              >
-                <FiPlus className="w-5 h-5" />
-                Create Resume
-              </button>
-            </motion.div>
-          )}
 
           <BillingHistoryModal
             isOpen={showBillingHistory}

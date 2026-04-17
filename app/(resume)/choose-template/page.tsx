@@ -294,7 +294,7 @@ function Choose_template() {
       const convertedData =
         convertParsedResumeToFrontendFormat(parsedResumeData);
 
-        console.log("convertedData",convertedData)
+      console.log("convertedData", convertedData);
 
       // Update context with parsed data
       if (convertedData.contact) {
@@ -313,8 +313,8 @@ function Choose_template() {
         setSkills(convertedData.skills);
       }
 
-      if(convertedData.projects){
-        setProjects(convertedData.projects)
+      if (convertedData.projects) {
+        setProjects(convertedData.projects);
       }
 
       if (convertedData.summary && convertedData.summary[0]) {
@@ -332,7 +332,7 @@ function Choose_template() {
         skills: convertedData.skills,
         summary: convertedData.summary?.[0] || "",
         finalize: convertedData.finalize || {},
-        projects:convertedData.projects || []
+        projects: convertedData.projects || [],
       });
 
       // Set default template
@@ -375,60 +375,6 @@ function Choose_template() {
     }
   };
 
-  // Upgrade Popup Component
-  const UpgradePopup = () => (
-    <AnimatePresence>
-      {showUpgradePopup && selectedLockedTemplate && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-md"
-        >
-          <motion.div
-            initial={{ scale: 0.9, y: 20, opacity: 0 }}
-            animate={{ scale: 1, y: 0, opacity: 1 }}
-            exit={{ scale: 0.9, y: 20, opacity: 0 }}
-            transition={{ type: "spring", duration: 0.5 }}
-            className="bg-white rounded-3xl max-w-md w-full shadow-2xl overflow-hidden"
-          >
-            <div className="bg-linear-to-r from-[#5E000B] to-[#C40116] p-6 text-white text-center">
-              <Lock className="w-12 h-12 mx-auto mb-3" />
-              <h3 className="text-2xl font-bold mb-2">Template Locked</h3>
-              <p className="text-white/80">
-                This template requires {selectedLockedTemplate.requiredPlan}{" "}
-                plan
-              </p>
-            </div>
-            <div className="p-6">
-              <p className="text-gray-600 text-center mb-6">
-                Upgrade your plan to unlock this template and get access to all
-                premium features
-              </p>
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setShowUpgradePopup(false)}
-                  className="flex-1 py-3 border border-gray-200 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-all"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={() => {
-                    setShowUpgradePopup(false);
-                    router.push("/choose-plan");
-                  }}
-                  className="flex-1 py-3 bg-linear-to-r from-[#5E000B] to-[#C40116] text-white rounded-xl font-medium hover:shadow-lg transition-all hover:scale-105"
-                >
-                  Upgrade Now
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-
   return (
     <div className="min-h-screen bg-linear-to-b from-gray-50 to-white">
       <Header />
@@ -440,61 +386,61 @@ function Choose_template() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-md"
+            className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-md overflow-y-auto"
           >
             <motion.div
               initial={{ scale: 0.9, y: 20, opacity: 0 }}
               animate={{ scale: 1, y: 0, opacity: 1 }}
               exit={{ scale: 0.9, y: 20, opacity: 0 }}
               transition={{ type: "spring", duration: 0.5 }}
-              className="bg-white/90 backdrop-blur-xl rounded-3xl max-w-4xl w-full shadow-2xl overflow-hidden"
+              className="bg-white/90 backdrop-blur-xl rounded-2xl sm:rounded-3xl max-w-4xl w-full shadow-2xl overflow-hidden my-4 mx-auto"
             >
-              <div className="bg-linear-to-r from-[#5E000B] to-[#C40116] pt-4 px-6 pb-6 text-white">
+              <div className="bg-linear-to-r from-[#5E000B] to-[#C40116] pt-3 sm:pt-4 px-4 sm:px-6 pb-4 sm:pb-6 text-white">
                 <div className="flex justify-end">
                   <button
                     onClick={() => setShowInitialPopup(false)}
-                    className="p-2 text-white/80 hover:text-white transition-all cursor-pointer"
+                    className="p-1.5 sm:p-2 text-white/80 hover:text-white transition-all cursor-pointer touch-manipulation"
                   >
-                    <X className="w-6 h-6" />
+                    <X className="w-5 h-5 sm:w-6 sm:h-6" />
                   </button>
                 </div>
                 <div className="text-center">
-                  <h2 className="text-3xl md:text-4xl font-bold mb-2">
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 px-2">
                     Let's Build Your Job Winning Resume
                   </h2>
-                  <p className="text-white/80 text-lg max-w-lg mx-auto">
+                  <p className="text-white/80 text-base sm:text-lg max-w-lg mx-auto px-4">
                     Choose how you want to create your resume and get interview
                     ready in minutes
                   </p>
                 </div>
               </div>
 
-              <div className="p-8">
-                <div className="grid md:grid-cols-2 gap-6">
+              <div className="p-4 sm:p-6 md:p-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   <motion.div
                     initial={{ x: -20, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ delay: 0.3 }}
-                    className="group relative overflow-hidden rounded-2xl bg-linear-to-br from-red-50 to-rose-50 p-1 hover:shadow-xl transition-all duration-500"
+                    className="group relative overflow-hidden rounded-xl sm:rounded-2xl bg-linear-to-br from-red-50 to-rose-50 p-0.5 sm:p-1 hover:shadow-xl transition-all duration-500"
                   >
-                    <div className="relative bg-white rounded-xl p-6 h-full hover:bg-transparent transition-colors duration-500">
+                    <div className="relative bg-white rounded-lg sm:rounded-xl p-4 sm:p-5 md:p-6 h-full hover:bg-transparent transition-colors duration-500">
                       <div className="relative z-10">
-                        <div className="w-14 h-14 bg-linear-to-br from-[#5E000B] to-[#C40116] rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-500">
-                          <Sparkles className="w-6 h-6 text-white" />
+                        <div className="w-12 h-12 sm:w-14 sm:h-14 bg-linear-to-br from-[#5E000B] to-[#C40116] rounded-lg sm:rounded-xl flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 transition-transform duration-500">
+                          <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                         </div>
-                        <h3 className="text-xl font-bold text-gray-900 mb-2">
+                        <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-1.5 sm:mb-2">
                           Create New Resume
                         </h3>
-                        <p className="text-gray-600 mb-4 text-start">
+                        <p className="text-gray-600 text-sm sm:text-base mb-3 sm:mb-4">
                           No experience? No problem. AI will build your resume
                           with the right skills, projects, and format
                         </p>
                         <button
                           onClick={handleCreateNew}
-                          className="flex items-center text-[#C40116] font-medium cursor-pointer group"
+                          className="flex items-center text-[#C40116] font-medium cursor-pointer group text-sm sm:text-base touch-manipulation"
                         >
                           <span>Get started</span>
-                          <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" />
+                          <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-2 group-hover:translate-x-2 transition-transform" />
                         </button>
                       </div>
                     </div>
@@ -504,17 +450,17 @@ function Choose_template() {
                     initial={{ x: 20, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ delay: 0.4 }}
-                    className="group relative overflow-hidden rounded-2xl bg-linear-to-br from-rose-50 to-red-50 p-1 hover:shadow-xl transition-all duration-500"
+                    className="group relative overflow-hidden rounded-xl sm:rounded-2xl bg-linear-to-br from-rose-50 to-red-50 p-0.5 sm:p-1 hover:shadow-xl transition-all duration-500"
                   >
-                    <div className="relative bg-white rounded-xl p-6 h-full hover:bg-transparent transition-colors duration-500">
+                    <div className="relative bg-white rounded-lg sm:rounded-xl p-4 sm:p-5 md:p-6 h-full hover:bg-transparent transition-colors duration-500">
                       <div className="relative z-10">
-                        <div className="w-14 h-14 bg-linear-to-br from-[#C40116] to-[#5E000B] rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-500">
-                          <Upload className="w-6 h-6 text-white" />
+                        <div className="w-12 h-12 sm:w-14 sm:h-14 bg-linear-to-br from-[#C40116] to-[#5E000B] rounded-lg sm:rounded-xl flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 transition-transform duration-500">
+                          <Upload className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                         </div>
-                        <h3 className="text-xl font-bold text-gray-900 mb-2">
+                        <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-1.5 sm:mb-2">
                           Improve My Existing Resume
                         </h3>
-                        <p className="text-gray-600 mb-4 text-start">
+                        <p className="text-gray-600 text-sm sm:text-base mb-3 sm:mb-4">
                           Already have a resume? Upload it and let AI rewrite,
                           fix, and optimize it for better results
                         </p>
@@ -523,28 +469,28 @@ function Choose_template() {
                             setShowInitialPopup(false);
                             setShowUploadPopup(true);
                           }}
-                          className="flex items-center text-[#C40116] font-medium cursor-pointer group"
+                          className="flex items-center text-[#C40116] font-medium cursor-pointer group text-sm sm:text-base touch-manipulation"
                         >
                           <span>Upload now</span>
-                          <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" />
+                          <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-2 group-hover:translate-x-2 transition-transform" />
                         </button>
                       </div>
                     </div>
                   </motion.div>
                 </div>
 
-                <div className="mt-8 pt-6 border-t border-gray-100">
-                  <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-500">
-                    <div className="flex items-center gap-2">
-                      <LuUsers className="w-4 h-4 text-[#C40116]" />
+                <div className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-gray-100">
+                  <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-xs sm:text-sm text-gray-500">
+                    <div className="flex items-center gap-1.5 sm:gap-2">
+                      <LuUsers className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C40116]" />
                       <span>Built for freshers & experienced</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <AiOutlineThunderbolt className="w-4 h-4 text-[#C40116]" />
+                    <div className="flex items-center gap-1.5 sm:gap-2">
+                      <AiOutlineThunderbolt className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C40116]" />
                       <span>AI powered</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <PiReadCvLogo className="w-4 h-4 text-[#C40116]" />
+                    <div className="flex items-center gap-1.5 sm:gap-2">
+                      <PiReadCvLogo className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C40116]" />
                       <span>Ready in 3 minutes</span>
                     </div>
                   </div>
@@ -555,14 +501,14 @@ function Choose_template() {
         )}
       </AnimatePresence>
 
-      {/* Upload Popup */}
+      {/* Upload Popup - Super Responsive */}
       <AnimatePresence>
         {showUploadPopup && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-md"
+            className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/50 backdrop-blur-md overflow-y-auto"
             onClick={resetUploadPopup}
           >
             <motion.div
@@ -570,16 +516,16 @@ function Choose_template() {
               animate={{ scale: 1, y: 0, opacity: 1 }}
               exit={{ scale: 0.9, y: 20, opacity: 0 }}
               transition={{ type: "spring", duration: 0.5 }}
-              className="bg-white rounded-3xl max-w-lg w-full shadow-2xl border border-white/20 overflow-hidden"
+              className="bg-white rounded-2xl sm:rounded-3xl max-w-lg w-full shadow-2xl border border-white/20 overflow-hidden my-4 mx-auto"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="p-8">
-                <div className="text-center mb-6">
+              <div className="p-4 sm:p-6 md:p-8">
+                <div className="text-center mb-4 sm:mb-6">
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ delay: 0.2, type: "spring" }}
-                    className={`w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 ${
+                    className={`w-16 h-16 sm:w-20 sm:h-20 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 ${
                       uploadStatus === "success"
                         ? "bg-green-500"
                         : uploadStatus === "error"
@@ -588,15 +534,15 @@ function Choose_template() {
                     }`}
                   >
                     {uploadStatus === "success" ? (
-                      <CheckCircle className="w-10 h-10 text-white" />
+                      <CheckCircle className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
                     ) : uploadStatus === "error" ? (
-                      <AlertCircle className="w-10 h-10 text-white" />
+                      <AlertCircle className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
                     ) : (
-                      <Upload className="w-10 h-10 text-white" />
+                      <Upload className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
                     )}
                   </motion.div>
 
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1.5 sm:mb-2">
                     {uploadStatus === "uploading" && "Uploading Your Resume"}
                     {uploadStatus === "processing" && "Processing Your Resume"}
                     {uploadStatus === "success" && "Upload Complete!"}
@@ -604,7 +550,7 @@ function Choose_template() {
                     {uploadStatus === "idle" && "Upload Your Resume"}
                   </h2>
 
-                  <p className="text-gray-600">
+                  <p className="text-sm sm:text-base text-gray-600 px-2">
                     {uploadStatus === "uploading" &&
                       "Please wait while we upload your file..."}
                     {uploadStatus === "processing" &&
@@ -622,15 +568,17 @@ function Choose_template() {
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl flex items-start gap-2"
+                    className="mb-4 p-2.5 sm:p-3 bg-red-50 border border-red-200 rounded-lg sm:rounded-xl flex items-start gap-2"
                   >
-                    <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
-                    <p className="text-sm text-red-700">{errorMessage}</p>
+                    <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                    <p className="text-xs sm:text-sm text-red-700">
+                      {errorMessage}
+                    </p>
                   </motion.div>
                 )}
 
                 <div
-                  className={`relative border-2 border-dashed rounded-2xl p-8 transition-all duration-300 ${
+                  className={`relative border-2 border-dashed rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 transition-all duration-300 ${
                     uploadStatus === "error"
                       ? "border-red-500 bg-red-50/40"
                       : uploadStatus === "success"
@@ -660,19 +608,19 @@ function Choose_template() {
 
                   {isUploading || uploadStatus === "processing" ? (
                     <div className="text-center">
-                      <div className="w-20 h-20 mx-auto mb-4 relative">
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-3 sm:mb-4 relative">
                         <div className="absolute inset-0 border-4 border-gray-200 rounded-full" />
                         <div className="absolute inset-0 border-4 border-[#C40116] rounded-full border-t-transparent animate-spin" />
                       </div>
 
                       {/* Progress Bar with Percentage */}
-                      <p className="text-sm font-medium text-gray-900 mb-2">
+                      <p className="text-xs sm:text-sm font-medium text-gray-900 mb-2">
                         {uploadStatus === "uploading"
                           ? "Uploading"
                           : "Processing"}
                         ... {uploadProgress}%
                       </p>
-                      <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="w-full h-1.5 sm:h-2 bg-gray-200 rounded-full overflow-hidden">
                         <motion.div
                           className="h-full bg-linear-to-r from-[#5E000B] to-[#C40116]"
                           initial={{ width: 0 }}
@@ -682,7 +630,7 @@ function Choose_template() {
                       </div>
 
                       {/* Status messages */}
-                      <p className="text-xs text-gray-500 mt-3">
+                      <p className="text-[11px] sm:text-xs text-gray-500 mt-3">
                         {uploadStatus === "uploading" &&
                           "Uploading file to server..."}
                         {uploadStatus === "processing" &&
@@ -691,28 +639,28 @@ function Choose_template() {
                     </div>
                   ) : uploadedFile && uploadStatus === "success" ? (
                     <div className="text-center">
-                      <div className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
-                        <CheckCircle className="w-8 h-8 text-green-500" />
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 bg-green-100 rounded-full flex items-center justify-center">
+                        <CheckCircle className="w-7 h-7 sm:w-8 sm:h-8 text-green-500" />
                       </div>
-                      <p className="text-sm font-medium text-gray-900 mb-1">
+                      <p className="text-xs sm:text-sm font-medium text-gray-900 mb-1 break-all px-2">
                         {uploadedFile.name}
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-[11px] sm:text-xs text-gray-500">
                         {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
                       </p>
-                      <p className="text-xs text-green-600 mt-2">
+                      <p className="text-[11px] sm:text-xs text-green-600 mt-2">
                         ✓ Successfully processed
                       </p>
                     </div>
                   ) : uploadedFile && uploadStatus === "error" ? (
                     <div className="text-center">
-                      <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
-                        <FileText className="w-8 h-8 text-red-500" />
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 bg-red-100 rounded-full flex items-center justify-center">
+                        <FileText className="w-7 h-7 sm:w-8 sm:h-8 text-red-500" />
                       </div>
-                      <p className="text-sm font-medium text-gray-900 mb-1">
+                      <p className="text-xs sm:text-sm font-medium text-gray-900 mb-1 break-all px-2">
                         {uploadedFile.name}
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-[11px] sm:text-xs text-gray-500">
                         {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
                       </p>
                       <button
@@ -721,20 +669,20 @@ function Choose_template() {
                           setUploadStatus("idle");
                           setErrorMessage("");
                         }}
-                        className="mt-3 text-sm text-[#C40116] hover:underline"
+                        className="mt-2 sm:mt-3 text-xs sm:text-sm text-[#C40116] hover:underline touch-manipulation"
                       >
                         Try again
                       </button>
                     </div>
                   ) : (
                     <div className="text-center">
-                      <div className="w-20 h-20 mx-auto mb-4 bg-linear-to-br from-red-100 to-rose-100 rounded-full flex items-center justify-center">
-                        <Upload className="w-8 h-8 text-[#C40116]" />
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-3 sm:mb-4 bg-linear-to-br from-red-100 to-rose-100 rounded-full flex items-center justify-center">
+                        <Upload className="w-6 h-6 sm:w-8 sm:h-8 text-[#C40116]" />
                       </div>
-                      <p className="text-sm font-medium text-gray-900 mb-1">
+                      <p className="text-xs sm:text-sm font-medium text-gray-900 mb-1">
                         Drop your file here
                       </p>
-                      <p className="text-xs text-gray-500 mb-4">
+                      <p className="text-[11px] sm:text-xs text-gray-500 mb-3 sm:mb-4">
                         Supports PDF only
                       </p>
                       <button
@@ -745,7 +693,7 @@ function Choose_template() {
                           uploadStatus === "uploading" ||
                           uploadStatus === "processing"
                         }
-                        className="px-6 py-2 bg-linear-to-r from-[#5E000B] to-[#C40116] text-white rounded-xl font-medium hover:shadow-lg transition-all hover:scale-105 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-5 sm:px-6 py-1.5 sm:py-2 bg-linear-to-r from-[#5E000B] to-[#C40116] text-white rounded-lg sm:rounded-xl font-medium hover:shadow-lg transition-all hover:scale-105 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base touch-manipulation"
                       >
                         Browse Files
                       </button>
@@ -753,14 +701,14 @@ function Choose_template() {
                   )}
                 </div>
 
-                <div className="flex gap-3 mt-6">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mt-4 sm:mt-6">
                   <button
                     onClick={resetUploadPopup}
                     disabled={
                       uploadStatus === "uploading" ||
                       uploadStatus === "processing"
                     }
-                    className="flex-1 py-3 border border-gray-200 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="order-2 sm:order-1 flex-1 py-2.5 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base touch-manipulation"
                   >
                     Cancel
                   </button>
@@ -771,7 +719,7 @@ function Choose_template() {
                         setShowUploadPopup(false);
                         router.push(`/resume-details/contact`);
                       }}
-                      className="flex-1 py-3 bg-green-500 text-white rounded-xl font-medium hover:shadow-lg transition-all hover:scale-105 cursor-pointer"
+                      className="order-1 sm:order-2 flex-1 py-2.5 sm:py-3 bg-green-500 text-white rounded-lg sm:rounded-xl font-medium hover:shadow-lg transition-all hover:scale-105 cursor-pointer text-sm sm:text-base touch-manipulation"
                     >
                       Continue
                     </button>
@@ -784,7 +732,7 @@ function Choose_template() {
                         setUploadStatus("idle");
                         setErrorMessage("");
                       }}
-                      className="flex-1 py-3 bg-red-500 text-white rounded-xl font-medium hover:shadow-lg transition-all hover:scale-105 cursor-pointer"
+                      className="order-1 sm:order-2 flex-1 py-2.5 sm:py-3 bg-red-500 text-white rounded-lg sm:rounded-xl font-medium hover:shadow-lg transition-all hover:scale-105 cursor-pointer text-sm sm:text-base touch-manipulation"
                     >
                       Try Again
                     </button>
@@ -797,7 +745,58 @@ function Choose_template() {
       </AnimatePresence>
 
       {/* Upgrade Popup */}
-      <UpgradePopup />
+      <AnimatePresence>
+        {showUpgradePopup && selectedLockedTemplate && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-md"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.9, y: 20, opacity: 0 }}
+              transition={{ type: "spring", duration: 0.5 }}
+              className="bg-white rounded-2xl sm:rounded-3xl max-w-md w-full shadow-2xl overflow-hidden mx-3 sm:mx-4"
+            >
+              <div className="bg-linear-to-r from-[#5E000B] to-[#C40116] p-4 sm:p-6 text-white text-center">
+                <Lock className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-2 sm:mb-3" />
+                <h3 className="text-xl sm:text-2xl font-bold mb-1.5 sm:mb-2">
+                  Template Locked
+                </h3>
+                <p className="text-white/80 text-sm sm:text-base">
+                  This template requires {selectedLockedTemplate.requiredPlan}{" "}
+                  plan
+                </p>
+              </div>
+              <div className="p-4 sm:p-6">
+                <p className="text-sm sm:text-base text-gray-600 text-center mb-4 sm:mb-6">
+                  Upgrade your plan to unlock this template and get access to
+                  all premium features
+                </p>
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                  <button
+                    onClick={() => setShowUpgradePopup(false)}
+                    className="order-2 sm:order-1 flex-1 py-2.5 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-all text-sm sm:text-base touch-manipulation"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowUpgradePopup(false);
+                      router.push("/choose-plan");
+                    }}
+                    className="order-1 sm:order-2 flex-1 py-2.5 sm:py-3 bg-linear-to-r from-[#5E000B] to-[#C40116] text-white rounded-lg sm:rounded-xl font-medium hover:shadow-lg transition-all hover:scale-105 text-sm sm:text-base touch-manipulation"
+                  >
+                    Upgrade Now
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div>
         {/* Hero Section */}

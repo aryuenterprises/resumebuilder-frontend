@@ -39,10 +39,8 @@ const ProjectsForm = () => {
   const UseContext = useContext(CreateContext);
   // const contactId = UseContext?.contact._id;
 
+  const contactId = UseContext?.contact._id || UseContext?.contact.contactId;
 
-      const contactId = UseContext?.contact._id || UseContext?.contact.contactId;
-
-  
   const { fullResumeData, setFullResumeData, projects, setProjects } =
     UseContext || {};
 
@@ -51,12 +49,6 @@ const ProjectsForm = () => {
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
   const [lastSavedData, setLastSavedData] = useState<string>("");
-  const [showPopup, setShowPopup] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [Airesponse, setAiresponse] = useState<string[] | null>(null);
-  const [clickedProjectIndex, setClickedProjectIndex] = useState<number | null>(
-    null,
-  );
   const [skillTipsClicked, setSkillTipsClicked] = useState(false);
   const [techInput, setTechInput] = useState<{ [key: string]: string }>({});
 
@@ -79,6 +71,7 @@ const ProjectsForm = () => {
 
   const addProject = () => {
     if (!setProjects) return;
+
     setProjects((prev: Project[]) => {
       const updated = [
         ...prev,
@@ -179,7 +172,7 @@ const ProjectsForm = () => {
 
   const addTechStack = (projectId: string | number) => {
     const techValue = techInput[projectId] || "";
-    if (techValue.trim()) {
+    if (techValue.trim()) {0
       const project = projects?.find((p: Project) => p.id === projectId);
       if (project && !project?.techStack?.includes(techValue.trim())) {
         handleChange(projectId, "techStack", [
@@ -368,7 +361,7 @@ const ProjectsForm = () => {
               <div
                 className={`transition-all duration-500 overflow-hidden ${
                   project.isOpen
-                    ? "max-h-[800px] opacity-100"
+                    ? "max-h-200 opacity-100"
                     : "max-h-0 opacity-0"
                 }`}
               >
@@ -475,8 +468,6 @@ const ProjectsForm = () => {
                     <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2 group-hover:text-[#c40116] transition-colors">
                       Project Description
                     </label>
-
-                    
 
                     <Editor
                       className="rounded-lg mt-3 md:mt-4 lg:mt-5 bg-white"
@@ -593,14 +584,14 @@ const ProjectsForm = () => {
                 }
                 if (projects) {
                   saveToAPI(projects).then(() => {
-                    router.push("/resume-details/finalize");
+                    router.push("/resume-details/summary");
                   });
                 } else {
-                  router.push("/resume-details/finalize");
+                  router.push("/resume-details/summary");
                 }
               }}
             >
-              Next Finalize
+              Next Summary
             </button>
           </div>
         </div>
@@ -763,8 +754,6 @@ const ProjectsForm = () => {
             </div>
           </AnimatePresence>
         )}
-
-     
       </div>
     </section>
   );

@@ -19,8 +19,8 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import Stepper from "../../../components/resume/Steppers";
 import { getLocalStorage, setLocalStorage } from "@/app/utils";
-import { Education, Experience, Skill } from "@/app/types";
 import { API_URL } from "@/app/config/api";
+import { SimpleSkill, SkillCategory } from "@/app/types";
 
 // Dynamically import Editor to avoid SSR issues
 const Editor = dynamic(
@@ -77,7 +77,17 @@ const SummaryForm = () => {
     year: edu.year,
   }));
 
-  const filteredSkills = skills.map((skill) => skill.skill);
+  // const filteredSkills = skills.map((skill) => skill.skill);
+
+  
+  const filteredSkills = skills?.length 
+  ? ('title' in skills[0] 
+      ? (skills as SkillCategory[]).flatMap(c => c.skills.map(s => s.name))
+      : (skills as SimpleSkill[]).map(s => s.name))
+  : [];
+
+  
+  console.log("filteredSkills",filteredSkills)
 
   const formData = {
     experiences: filteredExperiences,
@@ -385,7 +395,7 @@ const SummaryForm = () => {
           <div className="flex justify-between">
             <button
               className="bg-gray-200 text-[#374151] border border-gray-300 text-sm md:text-base px-4 py-1 md:px-6 md:py-2 rounded-lg font-nunito font-semibold hover:bg-gray-100 transition-colors duration-300 cursor-pointer"
-              onClick={() => router.push("/resume-details/skills")}
+              onClick={() => router.push("/resume-details/project")}
             >
               Back
             </button>

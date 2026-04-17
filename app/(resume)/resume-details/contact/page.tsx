@@ -70,12 +70,6 @@ const ContactForm = () => {
 
 
 
-  console.log("chosenResumeDetails",chosenResumeDetails)
-  console.log("contactId", contactId);
-  console.log("use contact", contact);
-  console.log("resumeId", resumeId);
-
-
 
 
   console.log("resumeId",resumeId)

@@ -173,7 +173,7 @@ export const convertParsedResumeToFrontendFormat = (
     id: `temp_project_${index}`,
     name: `${project.title}`,
     description: formatBulletsToHTML(project.bullets || []),
-    techStack:project.technologies
+    techStack:project.technologies || []
   })) || [];
 
   // Build finalize object matching your Finalize interface

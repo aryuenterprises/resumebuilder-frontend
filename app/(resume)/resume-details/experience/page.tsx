@@ -185,7 +185,7 @@ const ExperienceForm = () => {
         clearTimeout(saveTimeoutRef.current);
       }
       saveTimeoutRef.current = setTimeout(() => {
-        saveToAPI(experiencesData);
+        // saveToAPI(experiencesData);
       }, 1000);
     },
     [contactId, lastSavedData],

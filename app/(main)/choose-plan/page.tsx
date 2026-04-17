@@ -399,6 +399,7 @@ export default function ChoosePlanPage() {
   const [userId, setUserId] = useState<string>("");
   const [userEmail, setUserEmail] = useState<string>("");
   const [plan, setPlans] = useState();
+  console.log("plan from api",plan)
   const [usersCurrentPlan, setusersCurrentPlan] =
     useState<usersCurrentPlan | null>(null);
 

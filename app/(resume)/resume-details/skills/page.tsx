@@ -3006,6 +3006,1640 @@
 
 // export default SkillsForm;
 
+// "use client";
+
+// import React, {
+//   useContext,
+//   useState,
+//   useEffect,
+//   useCallback,
+//   useRef,
+// } from "react";
+// import { motion, AnimatePresence } from "framer-motion";
+// import {
+//   FiCheckCircle,
+//   FiXCircle,
+//   FiChevronDown,
+//   FiTrash2,
+//   FiPlus,
+//   FiGrid,
+//   FiList,
+//   FiEdit2,
+//   FiCheck,
+//   FiX,
+//   FiZap,
+//   FiTrendingUp,
+//   FiArrowRight,
+//   FiSave,
+//   FiTag,
+//   FiFolderPlus,
+//   FiCpu,
+//   FiStar,
+// } from "react-icons/fi";
+// import { CreateContext } from "@/app/context/CreateContext";
+// import axios from "axios";
+// import { toast } from "react-toastify";
+// import { BsArrowLeftCircleFill } from "react-icons/bs";
+// import {
+//   FaRegLightbulb,
+//   FaTimes,
+//   FaGraduationCap,
+//   FaMagic,
+// } from "react-icons/fa";
+// import { IoIosArrowDown, IoMdAdd } from "react-icons/io";
+// import { BsFillLightningFill } from "react-icons/bs";
+// import { useRouter } from "next/navigation";
+// import Stepper from "../../../components/resume/Steppers";
+// import { getLocalStorage, setLocalStorage } from "@/app/utils";
+// import { API_URL } from "@/app/config/api";
+// import { SimpleSkill, SkillCategory, SkillsType } from "@/app/types";
+
+// type SkillsMode = "simple" | "categorized";
+
+// const SkillsForm = () => {
+//   const [skillTipsClicked, setSkillTipsClicked] = useState(false);
+//   const [skillsMode, setSkillsMode] = useState<SkillsMode>("simple");
+//   const router = useRouter();
+//   const UseContext = useContext(CreateContext);
+//   const contactId = UseContext?.contact?._id;
+
+//   const { skills, setSkills, fullResumeData, setFullResumeData } = UseContext;
+
+//   const [simpleSkills, setSimpleSkills] = useState<SimpleSkill[]>([]);
+//   const [newSkillInput, setNewSkillInput] = useState<string>("");
+//   const [editingSkillId, setEditingSkillId] = useState<string | number | null>(
+//     null,
+//   );
+//   const [editingSkillValue, setEditingSkillValue] = useState<string>("");
+
+//   const [categorizedSkills, setCategorizedSkills] = useState<SkillCategory[]>(
+//     [],
+//   );
+//   const [newCategoryTitle, setNewCategoryTitle] = useState<string>("");
+//   const [showAddCategory, setShowAddCategory] = useState<boolean>(false);
+
+//   const [Airesponse, setAiresponse] = useState<string[] | null>(null);
+//   const [loading, setLoading] = useState<boolean>(false);
+//   const [showPopup, setShowPopup] = useState<boolean>(false);
+//   const [isSaving, setIsSaving] = useState<boolean>(false);
+//   const [lastSavedData, setLastSavedData] = useState<string>("");
+//   const [isInitialized, setIsInitialized] = useState<boolean>(false);
+
+//   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+//   const initialLoadDone = useRef<boolean>(false);
+
+//   // Initialize skills data
+//   useEffect(() => {
+//     // if (isInitialized) return;
+//     console.log(1);
+//     if (skills && Array.isArray(skills) && skills.length > 0) {
+//       console.log(2);
+
+//       const firstSkill = skills[0] as any;
+//       if (firstSkill?.title !== undefined) {
+//         console.log(3);
+
+//         setSkillsMode("categorized");
+//         const normalizedSkills = (skills as SkillCategory[]).map((cat) => ({
+//           ...cat,
+//           isOpen: cat.isOpen !== undefined ? cat.isOpen : true,
+//         }));
+//         setCategorizedSkills(normalizedSkills);
+//       } else {
+//         console.log(4);
+
+//         setSkillsMode("simple");
+//         setSimpleSkills(skills as SimpleSkill[]);
+//       }
+//     }
+//     // setIsInitialized(true);
+//   }, [skills, isInitialized]);
+
+//   // Auto-save effect
+//   useEffect(() => {
+//     if (!initialLoadDone.current) return;
+//     const currentSkills =
+//       skillsMode === "simple" ? simpleSkills : categorizedSkills;
+//     if (fullResumeData && setFullResumeData) {
+//       const updatedFullData = { ...fullResumeData, skills: currentSkills };
+//       setFullResumeData(updatedFullData);
+//       setLocalStorage("fullResumeData", updatedFullData);
+//     }
+//   }, [simpleSkills, categorizedSkills, skillsMode]);
+
+//   const saveToAPI = async (
+//     skillsDataToSave: SimpleSkill[] | SkillCategory[],
+//   ) => {
+//     if (!contactId) return false;
+
+//     console.log("skillsDataToSave", skillsDataToSave);
+
+//     const currentDataString = JSON.stringify(skillsDataToSave);
+//     if (currentDataString === lastSavedData) return true;
+
+//     setIsSaving(true);
+//     try {
+//       await axios.post(
+//         `${API_URL}/api/skill/update`,
+//         { skills: skillsDataToSave },
+//         {
+//           params: { contactId },
+//         },
+//       );
+//       setLastSavedData(currentDataString);
+//       if (setSkills) setSkills(skillsDataToSave);
+//       fetchSkill();
+//       return true;
+//     } catch (err) {
+//       toast.error("Failed to save Skills!");
+//       return false;
+//     } finally {
+//       setIsSaving(false);
+//     }
+//   };
+
+//   const fetchSkill = async () => {
+//     try {
+//       const response = await axios.get(
+//         `${API_URL}/api/skill/get-skill/${contactId}`,
+//       );
+
+//       console.log("skills response", response);
+
+//       const skillsList = response.data?.[0]?.skills || [];
+
+//       console.log("skillsList", skillsList);
+
+//       setSkills(skillsList);
+//       setLastSavedData(JSON.stringify(skillsList));
+
+//       initialLoadDone.current = true;
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   };
+
+//   const debouncedSave = useCallback(
+//     (data: SimpleSkill[] | SkillCategory[]) => {
+//       if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+//       saveTimeoutRef.current = setTimeout(() => saveToAPI(data), 1000);
+//     },
+//     [contactId, lastSavedData],
+//   );
+
+//   const startEditingSkill = (skill: SimpleSkill) => {
+//     setEditingSkillId(skill.id);
+//     setEditingSkillValue(skill.name);
+//   };
+
+//   const saveEditingSkill = () => {
+//     if (editingSkillId && editingSkillValue.trim()) {
+//       const updated = simpleSkills.map((skill) =>
+//         skill.id === editingSkillId
+//           ? { ...skill, name: editingSkillValue.trim() }
+//           : skill,
+//       );
+//       setSimpleSkills(updated);
+//       debouncedSave(updated);
+//     }
+//     setEditingSkillId(null);
+//     setEditingSkillValue("");
+//     toast.success("Skill updated!");
+//   };
+
+//   const cancelEditing = () => {
+//     setEditingSkillId(null);
+//     setEditingSkillValue("");
+//   };
+
+//   // In addSimpleSkill - replace Date.now() with crypto.randomUUID()
+//   const addSimpleSkill = () => {
+//     if (newSkillInput.trim()) {
+//       const updated = [
+//         ...simpleSkills,
+//         { id: crypto.randomUUID(), name: newSkillInput.trim() }, // Changed here
+//       ];
+//       setSimpleSkills(updated);
+//       debouncedSave(updated);
+//       setNewSkillInput("");
+//       toast.success("Skill added!");
+//     }
+//   };
+
+//   // In addCategorizedSkill
+//   const addCategorizedSkill = (
+//     categoryId: string | number,
+//     skillName: string,
+//   ) => {
+//     if (!skillName.trim()) return;
+//     const updated = categorizedSkills.map((cat) =>
+//       cat.id === categoryId
+//         ? {
+//             ...cat,
+//             skills: [
+//               ...cat.skills,
+//               { id: crypto.randomUUID(), name: skillName.trim() },
+//             ],
+//           }
+//         : cat,
+//     );
+//     setCategorizedSkills(updated);
+//     debouncedSave(updated);
+//   };
+
+//   // In addCategory
+//   const addCategory = () => {
+//     if (newCategoryTitle.trim()) {
+//       const newCategory: SkillCategory = {
+//         id: crypto.randomUUID(), // Changed here
+//         title: newCategoryTitle.trim(),
+//         skills: [],
+//         isOpen: true,
+//       };
+//       const updated = [...categorizedSkills, newCategory];
+//       setCategorizedSkills(updated);
+//       debouncedSave(updated);
+//       setNewCategoryTitle("");
+//       setShowAddCategory(false);
+//       toast.success("Category added!");
+//     }
+//   };
+
+//   // In insertAIResponse (when adding AI suggested skills)
+//   const insertAIResponse = (item: string, index: number) => {
+//     if (skillsMode === "simple") {
+//       const updated = [
+//         ...simpleSkills,
+//         { id: crypto.randomUUID(), name: item },
+//       ]; // Changed here
+//       setSimpleSkills(updated);
+//       debouncedSave(updated);
+//     } else {
+//       if (categorizedSkills.length === 0) {
+//         const newCategory: SkillCategory = {
+//           id: crypto.randomUUID(), // Changed here
+//           title: "Skills",
+//           isOpen: true,
+//           skills: [{ id: crypto.randomUUID(), name: item }], // Changed here
+//         };
+//         setCategorizedSkills([newCategory]);
+//         debouncedSave([newCategory]);
+//       } else {
+//         const updated = categorizedSkills.map((cat, idx) =>
+//           idx === 0
+//             ? {
+//                 ...cat,
+//                 skills: [
+//                   ...cat.skills,
+//                   { id: crypto.randomUUID(), name: item },
+//                 ], // Changed here
+//               }
+//             : cat,
+//         );
+//         setCategorizedSkills(updated);
+//         debouncedSave(updated);
+//       }
+//     }
+//     if (Airesponse) {
+//       const newAiResponse = Airesponse.filter((_, idx) => idx !== index);
+//       setAiresponse(newAiResponse.length > 0 ? newAiResponse : null);
+//     }
+//     toast.success("Skill added!");
+//   };
+
+//   const deleteSimpleSkill = (skillId: string | number) => {
+//     const updated = simpleSkills.filter((skill) => skill.id !== skillId);
+//     setSimpleSkills(updated);
+//     debouncedSave(updated);
+//     toast.success("Skill removed!");
+//   };
+
+//   const deleteCategory = (categoryId: string | number) => {
+//     const updated = categorizedSkills.filter((cat) => cat.id !== categoryId);
+//     setCategorizedSkills(updated);
+//     debouncedSave(updated);
+//     toast.success("Category removed!");
+//   };
+
+//   const toggleCategory = (categoryId: string | number) => {
+//     const updated = categorizedSkills.map((cat) =>
+//       cat.id === categoryId ? { ...cat, isOpen: !cat.isOpen } : cat,
+//     );
+//     setCategorizedSkills(updated);
+//     debouncedSave(updated);
+//   };
+
+//   const deleteCategorizedSkill = (
+//     categoryId: string | number,
+//     skillId: string | number,
+//   ) => {
+//     const updated = categorizedSkills.map((cat) =>
+//       cat.id === categoryId
+//         ? { ...cat, skills: cat.skills.filter((skill) => skill.id !== skillId) }
+//         : cat,
+//     );
+//     setCategorizedSkills(updated);
+//     debouncedSave(updated);
+//     toast.success("Skill removed!");
+//   };
+
+//   const updateCategoryTitle = (
+//     categoryId: string | number,
+//     newTitle: string,
+//   ) => {
+//     if (!newTitle.trim()) return;
+//     const updated = categorizedSkills.map((cat) =>
+//       cat.id === categoryId ? { ...cat, title: newTitle.trim() } : cat,
+//     );
+//     setCategorizedSkills(updated);
+//     debouncedSave(updated);
+//   };
+
+//   // AI Functions
+//   const handleSubmitAi = async () => {
+//     setLoading(true);
+//     setAiresponse(null);
+//     try {
+//       const experienceTitlesList =
+//         UseContext?.experiences?.map((item: any) => item.jobTitle) || [];
+//       const response = await axios.post(
+//         `https://ai.aryuacademy.com/api/v1/resume/skills`,
+//         {
+//           job_titles: experienceTitlesList,
+//         },
+//       );
+//       setAiresponse(response.data?.skills || []);
+//       setShowPopup(true);
+//     } catch (err) {
+//       toast.error("Failed to generate AI skills");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   // Sync with context
+//   useEffect(() => {
+//     if (initialLoadDone.current && setSkills) {
+//       const currentSkills: SkillsType =
+//         skillsMode === "simple" ? simpleSkills : categorizedSkills;
+//       if (JSON.stringify(currentSkills) !== JSON.stringify(skills)) {
+//         setSkills(currentSkills);
+//       }
+//     }
+//   }, [simpleSkills, categorizedSkills, skillsMode]);
+
+//   useEffect(() => {
+//     initialLoadDone.current = true;
+//   }, []);
+//   useEffect(
+//     () => () => {
+//       if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+//     },
+//     [],
+//   );
+
+//   return (
+//     // <section className="relative h-screen overflow-hidden">
+//     //   <div className="py-2 lg:py-3 px-3 md:px-4 lg:px-5 bg-white rounded-xl sm:rounded-2xl shadow-soft h-full flex flex-col">
+//     //     <Stepper />
+
+//     //     {/* Main Content */}
+//     //     <div className="flex-1 overflow-y-auto pb-5 mt-5">
+//     //       {/* Header */}
+//     //       <div className="mb-8">
+//     //         <div className="flex items-center justify-between flex-wrap gap-4">
+//     //           <div className="flex items-center gap-4">
+//     //             <div className="w-12 h-12 bg-gradient-to-br from-rose-500 to-rose-600 rounded-xl flex items-center justify-center shadow-lg shadow-rose-500/20">
+//     //               <FaGraduationCap className="w-6 h-6 text-white" />
+//     //             </div>
+//     //             <div>
+//     //               <h1 className="text-2xl font-bold text-slate-800">
+//     //                 Skills & Expertise
+//     //               </h1>
+//     //             </div>
+//     //           </div>
+//     //           <div className="flex items-center gap-3 justify-between w-full">
+//     //             {/* Mode Toggle */}
+//     //             <div className="bg-slate-100 rounded-xl p-1 flex gap-1">
+//     //               <button
+//     //                 onClick={() => setSkillsMode("simple")}
+//     //                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+//     //                   skillsMode === "simple"
+//     //                     ? "bg-white text-rose-600 shadow-sm"
+//     //                     : "text-slate-600 hover:text-slate-800"
+//     //                 }`}
+//     //               >
+//     //                 <FiList className="w-4 h-4" />
+//     //                 <span>Simple</span>
+//     //               </button>
+//     //               <button
+//     //                 onClick={() => setSkillsMode("categorized")}
+//     //                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+//     //                   skillsMode === "categorized"
+//     //                     ? "bg-white text-rose-600 shadow-sm"
+//     //                     : "text-slate-600 hover:text-slate-800"
+//     //                 }`}
+//     //               >
+//     //                 <FiGrid className="w-4 h-4" />
+//     //                 <span>Categories</span>
+//     //               </button>
+//     //             </div>
+
+//     //             <div className="flex items-center gap-1">
+//     //               <button
+//     //                 onClick={handleSubmitAi}
+//     //                 disabled={loading}
+//     //                 className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-xl text-sm font-medium hover:shadow-lg hover:shadow-rose-500/25 transition-all disabled:opacity-50"
+//     //               >
+//     //                 {loading ? (
+//     //                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+//     //                 ) : (
+//     //                   <FaMagic className="w-4 h-4" />
+//     //                 )}
+//     //                 <span>AI Suggest</span>
+//     //               </button>
+//     //               <button
+//     //                 onClick={() => setSkillTipsClicked(true)}
+//     //                 className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-xl text-slate-600 text-sm hover:border-rose-300 hover:text-rose-600 transition-all"
+//     //               >
+//     //                 <FaRegLightbulb className="w-4 h-4" />
+//     //                 <span className="max-sm:hidden sm:inline">Tips</span>
+//     //               </button>
+//     //             </div>
+//     //           </div>
+//     //         </div>
+//     //       </div>
+
+//     //       <div className="rounded-2xl shadow-sm border border-slate-200">
+//     //         {/* Simple Mode */}
+//     //         {skillsMode === "simple" && (
+//     //           <div className="p-6">
+//     //             {/* Skills Grid */}
+//     //             {simpleSkills.length > 0 ? (
+//     //               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 mb-8">
+//     //                 {simpleSkills.map((skill) => (
+//     //                   <motion.div
+//     //                     key={skill.id}
+//     //                     initial={{ opacity: 0, scale: 0.9 }}
+//     //                     animate={{ opacity: 1, scale: 1 }}
+//     //                     className="group relative"
+//     //                   >
+//     //                     {editingSkillId === skill.id ? (
+//     //                       <div className="flex items-center gap-2 p-2 bg-rose-50 border-2 border-rose-400 rounded-xl">
+//     //                         <input
+//     //                           type="text"
+//     //                           value={editingSkillValue}
+//     //                           onChange={(e) =>
+//     //                             setEditingSkillValue(e.target.value)
+//     //                           }
+//     //                           className="flex-1 px-2 py-1 bg-transparent text-sm focus:outline-none"
+//     //                           autoFocus
+//     //                           onKeyPress={(e) =>
+//     //                             e.key === "Enter" && saveEditingSkill()
+//     //                           }
+//     //                         />
+//     //                         <button
+//     //                           onClick={saveEditingSkill}
+//     //                           className="p-1 text-green-600 hover:bg-green-50 rounded"
+//     //                         >
+//     //                           <FiCheck className="w-4 h-4" />
+//     //                         </button>
+//     //                         <button
+//     //                           onClick={cancelEditing}
+//     //                           className="p-1 text-red-600 hover:bg-red-50 rounded"
+//     //                         >
+//     //                           <FiX className="w-4 h-4" />
+//     //                         </button>
+//     //                       </div>
+//     //                     ) : (
+//     //                       <div className="flex items-center justify-between gap-2 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl hover:border-rose-300 hover:shadow-md transition-all group">
+//     //                         <span className="text-slate-700 text-sm font-medium truncate">
+//     //                           {skill.name}
+//     //                         </span>
+//     //                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+//     //                           <button
+//     //                             onClick={() => startEditingSkill(skill)}
+//     //                             className="p-1 text-slate-400 hover:text-rose-600 rounded"
+//     //                           >
+//     //                             <FiEdit2 className="w-3.5 h-3.5" />
+//     //                           </button>
+//     //                           <button
+//     //                             onClick={() => deleteSimpleSkill(skill.id)}
+//     //                             className="p-1 text-slate-400 hover:text-red-600 rounded"
+//     //                           >
+//     //                             <FiTrash2 className="w-3.5 h-3.5" />
+//     //                           </button>
+//     //                         </div>
+//     //                       </div>
+//     //                     )}
+//     //                   </motion.div>
+//     //                 ))}
+//     //               </div>
+//     //             ) : (
+//     //               <div className="text-center py-16">
+//     //                 <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+//     //                   <FiTag className="w-10 h-10 text-slate-400" />
+//     //                 </div>
+//     //                 <h3 className="text-lg font-semibold text-slate-700 mb-2">
+//     //                   No skills added yet
+//     //                 </h3>
+//     //                 <p className="text-slate-400 text-sm">
+//     //                   Start adding your professional skills below
+//     //                 </p>
+//     //               </div>
+//     //             )}
+
+//     //             {/* Add Skill Input */}
+//     //             <div className="flex gap-3">
+//     //               <div className="flex-1 relative">
+//     //                 <input
+//     //                   type="text"
+//     //                   value={newSkillInput}
+//     //                   onChange={(e) => setNewSkillInput(e.target.value)}
+//     //                   onKeyPress={(e) => e.key === "Enter" && addSimpleSkill()}
+//     //                   placeholder="Type a skill and press Enter..."
+//     //                   className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all"
+//     //                 />
+//     //               </div>
+//     //               <button
+//     //                 onClick={addSimpleSkill}
+//     //                 className="px-6 py-3 bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-xl font-medium hover:shadow-lg transition-all flex items-center gap-2"
+//     //               >
+//     //                 <IoMdAdd className="w-5 h-5" />
+//     //                 <span>Add Skill</span>
+//     //               </button>
+//     //             </div>
+
+//     //             {/* Popular Suggestions */}
+//     //             {simpleSkills.length === 0 && (
+//     //               <div className="mt-6 pt-4 border-t border-slate-100">
+//     //                 <p className="text-xs text-slate-500 mb-3 flex items-center gap-2">
+//     //                   <FiTrendingUp className="w-3.5 h-3.5" />
+//     //                   Popular suggestions
+//     //                 </p>
+//     //                 <div className="flex flex-wrap gap-2">
+//     //                   {[
+//     //                     "React.js",
+//     //                     "Node.js",
+//     //                     "TypeScript",
+//     //                     "Python",
+//     //                     "AWS",
+//     //                     "Docker",
+//     //                     "PostgreSQL",
+//     //                     "Next.js",
+//     //                   ].map((suggestion) => (
+//     //                     <button
+//     //                       key={suggestion}
+//     //                       onClick={() => {
+//     //                         setNewSkillInput(suggestion);
+//     //                         setTimeout(() => addSimpleSkill(), 50);
+//     //                       }}
+//     //                       className="px-3 py-1.5 text-xs bg-slate-100 text-slate-600 rounded-full hover:bg-rose-100 hover:text-rose-600 transition-all"
+//     //                     >
+//     //                       + {suggestion}
+//     //                     </button>
+//     //                   ))}
+//     //                 </div>
+//     //               </div>
+//     //             )}
+//     //           </div>
+//     //         )}
+
+//     //         {/* Categorized Mode - FIXED VERSION */}
+//     //         {skillsMode === "categorized" && (
+//     //           <div className="p-6">
+//     //             {/* Show existing categories if any */}
+//     //             {categorizedSkills.length > 0 && (
+//     //               <div className="space-y-4 mb-6">
+//     //                 {categorizedSkills.map((category) => (
+//     //                   <motion.div
+//     //                     key={category.id}
+//     //                     initial={{ opacity: 0, y: 20 }}
+//     //                     animate={{ opacity: 1, y: 0 }}
+//     //                     className="border border-slate-200 rounded-xl overflow-hidden"
+//     //                   >
+//     //                     <div
+//     //                       onClick={() => toggleCategory(category.id)}
+//     //                       className="flex items-center justify-between p-4 bg-slate-50 cursor-pointer hover:bg-slate-100 transition-colors"
+//     //                     >
+//     //                       <div className="flex items-center gap-3">
+//     //                         <motion.div
+//     //                           animate={{ rotate: category.isOpen ? 90 : 0 }}
+//     //                           className="text-slate-400"
+//     //                         >
+//     //                           <FiChevronDown className="w-5 h-5" />
+//     //                         </motion.div>
+//     //                         <input
+//     //                           type="text"
+//     //                           value={category.title}
+//     //                           onChange={(e) =>
+//     //                             updateCategoryTitle(category.id, e.target.value)
+//     //                           }
+//     //                           onClick={(e) => e.stopPropagation()}
+//     //                           className="font-semibold text-slate-800 bg-transparent px-2 py-1 rounded focus:outline-none focus:bg-white focus:ring-2 focus:ring-rose-200"
+//     //                         />
+//     //                         <span className="text-xs text-slate-500 bg-white px-2 py-0.5 rounded-full">
+//     //                           {category?.skills?.length}
+//     //                         </span>
+//     //                       </div>
+//     //                       <button
+//     //                         onClick={(e) => {
+//     //                           e.stopPropagation();
+//     //                           deleteCategory(category.id);
+//     //                         }}
+//     //                         className="p-1.5 text-slate-400 hover:text-red-600 rounded-lg transition-colors"
+//     //                       >
+//     //                         <FiTrash2 className="w-4 h-4" />
+//     //                       </button>
+//     //                     </div>
+
+//     //                     <AnimatePresence>
+//     //                       {category.isOpen && (
+//     //                         <motion.div
+//     //                           initial={{ opacity: 0, height: 0 }}
+//     //                           animate={{ opacity: 1, height: "auto" }}
+//     //                           exit={{ opacity: 0, height: 0 }}
+//     //                           className="border-t border-slate-100"
+//     //                         >
+//     //                           <div className="p-4">
+//     //                             <div className="flex flex-wrap gap-2 mb-4">
+//     //                               {category?.skills.map((skill) => (
+//     //                                 <div
+//     //                                   key={skill.id}
+//     //                                   className="group flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-full hover:border-rose-300 hover:shadow-sm transition-all"
+//     //                                 >
+//     //                                   <span className="text-sm text-slate-700">
+//     //                                     {skill.name}
+//     //                                   </span>
+//     //                                   <button
+//     //                                     onClick={() =>
+//     //                                       deleteCategorizedSkill(
+//     //                                         category.id,
+//     //                                         skill.id,
+//     //                                       )
+//     //                                     }
+//     //                                     className="opacity-0 group-hover:opacity-100 transition-opacity"
+//     //                                   >
+//     //                                     <FiX className="w-3.5 h-3.5 text-slate-400 hover:text-red-600" />
+//     //                                   </button>
+//     //                                 </div>
+//     //                               ))}
+//     //                             </div>
+//     //                             <div className="flex gap-2">
+//     //                               <input
+//     //                                 type="text"
+//     //                                 placeholder="Add a skill..."
+//     //                                 className="flex-1 px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100"
+//     //                                 onKeyPress={(e) => {
+//     //                                   if (e.key === "Enter") {
+//     //                                     const input =
+//     //                                       e.target as HTMLInputElement;
+//     //                                     addCategorizedSkill(
+//     //                                       category.id,
+//     //                                       input.value,
+//     //                                     );
+//     //                                     input.value = "";
+//     //                                   }
+//     //                                 }}
+//     //                               />
+//     //                               <button
+//     //                                 onClick={(e) => {
+//     //                                   const input = (e.target as HTMLElement)
+//     //                                     .previousElementSibling as HTMLInputElement;
+//     //                                   if (input) {
+//     //                                     addCategorizedSkill(
+//     //                                       category.id,
+//     //                                       input.value,
+//     //                                     );
+//     //                                     input.value = "";
+//     //                                   }
+//     //                                 }}
+//     //                                 className="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-rose-100 hover:text-rose-600 transition-colors"
+//     //                               >
+//     //                                 <IoMdAdd className="w-5 h-5" />
+//     //                               </button>
+//     //                             </div>
+//     //                           </div>
+//     //                         </motion.div>
+//     //                       )}
+//     //                     </AnimatePresence>
+//     //                   </motion.div>
+//     //                 ))}
+//     //               </div>
+//     //             )}
+
+//     //             {/* Add Category Section - Always visible */}
+//     //             {!showAddCategory ? (
+//     //               <button
+//     //                 onClick={() => setShowAddCategory(true)}
+//     //                 className="w-full py-4 border-2 border-dashed border-slate-300 rounded-xl text-slate-500 hover:border-rose-400 hover:text-rose-600 hover:bg-rose-50 transition-all flex items-center justify-center gap-2"
+//     //               >
+//     //                 <FiPlus className="w-5 h-5" />
+//     //                 <span className="font-medium">
+//     //                   {categorizedSkills.length === 0
+//     //                     ? "Create First Category"
+//     //                     : "Add New Category"}
+//     //                 </span>
+//     //               </button>
+//     //             ) : (
+//     //               <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
+//     //                 <input
+//     //                   type="text"
+//     //                   value={newCategoryTitle}
+//     //                   onChange={(e) => setNewCategoryTitle(e.target.value)}
+//     //                   placeholder="Category name (e.g., Frontend, Backend, Tools)"
+//     //                   className="w-full px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 mb-3"
+//     //                   autoFocus
+//     //                   onKeyPress={(e) => e.key === "Enter" && addCategory()}
+//     //                 />
+//     //                 <div className="flex gap-3">
+//     //                   <button
+//     //                     onClick={addCategory}
+//     //                     className="flex-1 px-4 py-2 bg-rose-500 text-white rounded-lg font-medium hover:bg-rose-600 transition-colors"
+//     //                   >
+//     //                     Add Category
+//     //                   </button>
+//     //                   <button
+//     //                     onClick={() => {
+//     //                       setShowAddCategory(false);
+//     //                       setNewCategoryTitle("");
+//     //                     }}
+//     //                     className="flex-1 px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg font-medium hover:bg-slate-50 transition-colors"
+//     //                   >
+//     //                     Cancel
+//     //                   </button>
+//     //                 </div>
+//     //               </div>
+//     //             )}
+//     //           </div>
+//     //         )}
+//     //       </div>
+//     //     </div>
+
+//     //     {/* Navigation Buttons */}
+//     //     <div className="shrink-0 pt-2 lg:pt-3">
+//     //       <div className="flex justify-between gap-4 ">
+//     //         <button
+//     //           onClick={() => router.push("/resume-details/education")}
+//     //           className="flex items-center gap-2 px-6 py-3 bg-white border border-slate-200 text-slate-700 rounded-xl font-medium hover:bg-slate-50 hover:border-slate-300 transition-all"
+//     //         >
+//     //           ← Back
+//     //         </button>
+//     //         <button
+//     //           onClick={() => {
+//     //             if (saveTimeoutRef.current)
+//     //               clearTimeout(saveTimeoutRef.current);
+//     //             const currentSkills =
+//     //               skillsMode === "simple" ? simpleSkills : categorizedSkills;
+//     //             saveToAPI(currentSkills).then(() =>
+//     //               router.push("/resume-details/project"),
+//     //             );
+//     //           }}
+//     //           className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-xl font-medium hover:shadow-lg transition-all"
+//     //         >
+//     //           Next Projects
+//     //           <FiArrowRight className="w-4 h-4" />
+//     //         </button>
+//     //       </div>
+//     //     </div>
+
+//     //     {/* Auto-save Toast */}
+//     //     <AnimatePresence>
+//     //       {isSaving && (
+//     //         <motion.div
+//     //           initial={{ opacity: 0, y: 20 }}
+//     //           animate={{ opacity: 1, y: 0 }}
+//     //           exit={{ opacity: 0, y: 20 }}
+//     //           className="fixed bottom-6 right-6 flex items-center gap-2 bg-slate-800 text-white px-4 py-2 rounded-xl shadow-lg"
+//     //         >
+//     //           <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+//     //           <span className="text-sm">Saving...</span>
+//     //         </motion.div>
+//     //       )}
+//     //     </AnimatePresence>
+
+//     //     {/* Tips Modal */}
+//     //     <AnimatePresence>
+//     //       {skillTipsClicked && (
+//     //         <AnimatePresence>
+//     //           <div className="fixed inset-0 z-50 flex items-start justify-center overflow-hidden p-4">
+//     //             <div
+//     //               className="absolute inset-0 backdrop-blur-sm"
+//     //               onClick={() => setSkillTipsClicked(false)}
+//     //             />
+//     //             <div className="relative w-full max-w-sm sm:max-w-md md:max-w-lg lg:w-[30vw] h-auto max-h-[80vh] mt-8 sm:mt-20">
+//     //               <motion.div
+//     //                 initial={{ y: 50, opacity: 0, scale: 0.95 }}
+//     //                 animate={{ y: 0, opacity: 1, scale: 1 }}
+//     //                 exit={{ y: 50, opacity: 0, scale: 0.95 }}
+//     //                 transition={{
+//     //                   type: "spring",
+//     //                   stiffness: 120,
+//     //                   damping: 18,
+//     //                   duration: 0.4,
+//     //                 }}
+//     //                 className="w-full rounded-xl sm:rounded-2xl bg-white border border-gray-200 shadow-2xl max-h-[inherit] overflow-hidden"
+//     //               >
+//     //                 <div className="flex justify-between items-center p-4 sm:p-6">
+//     //                   <div className="flex items-center gap-2 sm:gap-3">
+//     //                     <div className="p-1.5 sm:p-2 bg-linear-to-br from-[#c40116]/10 to-[#be0117]/10 rounded-lg">
+//     //                       <FaRegLightbulb className="w-4 h-4 sm:w-5 sm:h-5 text-[#c40116]" />
+//     //                     </div>
+//     //                     <h3 className="text-base sm:text-lg font-semibold text-gray-800">
+//     //                       Skills Tips
+//     //                     </h3>
+//     //                   </div>
+//     //                   <button
+//     //                     onClick={() => setSkillTipsClicked(false)}
+//     //                     className="p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
+//     //                     type="button"
+//     //                   >
+//     //                     <FaTimes className="w-4 h-4 sm:w-5 sm:h-5" />
+//     //                   </button>
+//     //                 </div>
+//     //                 <hr className="border-gray-100" />
+
+//     //                 <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 overflow-y-auto max-h-[calc(80vh-100px)]">
+//     //                   {/* Positive tips */}
+//     //                   <div className="space-y-3 sm:space-y-4">
+//     //                     <h4 className="text-xs sm:text-sm font-semibold text-gray-700 uppercase tracking-wide">
+//     //                       Best Practices
+//     //                     </h4>
+//     //                     {[
+//     //                       {
+//     //                         title: "List job-relevant skills",
+//     //                         desc: "Match the job you're applying for.",
+//     //                       },
+//     //                       {
+//     //                         title: "Use keywords from job description",
+//     //                         desc: "It helps you pass Applicant Tracking Systems (ATS).",
+//     //                       },
+//     //                       {
+//     //                         title: "Keep it concise",
+//     //                         desc: "Aim for 4–5 of your strongest, most relevant skills.",
+//     //                       },
+//     //                     ].map((tip, idx) => (
+//     //                       <div
+//     //                         key={idx}
+//     //                         className="flex items-start gap-2 sm:gap-3"
+//     //                       >
+//     //                         <div className="shrink-0 mt-0.5">
+//     //                           <div className="p-1 sm:p-1.5 bg-emerald-100 rounded-lg">
+//     //                             <FiCheckCircle className="text-emerald-500 w-3.5 h-3.5 sm:w-4 sm:h-4" />
+//     //                           </div>
+//     //                         </div>
+//     //                         <div className="flex-1 min-w-0">
+//     //                           <p className="text-xs sm:text-sm font-semibold text-gray-800">
+//     //                             {tip.title}
+//     //                           </p>
+//     //                           <p className="text-xs sm:text-sm text-gray-600 mt-0.5 sm:mt-1">
+//     //                             {tip.desc}
+//     //                           </p>
+//     //                         </div>
+//     //                       </div>
+//     //                     ))}
+//     //                   </div>
+
+//     //                   {/* Negative tips */}
+//     //                   <div className="space-y-3 sm:space-y-4 pt-3 sm:pt-4 border-t border-gray-100">
+//     //                     <h4 className="text-xs sm:text-sm font-semibold text-gray-700 uppercase tracking-wide">
+//     //                       Avoid These
+//     //                     </h4>
+//     //                     {[
+//     //                       {
+//     //                         title: "Don't include outdated tools and software",
+//     //                         desc: "Show you're up to date with current tech.",
+//     //                       },
+//     //                       {
+//     //                         title: "Don't list general traits as skills",
+//     //                         desc: "Avoid terms like 'hard-working' or 'fast learner.'",
+//     //                       },
+//     //                       {
+//     //                         title: "Don't lie about your skills",
+//     //                         desc: "False claims can backfire during interviews.",
+//     //                       },
+//     //                     ].map((tip, idx) => (
+//     //                       <div
+//     //                         key={idx}
+//     //                         className="flex items-start gap-2 sm:gap-3"
+//     //                       >
+//     //                         <div className="shrink-0 mt-0.5">
+//     //                           <div className="p-1 sm:p-1.5 bg-[#c40116]/10 rounded-lg">
+//     //                             <FiXCircle className="text-[#c40116] w-3.5 h-3.5 sm:w-4 sm:h-4" />
+//     //                           </div>
+//     //                         </div>
+//     //                         <div className="flex-1 min-w-0">
+//     //                           <p className="text-xs sm:text-sm font-semibold text-gray-800">
+//     //                             {tip.title}
+//     //                           </p>
+//     //                           <p className="text-xs sm:text-sm text-gray-600 mt-0.5 sm:mt-1">
+//     //                             {tip.desc}
+//     //                           </p>
+//     //                         </div>
+//     //                       </div>
+//     //                     ))}
+//     //                   </div>
+//     //                 </div>
+//     //               </motion.div>
+//     //             </div>
+//     //           </div>
+//     //         </AnimatePresence>
+//     //       )}
+//     //     </AnimatePresence>
+
+//     //     {/* AI Popup */}
+//     //     <AnimatePresence>
+//     //       {showPopup && Airesponse && (
+//     //         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+//     //           <motion.div
+//     //             initial={{ opacity: 0, scale: 0.95 }}
+//     //             animate={{ opacity: 1, scale: 1 }}
+//     //             exit={{ opacity: 0, scale: 0.95 }}
+//     //             className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden max-h-[80vh]"
+//     //           >
+//     //             <div className="p-6 overflow-y-auto">
+//     //               <div className="flex justify-between items-center mb-4">
+//     //                 <div className="flex items-center gap-2">
+//     //                   <FiZap className="text-rose-500 w-5 h-5" />
+//     //                   <h2 className="text-xl font-semibold">
+//     //                     AI Recommendations
+//     //                   </h2>
+//     //                 </div>
+//     //                 <button
+//     //                   onClick={() => setShowPopup(false)}
+//     //                   className="p-1 hover:bg-slate-100 rounded-lg"
+//     //                 >
+//     //                   <FaTimes className="w-5 h-5 text-slate-500" />
+//     //                 </button>
+//     //               </div>
+//     //               <p className="text-slate-500 text-sm mb-4">
+//     //                 Click any skill to add it to your list
+//     //               </p>
+//     //               <div className="flex flex-wrap gap-2">
+//     //                 {Airesponse.map((item, index) => (
+//     //                   <motion.button
+//     //                     key={index}
+//     //                     initial={{ opacity: 0, scale: 0.9 }}
+//     //                     animate={{ opacity: 1, scale: 1 }}
+//     //                     transition={{ delay: index * 0.05 }}
+//     //                     onClick={() => insertAIResponse(item, index)}
+//     //                     className="px-4 py-2 bg-slate-100 text-slate-700 rounded-full text-sm hover:bg-rose-500 hover:text-white transition-all cursor-pointer"
+//     //                   >
+//     //                     {item}
+//     //                   </motion.button>
+//     //                 ))}
+//     //               </div>
+//     //             </div>
+//     //           </motion.div>
+//     //         </div>
+//     //       )}
+//     //     </AnimatePresence>
+//     //   </div>
+//     // </section>
+
+//     <section className="relative min-h-screen bg-gradient-to-br from-slate-50 to-white">
+//   <div className="py-2 lg:py-3 px-3 md:px-4 lg:px-5 bg-white rounded-xl sm:rounded-2xl shadow-soft min-h-screen flex flex-col">
+//     <Stepper />
+
+//     {/* Main Content */}
+//     <div className="flex-1 overflow-y-auto pb-5 mt-5">
+//       {/* Header */}
+//       <div className="mb-6 md:mb-8">
+//         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+//           <div className="flex items-center gap-3 md:gap-4">
+//             <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-rose-500 to-rose-600 rounded-xl flex items-center justify-center shadow-lg shadow-rose-500/20">
+//               <FaGraduationCap className="w-5 h-5 md:w-6 md:h-6 text-white" />
+//             </div>
+//             <div>
+//               <h1 className="text-xl md:text-2xl font-bold text-slate-800">
+//                 Skills & Expertise
+//               </h1>
+//             </div>
+//           </div>
+
+//           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+//             {/* Mode Toggle */}
+//             <div className="bg-slate-100 rounded-xl p-1 flex gap-1 w-full sm:w-auto">
+//               <button
+//                 onClick={() => setSkillsMode("simple")}
+//                 className={`flex-1 sm:flex-auto flex items-center justify-center gap-2 px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition-all ${
+//                   skillsMode === "simple"
+//                     ? "bg-white text-rose-600 shadow-sm"
+//                     : "text-slate-600 hover:text-slate-800"
+//                 }`}
+//               >
+//                 <FiList className="w-3.5 h-3.5 md:w-4 md:h-4" />
+//                 <span className="whitespace-nowrap">Simple</span>
+//               </button>
+//               <button
+//                 onClick={() => setSkillsMode("categorized")}
+//                 className={`flex-1 sm:flex-auto flex items-center justify-center gap-2 px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition-all ${
+//                   skillsMode === "categorized"
+//                     ? "bg-white text-rose-600 shadow-sm"
+//                     : "text-slate-600 hover:text-slate-800"
+//                 }`}
+//               >
+//                 <FiGrid className="w-3.5 h-3.5 md:w-4 md:h-4" />
+//                 <span className="whitespace-nowrap">Categories</span>
+//               </button>
+//             </div>
+
+//             <div className="flex items-center gap-2 w-full sm:w-auto">
+//               <button
+//                 onClick={handleSubmitAi}
+//                 disabled={loading}
+//                 className="flex-1 sm:flex-auto flex items-center justify-center gap-2 px-3 md:px-4 py-2 bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-xl text-xs md:text-sm font-medium hover:shadow-lg hover:shadow-rose-500/25 transition-all disabled:opacity-50 whitespace-nowrap"
+//               >
+//                 {loading ? (
+//                   <div className="w-3.5 h-3.5 md:w-4 md:h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+//                 ) : (
+//                   <FaMagic className="w-3.5 h-3.5 md:w-4 md:h-4" />
+//                 )}
+//                 <span className="hidden xs:inline">AI Suggest</span>
+//                 <span className="xs:hidden">AI</span>
+//               </button>
+//               <button
+//                 onClick={() => setSkillTipsClicked(true)}
+//                 className="flex items-center justify-center gap-1 md:gap-2 px-2 md:px-3 py-2 bg-white border border-slate-200 rounded-xl text-slate-600 text-xs md:text-sm hover:border-rose-300 hover:text-rose-600 transition-all"
+//               >
+//                 <FaRegLightbulb className="w-3.5 h-3.5 md:w-4 md:h-4" />
+//                 <span className="hidden xs:inline">Tips</span>
+//               </button>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+
+//       <div className="rounded-2xl shadow-sm border border-slate-200 bg-white">
+//         {/* Simple Mode - Responsive with word wrap */}
+//         {skillsMode === "simple" && (
+//           <div className="p-4 sm:p-6">
+//             {/* Skills Flex Container */}
+//             {simpleSkills.length > 0 ? (
+//               <div className="flex flex-wrap gap-3 mb-6 md:mb-8">
+//                 {simpleSkills.map((skill) => (
+//                   <motion.div
+//                     key={skill.id}
+//                     initial={{ opacity: 0, scale: 0.9 }}
+//                     animate={{ opacity: 1, scale: 1 }}
+//                     className="flex-shrink-0 max-w-full"
+//                     style={{ maxWidth: 'min(300px, 100%)' }}
+//                   >
+//                     {editingSkillId === skill.id ? (
+//                       <div className="flex items-center gap-2 p-2 bg-rose-50 border-2 border-rose-400 rounded-xl">
+//                         <input
+//                           type="text"
+//                           value={editingSkillValue}
+//                           onChange={(e) => setEditingSkillValue(e.target.value)}
+//                           className="flex-1 bg-transparent text-sm focus:outline-none min-w-[100px]"
+//                           style={{ width: `${Math.min(Math.max(editingSkillValue.length, 10), 30)}ch` }}
+//                           autoFocus
+//                           onKeyPress={(e) => e.key === "Enter" && saveEditingSkill()}
+//                           onBlur={saveEditingSkill}
+//                         />
+//                         <button
+//                           onClick={cancelEditing}
+//                           className="p-1 text-red-600 hover:bg-red-50 rounded shrink-0"
+//                         >
+//                           <FiX className="w-4 h-4" />
+//                         </button>
+//                       </div>
+//                     ) : (
+//                       <div
+//                         onClick={() => startEditingSkill(skill)}
+//                         className="group flex items-center gap-2 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl hover:border-rose-300 hover:shadow-md transition-all cursor-pointer"
+//                       >
+//                         <span className="text-slate-700 text-sm font-medium break-words max-w-[250px]">
+//                           {skill.name}
+//                         </span>
+//                         <button
+//                           onClick={(e) => {
+//                             e.stopPropagation();
+//                             deleteSimpleSkill(skill.id);
+//                           }}
+//                           className="p-1 text-slate-400 hover:text-red-600 rounded opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
+//                         >
+//                           <FiTrash2 className="w-3.5 h-3.5" />
+//                         </button>
+//                       </div>
+//                     )}
+//                   </motion.div>
+//                 ))}
+//               </div>
+//             ) : (
+//               <div className="text-center py-12 md:py-16">
+//                 <div className="w-16 h-16 md:w-20 md:h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+//                   <FiTag className="w-8 h-8 md:w-10 md:h-10 text-slate-400" />
+//                 </div>
+//                 <h3 className="text-base md:text-lg font-semibold text-slate-700 mb-2">
+//                   No skills added yet
+//                 </h3>
+//                 <p className="text-slate-400 text-xs md:text-sm">
+//                   Start adding your professional skills below
+//                 </p>
+//               </div>
+//             )}
+
+//             {/* Add Skill Input */}
+//             <div className="flex flex-col sm:flex-row gap-3">
+//               <div className="flex-1 relative">
+//                 <input
+//                   type="text"
+//                   value={newSkillInput}
+//                   onChange={(e) => setNewSkillInput(e.target.value)}
+//                   onKeyPress={(e) => e.key === "Enter" && addSimpleSkill()}
+//                   placeholder="Type a skill and press Enter..."
+//                   className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all"
+//                 />
+//               </div>
+//               <button
+//                 onClick={addSimpleSkill}
+//                 className="px-6 py-3 bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-xl font-medium hover:shadow-lg transition-all flex items-center justify-center gap-2"
+//               >
+//                 <IoMdAdd className="w-5 h-5" />
+//                 <span>Add Skill</span>
+//               </button>
+//             </div>
+
+//             {/* Popular Suggestions */}
+//             {simpleSkills.length === 0 && (
+//               <div className="mt-6 pt-4 border-t border-slate-100">
+//                 <p className="text-xs text-slate-500 mb-3 flex items-center gap-2">
+//                   <FiTrendingUp className="w-3.5 h-3.5" />
+//                   Popular suggestions
+//                 </p>
+//                 <div className="flex flex-wrap gap-2">
+//                   {[
+//                     "React.js",
+//                     "Node.js",
+//                     "TypeScript",
+//                     "Python",
+//                     "AWS",
+//                     "Docker",
+//                     "PostgreSQL",
+//                     "Next.js",
+//                   ].map((suggestion) => (
+//                     <button
+//                       key={suggestion}
+//                       onClick={() => {
+//                         setNewSkillInput(suggestion);
+//                         setTimeout(() => addSimpleSkill(), 50);
+//                       }}
+//                       className="px-3 py-1.5 text-xs bg-slate-100 text-slate-600 rounded-full hover:bg-rose-100 hover:text-rose-600 transition-all whitespace-nowrap"
+//                     >
+//                       + {suggestion}
+//                     </button>
+//                   ))}
+//                 </div>
+//               </div>
+//             )}
+//           </div>
+//         )}
+
+//         {/* Categorized Mode - Responsive with word wrap */}
+//         {skillsMode === "categorized" && (
+//           <div className="p-4 sm:p-6">
+//             {/* Show existing categories if any */}
+//             {categorizedSkills.length > 0 && (
+//               <div className="space-y-4 mb-6">
+//                 {categorizedSkills.map((category) => (
+//                   <motion.div
+//                     key={category.id}
+//                     initial={{ opacity: 0, y: 20 }}
+//                     animate={{ opacity: 1, y: 0 }}
+//                     className="border border-slate-200 rounded-xl overflow-hidden"
+//                   >
+//                     <div
+//                       onClick={() => toggleCategory(category.id)}
+//                       className="flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 bg-slate-50 cursor-pointer hover:bg-slate-100 transition-colors gap-2"
+//                     >
+//                       <div className="flex items-center gap-3 flex-1 min-w-0">
+//                         <motion.div
+//                           animate={{ rotate: category.isOpen ? 90 : 0 }}
+//                           className="text-slate-400 shrink-0"
+//                         >
+//                           <FiChevronDown className="w-5 h-5" />
+//                         </motion.div>
+//                         <input
+//                           type="text"
+//                           value={category.title}
+//                           onChange={(e) =>
+//                             updateCategoryTitle(category.id, e.target.value)
+//                           }
+//                           onClick={(e) => e.stopPropagation()}
+//                           className="font-semibold text-slate-800 bg-transparent px-2 py-1 rounded focus:outline-none focus:bg-white focus:ring-2 focus:ring-rose-200 flex-1 min-w-[100px]"
+//                           style={{ width: `${Math.min(Math.max(category.title.length, 10), 40)}ch` }}
+//                         />
+//                         <span className="text-xs text-slate-500 bg-white px-2 py-0.5 rounded-full shrink-0">
+//                           {category?.skills?.length}
+//                         </span>
+//                       </div>
+//                       <button
+//                         onClick={(e) => {
+//                           e.stopPropagation();
+//                           deleteCategory(category.id);
+//                         }}
+//                         className="p-1.5 text-slate-400 hover:text-red-600 rounded-lg transition-colors shrink-0 self-end sm:self-auto"
+//                       >
+//                         <FiTrash2 className="w-4 h-4" />
+//                       </button>
+//                     </div>
+
+//                     <AnimatePresence>
+//                       {category.isOpen && (
+//                         <motion.div
+//                           initial={{ opacity: 0, height: 0 }}
+//                           animate={{ opacity: 1, height: "auto" }}
+//                           exit={{ opacity: 0, height: 0 }}
+//                           className="border-t border-slate-100"
+//                         >
+//                           <div className="p-3 sm:p-4">
+//                             {/* Skills Flex Container - with word wrap */}
+//                             <div className="flex flex-wrap gap-2 mb-4">
+//                               {category?.skills.map((skill) => {
+//                                 const [isEditing, setIsEditing] = useState(false);
+//                                 const [editValue, setEditValue] = useState(skill.name);
+
+//                                 const saveEdit = () => {
+//                                   if (editValue.trim() && editValue !== skill.name) {
+//                                     const updated = categorizedSkills.map((cat) =>
+//                                       cat.id === category.id
+//                                         ? {
+//                                             ...cat,
+//                                             skills: cat.skills.map((s) =>
+//                                               s.id === skill.id
+//                                                 ? { ...s, name: editValue.trim() }
+//                                                 : s
+//                                             ),
+//                                           }
+//                                         : cat
+//                                     );
+//                                     setCategorizedSkills(updated);
+//                                     debouncedSave(updated);
+//                                   }
+//                                   setIsEditing(false);
+//                                 };
+
+//                                 return (
+//                                   <div
+//                                     key={skill.id}
+//                                     className="flex-shrink-0 max-w-full"
+//                                     style={{ maxWidth: 'min(300px, 100%)' }}
+//                                   >
+//                                     {isEditing ? (
+//                                       <div className="flex items-center gap-2 px-3 py-1.5 bg-rose-50 border-2 border-rose-400 rounded-full">
+//                                         <input
+//                                           type="text"
+//                                           value={editValue}
+//                                           onChange={(e) => setEditValue(e.target.value)}
+//                                           className="flex-1 bg-transparent text-sm focus:outline-none min-w-[100px]"
+//                                           style={{ width: `${Math.min(Math.max(editValue.length, 10), 30)}ch` }}
+//                                           autoFocus
+//                                           onKeyPress={(e) => e.key === "Enter" && saveEdit()}
+//                                           onBlur={saveEdit}
+//                                         />
+//                                         <button
+//                                           onClick={() => setIsEditing(false)}
+//                                           className="text-red-600 hover:bg-red-50 rounded p-0.5 shrink-0"
+//                                         >
+//                                           <FiX className="w-3.5 h-3.5" />
+//                                         </button>
+//                                       </div>
+//                                     ) : (
+//                                       <div className="group flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-full hover:border-rose-300 hover:shadow-sm transition-all">
+//                                         <span
+//                                           onClick={() => {
+//                                             setIsEditing(true);
+//                                             setEditValue(skill.name);
+//                                           }}
+//                                           className="text-sm text-slate-700 cursor-pointer hover:text-rose-600 transition-colors break-words max-w-[250px]"
+//                                         >
+//                                           {skill.name}
+//                                         </span>
+//                                         <button
+//                                           onClick={() =>
+//                                             deleteCategorizedSkill(
+//                                               category.id,
+//                                               skill.id,
+//                                             )
+//                                           }
+//                                           className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
+//                                         >
+//                                           <FiX className="w-3.5 h-3.5 text-slate-400 hover:text-red-600" />
+//                                         </button>
+//                                       </div>
+//                                     )}
+//                                   </div>
+//                                 );
+//                               })}
+//                             </div>
+
+//                             {/* Add Skill Input */}
+//                             <div className="flex flex-col sm:flex-row gap-2">
+//                               <input
+//                                 type="text"
+//                                 placeholder="Add a skill..."
+//                                 className="flex-1 px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100"
+//                                 onKeyPress={(e) => {
+//                                   if (e.key === "Enter") {
+//                                     const input = e.target as HTMLInputElement;
+//                                     if (input.value.trim()) {
+//                                       addCategorizedSkill(category.id, input.value);
+//                                       input.value = "";
+//                                     }
+//                                   }
+//                                 }}
+//                               />
+//                               <button
+//                                 onClick={(e) => {
+//                                   const container = (e.target as HTMLElement)
+//                                     .parentElement?.previousElementSibling;
+//                                   const input = container?.querySelector(
+//                                     "input",
+//                                   ) as HTMLInputElement;
+//                                   if (input && input.value.trim()) {
+//                                     addCategorizedSkill(category.id, input.value);
+//                                     input.value = "";
+//                                   }
+//                                 }}
+//                                 className="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-rose-100 hover:text-rose-600 transition-colors"
+//                               >
+//                                 <IoMdAdd className="w-5 h-5" />
+//                               </button>
+//                             </div>
+//                           </div>
+//                         </motion.div>
+//                       )}
+//                     </AnimatePresence>
+//                   </motion.div>
+//                 ))}
+//               </div>
+//             )}
+
+//             {/* Add Category Section */}
+//             {!showAddCategory ? (
+//               <button
+//                 onClick={() => setShowAddCategory(true)}
+//                 className="w-full py-4 border-2 border-dashed border-slate-300 rounded-xl text-slate-500 hover:border-rose-400 hover:text-rose-600 hover:bg-rose-50 transition-all flex items-center justify-center gap-2"
+//               >
+//                 <FiPlus className="w-5 h-5" />
+//                 <span className="font-medium">
+//                   {categorizedSkills.length === 0
+//                     ? "Create First Category"
+//                     : "Add New Category"}
+//                 </span>
+//               </button>
+//             ) : (
+//               <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
+//                 <input
+//                   type="text"
+//                   value={newCategoryTitle}
+//                   onChange={(e) => setNewCategoryTitle(e.target.value)}
+//                   placeholder="Category name (e.g., Frontend, Backend, Tools)"
+//                   className="w-full px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 mb-3"
+//                   autoFocus
+//                   onKeyPress={(e) => e.key === "Enter" && addCategory()}
+//                 />
+//                 <div className="flex flex-col sm:flex-row gap-3">
+//                   <button
+//                     onClick={addCategory}
+//                     className="flex-1 px-4 py-2 bg-rose-500 text-white rounded-lg font-medium hover:bg-rose-600 transition-colors"
+//                   >
+//                     Add Category
+//                   </button>
+//                   <button
+//                     onClick={() => {
+//                       setShowAddCategory(false);
+//                       setNewCategoryTitle("");
+//                     }}
+//                     className="flex-1 px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg font-medium hover:bg-slate-50 transition-colors"
+//                   >
+//                     Cancel
+//                   </button>
+//                 </div>
+//               </div>
+//             )}
+//           </div>
+//         )}
+//       </div>
+//     </div>
+
+//     {/* Navigation Buttons */}
+//     <div className="shrink-0 pt-4 lg:pt-6 mt-auto">
+//       <div className="flex flex-col-reverse sm:flex-row justify-between gap-3">
+//         <button
+//           onClick={() => router.push("/resume-details/education")}
+//           className="flex items-center justify-center gap-2 px-6 py-3 bg-white border border-slate-200 text-slate-700 rounded-xl font-medium hover:bg-slate-50 hover:border-slate-300 transition-all"
+//         >
+//           ← Back
+//         </button>
+//         <button
+//           onClick={() => {
+//             if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+//             const currentSkills =
+//               skillsMode === "simple" ? simpleSkills : categorizedSkills;
+//             saveToAPI(currentSkills).then(() =>
+//               router.push("/resume-details/project"),
+//             );
+//           }}
+//           className="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-xl font-medium hover:shadow-lg transition-all"
+//         >
+//           Next Projects
+//           <FiArrowRight className="w-4 h-4" />
+//         </button>
+//       </div>
+//     </div>
+
+//     {/* Auto-save Toast */}
+//     <AnimatePresence>
+//       {isSaving && (
+//         <motion.div
+//           initial={{ opacity: 0, y: 20 }}
+//           animate={{ opacity: 1, y: 0 }}
+//           exit={{ opacity: 0, y: 20 }}
+//           className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 flex items-center gap-2 bg-slate-800 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-xl shadow-lg z-50"
+//         >
+//           <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+//           <span className="text-xs sm:text-sm">Saving...</span>
+//         </motion.div>
+//       )}
+//     </AnimatePresence>
+
+//     {/* Tips Modal - Responsive */}
+//     <AnimatePresence>
+//       {skillTipsClicked && (
+//         <div className="fixed inset-0 z-50 flex items-start sm:items-center justify-center overflow-hidden p-3 sm:p-4">
+//           <div
+//             className="absolute inset-0 backdrop-blur-sm bg-black/50"
+//             onClick={() => setSkillTipsClicked(false)}
+//           />
+//           <div className="relative w-full max-w-[95%] sm:max-w-md md:max-w-lg lg:w-[30vw] h-auto max-h-[85vh] sm:max-h-[80vh] mt-8 sm:mt-0">
+//             <motion.div
+//               initial={{ y: 50, opacity: 0, scale: 0.95 }}
+//               animate={{ y: 0, opacity: 1, scale: 1 }}
+//               exit={{ y: 50, opacity: 0, scale: 0.95 }}
+//               transition={{
+//                 type: "spring",
+//                 stiffness: 120,
+//                 damping: 18,
+//                 duration: 0.4,
+//               }}
+//               className="w-full rounded-xl sm:rounded-2xl bg-white border border-gray-200 shadow-2xl max-h-[inherit] overflow-hidden"
+//             >
+//               <div className="flex justify-between items-center p-4 sm:p-6">
+//                 <div className="flex items-center gap-2 sm:gap-3">
+//                   <div className="p-1.5 sm:p-2 bg-linear-to-br from-[#c40116]/10 to-[#be0117]/10 rounded-lg">
+//                     <FaRegLightbulb className="w-4 h-4 sm:w-5 sm:h-5 text-[#c40116]" />
+//                   </div>
+//                   <h3 className="text-base sm:text-lg font-semibold text-gray-800">
+//                     Skills Tips
+//                   </h3>
+//                 </div>
+//                 <button
+//                   onClick={() => setSkillTipsClicked(false)}
+//                   className="p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
+//                   type="button"
+//                 >
+//                   <FaTimes className="w-4 h-4 sm:w-5 sm:h-5" />
+//                 </button>
+//               </div>
+//               <hr className="border-gray-100" />
+
+//               <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 overflow-y-auto max-h-[calc(85vh-100px)]">
+//                 {/* Positive tips */}
+//                 <div className="space-y-3 sm:space-y-4">
+//                   <h4 className="text-xs sm:text-sm font-semibold text-gray-700 uppercase tracking-wide">
+//                     Best Practices
+//                   </h4>
+//                   {[
+//                     {
+//                       title: "List job-relevant skills",
+//                       desc: "Match the job you're applying for.",
+//                     },
+//                     {
+//                       title: "Use keywords from job description",
+//                       desc: "It helps you pass Applicant Tracking Systems (ATS).",
+//                     },
+//                     {
+//                       title: "Keep it concise",
+//                       desc: "Aim for 4–5 of your strongest, most relevant skills.",
+//                     },
+//                   ].map((tip, idx) => (
+//                     <div key={idx} className="flex items-start gap-2 sm:gap-3">
+//                       <div className="shrink-0 mt-0.5">
+//                         <div className="p-1 sm:p-1.5 bg-emerald-100 rounded-lg">
+//                           <FiCheckCircle className="text-emerald-500 w-3.5 h-3.5 sm:w-4 sm:h-4" />
+//                         </div>
+//                       </div>
+//                       <div className="flex-1 min-w-0">
+//                         <p className="text-xs sm:text-sm font-semibold text-gray-800">
+//                           {tip.title}
+//                         </p>
+//                         <p className="text-xs sm:text-sm text-gray-600 mt-0.5 sm:mt-1">
+//                           {tip.desc}
+//                         </p>
+//                       </div>
+//                     </div>
+//                   ))}
+//                 </div>
+
+//                 {/* Negative tips */}
+//                 <div className="space-y-3 sm:space-y-4 pt-3 sm:pt-4 border-t border-gray-100">
+//                   <h4 className="text-xs sm:text-sm font-semibold text-gray-700 uppercase tracking-wide">
+//                     Avoid These
+//                   </h4>
+//                   {[
+//                     {
+//                       title: "Don't include outdated tools and software",
+//                       desc: "Show you're up to date with current tech.",
+//                     },
+//                     {
+//                       title: "Don't list general traits as skills",
+//                       desc: "Avoid terms like 'hard-working' or 'fast learner.'",
+//                     },
+//                     {
+//                       title: "Don't lie about your skills",
+//                       desc: "False claims can backfire during interviews.",
+//                     },
+//                   ].map((tip, idx) => (
+//                     <div key={idx} className="flex items-start gap-2 sm:gap-3">
+//                       <div className="shrink-0 mt-0.5">
+//                         <div className="p-1 sm:p-1.5 bg-[#c40116]/10 rounded-lg">
+//                           <FiXCircle className="text-[#c40116] w-3.5 h-3.5 sm:w-4 sm:h-4" />
+//                         </div>
+//                       </div>
+//                       <div className="flex-1 min-w-0">
+//                         <p className="text-xs sm:text-sm font-semibold text-gray-800">
+//                           {tip.title}
+//                         </p>
+//                         <p className="text-xs sm:text-sm text-gray-600 mt-0.5 sm:mt-1">
+//                           {tip.desc}
+//                         </p>
+//                       </div>
+//                     </div>
+//                   ))}
+//                 </div>
+//               </div>
+//             </motion.div>
+//           </div>
+//         </div>
+//       )}
+//     </AnimatePresence>
+
+//     {/* AI Popup - Responsive */}
+//     <AnimatePresence>
+//       {showPopup && Airesponse && (
+//         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-sm">
+//           <motion.div
+//             initial={{ opacity: 0, scale: 0.95 }}
+//             animate={{ opacity: 1, scale: 1 }}
+//             exit={{ opacity: 0, scale: 0.95 }}
+//             className="relative w-full max-w-[95%] sm:max-w-xl md:max-w-2xl bg-white rounded-xl sm:rounded-2xl shadow-2xl overflow-hidden max-h-[85vh] sm:max-h-[80vh]"
+//           >
+//             <div className="p-4 sm:p-6 overflow-y-auto">
+//               <div className="flex justify-between items-center mb-4">
+//                 <div className="flex items-center gap-2">
+//                   <FiZap className="text-rose-500 w-5 h-5" />
+//                   <h2 className="text-lg sm:text-xl font-semibold">
+//                     AI Recommendations
+//                   </h2>
+//                 </div>
+//                 <button
+//                   onClick={() => setShowPopup(false)}
+//                   className="p-1 hover:bg-slate-100 rounded-lg"
+//                 >
+//                   <FaTimes className="w-5 h-5 text-slate-500" />
+//                 </button>
+//               </div>
+//               <p className="text-slate-500 text-xs sm:text-sm mb-4">
+//                 Click any skill to add it to your list
+//               </p>
+//               <div className="flex flex-wrap gap-2">
+//                 {Airesponse.map((item, index) => (
+//                   <motion.button
+//                     key={index}
+//                     initial={{ opacity: 0, scale: 0.9 }}
+//                     animate={{ opacity: 1, scale: 1 }}
+//                     transition={{ delay: index * 0.05 }}
+//                     onClick={() => insertAIResponse(item, index)}
+//                     className="px-3 py-1.5 sm:px-4 sm:py-2 bg-slate-100 text-slate-700 rounded-full text-xs sm:text-sm hover:bg-rose-500 hover:text-white transition-all cursor-pointer whitespace-normal break-words max-w-[200px]"
+//                   >
+//                     {item}
+//                   </motion.button>
+//                 ))}
+//               </div>
+//             </div>
+//           </motion.div>
+//         </div>
+//       )}
+//     </AnimatePresence>
+//   </div>
+// </section>
+//   );
+// };
+
+// export default SkillsForm;
+
 "use client";
 
 import React, {
@@ -3039,7 +4673,6 @@ import {
 import { CreateContext } from "@/app/context/CreateContext";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { BsArrowLeftCircleFill } from "react-icons/bs";
 import {
   FaRegLightbulb,
   FaTimes,
@@ -3047,7 +4680,6 @@ import {
   FaMagic,
 } from "react-icons/fa";
 import { IoIosArrowDown, IoMdAdd } from "react-icons/io";
-import { BsFillLightningFill } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 import Stepper from "../../../components/resume/Steppers";
 import { getLocalStorage, setLocalStorage } from "@/app/utils";
@@ -3055,6 +4687,152 @@ import { API_URL } from "@/app/config/api";
 import { SimpleSkill, SkillCategory, SkillsType } from "@/app/types";
 
 type SkillsMode = "simple" | "categorized";
+
+const SkillItem = ({
+  skill,
+  onUpdate,
+  onDelete,
+}: {
+  skill: SimpleSkill;
+  onUpdate: (id: string | number, newName: string) => void;
+  onDelete: (id: string | number) => void;
+}) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editValue, setEditValue] = useState(skill.name);
+
+  const saveEdit = () => {
+    if (editValue.trim() && editValue.trim() !== skill.name) {
+      onUpdate(skill.id, editValue.trim());
+    }
+    setIsEditing(false);
+  };
+
+  return (
+    <div
+      className="flex-shrink-0 max-w-full"
+      style={{ maxWidth: "min(300px, 100%)" }}
+    >
+      {isEditing ? (
+        <div className="flex items-center gap-2 px-3 py-2 bg-rose-50 border-2 border-rose-400 rounded-xl">
+          <input
+            type="text"
+            value={editValue}
+            onChange={(e) => setEditValue(e.target.value)}
+            className="flex-1 bg-transparent text-sm focus:outline-none min-w-[100px]"
+            style={{
+              width: `${Math.min(Math.max(editValue?.length, 10), 30)}ch`,
+            }}
+            autoFocus
+            onKeyPress={(e) => e.key === "Enter" && saveEdit()}
+            onBlur={saveEdit}
+          />
+          <button
+            onClick={() => setIsEditing(false)}
+            className="p-1 text-red-600 hover:bg-red-50 rounded shrink-0"
+          >
+            <FiX className="w-4 h-4" />
+          </button>
+        </div>
+      ) : (
+        <div
+          onClick={() => {
+            setIsEditing(true);
+            setEditValue(skill.name);
+          }}
+          className="group flex items-center gap-2 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl hover:border-rose-300 hover:shadow-md transition-all cursor-pointer"
+        >
+          <span className="text-slate-700 text-sm font-medium break-words max-w-[250px]">
+            {skill.name}
+          </span>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(skill.id);
+            }}
+            className="p-1 text-slate-400 hover:text-red-600 rounded opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
+          >
+            <FiTrash2 className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Component for categorized skill item
+const CategorizedSkillItem = ({
+  skill,
+  categoryId,
+  onUpdate,
+  onDelete,
+}: {
+  skill: SimpleSkill;
+  categoryId: string | number;
+  onUpdate: (
+    categoryId: string | number,
+    skillId: string | number,
+    newName: string,
+  ) => void;
+  onDelete: (categoryId: string | number, skillId: string | number) => void;
+}) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editValue, setEditValue] = useState(skill.name);
+
+  const saveEdit = () => {
+    if (editValue.trim() && editValue.trim() !== skill.name) {
+      onUpdate(categoryId, skill.id, editValue.trim());
+    }
+    setIsEditing(false);
+  };
+
+  return (
+    <div
+      className="flex-shrink-0 max-w-full"
+      style={{ maxWidth: "min(300px, 100%)" }}
+    >
+      {isEditing ? (
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-rose-50 border-2 border-rose-400 rounded-full">
+          <input
+            type="text"
+            value={editValue}
+            onChange={(e) => setEditValue(e.target.value)}
+            className="flex-1 bg-transparent text-sm focus:outline-none min-w-[100px]"
+            style={{
+              width: `${Math.min(Math.max(editValue.length, 10), 30)}ch`,
+            }}
+            autoFocus
+            onKeyPress={(e) => e.key === "Enter" && saveEdit()}
+            onBlur={saveEdit}
+          />
+          <button
+            onClick={() => setIsEditing(false)}
+            className="text-red-600 hover:bg-red-50 rounded p-0.5 shrink-0"
+          >
+            <FiX className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      ) : (
+        <div className="group flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-full hover:border-rose-300 hover:shadow-sm transition-all">
+          <span
+            onClick={() => {
+              setIsEditing(true);
+              setEditValue(skill.name);
+            }}
+            className="text-sm text-slate-700 cursor-pointer hover:text-rose-600 transition-colors break-words max-w-[250px]"
+          >
+            {skill.name}
+          </span>
+          <button
+            onClick={() => onDelete(categoryId, skill.id)}
+            className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
+          >
+            <FiX className="w-3.5 h-3.5 text-slate-400 hover:text-red-600" />
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
 
 const SkillsForm = () => {
   const [skillTipsClicked, setSkillTipsClicked] = useState(false);
@@ -3065,15 +4843,8 @@ const SkillsForm = () => {
 
   const { skills, setSkills, fullResumeData, setFullResumeData } = UseContext;
 
-  console.log("skills", skills);
-
   const [simpleSkills, setSimpleSkills] = useState<SimpleSkill[]>([]);
   const [newSkillInput, setNewSkillInput] = useState<string>("");
-  const [editingSkillId, setEditingSkillId] = useState<string | number | null>(
-    null,
-  );
-  const [editingSkillValue, setEditingSkillValue] = useState<string>("");
-
   const [categorizedSkills, setCategorizedSkills] = useState<SkillCategory[]>(
     [],
   );
@@ -3085,15 +4856,17 @@ const SkillsForm = () => {
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [lastSavedData, setLastSavedData] = useState<string>("");
-  const [isInitialized, setIsInitialized] = useState<boolean>(false);
 
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const initialLoadDone = useRef<boolean>(false);
 
+  // Generate unique ID
+  const generateId = useCallback(() => {
+    return crypto.randomUUID();
+  }, []);
+
   // Initialize skills data
   useEffect(() => {
-    if (isInitialized) return;
-
     if (skills && Array.isArray(skills) && skills.length > 0) {
       const firstSkill = skills[0] as any;
       if (firstSkill?.title !== undefined) {
@@ -3108,8 +4881,7 @@ const SkillsForm = () => {
         setSimpleSkills(skills as SimpleSkill[]);
       }
     }
-    setIsInitialized(true);
-  }, [skills, isInitialized]);
+  }, [skills]);
 
   // Auto-save effect
   useEffect(() => {
@@ -3127,9 +4899,6 @@ const SkillsForm = () => {
     skillsDataToSave: SimpleSkill[] | SkillCategory[],
   ) => {
     if (!contactId) return false;
-
-  
-    console.log("skillsDataToSave",skillsDataToSave)
 
     const currentDataString = JSON.stringify(skillsDataToSave);
     if (currentDataString === lastSavedData) return true;
@@ -3160,26 +4929,10 @@ const SkillsForm = () => {
       const response = await axios.get(
         `${API_URL}/api/skill/get-skill/${contactId}`,
       );
-
-      console.log("skills response", response);
-
       const skillsList = response.data?.[0]?.skills || [];
-
-      if (skillsList.length > 0) {
-        //  const formattedData = skillsList.map((item: any) => ({
-        //    id: item._id || Date.now(),
-        //    skill: item?.skill || "",
-        //     Ensure level is stored as 1-5, default to 3 if not set
-        //    level: item?.level !== undefined ? item.level : 3,
-        //    error: {},
-        //  }));
-        //  setSkills(formattedData);
-        //  setLastSavedData(JSON.stringify(formattedData));
-      } else {
-        console.log("No skills data found for user");
-      }
-
-      initialLoadDone.current = true;
+      // setSkills(skillsList);
+      // setLastSavedData(JSON.stringify(skillsList));
+      // initialLoadDone.current = true;
     } catch (error) {
       console.log(error);
     }
@@ -3198,38 +4951,13 @@ const SkillsForm = () => {
     if (newSkillInput.trim()) {
       const updated = [
         ...simpleSkills,
-        { id: Date.now(), name: newSkillInput.trim() },
+        { id: generateId(), name: newSkillInput.trim() },
       ];
       setSimpleSkills(updated);
       debouncedSave(updated);
       setNewSkillInput("");
       toast.success("Skill added!");
     }
-  };
-
-  const startEditingSkill = (skill: SimpleSkill) => {
-    setEditingSkillId(skill.id);
-    setEditingSkillValue(skill.name);
-  };
-
-  const saveEditingSkill = () => {
-    if (editingSkillId && editingSkillValue.trim()) {
-      const updated = simpleSkills.map((skill) =>
-        skill.id === editingSkillId
-          ? { ...skill, name: editingSkillValue.trim() }
-          : skill,
-      );
-      setSimpleSkills(updated);
-      debouncedSave(updated);
-    }
-    setEditingSkillId(null);
-    setEditingSkillValue("");
-    toast.success("Skill updated!");
-  };
-
-  const cancelEditing = () => {
-    setEditingSkillId(null);
-    setEditingSkillValue("");
   };
 
   const deleteSimpleSkill = (skillId: string | number) => {
@@ -3239,11 +4967,20 @@ const SkillsForm = () => {
     toast.success("Skill removed!");
   };
 
+  const updateSimpleSkill = (skillId: string | number, newName: string) => {
+    const updated = simpleSkills.map((skill) =>
+      skill.id === skillId ? { ...skill, name: newName } : skill,
+    );
+    setSimpleSkills(updated);
+    debouncedSave(updated);
+    toast.success("Skill updated!");
+  };
+
   // Categorized mode functions
   const addCategory = () => {
     if (newCategoryTitle.trim()) {
       const newCategory: SkillCategory = {
-        id: Date.now(),
+        id: generateId(),
         title: newCategoryTitle.trim(),
         skills: [],
         isOpen: true,
@@ -3281,7 +5018,10 @@ const SkillsForm = () => {
       cat.id === categoryId
         ? {
             ...cat,
-            skills: [...cat.skills, { id: Date.now(), name: skillName.trim() }],
+            skills: [
+              ...cat.skills,
+              { id: generateId(), name: skillName.trim() },
+            ],
           }
         : cat,
     );
@@ -3301,6 +5041,26 @@ const SkillsForm = () => {
     setCategorizedSkills(updated);
     debouncedSave(updated);
     toast.success("Skill removed!");
+  };
+
+  const updateCategorizedSkill = (
+    categoryId: string | number,
+    skillId: string | number,
+    newName: string,
+  ) => {
+    const updated = categorizedSkills.map((cat) =>
+      cat.id === categoryId
+        ? {
+            ...cat,
+            skills: cat.skills.map((skill) =>
+              skill.id === skillId ? { ...skill, name: newName } : skill,
+            ),
+          }
+        : cat,
+    );
+    setCategorizedSkills(updated);
+    debouncedSave(updated);
+    toast.success("Skill updated!");
   };
 
   const updateCategoryTitle = (
@@ -3339,16 +5099,16 @@ const SkillsForm = () => {
 
   const insertAIResponse = (item: string, index: number) => {
     if (skillsMode === "simple") {
-      const updated = [...simpleSkills, { id: Date.now(), name: item }];
+      const updated = [...simpleSkills, { id: generateId(), name: item }];
       setSimpleSkills(updated);
       debouncedSave(updated);
     } else {
       if (categorizedSkills.length === 0) {
         const newCategory: SkillCategory = {
-          id: Date.now(),
+          id: generateId(),
           title: "Skills",
           isOpen: true,
-          skills: [{ id: Date.now(), name: item }],
+          skills: [{ id: generateId(), name: item }],
         };
         setCategorizedSkills([newCategory]);
         debouncedSave([newCategory]);
@@ -3357,7 +5117,7 @@ const SkillsForm = () => {
           idx === 0
             ? {
                 ...cat,
-                skills: [...cat.skills, { id: Date.now(), name: item }],
+                skills: [...cat.skills, { id: generateId(), name: item }],
               }
             : cat,
         );
@@ -3372,20 +5132,10 @@ const SkillsForm = () => {
     toast.success("Skill added!");
   };
 
-  // Sync with context
-  useEffect(() => {
-    if (initialLoadDone.current && setSkills) {
-      const currentSkills: SkillsType =
-        skillsMode === "simple" ? simpleSkills : categorizedSkills;
-      if (JSON.stringify(currentSkills) !== JSON.stringify(skills)) {
-        setSkills(currentSkills);
-      }
-    }
-  }, [simpleSkills, categorizedSkills, skillsMode]);
-
   useEffect(() => {
     initialLoadDone.current = true;
   }, []);
+
   useEffect(
     () => () => {
       if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
@@ -3393,159 +5143,222 @@ const SkillsForm = () => {
     [],
   );
 
+  const experienceTitlesList =
+    UseContext?.experiences?.map((item: any) => item.jobTitle) || [];
+
+  const [showMobileWarning, setShowMobileWarning] = useState(false);
+
+  console.log("showMobileWarning",showMobileWarning)
+
+  console.log("experienceTitlesList", experienceTitlesList);
+
   return (
-    <section className="relative h-screen overflow-hidden">
+   <section className="relative h-screen overflow-hidden">
       <div className="py-2 lg:py-3 px-3 md:px-4 lg:px-5 bg-white rounded-xl sm:rounded-2xl shadow-soft h-full flex flex-col">
+
+
+        
         <Stepper />
 
         {/* Main Content */}
-        <div className="bg-white  overflow-hidden pb-5 mt-5">
+        <div className="flex-1 overflow-y-auto pb-5 mt-5">
           {/* Header */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between flex-wrap gap-4">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-rose-500 to-rose-600 rounded-xl flex items-center justify-center shadow-lg shadow-rose-500/20">
-                  <FaGraduationCap className="w-6 h-6 text-white" />
+          <div className="mb-6 md:mb-8 5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-3 md:gap-4">
+                <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-rose-500 to-rose-600 rounded-xl flex items-center justify-center shadow-lg shadow-rose-500/20">
+                  <FaGraduationCap className="w-5 h-5 md:w-6 md:h-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-slate-800">
+                  <h1 className="text-xl md:text-2xl font-bold text-slate-800">
                     Skills & Expertise
                   </h1>
                 </div>
               </div>
-              <div className="flex items-center gap-3 justify-between w-full">
-                {/* Mode Toggle */}
-                <div className="bg-slate-100 rounded-xl p-1 flex gap-1">
-                  <button
-                    onClick={() => setSkillsMode("simple")}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                      skillsMode === "simple"
-                        ? "bg-white text-rose-600 shadow-sm"
-                        : "text-slate-600 hover:text-slate-800"
-                    }`}
-                  >
-                    <FiList className="w-4 h-4" />
-                    <span>Simple</span>
-                  </button>
-                  <button
-                    onClick={() => setSkillsMode("categorized")}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                      skillsMode === "categorized"
-                        ? "bg-white text-rose-600 shadow-sm"
-                        : "text-slate-600 hover:text-slate-800"
-                    }`}
-                  >
-                    <FiGrid className="w-4 h-4" />
-                    <span>Categories</span>
-                  </button>
-                </div>
+            </div>
 
-                <div className="flex items-center gap-1">
-                  <button
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto mt-5">
+              {/* Mode Toggle */}
+              <div className="bg-slate-100 rounded-xl p-1 flex gap-1 w-full sm:w-auto">
+                <button
+                  onClick={() => setSkillsMode("simple")}
+                  className={`flex-1 sm:flex-auto flex items-center justify-center gap-2 px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition-all ${
+                    skillsMode === "simple"
+                      ? "bg-white text-rose-600 shadow-sm"
+                      : "text-slate-600 hover:text-slate-800"
+                  }`}
+                >
+                  <FiList className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                  <span className="whitespace-nowrap">Simple</span>
+                </button>
+                <button
+                  onClick={() => setSkillsMode("categorized")}
+                  className={`flex-1 sm:flex-auto flex items-center justify-center gap-2 px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition-all ${
+                    skillsMode === "categorized"
+                      ? "bg-white text-rose-600 shadow-sm"
+                      : "text-slate-600 hover:text-slate-800"
+                  }`}
+                >
+                  <FiGrid className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                  <span className="whitespace-nowrap">Categories</span>
+                </button>
+              </div>
+
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                {/* <button
                     onClick={handleSubmitAi}
                     disabled={loading}
-                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-xl text-sm font-medium hover:shadow-lg hover:shadow-rose-500/25 transition-all disabled:opacity-50"
+                    className="flex-1 sm:flex-auto flex items-center justify-center gap-2 px-3 md:px-4 py-2 bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-xl text-xs md:text-sm font-medium hover:shadow-lg hover:shadow-rose-500/25 transition-all disabled:opacity-50 whitespace-nowrap"
                   >
                     {loading ? (
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <div className="w-3.5 h-3.5 md:w-4 md:h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                     ) : (
-                      <FaMagic className="w-4 h-4" />
+                      <FaMagic className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                    )}
+                    <span >AI Suggest</span>
+                  </button> */}
+
+                <div className="relative inline-block group">
+                  <button
+                    onClick={() => {
+                      if (experienceTitlesList.length === 0) {
+                        if (window.innerWidth < 768) {
+                          console.log("aa")
+                          setShowMobileWarning(true);
+                        }
+                      } else {
+                        handleSubmitAi();
+                      }
+                    }}
+                    disabled={loading }
+                    className={` flex-1 sm:flex-auto flex items-center justify-center gap-2 px-3 md:px-4 py-2 bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-xl text-xs md:text-sm font-medium hover:shadow-lg hover:shadow-rose-500/25 transition-all disabled:opacity-50 whitespace-nowrap ${
+                      experienceTitlesList.length === 0
+                        ? "cursor-not-allowed opacity-50"
+                        : ""
+                    }`}
+                  >
+                    {loading ? (
+                      <div className="w-3.5 h-3.5 md:w-4 md:h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <FaMagic className="w-3.5 h-3.5 md:w-4 md:h-4" />
                     )}
                     <span>AI Suggest</span>
                   </button>
-                  <button
-                    onClick={() => setSkillTipsClicked(true)}
-                    className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-xl text-slate-600 text-sm hover:border-rose-300 hover:text-rose-600 transition-all"
-                  >
-                    <FaRegLightbulb className="w-4 h-4" />
-                    <span className="max-sm:hidden sm:inline">Tips</span>
-                  </button>
+
+                  {/* Desktop Tooltip */}
+                  {experienceTitlesList.length === 0 && (
+                    <div className="max-md:hidden absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-[9999]">
+                      <div className="flex items-center gap-2">
+                        <svg
+                          className="w-3 h-3"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                        <span>
+                          Add work experience first to get personalized
+                          suggestions
+                        </span>
+                      </div>
+                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900"></div>
+                    </div>
+                  )}
+
+                  {/* Mobile Modal */}
+                  {showMobileWarning && (
+                    <div
+                      className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/50 md:hidden"
+                      onClick={() => setShowMobileWarning(false)}
+                    >
+                      <div
+                        className="bg-white rounded-xl p-6 max-w-sm w-full mx-4 shadow-xl"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <div className="flex items-center gap-3 mb-4">
+                          <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
+                            <svg
+                              className="w-5 h-5 text-amber-600"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                              />
+                            </svg>
+                          </div>
+                          <h3 className="text-lg font-semibold text-gray-900">
+                            Cannot Generate AI Suggestions
+                          </h3>
+                        </div>
+                        <p className="text-gray-600 mb-6">
+                          Please add your work experience first to get
+                          personalized AI-powered skill recommendations.
+                        </p>
+                        <button
+                          onClick={() => setShowMobileWarning(false)}
+                          className="w-full px-4 py-2 bg-rose-500 text-white rounded-lg font-medium hover:bg-rose-600 transition-colors"
+                        >
+                          Got it
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
+
+                <button
+                  onClick={() => setSkillTipsClicked(true)}
+                  className="flex items-center justify-center gap-1 md:gap-2 px-2 md:px-3 py-2 bg-white border border-slate-200 rounded-xl text-slate-600 text-xs md:text-sm hover:border-rose-300 hover:text-rose-600 transition-all"
+                >
+                  <FaRegLightbulb className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                  <span className="hidden xs:inline">Tips</span>
+                </button>
               </div>
             </div>
           </div>
 
-          <div className="rounded-2xl shadow-sm border border-slate-200">
+          <div className="rounded-2xl shadow-sm border border-slate-200 bg-white">
             {/* Simple Mode */}
             {skillsMode === "simple" && (
-              <div className="p-6">
-                {/* Skills Grid */}
+              <div className="p-4 sm:p-6">
+                {/* Skills Flex Container */}
                 {simpleSkills.length > 0 ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 mb-8">
+                  <div className="flex flex-wrap gap-3 mb-6 md:mb-8">
                     {simpleSkills.map((skill) => (
-                      <motion.div
+                      <SkillItem
                         key={skill.id}
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="group relative"
-                      >
-                        {editingSkillId === skill.id ? (
-                          <div className="flex items-center gap-2 p-2 bg-rose-50 border-2 border-rose-400 rounded-xl">
-                            <input
-                              type="text"
-                              value={editingSkillValue}
-                              onChange={(e) =>
-                                setEditingSkillValue(e.target.value)
-                              }
-                              className="flex-1 px-2 py-1 bg-transparent text-sm focus:outline-none"
-                              autoFocus
-                              onKeyPress={(e) =>
-                                e.key === "Enter" && saveEditingSkill()
-                              }
-                            />
-                            <button
-                              onClick={saveEditingSkill}
-                              className="p-1 text-green-600 hover:bg-green-50 rounded"
-                            >
-                              <FiCheck className="w-4 h-4" />
-                            </button>
-                            <button
-                              onClick={cancelEditing}
-                              className="p-1 text-red-600 hover:bg-red-50 rounded"
-                            >
-                              <FiX className="w-4 h-4" />
-                            </button>
-                          </div>
-                        ) : (
-                          <div className="flex items-center justify-between gap-2 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl hover:border-rose-300 hover:shadow-md transition-all group">
-                            <span className="text-slate-700 text-sm font-medium truncate">
-                              {skill.name}
-                            </span>
-                            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                              <button
-                                onClick={() => startEditingSkill(skill)}
-                                className="p-1 text-slate-400 hover:text-rose-600 rounded"
-                              >
-                                <FiEdit2 className="w-3.5 h-3.5" />
-                              </button>
-                              <button
-                                onClick={() => deleteSimpleSkill(skill.id)}
-                                className="p-1 text-slate-400 hover:text-red-600 rounded"
-                              >
-                                <FiTrash2 className="w-3.5 h-3.5" />
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                      </motion.div>
+                        skill={skill}
+                        onUpdate={updateSimpleSkill}
+                        onDelete={deleteSimpleSkill}
+                      />
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-16">
-                    <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <FiTag className="w-10 h-10 text-slate-400" />
+                  <div className="text-center py-12 md:py-16">
+                    <div className="w-16 h-16 md:w-20 md:h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <FiTag className="w-8 h-8 md:w-10 md:h-10 text-slate-400" />
                     </div>
-                    <h3 className="text-lg font-semibold text-slate-700 mb-2">
+                    <h3 className="text-base md:text-lg font-semibold text-slate-700 mb-2">
                       No skills added yet
                     </h3>
-                    <p className="text-slate-400 text-sm">
+                    <p className="text-slate-400 text-xs md:text-sm">
                       Start adding your professional skills below
                     </p>
                   </div>
                 )}
 
                 {/* Add Skill Input */}
-                <div className="flex gap-3">
+                <div className="flex flex-col sm:flex-row gap-3">
                   <div className="flex-1 relative">
                     <input
                       type="text"
@@ -3558,51 +5371,20 @@ const SkillsForm = () => {
                   </div>
                   <button
                     onClick={addSimpleSkill}
-                    className="px-6 py-3 bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-xl font-medium hover:shadow-lg transition-all flex items-center gap-2"
+                    className="px-6 py-3 bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-xl font-medium hover:shadow-lg transition-all flex items-center justify-center gap-2"
                   >
                     <IoMdAdd className="w-5 h-5" />
                     <span>Add Skill</span>
                   </button>
                 </div>
 
-                {/* Popular Suggestions */}
-                {simpleSkills.length === 0 && (
-                  <div className="mt-6 pt-4 border-t border-slate-100">
-                    <p className="text-xs text-slate-500 mb-3 flex items-center gap-2">
-                      <FiTrendingUp className="w-3.5 h-3.5" />
-                      Popular suggestions
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {[
-                        "React.js",
-                        "Node.js",
-                        "TypeScript",
-                        "Python",
-                        "AWS",
-                        "Docker",
-                        "PostgreSQL",
-                        "Next.js",
-                      ].map((suggestion) => (
-                        <button
-                          key={suggestion}
-                          onClick={() => {
-                            setNewSkillInput(suggestion);
-                            setTimeout(() => addSimpleSkill(), 50);
-                          }}
-                          className="px-3 py-1.5 text-xs bg-slate-100 text-slate-600 rounded-full hover:bg-rose-100 hover:text-rose-600 transition-all"
-                        >
-                          + {suggestion}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
+               
               </div>
             )}
 
-            {/* Categorized Mode - FIXED VERSION */}
+            {/* Categorized Mode */}
             {skillsMode === "categorized" && (
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 {/* Show existing categories if any */}
                 {categorizedSkills.length > 0 && (
                   <div className="space-y-4 mb-6">
@@ -3615,12 +5397,12 @@ const SkillsForm = () => {
                       >
                         <div
                           onClick={() => toggleCategory(category.id)}
-                          className="flex items-center justify-between p-4 bg-slate-50 cursor-pointer hover:bg-slate-100 transition-colors"
+                          className="flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 bg-slate-50 cursor-pointer hover:bg-slate-100 transition-colors gap-2"
                         >
-                          <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-3 flex-1 min-w-0">
                             <motion.div
                               animate={{ rotate: category.isOpen ? 90 : 0 }}
-                              className="text-slate-400"
+                              className="text-slate-400 shrink-0"
                             >
                               <FiChevronDown className="w-5 h-5" />
                             </motion.div>
@@ -3631,10 +5413,13 @@ const SkillsForm = () => {
                                 updateCategoryTitle(category.id, e.target.value)
                               }
                               onClick={(e) => e.stopPropagation()}
-                              className="font-semibold text-slate-800 bg-transparent px-2 py-1 rounded focus:outline-none focus:bg-white focus:ring-2 focus:ring-rose-200"
+                              className="font-semibold text-slate-800 bg-transparent px-2 py-1 rounded focus:outline-none focus:bg-white focus:ring-2 focus:ring-rose-200 flex-1 min-w-[100px]"
+                              style={{
+                                width: `${Math.min(Math.max(category.title.length, 10), 40)}ch`,
+                              }}
                             />
-                            <span className="text-xs text-slate-500 bg-white px-2 py-0.5 rounded-full">
-                              {category.skills.length}
+                            <span className="text-xs text-slate-500 bg-white px-2 py-0.5 rounded-full shrink-0">
+                              {category?.skills?.length}
                             </span>
                           </div>
                           <button
@@ -3642,7 +5427,7 @@ const SkillsForm = () => {
                               e.stopPropagation();
                               deleteCategory(category.id);
                             }}
-                            className="p-1.5 text-slate-400 hover:text-red-600 rounded-lg transition-colors"
+                            className="p-1.5 text-slate-400 hover:text-red-600 rounded-lg transition-colors shrink-0 self-end sm:self-auto"
                           >
                             <FiTrash2 className="w-4 h-4" />
                           </button>
@@ -3656,31 +5441,22 @@ const SkillsForm = () => {
                               exit={{ opacity: 0, height: 0 }}
                               className="border-t border-slate-100"
                             >
-                              <div className="p-4">
+                              <div className="p-3 sm:p-4">
+                                {/* Skills Flex Container */}
                                 <div className="flex flex-wrap gap-2 mb-4">
-                                  {category.skills.map((skill) => (
-                                    <div
+                                  {category?.skills.map((skill) => (
+                                    <CategorizedSkillItem
                                       key={skill.id}
-                                      className="group flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-full hover:border-rose-300 hover:shadow-sm transition-all"
-                                    >
-                                      <span className="text-sm text-slate-700">
-                                        {skill.name}
-                                      </span>
-                                      <button
-                                        onClick={() =>
-                                          deleteCategorizedSkill(
-                                            category.id,
-                                            skill.id,
-                                          )
-                                        }
-                                        className="opacity-0 group-hover:opacity-100 transition-opacity"
-                                      >
-                                        <FiX className="w-3.5 h-3.5 text-slate-400 hover:text-red-600" />
-                                      </button>
-                                    </div>
+                                      skill={skill}
+                                      categoryId={category.id}
+                                      onUpdate={updateCategorizedSkill}
+                                      onDelete={deleteCategorizedSkill}
+                                    />
                                   ))}
                                 </div>
-                                <div className="flex gap-2">
+
+                                {/* Add Skill Input */}
+                                <div className="flex flex-col sm:flex-row gap-2">
                                   <input
                                     type="text"
                                     placeholder="Add a skill..."
@@ -3689,19 +5465,25 @@ const SkillsForm = () => {
                                       if (e.key === "Enter") {
                                         const input =
                                           e.target as HTMLInputElement;
-                                        addCategorizedSkill(
-                                          category.id,
-                                          input.value,
-                                        );
-                                        input.value = "";
+                                        if (input.value.trim()) {
+                                          addCategorizedSkill(
+                                            category.id,
+                                            input.value,
+                                          );
+                                          input.value = "";
+                                        }
                                       }
                                     }}
                                   />
                                   <button
                                     onClick={(e) => {
-                                      const input = (e.target as HTMLElement)
-                                        .previousElementSibling as HTMLInputElement;
-                                      if (input) {
+                                      const container = (
+                                        e.target as HTMLElement
+                                      ).parentElement?.previousElementSibling;
+                                      const input = container?.querySelector(
+                                        "input",
+                                      ) as HTMLInputElement;
+                                      if (input && input.value.trim()) {
                                         addCategorizedSkill(
                                           category.id,
                                           input.value,
@@ -3723,7 +5505,7 @@ const SkillsForm = () => {
                   </div>
                 )}
 
-                {/* Add Category Section - Always visible */}
+                {/* Add Category Section */}
                 {!showAddCategory ? (
                   <button
                     onClick={() => setShowAddCategory(true)}
@@ -3747,7 +5529,7 @@ const SkillsForm = () => {
                       autoFocus
                       onKeyPress={(e) => e.key === "Enter" && addCategory()}
                     />
-                    <div className="flex gap-3">
+                    <div className="flex flex-col sm:flex-row gap-3">
                       <button
                         onClick={addCategory}
                         className="flex-1 px-4 py-2 bg-rose-500 text-white rounded-lg font-medium hover:bg-rose-600 transition-colors"
@@ -3772,27 +5554,30 @@ const SkillsForm = () => {
         </div>
 
         {/* Navigation Buttons */}
-        <div className="flex justify-between gap-4 mt-6">
-          <button
-            onClick={() => router.push("/resume-details/education")}
-            className="flex items-center gap-2 px-6 py-3 bg-white border border-slate-200 text-slate-700 rounded-xl font-medium hover:bg-slate-50 hover:border-slate-300 transition-all"
-          >
-            ← Back
-          </button>
-          <button
-            onClick={() => {
-              if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
-              const currentSkills =
-                skillsMode === "simple" ? simpleSkills : categorizedSkills;
-              saveToAPI(currentSkills).then(() =>
-                router.push("/resume-details/summary"),
-              );
-            }}
-            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-xl font-medium hover:shadow-lg transition-all"
-          >
-            Continue to Summary
-            <FiArrowRight className="w-4 h-4" />
-          </button>
+        <div className="shrink-0 pt-4 lg:pt-6 mt-auto">
+          <div className="flex flex-col-reverse sm:flex-row justify-between gap-3">
+            <button
+              onClick={() => router.push("/resume-details/education")}
+              className="flex items-center justify-center gap-2 px-6 py-3 bg-white border border-slate-200 text-slate-700 rounded-xl font-medium hover:bg-slate-50 hover:border-slate-300 transition-all"
+            >
+              ← Back
+            </button>
+            <button
+              onClick={() => {
+                if (saveTimeoutRef.current)
+                  clearTimeout(saveTimeoutRef.current);
+                const currentSkills =
+                  skillsMode === "simple" ? simpleSkills : categorizedSkills;
+                saveToAPI(currentSkills).then(() =>
+                  router.push("/resume-details/project"),
+                );
+              }}
+              className="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-xl font-medium hover:shadow-lg transition-all"
+            >
+              Next Projects
+              <FiArrowRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
         {/* Auto-save Toast */}
@@ -3802,10 +5587,10 @@ const SkillsForm = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
-              className="fixed bottom-6 right-6 flex items-center gap-2 bg-slate-800 text-white px-4 py-2 rounded-xl shadow-lg"
+              className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 flex items-center gap-2 bg-slate-800 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-xl shadow-lg z-50"
             >
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              <span className="text-sm">Saving...</span>
+              <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              <span className="text-xs sm:text-sm">Saving...</span>
             </motion.div>
           )}
         </AnimatePresence>
@@ -3813,62 +5598,126 @@ const SkillsForm = () => {
         {/* Tips Modal */}
         <AnimatePresence>
           {skillTipsClicked && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden"
-              >
-                <div className="p-6">
-                  <div className="flex justify-between items-center mb-4">
-                    <div className="flex items-center gap-2">
-                      <FaRegLightbulb className="text-rose-500 w-5 h-5" />
-                      <h3 className="text-xl font-semibold">Pro Tips</h3>
+            <div className="fixed inset-0 z-50 flex items-start sm:items-center justify-center overflow-hidden p-3 sm:p-4">
+              <div
+                className="absolute inset-0 backdrop-blur-sm bg-black/50"
+                onClick={() => setSkillTipsClicked(false)}
+              />
+              <div className="relative w-full max-w-[95%] sm:max-w-md md:max-w-lg lg:w-[30vw] h-auto max-h-[85vh] sm:max-h-[80vh] mt-8 sm:mt-0">
+                <motion.div
+                  initial={{ y: 50, opacity: 0, scale: 0.95 }}
+                  animate={{ y: 0, opacity: 1, scale: 1 }}
+                  exit={{ y: 50, opacity: 0, scale: 0.95 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 120,
+                    damping: 18,
+                    duration: 0.4,
+                  }}
+                  className="w-full rounded-xl sm:rounded-2xl bg-white border border-gray-200 shadow-2xl max-h-[inherit] overflow-hidden"
+                >
+                  <div className="flex justify-between items-center p-4 sm:p-6">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <div className="p-1.5 sm:p-2 bg-linear-to-br from-[#c40116]/10 to-[#be0117]/10 rounded-lg">
+                        <FaRegLightbulb className="w-4 h-4 sm:w-5 sm:h-5 text-[#c40116]" />
+                      </div>
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-800">
+                        Skills Tips
+                      </h3>
                     </div>
                     <button
                       onClick={() => setSkillTipsClicked(false)}
-                      className="p-1 hover:bg-slate-100 rounded-lg"
+                      className="p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
+                      type="button"
                     >
-                      <FaTimes className="w-5 h-5 text-slate-500" />
+                      <FaTimes className="w-4 h-4 sm:w-5 sm:h-5" />
                     </button>
                   </div>
-                  <div className="space-y-4">
-                    {[
-                      {
-                        icon: <FiCheckCircle className="text-emerald-500" />,
-                        title: "Be Relevant",
-                        desc: "Only list skills relevant to your target role",
-                      },
-                      {
-                        icon: <FiCheckCircle className="text-emerald-500" />,
-                        title: "Use Keywords",
-                        desc: "Match keywords from job descriptions to pass ATS",
-                      },
-                      {
-                        icon: <FiCheckCircle className="text-emerald-500" />,
-                        title: "Keep it Clean",
-                        desc: "Simple lists work better than skill bars",
-                      },
-                      {
-                        icon: <FiXCircle className="text-red-500" />,
-                        title: "Avoid Ratings",
-                        desc: "Self-rated skill levels are unhelpful to recruiters",
-                      },
-                    ].map((tip, i) => (
-                      <div key={i} className="flex items-start gap-3">
-                        <div className="mt-0.5">{tip.icon}</div>
-                        <div>
-                          <p className="font-semibold text-slate-800">
-                            {tip.title}
-                          </p>
-                          <p className="text-sm text-slate-500">{tip.desc}</p>
+                  <hr className="border-gray-100" />
+
+                  <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 overflow-y-auto max-h-[calc(85vh-100px)]">
+                    {/* Positive tips */}
+                    <div className="space-y-3 sm:space-y-4">
+                      <h4 className="text-xs sm:text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                        Best Practices
+                      </h4>
+                      {[
+                        {
+                          title: "List job-relevant skills",
+                          desc: "Match the job you're applying for.",
+                        },
+                        {
+                          title: "Use keywords from job description",
+                          desc: "It helps you pass Applicant Tracking Systems (ATS).",
+                        },
+                        {
+                          title: "Keep it concise",
+                          desc: "Aim for 4–5 of your strongest, most relevant skills.",
+                        },
+                      ].map((tip, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-start gap-2 sm:gap-3"
+                        >
+                          <div className="shrink-0 mt-0.5">
+                            <div className="p-1 sm:p-1.5 bg-emerald-100 rounded-lg">
+                              <FiCheckCircle className="text-emerald-500 w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                            </div>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs sm:text-sm font-semibold text-gray-800">
+                              {tip.title}
+                            </p>
+                            <p className="text-xs sm:text-sm text-gray-600 mt-0.5 sm:mt-1">
+                              {tip.desc}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
+
+                    {/* Negative tips */}
+                    <div className="space-y-3 sm:space-y-4 pt-3 sm:pt-4 border-t border-gray-100">
+                      <h4 className="text-xs sm:text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                        Avoid These
+                      </h4>
+                      {[
+                        {
+                          title: "Don't include outdated tools and software",
+                          desc: "Show you're up to date with current tech.",
+                        },
+                        {
+                          title: "Don't list general traits as skills",
+                          desc: "Avoid terms like 'hard-working' or 'fast learner.'",
+                        },
+                        {
+                          title: "Don't lie about your skills",
+                          desc: "False claims can backfire during interviews.",
+                        },
+                      ].map((tip, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-start gap-2 sm:gap-3"
+                        >
+                          <div className="shrink-0 mt-0.5">
+                            <div className="p-1 sm:p-1.5 bg-[#c40116]/10 rounded-lg">
+                              <FiXCircle className="text-[#c40116] w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                            </div>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs sm:text-sm font-semibold text-gray-800">
+                              {tip.title}
+                            </p>
+                            <p className="text-xs sm:text-sm text-gray-600 mt-0.5 sm:mt-1">
+                              {tip.desc}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              </motion.div>
+                </motion.div>
+              </div>
             </div>
           )}
         </AnimatePresence>
@@ -3876,18 +5725,18 @@ const SkillsForm = () => {
         {/* AI Popup */}
         <AnimatePresence>
           {showPopup && Airesponse && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-sm">
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden max-h-[80vh]"
+                className="relative w-full max-w-[95%] sm:max-w-xl md:max-w-2xl bg-white rounded-xl sm:rounded-2xl shadow-2xl overflow-hidden max-h-[85vh] sm:max-h-[80vh]"
               >
-                <div className="p-6 overflow-y-auto">
+                <div className="p-4 sm:p-6 overflow-y-auto">
                   <div className="flex justify-between items-center mb-4">
                     <div className="flex items-center gap-2">
                       <FiZap className="text-rose-500 w-5 h-5" />
-                      <h2 className="text-xl font-semibold">
+                      <h2 className="text-lg sm:text-xl font-semibold">
                         AI Recommendations
                       </h2>
                     </div>
@@ -3898,7 +5747,7 @@ const SkillsForm = () => {
                       <FaTimes className="w-5 h-5 text-slate-500" />
                     </button>
                   </div>
-                  <p className="text-slate-500 text-sm mb-4">
+                  <p className="text-slate-500 text-xs sm:text-sm mb-4">
                     Click any skill to add it to your list
                   </p>
                   <div className="flex flex-wrap gap-2">
@@ -3909,7 +5758,7 @@ const SkillsForm = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: index * 0.05 }}
                         onClick={() => insertAIResponse(item, index)}
-                        className="px-4 py-2 bg-slate-100 text-slate-700 rounded-full text-sm hover:bg-rose-500 hover:text-white transition-all cursor-pointer"
+                        className="px-3 py-1.5 sm:px-4 sm:py-2 bg-slate-100 text-slate-700 rounded-full text-xs sm:text-sm hover:bg-rose-500 hover:text-white transition-all cursor-pointer whitespace-normal break-words max-w-[200px]"
                       >
                         {item}
                       </motion.button>
