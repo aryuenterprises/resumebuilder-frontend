@@ -9,13 +9,9 @@ import { API_URL } from "@/app/config/api";
 import {
   getLocalStorage,
   getSessionStorage,
-  removeSessionStorage,
-  setLocalStorage,
-  setSessionStorage,
 } from "@/app/utils";
 import { User } from "@/app/types/user.types";
 import { Template } from "@/app/types/context.types";
-import { resume } from "react-dom/server";
 
 interface ResumeDataFetcherProps {
   children: React.ReactNode;
@@ -36,7 +32,6 @@ export function ResumeDataFetcher({ children }: ResumeDataFetcherProps) {
     setFullResumeData,
     setResumeId,
     setProjects
-    // chosenTemplate,
   } = useContext(CreateContext);
 
   const chosenTemplate = getLocalStorage<Template>("chosenTemplate");
@@ -112,8 +107,8 @@ export function ResumeDataFetcher({ children }: ResumeDataFetcherProps) {
         );
 
 
-        let a = getSessionStorage("oldRouteNameDashboard");
-        if (a) {
+        let isOldRouteNameDashboard = getSessionStorage("oldRouteNameDashboard");
+        if (isOldRouteNameDashboard) {
           setResumeId(contactResponse?.data.resumeId);
         }
 
@@ -167,6 +162,7 @@ export function ResumeDataFetcher({ children }: ResumeDataFetcherProps) {
               skills: data?.skills,
               summary: data?.summary?.[0] || "",
               finalize: data?.finalize?.[0] || {},
+              projects:data.projects || []
             });
 
             console.log("✅ Existing resume data loaded successfully");

@@ -148,7 +148,6 @@ const DashboardPage = () => {
           `${API_URL}/api/contact-resume/all-contact/${userId}`,
         );
 
-        // const filter = response.data.flatMap((data1) => {
 
         const filter = response.data.flatMap(
           (data1: { templateId: string | number }) => {
@@ -780,43 +779,7 @@ const DashboardPage = () => {
               </motion.button>
             </div>
 
-            {/* <div className="grid grid-cols-4 gap-4">
-              {filteredOldResumeData.length > 0 &&
-                filteredOldResumeData.map((item, index) => {
-                  const ComponentToRender = item.component;
-
-                  return (
-                    <div
-                      key={index}
-                      className="relative group w-full"
-                      style={{
-                        height: "350px",
-                        overflow: "hidden",
-                        border: "1px solid #e0e0e0",
-                        borderRadius: "8px",
-                        backgroundColor: "white",
-                      }}
-                    >
-                      <ComponentToRender alldata={item} />
-
-                      <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            router.push(`/resume-details/contact`);
-                            setLocalStorage("chosenTemplate", item);
-                            setSessionStorage("oldRouteNameDashboard", true);
-                            setIsUploadMode(false);
-                          }}
-                          className="bg-white rounded-full p-3 hover:bg-gray-100 transition-colors cursor-pointer"
-                        >
-                          <IoEyeOutline className="h-8 w-8 text-gray-700" />
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
-            </div> */}
+            
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 p-3 sm:p-4">
               {filteredOldResumeData.length > 0 ? (

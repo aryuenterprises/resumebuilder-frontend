@@ -32,6 +32,7 @@ import {
 
 import { FaBrain, FaRocket, FaGraduationCap } from "react-icons/fa";
 import { HiOutlineSparkles, HiOutlineChevronDown } from "react-icons/hi";
+import { usePreventReload } from "@/app/hooks";
 
 // ─── Types ───────────────────────────────────────────────────────────────
 interface Issue {
@@ -1077,6 +1078,9 @@ const ATSCheckerPage = () => {
   const [activeTab, setActiveTab] = useState<"overview" | "issues" | "section">(
     "overview",
   );
+
+    usePreventReload()
+
 
   useEffect(() => {
     if (file && !uploading && !loading) {

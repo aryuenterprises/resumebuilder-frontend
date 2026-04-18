@@ -331,7 +331,6 @@ const ContactForm = () => {
     setCroppedAreaPixels(croppedPixels);
   }, []);
 
-resumeId
   const handleCropSave = useCallback(async () => {
     try {
       if (!imageSrc || !croppedAreaPixels) return;
@@ -371,6 +370,8 @@ resumeId
     await saveToAPI(contact);
     router.push("/resume-details/experience");
   };
+
+    const [showAdditional, setShowAdditional] = useState<boolean>(false);
 
   const [contactTipsClicked, setContactTipsClicked] = useState(false);
 
@@ -654,7 +655,7 @@ resumeId
                 />
               </div>
 
-              <div className="group">
+              {/* <div className="group">
                 <label
                   htmlFor="DOB"
                   className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 group-hover:text-[#c40116] transition-colors"
@@ -675,8 +676,45 @@ resumeId
                   placeholder="Software Engineer"
                   className="w-full px-3 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm font-medium placeholder:text-gray-400 shadow-subtle focus:outline-none focus:border-[#c40116] focus:ring-2 focus:ring-[#c40116]/20 focus:shadow-lg focus:shadow-[#c40116]/10 transition-all duration-300 hover:shadow-md"
                 />
-              </div>
+              </div> */}
             </div>
+
+
+             {/* Toggle Button - More Compact */}
+            <button
+              type="button"
+              onClick={() => setShowAdditional(!showAdditional)}
+              className="w-full p-3 flex items-center justify-between bg-white hover:from-gray-100/80 hover:to-white transition-all duration-300 group rounded-xl cursor-pointer"
+            >
+              <div className="flex items-center gap-2">
+                <div
+                  className={`p-1.5 rounded-lg transition-all duration-300 ${
+                    showAdditional
+                      ? "bg-[#c40116]/10 text-[#c40116]"
+                      : "bg-gray-100 text-gray-600 group-hover:bg-[#c40116]/10 group-hover:text-[#c40116]"
+                  }`}
+                >
+                  <IoInformationCircleOutline className="w-4 h-4" />
+                </div>
+                <span className="text-xs sm:text-sm font-semibold text-gray-700 group-hover:text-[#c40116] transition-colors whitespace-nowrap">
+                  Additional Information
+                </span>
+              </div>
+              <IoChevronDown
+                className={`w-4 h-4 text-gray-500 group-hover:text-[#c40116] transition-all duration-300 ${
+                  showAdditional ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+
+
+             <div className="bg-linear-to-br from-gray-50/50 to-white/50 rounded-xl border border-gray-100 overflow-hidden">
+              <div
+                className={`transition-all duration-500 ease-in-out ${
+                  showAdditional ? "max-h-500 opacity-100" : "max-h-0 opacity-0"
+                }`}
+              >
+                <div className="p-3 sm:p-4  space-y-4">
 
             {/* LinkedIn & Portfolio - Compact */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
@@ -812,6 +850,13 @@ resumeId
                 />
               </div>
             </div>
+                        </div>
+
+            </div>
+
+            </div>
+
+
           </form>
         </div>
 

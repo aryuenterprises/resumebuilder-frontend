@@ -317,8 +317,8 @@ function Choose_template() {
         setProjects(convertedData.projects);
       }
 
-      if (convertedData.summary && convertedData.summary[0]) {
-        setSummary(convertedData.summary[0]);
+      if (convertedData.summary) {
+        setSummary(convertedData.summary);
       }
 
       if (convertedData.finalize) {
@@ -501,7 +501,7 @@ function Choose_template() {
         )}
       </AnimatePresence>
 
-      {/* Upload Popup - Super Responsive */}
+      {/* Upload Popup */}
       <AnimatePresence>
         {showUploadPopup && (
           <motion.div
@@ -593,7 +593,7 @@ function Choose_template() {
                     type="file"
                     id="file-upload"
                     className="hidden"
-                    accept=".pdf"
+                    accept=".pdf,.doc"
                     onChange={(e) => {
                       const file = e.target.files?.[0];
                       if (file && isValidFileType(file)) handleFileUpload(file);
@@ -683,7 +683,7 @@ function Choose_template() {
                         Drop your file here
                       </p>
                       <p className="text-[11px] sm:text-xs text-gray-500 mb-3 sm:mb-4">
-                        Supports PDF only
+                        Supports PDF and doc only
                       </p>
                       <button
                         onClick={() =>

@@ -58,7 +58,9 @@ const ExperienceForm = () => {
   const [isExperienced, setIsExperienced] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [lastSavedData, setLastSavedData] = useState<string>("");
-  setSessionStorage("oldRouteNameDashboard", "old");
+  // setSessionStorage("oldRouteNameDashboard", "old");
+    removeSessionStorage("oldRouteNameDashboard");
+
 
   const { experiences, setExperiences, fullResumeData, setFullResumeData } =
     UseContext;

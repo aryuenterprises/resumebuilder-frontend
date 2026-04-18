@@ -26,7 +26,12 @@ import {
 import { BsFileEarmarkText } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 import Stepper from "../../../components/resume/Steppers";
-import { Finalize as FinalizeType, SimpleSkill, SkillCategory, Template } from "@/app/types/context.types";
+import {
+  Finalize as FinalizeType,
+  SimpleSkill,
+  SkillCategory,
+  Template,
+} from "@/app/types/context.types";
 import { getLocalStorage, setLocalStorage } from "@/app/utils";
 import { API_URL } from "@/app/config/api";
 
@@ -98,7 +103,7 @@ const FinalizeForm = () => {
 
   // Safely destructure context with fallbacks
   const {
-    contact ,
+    contact,
     summary = "",
     skills = [],
     experiences = [],
@@ -114,10 +119,9 @@ const FinalizeForm = () => {
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const initialLoadDone = useRef(false);
 
-    const contactId = UseContext?.contact._id || UseContext?.contact.contactId;
+  const contactId = UseContext?.contact._id || UseContext?.contact.contactId;
 
-
-  console.log("contact",contact)
+  console.log("contact", contact);
 
   const stripHtml = (html: string) => {
     return html?.replace(/<\/?[^>]+(>|$)/g, "") || "";
@@ -140,11 +144,11 @@ const FinalizeForm = () => {
   //   .map((item) => item?.skill || "")
   //   .filter(Boolean);
 
-    const filteredSkills = skills?.length 
-      ? ('title' in skills[0] 
-          ? (skills as SkillCategory[]).flatMap(c => c.skills.map(s => s.name))
-          : (skills as SimpleSkill[]).map(s => s.name))
-      : [];
+  const filteredSkills = skills?.length
+    ? "title" in skills[0]
+      ? (skills as SkillCategory[]).flatMap((c) => c.skills.map((s) => s.name))
+      : (skills as SimpleSkill[]).map((s) => s.name)
+    : [];
 
   const filteredExperiences = experiences.map((item) => ({
     title: item?.jobTitle || "",
@@ -175,8 +179,6 @@ const FinalizeForm = () => {
   }, [finalize]);
 
   const saveToAPI = async (finalizeData: typeof finalize) => {
-
-
     if (!contactId) {
       console.error("Contact ID is required");
       return false;
@@ -208,7 +210,7 @@ const FinalizeForm = () => {
       const response = await axios.post(
         `${API_URL}/api/finalize-resume/update`,
         formData,
-        { params: { contactId: contactId} },
+        { params: { contactId: contactId } },
       );
 
       setLastSavedData(currentDataString);
@@ -257,7 +259,7 @@ const FinalizeForm = () => {
         `${API_URL}/api/finalize-resume/get-finalize-resume/${contactId}`,
       );
       const experienceList = response.data?.resume?.[0]?.skillsData || {};
-     
+
       const formattedData: FinalizeType = {
         languages: experienceList.languages || [],
         certificationsAndLicenses:
@@ -276,7 +278,6 @@ const FinalizeForm = () => {
       console.log(error);
     }
   };
-
 
   //   useEffect(() => {
   //   if (contact?.contactId) {
@@ -440,16 +441,15 @@ const FinalizeForm = () => {
     setLoading(true);
 
     const formData = {
-       resume_data: {
-      name: `${contact?.firstName || ""} ${contact?.lastName || ""}`.trim(),
-      email: contact?.email || "",
-      phone: contact?.phone || "",
-      summary: htmlRemovedSummary,
-      skills: filteredSkills,
-      experience: filteredExperiences,
-      education: filteredEducation,
-      
-    }
+      resume_data: {
+        name: `${contact?.firstName || ""} ${contact?.lastName || ""}`.trim(),
+        email: contact?.email || "",
+        phone: contact?.phone || "",
+        summary: htmlRemovedSummary,
+        skills: filteredSkills,
+        experience: filteredExperiences,
+        education: filteredEducation,
+      },
     };
 
     try {
@@ -459,7 +459,7 @@ const FinalizeForm = () => {
       );
 
       setScore(response.data.ats_score);
-      setAtsVerdict(response?.data?.summary?.ats_verdict)
+      setAtsVerdict(response?.data?.summary?.ats_verdict);
       setProgress(0);
       setLoading(false);
       setShowPopup(true);
@@ -493,9 +493,6 @@ const FinalizeForm = () => {
 
     return () => clearInterval(timer);
   }, [score, showPopup]);
-
-
-
 
   return (
     <section className="relative h-screen overflow-hidden">
@@ -621,6 +618,69 @@ const FinalizeForm = () => {
                                       <Editor
                                         className="rounded-lg"
                                         value={skill.name || ""}
+
+                                         headerTemplate={
+                        <div className="flex gap-1 p-2  flex-wrap items-center bg-gray-50">
+                          {/* Text formatting */}
+                          <button
+                            type="button"
+                            className="ql-bold p-2 hover:bg-gray-200 rounded transition-colors duration-200"
+                            aria-label="Bold"
+                            title="Bold"
+                          >
+                            <span className="font-bold">B</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            className="ql-italic p-2 hover:bg-gray-200 rounded transition-colors duration-200"
+                            aria-label="Italic"
+                            title="Italic"
+                          >
+                            <span className="italic">I</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            className="ql-underline p-2 hover:bg-gray-200 rounded transition-colors duration-200"
+                            aria-label="Underline"
+                            title="Underline"
+                          >
+                            <span className="underline">U</span>
+                          </button>
+
+                          {/* Lists */}
+                          <button
+                            type="button"
+                            className="ql-list p-2 hover:bg-gray-200 rounded transition-colors duration-200"
+                            value="ordered"
+                            aria-label="Numbered List"
+                            title="Numbered List"
+                          >
+                            <span>1.</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            className="ql-list p-2 hover:bg-gray-200 rounded transition-colors duration-200"
+                            value="bullet"
+                            aria-label="Bullet List"
+                            title="Bullet List"
+                          >
+                            <span>•</span>
+                          </button>
+
+                          {/* Clean formatting */}
+                          <button
+                            type="button"
+                            className="ql-clean p-2 hover:bg-gray-200 rounded transition-colors duration-200"
+                            aria-label="Clear Formatting"
+                            title="Clear Formatting"
+                          >
+                            <span>⌫</span>
+                          </button>
+                        </div>
+                      }
                                         onTextChange={(e: any) =>
                                           handleSkillChange(
                                             section.title,
@@ -728,6 +788,68 @@ const FinalizeForm = () => {
                                     <div className="bg-linear-to-br from-gray-50 to-white rounded-xl border border-gray-200 overflow-hidden focus-within:border-[#c40116] focus-within:ring-2 focus-within:ring-[#c40116]/20 transition-all duration-300">
                                       <Editor
                                         className="rounded-lg"
+                                         headerTemplate={
+                        <div className="flex gap-1 p-2  flex-wrap items-center bg-gray-50">
+                          {/* Text formatting */}
+                          <button
+                            type="button"
+                            className="ql-bold p-2 hover:bg-gray-200 rounded transition-colors duration-200"
+                            aria-label="Bold"
+                            title="Bold"
+                          >
+                            <span className="font-bold">B</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            className="ql-italic p-2 hover:bg-gray-200 rounded transition-colors duration-200"
+                            aria-label="Italic"
+                            title="Italic"
+                          >
+                            <span className="italic">I</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            className="ql-underline p-2 hover:bg-gray-200 rounded transition-colors duration-200"
+                            aria-label="Underline"
+                            title="Underline"
+                          >
+                            <span className="underline">U</span>
+                          </button>
+
+                          {/* Lists */}
+                          <button
+                            type="button"
+                            className="ql-list p-2 hover:bg-gray-200 rounded transition-colors duration-200"
+                            value="ordered"
+                            aria-label="Numbered List"
+                            title="Numbered List"
+                          >
+                            <span>1.</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            className="ql-list p-2 hover:bg-gray-200 rounded transition-colors duration-200"
+                            value="bullet"
+                            aria-label="Bullet List"
+                            title="Bullet List"
+                          >
+                            <span>•</span>
+                          </button>
+
+                          {/* Clean formatting */}
+                          <button
+                            type="button"
+                            className="ql-clean p-2 hover:bg-gray-200 rounded transition-colors duration-200"
+                            aria-label="Clear Formatting"
+                            title="Clear Formatting"
+                          >
+                            <span>⌫</span>
+                          </button>
+                        </div>
+                      }
                                         value={skill.name || ""}
                                         onTextChange={(e: any) =>
                                           handleSkillChange(
@@ -832,6 +954,68 @@ const FinalizeForm = () => {
                                       <div className="bg-linear-to-br from-gray-50 to-white rounded-xl border border-gray-200 overflow-hidden focus-within:border-[#c40116] focus-within:ring-2 focus-within:ring-[#c40116]/20 transition-all duration-300">
                                         <Editor
                                           className="rounded-lg"
+                                           headerTemplate={
+                        <div className="flex gap-1 p-2  flex-wrap items-center bg-gray-50">
+                          {/* Text formatting */}
+                          <button
+                            type="button"
+                            className="ql-bold p-2 hover:bg-gray-200 rounded transition-colors duration-200"
+                            aria-label="Bold"
+                            title="Bold"
+                          >
+                            <span className="font-bold">B</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            className="ql-italic p-2 hover:bg-gray-200 rounded transition-colors duration-200"
+                            aria-label="Italic"
+                            title="Italic"
+                          >
+                            <span className="italic">I</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            className="ql-underline p-2 hover:bg-gray-200 rounded transition-colors duration-200"
+                            aria-label="Underline"
+                            title="Underline"
+                          >
+                            <span className="underline">U</span>
+                          </button>
+
+                          {/* Lists */}
+                          <button
+                            type="button"
+                            className="ql-list p-2 hover:bg-gray-200 rounded transition-colors duration-200"
+                            value="ordered"
+                            aria-label="Numbered List"
+                            title="Numbered List"
+                          >
+                            <span>1.</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            className="ql-list p-2 hover:bg-gray-200 rounded transition-colors duration-200"
+                            value="bullet"
+                            aria-label="Bullet List"
+                            title="Bullet List"
+                          >
+                            <span>•</span>
+                          </button>
+
+                          {/* Clean formatting */}
+                          <button
+                            type="button"
+                            className="ql-clean p-2 hover:bg-gray-200 rounded transition-colors duration-200"
+                            aria-label="Clear Formatting"
+                            title="Clear Formatting"
+                          >
+                            <span>⌫</span>
+                          </button>
+                        </div>
+                      }
                                           value={skill.description || ""}
                                           onTextChange={(e: any) =>
                                             handleSkillChange(
@@ -1045,226 +1229,183 @@ const FinalizeForm = () => {
         </div>
       )}
 
-      {/* ATS Score Popup */}
-      {/* {showPopup && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          {showConfetti && <Confetti />}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-xl sm:rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden"
-          >
-            <div className="p-1 bg-linear-to-r from-[#c40116] to-[#be0117]"></div>
-
-            <div className="p-4 sm:p-6 text-center">
-              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4 sm:mb-6">
-                ATS Resume Score
-              </h3>
-
-              <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-44 md:h-44 mx-auto mb-4 sm:mb-6 relative">
-                <CircularProgressbar
-                  value={progress}
-                  text={`${progress}%`}
-                  styles={buildStyles({
-                    pathColor:
-                      progress >= 80
-                        ? "#10b981"
-                        : progress >= 60
-                          ? "#f59e0b"
-                          : "#7d838e",
-                    textColor:
-                      progress >= 80
-                        ? "#10b981"
-                        : progress >= 60
-                          ? "#f59e0b"
-                          : "#7d838e",
-                    trailColor: "#e5e7eb",
-                    pathTransitionDuration: 1,
-                  })}
-                />
-              </div>
-
-              <p className="text-gray-600 text-sm sm:text-base mb-3 sm:mb-4">
-                {atsVerdict}
-              </p>
-              
-              <button onClick={()=>window.open('/ats-checker')}>Use our advanced Ats Checker to see full suggestion</button>
-
-              <button
-                onClick={() => {
-                  setShowPopup(false);
-                  setShowConfetti(false);
-                }}
-                className="w-full py-2.5 sm:py-3 bg-linear-to-r from-[#c40116] to-[#be0117] text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all text-sm sm:text-base"
-                type="button"
-              >
-                Close
-              </button>
-            </div>
-          </motion.div>
-        </div>
-      )} */}
-
       
-
-
-  
-
-{/* ATS Result Modal - Shown after resume upload and analysis */}
-<AnimatePresence mode="wait">
-  {showPopup && (
-    <>
-      {/* Backdrop overlay */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.2 }}
-        className="fixed inset-0 bg-black/60 backdrop-blur-md z-50"
-        onClick={() => {
-          setShowPopup(false);
-          setShowConfetti(false);
-        }}
-      />
-      
-      {/* Modal */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.9, y: 20 }}
-        transition={{ 
-          type: "spring", 
-          damping: 20, 
-          stiffness: 300,
-          duration: 0.3
-        }}
-        className="fixed inset-0 flex items-center justify-center z-50 p-4 pointer-events-none"
-      >
-        <motion.div
-          className="bg-gradient-to-br from-white via-white to-gray-50 rounded-2xl sm:rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-gray-100 pointer-events-auto relative"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          
-         
-       
-
-          <div className="p-6 sm:p-8">
-            {/* Header with icon */}
-            <motion.div 
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.1 }}
-              className="text-center mb-6"
-            >
-              <motion.div 
-                initial={{ scale: 0, rotate: -180 }}
-                animate={{ scale: 1, rotate: 0 }}
-                transition={{ type: "spring", delay: 0.2, damping: 12 }}
-                className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#c40116]/10 to-[#be0117]/10 rounded-2xl mb-4"
-              >
-                <svg className="w-8 h-8 text-[#c40116]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-              </motion.div>
-              <motion.h3 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.3, delay: 0.25 }}
-                className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent"
-              >
-                ATS Score Analysis
-              </motion.h3>
-           
-            </motion.div>
-
-            {/* Score Circle with animation */}
-            <motion.div 
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ type: "spring", delay: 0.3, damping: 15 }}
-              className="relative w-36 h-36 sm:w-44 sm:h-44 mx-auto mb-6"
-            >
-              <CircularProgressbar
-                value={progress}
-                text={`${progress}%`}
-                styles={buildStyles({
-                  pathColor: progress >= 80 ? "#10b981" : progress >= 60 ? "#f59e0b" : "#ef4444",
-                  textColor: progress >= 80 ? "#10b981" : progress >= 60 ? "#f59e0b" : "#ef4444",
-                  trailColor: "#f3f4f6",
-                  pathTransitionDuration: 1,
-                  textSize: "24px",
-                  strokeLinecap: "round",
-                })}
-              />
-              <div className="absolute inset-0 rounded-full border-2 border-gray-100 -z-10"></div>
-            </motion.div>
-
-           
-
-            {/* Verdict text */}
-            <motion.p 
+      {/* ATS Result Modal - Shown after resume upload and analysis */}
+      <AnimatePresence mode="wait">
+        {showPopup && (
+          <>
+            {/* Backdrop overlay */}
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.3, delay: 0.55 }}
-              className="text-gray-600 text-sm sm:text-base mb-5 text-center leading-relaxed"
-            >
-              {atsVerdict}
-            </motion.p>
-            
-            {/* Navigation to Full ATS Checker Page */}
-            <motion.div
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.2, delay: 0.6 }}
-              className="mb-3"
-            >
-              <p className="text-xs text-gray-400 text-center mb-2">
-                Want a more detailed analysis?
-              </p>
-              <button
-                onClick={() => {
-                  setShowPopup(false);
-                window.open('/ats-checker')
-              
-                }}
-                className="w-full py-3 px-4 bg-gradient-to-r from-[#c40116]/5 to-[#be0117]/5 text-[#c40116] font-medium rounded-xl border border-[#c40116]/20 hover:border-[#c40116]/40 hover:shadow-md transition-all duration-300 group flex items-center justify-center gap-2 text-sm sm:text-base"
-              >
-                <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-                Go to Advanced ATS Checker
-                <span className="text-xs text-gray-500 group-hover:text-[#c40116] transition-colors">
-                  Full Analysis →
-                </span>
-              </button>
-            </motion.div>
-
-            {/* Close Button */}
-            <motion.button
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ duration: 0.2, delay: 0.65 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 bg-black/60 backdrop-blur-md z-50"
               onClick={() => {
                 setShowPopup(false);
                 setShowConfetti(false);
               }}
-              className="w-full py-2.5 sm:py-3 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 font-medium rounded-xl hover:shadow-md transition-all duration-300 text-sm sm:text-base"
-              type="button"
-            >
-              Close
-            </motion.button>
-          </div>
-        </motion.div>
-      </motion.div>
-    </>
-  )}
-</AnimatePresence>
+            />
 
+            {/* Modal */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{
+                type: "spring",
+                damping: 20,
+                stiffness: 300,
+                duration: 0.3,
+              }}
+              className="fixed inset-0 flex items-center justify-center z-50 p-4 pointer-events-none"
+            >
+              <motion.div
+                className="bg-gradient-to-br from-white via-white to-gray-50 rounded-2xl sm:rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-gray-100 pointer-events-auto relative"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <div className="p-6 sm:p-8">
+                  {/* Header with icon */}
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: 0.1 }}
+                    className="text-center mb-6"
+                  >
+                    <motion.div
+                      initial={{ scale: 0, rotate: -180 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      transition={{ type: "spring", delay: 0.2, damping: 12 }}
+                      className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#c40116]/10 to-[#be0117]/10 rounded-2xl mb-4"
+                    >
+                      <svg
+                        className="w-8 h-8 text-[#c40116]"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={1.5}
+                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                        />
+                      </svg>
+                    </motion.div>
+                    <motion.h3
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.3, delay: 0.25 }}
+                      className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent"
+                    >
+                      ATS Score Analysis
+                    </motion.h3>
+                  </motion.div>
+
+                  {/* Score Circle with animation */}
+                  <motion.div
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ type: "spring", delay: 0.3, damping: 15 }}
+                    className="relative w-36 h-36 sm:w-44 sm:h-44 mx-auto mb-6"
+                  >
+                    <CircularProgressbar
+                      value={progress}
+                      text={`${progress}%`}
+                      styles={buildStyles({
+                        pathColor:
+                          progress >= 80
+                            ? "#10b981"
+                            : progress >= 60
+                              ? "#f59e0b"
+                              : "#ef4444",
+                        textColor:
+                          progress >= 80
+                            ? "#10b981"
+                            : progress >= 60
+                              ? "#f59e0b"
+                              : "#ef4444",
+                        trailColor: "#f3f4f6",
+                        pathTransitionDuration: 1,
+                        textSize: "24px",
+                        strokeLinecap: "round",
+                      })}
+                    />
+                    <div className="absolute inset-0 rounded-full border-2 border-gray-100 -z-10"></div>
+                  </motion.div>
+
+                  {/* Verdict text */}
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.3, delay: 0.55 }}
+                    className="text-gray-600 text-sm sm:text-base mb-5 text-center leading-relaxed"
+                  >
+                    {atsVerdict}
+                  </motion.p>
+
+                  {/* Navigation to Full ATS Checker Page */}
+                  <motion.div
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.2, delay: 0.6 }}
+                    className="mb-3"
+                  >
+                    <p className="text-xs text-gray-400 text-center mb-2">
+                      Want a more detailed analysis?
+                    </p>
+                    <button
+                      onClick={() => {
+                        setShowPopup(false);
+                        window.open("/ats-checker");
+                      }}
+                      className="w-full py-3 px-4 bg-gradient-to-r from-[#c40116]/5 to-[#be0117]/5 text-[#c40116] font-medium rounded-xl border border-[#c40116]/20 hover:border-[#c40116]/40 hover:shadow-md transition-all duration-300 group flex items-center justify-center gap-2 text-sm sm:text-base"
+                    >
+                      <svg
+                        className="w-4 h-4 group-hover:translate-x-1 transition-transform"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13 7l5 5m0 0l-5 5m5-5H6"
+                        />
+                      </svg>
+                      Go to Advanced ATS Checker
+                      <span className="text-xs text-gray-500 group-hover:text-[#c40116] transition-colors">
+                        Full Analysis →
+                      </span>
+                    </button>
+                  </motion.div>
+
+                  {/* Close Button */}
+                  <motion.button
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ duration: 0.2, delay: 0.65 }}
+                    onClick={() => {
+                      setShowPopup(false);
+                      setShowConfetti(false);
+                    }}
+                    className="w-full py-2.5 sm:py-3 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 font-medium rounded-xl hover:shadow-md transition-all duration-300 text-sm sm:text-base"
+                    type="button"
+                  >
+                    Close
+                  </motion.button>
+                </div>
+              </motion.div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </section>
   );
 };

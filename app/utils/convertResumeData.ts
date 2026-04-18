@@ -56,13 +56,7 @@ const splitName = (fullName: string) => {
   return { firstName, lastName };
 };
 
-// Format date for Education (string | null | undefined)
-const formatEducationDate = (year: string): string | null | undefined => {
-  if (!year || year.toLowerCase() === 'present') {
-    return null;
-  }
-  return `${year}-01-01T00:00:00.000Z`;
-};
+
 
 // Format date for Experience (string | undefined)
 const formatExperienceDate = (year: string, isEndDate: boolean = false): string | undefined => {
@@ -106,11 +100,7 @@ export const convertParsedResumeToFrontendFormat = (
   templateId: string = "1"
 ) => {
   const { firstName, lastName } = splitName(parsedData.header.name || '');
-  
-  // Extract LinkedIn username from URL
-  const linkedInUsername = parsedData.header.link?.replace('linkedin.com/in/', '') || '';
-  
-  // Build contact object matching your Contact interface
+
   const contact = {
     contactId: '', // Empty for new resume
     firstName: firstName,
@@ -118,7 +108,7 @@ export const convertParsedResumeToFrontendFormat = (
     jobTitle: parsedData.header.title || parsedData.experience?.[0]?.position || '',
     phone: parsedData.header.phone || '',
     email: parsedData.header.email || '',
-    linkedin: linkedInUsername ? `https://linkedin.com/in/${linkedInUsername}` : '',
+    linkedin: '',
     portfolio: '',
     address: parsedData.header.location?.split(',')[0]?.trim() || '',
     city: parsedData.header.location?.split(',')[1]?.trim() || '',
@@ -128,7 +118,6 @@ export const convertParsedResumeToFrontendFormat = (
     croppedImage: null,
   };
 
-  // Convert experiences matching your Experience interface
   const experiences = parsedData.experience?.map((exp, index) => ({
     id: `temp_exp_${index}`,
     jobTitle: exp.position || '',
@@ -142,46 +131,42 @@ export const convertParsedResumeToFrontendFormat = (
     year: parseYearToNumber(exp.fromYear),
   })) || [];
 
-  // Convert education matching your Education interface
   const educations = parsedData.education?.map((edu, index) => ({
     id: `temp_edu_${index}`,
     schoolname: edu.institution || '',
     degree: edu.degree || '',
     location: edu.location || '',
     text: '',
-    startDate: formatEducationDate(edu.fromYear),
-    endDate: formatEducationDate(edu.toYear),
+    startDate: edu.fromYear,
+    endDate: edu.toYear,
     isOpen: false,
     showPicker: false,
     year: parseYearToNumber(edu.fromYear),
   })) || [];
 
-  // Convert skills matching your Skill interface
+  console.log("formatted educations",educations)
+
   const skills = parsedData.skills?.map((skill, index) => ({
-    id: `temp_skill_${index}`,
+    id: crypto.randomUUID(),
     name: skill.charAt(0).toUpperCase() + skill.slice(1),
-    level: 3, // Default level (1-4 scale, 3 is intermediate)
   })) || [];
 
-  // Convert summary
   const summary = parsedData.summary?.summary 
     ? `<p>${parsedData.summary.summary}</p>`
     : '';
 
-  // Convert projects to custom sections
   const projects = parsedData.projects?.map((project, index) => ({
-    id: `temp_project_${index}`,
-    name: `${project.title}`,
+    id: crypto.randomUUID(),
+    title: `${project.title}`,
     description: formatBulletsToHTML(project.bullets || []),
     techStack:project.technologies || []
   })) || [];
 
-  // Build finalize object matching your Finalize interface
+
   const finalize = {
     languages: parsedData.languages?.map((lang: any, index: number) => ({
       _id: `temp_lang_${index}`,
-      name: lang.name || '',
-      level: lang.level || 3,
+      name: lang || '',
     })) || [],
     certificationsAndLicenses: parsedData.certifications?.map((cert: any, index: number) => ({
       id: `temp_cert_${index}`,
