@@ -24,6 +24,7 @@ export interface Experience {
   employer?: string;
   startDate?: string;
   endDate?: string;
+  isCurrentlyWorking?:boolean;
   text?: string;
   location?: string;
   isOpen?: boolean;
@@ -38,6 +39,8 @@ export interface Education {
   text: string;
   startDate: string | null | undefined;
   endDate: string | null | undefined;
+  grade?:string;
+  isCurrentlyStudying?:boolean;
   isOpen: boolean;
   showPicker: boolean;
   year: number;
