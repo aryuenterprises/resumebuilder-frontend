@@ -1326,6 +1326,7 @@ const ContactForm = () => {
       fd.append("address", contactData.address || "");
       fd.append("postCode", contactData.postcode || "");
       fd.append("linkedIn", contactData.linkedin || "");
+      fd.append("github", contactData.github || "");
       fd.append("portfolio", contactData.portfolio || "");
 
       if (chosenResumeDetails?.id) {
@@ -1544,14 +1545,10 @@ const ContactForm = () => {
 
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
+        <div className="max-w-7xl mx-auto px-4   py-6 sm:py-8 lg:py-10">
           {/* Header Section - Responsive */}
           <div className="text-center mb-6 sm:mb-8">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-100 rounded-full text-indigo-700 text-xs font-semibold mb-3 shadow-sm">
-              <IoSparkles className="w-3 h-3" />
-              <span>STEP 1 OF 5</span>
-              <IoSparkles className="w-3 h-3" />
-            </div>
+          
 
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
               Contact Information
@@ -1692,7 +1689,7 @@ const ContactForm = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
                   <div>
                     <label className="block text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5 sm:mb-2">
-                      First Name <span className="text-indigo-500">*</span>
+                      First Name
                     </label>
                     <input
                       type="text"
@@ -1709,7 +1706,7 @@ const ContactForm = () => {
                   </div>
                   <div>
                     <label className="block text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5 sm:mb-2">
-                      Last Name <span className="text-indigo-500">*</span>
+                      Last Name
                     </label>
                     <input
                       type="text"
@@ -1730,7 +1727,7 @@ const ContactForm = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
                   <div>
                     <label className="block text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5 sm:mb-2">
-                      Phone Number <span className="text-indigo-500">*</span>
+                      Phone Number
                     </label>
                     <input
                       type="tel"
@@ -1747,7 +1744,7 @@ const ContactForm = () => {
                   </div>
                   <div>
                     <label className="block text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5 sm:mb-2">
-                      Email Address <span className="text-indigo-500">*</span>
+                      Email Address
                     </label>
                     <input
                       type="email"
@@ -1780,19 +1777,6 @@ const ContactForm = () => {
                       className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm sm:text-base placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
                     />
                   </div>
-                  <div>
-                    <label className="block text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5 sm:mb-2">
-                      Date of Birth
-                    </label>
-                    <input
-                      type="date"
-                      value={contact.dob?.split("T")[0] || ""}
-                      onChange={(e) =>
-                        handleContactChange("dob", e.target.value)
-                      }
-                      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm sm:text-base focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
-                    />
-                  </div>
                 </div>
 
                 {/* Additional Info Toggle - Responsive */}
@@ -1800,7 +1784,7 @@ const ContactForm = () => {
                   <button
                     type="button"
                     onClick={() => setShowAdditional(!showAdditional)}
-                    className="w-full flex items-center justify-between p-3 sm:p-4 bg-gradient-to-r from-gray-50 to-indigo-50/30 rounded-lg sm:rounded-xl hover:from-indigo-50 hover:to-purple-50 transition-all duration-300 group"
+                    className="w-full flex items-center justify-between p-3 sm:p-4 bg-gradient-to-r from-gray-50 to-indigo-50/30 rounded-lg sm:rounded-xl hover:from-indigo-50 hover:to-purple-50 transition-all duration-300 group cursor-pointer"
                   >
                     <div className="flex items-center gap-2 sm:gap-3">
                       <div
@@ -1842,6 +1826,20 @@ const ContactForm = () => {
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
                             <div>
                               <label className="block text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5 sm:mb-2">
+                                Date of Birth
+                              </label>
+                              <input
+                                type="date"
+                                value={contact.dob?.split("T")[0] || ""}
+                                onChange={(e) =>
+                                  handleContactChange("dob", e.target.value)
+                                }
+                                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm sm:text-base focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
+                              />
+                            </div>
+
+                            <div>
+                              <label className="block text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5 sm:mb-2">
                                 LinkedIn Profile
                               </label>
                               <input
@@ -1854,6 +1852,23 @@ const ContactForm = () => {
                                   )
                                 }
                                 placeholder="linkedin.com/in/username"
+                                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm sm:text-base placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+                            <div>
+                              <label className="block text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5 sm:mb-2">
+                                Github Profile
+                              </label>
+                              <input
+                                type="url"
+                                value={contact.github || ""}
+                                onChange={(e) =>
+                                  handleContactChange("github", e.target.value)
+                                }
+                                placeholder="github.com/username"
                                 className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm sm:text-base placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
                               />
                             </div>
@@ -1876,84 +1891,71 @@ const ContactForm = () => {
                             </div>
                           </div>
 
-                          <div>
-                            <div className="flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
-                              <div className="p-1 sm:p-1.5 bg-indigo-100 rounded-lg">
-                                <IoLocationOutline className="w-3 h-3 sm:w-4 sm:h-4 text-indigo-600" />
-                              </div>
-                              <h4 className="text-xs sm:text-sm font-semibold text-gray-700">
-                                Location Details
-                              </h4>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+                            <div>
+                              <label className="block text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5 sm:mb-2">
+                                Street Address
+                              </label>
+                              <input
+                                type="text"
+                                value={contact.address || ""}
+                                onChange={(e) =>
+                                  handleContactChange("address", e.target.value)
+                                }
+                                placeholder="123 Main Street"
+                                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm sm:text-base placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
+                              />
                             </div>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
-                              <div>
-                                <label className="block text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5 sm:mb-2">
-                                  Street Address
-                                </label>
-                                <input
-                                  type="text"
-                                  value={contact.address || ""}
-                                  onChange={(e) =>
-                                    handleContactChange(
-                                      "address",
-                                      e.target.value,
-                                    )
-                                  }
-                                  placeholder="123 Main Street"
-                                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm sm:text-base placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
-                                />
-                              </div>
-                              <div>
-                                <label className="block text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5 sm:mb-2">
-                                  City
-                                </label>
-                                <input
-                                  type="text"
-                                  value={contact.city || ""}
-                                  onChange={(e) =>
-                                    handleContactChange(
-                                      "city",
-                                      sanitizeTextWithComma(e.target.value),
-                                    )
-                                  }
-                                  placeholder="New York"
-                                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm sm:text-base placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
-                                />
-                              </div>
-                              <div>
-                                <label className="block text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5 sm:mb-2">
-                                  Postal Code
-                                </label>
-                                <input
-                                  type="text"
-                                  value={contact.postcode || ""}
-                                  onChange={(e) =>
-                                    handleContactChange(
-                                      "postcode",
-                                      e.target.value,
-                                    )
-                                  }
-                                  placeholder="10001"
-                                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm sm:text-base placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
-                                />
-                              </div>
-                              <div>
-                                <label className="block text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5 sm:mb-2">
-                                  Country
-                                </label>
-                                <input
-                                  type="text"
-                                  value={contact.country || ""}
-                                  onChange={(e) =>
-                                    handleContactChange(
-                                      "country",
-                                      sanitizeTextWithComma(e.target.value),
-                                    )
-                                  }
-                                  placeholder="United States"
-                                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm sm:text-base placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
-                                />
-                              </div>
+                            <div>
+                              <label className="block text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5 sm:mb-2">
+                                City
+                              </label>
+                              <input
+                                type="text"
+                                value={contact.city || ""}
+                                onChange={(e) =>
+                                  handleContactChange(
+                                    "city",
+                                    sanitizeTextWithComma(e.target.value),
+                                  )
+                                }
+                                placeholder="New York"
+                                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm sm:text-base placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5 sm:mb-2">
+                                Postal Code
+                              </label>
+                              <input
+                                type="text"
+                                value={contact.postcode || ""}
+                                onChange={(e) =>
+                                  handleContactChange(
+                                    "postcode",
+                                    e.target.value,
+                                  )
+                                }
+                                placeholder="10001"
+                                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm sm:text-base placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5 sm:mb-2">
+                                Country
+                              </label>
+                              <input
+                                type="text"
+                                value={contact.country || ""}
+                                onChange={(e) =>
+                                  handleContactChange(
+                                    "country",
+                                    sanitizeTextWithComma(e.target.value),
+                                  )
+                                }
+                                placeholder="United States"
+                                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm sm:text-base placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
+                              />
                             </div>
                           </div>
                         </div>
@@ -1972,13 +1974,13 @@ const ContactForm = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
           <div className="flex justify-between items-center gap-3">
             <button
-              className="text-xs sm:text-sm font-medium text-gray-500 hover:text-indigo-600 transition flex items-center gap-1"
+              className="text-xs sm:text-sm font-medium text-gray-500 hover:text-indigo-600 transition flex items-center gap-1 cursor-pointer"
               onClick={() => router.push("/choose-template")}
             >
               ← Back to Templates
             </button>
             <button
-              className="px-4 sm:px-6 py-2 sm:py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white text-xs sm:text-sm font-semibold rounded-lg sm:rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 sm:gap-2"
+              className="px-4 sm:px-6 py-2 sm:py-2.5 md:py-3 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white t font-semibold rounded-lg sm:rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer"
               onClick={handleNext}
             >
               <span>Continue to Experience</span>

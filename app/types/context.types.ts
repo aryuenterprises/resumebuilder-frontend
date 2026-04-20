@@ -10,6 +10,7 @@ export interface Contact {
   phone?: string;
   email?: string;
   linkedin?: string;
+    github?: string;
   portfolio: string;
   address: string;
   city: string;

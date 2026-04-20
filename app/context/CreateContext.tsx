@@ -143,6 +143,7 @@ export const CreateProvider: React.FC<CreateProviderProps> = ({ children }) => {
     email: "",
     linkedin: "",
     portfolio: "",
+    github: "",
     address: "",
     city: "",
     country: "",

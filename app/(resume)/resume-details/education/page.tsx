@@ -1046,6 +1046,8 @@ const Education_form = () => {
     setEducation: () => {},
   };
 
+  console.log("education",education)
+
   const [showPopup, setShowPopup] = useState(false);
   const [loading, setLoading] = useState(false);
   const [Airesponse, setAireseponse] = useState<string[] | null>(null);
@@ -1101,7 +1103,7 @@ const Education_form = () => {
           grade: "",
         },
       ];
-      debouncedSave(updated);
+      // debouncedSave(updated);
       return updated;
     });
   };
@@ -1218,7 +1220,7 @@ const Education_form = () => {
       const updated = prev.map((exp) =>
         exp.id === id ? { ...exp, [field]: value } : exp,
       );
-      debouncedSave(updated);
+      // debouncedSave(updated);
       return updated;
     });
   };
@@ -1279,17 +1281,22 @@ const Education_form = () => {
     }
   };
 
+ 
+
   const insertAIResponse = (item: string, index: number) => {
     if (clickedIndexoFGenerateWithAIBtn === null) return;
 
-    setEducation((prev) => {
-      const updated = [...prev];
-      updated[clickedIndexoFGenerateWithAIBtn].text =
-        (updated[clickedIndexoFGenerateWithAIBtn].text || "") + "\n" + item;
-      debouncedSave(updated);
-      return updated;
+    // 1. Calculate the new state outside of the setter
+    const updatedEducation = education.map((edu, i) => {
+      if (i === clickedIndexoFGenerateWithAIBtn) {
+        return {
+          ...edu,
+          text: (edu.text || "") + "\n" + item,
+        };
+      }
+      return edu;
     });
-
+    setEducation(updatedEducation);
     if (Airesponse) {
       const newAiResponse = Airesponse.filter((_, idx) => idx !== index);
       setAireseponse(newAiResponse.length > 0 ? newAiResponse : null);
@@ -1309,26 +1316,11 @@ const Education_form = () => {
     return `CGPA: ${grade}`;
   };
 
+
+  console.log("education",education)
+
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-indigo-50/40">
-      {/* Premium Background Decoration */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-64 sm:w-96 h-64 sm:h-96 bg-indigo-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
-        <div className="absolute -bottom-40 -left-40 w-64 sm:w-96 h-64 sm:h-96 bg-purple-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[600px] h-[300px] sm:h-[600px] bg-indigo-50 rounded-full filter blur-3xl opacity-30"></div>
-
-        <div
-          className="absolute inset-0 opacity-20"
-          style={{
-            backgroundImage: `
-              linear-gradient(to right, rgba(99, 102, 241, 0.08) 1px, transparent 1px),
-              linear-gradient(to bottom, rgba(99, 102, 241, 0.08) 1px, transparent 1px)
-            `,
-            backgroundSize: "50px 50px",
-          }}
-        />
-      </div>
-
       {/* Sticky Stepper */}
       <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <Stepper />
@@ -1336,14 +1328,10 @@ const Education_form = () => {
 
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
+        <div className="max-w-7xl mx-auto px-4  py-6 sm:py-8 lg:py-10">
           {/* Header Section */}
           <div className="text-center mb-6 sm:mb-8">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-100 rounded-full text-indigo-700 text-xs font-semibold mb-3 shadow-sm">
-              <IoSparkles className="w-3 h-3" />
-              <span>STEP 3 OF 7</span>
-              <IoSparkles className="w-3 h-3" />
-            </div>
+           
 
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
               Education
@@ -1525,95 +1513,91 @@ const Education_form = () => {
                             />
                           </div>
 
-                          <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                            <div>
-                              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5 sm:mb-2">
-                                Start Year
-                              </label>
-                              <Calendar
-                                value={
-                                  exp.startDate
-                                    ? new Date(parseInt(exp.startDate), 0, 1)
-                                    : null
-                                }
-                                onChange={(e) => {
-                                  const selectedValue =
-                                    e.value instanceof Date
-                                      ? e.value.getFullYear().toString()
-                                      : "";
-                                  handleChange(
-                                    exp.id,
-                                    "startDate",
-                                    selectedValue,
-                                  );
-                                }}
-                                view="year"
-                                dateFormat="yy"
-                                className="w-full [&_.p-inputtext]:w-full [&_.p-inputtext]:px-3 [&_.p-inputtext]:py-2.5 [&_.p-inputtext]:bg-white [&_.p-inputtext]:border-2 [&_.p-inputtext]:border-gray-200 [&_.p-inputtext]:rounded-lg [&_.p-inputtext]:text-gray-900 [&_.p-inputtext]:text-sm [&_.p-inputtext]:focus:border-indigo-500 [&_.p-inputtext]:focus:ring-2 [&_.p-inputtext]:focus:ring-indigo-100 w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
-                                placeholder="YYYY"
-                                showIcon
-                              />
-                            </div>
-
-                            <div>
-                              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5 sm:mb-2">
-                                End Year
-                              </label>
-                              <Calendar
-                                value={
-                                  exp.endDate && !exp.isCurrentlyStudying
-                                    ? new Date(parseInt(exp.endDate), 0, 1)
-                                    : null
-                                }
-                                onChange={(e) => {
-                                  const value =
-                                    e.value instanceof Date
-                                      ? e.value.getFullYear().toString()
-                                      : "";
-                                  handleChange(exp.id, "endDate", value);
-                                }}
-                                view="year"
-                                dateFormat="yy"
-                                disabled={exp.isCurrentlyStudying}
-                                className={ ` w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all w-full [&_.p-inputtext]:w-full [&_.p-inputtext]:px-3 [&_.p-inputtext]:py-2.5 [&_.p-inputtext]:border-2 [&_.p-inputtext]:rounded-lg [&_.p-inputtext]:text-sm ${
-                                  exp.isCurrentlyStudying
-                                    ? "[&_.p-inputtext]:bg-gray-50 [&_.p-inputtext]:text-gray-400 [&_.p-inputtext]:border-gray-200 cursor-not-allowed"
-                                    : "[&_.p-inputtext]:bg-white [&_.p-inputtext]:border-gray-200 [&_.p-inputtext]:text-gray-900 [&_.p-inputtext]:focus:border-indigo-500 [&_.p-inputtext]:focus:ring-2 [&_.p-inputtext]:focus:ring-indigo-100"
-                                }`}
-                                placeholder={
-                                  exp.isCurrentlyStudying ? "Present" : "YYYY"
-                                }
-                                showIcon
-                              />
-                            </div>
+                          <div>
+                            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5 sm:mb-2">
+                              CGPA / Percentage{" "}
+                            </label>
+                            <input
+                              type="number"
+                              step="0.01"
+                              min="0"
+                              max="100"
+                              value={exp.grade || ""}
+                              onChange={(e) => {
+                                let value = e.target.value;
+                                if (parseFloat(value) > 100) value = "100";
+                                if (parseFloat(value) < 0) value = "0";
+                                handleChange(exp.id, "grade", value);
+                              }}
+                              placeholder="Enter CGPA  or Percentage"
+                              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
+                            />
                           </div>
                         </div>
 
                         {/* CGPA/Percentage Field */}
-                        <div>
-                          <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5 sm:mb-2">
-                            CGPA / Percentage{" "}
-                            <span className="text-gray-400">(optional)</span>
-                          </label>
-                          <input
-                            type="number"
-                            step="0.01"
-                            min="0"
-                            max="100"
-                            value={exp.grade || ""}
-                            onChange={(e) => {
-                              let value = e.target.value;
-                              if (parseFloat(value) > 100) value = "100";
-                              if (parseFloat(value) < 0) value = "0";
-                              handleChange(exp.id, "grade", value);
-                            }}
-                            placeholder="Enter CGPA (e.g., 8.5) or Percentage (e.g., 85)"
-                            className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
-                          />
-                          <p className="text-xs text-gray-400 mt-1.5">
-                            Enter value ≤ 10 for CGPA, or &gt; 10 for Percentage
-                            (automatically formatted)
-                          </p>
+
+                        <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                          <div>
+                            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5 sm:mb-2">
+                              Start Year
+                            </label>
+                            <Calendar
+                              value={
+                                exp.startDate
+                                  ? new Date(parseInt(exp.startDate), 0, 1)
+                                  : null
+                              }
+                              onChange={(e) => {
+                                const selectedValue =
+                                  e.value instanceof Date
+                                    ? e.value.getFullYear().toString()
+                                    : "";
+                                handleChange(
+                                  exp.id,
+                                  "startDate",
+                                  selectedValue,
+                                );
+                              }}
+                              view="year"
+                              dateFormat="yy"
+                              className="w-full [&_.p-inputtext]:w-full [&_.p-inputtext]:px-3 [&_.p-inputtext]:py-2.5 [&_.p-inputtext]:bg-white [&_.p-inputtext]:border-2 [&_.p-inputtext]:border-gray-200 [&_.p-inputtext]:rounded-lg [&_.p-inputtext]:text-gray-900 [&_.p-inputtext]:text-sm [&_.p-inputtext]:focus:border-indigo-500 [&_.p-inputtext]:focus:ring-2 [&_.p-inputtext]:focus:ring-indigo-100 w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
+                              placeholder="YYYY"
+                              showIcon
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5 sm:mb-2">
+                              End Year
+                            </label>
+                            <Calendar
+                              value={
+                                exp.endDate && !exp.isCurrentlyStudying
+                                  ? new Date(parseInt(exp.endDate), 0, 1)
+                                  : null
+                              }
+                              onChange={(e) => {
+                                const value =
+                                  e.value instanceof Date
+                                    ? e.value.getFullYear().toString()
+                                    : "";
+                                handleChange(exp.id, "endDate", value);
+                              }}
+                              view="year"
+                              dateFormat="yy"
+                              disabled={exp.isCurrentlyStudying}
+                              className={` w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all w-full [&_.p-inputtext]:w-full [&_.p-inputtext]:px-3 [&_.p-inputtext]:py-2.5 [&_.p-inputtext]:border-2 [&_.p-inputtext]:rounded-lg [&_.p-inputtext]:text-sm ${
+                                exp.isCurrentlyStudying
+                                  ? "[&_.p-inputtext]:bg-gray-50 [&_.p-inputtext]:text-gray-400 [&_.p-inputtext]:border-gray-200 cursor-not-allowed"
+                                  : "[&_.p-inputtext]:bg-white [&_.p-inputtext]:border-gray-200 [&_.p-inputtext]:text-gray-900 [&_.p-inputtext]:focus:border-indigo-500 [&_.p-inputtext]:focus:ring-2 [&_.p-inputtext]:focus:ring-indigo-100"
+                              }`}
+                              placeholder={
+                                exp.isCurrentlyStudying ? "Present" : "YYYY"
+                              }
+                              showIcon
+                            />
+                          </div>
                         </div>
 
                         {/* Currently Studying Checkbox */}
@@ -1777,13 +1761,13 @@ const Education_form = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
           <div className="flex justify-between items-center gap-3">
             <button
-              className="text-xs sm:text-sm font-medium text-gray-500 hover:text-indigo-600 transition flex items-center gap-1"
+              className="text-xs sm:text-sm font-medium text-gray-500 hover:text-indigo-600 transition flex items-center gap-1 cursor-pointer"
               onClick={() => router.push("/resume-details/experience")}
             >
               ← Back to Experience
             </button>
             <button
-              className="px-4 sm:px-6 py-2 sm:py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white text-xs sm:text-sm font-semibold rounded-lg sm:rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 sm:gap-2"
+              className="px-4 sm:px-6 py-2 sm:py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white text-xs sm:text-sm font-semibold rounded-lg sm:rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer"
               onClick={() => {
                 if (saveTimeoutRef.current) {
                   clearTimeout(saveTimeoutRef.current);

@@ -1147,7 +1147,7 @@ const ExperienceForm = () => {
       );
 
       setLastSavedData(currentDataString);
-      fetchExp();
+      // fetchExp();
       return true;
     } catch (err: any) {
       console.error("Error saving experience:", err);
@@ -1286,21 +1286,44 @@ const ExperienceForm = () => {
     }
   };
 
+  // const insertAIResponse = (item: string, index: number) => {
+  //   if (clickedIndexoFGenerateWithAIBtn === null) return;
+
+  //   setExperiences((prev) => {
+  //     const updated = [...prev];
+  //     updated[clickedIndexoFGenerateWithAIBtn].text =
+  //       (updated[clickedIndexoFGenerateWithAIBtn].text || "") + "\n" + item;
+  //       console.log("updated",updated)
+  //     return updated;
+  //   });
+
+    
+  // };
+
+
+
   const insertAIResponse = (item: string, index: number) => {
-    if (clickedIndexoFGenerateWithAIBtn === null) return;
+  if (clickedIndexoFGenerateWithAIBtn === null) return;
 
-    setExperiences((prev) => {
-      const updated = [...prev];
-      updated[clickedIndexoFGenerateWithAIBtn].text =
-        (updated[clickedIndexoFGenerateWithAIBtn].text || "") + "\n" + item;
-      return updated;
+  setExperiences((prev) => {
+    return prev.map((exp, i) => {
+      // Only update the object at the specific index
+      if (i === clickedIndexoFGenerateWithAIBtn) {
+        return {
+          ...exp,
+          text: (exp.text || "") + "\n" + item
+        };
+      }
+      return exp; // Return others unchanged
     });
+  });
 
-    if (Airesponse) {
+  if (Airesponse) {
       const newAiResponse = Airesponse.filter((_, idx) => idx !== index);
       setAireseponse(newAiResponse.length > 0 ? newAiResponse : null);
     }
-  };
+};
+  console.log("experiences",experiences)
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-indigo-50/40">
@@ -1313,14 +1336,9 @@ const ExperienceForm = () => {
 
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
+        <div className="max-w-7xl mx-auto px-4  py-6 sm:py-8 lg:py-10">
           {/* Header Section - Compact */}
           <div className="text-center mb-6 sm:mb-8">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-100 rounded-full text-indigo-700 text-xs font-semibold mb-3 shadow-sm">
-              <IoSparkles className="w-3 h-3" />
-              <span>STEP 2 OF 7</span>
-              <IoSparkles className="w-3 h-3" />
-            </div>
             
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
               Work Experience
@@ -1657,13 +1675,13 @@ const ExperienceForm = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
           <div className="flex justify-between items-center gap-3">
             <button
-              className="text-xs sm:text-sm font-medium text-gray-500 hover:text-indigo-600 transition flex items-center gap-1"
+              className="text-xs sm:text-sm font-medium text-gray-500 hover:text-indigo-600 transition flex items-center gap-1 cursor-pointer"
               onClick={() => router.push("/resume-details/contact")}
             >
               ← Back to Contact
             </button>
             <button
-              className="px-4 sm:px-6 py-2 sm:py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white text-xs sm:text-sm font-semibold rounded-lg sm:rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 sm:gap-2"
+              className="px-4 sm:px-6 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base font-semibold  bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-lg sm:rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer"
               onClick={() => {
                 if (saveTimeoutRef.current) {
                   clearTimeout(saveTimeoutRef.current);

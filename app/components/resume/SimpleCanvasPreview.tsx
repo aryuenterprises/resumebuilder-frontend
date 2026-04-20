@@ -277,6 +277,9 @@ interface Position {
   y: number;
 }
 
+import { IoReload } from "react-icons/io5";
+
+
 export default function SimpleCanvasPreview({ children }: SimpleCanvasPreviewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef   = useRef<HTMLDivElement>(null);
@@ -535,7 +538,8 @@ export default function SimpleCanvasPreview({ children }: SimpleCanvasPreviewPro
           title="Reset View"
           type="button"
         >
-          <span className="text-xs">⟲</span>
+          {/* <span className="text-xs">⟲</span> */}
+          <IoReload className="font-bold size-7"/>
         </button>
       </div>
 

@@ -1017,7 +1017,7 @@ const ProjectsForm = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-indigo-50/40">
       {/* Premium Background Decoration */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+      {/* <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-64 sm:w-96 h-64 sm:h-96 bg-indigo-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
         <div className="absolute -bottom-40 -left-40 w-64 sm:w-96 h-64 sm:h-96 bg-purple-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[600px] h-[300px] sm:h-[600px] bg-indigo-50 rounded-full filter blur-3xl opacity-30"></div>
@@ -1032,7 +1032,7 @@ const ProjectsForm = () => {
             backgroundSize: '50px 50px'
           }}
         />
-      </div>
+      </div> */}
 
       {/* Sticky Stepper */}
       <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
@@ -1041,14 +1041,10 @@ const ProjectsForm = () => {
 
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
+        <div className="max-w-7xl mx-auto px-4  py-6 sm:py-8 lg:py-10">
           {/* Header Section */}
           <div className="text-center mb-6 sm:mb-8">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-100 rounded-full text-indigo-700 text-xs font-semibold mb-3 shadow-sm">
-              <IoSparkles className="w-3 h-3" />
-              <span>STEP 5 OF 7</span>
-              <IoSparkles className="w-3 h-3" />
-            </div>
+          
             
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
               Projects
@@ -1283,13 +1279,13 @@ const ProjectsForm = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
           <div className="flex justify-between items-center gap-3">
             <button
-              className="text-xs sm:text-sm font-medium text-gray-500 hover:text-indigo-600 transition flex items-center gap-1"
+              className="text-xs sm:text-sm font-medium text-gray-500 hover:text-indigo-600 transition flex items-center gap-1 cursor-pointer"
               onClick={() => router.push("/resume-details/skills")}
             >
               ← Back to Skills
             </button>
             <button
-              className="px-4 sm:px-6 py-2 sm:py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white text-xs sm:text-sm font-semibold rounded-lg sm:rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 sm:gap-2"
+              className="px-4 sm:px-6 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base font-semibold  bg-gradient-to-r from-indigo-600 to-indigo-500 text-white  rounded-lg sm:rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer"
               onClick={() => {
                 if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
                 if (projects) {

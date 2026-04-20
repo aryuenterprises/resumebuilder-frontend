@@ -4640,36 +4640,6 @@
 
 // export default SkillsForm;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
 
 // import React, {
@@ -5186,8 +5156,6 @@
 //    <section className="relative h-screen overflow-hidden">
 //       <div className="py-2 lg:py-3 px-3 md:px-4 lg:px-5 bg-white rounded-xl sm:rounded-2xl shadow-soft h-full flex flex-col">
 
-
-        
 //         <Stepper />
 
 //         {/* Main Content */}
@@ -5408,7 +5376,6 @@
 //                   </button>
 //                 </div>
 
-               
 //               </div>
 //             )}
 
@@ -5806,20 +5773,6 @@
 
 // export default SkillsForm;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 
 import React, {
@@ -6093,7 +6046,7 @@ const SkillsForm = () => {
       );
       setLastSavedData(currentDataString);
       if (setSkills) setSkills(skillsDataToSave);
-      fetchSkill();
+      // fetchSkill();
       return true;
     } catch (err) {
       toast.error("Failed to save Skills!");
@@ -6117,7 +6070,7 @@ const SkillsForm = () => {
   const debouncedSave = useCallback(
     (data: SimpleSkill[] | SkillCategory[]) => {
       if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
-      saveTimeoutRef.current = setTimeout(() => saveToAPI(data), 1000);
+      saveTimeoutRef.current = setTimeout(() => "", 1000);
     },
     [contactId, lastSavedData],
   );
@@ -6327,22 +6280,22 @@ const SkillsForm = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-indigo-50/40">
       {/* Premium Background Decoration */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+      {/* <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-64 sm:w-96 h-64 sm:h-96 bg-indigo-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
         <div className="absolute -bottom-40 -left-40 w-64 sm:w-96 h-64 sm:h-96 bg-purple-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[600px] h-[300px] sm:h-[600px] bg-indigo-50 rounded-full filter blur-3xl opacity-30"></div>
-        
-        <div 
+
+        <div
           className="absolute inset-0 opacity-20"
           style={{
             backgroundImage: `
               linear-gradient(to right, rgba(99, 102, 241, 0.08) 1px, transparent 1px),
               linear-gradient(to bottom, rgba(99, 102, 241, 0.08) 1px, transparent 1px)
             `,
-            backgroundSize: '50px 50px'
+            backgroundSize: "50px 50px",
           }}
         />
-      </div>
+      </div> */}
 
       {/* Sticky Stepper */}
       <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
@@ -6351,19 +6304,15 @@ const SkillsForm = () => {
 
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
+        <div className="max-w-7xl mx-auto px-4  py-6 sm:py-8 lg:py-10">
           {/* Header Section */}
           <div className="text-center mb-6 sm:mb-8">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-100 rounded-full text-indigo-700 text-xs font-semibold mb-3 shadow-sm">
-              <IoSparkles className="w-3 h-3" />
-              <span>STEP 4 OF 7</span>
-              <IoSparkles className="w-3 h-3" />
-            </div>
-            
+           
+
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
               Skills & Expertise
             </h1>
-            
+
             <p className="text-gray-500 text-sm max-w-md mx-auto">
               Showcase your professional skills and technical expertise
             </p>
@@ -6388,14 +6337,20 @@ const SkillsForm = () => {
                     <IoDiamondOutline className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600" />
                   </div>
                   <div>
-                    <h2 className="text-base sm:text-lg font-semibold text-gray-900">Professional Skills</h2>
-                    <p className="text-xs sm:text-sm text-gray-500">Add your technical and soft skills</p>
+                    <h2 className="text-base sm:text-lg font-semibold text-gray-900">
+                      Professional Skills
+                    </h2>
+                    <p className="text-xs sm:text-sm text-gray-500">
+                      Add your technical and soft skills
+                    </p>
                   </div>
                 </div>
                 {isSaving && (
                   <div className="flex items-center gap-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-indigo-100 rounded-full self-start sm:self-auto">
                     <div className="w-2 h-2 sm:w-3 sm:h-3 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-                    <span className="text-[10px] sm:text-xs text-indigo-700 font-medium">Saving...</span>
+                    <span className="text-[10px] sm:text-xs text-indigo-700 font-medium">
+                      Saving...
+                    </span>
                   </div>
                 )}
               </div>
@@ -6460,10 +6415,22 @@ const SkillsForm = () => {
                   {experienceTitlesList.length === 0 && !isMobile && (
                     <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg shadow-lg whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-[100]">
                       <div className="flex items-center gap-2">
-                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <svg
+                          className="w-3 h-3"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
                         </svg>
-                        <span>Add work experience first for personalized suggestions</span>
+                        <span>
+                          Add work experience first for personalized suggestions
+                        </span>
                       </div>
                       <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900"></div>
                     </div>
@@ -6490,8 +6457,12 @@ const SkillsForm = () => {
                       <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <FiTag className="w-8 h-8 text-gray-400" />
                       </div>
-                      <h3 className="text-base font-semibold text-gray-700 mb-2">No skills added yet</h3>
-                      <p className="text-gray-400 text-sm">Start adding your professional skills below</p>
+                      <h3 className="text-base font-semibold text-gray-700 mb-2">
+                        No skills added yet
+                      </h3>
+                      <p className="text-gray-400 text-sm">
+                        Start adding your professional skills below
+                      </p>
                     </div>
                   )}
 
@@ -6501,7 +6472,9 @@ const SkillsForm = () => {
                         type="text"
                         value={newSkillInput}
                         onChange={(e) => setNewSkillInput(e.target.value)}
-                        onKeyPress={(e) => e.key === "Enter" && addSimpleSkill()}
+                        onKeyPress={(e) =>
+                          e.key === "Enter" && addSimpleSkill()
+                        }
                         placeholder="Type a skill and press Enter..."
                         className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
                       />
@@ -6544,7 +6517,10 @@ const SkillsForm = () => {
                                 type="text"
                                 value={category.title}
                                 onChange={(e) =>
-                                  updateCategoryTitle(category.id, e.target.value)
+                                  updateCategoryTitle(
+                                    category.id,
+                                    e.target.value,
+                                  )
                                 }
                                 onClick={(e) => e.stopPropagation()}
                                 className="font-semibold text-gray-800 bg-transparent px-2 py-1 rounded focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-200 flex-1 min-w-[100px]"
@@ -6592,9 +6568,13 @@ const SkillsForm = () => {
                                       className="flex-1 px-4 py-2 bg-gray-50 border-2 border-gray-200 rounded-lg text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
                                       onKeyPress={(e) => {
                                         if (e.key === "Enter") {
-                                          const input = e.target as HTMLInputElement;
+                                          const input =
+                                            e.target as HTMLInputElement;
                                           if (input.value.trim()) {
-                                            addCategorizedSkill(category.id, input.value);
+                                            addCategorizedSkill(
+                                              category.id,
+                                              input.value,
+                                            );
                                             input.value = "";
                                           }
                                         }
@@ -6602,10 +6582,17 @@ const SkillsForm = () => {
                                     />
                                     <button
                                       onClick={(e) => {
-                                        const container = (e.target as HTMLElement).parentElement?.previousElementSibling;
-                                        const input = container?.querySelector("input") as HTMLInputElement;
+                                        const container = (
+                                          e.target as HTMLElement
+                                        ).parentElement?.previousElementSibling;
+                                        const input = container?.querySelector(
+                                          "input",
+                                        ) as HTMLInputElement;
                                         if (input && input.value.trim()) {
-                                          addCategorizedSkill(category.id, input.value);
+                                          addCategorizedSkill(
+                                            category.id,
+                                            input.value,
+                                          );
                                           input.value = "";
                                         }
                                       }}
@@ -6630,7 +6617,9 @@ const SkillsForm = () => {
                     >
                       <FiPlus className="w-5 h-5" />
                       <span className="font-medium">
-                        {categorizedSkills.length === 0 ? "Create First Category" : "Add New Category"}
+                        {categorizedSkills.length === 0
+                          ? "Create First Category"
+                          : "Add New Category"}
                       </span>
                     </button>
                   ) : (
@@ -6675,17 +6664,21 @@ const SkillsForm = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
           <div className="flex justify-between items-center gap-3">
             <button
-              className="text-xs sm:text-sm font-medium text-gray-500 hover:text-indigo-600 transition flex items-center gap-1"
+              className="text-xs sm:text-sm font-medium text-gray-500 hover:text-indigo-600 transition flex items-center gap-1 cursor-pointer"
               onClick={() => router.push("/resume-details/education")}
             >
               ← Back to Education
             </button>
             <button
-              className="px-4 sm:px-6 py-2 sm:py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white text-xs sm:text-sm font-semibold rounded-lg sm:rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 sm:gap-2"
+              className="px-4 sm:px-6 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base font-semibold  bg-gradient-to-r from-indigo-600 to-indigo-500 text-white  rounded-lg sm:rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer"
               onClick={() => {
-                if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
-                const currentSkills = skillsMode === "simple" ? simpleSkills : categorizedSkills;
-                saveToAPI(currentSkills).then(() => router.push("/resume-details/project"));
+                if (saveTimeoutRef.current)
+                  clearTimeout(saveTimeoutRef.current);
+                const currentSkills =
+                  skillsMode === "simple" ? simpleSkills : categorizedSkills;
+                saveToAPI(currentSkills).then(() =>
+                  router.push("/resume-details/project"),
+                );
               }}
             >
               <span>Continue to Projects</span>
@@ -6721,18 +6714,25 @@ const SkillsForm = () => {
                 <div className="bg-amber-50 rounded-xl p-3 mb-4 border border-amber-100">
                   <div className="flex items-center gap-2 mb-1">
                     <FaStar className="w-3 h-3 text-amber-500" />
-                    <span className="text-xs font-semibold text-amber-700">Pro Tip</span>
+                    <span className="text-xs font-semibold text-amber-700">
+                      Pro Tip
+                    </span>
                   </div>
-                  <p className="text-xs text-gray-700">List job-relevant skills and use keywords from job descriptions</p>
+                  <p className="text-xs text-gray-700">
+                    List job-relevant skills and use keywords from job
+                    descriptions
+                  </p>
                 </div>
 
                 <div className="space-y-3">
-                  <h4 className="text-xs font-semibold text-indigo-600 uppercase tracking-wide">Best Practices</h4>
+                  <h4 className="text-xs font-semibold text-indigo-600 uppercase tracking-wide">
+                    Best Practices
+                  </h4>
                   {[
                     "List job-relevant skills matching the role",
                     "Use keywords from job descriptions for ATS",
                     "Keep it concise - aim for 4-5 strongest skills",
-                    "Include both technical and soft skills"
+                    "Include both technical and soft skills",
                   ].map((tip, idx) => (
                     <div key={idx} className="flex items-start gap-2">
                       <FiCheckCircle className="w-3.5 h-3.5 text-emerald-500 mt-0.5" />
@@ -6766,8 +6766,12 @@ const SkillsForm = () => {
             <div className="bg-gradient-to-r from-indigo-600 to-indigo-500 px-5 py-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-lg font-semibold text-white">AI Recommendations</h2>
-                  <p className="text-indigo-100 text-xs">Click any skill to add it to your list</p>
+                  <h2 className="text-lg font-semibold text-white">
+                    AI Recommendations
+                  </h2>
+                  <p className="text-indigo-100 text-xs">
+                    Click any skill to add it to your list
+                  </p>
                 </div>
                 <button
                   onClick={() => setShowPopup(false)}
@@ -6804,14 +6808,27 @@ const SkillsForm = () => {
           <div className="bg-white rounded-xl p-6 max-w-sm w-full mx-4 shadow-xl">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
-                <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg
+                  className="w-5 h-5 text-amber-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900">Cannot Generate AI Suggestions</h3>
+              <h3 className="text-lg font-semibold text-gray-900">
+                Cannot Generate AI Suggestions
+              </h3>
             </div>
             <p className="text-gray-600 mb-6">
-              Please add your work experience first to get personalized AI-powered skill recommendations.
+              Please add your work experience first to get personalized
+              AI-powered skill recommendations.
             </p>
             <button
               onClick={() => setShowMobileWarning(false)}

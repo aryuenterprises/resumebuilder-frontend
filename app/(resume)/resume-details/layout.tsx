@@ -39,8 +39,8 @@ export default function RootLayout({
 
 
       <aside className="w-full lg:w-1/2 overflow-y-auto">
-        {/* <ResumeDataFetcher>{children}</ResumeDataFetcher> */}
-        {children}
+        <ResumeDataFetcher>{children}</ResumeDataFetcher>
+        {/* {children} */}
       </aside>
 
       <section className="max-lg:hidden w-1/2 bg-gray-100">
