@@ -1204,7 +1204,7 @@ const ExperienceForm = () => {
   const deleteExperience = (id: string | number) => {
     setExperiences((prev) => {
       const updated = prev.filter((exp) => exp.id !== id);
-      saveToAPI(updated);
+      // saveToAPI(updated);
       return updated;
     });
   };

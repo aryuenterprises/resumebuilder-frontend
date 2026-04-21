@@ -905,7 +905,7 @@ const ProjectsForm = () => {
         clearTimeout(saveTimeoutRef.current);
       }
       saveTimeoutRef.current = setTimeout(() => {
-        saveToAPI(projectsData);
+        // saveToAPI(projectsData);
       }, 1000);
     },
     [contactId, lastSavedData],
@@ -939,7 +939,7 @@ const ProjectsForm = () => {
     if (!setProjects) return;
     setProjects((prev: Project[]) => {
       const updated = prev.filter((project) => project.id !== id);
-      saveToAPI(updated);
+      // saveToAPI(updated);
       return updated;
     });
   };

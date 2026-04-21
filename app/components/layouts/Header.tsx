@@ -4,10 +4,11 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiMenu, FiX } from "react-icons/fi";
+import { FiArrowRight, FiMenu, FiUser, FiX } from "react-icons/fi";
 import { SiReaddotcv } from "react-icons/si";
 import { RedGradientButton } from "../ui";
 import { IoIosInformationCircleOutline } from "react-icons/io";
+import { FaUserCircle } from "react-icons/fa";
 
 const Header: React.FC = () => {
   const router = useRouter();
@@ -25,22 +26,22 @@ const Header: React.FC = () => {
 
   // Handle scroll show/hide
   useEffect(() => {
-  const handleScroll = (): void => {
-    const currentScrollY = window.scrollY;
+    const handleScroll = (): void => {
+      const currentScrollY = window.scrollY;
 
-    // Only trigger after 100px scroll
-    if (currentScrollY > 100) {
-      setShowHeader(currentScrollY < lastScrollY); // scroll up → show
-    } else {
-      setShowHeader(true); // always show at top
-    }
+      // Only trigger after 100px scroll
+      if (currentScrollY > 100) {
+        setShowHeader(currentScrollY < lastScrollY); // scroll up → show
+      } else {
+        setShowHeader(true); // always show at top
+      }
 
-    setLastScrollY(currentScrollY);
-  };
+      setLastScrollY(currentScrollY);
+    };
 
-  window.addEventListener("scroll", handleScroll);
-  return () => window.removeEventListener("scroll", handleScroll);
-}, [lastScrollY]);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
 
   // Lock body scroll on mobile menu
   useEffect(() => {
@@ -74,75 +75,73 @@ const Header: React.FC = () => {
         {/* Desktop Menu */}
         <nav className="max-md:hidden flex gap-4">
           <button
-            className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito font-semibold text-[#c40116]  hover:bg-[#c40116]/10 transition text-sm lg:text-base cursor-pointer"
+            className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito text-gray-700 font-semibold hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200 text-sm lg:text-base cursor-pointer"
             onClick={() => router.push("/")}
           >
             Home
           </button>
-         
+
           <button
-            className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito font-semibold text-[#c40116]  hover:bg-[#c40116]/10 transition text-sm lg:text-base cursor-pointer"
+            className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito text-gray-700 font-semibold hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200 text-sm lg:text-base cursor-pointer"
             onClick={() => router.push("/choose-template")}
           >
             Create Resume
           </button>
 
-           <button
-            className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito font-semibold text-[#c40116]  hover:bg-[#c40116]/10 transition text-sm lg:text-base cursor-pointer"
+          <button
+            className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito text-gray-700 font-semibold hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200 text-sm lg:text-base cursor-pointer"
             onClick={() => router.push("/ats-checker")}
           >
             ATS Checker
           </button>
 
           {/* <button
-            className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito font-semibold text-[#c40116]  hover:bg-[#c40116]/10 transition text-sm lg:text-base cursor-pointer"
+            className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito text-gray-700 font-semibold hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200 text-sm lg:text-base cursor-pointer"
             onClick={() => router.push("/cover-letter")}
           >
             Cover Letter
           </button> */}
 
-           {/* <button
-            className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito font-semibold text-[#c40116]  hover:bg-[#c40116]/10 transition text-sm lg:text-base cursor-pointer"
+          {/* <button
+            className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito text-gray-700 font-semibold hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200 text-sm lg:text-base cursor-pointer"
             onClick={() => router.push("/voice-to-text")}
           >
 Speech-to-CV          </button> */}
 
-            {/* <button
-            className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito font-semibold text-[#c40116]  hover:bg-[#c40116]/10 transition text-sm lg:text-base cursor-pointer"
+          {/* <button
+            className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito text-gray-700 font-semibold hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200 text-sm lg:text-base cursor-pointer"
             onClick={() => router.push("/about-us")}
           >
             About Us
           </button> */}
 
-             <button
-            className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito font-semibold text-[#c40116]  hover:bg-[#c40116]/10 transition text-sm lg:text-base cursor-pointer"
+          <button
+            className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito text-gray-700 font-semibold hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200 text-sm lg:text-base cursor-pointer"
             onClick={() => router.push("/choose-plan")}
           >
             Plans
           </button>
 
-           {/* <button
-            className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito font-semibold text-[#c40116]  hover:bg-[#c40116]/10 transition text-sm lg:text-base cursor-pointer"
+          {/* <button
+            className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito text-gray-700 font-semibold hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200 text-sm lg:text-base cursor-pointer"
             onClick={() => router.push("/contact-us")}
           >
             Contact Us
           </button> */}
 
-          
-
           {userLoggedIn ? (
             <button
-              onClick={() => router.push("dashboard")}
-              className="px-4 lg:px-6 py-1.5 lg:py-2 rounded-lg font-nunito font-semibold text-white bg-linear-to-r from-[#c40116] to-[#c40116]/60 shadow-md  transition text-sm lg:text-base cursor-pointer hover:shadow-lg hover:shadow-[#c40116]/25 hover:scale-[1.02]"
+              onClick={() => router.push("/dashboard")}
+              className="ml-3 px-5 lg:px-6 py-2 rounded-lg font-semibold text-white bg-indigo-600 hover:bg-indigo-700 shadow-md hover:shadow-lg transition-all duration-200 text-sm lg:text-base cursor-pointer flex items-center gap-2"
             >
               Dashboard
             </button>
           ) : (
             <button
               onClick={() => router.push("/login")}
-              className="px-4 lg:px-6 py-1.5 lg:py-2 rounded-lg font-nunito font-semibold text-white bg-linear-to-r from-[#c40116] to-[#c40116]/60 shadow-md  transition text-sm lg:text-base cursor-pointer hover:shadow-lg hover:shadow-[#c40116]/25 hover:scale-[1.02]"
+              className="ml-3 px-5 lg:px-6 py-2 rounded-lg font-semibold text-white bg-indigo-600 hover:bg-indigo-700 shadow-md hover:shadow-lg transition-all duration-200 text-sm lg:text-base cursor-pointer flex items-center gap-2"
             >
-              Log in
+              Sign In
             </button>
           )}
         </nav>
@@ -251,7 +250,7 @@ Speech-to-CV          </button> */}
                     <span className="text-left flex-1">Create Resume</span>
                   </button>
 
-                      <button
+                  <button
                     onClick={() => {
                       router.push("/choose-plan");
                       setMenuOpen(false);
@@ -291,7 +290,7 @@ Speech-to-CV          </button> */}
                     <span className="text-left flex-1">Contact Us</span>
                   </button>
 
-                   <button
+                  <button
                     onClick={() => {
                       router.push("/about-us");
 
@@ -300,11 +299,10 @@ Speech-to-CV          </button> */}
                     className="w-full flex items-center bg-linear-to-r from-[#c40116]/5 to-[#be0117]/5  gap-3 p-3 sm:p-4 rounded-xl font-nunito font-semibold border border-[#c40116]/20 text-[#c40116] hover:bg-[#c40116]/5 transition-all duration-200 group"
                   >
                     <div className="p-2 bg-white rounded-lg group-hover:scale-110 transition-transform">
-                     <IoIosInformationCircleOutline className="font-extrabold text-2xl"/>
+                      <IoIosInformationCircleOutline className="font-extrabold text-2xl" />
                     </div>
                     <span className="text-left flex-1">About Us</span>
                   </button>
-                  
 
                   {/* Divider */}
                   <div className="my-4 border-t border-gray-100"></div>

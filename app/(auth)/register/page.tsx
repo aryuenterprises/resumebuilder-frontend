@@ -505,14 +505,14 @@ export default function RegisterForm() {
                   </div>
 
                   {/* Password Strength Bar */}
-                  <div className="mt-2">
+                  {/* <div className="mt-2">
                     <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                       <div
                         className={`h-full ${passwordStrength.color} transition-all duration-300 ease-out`}
                         style={{ width: `${passwordStrength.percentage}%` }}
                       ></div>
                     </div>
-                  </div>
+                  </div> */}
 
                   {/* Show/Hide Requirements Toggle */}
                   <button

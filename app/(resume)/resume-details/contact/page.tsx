@@ -1545,11 +1545,9 @@ const ContactForm = () => {
 
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-7xl mx-auto px-4   py-6 sm:py-8 lg:py-10">
+        <div className="max-w-7xl mx-auto px-2   py-6 sm:py-8 lg:py-10">
           {/* Header Section - Responsive */}
           <div className="text-center mb-6 sm:mb-8">
-          
-
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
               Contact Information
             </h1>
@@ -1568,7 +1566,7 @@ const ContactForm = () => {
           </div>
 
           {/* Main Form Card - Responsive */}
-          <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+          <div className="bg-white rounded-2xl sm:rounded-3xl shadow-md border border-gray-100 overflow-hidden">
             {/* Card Header - Responsive */}
             <div className="relative px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 bg-gradient-to-r from-indigo-50 to-white border-b border-gray-100">
               <div className="absolute top-0 right-0 w-24 sm:w-32 h-24 sm:h-32 bg-indigo-100 rounded-full filter blur-3xl opacity-50"></div>

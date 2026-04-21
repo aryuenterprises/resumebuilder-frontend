@@ -1228,7 +1228,7 @@ const Education_form = () => {
   const deleteEducation = (id: string | number) => {
     setEducation((prev) => {
       const updated = prev.filter((exp) => exp.id !== id);
-      saveToAPI(updated);
+      // saveToAPI(updated);
       return updated;
     });
   };
@@ -1280,7 +1280,6 @@ const Education_form = () => {
       setLoading(false);
     }
   };
-
  
 
   const insertAIResponse = (item: string, index: number) => {
@@ -1767,7 +1766,7 @@ const Education_form = () => {
               ← Back to Experience
             </button>
             <button
-              className="px-4 sm:px-6 py-2 sm:py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white text-xs sm:text-sm font-semibold rounded-lg sm:rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer"
+              className="px-4 sm:px-6 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base font-semibold  bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-lg sm:rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer"
               onClick={() => {
                 if (saveTimeoutRef.current) {
                   clearTimeout(saveTimeoutRef.current);

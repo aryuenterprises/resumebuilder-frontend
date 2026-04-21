@@ -690,7 +690,7 @@ const SummaryForm = () => {
         clearTimeout(saveTimeoutRef.current);
       }
       saveTimeoutRef.current = setTimeout(() => {
-        saveToAPI(summaryText);
+        // saveToAPI(summaryText);
       }, 1000);
     },
     [contactId, lastSavedData],
@@ -729,7 +729,7 @@ const SummaryForm = () => {
     if (Airesponse) {
       setShowPopup(false);
       setSummary(Airesponse);
-      saveToAPI(Airesponse);
+      // saveToAPI(Airesponse);
     }
   };
 

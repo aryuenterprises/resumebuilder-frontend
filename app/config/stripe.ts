@@ -1,0 +1,1 @@
+export const STRIPE_PUBLIC_KEY = "rzp_live_S63MYeJCw1dvz8";
