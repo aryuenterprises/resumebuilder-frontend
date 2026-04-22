@@ -1944,7 +1944,7 @@ const DashboardPage = () => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => router.push("/choose-template")}
-                className="flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-xl hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-500/25 transition-all duration-300 group"
+                className="flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-xl hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-500/25 transition-all duration-300 group cursor-pointer"
               >
                 <motion.div
                   animate={{ rotate: [0, 90, 0] }}
@@ -2057,7 +2057,7 @@ const DashboardPage = () => {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setShowLogoutModal(true)}
-                    className="w-full mt-6 px-4 py-3 bg-indigo-50 text-indigo-600 font-medium rounded-xl hover:bg-indigo-100 transition-all duration-300 flex items-center justify-center gap-2 group"
+                    className="w-full mt-6 px-4 py-3 bg-indigo-50 text-indigo-600 font-medium rounded-xl hover:bg-indigo-100 transition-all duration-300 flex items-center justify-center gap-2 group cursor-pointer"
                   >
                     <motion.div
                       animate={{ rotate: 0 }}
@@ -2131,7 +2131,7 @@ const DashboardPage = () => {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => router.push("/choose-plan")}
-                        className="flex-1 px-4 py-2.5 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition-all duration-300 flex items-center justify-center gap-2 group"
+                        className="flex-1 px-4 py-2.5 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition-all duration-300 flex items-center justify-center gap-2 group cursor-pointer"
                       >
                         <motion.div
                           whileHover={{ rotate: 90 }}
@@ -2145,7 +2145,7 @@ const DashboardPage = () => {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => setShowBillingHistory(true)}
-                        className="flex-1 px-4 py-2.5 bg-indigo-50 text-indigo-600 font-medium rounded-xl hover:bg-indigo-100 transition-all duration-300 flex items-center justify-center gap-2"
+                        className="flex-1 px-4 py-2.5 bg-indigo-50 text-indigo-600 font-medium rounded-xl hover:bg-indigo-100 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
                       >
                         <FiCreditCard className="w-4 h-4" /> Billing History
                       </motion.button>
@@ -2177,7 +2177,7 @@ const DashboardPage = () => {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => router.push("/choose-plan")}
-                      className="px-6 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition-all duration-300"
+                      className="px-6 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition-all duration-300 cursor-pointer"
                     >
                       Choose a Plan
                     </motion.button>
@@ -2212,7 +2212,7 @@ const DashboardPage = () => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setViewMode("grid")} 
-                    className={`p-2 rounded-md transition-all ${viewMode === "grid" ? "bg-white text-indigo-600 shadow-sm" : "text-gray-500"}`}
+                    className={`p-2 rounded-md cursor-pointer transition-all ${viewMode === "grid" ? "bg-white text-indigo-600 shadow-sm" : "text-gray-500"}`}
                   >
                     <FiGrid className="w-4 h-4" />
                   </motion.button>
@@ -2220,7 +2220,7 @@ const DashboardPage = () => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setViewMode("list")} 
-                    className={`p-2 rounded-md transition-all ${viewMode === "list" ? "bg-white text-indigo-600 shadow-sm" : "text-gray-500"}`}
+                    className={`p-2 rounded-md cursor-pointer transition-all ${viewMode === "list" ? "bg-white text-indigo-600 shadow-sm" : "text-gray-500"}`}
                   >
                     <FiList className="w-4 h-4" />
                   </motion.button>
@@ -2313,7 +2313,7 @@ const DashboardPage = () => {
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={() => { router.push(`/resume-details/contact`); setLocalStorage("chosenTemplate", item); setSessionStorage("oldRouteNameDashboard", true); setIsUploadMode(false); }} 
-                                className="bg-white rounded-full p-2.5 hover:bg-indigo-50 transition-all duration-300 shadow-lg"
+                                className="bg-white rounded-full p-2.5 hover:bg-indigo-50 transition-all duration-300 shadow-lg cursor-pointer"
                               >
                                 <FiEdit2 className="h-4 w-4 text-indigo-600" />
                               </motion.button>
@@ -2321,7 +2321,7 @@ const DashboardPage = () => {
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={() => handleDeleteResume(item.contact?._id, item.name)} 
-                                className="bg-white rounded-full p-2.5 hover:bg-red-50 transition-all duration-300 shadow-lg"
+                                className="bg-white rounded-full p-2.5 hover:bg-red-50 transition-all duration-300 shadow-lg cursor-pointer"
                               >
                                 <FiTrash2 className="h-4 w-4 text-red-600" />
                               </motion.button>
@@ -2355,7 +2355,7 @@ const DashboardPage = () => {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => { router.push(`/resume-details/contact`); setLocalStorage("chosenTemplate", item); setSessionStorage("oldRouteNameDashboard", true); setIsUploadMode(false); }} 
-                            className="p-2 bg-indigo-50 rounded-lg hover:bg-indigo-100 text-indigo-600 transition-all"
+                            className="p-2 bg-indigo-50 rounded-lg hover:bg-indigo-100 text-indigo-600 transition-all cursor-pointer"
                           >
                             <FiEdit2 className="w-4 h-4" />
                           </motion.button>
@@ -2363,7 +2363,7 @@ const DashboardPage = () => {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => handleDeleteResume(item.contact?._id, item.name)} 
-                            className="p-2 bg-indigo-50 rounded-lg hover:bg-red-100 text-red-600 transition-all"
+                            className="p-2 bg-indigo-50 rounded-lg hover:bg-red-100 text-red-600 transition-all cursor-pointer"
                           >
                             <FiTrash2 className="w-4 h-4" />
                           </motion.button>
@@ -2384,7 +2384,7 @@ const DashboardPage = () => {
                     </div>
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">No Resumes Found</h3>
                     <p className="text-gray-500 text-sm mb-4">Create your first resume to get started</p>
-                    <button onClick={() => router.push("/choose-template")} className="px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-all text-sm">Create Resume</button>
+                    <button onClick={() => router.push("/choose-template")} className="px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-all text-sm cursor-pointer">Create Resume</button>
                   </div>
                 </motion.div>
               )}
@@ -2416,7 +2416,7 @@ const DashboardPage = () => {
                       <p className="text-indigo-100 text-xs sm:text-sm">View your past transactions and invoices</p>
                     </div>
                   </div>
-                  <button onClick={() => setShowBillingHistory(false)} className="p-2 hover:bg-white/20 rounded-lg transition">
+                  <button onClick={() => setShowBillingHistory(false)} className="p-2 hover:bg-white/20 rounded-lg transition cursor-pointer">
                     <FiX className="w-5 h-5 text-white" />
                   </button>
                 </div>
@@ -2490,7 +2490,7 @@ const DashboardPage = () => {
                           <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Plan</th>
                           <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Amount</th>
                           <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
-                          <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Invoice</th>
+                         
                         </tr>
                       </thead>
                       <tbody>
@@ -2539,15 +2539,7 @@ const DashboardPage = () => {
                                 {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
                               </motion.span>
                             </td>
-                            <td className="px-4 py-3">
-                              <motion.button 
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="text-indigo-600 hover:text-indigo-700 text-sm font-medium flex items-center gap-1"
-                              >
-                                <FiFileText className="w-3 h-3" /> View
-                              </motion.button>
-                            </td>
+                           
                           </motion.tr>
                         ))}
                       </tbody>
@@ -2597,8 +2589,10 @@ const DashboardPage = () => {
               </div>
               <div className="p-6">
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <button onClick={() => setShowLogoutModal(false)} className="flex-1 px-4 py-2.5 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 transition-colors">Cancel</button>
-                  <button onClick={handleLogout} className="flex-1 px-4 py-2.5 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition-all duration-300 flex items-center justify-center gap-2">
+                  <button onClick={() => setShowLogoutModal(false)} className="flex-1 px-4 py-2.5 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 transition-colors cursor-pointer">
+                    Cancel
+                  </button>
+                  <button onClick={handleLogout} className="flex-1 px-4 py-2.5 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer">
                     <FiLogOut className="w-4 h-4" /> Logout
                   </button>
                 </div>

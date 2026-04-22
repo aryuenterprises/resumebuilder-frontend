@@ -1516,6 +1516,8 @@ function Choose_template() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   {/* Create New Resume Card */}
                   <motion.div
+                                        onClick={handleCreateNew}
+
                     initial={{ x: -20, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ delay: 0.3 }}
@@ -1534,7 +1536,7 @@ function Choose_template() {
                     </p>
                     <button
                       onClick={handleCreateNew}
-                      className="flex items-center text-indigo-600 font-semibold text-sm sm:text-base group-hover:gap-2 transition-all"
+                      className="flex items-center text-indigo-600 font-semibold text-sm sm:text-base group-hover:gap-2 transition-all cursor-pointer"
                     >
                       Get started{" "}
                       <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-1 group-hover:translate-x-1 transition-transform" />
@@ -1543,6 +1545,10 @@ function Choose_template() {
 
                   {/* Improve Existing Resume Card */}
                   <motion.div
+                   onClick={() => {
+                        setShowInitialPopup(false);
+                        setShowUploadPopup(true);
+                      }}
                     initial={{ x: 20, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ delay: 0.4 }}
@@ -1564,7 +1570,7 @@ function Choose_template() {
                         setShowInitialPopup(false);
                         setShowUploadPopup(true);
                       }}
-                      className="flex items-center text-purple-600 font-semibold text-sm sm:text-base group-hover:gap-2 transition-all"
+                      className="flex items-center text-purple-600 font-semibold text-sm sm:text-base group-hover:gap-2 transition-all cursor-pointer"
                     >
                       Upload now{" "}
                       <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-1 group-hover:translate-x-1 transition-transform" />
@@ -1595,7 +1601,7 @@ function Choose_template() {
         )}
       </AnimatePresence>
 
-      {/* Premium Upload Popup with Text Upload Option */}
+      {/* Premium Upload Popup  */}
       <AnimatePresence>
         {showUploadPopup && (
           <motion.div
@@ -1727,7 +1733,7 @@ function Choose_template() {
                           uploadStatus === "uploading" ||
                           uploadStatus === "processing"
                         }
-                        className="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-xl font-medium hover:shadow-lg transition-all disabled:opacity-50"
+                        className="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-xl font-medium hover:shadow-lg transition-all disabled:opacity-50 cursor-pointer"
                       >
                         Browse Files
                       </button>
@@ -1750,7 +1756,7 @@ function Choose_template() {
                       uploadStatus === "uploading" ||
                       uploadStatus === "processing"
                     }
-                    className="flex-1 py-3 border border-gray-200 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-all disabled:opacity-50"
+                    className="flex-1 py-3 border border-gray-200 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-all disabled:opacity-50 cursor-pointer"
                   >
                     Cancel
                   </button>
@@ -1760,7 +1766,7 @@ function Choose_template() {
                         setShowUploadPopup(false);
                         router.push(`/resume-details/contact`);
                       }}
-                      className="flex-1 py-3 bg-emerald-500 text-white rounded-xl font-medium hover:bg-emerald-600 transition-all"
+                      className="flex-1 py-3 bg-emerald-500 text-white rounded-xl font-medium hover:bg-emerald-600 transition-all cursor-pointer"
                     >
                       Continue to Resume
                     </button>
@@ -1815,7 +1821,7 @@ function Choose_template() {
                 <div className="flex flex-col sm:flex-row gap-3">
                   <button
                     onClick={() => setShowUpgradePopup(false)}
-                    className="flex-1 py-3 border border-gray-200 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-all"
+                    className="flex-1 py-3 border border-gray-200 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-all cursor-pointer"
                   >
                     Cancel
                   </button>
@@ -1824,7 +1830,7 @@ function Choose_template() {
                       setShowUpgradePopup(false);
                       router.push("/choose-plan");
                     }}
-                    className="flex-1 py-3 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-xl font-medium hover:shadow-lg transition-all"
+                    className="flex-1 py-3 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-xl font-medium hover:shadow-lg transition-all cursor-pointer"
                   >
                     Upgrade Now
                   </button>
@@ -1983,7 +1989,7 @@ function Choose_template() {
                         <div className="absolute bottom-0 left-0 right-0 p-4 flex items-center justify-center gap-3">
                           <button
                             onClick={() => handlePreview(template)}
-                            className="px-4 py-2 rounded-lg bg-white text-indigo-600 font-semibold text-sm shadow-lg hover:scale-105 transition flex items-center gap-2"
+                            className="px-4 py-2 rounded-lg bg-white text-indigo-600 font-semibold text-sm shadow-lg hover:scale-105 transition flex items-center gap-2 cursor-pointer"
                           >
                             <Eye className="w-4 h-4" /> Preview
                           </button>
@@ -1992,7 +1998,7 @@ function Choose_template() {
                               onClick={() =>
                                 handleTemplateSelect(template, index)
                               }
-                              className="px-4 py-2 rounded-lg bg-indigo-600 text-white font-semibold text-sm shadow-lg hover:scale-105 transition flex items-center gap-2"
+                              className="px-4 py-2 rounded-lg bg-indigo-600 text-white font-semibold text-sm shadow-lg hover:scale-105 transition flex items-center gap-2 cursor-pointer"
                             >
                               <Sparkles className="w-4 h-4" /> Use Template
                             </button>
@@ -2005,7 +2011,7 @@ function Choose_template() {
                                 });
                                 setShowUpgradePopup(true);
                               }}
-                              className="px-4 py-2 rounded-lg bg-gray-600 text-white font-semibold text-sm shadow-lg hover:scale-105 transition flex items-center gap-2"
+                              className="px-4 py-2 rounded-lg bg-gray-600 text-white font-semibold text-sm shadow-lg hover:scale-105 transition flex items-center gap-2 cursor-pointer"
                             >
                               <Lock className="w-4 h-4" /> Unlock
                             </button>

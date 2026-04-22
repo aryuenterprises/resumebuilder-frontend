@@ -1,3 +1,176 @@
+// "use client";
+
+// import { useState, FormEvent } from "react";
+// import { useRouter } from "next/navigation";
+// import axios from "axios";
+// import Swal from "sweetalert2";
+// import { API_URL } from "../../config/api";
+// import { MdOutlineAttachEmail } from "react-icons/md";
+
+
+// interface ApiError {
+//   response?: {
+//     data?: {
+//       message?: string;
+//     };
+//   };
+// }
+
+// const ForgetPassword = () => {
+//   const router = useRouter();
+
+//   const [email, setEmail] = useState<string>("");
+//   const [loading, setLoading] = useState<boolean>(false);
+
+//   const handleSubmit = async (e: FormEvent) => {
+//     e.preventDefault();
+
+//     if (!email || email.trim() === "") {
+//       Swal.fire({
+//         icon: "warning",
+//         title: "Email Required",
+//         text: "Please enter your registered email address.",
+//         confirmButtonColor: "#05a2ff",
+//       });
+//       return;
+//     }
+
+//     try {
+//       setLoading(true);
+
+//       const formData = { email };
+
+//       const response = await axios.post(
+//         `${API_URL}/api/users/forgot-password`,
+//         formData,
+//       );
+
+//       setLoading(false);
+
+//       Swal.fire({
+//         icon: "success",
+//         title: "Success!",
+//         text: response.data?.message || "OTP sent to your email.",
+//         confirmButtonColor: "#05a2ff",
+//       }).then(() => {
+//         router.push(`/change-password?email=${encodeURIComponent(email)}`);
+//       });
+
+//       return true;
+//     } catch (err: unknown) {
+//       console.error("Error sending message:", err);
+//       setLoading(false);
+
+//       const error = err as ApiError;
+
+//       Swal.fire({
+//         icon: "error",
+//         title: "Failed!",
+//         text:
+//           error.response?.data?.message ||
+//           "Something went wrong. Please try again later.",
+//         confirmButtonColor: "#d33",
+//       });
+
+//       return false;
+//     }
+//   };
+
+//   return (
+//     <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 flex flex-col">
+//       <div className="flex-1 flex justify-center items-center p-4 sm:p-6 mt-5 md:mt-12">
+//         <div className="w-full max-w-md">
+//           <div className="relative bg-white/90 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl border border-gray-100 overflow-hidden">
+//             {/* Header gradient accent */}
+//             <div className="h-1 sm:h-2 bg-linear-to-r from-[#C40116] to-[#5E000B]"></div>
+
+//             <div className="p-6 sm:p-8">
+//               <div className="text-center mb-6">
+//                 <h2 className="text-xl sm:text-2xl md:text-3xl font-bold bg-linear-to-r from-[#C40116] to-[#5E000B] bg-clip-text text-transparent mb-2">
+//                   Reset your password
+//                 </h2>
+//                 <p className="text-sm sm:text-base text-gray-600">
+//                   Enter your email address and we&apos;ll send you a link to
+//                   reset your password.
+//                 </p>
+//               </div>
+
+//               {/* Email Field */}
+//               <div className="mb-6">
+//                 <label className="block text-gray-800 text-sm sm:text-base font-semibold mb-2">
+//                   Email Address
+//                 </label>
+//                 <div className="relative group">
+//                   <input
+//                     type="email"
+//                     placeholder="Enter your email"
+//                     autoComplete="new-email"
+//                     value={email}
+//                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+//                       setEmail(e.target.value)
+//                     }
+//                     className="w-full p-3 sm:p-4 border border-gray-200 text-gray-900 rounded-lg sm:rounded-xl bg-white shadow-sm focus:outline-none focus:border-[#C40116]/50 focus:ring-2 sm:focus:ring-4 focus:ring-[#C40116]/10 transition-all duration-300 group-hover:border-[#C40116]/30 text-sm sm:text-base"
+//                   />
+//                 </div>
+//               </div>
+
+//               {/* Send Reset Link Button */}
+//               <button
+//                 onClick={handleSubmit}
+//                 disabled={loading}
+//                 className={`w-full py-3 sm:py-4 rounded-xl font-semibold text-white transition-all duration-300 flex items-center  justify-center gap-2 ${
+//                   loading
+//                     ? "bg-linear-to-r from-gray-400 to-gray-500 cursor-not-allowed"
+//                     : "bg-linear-to-r from-[#C40116] to-[#5E000B] hover:from-[#d6021a] hover:to-[#6e000c] shadow-lg shadow-red-500/30 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+//                 }`}
+//               >
+//                 {loading ? (
+//                   <>
+//                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin "></div>
+//                     <span>Sending OTP...</span>
+//                   </>
+//                 ) : (
+//                   <>
+//                    <MdOutlineAttachEmail className="text-xl"/>
+//                     <span>Send Reset Link</span>
+//                   </>
+//                 )}
+//               </button>
+
+//               {/* Back to Login */}
+//               <div className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-gray-100 text-center">
+//                 <button
+//                   onClick={() => router.back()}
+//                   className="text-[#C40116] hover:text-[#5E000B] font-semibold text-sm sm:text-base transition-all duration-200 inline-flex items-center group cursor-pointer"
+//                 >
+//                   <svg
+//                     xmlns="http://www.w3.org/2000/svg"
+//                     className="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2 group-hover:-translate-x-1 transition-transform"
+//                     fill="none"
+//                     viewBox="0 0 24 24"
+//                     stroke="currentColor"
+//                   >
+//                     <path
+//                       strokeLinecap="round"
+//                       strokeLinejoin="round"
+//                       strokeWidth={2}
+//                       d="M10 19l-7-7m0 0l7-7m-7 7h18"
+//                     />
+//                   </svg>
+//                   Back to Login
+//                 </button>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default ForgetPassword;
+
+
 "use client";
 
 import { useState, FormEvent } from "react";
@@ -5,8 +178,10 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { API_URL } from "../../config/api";
+import { FiMail, FiArrowLeft, FiShield, FiSend, FiLock } from "react-icons/fi";
 import { MdOutlineAttachEmail } from "react-icons/md";
-
+import { motion } from "framer-motion";
+import Link from "next/link";
 
 interface ApiError {
   response?: {
@@ -21,16 +196,38 @@ const ForgetPassword = () => {
 
   const [email, setEmail] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const [focusedField, setFocusedField] = useState<string | null>(null);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     if (!email || email.trim() === "") {
-      Swal.fire({
+      await Swal.fire({
         icon: "warning",
         title: "Email Required",
         text: "Please enter your registered email address.",
-        confirmButtonColor: "#05a2ff",
+        confirmButtonColor: "#4f46e5",
+        background: "#ffffff",
+        color: "#1f2937",
+        customClass: {
+          popup: "rounded-2xl",
+        },
+      });
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      await Swal.fire({
+        icon: "warning",
+        title: "Invalid Email",
+        text: "Please enter a valid email address.",
+        confirmButtonColor: "#4f46e5",
+        background: "#ffffff",
+        color: "#1f2937",
+        customClass: {
+          popup: "rounded-2xl",
+        },
       });
       return;
     }
@@ -47,122 +244,154 @@ const ForgetPassword = () => {
 
       setLoading(false);
 
-      Swal.fire({
+      await Swal.fire({
         icon: "success",
-        title: "Success!",
-        text: response.data?.message || "OTP sent to your email.",
-        confirmButtonColor: "#05a2ff",
-      }).then(() => {
-        router.push(`/change-password?email=${encodeURIComponent(email)}`);
+        title: "OTP Sent!",
+        html: `
+          <p>We've sent a verification code to</p>
+          <p class="font-semibold text-indigo-600 mt-1">${email}</p>
+          <p class="text-sm text-gray-500 mt-2">Please check your inbox</p>
+        `,
+        confirmButtonText: "Continue",
+        confirmButtonColor: "#4f46e5",
+        background: "#ffffff",
+        color: "#1f2937",
+        customClass: {
+          popup: "rounded-2xl",
+        },
       });
 
-      return true;
+      router.push(`/change-password?email=${encodeURIComponent(email)}`);
     } catch (err: unknown) {
       console.error("Error sending message:", err);
       setLoading(false);
 
       const error = err as ApiError;
 
-      Swal.fire({
+      await Swal.fire({
         icon: "error",
         title: "Failed!",
         text:
           error.response?.data?.message ||
           "Something went wrong. Please try again later.",
-        confirmButtonColor: "#d33",
+        confirmButtonColor: "#ef4444",
+        background: "#ffffff",
+        color: "#1f2937",
+        customClass: {
+          popup: "rounded-2xl",
+        },
       });
-
-      return false;
     }
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 flex flex-col">
-      <div className="flex-1 flex justify-center items-center p-4 sm:p-6 mt-5 md:mt-12">
-        <div className="w-full max-w-md">
-          <div className="relative bg-white/90 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl border border-gray-100 overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 flex flex-col">
+     
+
+      <div className="relative flex-1 flex items-center justify-center p-4 sm:p-6">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="w-full max-w-md"
+        >
+          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
             {/* Header gradient accent */}
-            <div className="h-1 sm:h-2 bg-linear-to-r from-[#C40116] to-[#5E000B]"></div>
+            <div className="h-1 bg-gradient-to-r from-indigo-600 to-indigo-500"></div>
 
             <div className="p-6 sm:p-8">
+              {/* Icon */}
               <div className="text-center mb-6">
-                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold bg-linear-to-r from-[#C40116] to-[#5E000B] bg-clip-text text-transparent mb-2">
-                  Reset your password
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-100 rounded-2xl mb-4">
+                  <FiLock className="w-8 h-8 text-indigo-600" />
+                </div>
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-indigo-500 bg-clip-text text-transparent">
+                  Reset Password
                 </h2>
-                <p className="text-sm sm:text-base text-gray-600">
-                  Enter your email address and we&apos;ll send you a link to
-                  reset your password.
+                <p className="text-sm text-gray-500 mt-2">
+                  Enter your email address and we'll send you a verification code
                 </p>
               </div>
 
-              {/* Email Field */}
-              <div className="mb-6">
-                <label className="block text-gray-800 text-sm sm:text-base font-semibold mb-2">
-                  Email Address
-                </label>
-                <div className="relative group">
-                  <input
-                    type="email"
-                    placeholder="Enter your email"
-                    autoComplete="new-email"
-                    value={email}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      setEmail(e.target.value)
-                    }
-                    className="w-full p-3 sm:p-4 border border-gray-200 text-gray-900 rounded-lg sm:rounded-xl bg-white shadow-sm focus:outline-none focus:border-[#C40116]/50 focus:ring-2 sm:focus:ring-4 focus:ring-[#C40116]/10 transition-all duration-300 group-hover:border-[#C40116]/30 text-sm sm:text-base"
-                  />
+              <form onSubmit={handleSubmit} noValidate>
+                {/* Email Field */}
+                <div className="mb-6">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Email Address
+                  </label>
+                  <div className="relative group">
+                    <div
+                      className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors duration-200 ${
+                        focusedField === "email" ? "text-indigo-600" : "text-gray-400"
+                      }`}
+                    >
+                      <FiMail className="w-5 h-5" />
+                    </div>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      onFocus={() => setFocusedField("email")}
+                      onBlur={() => setFocusedField(null)}
+                      placeholder="Enter your registered email"
+                      className={`w-full pl-12 pr-4 py-3 border-2 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none transition-all duration-200 ${
+                        focusedField === "email"
+                          ? "border-indigo-500 ring-2 ring-indigo-100"
+                          : "border-gray-200 hover:border-indigo-300"
+                      }`}
+                    />
+                  </div>
+                  <p className="text-xs text-gray-400 mt-2">
+                    We'll send a verification code to this email
+                  </p>
                 </div>
-              </div>
 
-              {/* Send Reset Link Button */}
-              <button
-                onClick={handleSubmit}
-                disabled={loading}
-                className={`w-full py-3 sm:py-4 rounded-xl font-semibold text-white transition-all duration-300 flex items-center  justify-center gap-2 ${
-                  loading
-                    ? "bg-linear-to-r from-gray-400 to-gray-500 cursor-not-allowed"
-                    : "bg-linear-to-r from-[#C40116] to-[#5E000B] hover:from-[#d6021a] hover:to-[#6e000c] shadow-lg shadow-red-500/30 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-                }`}
-              >
-                {loading ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin "></div>
-                    <span>Sending OTP...</span>
-                  </>
-                ) : (
-                  <>
-                   <MdOutlineAttachEmail className="text-xl"/>
-                    <span>Send Reset Link</span>
-                  </>
-                )}
-              </button>
+                {/* Send Reset Link Button */}
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-3 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-semibold rounded-xl hover:from-indigo-700 hover:to-indigo-600 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/25 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer"
+                >
+                  {loading ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      Sending OTP...
+                    </>
+                  ) : (
+                    <>
+                      <FiSend className="w-4 h-4" />
+                      Send Verification Code
+                    </>
+                  )}
+                </button>
+              </form>
+
+             
 
               {/* Back to Login */}
-              <div className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-gray-100 text-center">
+              <div className="text-center mt-4">
                 <button
+                  type="button"
                   onClick={() => router.back()}
-                  className="text-[#C40116] hover:text-[#5E000B] font-semibold text-sm sm:text-base transition-all duration-200 inline-flex items-center group cursor-pointer"
+                  className="text-indigo-600 hover:text-indigo-700 font-semibold text-sm inline-flex items-center gap-1 group cursor-pointer"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2 group-hover:-translate-x-1 transition-transform"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M10 19l-7-7m0 0l7-7m-7 7h18"
-                    />
-                  </svg>
+                  <FiArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" />
                   Back to Login
                 </button>
               </div>
+
+              {/* Terms */}
+              <div className="mt-6 text-center">
+                <p className="text-xs text-gray-400">
+                  Need help?{" "}
+                  <Link href="/contact-us" className="text-indigo-600 hover:underline cursor-pointer">
+                    Contact Support
+                  </Link>
+                </p>
+              </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

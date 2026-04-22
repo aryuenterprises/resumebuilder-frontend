@@ -589,7 +589,7 @@ const ContactPage = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="group w-full py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/25 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="group w-full py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/25 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer"
                 >
                   {isSubmitting ? (
                     <>
@@ -607,7 +607,7 @@ const ContactPage = () => {
                 {/* Privacy Note */}
                 <p className="text-xs text-gray-400 text-center">
                   By submitting this form, you agree to our{' '}
-                  <a href="/privacy-policy" className="text-indigo-600 hover:underline">
+                  <a href="/privacy-policy" className="text-indigo-600 hover:underline cursor-pointer">
                     Privacy Policy
                   </a>
                 </p>

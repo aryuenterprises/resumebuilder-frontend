@@ -47,7 +47,7 @@
 //       },
 //     ],
 //   },
- 
+
 // ];
 
 // export default function Faq() {
@@ -93,7 +93,7 @@
 //           </span>
 
 //           <h2 className="font-bold md:font-extrabold text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-slate-900 tracking-tight leading-tight">
-// Still Doubting? Let’s Clear That 
+// Still Doubting? Let’s Clear That
 //           </h2>
 
 //           <p className="mt-3 sm:mt-4 md:mt-5 text-sm sm:text-base md:text-lg text-gray-600 leading-relaxed">
@@ -246,7 +246,6 @@
 //           )}
 //         </div>
 
-      
 //       </div>
 
 //       {/* Decorative elements */}
@@ -255,8 +254,6 @@
 //     </section>
 //   );
 // }
-
-
 
 "use client";
 
@@ -314,11 +311,6 @@ export default function Faq() {
 
   return (
     <section className="relative bg-white py-16 sm:py-20 md:py-24  overflow-hidden">
-      {/* Decorative Background Elements */}
-      <div className="absolute -top-24 -right-24 w-80 h-80 bg-indigo-100 rounded-full blur-3xl opacity-30 pointer-events-none" />
-      <div className="absolute bottom-0 -left-24 w-80 h-80 bg-purple-100 rounded-full blur-3xl opacity-20 pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-50 rounded-full blur-3xl opacity-30 pointer-events-none" />
-
       <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
@@ -336,14 +328,15 @@ export default function Faq() {
           </div>
 
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
-            Still Doubting?{' '}
+            Still Doubting?{" "}
             <span className="block bg-gradient-to-r from-indigo-600 to-indigo-500 bg-clip-text text-transparent mt-2">
               Let's Clear That
             </span>
           </h2>
 
           <p className="mt-4 text-base sm:text-lg text-gray-500 max-w-2xl mx-auto">
-            Quick answers before you build your resume and start getting interview calls
+            Quick answers before you build your resume and start getting
+            interview calls
           </p>
         </motion.div>
 
@@ -368,7 +361,7 @@ export default function Faq() {
                 {/* Question Button */}
                 <button
                   onClick={() => toggle(index)}
-                  className="relative w-full flex justify-between items-center px-5 sm:px-6 py-4 sm:py-5 text-left focus:outline-none"
+                  className="relative w-full flex justify-between items-center px-5 sm:px-6 py-4 sm:py-5 text-left focus:outline-none cursor-pointer"
                   aria-expanded={isOpen}
                 >
                   <span className="font-semibold text-sm sm:text-base md:text-lg text-gray-800 leading-relaxed pr-4">
@@ -414,8 +407,6 @@ export default function Faq() {
             );
           })}
         </div>
-
-       
       </div>
     </section>
   );

@@ -3255,7 +3255,7 @@ const FinalizeForm = () => {
 
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-7xl mx-auto px-4  py-6 sm:py-8 lg:py-10">
+        <div className="mx-auto px-2  py-6 sm:py-8 lg:py-10">
           {/* Header Section */}
           <div className="text-center mb-6 sm:mb-8">
             <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-100 rounded-full text-indigo-700 text-xs font-semibold mb-3 shadow-sm">
