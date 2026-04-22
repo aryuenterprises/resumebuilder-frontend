@@ -1443,7 +1443,7 @@ export default function ChangeTemplate() {
                               `}
                             >
                               <div className="flex items-start gap-3 p-3">
-                                <div className="relative w-14 h-16 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
+                                <div className="relative w-18 h-18 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
                                   <Image
                                     src={template.image}
                                     alt={template.style!}

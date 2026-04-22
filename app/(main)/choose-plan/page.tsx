@@ -445,7 +445,6 @@
 // //           },
 // //         );
 
-
 // //         Swal.fire({
 // //           icon: "success",
 // //           title: "Free Plan Activated!",
@@ -573,7 +572,7 @@
 // //             relative h-full bg-white rounded-xl sm:rounded-2xl overflow-hidden
 // //             transition-all duration-500
 // //             ${isHovered ? "scale-105 shadow-2xl" : "shadow-lg"}
-           
+
 // //           `}
 // //                 >
 // //                   {/* Card Header with Gradient */}
@@ -693,7 +692,6 @@
 // //                     )}
 // //                   </div>
 
-                  
 // //                 </div>
 // //               </motion.div>
 // //             );
@@ -857,26 +855,6 @@
 // //     </div>
 // //   );
 // // }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // "use client";
 
@@ -1192,7 +1170,7 @@
 //   return (
 //     <div className="min-h-screen bg-gradient-to-br from-indigo-50/30 via-white to-indigo-50/30">
 //       <Toaster position="top-right" />
-      
+
 //       {/* Animated Background */}
 //       <div className="fixed inset-0 overflow-hidden pointer-events-none">
 //         <div className="absolute -top-40 -right-40 w-96 h-96 bg-indigo-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
@@ -1210,7 +1188,7 @@
 //             transition={{ duration: 0.6 }}
 //             className="text-center"
 //           >
-//             <motion.div 
+//             <motion.div
 //               initial={{ scale: 0 }}
 //               animate={{ scale: 1 }}
 //               transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
@@ -1260,7 +1238,7 @@
 //                   animate={{ opacity: isHovered ? 0.5 : 0 }}
 //                   transition={{ duration: 0.3 }}
 //                 />
-                
+
 //                 <motion.div
 //                   animate={{ y: isHovered ? -8 : 0 }}
 //                   transition={{ duration: 0.3, type: "spring", stiffness: 300 }}
@@ -1268,7 +1246,7 @@
 //                 >
 //                   {/* Popular Badge */}
 //                   {plan.popular && (
-//                     <motion.div 
+//                     <motion.div
 //                       initial={{ x: 100 }}
 //                       animate={{ x: 0 }}
 //                       transition={{ delay: 0.3 }}
@@ -1281,18 +1259,18 @@
 //                   )}
 
 //                   {/* Card Header with animated gradient */}
-//                   <motion.div 
+//                   <motion.div
 //                     className={`bg-gradient-to-r ${plan.color} p-6 text-white relative overflow-hidden`}
 //                     whileHover={{ scale: 1.02 }}
 //                     transition={{ duration: 0.3 }}
 //                   >
-//                     <motion.div 
+//                     <motion.div
 //                       className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"
 //                       animate={{ scale: isHovered ? 1.2 : 1 }}
 //                       transition={{ duration: 0.3 }}
 //                     />
 //                     <div className="relative">
-//                       <motion.div 
+//                       <motion.div
 //                         className="inline-flex p-3 bg-white/20 rounded-xl backdrop-blur-sm mb-4"
 //                         animate={{ rotate: isHovered ? 10 : 0 }}
 //                         transition={{ duration: 0.3 }}
@@ -1302,7 +1280,7 @@
 //                       <h3 className="text-2xl font-bold mb-1">{plan.name}</h3>
 //                       <p className="text-white/80 text-sm mb-3">{plan.description}</p>
 //                       <div className="flex items-baseline gap-1">
-//                         <motion.span 
+//                         <motion.span
 //                           className="text-4xl font-bold"
 //                           animate={{ scale: isHovered ? 1.05 : 1 }}
 //                           transition={{ duration: 0.2 }}
@@ -1312,7 +1290,7 @@
 //                         <span className="text-white/80 text-sm">/{plan.interval}</span>
 //                       </div>
 //                       {plan.badge && !isSamePlan && (
-//                         <motion.span 
+//                         <motion.span
 //                           initial={{ opacity: 0, x: 20 }}
 //                           animate={{ opacity: 1, x: 0 }}
 //                           className="absolute top-0 right-0 px-2 py-1 bg-white/20 rounded-full text-xs backdrop-blur-sm"
@@ -1332,7 +1310,7 @@
 //                   <div className="p-6">
 //                     <ul className="space-y-3 mb-6">
 //                       {plan.features.map((feature, idx) => (
-//                         <motion.li 
+//                         <motion.li
 //                           key={idx}
 //                           initial={{ opacity: 0, x: -10 }}
 //                           animate={{ opacity: 1, x: 0 }}
@@ -1340,7 +1318,7 @@
 //                           whileHover={{ x: 3 }}
 //                           className="flex items-start gap-2 group"
 //                         >
-//                           <motion.div 
+//                           <motion.div
 //                             className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${feature.included ? 'bg-emerald-100' : 'bg-gray-100'}`}
 //                             whileHover={{ scale: 1.1 }}
 //                           >
@@ -1359,7 +1337,7 @@
 
 //                     {/* Button with micro-interactions */}
 //                     {isSamePlan ? (
-//                       <motion.button 
+//                       <motion.button
 //                         whileHover={{ scale: 1.02 }}
 //                         className="w-full py-3 bg-emerald-50 text-emerald-600 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 cursor-default border border-emerald-200"
 //                       >
@@ -1376,7 +1354,7 @@
 //                         <span className="relative z-10">
 //                           {plan.price === 0 ? "Switch to Free" : `Upgrade to ${plan.name}`}
 //                         </span>
-//                         <motion.div 
+//                         <motion.div
 //                           className="absolute inset-0 bg-white/20 -translate-x-full group-hover:translate-x-0 transition-transform duration-500"
 //                           initial={false}
 //                         />
@@ -1390,7 +1368,7 @@
 //         </div>
 
 //         {/* Stats Section */}
-//         <motion.div 
+//         <motion.div
 //           initial={{ opacity: 0, y: 30 }}
 //           animate={{ opacity: 1, y: 0 }}
 //           transition={{ delay: 0.5, duration: 0.5 }}
@@ -1406,13 +1384,13 @@
 //               whileHover={{ y: -5, scale: 1.02 }}
 //               className="bg-white rounded-2xl p-6 text-center border border-gray-100 shadow-lg hover:shadow-xl transition-all duration-300"
 //             >
-//               <motion.div 
+//               <motion.div
 //                 className={`w-12 h-12 bg-${stat.color}-100 rounded-xl flex items-center justify-center mx-auto mb-3`}
 //                 whileHover={{ rotate: 5, scale: 1.1 }}
 //               >
 //                 <stat.icon className={`w-6 h-6 text-${stat.color}-600`} />
 //               </motion.div>
-//               <motion.p 
+//               <motion.p
 //                 className="text-2xl font-bold text-gray-900"
 //                 initial={{ opacity: 0, scale: 0.5 }}
 //                 animate={{ opacity: 1, scale: 1 }}
@@ -1441,33 +1419,30 @@
 //   );
 // }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  FiStar, FiHeart, FiX, FiCheckCircle, FiArrowRight, FiZap, 
-  FiShield, FiAward, FiTrendingUp, FiUsers, FiBriefcase, 
+import {
+  FiStar,
+  FiHeart,
+  FiX,
+  FiCheckCircle,
+  FiArrowRight,
+  FiZap,
+  FiShield,
+  FiAward,
+  FiTrendingUp,
+  FiUsers,
+  FiBriefcase,
 } from "react-icons/fi";
-import { 
-  IoSparkles, IoCheckmarkCircle, IoDiamondOutline, 
-  IoRocket, IoFlash, IoShieldCheckmark 
+import {
+  IoSparkles,
+  IoCheckmarkCircle,
+  IoDiamondOutline,
+  IoRocket,
+  IoFlash,
+  IoShieldCheckmark,
 } from "react-icons/io5";
 import { FaCrown, FaGem, FaChessQueen, FaChessKing } from "react-icons/fa";
 import { useRouter } from "next/navigation";
@@ -1559,11 +1534,11 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
             toast.success(`${plan.name} plan activated successfully!`, {
               duration: 4000,
-              icon: '🎉',
+              icon: "🎉",
               style: {
-                background: '#10b981',
-                color: '#fff',
-                borderRadius: '12px',
+                background: "#10b981",
+                color: "#fff",
+                borderRadius: "12px",
               },
             });
             onSuccess();
@@ -1572,9 +1547,9 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
             toast.error("Payment verification failed", {
               duration: 3000,
               style: {
-                background: '#ef4444',
-                color: '#fff',
-                borderRadius: '12px',
+                background: "#ef4444",
+                color: "#fff",
+                borderRadius: "12px",
               },
             });
           }
@@ -1582,19 +1557,19 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
         prefill: { email: userEmail, name: "" },
         theme: { color: "#4f46e5" },
         modal: {
-          ondismiss: function() {
+          ondismiss: function () {
             setLoading(false);
             toast("Payment cancelled", {
-              icon: '⚠️',
+              icon: "⚠️",
               duration: 3000,
               style: {
-                background: '#f59e0b',
-                color: '#fff',
-                borderRadius: '12px',
+                background: "#f59e0b",
+                color: "#fff",
+                borderRadius: "12px",
               },
             });
-          }
-        }
+          },
+        },
       };
 
       const rzp = new (window as any).Razorpay(options);
@@ -1605,9 +1580,9 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
       toast.error("Unable to start payment. Please try again.", {
         duration: 3000,
         style: {
-          background: '#ef4444',
-          color: '#fff',
-          borderRadius: '12px',
+          background: "#ef4444",
+          color: "#fff",
+          borderRadius: "12px",
         },
       });
       setLoading(false);
@@ -1632,16 +1607,23 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
             className="bg-white rounded-3xl max-w-md w-full shadow-2xl overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className={`bg-gradient-to-r ${plan.color} p-6 text-white relative overflow-hidden`}>
+            <div
+              className={`bg-gradient-to-r ${plan.color} p-6 text-white relative overflow-hidden`}
+            >
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 animate-pulse"></div>
               <div className="absolute bottom-0 left-0 w-32 h-32 bg-black/10 rounded-full -ml-16 -mb-16"></div>
               <div className="relative">
                 <div className="flex justify-between items-start">
                   <div>
-                    <h3 className="text-2xl font-bold mb-2">{plan.name} Plan</h3>
+                    <h3 className="text-2xl font-bold mb-2">
+                      {plan.name} Plan
+                    </h3>
                     <p className="text-white/80 text-sm">{plan.description}</p>
                   </div>
-                  <button onClick={onClose} className="p-1 hover:bg-white/20 rounded-xl transition-all duration-200">
+                  <button
+                    onClick={onClose}
+                    className="p-1 hover:bg-white/20 rounded-xl transition-all duration-200"
+                  >
                     <FiX className="w-5 h-5" />
                   </button>
                 </div>
@@ -1650,7 +1632,9 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
             <div className="p-6">
               <div className="mb-6">
                 <div className="flex items-baseline gap-2 mb-4">
-                  <span className="text-4xl font-bold text-gray-900">₹{plan.price}</span>
+                  <span className="text-4xl font-bold text-gray-900">
+                    ₹{plan.price}
+                  </span>
                   <span className="text-gray-500">/{plan.interval}</span>
                 </div>
                 <div className="space-y-3">
@@ -1665,7 +1649,9 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                           <FiX className="w-3 h-3 text-gray-400" />
                         </div>
                       )}
-                      <span className={`text-sm ${feature.highlight ? "text-gray-900 font-semibold" : "text-gray-700"}`}>
+                      <span
+                        className={`text-sm ${feature.highlight ? "text-gray-900 font-semibold" : "text-gray-700"}`}
+                      >
                         {feature.name}
                       </span>
                     </div>
@@ -1677,7 +1663,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 whileTap={{ scale: 0.98 }}
                 onClick={handlePayment}
                 disabled={loading}
-                className={`w-full py-3 rounded-xl font-semibold text-white transition-all duration-300 bg-gradient-to-r ${plan.color} ${loading ? "opacity-60 cursor-not-allowed" : "hover:shadow-xl"}`}
+                className={`w-full py-3 rounded-xl font-semibold cursor-pointer text-white transition-all duration-300 bg-gradient-to-r ${plan.color} ${loading ? "opacity-60 cursor-not-allowed" : "hover:shadow-xl"}`}
               >
                 {loading ? (
                   <div className="flex items-center justify-center gap-2">
@@ -1691,7 +1677,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 )}
               </motion.button>
               <p className="text-xs text-gray-500 text-center mt-4 flex items-center justify-center gap-1">
-                <IoShieldCheckmark className="w-3 h-3" /> Secure payment powered by Razorpay
+                <IoShieldCheckmark className="w-3 h-3" /> Secure payment powered
+                by Razorpay
               </p>
             </div>
           </motion.div>
@@ -1778,23 +1765,83 @@ const plans: Plan[] = [
 
 // Comparison Features
 const comparisonFeatures = [
-  { name: "Resume Templates", free: "1 Basic", pro: "3 Templates", proPlus: "5 Professional", premium: "All Premium" },
-  { name: "ATS Optimization", free: "Basic Check", pro: "Basic", proPlus: "Advanced", premium: "Premium + High Match" },
-  { name: "AI Resume Writing", free: "Limited", pro: "Basic", proPlus: "Smart", premium: "Unlimited" },
-  { name: "Profile Photo", free: "❌", pro: "✅", proPlus: "✅", premium: "✅" },
-  { name: "Cover Letter Builder", free: "❌", pro: "❌", proPlus: "✅", premium: "✅" },
-  { name: "Interview Kit", free: "❌", pro: "❌", proPlus: "❌", premium: "✅" },
-  { name: "Best For", free: "Trial", pro: "Beginners", proPlus: "Job Seekers", premium: "Career Growth" },
+  {
+    name: "Resume Templates",
+    free: "1 Basic",
+    pro: "3 Templates",
+    proPlus: "5 Professional",
+    premium: "All Premium",
+  },
+  {
+    name: "ATS Optimization",
+    free: "Basic Check",
+    pro: "Basic",
+    proPlus: "Advanced",
+    premium: "Premium + High Match",
+  },
+  {
+    name: "AI Resume Writing",
+    free: "Limited",
+    pro: "Basic",
+    proPlus: "Smart",
+    premium: "Unlimited",
+  },
+  {
+    name: "Profile Photo",
+    free: "❌",
+    pro: "✅",
+    proPlus: "✅",
+    premium: "✅",
+  },
+  {
+    name: "Cover Letter Builder",
+    free: "❌",
+    pro: "❌",
+    proPlus: "✅",
+    premium: "✅",
+  },
+  {
+    name: "Interview Kit",
+    free: "❌",
+    pro: "❌",
+    proPlus: "❌",
+    premium: "✅",
+  },
+  {
+    name: "Best For",
+    free: "Trial",
+    pro: "Beginners",
+    proPlus: "Job Seekers",
+    premium: "Career Growth",
+  },
 ];
 
 // FAQ Data
 const faqs = [
-  { q: "Can I switch plans later?", a: "Yes. You can upgrade or downgrade anytime. Your access updates instantly." },
-  { q: "What payment methods do you accept?", a: "We accept UPI, debit cards, credit cards, and all major payment methods." },
-  { q: "Is there a free plan?", a: "Yes. You can create and download a basic resume for free forever." },
-  { q: "Can I cancel my subscription?", a: "Yes, you can cancel anytime from your dashboard." },
-  { q: "Is my payment secure?", a: "Yes, all payments are processed securely via Razorpay." },
-  { q: "Do you offer refunds?", a: "Please contact support for refund inquiries." },
+  {
+    q: "Can I switch plans later?",
+    a: "Yes. You can upgrade or downgrade anytime. Your access updates instantly.",
+  },
+  {
+    q: "What payment methods do you accept?",
+    a: "We accept UPI, debit cards, credit cards, and all major payment methods.",
+  },
+  {
+    q: "Is there a free plan?",
+    a: "Yes. You can create and download a basic resume for free forever.",
+  },
+  {
+    q: "Can I cancel my subscription?",
+    a: "Yes, you can cancel anytime from your dashboard.",
+  },
+  {
+    q: "Is my payment secure?",
+    a: "Yes, all payments are processed securely via Razorpay.",
+  },
+  {
+    q: "Do you offer refunds?",
+    a: "Please contact support for refund inquiries.",
+  },
 ];
 
 // Main Component
@@ -1807,13 +1854,14 @@ export default function ChoosePlanPage() {
   const [loading, setLoading] = useState(false);
   const [userId, setUserId] = useState<string>("");
   const [userEmail, setUserEmail] = useState<string>("");
-  const [usersCurrentPlan, setUsersCurrentPlan] = useState<usersCurrentPlan | null>(null);
+  const [usersCurrentPlan, setUsersCurrentPlan] =
+    useState<usersCurrentPlan | null>(null);
 
   useEffect(() => {
     const userDetails = getLocalStorage<User>("user_details");
     setUserEmail(userDetails?.email || "");
     setUserId(userDetails?.id || "");
-    
+
     const fetchUserData = async () => {
       try {
         const response = await axios.get(`${API_URL}/api/users/dashboard`, {
@@ -1830,10 +1878,10 @@ export default function ChoosePlanPage() {
 
   const handleSelectPlan = async (plan: Plan) => {
     if (!userDetails) {
-      router.push('/login');
+      router.push("/login");
       return;
     }
-    
+
     if (plan.price === 0) {
       setLoading(true);
       try {
@@ -1843,14 +1891,21 @@ export default function ChoosePlanPage() {
         });
         toast.success("Free Plan Activated!", {
           duration: 3000,
-          icon: '🎉',
-          style: { background: '#10b981', color: '#fff', borderRadius: '12px' },
+          icon: "🎉",
+          style: { background: "#10b981", color: "#fff", borderRadius: "12px" },
         });
       } catch (error: any) {
-        toast.error(error?.response?.data?.message || "Failed to activate free plan", {
-          duration: 3000,
-          style: { background: '#ef4444', color: '#fff', borderRadius: '12px' },
-        });
+        toast.error(
+          error?.response?.data?.message || "Failed to activate free plan",
+          {
+            duration: 3000,
+            style: {
+              background: "#ef4444",
+              color: "#fff",
+              borderRadius: "12px",
+            },
+          },
+        );
       } finally {
         setLoading(false);
       }
@@ -1860,8 +1915,6 @@ export default function ChoosePlanPage() {
     }
   };
 
-  console.log("selectedPlan",selectedPlan)
-
   const handlePaymentSuccess = () => {
     router.push("/choose-template");
   };
@@ -1869,13 +1922,11 @@ export default function ChoosePlanPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50/30 via-white to-indigo-50/30">
       <Toaster position="top-right" />
-      
-      
 
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700">
         <div className="absolute inset-0 bg-black/20"></div>
-        
+
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -1883,7 +1934,7 @@ export default function ChoosePlanPage() {
             transition={{ duration: 0.6 }}
             className="text-center"
           >
-            <motion.div 
+            <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
@@ -1901,13 +1952,18 @@ export default function ChoosePlanPage() {
               </span>
             </h1>
             <p className="text-xl text-white/90 max-w-2xl mx-auto">
-              Get the tools you need to create professional resumes and land your dream job
+              Get the tools you need to create professional resumes and land
+              your dream job
             </p>
           </motion.div>
         </div>
 
         <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="w-full h-16">
+          <svg
+            viewBox="0 0 1440 120"
+            preserveAspectRatio="none"
+            className="w-full h-16"
+          >
             <path d="M0 120L1440 0V120H0Z" fill="white" />
           </svg>
         </div>
@@ -1918,7 +1974,8 @@ export default function ChoosePlanPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {plans.map((plan, index) => {
             const isHovered = hoveredPlan === plan.id;
-            const isSamePlan = plan.name.toLowerCase() === usersCurrentPlan?.plan?.toLowerCase();
+            const isSamePlan =
+              plan.name.toLowerCase() === usersCurrentPlan?.plan?.toLowerCase();
 
             return (
               <motion.div
@@ -1933,42 +1990,30 @@ export default function ChoosePlanPage() {
                 {/* Animated border glow */}
                 <motion.div
                   className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl opacity-0 blur-xl"
-                  animate={{ opacity: isHovered ? 0.5 : 0 }}
+                  animate={{ opacity: isHovered ? 0.2 : 0 }}
                   transition={{ duration: 0.3 }}
                 />
-                
+
                 <motion.div
                   animate={{ y: isHovered ? -8 : 0 }}
                   transition={{ duration: 0.3, type: "spring", stiffness: 300 }}
                   className="relative h-full bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300"
                 >
-                  {/* Popular Badge */}
-                  {plan.popular && (
-                    <motion.div 
-                      initial={{ x: 100 }}
-                      animate={{ x: 0 }}
-                      transition={{ delay: 0.3 }}
-                      className="absolute top-4 right-4 z-10"
-                    >
-                      <div className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-lg">
-                        <IoFlash className="w-3 h-3" /> MOST POPULAR
-                      </div>
-                    </motion.div>
-                  )}
+                
 
                   {/* Card Header */}
-                  <motion.div 
+                  <motion.div
                     className={`bg-gradient-to-r ${plan.color} p-6 text-white relative overflow-hidden`}
                     whileHover={{ scale: 1.02 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <motion.div 
+                    <motion.div
                       className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"
                       animate={{ scale: isHovered ? 1.2 : 1 }}
                       transition={{ duration: 0.3 }}
                     />
                     <div className="relative">
-                      <motion.div 
+                      <motion.div
                         className="inline-flex p-3 bg-white/20 rounded-xl backdrop-blur-sm mb-4"
                         animate={{ rotate: isHovered ? 10 : 0 }}
                         transition={{ duration: 0.3 }}
@@ -1976,19 +2021,23 @@ export default function ChoosePlanPage() {
                         {plan.icon}
                       </motion.div>
                       <h3 className="text-2xl font-bold mb-1">{plan.name}</h3>
-                      <p className="text-white/80 text-sm mb-3">{plan.description}</p>
+                      <p className="text-white/80 text-sm mb-3">
+                        {plan.description}
+                      </p>
                       <div className="flex items-baseline gap-1">
-                        <motion.span 
+                        <motion.span
                           className="text-4xl font-bold"
                           animate={{ scale: isHovered ? 1.05 : 1 }}
                           transition={{ duration: 0.2 }}
                         >
                           ₹{plan.price}
                         </motion.span>
-                        <span className="text-white/80 text-sm">/{plan.interval}</span>
+                        <span className="text-white/80 text-sm">
+                          /{plan.interval}
+                        </span>
                       </div>
                       {plan.badge && !isSamePlan && (
-                        <motion.span 
+                        <motion.span
                           initial={{ opacity: 0, x: 20 }}
                           animate={{ opacity: 1, x: 0 }}
                           className="absolute top-0 right-0 px-2 py-1 bg-white/20 rounded-full text-xs backdrop-blur-sm"
@@ -2008,7 +2057,7 @@ export default function ChoosePlanPage() {
                   <div className="p-6">
                     <ul className="space-y-3 mb-6">
                       {plan.features.map((feature, idx) => (
-                        <motion.li 
+                        <motion.li
                           key={idx}
                           initial={{ opacity: 0, x: -10 }}
                           animate={{ opacity: 1, x: 0 }}
@@ -2016,8 +2065,8 @@ export default function ChoosePlanPage() {
                           whileHover={{ x: 3 }}
                           className="flex items-start gap-2 group"
                         >
-                          <motion.div 
-                            className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${feature.included ? 'bg-emerald-100' : 'bg-gray-100'}`}
+                          <motion.div
+                            className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${feature.included ? "bg-emerald-100" : "bg-gray-100"}`}
                             whileHover={{ scale: 1.1 }}
                           >
                             {feature.included ? (
@@ -2026,7 +2075,9 @@ export default function ChoosePlanPage() {
                               <FiX className="w-3 h-3 text-gray-400" />
                             )}
                           </motion.div>
-                          <span className={`text-sm ${feature.highlight ? "text-gray-900 font-semibold" : "text-gray-700"} group-hover:text-gray-900 transition-colors`}>
+                          <span
+                            className={`text-sm ${feature.highlight ? "text-gray-900 font-semibold" : "text-gray-700"} group-hover:text-gray-900 transition-colors`}
+                          >
                             {feature.name}
                           </span>
                         </motion.li>
@@ -2035,7 +2086,7 @@ export default function ChoosePlanPage() {
 
                     {/* Action Button */}
                     {isSamePlan ? (
-                      <motion.button 
+                      <motion.button
                         whileHover={{ scale: 1.02 }}
                         className="w-full py-3 bg-emerald-50 text-emerald-600 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 cursor-default border border-emerald-200"
                       >
@@ -2047,12 +2098,14 @@ export default function ChoosePlanPage() {
                         whileTap={{ scale: 0.98 }}
                         onClick={() => handleSelectPlan(plan)}
                         disabled={loading}
-                        className={`w-full py-3 rounded-xl font-semibold text-sm transition-all duration-300 relative overflow-hidden group ${plan.price === 0 ? "bg-gray-100 text-gray-700 hover:bg-gray-200" : `bg-gradient-to-r ${plan.color} text-white shadow-lg`}`}
+                        className={`w-full py-3 rounded-xl font-semibold text-sm transition-all duration-300 relative overflow-hidden cursor-pointer group ${plan.price === 0 ? "bg-gray-100 text-gray-700 hover:bg-gray-200" : `bg-gradient-to-r ${plan.color} text-white shadow-lg`}`}
                       >
                         <span className="relative z-10">
-                          {plan.price === 0 ? "Switch to Free" : `Upgrade to ${plan.name}`}
+                          {plan.price === 0
+                            ? "Switch to Free"
+                            : `Upgrade to ${plan.name}`}
                         </span>
-                        <motion.div 
+                        <motion.div
                           className="absolute inset-0 bg-white/20 -translate-x-full group-hover:translate-x-0 transition-transform duration-500"
                           initial={false}
                         />
@@ -2066,29 +2119,50 @@ export default function ChoosePlanPage() {
         </div>
 
         {/* Stats Section */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.5 }}
           className="mt-20 grid grid-cols-1 sm:grid-cols-3 gap-6"
         >
           {[
-            { icon: FiUsers, value: "10,000+", label: "Active Users", color: "indigo", bg: "bg-indigo-100", text: "text-indigo-600" },
-            { icon: FiBriefcase, value: "50,000+", label: "Resumes Created", color: "purple", bg: "bg-purple-100", text: "text-purple-600" },
-            { icon: FiTrendingUp, value: "85%", label: "Interview Success", color: "emerald", bg: "bg-emerald-100", text: "text-emerald-600" },
+            {
+              icon: FiUsers,
+              value: "10,000+",
+              label: "Active Users",
+              color: "indigo",
+              bg: "bg-indigo-100",
+              text: "text-indigo-600",
+            },
+            {
+              icon: FiBriefcase,
+              value: "50,000+",
+              label: "Resumes Created",
+              color: "purple",
+              bg: "bg-purple-100",
+              text: "text-purple-600",
+            },
+            {
+              icon: FiTrendingUp,
+              value: "85%",
+              label: "Interview Success",
+              color: "emerald",
+              bg: "bg-emerald-100",
+              text: "text-emerald-600",
+            },
           ].map((stat, idx) => (
             <motion.div
               key={idx}
               whileHover={{ y: -5, scale: 1.02 }}
               className="bg-white rounded-2xl p-6 text-center border border-gray-100 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
             >
-              <motion.div 
+              <motion.div
                 className={`w-12 h-12 ${stat.bg} rounded-xl flex items-center justify-center mx-auto mb-3`}
                 whileHover={{ rotate: 5, scale: 1.1 }}
               >
                 <stat.icon className={`w-6 h-6 ${stat.text}`} />
               </motion.div>
-              <motion.p 
+              <motion.p
                 className="text-2xl font-bold text-gray-900"
                 initial={{ opacity: 0, scale: 0.5 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -2102,25 +2176,33 @@ export default function ChoosePlanPage() {
         </motion.div>
 
         {/* Comparison Table */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 0.5 }}
           className="mt-20"
         >
           <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">Compare All Features</h2>
-            <p className="text-gray-500 max-w-2xl mx-auto">See exactly what you get with each plan</p>
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">
+              Compare All Features
+            </h2>
+            <p className="text-gray-500 max-w-2xl mx-auto">
+              See exactly what you get with each plan
+            </p>
           </div>
 
           <div className="overflow-x-auto bg-white rounded-2xl shadow-xl border border-gray-100">
             <table className="w-full min-w-[600px]">
               <thead>
                 <tr className="border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
-                  <th className="p-5 text-left text-sm font-semibold text-gray-900">Features</th>
+                  <th className="p-5 text-left text-sm font-semibold text-gray-900">
+                    Features
+                  </th>
                   {plans.map((plan) => (
                     <th key={plan.id} className="p-5 text-center">
-                      <div className={`inline-block text-sm font-bold bg-gradient-to-r ${plan.color} bg-clip-text text-transparent`}>
+                      <div
+                        className={`inline-block text-sm font-bold bg-gradient-to-r ${plan.color} bg-clip-text text-transparent`}
+                      >
                         {plan.name}
                       </div>
                     </th>
@@ -2129,17 +2211,27 @@ export default function ChoosePlanPage() {
               </thead>
               <tbody>
                 {comparisonFeatures.map((feature, idx) => (
-                  <motion.tr 
-                    key={idx} 
+                  <motion.tr
+                    key={idx}
                     className="border-b border-gray-100 hover:bg-indigo-50/30 transition-all duration-200"
                     whileHover={{ scale: 1.01 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <td className="p-5 text-sm font-medium text-gray-900">{feature.name}</td>
-                    <td className="p-5 text-center text-sm text-gray-600">{feature.free}</td>
-                    <td className="p-5 text-center text-sm text-gray-600 font-medium">{feature.pro}</td>
-                    <td className="p-5 text-center text-sm text-gray-600 font-medium">{feature.proPlus}</td>
-                    <td className="p-5 text-center text-sm text-gray-600 font-medium">{feature.premium}</td>
+                    <td className="p-5 text-sm font-medium text-gray-900">
+                      {feature.name}
+                    </td>
+                    <td className="p-5 text-center text-sm text-gray-600">
+                      {feature.free}
+                    </td>
+                    <td className="p-5 text-center text-sm text-gray-600 font-medium">
+                      {feature.pro}
+                    </td>
+                    <td className="p-5 text-center text-sm text-gray-600 font-medium">
+                      {feature.proPlus}
+                    </td>
+                    <td className="p-5 text-center text-sm text-gray-600 font-medium">
+                      {feature.premium}
+                    </td>
                   </motion.tr>
                 ))}
               </tbody>
@@ -2148,15 +2240,19 @@ export default function ChoosePlanPage() {
         </motion.div>
 
         {/* FAQ Section */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7, duration: 0.5 }}
           className="mt-20"
         >
           <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">Frequently Asked Questions</h2>
-            <p className="text-gray-500 max-w-2xl mx-auto">Everything you need to know about our plans</p>
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-gray-500 max-w-2xl mx-auto">
+              Everything you need to know about our plans
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -2179,20 +2275,34 @@ export default function ChoosePlanPage() {
         </motion.div>
 
         {/* Trust Section */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.9 }}
           className="mt-20 text-center"
         >
-          <p className="text-xs text-gray-400 mb-6">Trusted by professionals from leading companies</p>
+          <p className="text-xs text-gray-400 mb-6">
+            Trusted by professionals from leading companies
+          </p>
           <div className="flex flex-wrap justify-center items-center gap-8 opacity-50">
-            <span className="text-base font-semibold text-gray-500 hover:text-gray-700 transition-colors cursor-pointer">Google</span>
-            <span className="text-base font-semibold text-gray-500 hover:text-gray-700 transition-colors cursor-pointer">Microsoft</span>
-            <span className="text-base font-semibold text-gray-500 hover:text-gray-700 transition-colors cursor-pointer">Amazon</span>
-            <span className="text-base font-semibold text-gray-500 hover:text-gray-700 transition-colors cursor-pointer">Meta</span>
-            <span className="text-base font-semibold text-gray-500 hover:text-gray-700 transition-colors cursor-pointer">Apple</span>
-            <span className="text-base font-semibold text-gray-500 hover:text-gray-700 transition-colors cursor-pointer">Netflix</span>
+            <span className="text-base font-semibold text-gray-500 hover:text-gray-700 transition-colors cursor-pointer">
+              Google
+            </span>
+            <span className="text-base font-semibold text-gray-500 hover:text-gray-700 transition-colors cursor-pointer">
+              Microsoft
+            </span>
+            <span className="text-base font-semibold text-gray-500 hover:text-gray-700 transition-colors cursor-pointer">
+              Amazon
+            </span>
+            <span className="text-base font-semibold text-gray-500 hover:text-gray-700 transition-colors cursor-pointer">
+              Meta
+            </span>
+            <span className="text-base font-semibold text-gray-500 hover:text-gray-700 transition-colors cursor-pointer">
+              Apple
+            </span>
+            <span className="text-base font-semibold text-gray-500 hover:text-gray-700 transition-colors cursor-pointer">
+              Netflix
+            </span>
           </div>
         </motion.div>
       </div>
@@ -2212,18 +2322,3 @@ export default function ChoosePlanPage() {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

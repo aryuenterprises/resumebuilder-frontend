@@ -60,7 +60,6 @@ export function ResumeDataFetcher({ children }: ResumeDataFetcherProps) {
   }, [pathname, isResumeDetailPage, clearUploadMode]);
 
   // console.log(con)
-  console.log("contact id", contact._id);
 
   useEffect(() => {
     // Skip data fetching if:
@@ -123,7 +122,6 @@ export function ResumeDataFetcher({ children }: ResumeDataFetcherProps) {
           if (fullResponse.data?.data?.length > 0) {
             const data = fullResponse.data.data[0];
 
-            console.log("data",data)
 
             // Update all contexts with existing data
             if (data?.contact) {

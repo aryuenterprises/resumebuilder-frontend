@@ -1046,7 +1046,6 @@ const Education_form = () => {
     setEducation: () => {},
   };
 
-  console.log("education",education)
 
   const [showPopup, setShowPopup] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -1315,8 +1314,6 @@ const Education_form = () => {
     return `CGPA: ${grade}`;
   };
 
-
-  console.log("education",education)
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-indigo-50/40">

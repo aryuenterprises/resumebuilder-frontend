@@ -7727,37 +7727,6 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
     }
   }
 
-  /* RESPONSIVE */
-  @media (max-width: 768px) {
-    .t1-resume {
-      width: 100%;
-      padding: 10mm;
-    }
-
-    .t1-resume .skills-list {
-      gap: 4px;
-    }
-    
-    .t1-resume .skill-tag {
-      padding: 3px 8px;
-      font-size: 11px;
-    }
-
-    .t1-resume .item-header {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
-    .t1-resume .item-date {
-      text-align: left;
-      margin-top: 2px;
-    }
-    
-    .t1-resume .project-header {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-  }
 `;
 
   /* =====================================================

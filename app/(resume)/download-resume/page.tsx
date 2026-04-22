@@ -10,13 +10,10 @@ import ProtectedRoute from "@/app/utils/ProtectedRoute";
 const page = () => {
   const chosenTemplate = getLocalStorage<Template>("chosenTemplate");
 
-  console.log("chosenTemplate",chosenTemplate)
-
   const selectedResume = templateData.find(
     (resume) => resume.id == chosenTemplate?.id || chosenTemplate?.templateId,
   );
 
-  console.log("selectedResume",selectedResume)
 
   const SelectedComponent = selectedResume?.component;
 

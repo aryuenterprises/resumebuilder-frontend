@@ -2504,7 +2504,6 @@ import { ResumeProps } from "@/app/types";
 
 const TemplateEight: React.FC<ResumeProps> = ({ alldata }) => {
   const context = useContext(CreateContext);
-  console.log("context,", context);
 
   const pathname = usePathname();
   const lastSegment = pathname.split("/").pop();

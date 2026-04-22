@@ -1516,8 +1516,7 @@ function Choose_template() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   {/* Create New Resume Card */}
                   <motion.div
-                                        onClick={handleCreateNew}
-
+                    onClick={handleCreateNew}
                     initial={{ x: -20, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ delay: 0.3 }}
@@ -1545,10 +1544,10 @@ function Choose_template() {
 
                   {/* Improve Existing Resume Card */}
                   <motion.div
-                   onClick={() => {
-                        setShowInitialPopup(false);
-                        setShowUploadPopup(true);
-                      }}
+                    onClick={() => {
+                      setShowInitialPopup(false);
+                      setShowUploadPopup(true);
+                    }}
                     initial={{ x: 20, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ delay: 0.4 }}
@@ -1964,10 +1963,10 @@ function Choose_template() {
                     transition={{ duration: 0.3 }}
                     className="relative bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300"
                   >
-                    <div className="relative bg-gray-50 p-6">
+                    <div className="relative bg-gray-50 p-3">
                       {isPremium && (
                         <div
-                          className={`absolute top-3 left-3 ${PLAN_CONFIG[requiredPlan].badgeColor} px-2 py-0.5 rounded-full text-xs font-bold z-10 flex items-center gap-1 shadow-sm`}
+                          className={`absolute top-3 right-3 ${PLAN_CONFIG[requiredPlan].badgeColor} px-2 py-0.5 rounded-full text-xs font-bold z-10 flex items-center gap-1 shadow-sm`}
                         >
                           {requiredPlan === "premium" ? (
                             <Crown className="w-3 h-3" />
@@ -1977,12 +1976,12 @@ function Choose_template() {
                           <span>{requiredPlanLabel}</span>
                         </div>
                       )}
-                      <div className="relative w-full h-64">
+                      <div className="relative w-full h-90">
                         <Image
                           src={template.image}
                           alt={template?.style || "Template"}
                           fill
-                          className="object-contain transition-transform duration-500 group-hover:scale-105"
+                          className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
                         />
                       </div>
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300">

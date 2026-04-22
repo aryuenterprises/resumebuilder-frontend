@@ -2867,16 +2867,16 @@ const ATSCheckerPage = () => {
                   <div className="flex items-center justify-between">
                     <button
                       onClick={removeFile}
-                      className="text-sm text-gray-600 hover:text-gray-900 font-medium flex items-center gap-2 group"
+                      className="text-sm text-gray-600 hover:text-gray-900 font-medium flex items-center gap-2 group cursor-pointer"
                     >
                       <FiRefreshCw className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" />
                       Analyze New Resume
                     </button>
-                    <button className="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-xl font-medium shadow-md hover:shadow-lg transition-all flex items-center gap-2 group hover:scale-105">
+                    {/* <button className="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-xl font-medium shadow-md hover:shadow-lg transition-all flex items-center gap-2 group hover:scale-105">
                       <FaRocket className="w-4 h-4 group-hover:rotate-12 transition-transform" />
                       Optimize Resume
                       <FiArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </button>
+                    </button> */}
                   </div>
                 </div>
               </div>

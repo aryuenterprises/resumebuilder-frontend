@@ -1300,8 +1300,7 @@ const ContactForm = () => {
   };
 
   const saveToAPI = async (contactData: typeof contact) => {
-    console.log(contact);
-    console.log(contactId);
+   
     if (!userId) {
       console.error("User ID is required");
       return false;
@@ -1312,7 +1311,6 @@ const ContactForm = () => {
     try {
       const fd = new FormData();
 
-      console.log("fd", fd);
 
       fd.append("userId", userId);
       fd.append("firstName", contactData.firstName || "");
@@ -1371,8 +1369,7 @@ const ContactForm = () => {
         },
       );
 
-      console.log(response.data);
-      console.log(response.data.resume._id);
+
       setContact((prev) => ({ ...prev, contactId: response.data.resume._id }));
       fetchContact(response.data.resume._id);
       return true;
@@ -1445,7 +1442,6 @@ const ContactForm = () => {
   };
 
   const debouncedSave = useCallback((contactData: typeof contact) => {
-    console.log("contactData", contactData);
 
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current);
@@ -1456,8 +1452,7 @@ const ContactForm = () => {
   }, []);
 
   const handleContactChange = (field: keyof typeof contact, value: string) => {
-    console.log("field", field);
-    console.log("value", value);
+   
 
     setContact((prev) => {
       const updated = { ...prev, [field]: value };
@@ -1518,7 +1513,7 @@ const ContactForm = () => {
   const handleDeletePhoto = () => {
     setContact((prev) => {
       const updated = { ...prev, croppedImage: null };
-      saveToAPI(updated);
+      // saveToAPI(updated);
       return updated;
     });
   };
@@ -1535,6 +1530,8 @@ const ContactForm = () => {
   const [showAdditional, setShowAdditional] = useState<boolean>(false);
 
   const [contactTipsClicked, setContactTipsClicked] = useState(false);
+
+
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-indigo-50/40">

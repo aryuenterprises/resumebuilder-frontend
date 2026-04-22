@@ -10,13 +10,13 @@ export interface Contact {
   phone?: string;
   email?: string;
   linkedin?: string;
-    github?: string;
+  github?: string;
   portfolio: string;
   address: string;
   city: string;
   country: string;
   postcode: string;
-  photo?: string;
+  photo?: string | null;
   croppedImage: string | null;
 }
 export interface Experience {
@@ -25,7 +25,7 @@ export interface Experience {
   employer?: string;
   startDate?: string;
   endDate?: string;
-  isCurrentlyWorking?:boolean;
+  isCurrentlyWorking?: boolean;
   text?: string;
   location?: string;
   isOpen?: boolean;
@@ -40,8 +40,8 @@ export interface Education {
   text: string;
   startDate: string | null | undefined;
   endDate: string | null | undefined;
-  grade?:string;
-  isCurrentlyStudying?:boolean;
+  grade?: string;
+  isCurrentlyStudying?: boolean;
   isOpen: boolean;
   showPicker: boolean;
   year: number;
@@ -73,9 +73,6 @@ export interface SkillCategory {
   skills: CategorySkill[];
   isOpen?: boolean;
 }
-
-
-
 
 // Combined skills type
 export type SkillsType = SimpleSkill[] | SkillCategory[];
