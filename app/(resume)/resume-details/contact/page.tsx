@@ -1221,7 +1221,7 @@ import { IoIosArrowDown } from "react-icons/io";
 const ContactForm = () => {
   const router = useRouter();
 
-    const [showAdditional, setShowAdditional] = useState<boolean>(false);
+  const [showAdditional, setShowAdditional] = useState<boolean>(false);
   const [contactTipsClicked, setContactTipsClicked] = useState(false);
   const userDetails = getLocalStorage<User>("user_details");
   const userId = userDetails?.id;
@@ -1332,19 +1332,19 @@ const ContactForm = () => {
       }
 
       if (
-        contactData.croppedImage &&
-        (contactData.croppedImage.startsWith("blob:") ||
-          contactData.croppedImage.startsWith("data:image"))
+        contactData.photo &&
+        (contactData.photo.startsWith("blob:") ||
+          contactData.photo.startsWith("data:image"))
       ) {
         let fileImage;
 
-        if (contactData.croppedImage.startsWith("blob:")) {
+        if (contactData.photo.startsWith("blob:")) {
           fileImage = await blobUrlToFile(
-            contactData.croppedImage,
+            contactData.photo,
             "profile.jpg",
           );
-        } else if (contactData.croppedImage.startsWith("data:image")) {
-          fileImage = base64ToFile(contactData.croppedImage, "profile.jpg");
+        } else if (contactData.photo.startsWith("data:image")) {
+          fileImage = base64ToFile(contactData.photo, "profile.jpg");
         }
 
         if (fileImage) {
@@ -1410,7 +1410,7 @@ const ContactForm = () => {
         postcode: data?.postCode || "",
         linkedin: data?.linkedIn || "",
         portfolio: data?.portfolio || "",
-        croppedImage: data?.photo || null,
+        photo: data?.photo || null,
       };
 
       setContact(updatedContact);
@@ -1494,8 +1494,8 @@ const ContactForm = () => {
       );
 
       setContact((prev) => {
-        const updated = { ...prev, croppedImage: croppedBlob as string };
-        saveToAPI(updated);
+        const updated = { ...prev, photo: croppedBlob as string };
+        // saveToAPI(updated);
         return updated;
       });
 
@@ -1508,7 +1508,7 @@ const ContactForm = () => {
 
   const handleDeletePhoto = () => {
     setContact((prev) => {
-      const updated = { ...prev, croppedImage: null };
+      const updated = { ...prev, photo: null };
       // saveToAPI(updated);
       return updated;
     });
@@ -1523,7 +1523,7 @@ const ContactForm = () => {
     router.push("/resume-details/experience");
   };
 
-
+console.log("contact",contact)
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-indigo-50/40">
@@ -1590,20 +1590,20 @@ const ContactForm = () => {
               {chosenResumeDetails?.pic === "true" && (
                 <div className="bg-gradient-to-r from-indigo-50/50 to-purple-50/50 p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-indigo-100">
                   <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
-                    {contact.croppedImage ? (
+                    {contact.photo ? (
                       <div className="relative group self-center sm:self-auto">
                         <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl sm:rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         <div className="relative">
-                          {contact.croppedImage.startsWith("blob:") ||
-                          contact.croppedImage.startsWith("data:") ? (
+                          {contact.photo.startsWith("blob:") ||
+                          contact.photo.startsWith("data:") ? (
                             <img
-                              src={contact.croppedImage}
+                              src={contact.photo}
                               alt="Profile"
                               className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl sm:rounded-2xl object-cover border-4 border-white shadow-xl"
                             />
                           ) : (
                             <img
-                              src={`${API_URL}/api/uploads/photos/${contact.croppedImage}`}
+                              src={`${API_URL}/api/uploads/photos/${contact.photo}`}
                               alt="Profile"
                               className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl sm:rounded-2xl object-cover border-4 border-white shadow-xl"
                             />
@@ -1635,7 +1635,7 @@ const ContactForm = () => {
                         impression
                       </p>
                       <div className="flex flex-wrap gap-2 sm:gap-3 justify-center sm:justify-start">
-                        {!contact.croppedImage ? (
+                        {!contact.photo ? (
                           <button
                             type="button"
                             onClick={() => setOpen(true)}
@@ -1958,7 +1958,7 @@ const ContactForm = () => {
 
       {/* Sticky Footer Buttons - Always at bottom - Responsive */}
       <div className="sticky bottom-0 z-20 bg-white/80 backdrop-blur-md border-t border-gray-100 shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 ">
           <div className="flex justify-between items-center gap-3">
             <button
               className="text-xs sm:text-sm font-medium text-gray-500 hover:text-indigo-600 transition flex items-center gap-1 cursor-pointer"
@@ -1967,7 +1967,7 @@ const ContactForm = () => {
               ← Back to Templates
             </button>
             <button
-              className="px-4 sm:px-6 py-2 sm:py-2.5 md:py-3 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white t font-semibold rounded-lg sm:rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer"
+              className="px-4 sm:px-6 py-2 sm:py-2.5  bg-gradient-to-r from-indigo-600 to-indigo-500 text-white t font-medium rounded-lg sm:rounded-xl shadow-md transition-all hover:shadow-indigo-300 flex items-center gap-1.5 sm:gap-2 cursor-pointer"
               onClick={handleNext}
             >
               <span>Continue to Experience</span>

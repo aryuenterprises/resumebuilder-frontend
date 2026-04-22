@@ -75,19 +75,18 @@ export default function RootLayout({
           </button>
         </div> */}
 
-
-<div
-  className="absolute top-4 right-4 z-10"
-  onMouseEnter={() => setIsHovered(true)}
-  onMouseLeave={() => setIsHovered(false)}
->
-  <motion.button
-    onClick={() => router.push("/change-template")}
-    initial={{ opacity: 0, x: 20 }}
-    animate={{ opacity: 1, x: 0 }}
-    whileHover={{ scale: 1.02, y: -2 }}
-    whileTap={{ scale: 0.98 }}
-    className={`
+        <div
+          className="absolute top-4 right-4 z-10"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          <motion.button
+            onClick={() => router.push("/change-template")}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            whileHover={{ scale: 1.02, y: -2 }}
+            whileTap={{ scale: 0.98 }}
+            className={`
       flex items-center gap-2 px-4 py-2.5 
       bg-white/80 backdrop-blur-md 
       border border-gray-200/50 hover:border-indigo-400 
@@ -96,36 +95,36 @@ export default function RootLayout({
       transition-all duration-300 group cursor-pointer
       ${isHovered ? "shadow-lg bg-white" : ""}
     `}
-  >
-    {/* Animated Icon Container */}
-    <div className="relative">
-      <motion.div
-        animate={{ rotate: isHovered ? 180 : 0 }}
-        transition={{ duration: 0.3, type: "spring", stiffness: 200 }}
-        className="p-0.5"
-      >
-        <FiLayout className="w-4 h-4" />
-      </motion.div>
-      {/* Glow effect on hover */}
-      {isHovered && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="absolute inset-0 bg-indigo-400 rounded-full blur-md -z-10"
-        />
-      )}
-    </div>
+          >
+            {/* Animated Icon Container */}
+            <div className="relative">
+              <motion.div
+                animate={{ rotate: isHovered ? 180 : 0 }}
+                transition={{ duration: 0.3, type: "spring", stiffness: 200 }}
+                className="p-0.5"
+              >
+                <FiLayout className="w-4 h-4" />
+              </motion.div>
+              {/* Glow effect on hover */}
+              {isHovered && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="absolute inset-0 bg-indigo-400 rounded-full blur-md -z-10"
+                />
+              )}
+            </div>
 
-    <span className="text-sm font-medium">Change Template</span>
+            <span className="text-sm font-medium">Change Template</span>
 
-    <motion.div
-      animate={{ x: isHovered ? 5 : 0 }}
-      transition={{ duration: 0.3, type: "spring", stiffness: 300 }}
-    >
-      <FiChevronRight className="w-4 h-4" />
-    </motion.div>
-  </motion.button>
-</div>
+            <motion.div
+              animate={{ x: isHovered ? 5 : 0 }}
+              transition={{ duration: 0.3, type: "spring", stiffness: 300 }}
+            >
+              <FiChevronRight className="w-4 h-4" />
+            </motion.div>
+          </motion.button>
+        </div>
         {SelectedComponent && (
           <SimpleCanvasPreview>
             <SelectedComponent />

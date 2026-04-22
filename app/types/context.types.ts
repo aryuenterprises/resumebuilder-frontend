@@ -20,7 +20,7 @@ export interface Contact {
   croppedImage: string | null;
 }
 export interface Experience {
-  id: number | string;
+  _id: number | string;
   jobTitle?: string;
   employer?: string;
   startDate?: string;
@@ -33,7 +33,7 @@ export interface Experience {
   year?: number;
 }
 export interface Education {
-  id: string | number;
+  _id: string | number;
   schoolname: string;
   degree: string;
   location: string;

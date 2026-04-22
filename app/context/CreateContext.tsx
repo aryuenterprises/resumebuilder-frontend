@@ -86,7 +86,7 @@ export const CreateProvider: React.FC<CreateProviderProps> = ({ children }) => {
 
     setExperiences([
       {
-        id: Date.now(),
+        _id: Date.now(),
         jobTitle: "",
         employer: "",
         location: "",
@@ -101,7 +101,7 @@ export const CreateProvider: React.FC<CreateProviderProps> = ({ children }) => {
 
     setEducation([
       {
-        id: Date.now(),
+        _id: Date.now(),
         schoolname: "",
         degree: "",
         location: "",
@@ -149,11 +149,12 @@ export const CreateProvider: React.FC<CreateProviderProps> = ({ children }) => {
     country: "",
     postcode: "",
     croppedImage: null,
+    photo: null,
   });
 
   const [experiences, setExperiences] = useState<Experience[]>([
     {
-      id: Date.now(),
+      _id: Date.now(),
       jobTitle: "",
       employer: "",
       location: "",
@@ -168,7 +169,7 @@ export const CreateProvider: React.FC<CreateProviderProps> = ({ children }) => {
 
   const [education, setEducation] = useState<Education[]>([
     {
-      id: Date.now(),
+      _id: Date.now(),
       schoolname: "",
       degree: "",
       location: "",

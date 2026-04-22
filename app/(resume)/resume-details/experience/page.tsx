@@ -1069,7 +1069,7 @@ const ExperienceForm = () => {
     setExperiences([
       ...experiences,
       {
-        id: Date.now(),
+        _id: Date.now(),
         jobTitle: "",
         employer: "",
         location: "",
@@ -1128,12 +1128,12 @@ const ExperienceForm = () => {
       return false;
     }
 
-    const currentDataString = JSON.stringify(experiencesData);
-    if (currentDataString === lastSavedData) {
-      return true;
-    }
+    // const currentDataString = JSON.stringify(experiencesData);
+    // if (currentDataString === lastSavedData) {
+    //   return true;
+    // }
 
-    setIsSaving(true);
+    // setIsSaving(true);
 
     try {
       const formData = {
@@ -1146,7 +1146,7 @@ const ExperienceForm = () => {
         { params: { contactId: contactId } },
       );
 
-      setLastSavedData(currentDataString);
+      // setLastSavedData(currentDataString);
       // fetchExp();
       return true;
     } catch (err: any) {
@@ -1182,7 +1182,7 @@ const ExperienceForm = () => {
   const toggleForm = (id: string | number) => {
     setExperiences((prev) =>
       prev.map((exp) =>
-        exp.id === id ? { ...exp, isOpen: !exp.isOpen } : exp,
+        exp._id === id ? { ...exp, isOpen: !exp.isOpen } : exp,
       ),
     );
   };
@@ -1194,7 +1194,7 @@ const ExperienceForm = () => {
   ) => {
     setExperiences((prev) => {
       const updated = prev.map((exp) =>
-        exp.id === id ? { ...exp, [field]: value } : exp,
+        exp._id === id ? { ...exp, [field]: value } : exp,
       );
       debouncedSave(updated);
       return updated;
@@ -1203,7 +1203,7 @@ const ExperienceForm = () => {
 
   const deleteExperience = (id: string | number) => {
     setExperiences((prev) => {
-      const updated = prev.filter((exp) => exp.id !== id);
+      const updated = prev.filter((exp) => exp._id !== id);
       // saveToAPI(updated);
       return updated;
     });
@@ -1427,7 +1427,7 @@ const ExperienceForm = () => {
                     >
                       {/* Header */}
                       <div
-                        onClick={() => toggleForm(exp.id)}
+                        onClick={() => toggleForm(exp._id)}
                         className="flex justify-between items-center cursor-pointer p-4 sm:p-5 group hover:bg-gray-50/50 transition-all duration-300"
                       >
                         <div className="flex-1 min-w-0">
@@ -1462,7 +1462,7 @@ const ExperienceForm = () => {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              deleteExperience(exp.id);
+                              deleteExperience(exp._id);
                             }}
                             className="p-1.5 sm:p-2 rounded-lg bg-gray-100 text-red-500 hover:bg-red-50 hover:text-red-600 transition-all duration-200 cursor-pointer"
                             type="button"
@@ -1488,7 +1488,7 @@ const ExperienceForm = () => {
                               <input
                                 type="text"
                                 value={exp.jobTitle || ""}
-                                onChange={(e) => handleChange(exp.id, "jobTitle", e.target.value)}
+                                onChange={(e) => handleChange(exp._id, "jobTitle", e.target.value)}
                                 placeholder="Senior Software Engineer"
                                 className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
                               />
@@ -1501,7 +1501,7 @@ const ExperienceForm = () => {
                               <input
                                 type="text"
                                 value={exp.employer || ""}
-                                onChange={(e) => handleChange(exp.id, "employer", e.target.value)}
+                                onChange={(e) => handleChange(exp._id, "employer", e.target.value)}
                                 placeholder="Google, Microsoft, etc."
                                 className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
                               />
@@ -1516,7 +1516,7 @@ const ExperienceForm = () => {
                             <input
                               type="text"
                               value={exp.location || ""}
-                              onChange={(e) => handleChange(exp.id, "location", e.target.value)}
+                              onChange={(e) => handleChange(exp._id, "location", e.target.value)}
                               placeholder="City, State or Remote"
                               className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
                             />
@@ -1532,7 +1532,7 @@ const ExperienceForm = () => {
                                 <input
                                   type="month"
                                   value={exp.startDate || ""}
-                                  onChange={(e) => handleChange(exp.id, "startDate", e.target.value)}
+                                  onChange={(e) => handleChange(exp._id, "startDate", e.target.value)}
                                   className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
                                 />
                               </div>
@@ -1544,7 +1544,7 @@ const ExperienceForm = () => {
                                 <input
                                   type="month"
                                   value={exp.endDate || ""}
-                                  onChange={(e) => handleChange(exp.id, "endDate", e.target.value)}
+                                  onChange={(e) => handleChange(exp._id, "endDate", e.target.value)}
                                   disabled={exp.isCurrentlyWorking}
                                   className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 rounded-lg sm:rounded-xl text-gray-900 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all ${
                                     exp.isCurrentlyWorking
@@ -1560,19 +1560,19 @@ const ExperienceForm = () => {
                             <div className="mt-3 flex items-center gap-2">
                               <input
                                 type="checkbox"
-                                id={`currently-working-${exp.id}`}
+                                id={`currently-working-${exp._id}`}
                                 checked={exp.isCurrentlyWorking || false}
                                 onChange={(e) => {
                                   const isChecked = e.target.checked;
-                                  handleChange(exp.id, "isCurrentlyWorking", isChecked);
+                                  handleChange(exp._id, "isCurrentlyWorking", isChecked);
                                   if (isChecked) {
-                                    handleChange(exp.id, "endDate", "");
+                                    handleChange(exp._id, "endDate", "");
                                   }
                                 }}
                                 className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 cursor-pointer"
                               />
                               <label
-                                htmlFor={`currently-working-${exp.id}`}
+                                htmlFor={`currently-working-${exp._id}`}
                                 className="text-sm text-gray-700 cursor-pointer hover:text-indigo-600 transition-colors"
                               >
                                 I currently work here
@@ -1642,7 +1642,7 @@ const ExperienceForm = () => {
                                 </div>
                               }
                               onTextChange={(e: any) => {
-                                handleChange(exp.id, "text", e.htmlValue);
+                                handleChange(exp._id, "text", e.htmlValue);
                               }}
                               style={{ height: "140px", minHeight: "140px", background: "white" }}
                             />
@@ -1672,7 +1672,7 @@ const ExperienceForm = () => {
 
       {/* Sticky Footer Buttons */}
       <div className="sticky bottom-0 z-20 bg-white/80 backdrop-blur-md border-t border-gray-100 shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 ">
           <div className="flex justify-between items-center gap-3">
             <button
               className="text-xs sm:text-sm font-medium text-gray-500 hover:text-indigo-600 transition flex items-center gap-1 cursor-pointer"
@@ -1681,7 +1681,7 @@ const ExperienceForm = () => {
               ← Back to Contact
             </button>
             <button
-              className="px-4 sm:px-6 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base font-semibold  bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-lg sm:rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer"
+             className="px-4 sm:px-6 py-2 sm:py-2.5  bg-gradient-to-r from-indigo-600 to-indigo-500 text-white t font-medium rounded-lg sm:rounded-xl shadow-md transition-all hover:shadow-indigo-300 flex items-center gap-1.5 sm:gap-2 cursor-pointer"
               onClick={() => {
                 if (saveTimeoutRef.current) {
                   clearTimeout(saveTimeoutRef.current);

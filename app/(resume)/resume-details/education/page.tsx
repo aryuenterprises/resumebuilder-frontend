@@ -1046,7 +1046,6 @@ const Education_form = () => {
     setEducation: () => {},
   };
 
-
   const [showPopup, setShowPopup] = useState(false);
   const [loading, setLoading] = useState(false);
   const [Airesponse, setAireseponse] = useState<string[] | null>(null);
@@ -1087,7 +1086,7 @@ const Education_form = () => {
       const updated = [
         ...prev,
         {
-          id: Date.now(),
+          _id: Date.now(),
           schoolname: "",
           degree: "",
           location: "",
@@ -1205,7 +1204,7 @@ const Education_form = () => {
   const toggleForm = (id: string | number) => {
     setEducation((prev) =>
       prev.map((exp) =>
-        exp.id === id ? { ...exp, isOpen: !exp.isOpen } : exp,
+        exp._id === id ? { ...exp, isOpen: !exp.isOpen } : exp,
       ),
     );
   };
@@ -1217,7 +1216,7 @@ const Education_form = () => {
   ) => {
     setEducation((prev) => {
       const updated = prev.map((exp) =>
-        exp.id === id ? { ...exp, [field]: value } : exp,
+        exp._id === id ? { ...exp, [field]: value } : exp,
       );
       // debouncedSave(updated);
       return updated;
@@ -1226,7 +1225,7 @@ const Education_form = () => {
 
   const deleteEducation = (id: string | number) => {
     setEducation((prev) => {
-      const updated = prev.filter((exp) => exp.id !== id);
+      const updated = prev.filter((exp) => exp._id !== id);
       // saveToAPI(updated);
       return updated;
     });
@@ -1279,7 +1278,6 @@ const Education_form = () => {
       setLoading(false);
     }
   };
- 
 
   const insertAIResponse = (item: string, index: number) => {
     if (clickedIndexoFGenerateWithAIBtn === null) return;
@@ -1314,6 +1312,7 @@ const Education_form = () => {
     return `CGPA: ${grade}`;
   };
 
+  console.log("education", education);
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-indigo-50/40">
@@ -1327,8 +1326,6 @@ const Education_form = () => {
         <div className=" mx-auto px-2   py-6 sm:py-8 lg:py-10">
           {/* Header Section */}
           <div className="text-center mb-6 sm:mb-8">
-           
-
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
               Education
             </h1>
@@ -1386,7 +1383,7 @@ const Education_form = () => {
                   >
                     {/* Header */}
                     <div
-                      onClick={() => toggleForm(exp.id)}
+                      onClick={() => toggleForm(exp._id)}
                       className="flex justify-between items-center cursor-pointer p-4 sm:p-5 group hover:bg-gray-50/50 transition-all duration-300"
                     >
                       <div className="flex-1 min-w-0">
@@ -1436,7 +1433,7 @@ const Education_form = () => {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            deleteEducation(exp.id);
+                            deleteEducation(exp._id);
                           }}
                           className="p-1.5 sm:p-2 rounded-lg bg-gray-100 text-red-500 hover:bg-red-50 hover:text-red-600 transition-all duration-200 cursor-pointer"
                           type="button"
@@ -1466,7 +1463,7 @@ const Education_form = () => {
                               value={exp.schoolname || ""}
                               onChange={(e) =>
                                 handleChange(
-                                  exp.id,
+                                  exp._id,
                                   "schoolname",
                                   e.target.value,
                                 )
@@ -1484,7 +1481,11 @@ const Education_form = () => {
                               type="text"
                               value={exp.location || ""}
                               onChange={(e) =>
-                                handleChange(exp.id, "location", e.target.value)
+                                handleChange(
+                                  exp._id,
+                                  "location",
+                                  e.target.value,
+                                )
                               }
                               placeholder="City, State"
                               className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
@@ -1502,7 +1503,7 @@ const Education_form = () => {
                               type="text"
                               value={exp.degree || ""}
                               onChange={(e) =>
-                                handleChange(exp.id, "degree", e.target.value)
+                                handleChange(exp._id, "degree", e.target.value)
                               }
                               placeholder="B.Sc in Computer Science"
                               className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
@@ -1523,7 +1524,7 @@ const Education_form = () => {
                                 let value = e.target.value;
                                 if (parseFloat(value) > 100) value = "100";
                                 if (parseFloat(value) < 0) value = "0";
-                                handleChange(exp.id, "grade", value);
+                                handleChange(exp._id, "grade", value);
                               }}
                               placeholder="Enter CGPA  or Percentage"
                               className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
@@ -1550,7 +1551,7 @@ const Education_form = () => {
                                     ? e.value.getFullYear().toString()
                                     : "";
                                 handleChange(
-                                  exp.id,
+                                  exp._id,
                                   "startDate",
                                   selectedValue,
                                 );
@@ -1578,7 +1579,7 @@ const Education_form = () => {
                                   e.value instanceof Date
                                     ? e.value.getFullYear().toString()
                                     : "";
-                                handleChange(exp.id, "endDate", value);
+                                handleChange(exp._id, "endDate", value);
                               }}
                               view="year"
                               dateFormat="yy"
@@ -1600,23 +1601,23 @@ const Education_form = () => {
                         <div className="flex items-center gap-2">
                           <input
                             type="checkbox"
-                            id={`currently-studying-${exp.id}`}
+                            id={`currently-studying-${exp._id}`}
                             checked={exp.isCurrentlyStudying || false}
                             onChange={(e) => {
                               const isChecked = e.target.checked;
                               handleChange(
-                                exp.id,
+                                exp._id,
                                 "isCurrentlyStudying",
                                 isChecked,
                               );
                               if (isChecked) {
-                                handleChange(exp.id, "endDate", "");
+                                handleChange(exp._id, "endDate", "");
                               }
                             }}
                             className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 cursor-pointer"
                           />
                           <label
-                            htmlFor={`currently-studying-${exp.id}`}
+                            htmlFor={`currently-studying-${exp._id}`}
                             className="text-sm text-gray-700 cursor-pointer hover:text-indigo-600 transition-colors"
                           >
                             I am currently studying here
@@ -1719,7 +1720,7 @@ const Education_form = () => {
                               </div>
                             }
                             onTextChange={(e: any) => {
-                              handleChange(exp.id, "text", e.htmlValue);
+                              handleChange(exp._id, "text", e.htmlValue);
                             }}
                             style={{
                               height: "140px",
@@ -1754,7 +1755,7 @@ const Education_form = () => {
 
       {/* Sticky Footer Buttons */}
       <div className="sticky bottom-0 z-20 bg-white/80 backdrop-blur-md border-t border-gray-100 shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 ">
           <div className="flex justify-between items-center gap-3">
             <button
               className="text-xs sm:text-sm font-medium text-gray-500 hover:text-indigo-600 transition flex items-center gap-1 cursor-pointer"
@@ -1763,7 +1764,7 @@ const Education_form = () => {
               ← Back to Experience
             </button>
             <button
-              className="px-4 sm:px-6 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base font-semibold  bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-lg sm:rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer"
+              className="px-4 sm:px-6 py-2 sm:py-2.5  bg-gradient-to-r from-indigo-600 to-indigo-500 text-white t font-medium rounded-lg sm:rounded-xl shadow-md transition-all hover:shadow-indigo-300 flex items-center gap-1.5 sm:gap-2 cursor-pointer"
               onClick={() => {
                 if (saveTimeoutRef.current) {
                   clearTimeout(saveTimeoutRef.current);
