@@ -1221,6 +1221,8 @@ import { IoIosArrowDown } from "react-icons/io";
 const ContactForm = () => {
   const router = useRouter();
 
+    const [showAdditional, setShowAdditional] = useState<boolean>(false);
+  const [contactTipsClicked, setContactTipsClicked] = useState(false);
   const userDetails = getLocalStorage<User>("user_details");
   const userId = userDetails?.id;
 
@@ -1300,7 +1302,6 @@ const ContactForm = () => {
   };
 
   const saveToAPI = async (contactData: typeof contact) => {
-   
     if (!userId) {
       console.error("User ID is required");
       return false;
@@ -1310,7 +1311,6 @@ const ContactForm = () => {
 
     try {
       const fd = new FormData();
-
 
       fd.append("userId", userId);
       fd.append("firstName", contactData.firstName || "");
@@ -1368,7 +1368,6 @@ const ContactForm = () => {
           },
         },
       );
-
 
       setContact((prev) => ({ ...prev, contactId: response.data.resume._id }));
       fetchContact(response.data.resume._id);
@@ -1442,7 +1441,6 @@ const ContactForm = () => {
   };
 
   const debouncedSave = useCallback((contactData: typeof contact) => {
-
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current);
     }
@@ -1452,8 +1450,6 @@ const ContactForm = () => {
   }, []);
 
   const handleContactChange = (field: keyof typeof contact, value: string) => {
-   
-
     setContact((prev) => {
       const updated = { ...prev, [field]: value };
       debouncedSave(updated);
@@ -1526,10 +1522,6 @@ const ContactForm = () => {
     await saveToAPI(contact);
     router.push("/resume-details/experience");
   };
-
-  const [showAdditional, setShowAdditional] = useState<boolean>(false);
-
-  const [contactTipsClicked, setContactTipsClicked] = useState(false);
 
 
 
