@@ -3041,7 +3041,7 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
           <>
             <div className="section-title">Experience</div>
             {experiences.map((exp, index) => (
-              <div key={exp.id || index} className="entry-block">
+              <div key={exp._id || index} className="entry-block">
                 {(exp.jobTitle || exp.employer || exp.location) && (
                   <div className="entry-heading">
                     {exp.jobTitle || ""}
@@ -3086,7 +3086,7 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
             {educations.map((edu, index) => {
               const formattedGrade = formatGrade(edu.grade || "");
               return (
-                <div key={edu.id || index} className="entry-block">
+                <div key={edu._id || index} className="entry-block">
                   {(edu.schoolname || edu.degree || edu.location) && (
                     <div className="entry-heading">
                       {edu.schoolname || ""}

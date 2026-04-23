@@ -2121,7 +2121,6 @@
 import { useContext, useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import ResumePreviewModal from "../../components/resume/ResumePreviewModal";
 import { CreateContext } from "@/app/context/CreateContext";
 import { templateData } from "@/app/data";
 import { Template } from "@/app/types";
@@ -2156,6 +2155,7 @@ import axios from "axios";
 import { API_URL } from "@/app/config/api";
 import { User } from "@/app/types/user.types";
 import toast, { Toaster } from "react-hot-toast";
+import { ResumePreviewModal } from "@/app/components/resume";
 
 interface usersCurrentPlan {
   amount: number;

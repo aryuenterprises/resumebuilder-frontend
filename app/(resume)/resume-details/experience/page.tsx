@@ -930,66 +930,12 @@
 
 // export default ExperienceForm;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 import React, {
   useState,
   useRef,
   useEffect,
   useContext,
-  useCallback,
 } from "react";
 import dynamic from "next/dynamic";
 import axios from "axios";
@@ -1001,10 +947,11 @@ import {
   setSessionStorage,
 } from "@/app/utils";
 
-import { IoMdAdd} from "react-icons/io";
+import { IoMdAdd } from "react-icons/io";
 import {
   FiCheckCircle,
   FiChevronDown,
+  FiShield,
   FiTrash2,
   FiX,
   FiXCircle,
@@ -1014,12 +961,15 @@ import { BsArrowLeftCircleFill } from "react-icons/bs";
 
 import { CreateContext } from "@/app/context/CreateContext";
 import { useRouter } from "next/navigation";
-import Stepper from "../../../components/resume/Steppers";
 import { Experience } from "@/app/types";
-import { getLocalStorage, setLocalStorage } from "@/app/utils";
-import { User } from "@/app/types/user.types";
 import { API_URL } from "@/app/config/api";
-import { IoArrowForward, IoClose, IoDiamondOutline, IoSparkles } from "react-icons/io5";
+import {
+  IoArrowForward,
+  IoClose,
+  IoDiamondOutline,
+  IoSparkles,
+} from "react-icons/io5";
+import { TipsModal } from "@/app/components/resume";
 
 // Dynamically import Editor to avoid SSR issues
 const Editor = dynamic(
@@ -1028,7 +978,9 @@ const Editor = dynamic(
     ssr: false,
     loading: () => (
       <div className="rounded-xl mt-3 md:mt-4 bg-gray-50 h-32 flex items-center justify-center border border-gray-200">
-        <div className="animate-pulse text-gray-400 text-sm">Loading editor...</div>
+        <div className="animate-pulse text-gray-400 text-sm">
+          Loading editor...
+        </div>
       </div>
     ),
   },
@@ -1036,34 +988,16 @@ const Editor = dynamic(
 
 const ExperienceForm = () => {
   const router = useRouter();
-  const userDetails = getLocalStorage<User>("user_details");
   const UseContext = useContext(CreateContext);
   const contactId = UseContext?.contact._id || UseContext?.contact.contactId;
 
   const [isExperienced, setIsExperienced] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [lastSavedData, setLastSavedData] = useState<string>("");
   removeSessionStorage("oldRouteNameDashboard");
 
   const { experiences, setExperiences, fullResumeData, setFullResumeData } =
     UseContext;
 
-  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const initialLoadDone = useRef(false);
-
-  // Save to localStorage whenever experiences change
-  useEffect(() => {
-    if (!initialLoadDone.current) return;
-
-    if (fullResumeData) {
-      const updatedFullData = {
-        ...fullResumeData,
-        experiences: experiences,
-      };
-      setFullResumeData(updatedFullData);
-      setLocalStorage("fullResumeData", updatedFullData);
-    }
-  }, [experiences]);
 
   const addExperience = () => {
     setExperiences([
@@ -1111,12 +1045,9 @@ const ExperienceForm = () => {
         }));
 
         setExperiences(formattedData);
-        setLastSavedData(JSON.stringify(formattedData));
       } else {
         console.error("No experience data found for user");
       }
-
-      initialLoadDone.current = true;
     } catch (error) {
       console.log(error);
     }
@@ -1127,13 +1058,6 @@ const ExperienceForm = () => {
       console.error("Contact ID is required");
       return false;
     }
-
-    // const currentDataString = JSON.stringify(experiencesData);
-    // if (currentDataString === lastSavedData) {
-    //   return true;
-    // }
-
-    // setIsSaving(true);
 
     try {
       const formData = {
@@ -1146,8 +1070,6 @@ const ExperienceForm = () => {
         { params: { contactId: contactId } },
       );
 
-      // setLastSavedData(currentDataString);
-      // fetchExp();
       return true;
     } catch (err: any) {
       console.error("Error saving experience:", err);
@@ -1158,24 +1080,11 @@ const ExperienceForm = () => {
     }
   };
 
-  const debouncedSave = useCallback(
-    (experiencesData: typeof experiences) => {
-      if (saveTimeoutRef.current) {
-        clearTimeout(saveTimeoutRef.current);
-      }
-      saveTimeoutRef.current = setTimeout(() => {
-        // saveToAPI(experiencesData);
-      }, 1000);
-    },
-    [contactId, lastSavedData],
-  );
-
   const toggleExperienceMode = () => {
     const newValue = !isExperienced;
     setIsExperienced(newValue);
     if (!newValue) {
       setExperiences([]);
-      debouncedSave([]);
     }
   };
 
@@ -1196,7 +1105,6 @@ const ExperienceForm = () => {
       const updated = prev.map((exp) =>
         exp._id === id ? { ...exp, [field]: value } : exp,
       );
-      debouncedSave(updated);
       return updated;
     });
   };
@@ -1204,25 +1112,17 @@ const ExperienceForm = () => {
   const deleteExperience = (id: string | number) => {
     setExperiences((prev) => {
       const updated = prev.filter((exp) => exp._id !== id);
-      // saveToAPI(updated);
       return updated;
     });
   };
-
-  useEffect(() => {
-    return () => {
-      if (saveTimeoutRef.current) {
-        clearTimeout(saveTimeoutRef.current);
-      }
-    };
-  }, []);
 
   const [experienceTipsButtonClicked, setExperienceTipsButtonClicked] =
     useState(false);
   const [Airesponse, setAireseponse] = useState<string[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
-  const [showJobTitleWarningModal, setShowJobTitleWarningModal] = useState(false);
+  const [showJobTitleWarningModal, setShowJobTitleWarningModal] =
+    useState(false);
   const [clickedIndexoFGenerateWithAIBtn, setClickedIndexoFGenerateWithAIBtn] =
     useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
@@ -1239,7 +1139,7 @@ const ExperienceForm = () => {
 
   const handleSubmitAi = async (index: number) => {
     const exp = experiences[index];
-    
+
     // Check if job title is empty
     if (!exp.jobTitle || exp.jobTitle.trim() === "") {
       if (isMobile) {
@@ -1286,71 +1186,51 @@ const ExperienceForm = () => {
     }
   };
 
-  // const insertAIResponse = (item: string, index: number) => {
-  //   if (clickedIndexoFGenerateWithAIBtn === null) return;
-
-  //   setExperiences((prev) => {
-  //     const updated = [...prev];
-  //     updated[clickedIndexoFGenerateWithAIBtn].text =
-  //       (updated[clickedIndexoFGenerateWithAIBtn].text || "") + "\n" + item;
-  //       console.log("updated",updated)
-  //     return updated;
-  //   });
-
-    
-  // };
-
-
-
   const insertAIResponse = (item: string, index: number) => {
-  if (clickedIndexoFGenerateWithAIBtn === null) return;
+    if (clickedIndexoFGenerateWithAIBtn === null) return;
 
-  setExperiences((prev) => {
-    return prev.map((exp, i) => {
-      // Only update the object at the specific index
-      if (i === clickedIndexoFGenerateWithAIBtn) {
-        return {
-          ...exp,
-          text: (exp.text || "") + "\n" + item
-        };
-      }
-      return exp; // Return others unchanged
+    setExperiences((prev) => {
+      return prev.map((exp, i) => {
+        // Only update the object at the specific index
+        if (i === clickedIndexoFGenerateWithAIBtn) {
+          return {
+            ...exp,
+            text: (exp.text || "") + "\n" + item,
+          };
+        }
+        return exp; // Return others unchanged
+      });
     });
-  });
 
-  if (Airesponse) {
+    if (Airesponse) {
       const newAiResponse = Airesponse.filter((_, idx) => idx !== index);
       setAireseponse(newAiResponse.length > 0 ? newAiResponse : null);
     }
-};
-  console.log("experiences",experiences)
+  };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-indigo-50/40">
-    
-
+    <div className="min-h-screen flex flex-col bg-linear-to-br from-slate-50 via-white to-indigo-50/40">
       {/* Sticky Stepper */}
-      <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
+      {/* <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <Stepper />
-      </div>
+      </div> */}
 
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto">
         <div className="mx-auto px-2  py-6 sm:py-8 lg:py-10">
           {/* Header Section - Compact */}
           <div className="text-center mb-6 sm:mb-8">
-            
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-linear-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
               Work Experience
             </h1>
-            
+
             <p className="text-gray-500 text-sm max-w-md mx-auto">
               Showcase your professional journey and achievements
             </p>
 
             <button
               onClick={() => setExperienceTipsButtonClicked((prev) => !prev)}
-              className="mt-4 inline-flex items-center gap-1.5 px-4 py-1.5 bg-gradient-to-r from-amber-400 to-orange-400 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+              className="mt-4 inline-flex items-center gap-1.5 px-4 py-1.5 bg-linear-to-r from-amber-400 to-orange-400 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transition-all duration-200"
             >
               <FaRegLightbulb className="w-3 h-3" />
               <span>Experience Tips</span>
@@ -1360,7 +1240,7 @@ const ExperienceForm = () => {
           {/* Main Form Card */}
           <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
             {/* Card Header */}
-            <div className="relative px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 bg-gradient-to-r from-indigo-50 to-white border-b border-gray-100">
+            <div className="relative px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 bg-linear-to-r from-indigo-50 to-white border-b border-gray-100">
               <div className="absolute top-0 right-0 w-24 sm:w-32 h-24 sm:h-32 bg-indigo-100 rounded-full filter blur-3xl opacity-50"></div>
               <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-2 sm:gap-3">
@@ -1368,14 +1248,20 @@ const ExperienceForm = () => {
                     <IoDiamondOutline className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600" />
                   </div>
                   <div>
-                    <h2 className="text-base sm:text-lg font-semibold text-gray-900">Professional Experience</h2>
-                    <p className="text-xs sm:text-sm text-gray-500">Tell employers about your work history</p>
+                    <h2 className="text-base sm:text-lg font-semibold text-gray-900">
+                      Professional Experience
+                    </h2>
+                    <p className="text-xs sm:text-sm text-gray-500">
+                      Tell employers about your work history
+                    </p>
                   </div>
                 </div>
                 {isSaving && (
                   <div className="flex items-center gap-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-indigo-100 rounded-full self-start sm:self-auto">
                     <div className="w-2 h-2 sm:w-3 sm:h-3 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-                    <span className="text-[10px] sm:text-xs text-indigo-700 font-medium">Saving...</span>
+                    <span className="text-[10px] sm:text-xs text-indigo-700 font-medium">
+                      Saving...
+                    </span>
                   </div>
                 )}
               </div>
@@ -1389,7 +1275,7 @@ const ExperienceForm = () => {
                   onClick={toggleExperienceMode}
                   className={`relative w-10 h-5 sm:w-12 sm:h-6 rounded-full cursor-pointer transition-all duration-300 ${
                     isExperienced
-                      ? "bg-gradient-to-r from-indigo-600 to-indigo-500"
+                      ? "bg-linear-to-r from-indigo-600 to-indigo-500"
                       : "bg-gray-300"
                   }`}
                 >
@@ -1438,14 +1324,24 @@ const ExperienceForm = () => {
                             <span className="truncate max-w-25 sm:max-w-none">
                               {exp.employer || "Employer"}
                             </span>
-                            <span className="text-gray-300 hidden xs:inline">•</span>
+                            <span className="text-gray-300 hidden xs:inline">
+                              •
+                            </span>
                             <span className="whitespace-nowrap">
-                              <MonthYearDisplay value={exp.startDate} shortYear={true} />
+                              <MonthYearDisplay
+                                value={exp.startDate}
+                                shortYear={true}
+                              />
                               {" - "}
                               {exp.isCurrentlyWorking ? (
-                                <span className="text-emerald-600 font-medium">Present</span>
+                                <span className="text-emerald-600 font-medium">
+                                  Present
+                                </span>
                               ) : (
-                                <MonthYearDisplay value={exp.endDate || ""} shortYear={true} />
+                                <MonthYearDisplay
+                                  value={exp.endDate || ""}
+                                  shortYear={true}
+                                />
                               )}
                             </span>
                           </div>
@@ -1457,7 +1353,10 @@ const ExperienceForm = () => {
                             transition={{ duration: 0.3 }}
                             className="p-1.5 sm:p-2 rounded-lg text-gray-400 group-hover:text-indigo-600 cursor-pointer"
                           >
-                            <FiChevronDown size={14} className="sm:w-5 sm:h-5" />
+                            <FiChevronDown
+                              size={14}
+                              className="sm:w-5 sm:h-5"
+                            />
                           </motion.div>
                           <button
                             onClick={(e) => {
@@ -1475,7 +1374,9 @@ const ExperienceForm = () => {
                       {/* Content */}
                       <div
                         className={`transition-all duration-500 overflow-hidden ${
-                          exp.isOpen ? "max-h-[900px] opacity-100" : "max-h-0 opacity-0"
+                          exp.isOpen
+                            ? "max-h-225 opacity-100"
+                            : "max-h-0 opacity-0"
                         }`}
                       >
                         <div className="p-4 sm:p-5 space-y-4 sm:space-y-5 border-t border-gray-100">
@@ -1488,7 +1389,13 @@ const ExperienceForm = () => {
                               <input
                                 type="text"
                                 value={exp.jobTitle || ""}
-                                onChange={(e) => handleChange(exp._id, "jobTitle", e.target.value)}
+                                onChange={(e) =>
+                                  handleChange(
+                                    exp._id,
+                                    "jobTitle",
+                                    e.target.value,
+                                  )
+                                }
                                 placeholder="Senior Software Engineer"
                                 className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
                               />
@@ -1501,7 +1408,13 @@ const ExperienceForm = () => {
                               <input
                                 type="text"
                                 value={exp.employer || ""}
-                                onChange={(e) => handleChange(exp._id, "employer", e.target.value)}
+                                onChange={(e) =>
+                                  handleChange(
+                                    exp._id,
+                                    "employer",
+                                    e.target.value,
+                                  )
+                                }
                                 placeholder="Google, Microsoft, etc."
                                 className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
                               />
@@ -1516,7 +1429,13 @@ const ExperienceForm = () => {
                             <input
                               type="text"
                               value={exp.location || ""}
-                              onChange={(e) => handleChange(exp._id, "location", e.target.value)}
+                              onChange={(e) =>
+                                handleChange(
+                                  exp._id,
+                                  "location",
+                                  e.target.value,
+                                )
+                              }
                               placeholder="City, State or Remote"
                               className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
                             />
@@ -1532,7 +1451,13 @@ const ExperienceForm = () => {
                                 <input
                                   type="month"
                                   value={exp.startDate || ""}
-                                  onChange={(e) => handleChange(exp._id, "startDate", e.target.value)}
+                                  onChange={(e) =>
+                                    handleChange(
+                                      exp._id,
+                                      "startDate",
+                                      e.target.value,
+                                    )
+                                  }
                                   className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
                                 />
                               </div>
@@ -1544,14 +1469,22 @@ const ExperienceForm = () => {
                                 <input
                                   type="month"
                                   value={exp.endDate || ""}
-                                  onChange={(e) => handleChange(exp._id, "endDate", e.target.value)}
+                                  onChange={(e) =>
+                                    handleChange(
+                                      exp._id,
+                                      "endDate",
+                                      e.target.value,
+                                    )
+                                  }
                                   disabled={exp.isCurrentlyWorking}
                                   className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 rounded-lg sm:rounded-xl text-gray-900 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all ${
                                     exp.isCurrentlyWorking
                                       ? "border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed"
                                       : "border-gray-200"
                                   }`}
-                                  placeholder={exp.isCurrentlyWorking ? "Present" : ""}
+                                  placeholder={
+                                    exp.isCurrentlyWorking ? "Present" : ""
+                                  }
                                 />
                               </div>
                             </div>
@@ -1564,7 +1497,11 @@ const ExperienceForm = () => {
                                 checked={exp.isCurrentlyWorking || false}
                                 onChange={(e) => {
                                   const isChecked = e.target.checked;
-                                  handleChange(exp._id, "isCurrentlyWorking", isChecked);
+                                  handleChange(
+                                    exp._id,
+                                    "isCurrentlyWorking",
+                                    isChecked,
+                                  );
                                   if (isChecked) {
                                     handleChange(exp._id, "endDate", "");
                                   }
@@ -1593,7 +1530,7 @@ const ExperienceForm = () => {
                                   className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
                                     !exp.jobTitle || exp.jobTitle.trim() === ""
                                       ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                                      : "bg-gradient-to-r from-indigo-600 to-indigo-500 text-white hover:shadow-md"
+                                      : "bg-linear-to-r from-indigo-600 to-indigo-500 text-white hover:shadow-md"
                                   }`}
                                   type="button"
                                 >
@@ -1612,19 +1549,24 @@ const ExperienceForm = () => {
                                       d="M13 10V3L4 14h7v7l9-11h-7z"
                                     />
                                   </svg>
-                                  {loading ? "Generating..." : "AI Assist"}
+                                  {loading ? "Generating..." : "Generate With AI"}
                                 </button>
 
                                 {/* Tooltip - Desktop only */}
-                                {(!exp.jobTitle || exp.jobTitle.trim() === "") && !loading && !isMobile && (
-                                  <div className="absolute left-1/2 -translate-x-1/2 -top-2 -translate-y-full mt-1 w-48 bg-gray-900 text-white text-xs rounded-lg py-2 px-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-50 shadow-lg">
-                                    <div className="relative text-center">
-                                      <span className="inline-block mr-1">⚠️</span>
-                                      Enter job title to use AI Assist
-                                      <div className="absolute left-1/2 -translate-x-1/2 -bottom-1.5 w-2 h-2 bg-gray-900 rotate-45"></div>
+                                {(!exp.jobTitle ||
+                                  exp.jobTitle.trim() === "") &&
+                                  !loading &&
+                                  !isMobile && (
+                                    <div className="absolute left-1/2 -translate-x-1/2 -top-2 -translate-y-full mt-1 w-48 bg-gray-900 text-white text-xs rounded-lg py-2 px-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-50 shadow-lg">
+                                      <div className="relative text-center">
+                                        <span className="inline-block mr-1">
+                                          ⚠️
+                                        </span>
+                                        Enter job title to use AI Assist
+                                        <div className="absolute left-1/2 -translate-x-1/2 -bottom-1.5 w-2 h-2 bg-gray-900 rotate-45"></div>
+                                      </div>
                                     </div>
-                                  </div>
-                                )}
+                                  )}
                               </div>
                             </div>
 
@@ -1633,18 +1575,54 @@ const ExperienceForm = () => {
                               value={exp.text || ""}
                               headerTemplate={
                                 <div className="flex gap-1 p-2 flex-wrap items-center bg-gray-50 border-b border-gray-200">
-                                  <button type="button" className="ql-bold p-1.5 hover:bg-gray-200 rounded transition">B</button>
-                                  <button type="button" className="ql-italic p-1.5 hover:bg-gray-200 rounded transition">I</button>
-                                  <button type="button" className="ql-underline p-1.5 hover:bg-gray-200 rounded transition">U</button>
-                                  <button type="button" className="ql-list p-1.5 hover:bg-gray-200 rounded transition" value="ordered">1.</button>
-                                  <button type="button" className="ql-list p-1.5 hover:bg-gray-200 rounded transition" value="bullet">•</button>
-                                  <button type="button" className="ql-clean p-1.5 hover:bg-gray-200 rounded transition">⌫</button>
+                                  <button
+                                    type="button"
+                                    className="ql-bold p-1.5 hover:bg-gray-200 rounded transition"
+                                  >
+                                    B
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="ql-italic p-1.5 hover:bg-gray-200 rounded transition"
+                                  >
+                                    I
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="ql-underline p-1.5 hover:bg-gray-200 rounded transition"
+                                  >
+                                    U
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="ql-list p-1.5 hover:bg-gray-200 rounded transition"
+                                    value="ordered"
+                                  >
+                                    1.
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="ql-list p-1.5 hover:bg-gray-200 rounded transition"
+                                    value="bullet"
+                                  >
+                                    •
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="ql-clean p-1.5 hover:bg-gray-200 rounded transition"
+                                  >
+                                    ⌫
+                                  </button>
                                 </div>
                               }
                               onTextChange={(e: any) => {
                                 handleChange(exp._id, "text", e.htmlValue);
                               }}
-                              style={{ height: "140px", minHeight: "140px", background: "white" }}
+                              style={{
+                                height: "140px",
+                                minHeight: "140px",
+                                background: "white",
+                              }}
                             />
                           </div>
                         </div>
@@ -1660,7 +1638,9 @@ const ExperienceForm = () => {
                   >
                     <div className="flex items-center justify-center gap-2">
                       <IoMdAdd className="w-4 h-4 sm:w-5 sm:h-5" />
-                      <span className="text-xs sm:text-sm font-semibold">Add Work Experience</span>
+                      <span className="text-xs sm:text-sm font-semibold">
+                        Add Work Experience
+                      </span>
                     </div>
                   </button>
                 </div>
@@ -1681,11 +1661,10 @@ const ExperienceForm = () => {
               ← Back to Contact
             </button>
             <button
-             className="px-4 sm:px-6 py-2 sm:py-2.5  bg-gradient-to-r from-indigo-600 to-indigo-500 text-white t font-medium rounded-lg sm:rounded-xl shadow-md transition-all hover:shadow-indigo-300 flex items-center gap-1.5 sm:gap-2 cursor-pointer"
+              className="px-4 sm:px-6 py-2 sm:py-2.5  bg-linear-to-r from-indigo-600 to-indigo-500 text-white t font-medium rounded-lg sm:rounded-xl shadow-md transition-all hover:shadow-indigo-300 flex items-center gap-1.5 sm:gap-2 cursor-pointer"
               onClick={() => {
-                if (saveTimeoutRef.current) {
-                  clearTimeout(saveTimeoutRef.current);
-                }
+              
+                
                 saveToAPI(experiences).then(() => {
                   router.push("/resume-details/education");
                 });
@@ -1706,11 +1685,15 @@ const ExperienceForm = () => {
             animate={{ opacity: 1, scale: 1 }}
             className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] overflow-hidden"
           >
-            <div className="bg-gradient-to-r from-indigo-600 to-indigo-500 px-5 py-4">
+            <div className="bg-linear-to-r from-indigo-600 to-indigo-500 px-5 py-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-lg font-semibold text-white">AI Suggestions</h2>
-                  <p className="text-indigo-100 text-xs">Click on any suggestion to add it</p>
+                  <h2 className="text-lg font-semibold text-white">
+                    AI Suggestions
+                  </h2>
+                  <p className="text-indigo-100 text-xs">
+                    Click on any suggestion to add it
+                  </p>
                 </div>
                 <button
                   onClick={() => setShowPopup(false)}
@@ -1731,7 +1714,9 @@ const ExperienceForm = () => {
                   <div className="p-1.5 bg-indigo-100 rounded-lg group-hover:bg-indigo-200 transition-all shrink-0">
                     <BsArrowLeftCircleFill className="w-4 h-4 text-indigo-600" />
                   </div>
-                  <p className="text-sm text-gray-700 leading-relaxed flex-1">{item}</p>
+                  <p className="text-sm text-gray-700 leading-relaxed flex-1">
+                    {item}
+                  </p>
                 </div>
               ))}
             </div>
@@ -1752,24 +1737,37 @@ const ExperienceForm = () => {
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             className="relative w-full max-w-sm bg-white rounded-2xl shadow-2xl overflow-hidden"
           >
-            <div className="bg-gradient-to-r from-amber-500 to-orange-500 px-5 py-4">
+            <div className="bg-linear-to-r from-amber-500 to-orange-500 px-5 py-4">
               <div className="flex items-center gap-2">
                 <div className="p-1.5 bg-white/20 rounded-lg">
-                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  <svg
+                    className="w-5 h-5 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                    />
                   </svg>
                 </div>
-                <h3 className="text-lg font-bold text-white">Job Title Required</h3>
+                <h3 className="text-lg font-bold text-white">
+                  Job Title Required
+                </h3>
               </div>
             </div>
 
             <div className="p-5">
               <p className="text-sm text-gray-700 mb-4">
-                Please enter a job title first to use the AI Assist feature. This helps generate relevant content for your experience.
+                Please enter a job title first to use the AI Assist feature.
+                This helps generate relevant content for your experience.
               </p>
               <button
                 onClick={() => setShowJobTitleWarningModal(false)}
-                className="w-full px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-semibold rounded-lg hover:shadow-lg transition-all"
+                className="w-full px-4 py-2.5 bg-linear-to-r from-indigo-600 to-indigo-500 text-white font-semibold rounded-lg hover:shadow-lg transition-all"
               >
                 Got it
               </button>
@@ -1779,7 +1777,7 @@ const ExperienceForm = () => {
       )}
 
       {/* Tips Modal */}
-      {experienceTipsButtonClicked && (
+      {/* {experienceTipsButtonClicked && (
         <AnimatePresence>
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div
@@ -1793,10 +1791,12 @@ const ExperienceForm = () => {
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
               className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden"
             >
-              <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-5 py-4">
+              <div className="bg-linear-to-r from-indigo-600 to-purple-600 px-5 py-4">
                 <div className="flex items-center gap-2">
                   <FaRegLightbulb className="w-5 h-5 text-white" />
-                  <h3 className="text-lg font-bold text-white">Experience Tips</h3>
+                  <h3 className="text-lg font-bold text-white">
+                    Experience Tips
+                  </h3>
                 </div>
               </div>
 
@@ -1804,18 +1804,24 @@ const ExperienceForm = () => {
                 <div className="bg-amber-50 rounded-xl p-3 mb-4 border border-amber-100">
                   <div className="flex items-center gap-2 mb-1">
                     <FaStar className="w-3 h-3 text-amber-500" />
-                    <span className="text-xs font-semibold text-amber-700">Pro Tip</span>
+                    <span className="text-xs font-semibold text-amber-700">
+                      Pro Tip
+                    </span>
                   </div>
-                  <p className="text-xs text-gray-700">Use bullet points and action verbs to highlight achievements</p>
+                  <p className="text-xs text-gray-700">
+                    Use bullet points and action verbs to highlight achievements
+                  </p>
                 </div>
 
                 <div className="space-y-3">
-                  <h4 className="text-xs font-semibold text-indigo-600 uppercase tracking-wide">Best Practices</h4>
+                  <h4 className="text-xs font-semibold text-indigo-600 uppercase tracking-wide">
+                    Best Practices
+                  </h4>
                   {[
                     "Use bullet points for achievements",
                     "Start with strong action verbs",
                     "Quantify your accomplishments",
-                    "Focus on results, not just duties"
+                    "Focus on results, not just duties",
                   ].map((tip, idx) => (
                     <div key={idx} className="flex items-start gap-2">
                       <FiCheckCircle className="w-3.5 h-3.5 text-emerald-500 mt-0.5" />
@@ -1827,7 +1833,7 @@ const ExperienceForm = () => {
                 <div className="mt-4 pt-3 border-t border-gray-100">
                   <button
                     onClick={() => setExperienceTipsButtonClicked(false)}
-                    className="w-full px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-semibold rounded-lg hover:shadow-lg transition-all"
+                    className="w-full px-4 py-2 bg-linear-to-r from-indigo-600 to-purple-600 text-white text-sm font-semibold rounded-lg hover:shadow-lg transition-all"
                   >
                     Got it, thanks! ✨
                   </button>
@@ -1836,7 +1842,32 @@ const ExperienceForm = () => {
             </motion.div>
           </div>
         </AnimatePresence>
-      )}
+      )} */}
+
+   <TipsModal
+  isOpen={experienceTipsButtonClicked}
+  onClose={() => setExperienceTipsButtonClicked(false)}
+  title="Experience Tips"
+  subtitle="Make your work history stand out"
+  hasAI={true}
+  aiFeatureDescription= "get intelligent bullet points based on your job title."
+  proTip="Use bullet points and action verbs to highlight achievements"
+  bestPractices={[
+    { tip: "Use bullet points for achievements", example: "• Led team of 5 developers" },
+    { tip: "Start with strong action verbs", example: "Developed, Managed, Created" },
+    { tip: "Quantify your accomplishments", example: "Increased sales by 40%" },
+    { tip: "Focus on results, not just duties", example: "Improved efficiency by 25%" },
+  ]}
+  avoidList={[
+    "Using generic descriptions",
+    "Writing long paragraphs",
+    "Listing duties without results",
+  ]}
+  examples={{
+    before: "Responsible for managing team",
+    after: "Led a team of 8 developers, delivering projects 30% ahead of schedule"
+  }}
+/>
     </div>
   );
 };

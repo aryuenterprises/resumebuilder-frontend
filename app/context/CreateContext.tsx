@@ -184,7 +184,7 @@ export const CreateProvider: React.FC<CreateProviderProps> = ({ children }) => {
 
   const [projects, setProjects] = useState<Project[]>([
     {
-      id: Date.now(),
+      _id: Date.now(),
       title: "",
       techStack: [],
       description: "",

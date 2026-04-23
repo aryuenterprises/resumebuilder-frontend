@@ -575,7 +575,7 @@ interface Position {
   y: number;
 }
 
-export default function SimpleCanvasPreview({ children }: SimpleCanvasPreviewProps) {
+export  function SimpleCanvasPreview({ children }: SimpleCanvasPreviewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef   = useRef<HTMLDivElement>(null);
 
@@ -771,7 +771,7 @@ export default function SimpleCanvasPreview({ children }: SimpleCanvasPreviewPro
   }, []);
 
   return (
-    <div className="relative w-full h-[80vh] lg:h-[92vh] mt-10 rounded-xl overflow-hidden bg-gradient-to-br from-gray-50 to-white shadow-inner">
+    <div className="relative w-full h-[80vh] lg:h-[92vh] mt-8 ">
       {/* Preview Container */}
       <div
         ref={containerRef}

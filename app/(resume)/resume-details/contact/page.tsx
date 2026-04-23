@@ -1189,6 +1189,8 @@ import {
   FiX,
   FiXCircle,
   FiTrendingUp,
+  FiShield,
+  FiGlobe,
 } from "react-icons/fi";
 import {
   FaLinkedin,
@@ -1199,7 +1201,6 @@ import {
 } from "react-icons/fa";
 import { API_URL } from "@/app/config/api";
 import { CreateContext } from "@/app/context/CreateContext";
-import Stepper from "../../../components/resume/Steppers";
 import {
   getCroppedImgWithOptions,
   getLocalStorage,
@@ -1217,10 +1218,10 @@ import {
 import { Contact, Template } from "@/app/types";
 import { User } from "@/app/types/user.types";
 import { IoIosArrowDown } from "react-icons/io";
+import { TipsModal } from "@/app/components/resume";
 
 const ContactForm = () => {
   const router = useRouter();
-
   const [showAdditional, setShowAdditional] = useState<boolean>(false);
   const [contactTipsClicked, setContactTipsClicked] = useState(false);
   const userDetails = getLocalStorage<User>("user_details");
@@ -1242,43 +1243,10 @@ const ContactForm = () => {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
-
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
-
   const [showPhotoViewer, setShowPhotoViewer] = useState<boolean>(false);
-
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Track initial load
-  const initialLoadDone = useRef(false);
-
-  useEffect(() => {
-    // Don't save until initial data is loaded
-    if (!initialLoadDone.current) return;
-
-    // Check if we have existing data in localStorage or context
-    const existingData = fullResumeData || getLocalStorage("fullResumeData");
-
-    if (existingData) {
-      // Update existing data
-      setLocalStorage("fullResumeData", {
-        ...existingData,
-        contact: contact,
-      });
-    } else {
-      // Create new data structure if nothing exists
-      setLocalStorage("fullResumeData", {
-        template: chosenResumeDetails || null,
-        contact: contact,
-        experiences: [],
-        education: [],
-        skills: [],
-        summary: "",
-        finalize: {},
-      });
-    }
-  }, [contact, fullResumeData, chosenResumeDetails]);
 
   const blobUrlToFile = async (
     blobUrl: string,
@@ -1339,10 +1307,7 @@ const ContactForm = () => {
         let fileImage;
 
         if (contactData.photo.startsWith("blob:")) {
-          fileImage = await blobUrlToFile(
-            contactData.photo,
-            "profile.jpg",
-          );
+          fileImage = await blobUrlToFile(contactData.photo, "profile.jpg");
         } else if (contactData.photo.startsWith("data:image")) {
           fileImage = base64ToFile(contactData.photo, "profile.jpg");
         }
@@ -1432,38 +1397,17 @@ const ContactForm = () => {
           finalize: {},
         });
       }
-
-      // Mark initial load as complete
-      initialLoadDone.current = true;
     } catch (error) {
       console.log(error);
     }
   };
 
-  const debouncedSave = useCallback((contactData: typeof contact) => {
-    if (saveTimeoutRef.current) {
-      clearTimeout(saveTimeoutRef.current);
-    }
-    saveTimeoutRef.current = setTimeout(() => {
-      // saveToAPI(contactData);
-    }, 1000);
-  }, []);
-
   const handleContactChange = (field: keyof typeof contact, value: string) => {
     setContact((prev) => {
       const updated = { ...prev, [field]: value };
-      debouncedSave(updated);
       return updated;
     });
   };
-
-  useEffect(() => {
-    return () => {
-      if (saveTimeoutRef.current) {
-        clearTimeout(saveTimeoutRef.current);
-      }
-    };
-  }, []);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
@@ -1495,7 +1439,6 @@ const ContactForm = () => {
 
       setContact((prev) => {
         const updated = { ...prev, photo: croppedBlob as string };
-        // saveToAPI(updated);
         return updated;
       });
 
@@ -1514,7 +1457,6 @@ const ContactForm = () => {
     });
   };
 
-  // Update the Next button click handler
   const handleNext = async () => {
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current);
@@ -1523,21 +1465,20 @@ const ContactForm = () => {
     router.push("/resume-details/experience");
   };
 
-console.log("contact",contact)
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-indigo-50/40">
+    <div className="min-h-screen flex flex-col bg-linear-to-br from-slate-50 via-white to-indigo-50/40">
       {/* Sticky Stepper - Always at top */}
-      <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
+      {/* <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <Stepper />
-      </div>
+      </div> */}
 
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto">
         <div className=" mx-auto px-2   py-6 sm:py-8 lg:py-10">
           {/* Header Section - Responsive */}
           <div className="text-center mb-6 sm:mb-8">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-linear-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
               Contact Information
             </h1>
 
@@ -1547,7 +1488,7 @@ console.log("contact",contact)
 
             <button
               onClick={() => setContactTipsClicked((prev) => !prev)}
-              className="mt-4 inline-flex items-center gap-1.5 px-4 py-1.5 bg-gradient-to-r from-amber-400 to-orange-400 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+              className="mt-4 inline-flex items-center gap-1.5 px-4 py-1.5 bg-linear-to-r from-amber-400 to-orange-400 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transition-all duration-200"
             >
               <FaRegLightbulb className="w-3 h-3" />
               <span>View Pro Tips</span>
@@ -1557,7 +1498,7 @@ console.log("contact",contact)
           {/* Main Form Card - Responsive */}
           <div className="bg-white rounded-2xl sm:rounded-3xl shadow-md border border-gray-100 overflow-hidden">
             {/* Card Header - Responsive */}
-            <div className="relative px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 bg-gradient-to-r from-indigo-50 to-white border-b border-gray-100">
+            <div className="relative px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 bg-linear-to-r from-indigo-50 to-white border-b border-gray-100">
               <div className="absolute top-0 right-0 w-24 sm:w-32 h-24 sm:h-32 bg-indigo-100 rounded-full filter blur-3xl opacity-50"></div>
               <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-2 sm:gap-3">
@@ -1588,11 +1529,11 @@ console.log("contact",contact)
             <div className="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8">
               {/* Profile Photo Section - Responsive */}
               {chosenResumeDetails?.pic === "true" && (
-                <div className="bg-gradient-to-r from-indigo-50/50 to-purple-50/50 p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-indigo-100">
+                <div className="bg-linear-to-r from-indigo-50/50 to-purple-50/50 p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-indigo-100">
                   <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
                     {contact.photo ? (
                       <div className="relative group self-center sm:self-auto">
-                        <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl sm:rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div className="absolute inset-0 bg-linear-to-r from-indigo-500 to-purple-500 rounded-xl sm:rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         <div className="relative">
                           {contact.photo.startsWith("blob:") ||
                           contact.photo.startsWith("data:") ? (
@@ -1619,7 +1560,7 @@ console.log("contact",contact)
                       </div>
                     ) : (
                       <div
-                        className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-xl sm:rounded-2xl flex items-center justify-center cursor-pointer border-2 border-dashed border-indigo-300 hover:border-indigo-500 transition-all self-center sm:self-auto"
+                        className="w-16 h-16 sm:w-20 sm:h-20 bg-linear-to-br from-indigo-100 to-purple-100 rounded-xl sm:rounded-2xl flex items-center justify-center cursor-pointer border-2 border-dashed border-indigo-300 hover:border-indigo-500 transition-all self-center sm:self-auto"
                         onClick={() => setOpen(true)}
                       >
                         <IoCloudUploadOutline className="w-6 h-6 sm:w-8 sm:h-8 text-indigo-600" />
@@ -1639,7 +1580,7 @@ console.log("contact",contact)
                           <button
                             type="button"
                             onClick={() => setOpen(true)}
-                            className="px-3 sm:px-5 py-1.5 sm:py-2 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white text-xs sm:text-sm font-semibold rounded-lg sm:rounded-xl hover:shadow-lg transition-all"
+                            className="px-3 sm:px-5 py-1.5 sm:py-2 bg-linear-to-r from-indigo-600 to-indigo-500 text-white text-xs sm:text-sm font-semibold rounded-lg sm:rounded-xl hover:shadow-lg transition-all"
                           >
                             <IoCloudUploadOutline className="inline mr-1 sm:mr-2 w-3 h-3 sm:w-4 sm:h-4" />
                             Upload Photo
@@ -1649,7 +1590,7 @@ console.log("contact",contact)
                             <button
                               type="button"
                               onClick={() => setOpen(true)}
-                              className="px-3 sm:px-5 py-1.5 sm:py-2 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white text-xs sm:text-sm font-semibold rounded-lg sm:rounded-xl hover:shadow-lg transition-all"
+                              className="px-3 sm:px-5 py-1.5 sm:py-2 bg-linear-to-r from-indigo-600 to-indigo-500 text-white text-xs sm:text-sm font-semibold rounded-lg sm:rounded-xl hover:shadow-lg transition-all"
                             >
                               <IoPencilOutline className="inline mr-1 sm:mr-2 w-3 h-3 sm:w-4 sm:h-4" />
                               Change
@@ -1771,7 +1712,7 @@ console.log("contact",contact)
                   <button
                     type="button"
                     onClick={() => setShowAdditional(!showAdditional)}
-                    className="w-full flex items-center justify-between p-3 sm:p-4 bg-gradient-to-r from-gray-50 to-indigo-50/30 rounded-lg sm:rounded-xl hover:from-indigo-50 hover:to-purple-50 transition-all duration-300 group cursor-pointer"
+                    className="w-full flex items-center justify-between p-3 sm:p-4 bg-linear-to-r from-gray-50 to-indigo-50/30 rounded-lg sm:rounded-xl hover:from-indigo-50 hover:to-purple-50 transition-all duration-300 group cursor-pointer"
                   >
                     <div className="flex items-center gap-2 sm:gap-3">
                       <div
@@ -1809,7 +1750,7 @@ console.log("contact",contact)
                         transition={{ duration: 0.3 }}
                         className="overflow-hidden"
                       >
-                        <div className="mt-3 sm:mt-4 p-4 sm:p-5 bg-gradient-to-r from-indigo-50/30 to-purple-50/30 rounded-lg sm:rounded-xl border border-indigo-100 space-y-4 sm:space-y-5">
+                        <div className="mt-3 sm:mt-4 p-4 sm:p-5 bg-linear-to-r from-indigo-50/30 to-purple-50/30 rounded-lg sm:rounded-xl border border-indigo-100 space-y-4 sm:space-y-5">
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
                             <div>
                               <label className="block text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5 sm:mb-2">
@@ -1967,7 +1908,7 @@ console.log("contact",contact)
               ← Back to Templates
             </button>
             <button
-              className="px-4 sm:px-6 py-2 sm:py-2.5  bg-gradient-to-r from-indigo-600 to-indigo-500 text-white t font-medium rounded-lg sm:rounded-xl shadow-md transition-all hover:shadow-indigo-300 flex items-center gap-1.5 sm:gap-2 cursor-pointer"
+              className="px-4 sm:px-6 py-2 sm:py-2.5  bg-linear-to-r from-indigo-600 to-indigo-500 text-white t font-medium rounded-lg sm:rounded-xl shadow-md transition-all hover:shadow-indigo-300 flex items-center gap-1.5 sm:gap-2 cursor-pointer"
               onClick={handleNext}
             >
               <span>Continue to Experience</span>
@@ -2017,7 +1958,7 @@ console.log("contact",contact)
             animate={{ opacity: 1, scale: 1 }}
             className="bg-white rounded-xl sm:rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden"
           >
-            <div className="bg-gradient-to-r from-indigo-600 to-indigo-500 px-4 sm:px-5 py-3 sm:py-4">
+            <div className="bg-linear-to-r from-indigo-600 to-indigo-500 px-4 sm:px-5 py-3 sm:py-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-base sm:text-lg font-semibold text-white">
                   Upload Profile Photo
@@ -2098,7 +2039,7 @@ console.log("contact",contact)
                     <button
                       type="button"
                       onClick={handleCropSave}
-                      className="flex-1 px-3 sm:px-4 py-2 sm:py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white text-xs sm:text-sm font-medium rounded-lg hover:shadow-lg transition"
+                      className="flex-1 px-3 sm:px-4 py-2 sm:py-2.5 bg-linear-to-r from-indigo-600 to-indigo-500 text-white text-xs sm:text-sm font-medium rounded-lg hover:shadow-lg transition"
                     >
                       Save Photo
                     </button>
@@ -2110,7 +2051,7 @@ console.log("contact",contact)
         </div>
       )}
 
-      {contactTipsClicked && (
+      {/* {contactTipsClicked && (
         <AnimatePresence>
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div
@@ -2124,7 +2065,7 @@ console.log("contact",contact)
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
               className="relative w-full max-w-md mx-4 bg-white rounded-xl sm:rounded-2xl shadow-2xl overflow-hidden"
             >
-              <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-4 sm:px-6 py-4 sm:py-5">
+              <div className="bg-linear-to-r from-indigo-600 to-purple-600 px-4 sm:px-6 py-4 sm:py-5">
                 <div className="flex items-center gap-2 sm:gap-3">
                   <div className="p-1.5 sm:p-2 bg-white/20 rounded-xl">
                     <FaRegLightbulb className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
@@ -2178,19 +2119,12 @@ console.log("contact",contact)
                     </div>
                   ))}
                 </div>
-
-                <div className="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-gray-100">
-                  <div className="flex items-center justify-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs text-gray-400">
-                    <IoShieldCheckmark className="w-3 h-3 sm:w-4 sm:h-4" />
-                    <span>Your information is encrypted and secure</span>
-                  </div>
-                </div>
               </div>
 
               <div className="px-4 sm:px-6 py-3 sm:py-4 bg-gray-50 border-t border-gray-100">
                 <button
                   onClick={() => setContactTipsClicked(false)}
-                  className="w-full px-3 sm:px-4 py-2 sm:py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-xs sm:text-sm font-semibold rounded-lg sm:rounded-xl hover:shadow-lg transition-all"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-2.5 bg-linear-to-r from-indigo-600 to-purple-600 text-white text-xs sm:text-sm font-semibold rounded-lg sm:rounded-xl hover:shadow-lg transition-all"
                 >
                   Got it, thanks! ✨
                 </button>
@@ -2198,7 +2132,46 @@ console.log("contact",contact)
             </motion.div>
           </div>
         </AnimatePresence>
-      )}
+      )} */}
+
+
+
+<TipsModal
+  isOpen={contactTipsClicked}
+  onClose={() => setContactTipsClicked(false)}
+  title="Contact Tips"
+  subtitle="Make it easy for recruiters to reach you"
+  hasAI={false}
+  proTip="Complete contact info = 40% more responses from recruiters"
+  bestPractices={[
+    { tip: "Use your legal full name", example: "No nicknames or abbreviations" },
+    { tip: "Use a professional email", example: "name@domain.com" },
+    { tip: "Include country code in phone", example: "+1 (555) 123-4567" },
+    { tip: "Add your target job title", example: "Senior Software Engineer" },
+    { tip: "Include LinkedIn profile URL", example: "linkedin.com/in/username" },
+    { tip: "Include city & country", example: "Shows work eligibility" },
+  ]}
+  avoidList={[
+    "Unprofessional email addresses",
+    "Missing country code in phone",
+    "Outdated contact information",
+    "Missing LinkedIn profile",
+  ]}
+  customContent={
+    <div className="bg-indigo-50 rounded-lg p-3">
+      <p className="text-xs sm:text-sm font-semibold text-indigo-700 mb-2">Quick Checklist</p>
+      <div className="grid sm:grid-cols-2 gap-1">
+        <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 bg-indigo-400 rounded-full" /><span className="text-xs sm:text-sm text-gray-600">Legal name</span></div>
+       <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 bg-indigo-400 rounded-full" /><span className="text-xs sm:text-sm text-gray-600">LinkedIn URL</span></div>
+        <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 bg-indigo-400 rounded-full" /><span className="text-xs sm:text-sm text-gray-600">Phone with code</span></div>
+        
+         <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 bg-indigo-400 rounded-full" /><span className="text-xs sm:text-sm text-gray-600">Professional email</span></div>
+      </div>
+    </div>
+  }
+/>
+
+  
     </div>
   );
 };

@@ -2764,7 +2764,7 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
           <div className="t5-section">
             <div className="t5-section-title">Experience</div>
             {experiences.map((exp, index) => (
-              <div key={exp.id || index} className="t5-entry">
+              <div key={exp._id || index} className="t5-entry">
                 {(exp.jobTitle || exp.employer || exp.location) && (
                   <div className="t5-entry-heading">
                     {exp.jobTitle || ""}
@@ -2793,7 +2793,7 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
             {educations.map((edu, index) => {
               const formattedGrade = formatGrade(edu.grade || "");
               return (
-                <div key={edu.id || index} className="t5-entry">
+                <div key={edu._id || index} className="t5-entry">
                   {edu.schoolname && <div className="t5-entry-heading">{edu.schoolname}</div>}
                   {edu.degree && <div className="t5-entry-sub">{edu.degree}</div>}
                   {edu.location && <div className="t5-entry-sub">{edu.location}</div>}

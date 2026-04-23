@@ -1260,7 +1260,7 @@
 //               className="fixed inset-0 flex items-center justify-center z-50 p-4 pointer-events-none"
 //             >
 //               <motion.div
-//                 className="bg-gradient-to-br from-white via-white to-gray-50 rounded-2xl sm:rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-gray-100 pointer-events-auto relative"
+//                 className="bg-linear-to-br from-white via-white to-gray-50 rounded-2xl sm:rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-gray-100 pointer-events-auto relative"
 //                 initial={{ opacity: 0 }}
 //                 animate={{ opacity: 1 }}
 //                 exit={{ opacity: 0 }}
@@ -1278,7 +1278,7 @@
 //                       initial={{ scale: 0, rotate: -180 }}
 //                       animate={{ scale: 1, rotate: 0 }}
 //                       transition={{ type: "spring", delay: 0.2, damping: 12 }}
-//                       className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#c40116]/10 to-[#be0117]/10 rounded-2xl mb-4"
+//                       className="inline-flex items-center justify-center w-16 h-16 bg-linear-to-br from-[#c40116]/10 to-[#be0117]/10 rounded-2xl mb-4"
 //                     >
 //                       <svg
 //                         className="w-8 h-8 text-[#c40116]"
@@ -1298,7 +1298,7 @@
 //                       initial={{ opacity: 0 }}
 //                       animate={{ opacity: 1 }}
 //                       transition={{ duration: 0.3, delay: 0.25 }}
-//                       className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent"
+//                       className="text-2xl sm:text-3xl font-bold bg-linear-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent"
 //                     >
 //                       ATS Score Analysis
 //                     </motion.h3>
@@ -1361,7 +1361,7 @@
 //                         setShowPopup(false);
 //                         window.open("/ats-checker");
 //                       }}
-//                       className="w-full py-3 px-4 bg-gradient-to-r from-[#c40116]/5 to-[#be0117]/5 text-[#c40116] font-medium rounded-xl border border-[#c40116]/20 hover:border-[#c40116]/40 hover:shadow-md transition-all duration-300 group flex items-center justify-center gap-2 text-sm sm:text-base"
+//                       className="w-full py-3 px-4 bg-linear-to-r from-[#c40116]/5 to-[#be0117]/5 text-[#c40116] font-medium rounded-xl border border-[#c40116]/20 hover:border-[#c40116]/40 hover:shadow-md transition-all duration-300 group flex items-center justify-center gap-2 text-sm sm:text-base"
 //                     >
 //                       <svg
 //                         className="w-4 h-4 group-hover:translate-x-1 transition-transform"
@@ -1394,7 +1394,7 @@
 //                       setShowPopup(false);
 //                       setShowConfetti(false);
 //                     }}
-//                     className="w-full py-2.5 sm:py-3 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 font-medium rounded-xl hover:shadow-md transition-all duration-300 text-sm sm:text-base"
+//                     className="w-full py-2.5 sm:py-3 bg-linear-to-r from-gray-100 to-gray-200 text-gray-700 font-medium rounded-xl hover:shadow-md transition-all duration-300 text-sm sm:text-base"
 //                     type="button"
 //                   >
 //                     Close
@@ -1955,7 +1955,7 @@
 //   );
 
 //   return (
-//     <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-indigo-50/40">
+//     <div className="min-h-screen flex flex-col bg-linear-to-br from-slate-50 via-white to-indigo-50/40">
 //       {/* Premium Background Decoration */}
 //       {/* <div className="fixed inset-0 overflow-hidden pointer-events-none">
 //         <div className="absolute -top-40 -right-40 w-64 sm:w-96 h-64 sm:h-96 bg-indigo-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
@@ -1966,8 +1966,8 @@
 //           className="absolute inset-0 opacity-20"
 //           style={{
 //             backgroundImage: `
-//               linear-gradient(to right, rgba(99, 102, 241, 0.08) 1px, transparent 1px),
-//               linear-gradient(to bottom, rgba(99, 102, 241, 0.08) 1px, transparent 1px)
+//               linear-linear(to right, rgba(99, 102, 241, 0.08) 1px, transparent 1px),
+//               linear-linear(to bottom, rgba(99, 102, 241, 0.08) 1px, transparent 1px)
 //             `,
 //             backgroundSize: "50px 50px",
 //           }}
@@ -1985,7 +1985,7 @@
 //           {/* Header Section */}
 //           <div className="text-center mb-6 sm:mb-8">
 
-//             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
+//             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-linear-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
 //               Additional Information
 //             </h1>
 
@@ -1996,7 +1996,7 @@
 
 //             <button
 //               onClick={() => setTipsClicked(true)}
-//               className="mt-4 inline-flex items-center gap-1.5 px-4 py-1.5 bg-gradient-to-r from-amber-400 to-orange-400 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+//               className="mt-4 inline-flex items-center gap-1.5 px-4 py-1.5 bg-linear-to-r from-amber-400 to-orange-400 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transition-all duration-200"
 //             >
 //               <FaRegLightbulb className="w-3 h-3" />
 //               <span>Additional Info Tips</span>
@@ -2006,7 +2006,7 @@
 //           {/* Main Form Card */}
 //           <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
 //             {/* Card Header */}
-//             <div className="relative px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 bg-gradient-to-r from-indigo-50 to-white border-b border-gray-100">
+//             <div className="relative px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 bg-linear-to-r from-indigo-50 to-white border-b border-gray-100">
 //               <div className="absolute top-0 right-0 w-24 sm:w-32 h-24 sm:h-32 bg-indigo-100 rounded-full filter blur-3xl opacity-50"></div>
 //               <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-3">
 //                 <div className="flex items-center gap-2 sm:gap-3">
@@ -2454,7 +2454,7 @@
 //               <div className="mt-8 pt-4 border-t border-gray-100">
 //                 <button
 //                   onClick={checkATSScore}
-//                   className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-medium rounded-xl shadow-md hover:shadow-lg transition-all duration-300 text-sm flex items-center justify-center gap-2"
+//                   className="w-full sm:w-auto px-6 py-3 bg-linear-to-r from-indigo-600 to-indigo-500 text-white font-medium rounded-xl shadow-md hover:shadow-lg transition-all duration-300 text-sm flex items-center justify-center gap-2"
 //                   type="button"
 //                 >
 //                   <IoSparkles className="w-4 h-4" />
@@ -2477,7 +2477,7 @@
 //               ← Back to Summary
 //             </button>
 //             <button
-//               className="px-4 sm:px-6 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base font-semibold  bg-gradient-to-r from-indigo-600 to-indigo-500 text-white  rounded-lg sm:rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer"
+//               className="px-4 sm:px-6 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base font-semibold  bg-linear-to-r from-indigo-600 to-indigo-500 text-white  rounded-lg sm:rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer"
 //               onClick={() => {
 //                 if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
 //                 saveToAPI(finalize).then(() => router.push("/download-resume"));
@@ -2505,7 +2505,7 @@
 //               transition={{ type: "spring", damping: 25, stiffness: 300 }}
 //               className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden"
 //             >
-//               <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-5 py-4">
+//               <div className="bg-linear-to-r from-indigo-600 to-purple-600 px-5 py-4">
 //                 <div className="flex items-center gap-2">
 //                   <FaRegLightbulb className="w-5 h-5 text-white" />
 //                   <h3 className="text-lg font-bold text-white">
@@ -2549,7 +2549,7 @@
 //                 <div className="mt-4 pt-3 border-t border-gray-100">
 //                   <button
 //                     onClick={() => setTipsClicked(false)}
-//                     className="w-full px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-semibold rounded-lg hover:shadow-lg transition-all"
+//                     className="w-full px-4 py-2 bg-linear-to-r from-indigo-600 to-purple-600 text-white text-sm font-semibold rounded-lg hover:shadow-lg transition-all"
 //                   >
 //                     Got it, thanks! ✨
 //                   </button>
@@ -2564,7 +2564,7 @@
 //       {deletePopup.show && (
 //         <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-50 p-4">
 //           <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden">
-//             <div className="bg-gradient-to-r from-indigo-600 to-indigo-500 px-5 py-4">
+//             <div className="bg-linear-to-r from-indigo-600 to-indigo-500 px-5 py-4">
 //               <div className="flex items-center gap-2">
 //                 <div className="p-1.5 bg-white/20 rounded-lg">
 //                   <FaTrash className="w-5 h-5 text-white" />
@@ -2591,7 +2591,7 @@
 //                 </button>
 //                 <button
 //                   onClick={deleteSection}
-//                   className="flex-1 px-4 py-2.5 bg-gradient-to-r from-red-500 to-red-600 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all text-sm"
+//                   className="flex-1 px-4 py-2.5 bg-linear-to-r from-red-500 to-red-600 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all text-sm"
 //                   type="button"
 //                 >
 //                   Delete
@@ -2637,7 +2637,7 @@
 //               className="fixed inset-0 flex items-center justify-center z-50 p-4 pointer-events-none"
 //             >
 //               <motion.div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden pointer-events-auto">
-//                 <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-5 py-4">
+//                 <div className="bg-linear-to-r from-indigo-600 to-purple-600 px-5 py-4">
 //                   <div className="flex items-center gap-2">
 //                     <div className="p-1.5 bg-white/20 rounded-lg">
 //                       <svg
@@ -2748,9 +2748,8 @@ import {
   FaGem,
 } from "react-icons/fa";
 import { BsFileEarmarkText } from "react-icons/bs";
-import { FiCheckCircle, FiXCircle } from "react-icons/fi";
+import { FiCheckCircle, FiShield, FiXCircle } from "react-icons/fi";
 import { useRouter } from "next/navigation";
-import Stepper from "../../../components/resume/Steppers";
 import {
   Finalize as FinalizeType,
   SimpleSkill,
@@ -2760,6 +2759,7 @@ import {
 import { getLocalStorage, setLocalStorage } from "@/app/utils";
 import { API_URL } from "@/app/config/api";
 import { IoArrowForward, IoDiamondOutline, IoSparkles } from "react-icons/io5";
+import { TipsModal } from "@/app/components/resume";
 
 // Define interfaces
 interface Section {
@@ -2843,8 +2843,6 @@ const FinalizeForm = () => {
 
   const [isSaving, setIsSaving] = useState(false);
   const [lastSavedData, setLastSavedData] = useState<string>("");
-  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const initialLoadDone = useRef(false);
 
   const contactId = UseContext?.contact._id || UseContext?.contact.contactId;
 
@@ -2884,20 +2882,6 @@ const FinalizeForm = () => {
   const chosenResumeDetails = getLocalStorage<Template>("chosenTemplate");
 
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
-
-  // Save to localStorage whenever skillsData changes
-  useEffect(() => {
-    if (!initialLoadDone.current) return;
-
-    if (fullResumeData) {
-      const updatedFullData = {
-        ...fullResumeData,
-        finalize: finalize,
-      };
-      setFullResumeData(updatedFullData);
-      setLocalStorage("fullResumeData", updatedFullData);
-    }
-  }, [finalize]);
 
   const saveToAPI = async (finalizeData: typeof finalize) => {
     if (!contactId) {
@@ -2944,18 +2928,6 @@ const FinalizeForm = () => {
     }
   };
 
-  const debouncedSave = useCallback(
-    (finalizeData: typeof finalize) => {
-      if (saveTimeoutRef.current) {
-        clearTimeout(saveTimeoutRef.current);
-      }
-      saveTimeoutRef.current = setTimeout(() => {
-        // saveToAPI(finalizeData);
-      }, 1000);
-    },
-    [contactId, lastSavedData],
-  );
-
   const [deletePopup, setDeletePopup] = useState<DeletePopupState>({
     show: false,
     section: null,
@@ -2989,22 +2961,10 @@ const FinalizeForm = () => {
         references: experienceList.references || [],
         customSection: experienceList.customSection || [],
       };
-
-      setFinalize(formattedData);
-      setLastSavedData(JSON.stringify(formattedData));
-      initialLoadDone.current = true;
     } catch (error) {
       console.log(error);
     }
   };
-
-  useEffect(() => {
-    return () => {
-      if (saveTimeoutRef.current) {
-        clearTimeout(saveTimeoutRef.current);
-      }
-    };
-  }, []);
 
   useEffect(() => {
     document.body.style.overflow = deletePopup.show ? "hidden" : "auto";
@@ -3039,7 +2999,6 @@ const FinalizeForm = () => {
           return clearedItem;
         }),
       };
-      debouncedSave(updated);
       return updated;
     });
 
@@ -3078,7 +3037,6 @@ const FinalizeForm = () => {
           { id: Date.now(), name: "", level: 3 },
         ],
       };
-      debouncedSave(updated);
       return updated;
     });
 
@@ -3092,7 +3050,6 @@ const FinalizeForm = () => {
         [section]:
           (prev[section] as any[])?.filter((s) => s.id !== skillId) || [],
       };
-      debouncedSave(updated);
       return updated;
     });
   };
@@ -3116,7 +3073,6 @@ const FinalizeForm = () => {
               : s,
           ) || [],
       };
-      debouncedSave(updated);
       return updated;
     });
   };
@@ -3143,7 +3099,6 @@ const FinalizeForm = () => {
   const [score, setScore] = useState(0);
   const [atsVerdict, setAtsVerdict] = useState("");
   const [progress, setProgress] = useState(0);
-  const [showConfetti, setShowConfetti] = useState(false);
   const [tipsClicked, setTipsClicked] = useState(false);
 
   const checkATSScore = async () => {
@@ -3191,10 +3146,6 @@ const FinalizeForm = () => {
       if (current >= score) {
         current = score;
         clearInterval(timer);
-
-        if (score >= 80) {
-          setShowConfetti(true);
-        }
       }
       setProgress(current);
     }, 15);
@@ -3247,11 +3198,11 @@ const FinalizeForm = () => {
   );
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-indigo-50/40">
+    <div className="min-h-screen flex flex-col bg-linear-to-br from-slate-50 via-white to-indigo-50/40">
       {/* Sticky Stepper */}
-      <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
+      {/* <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <Stepper />
-      </div>
+      </div> */}
 
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto">
@@ -3264,7 +3215,7 @@ const FinalizeForm = () => {
               <IoSparkles className="w-3 h-3" />
             </div>
 
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-linear-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
               Additional Information
             </h1>
 
@@ -3275,7 +3226,7 @@ const FinalizeForm = () => {
 
             <button
               onClick={() => setTipsClicked(true)}
-              className="mt-4 inline-flex items-center gap-1.5 px-4 py-1.5 bg-gradient-to-r from-amber-400 to-orange-400 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+              className="mt-4 inline-flex items-center gap-1.5 px-4 py-1.5 bg-linear-to-r from-amber-400 to-orange-400 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transition-all duration-200"
             >
               <FaRegLightbulb className="w-3 h-3" />
               <span>Additional Info Tips</span>
@@ -3285,7 +3236,7 @@ const FinalizeForm = () => {
           {/* Main Form Card */}
           <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
             {/* Card Header */}
-            <div className="relative px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 bg-gradient-to-r from-indigo-50 to-white border-b border-gray-100">
+            <div className="relative px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 bg-linear-to-r from-indigo-50 to-white border-b border-gray-100">
               <div className="absolute top-0 right-0 w-24 sm:w-32 h-24 sm:h-32 bg-indigo-100 rounded-full filter blur-3xl opacity-50"></div>
               <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-2 sm:gap-3">
@@ -3374,7 +3325,7 @@ const FinalizeForm = () => {
                           <div
                             className={`transition-all duration-500 overflow-hidden ${
                               collapseStates[section.title]
-                                ? "max-h-[800px] opacity-100"
+                                ? "max-h-200 opacity-100"
                                 : "max-h-0 opacity-0"
                             }`}
                           >
@@ -3650,7 +3601,7 @@ const FinalizeForm = () => {
               <div className="mt-8 pt-4 border-t border-gray-100">
                 <button
                   onClick={checkATSScore}
-                  className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-medium rounded-xl shadow-md hover:shadow-lg transition-all duration-300 text-sm flex items-center justify-center gap-2"
+                  className="w-full sm:w-auto px-6 py-3 bg-linear-to-r from-indigo-600 to-indigo-500 text-white font-medium rounded-xl shadow-md hover:shadow-lg transition-all duration-300 text-sm flex items-center justify-center gap-2"
                   type="button"
                 >
                   <IoSparkles className="w-4 h-4" />
@@ -3667,16 +3618,14 @@ const FinalizeForm = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 ">
           <div className="flex justify-between items-center gap-3">
             <button
-              className="text-xs sm:text-sm font-medium text-gray-500 hover:text-indigo-600 transition flex items-center gap-1"
+              className="text-xs sm:text-sm font-medium text-gray-500 hover:text-indigo-600 transition flex items-center gap-1 cursor-pointer"
               onClick={() => router.push("/resume-details/summary")}
             >
               ← Back to Summary
             </button>
             <button
-            className="px-4 sm:px-6 py-2 sm:py-2.5  bg-gradient-to-r from-indigo-600 to-indigo-500 text-white t font-medium rounded-lg sm:rounded-xl shadow-md transition-all hover:shadow-indigo-300 flex items-center gap-1.5 sm:gap-2 cursor-pointer"
+              className="px-4 sm:px-6 py-2 sm:py-2.5  bg-linear-to-r from-indigo-600 to-indigo-500 text-white t font-medium rounded-lg sm:rounded-xl shadow-md transition-all hover:shadow-indigo-300 flex items-center gap-1.5 sm:gap-2 cursor-pointer"
               onClick={() => {
-                if (saveTimeoutRef.current)
-                  clearTimeout(saveTimeoutRef.current);
                 saveToAPI(finalize).then(() => router.push("/download-resume"));
               }}
             >
@@ -3688,79 +3637,52 @@ const FinalizeForm = () => {
       </div>
 
       {/* Tips Modal */}
-      {tipsClicked && (
-        <AnimatePresence>
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div
-              className="absolute inset-0 backdrop-blur-md bg-black/50"
-              onClick={() => setTipsClicked(false)}
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden"
-            >
-              <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-5 py-4">
-                <div className="flex items-center gap-2">
-                  <FaRegLightbulb className="w-5 h-5 text-white" />
-                  <h3 className="text-lg font-bold text-white">
-                    Additional Info Tips
-                  </h3>
-                </div>
-              </div>
-
-              <div className="p-5">
-                <div className="bg-amber-50 rounded-xl p-3 mb-4 border border-amber-100">
-                  <div className="flex items-center gap-2 mb-1">
-                    <FaStar className="w-3 h-3 text-amber-500" />
-                    <span className="text-xs font-semibold text-amber-700">
-                      Pro Tip
-                    </span>
-                  </div>
-                  <p className="text-xs text-gray-700">
-                    Add relevant certifications and awards that showcase your
-                    expertise
-                  </p>
-                </div>
-
-                <div className="space-y-3">
-                  <h4 className="text-xs font-semibold text-indigo-600 uppercase tracking-wide">
-                    Best Practices
-                  </h4>
-                  {[
-                    "Add relevant certifications only",
-                    "Include awards that highlight achievements",
-                    "List hobbies that show transferable skills",
-                    "Keep custom sections focused and concise",
-                  ].map((tip, idx) => (
-                    <div key={idx} className="flex items-start gap-2">
-                      <FiCheckCircle className="w-3.5 h-3.5 text-emerald-500 mt-0.5" />
-                      <span className="text-xs text-gray-700">{tip}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-4 pt-3 border-t border-gray-100">
-                  <button
-                    onClick={() => setTipsClicked(false)}
-                    className="w-full px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-semibold rounded-lg hover:shadow-lg transition-all"
-                  >
-                    Got it, thanks! ✨
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </AnimatePresence>
-      )}
+     <TipsModal
+  isOpen={tipsClicked}
+  onClose={() => setTipsClicked(false)}
+  title="Additional Info Tips"
+  subtitle="Make your resume stand out"
+  hasAI={false}
+  proTip="Add relevant certifications and awards that showcase your expertise"
+  bestPractices={[
+    { tip: "Add relevant certifications only", example: "Pick certifications that matter for your job" },
+    { tip: "Include awards that highlight achievements", example: "Employee of the Month, Best Performer" },
+    { tip: "List hobbies that show useful skills", example: "Chess (strategy), Blogging (writing)" },
+    { tip: "Keep custom sections short", example: "2-3 bullet points max" },
+   
+  ]}
+  avoidList={[
+    "Adding old or unused certifications",
+    "Listing too many hobbies (keep it 3-4)",
+    "Making custom sections too long",
+  ]}
+  customContent={
+    <div className="bg-indigo-50 rounded-lg p-3">
+      <div className="flex items-center gap-2 mb-2">
+        <FiShield className="w-3 h-3 text-indigo-600" />
+        <p className="text-xs sm:text-sm font-semibold text-indigo-700">What to Include</p>
+      </div>
+      <div className="grid sm:grid-cols-2 gap-2">
+        <div>
+          <p className="text-xs sm:text-sm font-medium text-gray-800">Certifications</p>
+          <p className="text-xs  text-gray-600">AWS, Google, Microsoft, PMP</p>
+        </div>
+        <div>
+          <p className="text-xs font-medium text-gray-800">Awards</p>
+          <p className="text-xs  text-gray-600">Best Employee, Leadership Award</p>
+        </div>
+     
+       
+      </div>
+    </div>
+  }
+/>
 
       {/* Delete Confirmation Popup */}
       {deletePopup.show && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden">
-            <div className="bg-gradient-to-r from-indigo-600 to-indigo-500 px-5 py-4">
+            <div className="bg-linear-to-r from-indigo-600 to-indigo-500 px-5 py-4">
               <div className="flex items-center gap-2">
                 <div className="p-1.5 bg-white/20 rounded-lg">
                   <FaTrash className="w-5 h-5 text-white" />
@@ -3787,7 +3709,7 @@ const FinalizeForm = () => {
                 </button>
                 <button
                   onClick={deleteSection}
-                  className="flex-1 px-4 py-2.5 bg-gradient-to-r from-red-500 to-red-600 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all text-sm"
+                  className="flex-1 px-4 py-2.5 bg-linear-to-r from-red-500 to-red-600 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all text-sm"
                   type="button"
                 >
                   Delete
@@ -3822,7 +3744,6 @@ const FinalizeForm = () => {
               className="fixed inset-0 bg-black/60 backdrop-blur-md z-50"
               onClick={() => {
                 setShowPopup(false);
-                setShowConfetti(false);
               }}
             />
 
@@ -3833,7 +3754,7 @@ const FinalizeForm = () => {
               className="fixed inset-0 flex items-center justify-center z-50 p-4 pointer-events-none"
             >
               <motion.div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden pointer-events-auto">
-                <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-5 py-4">
+                <div className="bg-linear-to-r from-indigo-600 to-purple-600 px-5 py-4">
                   <div className="flex items-center gap-2">
                     <div className="p-1.5 bg-white/20 rounded-lg">
                       <svg
@@ -3884,7 +3805,7 @@ const FinalizeForm = () => {
 
                   <p className="text-gray-600 text-sm mb-5">{atsVerdict}</p>
 
-                  <button
+                  {/* <button
                     onClick={() => {
                       setShowPopup(false);
                       window.open("/ats-checker");
@@ -3893,12 +3814,11 @@ const FinalizeForm = () => {
                   >
                     Go to Advanced ATS Checker
                     <IoArrowForward className="w-4 h-4" />
-                  </button>
+                  </button> */}
 
                   <button
                     onClick={() => {
                       setShowPopup(false);
-                      setShowConfetti(false);
                     }}
                     className="w-full py-2.5 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-all text-sm"
                   >

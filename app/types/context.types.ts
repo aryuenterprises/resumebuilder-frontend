@@ -78,7 +78,7 @@ export interface SkillCategory {
 export type SkillsType = SimpleSkill[] | SkillCategory[];
 
 export interface Project {
-  id: string | number;
+  _id: string | number;
   title?: string;
   techStack: string[];
   description?: string;

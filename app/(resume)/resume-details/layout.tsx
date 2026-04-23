@@ -1,5 +1,4 @@
 "use client";
-import SimpleCanvasPreview from "../../components/resume/SimpleCanvasPreview";
 import { templateData } from "@/app/data";
 import { useState, useEffect, useContext, useRef } from "react";
 import { useRouter } from "next/navigation";
@@ -19,8 +18,8 @@ import axios from "axios";
 import { API_URL } from "@/app/config/api";
 import { CreateContext } from "@/app/context/CreateContext";
 import LoginModel from "@/app/components/auth/LoginModel";
-import { ResumeDataFetcher } from "@/app/components/resume/ResumeDataFetcher";
-import { usePreventReload } from "@/app/hooks";
+import { ResumeDataFetcher, usePreventReload } from "@/app/hooks";
+import {SimpleCanvasPreview, Stepper} from "@/app/components/resume";
 
 export default function RootLayout({
   children,
@@ -45,6 +44,7 @@ export default function RootLayout({
       <LoginModel />
 
       <aside className="w-full lg:w-1/2 overflow-y-auto">
+      <Stepper/>
         <ResumeDataFetcher>{children}</ResumeDataFetcher>
       </aside>
 

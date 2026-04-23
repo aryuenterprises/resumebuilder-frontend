@@ -41,7 +41,6 @@
 
 //       const contactId = UseContext?.contact._id || UseContext?.contact.contactId;
 
-
 //   const {
 //     summary,
 //     setSummary,
@@ -51,7 +50,6 @@
 //     fullResumeData,
 //     setFullResumeData,
 //   } = UseContext;
-
 
 //   const [isSaving, setIsSaving] = useState(false);
 //   const [lastSavedData, setLastSavedData] = useState<string>("");
@@ -79,14 +77,12 @@
 
 //   // const filteredSkills = skills.map((skill) => skill.skill);
 
-  
-//   const filteredSkills = skills?.length 
-//   ? ('title' in skills[0] 
+//   const filteredSkills = skills?.length
+//   ? ('title' in skills[0]
 //       ? (skills as SkillCategory[]).flatMap(c => c.skills.map(s => s.name))
 //       : (skills as SimpleSkill[]).map(s => s.name))
 //   : [];
 
-  
 //   console.log("filteredSkills",filteredSkills)
 
 //   const formData = {
@@ -539,8 +535,6 @@
 // };
 // export default SummaryForm;
 
-
-
 "use client";
 
 import React, {
@@ -556,7 +550,6 @@ import { CreateContext } from "@/app/context/CreateContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import Stepper from "../../../components/resume/Steppers";
 import { getLocalStorage, setLocalStorage } from "@/app/utils";
 import { API_URL } from "@/app/config/api";
 import { SimpleSkill, SkillCategory } from "@/app/types";
@@ -568,7 +561,8 @@ import {
   IoSparkles,
 } from "react-icons/io5";
 import { FaRegLightbulb, FaStar, FaGem, FaMagic } from "react-icons/fa";
-import { FiCheckCircle, FiXCircle } from "react-icons/fi";
+import { FiCheckCircle, FiShield, FiX, FiXCircle } from "react-icons/fi";
+import { TipsModal } from "@/app/components/resume";
 
 // Dynamically import Editor to avoid SSR issues
 const Editor = dynamic(
@@ -577,7 +571,9 @@ const Editor = dynamic(
     ssr: false,
     loading: () => (
       <div className="rounded-xl mt-3 md:mt-4 bg-gray-50 h-32 flex items-center justify-center border border-gray-200">
-        <div className="animate-pulse text-gray-400 text-sm">Loading editor...</div>
+        <div className="animate-pulse text-gray-400 text-sm">
+          Loading editor...
+        </div>
       </div>
     ),
   },
@@ -604,28 +600,27 @@ const SummaryForm = () => {
   const [loading, setLoading] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [summaryTipsClicked, setSummaryTipsClicked] = useState(false);
-
-  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const initialLoadDone = useRef(false);
   const router = useRouter();
 
-  const filteredExperiences = experiences?.map((exp) => ({
-    job_title: exp.jobTitle,
-    company: exp.employer,
-    start_date: exp.startDate,
-    end_date: exp.endDate,
-  })) || [];
+  const filteredExperiences =
+    experiences?.map((exp) => ({
+      job_title: exp.jobTitle,
+      company: exp.employer,
+      start_date: exp.startDate,
+      end_date: exp.endDate,
+    })) || [];
 
-  const filteredEducation = education?.map((edu) => ({
-    degree: edu.degree,
-    institution: edu.schoolname,
-    year: edu.year,
-  })) || [];
+  const filteredEducation =
+    education?.map((edu) => ({
+      degree: edu.degree,
+      institution: edu.schoolname,
+      year: edu.year,
+    })) || [];
 
-  const filteredSkills = skills?.length 
-    ? ('title' in skills[0] 
-        ? (skills as SkillCategory[]).flatMap(c => c.skills.map(s => s.name))
-        : (skills as SimpleSkill[]).map(s => s.name))
+  const filteredSkills = skills?.length
+    ? "title" in skills[0]
+      ? (skills as SkillCategory[]).flatMap((c) => c.skills.map((s) => s.name))
+      : (skills as SimpleSkill[]).map((s) => s.name)
     : [];
 
   const formData = {
@@ -634,29 +629,10 @@ const SummaryForm = () => {
     skills: filteredSkills,
   };
 
-  // Save to localStorage whenever text changes
-  useEffect(() => {
-    if (!initialLoadDone.current) return;
-
-    if (fullResumeData) {
-      const updatedFullData = {
-        ...fullResumeData,
-        summary: summary,
-      };
-      setFullResumeData(updatedFullData);
-      setLocalStorage("fullResumeData", updatedFullData);
-    }
-  }, [summary]);
-
   const saveToAPI = async (summaryText: string) => {
     if (!contactId) {
       console.error("Contact ID is required");
       return false;
-    }
-
-    const plainText = summaryText?.replace(/<[^>]*>/g, "").trim() || "";
-    if (plainText === lastSavedData) {
-      return true;
     }
 
     setIsSaving(true);
@@ -672,7 +648,6 @@ const SummaryForm = () => {
         { params: { contactId: contactId } },
       );
 
-      setLastSavedData(plainText);
       return true;
     } catch (err: any) {
       setErrors(err);
@@ -684,21 +659,8 @@ const SummaryForm = () => {
     }
   };
 
-  const debouncedSave = useCallback(
-    (summaryText: string) => {
-      if (saveTimeoutRef.current) {
-        clearTimeout(saveTimeoutRef.current);
-      }
-      saveTimeoutRef.current = setTimeout(() => {
-        // saveToAPI(summaryText);
-      }, 1000);
-    },
-    [contactId, lastSavedData],
-  );
-
   const handleTextChange = (htmlValue: string) => {
     setSummary(htmlValue);
-    debouncedSave(htmlValue);
   };
 
   const handleSubmitAi = async (e?: React.MouseEvent) => {
@@ -729,7 +691,6 @@ const SummaryForm = () => {
     if (Airesponse) {
       setShowPopup(false);
       setSummary(Airesponse);
-      // saveToAPI(Airesponse);
     }
   };
 
@@ -744,64 +705,35 @@ const SummaryForm = () => {
 
       const plainText = fetchedText?.replace(/<[^>]*>/g, "").trim() || "";
       setLastSavedData(plainText);
-
-      initialLoadDone.current = true;
     } catch (error) {
       console.log(error);
     }
   };
 
-  useEffect(() => {
-    return () => {
-      if (saveTimeoutRef.current) {
-        clearTimeout(saveTimeoutRef.current);
-      }
-    };
-  }, []);
-
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-indigo-50/40">
-      {/* Premium Background Decoration */}
-      {/* <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-64 sm:w-96 h-64 sm:h-96 bg-indigo-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
-        <div className="absolute -bottom-40 -left-40 w-64 sm:w-96 h-64 sm:h-96 bg-purple-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[600px] h-[300px] sm:h-[600px] bg-indigo-50 rounded-full filter blur-3xl opacity-30"></div>
-        
-        <div 
-          className="absolute inset-0 opacity-20"
-          style={{
-            backgroundImage: `
-              linear-gradient(to right, rgba(99, 102, 241, 0.08) 1px, transparent 1px),
-              linear-gradient(to bottom, rgba(99, 102, 241, 0.08) 1px, transparent 1px)
-            `,
-            backgroundSize: '50px 50px'
-          }}
-        />
-      </div> */}
-
+    <div className="min-h-screen flex flex-col bg-linear-to-br from-slate-50 via-white to-indigo-50/40">
       {/* Sticky Stepper */}
-      <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
+      {/* <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <Stepper />
-      </div>
+      </div> */}
 
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto">
         <div className=" mx-auto px-2 py-6 sm:py-8 lg:py-10">
           {/* Header Section */}
           <div className="text-center mb-6 sm:mb-8">
-            
-            
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-linear-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
               Professional Summary
             </h1>
-            
+
             <p className="text-gray-500 text-sm max-w-md mx-auto">
-              Write a compelling introduction that highlights your experience and skills
+              Write a compelling introduction that highlights your experience
+              and skills
             </p>
 
             <button
               onClick={() => setSummaryTipsClicked(true)}
-              className="mt-4 inline-flex items-center gap-1.5 px-4 py-1.5 bg-gradient-to-r from-amber-400 to-orange-400 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+              className="mt-4 inline-flex items-center gap-1.5 px-4 py-1.5 bg-linear-to-r from-amber-400 to-orange-400 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transition-all duration-200"
             >
               <FaRegLightbulb className="w-3 h-3" />
               <span>Summary Tips</span>
@@ -811,7 +743,7 @@ const SummaryForm = () => {
           {/* Main Form Card */}
           <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
             {/* Card Header */}
-            <div className="relative px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 bg-gradient-to-r from-indigo-50 to-white border-b border-gray-100">
+            <div className="relative px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 bg-linear-to-r from-indigo-50 to-white border-b border-gray-100">
               <div className="absolute top-0 right-0 w-24 sm:w-32 h-24 sm:h-32 bg-indigo-100 rounded-full filter blur-3xl opacity-50"></div>
               <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-2 sm:gap-3">
@@ -819,14 +751,20 @@ const SummaryForm = () => {
                     <IoDiamondOutline className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600" />
                   </div>
                   <div>
-                    <h2 className="text-base sm:text-lg font-semibold text-gray-900">Professional Summary</h2>
-                    <p className="text-xs sm:text-sm text-gray-500">Tell your professional story</p>
+                    <h2 className="text-base sm:text-lg font-semibold text-gray-900">
+                      Professional Summary
+                    </h2>
+                    <p className="text-xs sm:text-sm text-gray-500">
+                      Tell your professional story
+                    </p>
                   </div>
                 </div>
                 {isSaving && (
                   <div className="flex items-center gap-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-indigo-100 rounded-full self-start sm:self-auto">
                     <div className="w-2 h-2 sm:w-3 sm:h-3 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-                    <span className="text-[10px] sm:text-xs text-indigo-700 font-medium">Saving...</span>
+                    <span className="text-[10px] sm:text-xs text-indigo-700 font-medium">
+                      Saving...
+                    </span>
                   </div>
                 )}
               </div>
@@ -845,7 +783,7 @@ const SummaryForm = () => {
                       className={`inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                         loading
                           ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                          : "bg-gradient-to-r from-indigo-600 to-indigo-500 text-white hover:shadow-lg"
+                          : "bg-linear-to-r from-indigo-600 to-indigo-500 text-white hover:shadow-lg"
                       }`}
                       type="button"
                     >
@@ -874,10 +812,30 @@ const SummaryForm = () => {
                       onTextChange={(e: any) => handleTextChange(e.htmlValue)}
                       headerTemplate={
                         <div className="flex gap-1 p-2 flex-wrap items-center bg-gray-50 border-b border-gray-200">
-                          <button type="button" className="ql-bold p-1.5 hover:bg-gray-200 rounded transition">B</button>
-                          <button type="button" className="ql-italic p-1.5 hover:bg-gray-200 rounded transition">I</button>
-                          <button type="button" className="ql-underline p-1.5 hover:bg-gray-200 rounded transition">U</button>
-                          <button type="button" className="ql-clean p-1.5 hover:bg-gray-200 rounded transition">⌫</button>
+                          <button
+                            type="button"
+                            className="ql-bold p-1.5 hover:bg-gray-200 rounded transition"
+                          >
+                            B
+                          </button>
+                          <button
+                            type="button"
+                            className="ql-italic p-1.5 hover:bg-gray-200 rounded transition"
+                          >
+                            I
+                          </button>
+                          <button
+                            type="button"
+                            className="ql-underline p-1.5 hover:bg-gray-200 rounded transition"
+                          >
+                            U
+                          </button>
+                          <button
+                            type="button"
+                            className="ql-clean p-1.5 hover:bg-gray-200 rounded transition"
+                          >
+                            ⌫
+                          </button>
                         </div>
                       }
                       style={{
@@ -892,11 +850,23 @@ const SummaryForm = () => {
                   {errors?.text && (
                     <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg">
                       <div className="p-1 bg-red-100 rounded-lg">
-                        <svg className="w-3.5 h-3.5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <svg
+                          className="w-3.5 h-3.5 text-red-600"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
                         </svg>
                       </div>
-                      <p className="text-red-600 text-xs font-medium">{errors.text}</p>
+                      <p className="text-red-600 text-xs font-medium">
+                        {errors.text}
+                      </p>
                     </div>
                   )}
                 </div>
@@ -917,10 +887,11 @@ const SummaryForm = () => {
               ← Back to Projects
             </button>
             <button
-            className="px-4 sm:px-6 py-2 sm:py-2.5  bg-gradient-to-r from-indigo-600 to-indigo-500 text-white t font-medium rounded-lg sm:rounded-xl shadow-md transition-all hover:shadow-indigo-300 flex items-center gap-1.5 sm:gap-2 cursor-pointer"
+              className="px-4 sm:px-6 py-2 sm:py-2.5  bg-linear-to-r from-indigo-600 to-indigo-500 text-white t font-medium rounded-lg sm:rounded-xl shadow-md transition-all hover:shadow-indigo-300 flex items-center gap-1.5 sm:gap-2 cursor-pointer"
               onClick={() => {
-                if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
-                saveToAPI(summary).then(() => router.push("/resume-details/finalize"));
+                saveToAPI(summary).then(() =>
+                  router.push("/resume-details/finalize"),
+                );
               }}
             >
               <span>Continue to Finalize</span>
@@ -930,66 +901,30 @@ const SummaryForm = () => {
         </div>
       </div>
 
-      {/* Summary Tips Modal */}
-      {summaryTipsClicked && (
-        <AnimatePresence>
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div
-              className="absolute inset-0 backdrop-blur-md bg-black/50"
-              onClick={() => setSummaryTipsClicked(false)}
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden"
-            >
-              <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-5 py-4">
-                <div className="flex items-center gap-2">
-                  <FaRegLightbulb className="w-5 h-5 text-white" />
-                  <h3 className="text-lg font-bold text-white">Summary Tips</h3>
-                </div>
-              </div>
-
-              <div className="p-5">
-                <div className="bg-amber-50 rounded-xl p-3 mb-4 border border-amber-100">
-                  <div className="flex items-center gap-2 mb-1">
-                    <FaStar className="w-3 h-3 text-amber-500" />
-                    <span className="text-xs font-semibold text-amber-700">Pro Tip</span>
-                  </div>
-                  <p className="text-xs text-gray-700">Keep your summary concise, focused, and tailored to your target role</p>
-                </div>
-
-                <div className="space-y-3">
-                  <h4 className="text-xs font-semibold text-indigo-600 uppercase tracking-wide">Best Practices</h4>
-                  {[
-                    "Keep it concise (3-5 sentences maximum)",
-                    "Highlight your most relevant experience",
-                    "Include key skills and achievements",
-                    "Tailor to your target role/industry",
-                    "Use action verbs and quantifiable results"
-                  ].map((tip, idx) => (
-                    <div key={idx} className="flex items-start gap-2">
-                      <FiCheckCircle className="w-3.5 h-3.5 text-emerald-500 mt-0.5" />
-                      <span className="text-xs text-gray-700">{tip}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-4 pt-3 border-t border-gray-100">
-                  <button
-                    onClick={() => setSummaryTipsClicked(false)}
-                    className="w-full px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-semibold rounded-lg hover:shadow-lg transition-all"
-                  >
-                    Got it, thanks! ✨
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </AnimatePresence>
-      )}
+    <TipsModal
+  isOpen={summaryTipsClicked}
+  onClose={() => setSummaryTipsClicked(false)}
+  title="Summary Tips"
+  subtitle="Write a compelling introduction"
+  hasAI={true}
+  
+  aiFeatureDescription="get a professionally written summary based on your experience."
+  proTip="Your summary is the first thing recruiters read — make it count in 3-5 sentences"
+  bestPractices={[
+    { tip: "Keep it short (3-5 sentences)", example: "Recruiters read quickly" },
+    { tip: "Focus on your best experience", example: "Talk about your main jobs" },
+    { tip: "Add numbers to show success", example: "Made processes 40% faster" },
+  ]}
+  avoidList={[
+    "Writing long paragraphs (more than 5 sentences)",
+    "Using overused words like 'hardworking'",
+    "Using 'I', 'me', 'my' too much",
+  ]}
+   examples={{
+    before: "I am a hard worker. I know many skills. I want to learn and grow. I am good at my job.",
+    after: "Senior Software Engineer with 8+ years of experience. Led 5+ developers, delivered 15+ projects, and improved efficiency by 40%."
+  }}
+/>
 
       {/* AI Response Popup */}
       {showPopup && Airesponse && (
@@ -999,11 +934,15 @@ const SummaryForm = () => {
             animate={{ opacity: 1, scale: 1 }}
             className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] overflow-hidden"
           >
-            <div className="bg-gradient-to-r from-indigo-600 to-indigo-500 px-5 py-4">
+            <div className="bg-linear-to-r from-indigo-600 to-indigo-500 px-5 py-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-lg font-semibold text-white">AI-Generated Summary</h2>
-                  <p className="text-indigo-100 text-xs">Review and insert below</p>
+                  <h2 className="text-lg font-semibold text-white">
+                    AI-Generated Summary
+                  </h2>
+                  <p className="text-indigo-100 text-xs">
+                    Review and insert below
+                  </p>
                 </div>
                 <button
                   onClick={() => setShowPopup(false)}
@@ -1037,7 +976,7 @@ const SummaryForm = () => {
                 </button>
                 <button
                   onClick={insertAIResponse}
-                  className="flex-1 px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2"
+                  className="flex-1 px-4 py-2.5 bg-linear-to-r from-indigo-600 to-indigo-500 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2"
                   type="button"
                 >
                   <span>Insert Summary</span>

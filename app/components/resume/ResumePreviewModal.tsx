@@ -312,7 +312,7 @@ interface ResumePreviewModalProps {
   onUse?: () => void;
 }
 
-const ResumePreviewModal = ({
+export const ResumePreviewModal = ({
   show,
   onClose,
   template,
@@ -567,4 +567,3 @@ const ResumePreviewModal = ({
   );
 };
 
-export default ResumePreviewModal;

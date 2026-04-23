@@ -49,7 +49,7 @@
 //   const router = useRouter();
 //   const [isSaving, setIsSaving] = useState(false);
 //   const [lastSavedData, setLastSavedData] = useState<string>("");
-//   const [skillTipsClicked, setSkillTipsClicked] = useState(false);
+//   const [projectsTipsClicked, setProjectsTipsClicked] = useState(false);
 //   const [techInput, setTechInput] = useState<{ [key: string]: string }>({});
 
 //   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -282,7 +282,7 @@
 
 //             <div className="flex justify-end me-5">
 //               <button
-//                 onClick={() => setSkillTipsClicked((prev) => !prev)}
+//                 onClick={() => setProjectsTipsClicked((prev) => !prev)}
 //                 className="flex items-center justify-center xs:justify-start gap-2 bg-linear-to-r from-white to-gray-50/80 border border-gray-200 rounded-xl p-2 text-gray-700 text-xs sm:text-sm font-medium hover:border-[#c40116] hover:text-[#c40116] hover:shadow-md transition-all duration-200 w-fit"
 //                 type="button"
 //               >
@@ -298,7 +298,7 @@
 //                 </motion.div>
 //                 <span className="truncate">Project Tips</span>
 //                 <motion.div
-//                   animate={{ rotate: skillTipsClicked ? 180 : 0 }}
+//                   animate={{ rotate: projectsTipsClicked ? 180 : 0 }}
 //                   transition={{ duration: 0.3 }}
 //                   className="text-gray-500 shrink-0"
 //                 >
@@ -597,12 +597,12 @@
 //         </div>
 
 //         {/* Project Tips Modal */}
-//         {skillTipsClicked && (
+//         {projectsTipsClicked && (
 //           <AnimatePresence>
 //             <div className="fixed inset-0 z-50 flex items-start justify-center overflow-hidden p-4">
 //               <div
 //                 className="absolute inset-0 backdrop-blur-sm"
-//                 onClick={() => setSkillTipsClicked(false)}
+//                 onClick={() => setProjectsTipsClicked(false)}
 //               />
 //               <div className="relative w-full max-w-sm sm:max-w-md md:max-w-lg lg:w-[30vw] h-auto max-h-[80vh] mt-8 sm:mt-20">
 //                 <motion.div
@@ -627,7 +627,7 @@
 //                       </h3>
 //                     </div>
 //                     <button
-//                       onClick={() => setSkillTipsClicked(false)}
+//                       onClick={() => setProjectsTipsClicked(false)}
 //                       className="p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
 //                       type="button"
 //                     >
@@ -761,15 +761,6 @@
 
 // export default ProjectsForm;
 
-
-
-
-
-
-
-
-
-
 "use client";
 
 import React, {
@@ -779,7 +770,14 @@ import React, {
   useContext,
   useCallback,
 } from "react";
-import { FiChevronDown, FiTrash2, FiX, FiCheckCircle, FiXCircle } from "react-icons/fi";
+import {
+  FiChevronDown,
+  FiTrash2,
+  FiX,
+  FiCheckCircle,
+  FiXCircle,
+  FiShield,
+} from "react-icons/fi";
 import { IoMdAdd } from "react-icons/io";
 import {
   IoArrowForward,
@@ -795,10 +793,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import Stepper from "../../../components/resume/Steppers";
 import { getLocalStorage, setLocalStorage } from "@/app/utils";
 import { API_URL } from "@/app/config/api";
 import { Project } from "@/app/types";
+import { TipsModal } from "@/app/components/resume";
 
 // Dynamically import Editor to avoid SSR issues
 const Editor = dynamic(
@@ -807,7 +805,9 @@ const Editor = dynamic(
     ssr: false,
     loading: () => (
       <div className="rounded-xl mt-3 md:mt-4 bg-gray-50 h-32 flex items-center justify-center border border-gray-200">
-        <div className="animate-pulse text-gray-400 text-sm">Loading editor...</div>
+        <div className="animate-pulse text-gray-400 text-sm">
+          Loading editor...
+        </div>
       </div>
     ),
   },
@@ -817,31 +817,12 @@ const ProjectsForm = () => {
   const UseContext = useContext(CreateContext);
   const contactId = UseContext?.contact._id || UseContext?.contact.contactId;
 
-  const { fullResumeData, setFullResumeData, projects, setProjects } =
-    UseContext || {};
+  const { projects, setProjects } = UseContext || {};
 
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
-  const [lastSavedData, setLastSavedData] = useState<string>("");
-  const [skillTipsClicked, setSkillTipsClicked] = useState(false);
+  const [projectsTipsClicked, setProjectsTipsClicked] = useState(false);
   const [techInput, setTechInput] = useState<{ [key: string]: string }>({});
-
-  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const initialLoadDone = useRef(false);
-
-  // Save to localStorage whenever projects change
-  useEffect(() => {
-    if (!initialLoadDone.current) return;
-
-    if (fullResumeData) {
-      const updatedFullData = {
-        ...fullResumeData,
-        projects: projects,
-      };
-      setFullResumeData(updatedFullData);
-      setLocalStorage("fullResumeData", updatedFullData);
-    }
-  }, [projects]);
 
   const addProject = () => {
     if (!setProjects) return;
@@ -850,7 +831,7 @@ const ProjectsForm = () => {
       const updated = [
         ...prev,
         {
-          id: Date.now(),
+          _id: Date.now(),
           title: "",
           techStack: [],
           description: "",
@@ -860,7 +841,6 @@ const ProjectsForm = () => {
           error: {},
         },
       ];
-      debouncedSave(updated);
       return updated;
     });
   };
@@ -869,11 +849,6 @@ const ProjectsForm = () => {
     if (!contactId) {
       console.error("Contact ID is required");
       return false;
-    }
-
-    const currentDataString = JSON.stringify(projectsData);
-    if (currentDataString === lastSavedData) {
-      return true;
     }
 
     setIsSaving(true);
@@ -887,8 +862,7 @@ const ProjectsForm = () => {
         params: { contactId: contactId },
       });
 
-      setLastSavedData(currentDataString);
-      fetchProjects();
+      // fetchProjects();
       return true;
     } catch (err: any) {
       console.error("Error saving projects:", err);
@@ -899,23 +873,11 @@ const ProjectsForm = () => {
     }
   };
 
-  const debouncedSave = useCallback(
-    (projectsData: Project[]) => {
-      if (saveTimeoutRef.current) {
-        clearTimeout(saveTimeoutRef.current);
-      }
-      saveTimeoutRef.current = setTimeout(() => {
-        // saveToAPI(projectsData);
-      }, 1000);
-    },
-    [contactId, lastSavedData],
-  );
-
   const toggleForm = (id: string | number) => {
     if (!setProjects) return;
     setProjects((prev: Project[]) =>
       prev.map((project) =>
-        project.id === id ? { ...project, isOpen: !project.isOpen } : project,
+        project._id === id ? { ...project, isOpen: !project.isOpen } : project,
       ),
     );
   };
@@ -928,9 +890,8 @@ const ProjectsForm = () => {
     if (!setProjects) return;
     setProjects((prev: Project[]) => {
       const updated = prev.map((project) =>
-        project.id === id ? { ...project, [field]: value } : project,
+        project._id === id ? { ...project, [field]: value } : project,
       );
-      debouncedSave(updated);
       return updated;
     });
   };
@@ -938,8 +899,7 @@ const ProjectsForm = () => {
   const deleteProject = (id: string | number) => {
     if (!setProjects) return;
     setProjects((prev: Project[]) => {
-      const updated = prev.filter((project) => project.id !== id);
-      // saveToAPI(updated);
+      const updated = prev.filter((project) => project._id !== id);
       return updated;
     });
   };
@@ -947,7 +907,7 @@ const ProjectsForm = () => {
   const addTechStack = (projectId: string | number) => {
     const techValue = techInput[projectId] || "";
     if (techValue.trim()) {
-      const project = projects?.find((p: Project) => p.id === projectId);
+      const project = projects?.find((p: Project) => p._id === projectId);
       if (project && !project?.techStack?.includes(techValue.trim())) {
         handleChange(projectId, "techStack", [
           ...project.techStack,
@@ -959,7 +919,7 @@ const ProjectsForm = () => {
   };
 
   const removeTechStack = (projectId: string | number, tech: string) => {
-    const project = projects?.find((p: Project) => p.id === projectId);
+    const project = projects?.find((p: Project) => p._id === projectId);
     if (project) {
       handleChange(
         projectId,
@@ -990,73 +950,36 @@ const ProjectsForm = () => {
           isOpen: true,
         }));
         setProjects(formattedData);
-        setLastSavedData(JSON.stringify(formattedData));
       }
-      initialLoadDone.current = true;
     } catch (error) {
       console.log(error);
     }
   };
 
-  useEffect(() => {
-    return () => {
-      if (saveTimeoutRef.current) {
-        clearTimeout(saveTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  // Initialize projects if not exists
-  useEffect(() => {
-    if (!projects && setProjects) {
-      setProjects([]);
-    }
-    initialLoadDone.current = true;
-  }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-indigo-50/40">
-      {/* Premium Background Decoration */}
-      {/* <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-64 sm:w-96 h-64 sm:h-96 bg-indigo-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
-        <div className="absolute -bottom-40 -left-40 w-64 sm:w-96 h-64 sm:h-96 bg-purple-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[600px] h-[300px] sm:h-[600px] bg-indigo-50 rounded-full filter blur-3xl opacity-30"></div>
-        
-        <div 
-          className="absolute inset-0 opacity-20"
-          style={{
-            backgroundImage: `
-              linear-gradient(to right, rgba(99, 102, 241, 0.08) 1px, transparent 1px),
-              linear-gradient(to bottom, rgba(99, 102, 241, 0.08) 1px, transparent 1px)
-            `,
-            backgroundSize: '50px 50px'
-          }}
-        />
-      </div> */}
-
+    <div className="min-h-screen flex flex-col bg-linear-to-br from-slate-50 via-white to-indigo-50/40">
       {/* Sticky Stepper */}
-      <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
+      {/* <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <Stepper />
-      </div>
+      </div> */}
 
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto">
         <div className="mx-auto px-2  py-6 sm:py-8 lg:py-10">
           {/* Header Section */}
           <div className="text-center mb-6 sm:mb-8">
-          
-            
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-linear-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
               Projects
             </h1>
-            
+
             <p className="text-gray-500 text-sm max-w-md mx-auto">
               Showcase your best work and technical projects
             </p>
 
             <button
-              onClick={() => setSkillTipsClicked(true)}
-              className="mt-4 inline-flex items-center gap-1.5 px-4 py-1.5 bg-gradient-to-r from-amber-400 to-orange-400 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+              onClick={() => setProjectsTipsClicked(true)}
+              className="mt-4 inline-flex items-center gap-1.5 px-4 py-1.5 bg-linear-to-r from-amber-400 to-orange-400 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transition-all duration-200"
             >
               <FaRegLightbulb className="w-3 h-3" />
               <span>Project Tips</span>
@@ -1066,7 +989,7 @@ const ProjectsForm = () => {
           {/* Main Form Card */}
           <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
             {/* Card Header */}
-            <div className="relative px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 bg-gradient-to-r from-indigo-50 to-white border-b border-gray-100">
+            <div className="relative px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 bg-linear-to-r from-indigo-50 to-white border-b border-gray-100">
               <div className="absolute top-0 right-0 w-24 sm:w-32 h-24 sm:h-32 bg-indigo-100 rounded-full filter blur-3xl opacity-50"></div>
               <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-2 sm:gap-3">
@@ -1074,14 +997,20 @@ const ProjectsForm = () => {
                     <IoDiamondOutline className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600" />
                   </div>
                   <div>
-                    <h2 className="text-base sm:text-lg font-semibold text-gray-900">Portfolio Projects</h2>
-                    <p className="text-xs sm:text-sm text-gray-500">Showcase your best work and technical projects</p>
+                    <h2 className="text-base sm:text-lg font-semibold text-gray-900">
+                      Portfolio Projects
+                    </h2>
+                    <p className="text-xs sm:text-sm text-gray-500">
+                      Showcase your best work and technical projects
+                    </p>
                   </div>
                 </div>
                 {isSaving && (
                   <div className="flex items-center gap-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-indigo-100 rounded-full self-start sm:self-auto">
                     <div className="w-2 h-2 sm:w-3 sm:h-3 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-                    <span className="text-[10px] sm:text-xs text-indigo-700 font-medium">Saving...</span>
+                    <span className="text-[10px] sm:text-xs text-indigo-700 font-medium">
+                      Saving...
+                    </span>
                   </div>
                 )}
               </div>
@@ -1091,12 +1020,12 @@ const ProjectsForm = () => {
             <div className="p-4 sm:p-6 lg:p-8">
               {projects?.map((project: Project, index: number) => (
                 <div
-                  key={project.id}
+                  key={index}
                   className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 mb-4"
                 >
                   {/* Header */}
                   <div
-                    onClick={() => toggleForm(project.id)}
+                    onClick={() => toggleForm(project._id)}
                     className="flex justify-between items-center cursor-pointer p-4 sm:p-5 group hover:bg-gray-50/50 transition-all duration-300"
                   >
                     <div className="flex-1 min-w-0">
@@ -1123,7 +1052,7 @@ const ProjectsForm = () => {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          deleteProject(project.id);
+                          deleteProject(project._id);
                         }}
                         className="p-1.5 sm:p-2 rounded-lg bg-gray-100 text-red-500 hover:bg-red-50 hover:text-red-600 transition-all duration-200 cursor-pointer"
                         type="button"
@@ -1136,7 +1065,9 @@ const ProjectsForm = () => {
                   {/* Content */}
                   <div
                     className={`transition-all duration-500 overflow-hidden ${
-                      project.isOpen ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"
+                      project.isOpen
+                        ? "max-h-250 opacity-100"
+                        : "max-h-0 opacity-0"
                     }`}
                   >
                     <div className="p-4 sm:p-5 space-y-4 sm:space-y-5 border-t border-gray-100">
@@ -1148,7 +1079,9 @@ const ProjectsForm = () => {
                         <input
                           type="text"
                           value={project.title || ""}
-                          onChange={(e) => handleChange(project.id, "title", e.target.value)}
+                          onChange={(e) =>
+                            handleChange(project._id, "title", e.target.value)
+                          }
                           placeholder="E-Commerce Platform"
                           className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
                         />
@@ -1162,21 +1095,21 @@ const ProjectsForm = () => {
                         <div className="flex gap-2 mb-3">
                           <input
                             type="text"
-                            value={techInput[project.id] || ""}
+                            value={techInput[project._id] || ""}
                             onChange={(e) =>
                               setTechInput((prev) => ({
                                 ...prev,
-                                [project.id]: e.target.value,
+                                [project._id]: e.target.value,
                               }))
                             }
                             onKeyPress={(e) =>
-                              e.key === "Enter" && addTechStack(project.id)
+                              e.key === "Enter" && addTechStack(project._id)
                             }
                             className="flex-1 px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
                             placeholder="React, Node.js, MongoDB"
                           />
                           <button
-                            onClick={() => addTechStack(project.id)}
+                            onClick={() => addTechStack(project._id)}
                             className="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-indigo-100 hover:text-indigo-600 transition-colors text-sm font-medium"
                           >
                             Add
@@ -1190,7 +1123,9 @@ const ProjectsForm = () => {
                             >
                               {tech}
                               <button
-                                onClick={() => removeTechStack(project.id, tech)}
+                                onClick={() =>
+                                  removeTechStack(project._id, tech)
+                                }
                                 className="hover:text-indigo-900 ml-1"
                               >
                                 ×
@@ -1209,7 +1144,13 @@ const ProjectsForm = () => {
                           <input
                             type="url"
                             value={project.liveUrl || ""}
-                            onChange={(e) => handleChange(project.id, "liveUrl", e.target.value)}
+                            onChange={(e) =>
+                              handleChange(
+                                project._id,
+                                "liveUrl",
+                                e.target.value,
+                              )
+                            }
                             placeholder="https://your-project.com"
                             className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
                           />
@@ -1222,7 +1163,13 @@ const ProjectsForm = () => {
                           <input
                             type="url"
                             value={project.githubUrl || ""}
-                            onChange={(e) => handleChange(project.id, "githubUrl", e.target.value)}
+                            onChange={(e) =>
+                              handleChange(
+                                project._id,
+                                "githubUrl",
+                                e.target.value,
+                              )
+                            }
                             placeholder="https://github.com/username/project"
                             className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
                           />
@@ -1239,18 +1186,58 @@ const ProjectsForm = () => {
                           value={project.description || ""}
                           headerTemplate={
                             <div className="flex gap-1 p-2 flex-wrap items-center bg-gray-50 border-b border-gray-200">
-                              <button type="button" className="ql-bold p-1.5 hover:bg-gray-200 rounded transition">B</button>
-                              <button type="button" className="ql-italic p-1.5 hover:bg-gray-200 rounded transition">I</button>
-                              <button type="button" className="ql-underline p-1.5 hover:bg-gray-200 rounded transition">U</button>
-                              <button type="button" className="ql-list p-1.5 hover:bg-gray-200 rounded transition" value="ordered">1.</button>
-                              <button type="button" className="ql-list p-1.5 hover:bg-gray-200 rounded transition" value="bullet">•</button>
-                              <button type="button" className="ql-clean p-1.5 hover:bg-gray-200 rounded transition">⌫</button>
+                              <button
+                                type="button"
+                                className="ql-bold p-1.5 hover:bg-gray-200 rounded transition"
+                              >
+                                B
+                              </button>
+                              <button
+                                type="button"
+                                className="ql-italic p-1.5 hover:bg-gray-200 rounded transition"
+                              >
+                                I
+                              </button>
+                              <button
+                                type="button"
+                                className="ql-underline p-1.5 hover:bg-gray-200 rounded transition"
+                              >
+                                U
+                              </button>
+                              <button
+                                type="button"
+                                className="ql-list p-1.5 hover:bg-gray-200 rounded transition"
+                                value="ordered"
+                              >
+                                1.
+                              </button>
+                              <button
+                                type="button"
+                                className="ql-list p-1.5 hover:bg-gray-200 rounded transition"
+                                value="bullet"
+                              >
+                                •
+                              </button>
+                              <button
+                                type="button"
+                                className="ql-clean p-1.5 hover:bg-gray-200 rounded transition"
+                              >
+                                ⌫
+                              </button>
                             </div>
                           }
                           onTextChange={(e: any) => {
-                            handleChange(project.id, "description", e.htmlValue);
+                            handleChange(
+                              project._id,
+                              "description",
+                              e.htmlValue,
+                            );
                           }}
-                          style={{ height: "140px", minHeight: "140px", background: "white" }}
+                          style={{
+                            height: "140px",
+                            minHeight: "140px",
+                            background: "white",
+                          }}
                         />
                       </div>
                     </div>
@@ -1266,7 +1253,9 @@ const ProjectsForm = () => {
               >
                 <div className="flex items-center justify-center gap-2">
                   <IoMdAdd className="w-4 h-4 sm:w-5 sm:h-5" />
-                  <span className="text-xs sm:text-sm font-semibold">Add Project</span>
+                  <span className="text-xs sm:text-sm font-semibold">
+                    Add Project
+                  </span>
                 </div>
               </button>
             </div>
@@ -1285,11 +1274,12 @@ const ProjectsForm = () => {
               ← Back to Skills
             </button>
             <button
-            className="px-4 sm:px-6 py-2 sm:py-2.5  bg-gradient-to-r from-indigo-600 to-indigo-500 text-white t font-medium rounded-lg sm:rounded-xl shadow-md transition-all hover:shadow-indigo-300 flex items-center gap-1.5 sm:gap-2 cursor-pointer"
+              className="px-4 sm:px-6 py-2 sm:py-2.5  bg-linear-to-r from-indigo-600 to-indigo-500 text-white t font-medium rounded-lg sm:rounded-xl shadow-md transition-all hover:shadow-indigo-300 flex items-center gap-1.5 sm:gap-2 cursor-pointer"
               onClick={() => {
-                if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
                 if (projects) {
-                  saveToAPI(projects).then(() => router.push("/resume-details/summary"));
+                  saveToAPI(projects).then(() =>
+                    router.push("/resume-details/summary"),
+                  );
                 } else {
                   router.push("/resume-details/summary");
                 }
@@ -1302,66 +1292,23 @@ const ProjectsForm = () => {
         </div>
       </div>
 
-      {/* Project Tips Modal */}
-      {skillTipsClicked && (
-        <AnimatePresence>
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div
-              className="absolute inset-0 backdrop-blur-md bg-black/50"
-              onClick={() => setSkillTipsClicked(false)}
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden"
-            >
-              <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-5 py-4">
-                <div className="flex items-center gap-2">
-                  <FaRegLightbulb className="w-5 h-5 text-white" />
-                  <h3 className="text-lg font-bold text-white">Project Tips</h3>
-                </div>
-              </div>
-
-              <div className="p-5">
-                <div className="bg-amber-50 rounded-xl p-3 mb-4 border border-amber-100">
-                  <div className="flex items-center gap-2 mb-1">
-                    <FaStar className="w-3 h-3 text-amber-500" />
-                    <span className="text-xs font-semibold text-amber-700">Pro Tip</span>
-                  </div>
-                  <p className="text-xs text-gray-700">Showcase 3-5 of your most impressive and relevant projects</p>
-                </div>
-
-                <div className="space-y-3">
-                  <h4 className="text-xs font-semibold text-indigo-600 uppercase tracking-wide">Best Practices</h4>
-                  {[
-                    "Showcase your best and most relevant work",
-                    "Highlight your specific role and contributions",
-                    "Include measurable results and impact",
-                    "Keep descriptions concise (2-4 bullet points)",
-                    "Add live demo links whenever possible"
-                  ].map((tip, idx) => (
-                    <div key={idx} className="flex items-start gap-2">
-                      <FiCheckCircle className="w-3.5 h-3.5 text-emerald-500 mt-0.5" />
-                      <span className="text-xs text-gray-700">{tip}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-4 pt-3 border-t border-gray-100">
-                  <button
-                    onClick={() => setSkillTipsClicked(false)}
-                    className="w-full px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-semibold rounded-lg hover:shadow-lg transition-all"
-                  >
-                    Got it, thanks! ✨
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </AnimatePresence>
-      )}
+    <TipsModal
+  isOpen={projectsTipsClicked}
+  onClose={() => setProjectsTipsClicked(false)}
+  title="Project Tips"
+  subtitle="Showcase your best work"
+  hasAI={false}
+  proTip="Pick 3-5 projects that best match the job you're applying for"
+  bestPractices={[
+    { tip: "Showcase your best and relevant work", example: "Pick projects related to the job" },
+    { tip: "Include measurable results", example: "Reduced load time by 40%" },
+    { tip: "Add live demo links", example: "Deployed project URL" },
+  ]}
+  avoidList={[
+    "Adding unfinished projects",
+    "Making it too technical for recruiters",
+  ]}
+/>
     </div>
   );
 };

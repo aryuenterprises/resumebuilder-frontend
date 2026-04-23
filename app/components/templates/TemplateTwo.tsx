@@ -2470,7 +2470,6 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
   const dateOfBirth = contact?.dob;
 
 
-  console.log("Contact Data:", contact);
 
   // Format date of birth for display
   const formatDateOfBirth = (dob: string) => {
@@ -3506,7 +3505,6 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
         },
       );
 
-      console.log("Upload success:", response.data);
     } catch (err) {
       console.error("Upload error:", err);
     }
@@ -3766,7 +3764,7 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
               <div>
                 <div className="section-title">Experience</div>
                 {experiences.map((exp, index) => (
-                  <div key={exp.id || index} className="entry-block">
+                  <div key={exp._id || index} className="entry-block">
                     <div className="entry-top-row">
                       {exp.jobTitle ? (
                         <div className="entry-title">{exp.jobTitle}</div>
@@ -3819,7 +3817,7 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
                 {educations.map((edu, index) => {
                   const formattedGrade = formatGrade(edu.grade || "");
                   return (
-                    <div key={edu.id || index} className="entry-block">
+                    <div key={edu._id || index} className="entry-block">
                       <div className="entry-top-row">
                         <div className="entry-title">
                           {edu.schoolname || ""}

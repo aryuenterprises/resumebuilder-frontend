@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { IoHomeOutline, IoCheckmarkCircle } from "react-icons/io5";
 import { motion } from "framer-motion";
 
-const Stepper = () => {
+export const Stepper = () => {
   const router = useRouter();
   const pathname = usePathname();
   const [isMobile, setIsMobile] = useState(false);
@@ -41,6 +41,8 @@ const Stepper = () => {
   // Mobile view - Smaller, no scrollbar visible
   if (isMobile) {
     return (
+            <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
+
       <div className="w-full bg-white/80 backdrop-blur-md border-b border-gray-100">
         <div className="flex items-center gap-2 overflow-x-auto overflow-y-hidden px-3 py-2 hide-scrollbar">
           {/* Home Icon Button - Smaller */}
@@ -94,11 +96,14 @@ const Stepper = () => {
           </div>
         </div>
       </div>
+      </div>
     );
   }
 
   // Desktop/Tablet view - Smaller, no visible scrollbar
   return (
+          <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
+
     <div className="w-full bg-white/80 backdrop-blur-md border-b border-gray-100 py-2">
       <div className="px-4 py-2 overflow-x-auto overflow-y-hidden hide-scrollbar">
         <div className="flex items-center gap-2 min-w-max">
@@ -208,7 +213,7 @@ const Stepper = () => {
         }
       `}</style>
     </div>
+    </div>
   );
 };
 
-export default Stepper;

@@ -296,7 +296,7 @@
 //     }
 //   };
 
-//   const [skillTipsClicked, setSkillTipsClicked] = useState(false);
+//   const [educationTipsClicked, setEducationTipsClicked] = useState(false);
 
 //   return (
 //     <section className="relative h-screen overflow-hidden">
@@ -356,7 +356,7 @@
 
 //             <div className="flex justify-end me-5">
 //               <button
-//                 onClick={() => setSkillTipsClicked((prev) => !prev)}
+//                 onClick={() => setEducationTipsClicked((prev) => !prev)}
 //                 className="flex items-center justify-center xs:justify-start gap-2 bg-linear-to-r from-white to-gray-50/80 border border-gray-200 rounded-xl p-2 text-gray-700 text-xs sm:text-sm font-medium hover:border-[#c40116] hover:text-[#c40116] hover:shadow-md transition-all duration-200 w-fit text-xs sm:text-sm"
 //                 type="button"
 //               >
@@ -372,7 +372,7 @@
 //                 </motion.div>
 //                 <span className="truncate">Education Tips</span>
 //                 <motion.div
-//                   animate={{ rotate: skillTipsClicked ? 180 : 0 }}
+//                   animate={{ rotate: educationTipsClicked ? 180 : 0 }}
 //                   transition={{ duration: 0.3 }}
 //                   className="text-gray-500 shrink-0"
 //                 >
@@ -784,12 +784,12 @@
 //         </div>
 
 //         {/* Education Tips Modal */}
-//         {skillTipsClicked && (
+//         {educationTipsClicked && (
 //           <AnimatePresence>
 //             <div className="fixed inset-0 z-50 flex items-start justify-center overflow-hidden p-4">
 //               <div
 //                 className="absolute inset-0 backdrop-blur-sm"
-//                 onClick={() => setSkillTipsClicked(false)}
+//                 onClick={() => setEducationTipsClicked(false)}
 //               />
 //               <div className="relative w-full max-w-sm sm:max-w-md md:max-w-lg lg:w-[30vw] h-auto max-h-[80vh] mt-8 sm:mt-20">
 //                 <motion.div
@@ -814,7 +814,7 @@
 //                       </h3>
 //                     </div>
 //                     <button
-//                       onClick={() => setSkillTipsClicked(false)}
+//                       onClick={() => setEducationTipsClicked(false)}
 //                       className="p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
 //                       type="button"
 //                     >
@@ -995,6 +995,7 @@ import {
   FiCheckCircle,
   FiXCircle,
   FiX,
+  FiShield,
 } from "react-icons/fi";
 import { IoMdAdd } from "react-icons/io";
 import dynamic from "next/dynamic";
@@ -1008,9 +1009,12 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { BsArrowLeftCircleFill } from "react-icons/bs";
 import { useRouter } from "next/navigation";
-import Stepper from "../../../components/resume/Steppers";
 import { Education } from "@/app/types/context.types";
-import { getLocalStorage, setLocalStorage } from "@/app/utils";
+import {
+  formatGradeToCgpdAndPercentage,
+  getLocalStorage,
+  setLocalStorage,
+} from "@/app/utils";
 import { API_URL } from "@/app/config/api";
 import {
   IoArrowForward,
@@ -1018,6 +1022,7 @@ import {
   IoDiamondOutline,
   IoSparkles,
 } from "react-icons/io5";
+import { TipsModal } from "@/app/components/resume";
 
 // Dynamically import Editor to avoid SSR issues
 const Editor = dynamic(
@@ -1054,9 +1059,6 @@ const Education_form = () => {
   const [showDegreeWarningModal, setShowDegreeWarningModal] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
-  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const initialLoadDone = useRef(false);
-
   // Check if mobile
   useEffect(() => {
     const checkMobile = () => {
@@ -1066,20 +1068,6 @@ const Education_form = () => {
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
-
-  // Save to localStorage whenever education changes
-  useEffect(() => {
-    if (!initialLoadDone.current) return;
-
-    if (fullResumeData) {
-      const updatedFullData = {
-        ...fullResumeData,
-        education: education,
-      };
-      setFullResumeData(updatedFullData);
-      setLocalStorage("fullResumeData", updatedFullData);
-    }
-  }, [education]);
 
   const addEducation = () => {
     setEducation((prev) => {
@@ -1101,7 +1089,6 @@ const Education_form = () => {
           grade: "",
         },
       ];
-      // debouncedSave(updated);
       return updated;
     });
   };
@@ -1130,7 +1117,6 @@ const Education_form = () => {
         { params: { contactId: contactId } },
       );
 
-      setLastSavedData(currentDataString);
       return true;
     } catch (err: any) {
       console.error("Error saving education:", err);
@@ -1140,18 +1126,6 @@ const Education_form = () => {
       setIsSaving(false);
     }
   };
-
-  const debouncedSave = useCallback(
-    (educationData: typeof education) => {
-      if (saveTimeoutRef.current) {
-        clearTimeout(saveTimeoutRef.current);
-      }
-      saveTimeoutRef.current = setTimeout(() => {
-        saveToAPI(educationData);
-      }, 1000);
-    },
-    [contactId, lastSavedData],
-  );
 
   const fetched = async () => {
     try {
@@ -1186,20 +1160,10 @@ const Education_form = () => {
       } else {
         console.log("No education data found for user");
       }
-
-      initialLoadDone.current = true;
     } catch (error) {
       console.log(error);
     }
   };
-
-  useEffect(() => {
-    return () => {
-      if (saveTimeoutRef.current) {
-        clearTimeout(saveTimeoutRef.current);
-      }
-    };
-  }, []);
 
   const toggleForm = (id: string | number) => {
     setEducation((prev) =>
@@ -1218,7 +1182,6 @@ const Education_form = () => {
       const updated = prev.map((exp) =>
         exp._id === id ? { ...exp, [field]: value } : exp,
       );
-      // debouncedSave(updated);
       return updated;
     });
   };
@@ -1226,7 +1189,6 @@ const Education_form = () => {
   const deleteEducation = (id: string | number) => {
     setEducation((prev) => {
       const updated = prev.filter((exp) => exp._id !== id);
-      // saveToAPI(updated);
       return updated;
     });
   };
@@ -1299,34 +1261,22 @@ const Education_form = () => {
     }
   };
 
-  const [skillTipsClicked, setSkillTipsClicked] = useState(false);
+  const [educationTipsClicked, setEducationTipsClicked] = useState(false);
 
-  // Helper function to format grade display
-  const formatGradeDisplay = (grade: string) => {
-    if (!grade) return "";
-    const num = parseFloat(grade);
-    if (isNaN(num)) return grade;
-    if (num > 10) {
-      return `${grade}%`;
-    }
-    return `CGPA: ${grade}`;
-  };
-
-  console.log("education", education);
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-indigo-50/40">
+    <div className="min-h-screen flex flex-col bg-linear-to-br from-slate-50 via-white to-indigo-50/40">
       {/* Sticky Stepper */}
-      <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
+      {/* <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <Stepper />
-      </div>
+      </div> */}
 
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto">
         <div className=" mx-auto px-2   py-6 sm:py-8 lg:py-10">
           {/* Header Section */}
           <div className="text-center mb-6 sm:mb-8">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-linear-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
               Education
             </h1>
 
@@ -1335,8 +1285,8 @@ const Education_form = () => {
             </p>
 
             <button
-              onClick={() => setSkillTipsClicked((prev) => !prev)}
-              className="mt-4 inline-flex items-center gap-1.5 px-4 py-1.5 bg-gradient-to-r from-amber-400 to-orange-400 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+              onClick={() => setEducationTipsClicked((prev) => !prev)}
+              className="mt-4 inline-flex items-center gap-1.5 px-4 py-1.5 bg-linear-to-r from-amber-400 to-orange-400 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transition-all duration-200"
             >
               <FaRegLightbulb className="w-3 h-3" />
               <span>Education Tips</span>
@@ -1346,7 +1296,7 @@ const Education_form = () => {
           {/* Main Form Card */}
           <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
             {/* Card Header */}
-            <div className="relative px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 bg-gradient-to-r from-indigo-50 to-white border-b border-gray-100">
+            <div className="relative px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 bg-linear-to-r from-indigo-50 to-white border-b border-gray-100">
               <div className="absolute top-0 right-0 w-24 sm:w-32 h-24 sm:h-32 bg-indigo-100 rounded-full filter blur-3xl opacity-50"></div>
               <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-2 sm:gap-3">
@@ -1415,7 +1365,7 @@ const Education_form = () => {
                                 •
                               </span>
                               <span className="text-indigo-600 font-medium">
-                                {formatGradeDisplay(exp.grade)}
+                                {formatGradeToCgpdAndPercentage(exp.grade)}
                               </span>
                             </>
                           )}
@@ -1447,7 +1397,7 @@ const Education_form = () => {
                     <div
                       className={`transition-all duration-500 overflow-hidden ${
                         exp.isOpen
-                          ? "max-h-[1000px] opacity-100"
+                          ? "max-h-250 opacity-100"
                           : "max-h-0 opacity-0"
                       }`}
                     >
@@ -1558,7 +1508,7 @@ const Education_form = () => {
                               }}
                               view="year"
                               dateFormat="yy"
-                              className="w-full [&_.p-inputtext]:w-full [&_.p-inputtext]:px-3 [&_.p-inputtext]:py-2.5 [&_.p-inputtext]:bg-white [&_.p-inputtext]:border-2 [&_.p-inputtext]:border-gray-200 [&_.p-inputtext]:rounded-lg [&_.p-inputtext]:text-gray-900 [&_.p-inputtext]:text-sm [&_.p-inputtext]:focus:border-indigo-500 [&_.p-inputtext]:focus:ring-2 [&_.p-inputtext]:focus:ring-indigo-100 w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
+                              className="w-full [&_.p-inputtext]:w-full [&_.p-inputtext]:px-3 [&_.p-inputtext]:py-2.5 [&_.p-inputtext]:bg-white [&_.p-inputtext]:border-2 [&_.p-inputtext]:border-gray-200 [&_.p-inputtext]:rounded-lg [&_.p-inputtext]:text-gray-900 [&_.p-inputtext]:text-sm [&_.p-inputtext]:focus:border-indigo-500 [&_.p-inputtext]:focus:ring-2 [&_.p-inputtext]:focus:ring-indigo-100 px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
                               placeholder="YYYY"
                               showIcon
                             />
@@ -1584,7 +1534,7 @@ const Education_form = () => {
                               view="year"
                               dateFormat="yy"
                               disabled={exp.isCurrentlyStudying}
-                              className={` w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all w-full [&_.p-inputtext]:w-full [&_.p-inputtext]:px-3 [&_.p-inputtext]:py-2.5 [&_.p-inputtext]:border-2 [&_.p-inputtext]:rounded-lg [&_.p-inputtext]:text-sm ${
+                              className={` w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all [&_.p-inputtext]:w-full [&_.p-inputtext]:px-3 [&_.p-inputtext]:py-2.5 [&_.p-inputtext]:border-2 [&_.p-inputtext]:rounded-lg [&_.p-inputtext]:text-sm ${
                                 exp.isCurrentlyStudying
                                   ? "[&_.p-inputtext]:bg-gray-50 [&_.p-inputtext]:text-gray-400 [&_.p-inputtext]:border-gray-200 cursor-not-allowed"
                                   : "[&_.p-inputtext]:bg-white [&_.p-inputtext]:border-gray-200 [&_.p-inputtext]:text-gray-900 [&_.p-inputtext]:focus:border-indigo-500 [&_.p-inputtext]:focus:ring-2 [&_.p-inputtext]:focus:ring-indigo-100"
@@ -1637,7 +1587,7 @@ const Education_form = () => {
                                 className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
                                   !exp.degree || exp.degree.trim() === ""
                                     ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                                    : "bg-gradient-to-r from-indigo-600 to-indigo-500 text-white hover:shadow-md"
+                                    : "bg-linear-to-r from-indigo-600 to-indigo-500 text-white hover:shadow-md"
                                 }`}
                                 type="button"
                               >
@@ -1654,14 +1604,14 @@ const Education_form = () => {
                                     d="M13 10V3L4 14h7v7l9-11h-7z"
                                   />
                                 </svg>
-                                {loading ? "Generating..." : "AI Assist"}
+                                {loading ? "Generating..." : "Generate With AI"}
                               </button>
 
                               {/* Tooltip - Desktop only */}
                               {(!exp.degree || exp.degree.trim() === "") &&
                                 !loading &&
                                 !isMobile && (
-                                  <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 bg-gray-900 text-white text-xs rounded-lg py-2 px-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-[100] shadow-lg whitespace-normal">
+                                  <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 bg-gray-900 text-white text-xs rounded-lg py-2 px-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-100 shadow-lg whitespace-normal">
                                     <div className="relative text-center">
                                       <span className="inline-block mr-1">
                                         ⚠️
@@ -1764,11 +1714,8 @@ const Education_form = () => {
               ← Back to Experience
             </button>
             <button
-              className="px-4 sm:px-6 py-2 sm:py-2.5  bg-gradient-to-r from-indigo-600 to-indigo-500 text-white t font-medium rounded-lg sm:rounded-xl shadow-md transition-all hover:shadow-indigo-300 flex items-center gap-1.5 sm:gap-2 cursor-pointer"
+              className="px-4 sm:px-6 py-2 sm:py-2.5  bg-linear-to-r from-indigo-600 to-indigo-500 text-white t font-medium rounded-lg sm:rounded-xl shadow-md transition-all hover:shadow-indigo-300 flex items-center gap-1.5 sm:gap-2 cursor-pointer"
               onClick={() => {
-                if (saveTimeoutRef.current) {
-                  clearTimeout(saveTimeoutRef.current);
-                }
                 saveToAPI(education).then(() => {
                   router.push("/resume-details/skills");
                 });
@@ -1781,75 +1728,30 @@ const Education_form = () => {
         </div>
       </div>
 
-      {/* Education Tips Modal */}
-      {skillTipsClicked && (
-        <AnimatePresence>
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div
-              className="absolute inset-0 backdrop-blur-md bg-black/50"
-              onClick={() => setSkillTipsClicked(false)}
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden"
-            >
-              <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-5 py-4">
-                <div className="flex items-center gap-2">
-                  <FaRegLightbulb className="w-5 h-5 text-white" />
-                  <h3 className="text-lg font-bold text-white">
-                    Education Tips
-                  </h3>
-                </div>
-              </div>
-
-              <div className="p-5">
-                <div className="bg-amber-50 rounded-xl p-3 mb-4 border border-amber-100">
-                  <div className="flex items-center gap-2 mb-1">
-                    <FaStar className="w-3 h-3 text-amber-500" />
-                    <span className="text-xs font-semibold text-amber-700">
-                      Pro Tip
-                    </span>
-                  </div>
-                  <p className="text-xs text-gray-700">
-                    List your most recent education first for better visibility
-                  </p>
-                </div>
-
-                <div className="space-y-3">
-                  <h4 className="text-xs font-semibold text-indigo-600 uppercase tracking-wide">
-                    Best Practices
-                  </h4>
-                  {[
-                    "List your most recent education first",
-                    "Include relevant coursework or achievements",
-                    "Spell out degree names completely",
-                    "Add CGPA (if 8.0+) or Percentage (if 80%+)",
-                    "Use 'Present' for current education",
-                    "Include honors, awards, or relevant activities",
-                  ].map((tip, idx) => (
-                    <div key={idx} className="flex items-start gap-2">
-                      <FiCheckCircle className="w-3.5 h-3.5 text-emerald-500 mt-0.5" />
-                      <span className="text-xs text-gray-700">{tip}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-4 pt-3 border-t border-gray-100">
-                  <button
-                    onClick={() => setSkillTipsClicked(false)}
-                    className="w-full px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-semibold rounded-lg hover:shadow-lg transition-all"
-                  >
-                    Got it, thanks! ✨
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </AnimatePresence>
-      )}
+      <TipsModal
+        isOpen={educationTipsClicked}
+        onClose={() => setEducationTipsClicked(false)}
+        title="Education Tips"
+        subtitle="Showcase your academic background"
+        hasAI={true}
+        aiFeatureDescription="get intelligent bullet points for your coursework and achievements."
+        proTip="Put your highest degree first — recruiters scan top to bottom"
+        bestPractices={[
+          {
+            tip: "Put your highest degree first",
+            example: "MBA at top, then Bachelor's",
+          },
+          {
+            tip: "Include relevant coursework",
+            example: "Data Structures, Algorithms",
+          },
+          { tip: "Add CGPA (8.0+) or Percentage", example: "CGPA: 8.5/10" },
+        ]}
+        avoidList={[
+          "Listing incomplete degrees",
+          "Adding unnecessary high school details",
+        ]}
+      />
 
       {/* AI Response Popup */}
       {showPopup && Airesponse && (
@@ -1859,7 +1761,7 @@ const Education_form = () => {
             animate={{ opacity: 1, scale: 1 }}
             className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] overflow-hidden"
           >
-            <div className="bg-gradient-to-r from-indigo-600 to-indigo-500 px-5 py-4">
+            <div className="bg-linear-to-r from-indigo-600 to-indigo-500 px-5 py-4">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-lg font-semibold text-white">
@@ -1911,7 +1813,7 @@ const Education_form = () => {
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             className="relative w-full max-w-sm bg-white rounded-2xl shadow-2xl overflow-hidden"
           >
-            <div className="bg-gradient-to-r from-amber-500 to-orange-500 px-5 py-4">
+            <div className="bg-linear-to-r from-amber-500 to-orange-500 px-5 py-4">
               <div className="flex items-center gap-2">
                 <div className="p-1.5 bg-white/20 rounded-lg">
                   <svg
@@ -1941,7 +1843,7 @@ const Education_form = () => {
               </p>
               <button
                 onClick={() => setShowDegreeWarningModal(false)}
-                className="w-full px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-semibold rounded-lg hover:shadow-lg transition-all"
+                className="w-full px-4 py-2.5 bg-linear-to-r from-indigo-600 to-indigo-500 text-white font-semibold rounded-lg hover:shadow-lg transition-all"
               >
                 Got it
               </button>
