@@ -1030,7 +1030,7 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
-      await fetchOldResumeData(pdfBlob);
+      // await fetchOldResumeData(pdfBlob);
     } catch (error) {
       console.error("Error generating PDF:", error);
       alert("Failed to generate PDF. Please try again.");
@@ -1081,7 +1081,7 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
             onClick={handleDownload}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 cursor-pointer shadow-md hover:shadow-lg"
+            className="bg-emerald-500 text-2xl md:text-base hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 cursor-pointer shadow-md hover:shadow-lg"
           >
             Download Resume
           </motion.button>

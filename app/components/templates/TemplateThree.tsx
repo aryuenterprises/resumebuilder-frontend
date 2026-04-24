@@ -1995,6 +1995,7 @@ import {
 
 } from "@/app/types/context.types";
 import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
 
 /* ======================================================
    SHARED CSS
@@ -2716,20 +2717,17 @@ const TemplateThree: React.FC<ResumeProps> = ({ alldata }) => {
 
   return (
     <>
-      {lastSegment === "download-resume" && (
-        <div
-          style={{
-            textAlign: "center",
-            marginTop: "20px",
-            marginBottom: "20px",
-          }}
-        >
-          <button
+     
+     {lastSegment === "download-resume" && (
+        <div className="text-center my-5">
+          <motion.button
             onClick={handleDownload}
-            className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-emerald-500 text-2xl md:text-base hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 cursor-pointer shadow-md hover:shadow-lg"
           >
             Download Resume
-          </button>
+          </motion.button>
         </div>
       )}
 

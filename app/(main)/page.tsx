@@ -704,7 +704,7 @@ export default function Home() {
                 initial={{ width: 0 }}
                 animate={{ width: "100%" }}
                 transition={{ delay: 0.8, duration: 0.8 }}
-                className="absolute bottom-2 left-0 h-3 bg-indigo-200/50 -z-0 rounded-full hidden sm:block"
+                className="absolute bottom-2 left-0 h-3 bg-indigo-300 -z-0 rounded-full sm:block"
                 style={{ width: "100%" }}
               />
             </span>

@@ -16,7 +16,6 @@
 //   Skill,
 // } from "@/app/types/context.types";
 
-
 // const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
 //   const context = useContext(CreateContext);
 //   const pathname = usePathname();
@@ -106,7 +105,7 @@
 //       .resume-t5.is-preview {
 //       transform: scale(0.36);
 //     transform-origin: top left;
-//     width: 210mm; 
+//     width: 210mm;
 //     height: auto;
 //     max-height: none;
 //     min-height: auto;
@@ -637,10 +636,10 @@
 //         </div>
 //       )}
 
-//       <div 
+//       <div
 //               className={`resume-t5  ${alldata ? 'is-preview' : ''}`}
 
-//       style={{ margin: "0 auto",           boxShadow: !alldata ? "0 0 10px rgba(0,0,0,0.1)" : "" 
+//       style={{ margin: "0 auto",           boxShadow: !alldata ? "0 0 10px rgba(0,0,0,0.1)" : ""
 //  }}>
 //         <style>{`@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap');`}</style>
 //         <style>{styles}</style>
@@ -821,10 +820,6 @@
 
 // export default TemplateFive;
 
-
-
-
-
 // "use client";
 
 // import React, { useContext, useState, useEffect } from "react";
@@ -841,7 +836,6 @@
 //   Finalize,
 //   ResumeProps,
 // } from "@/app/types/context.types";
-
 
 // const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
 //   const context = useContext(CreateContext);
@@ -1031,7 +1025,7 @@
 //     .resume-t5.is-preview {
 //       transform: scale(0.36);
 //       transform-origin: top left;
-//       width: 210mm; 
+//       width: 210mm;
 //       height: auto;
 //       max-height: none;
 //       min-height: auto;
@@ -1400,9 +1394,9 @@
 //     // Generate skills HTML for PDF
 //     const generateSkillsHTML = () => {
 //       if (!skills || skills.length === 0) return "";
-      
+
 //       const isCategorized = isCategorizedSkills(skills);
-      
+
 //       if (isCategorized) {
 //         return `
 //           <div class="t5-section-title">Skills</div>
@@ -1434,7 +1428,7 @@
 //     // Generate projects HTML for PDF
 //     const generateProjectsHTML = () => {
 //       if (!projects || projects.length === 0) return "";
-      
+
 //       return `
 //         <div class="t5-section-title">Projects</div>
 //         ${projects.map((project: any) => `
@@ -1646,7 +1640,7 @@
 //         </div>
 //       )}
 
-//       <div 
+//       <div
 //         className={`resume-t5 ${alldata ? 'is-preview' : ''}`}
 //         style={{ margin: "0 auto", boxShadow: !alldata ? "0 0 10px rgba(0,0,0,0.1)" : "" }}
 //       >
@@ -1819,19 +1813,6 @@
 
 // export default TemplateFive;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 
 import React, { useContext, useState, useEffect } from "react";
@@ -1848,6 +1829,7 @@ import {
   Finalize,
   ResumeProps,
 } from "@/app/types/context.types";
+import { motion } from "framer-motion";
 
 
 const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
@@ -1883,11 +1865,17 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
     let objectUrl: string | null = null;
 
     if (croppedImage) {
-      if (typeof croppedImage === "string" && croppedImage.startsWith("blob:")) {
+      if (
+        typeof croppedImage === "string" &&
+        croppedImage.startsWith("blob:")
+      ) {
         url = croppedImage;
       } else if (typeof croppedImage === "string") {
         url = `${API_URL}/api/uploads/photos/${croppedImage}`;
-      } else if ((croppedImage as any) instanceof Blob || (croppedImage as any) instanceof File) {
+      } else if (
+        (croppedImage as any) instanceof Blob ||
+        (croppedImage as any) instanceof File
+      ) {
         objectUrl = URL.createObjectURL(croppedImage as Blob);
         url = objectUrl;
       }
@@ -1898,7 +1886,9 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
       setPreviewUrl(null);
     }
 
-    return () => { if (objectUrl) URL.revokeObjectURL(objectUrl); };
+    return () => {
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
   }, [croppedImage, contact.photo]);
 
   // Format date of birth for display
@@ -1906,7 +1896,11 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
     if (!dob) return "";
     try {
       const date = new Date(dob);
-      return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
     } catch {
       return dob;
     }
@@ -1915,22 +1909,22 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
   // Helper function to format grade (CGPA/Percentage)
   const formatGrade = (grade: string, gradeType?: string) => {
     if (!grade) return "";
-    
+
     if (gradeType === "cgpa") {
       return `CGPA: ${grade}`;
     } else if (gradeType === "percentage") {
       return `Percentage: ${grade}%`;
     }
-    
+
     const numGrade = parseFloat(grade);
     if (!isNaN(numGrade)) {
-      if (numGrade <= 10 && grade.includes('.')) {
+      if (numGrade <= 10 && grade.includes(".")) {
         return `CGPA: ${grade}`;
       } else if (numGrade > 10) {
         return `Percentage: ${grade}%`;
       }
     }
-    
+
     return grade;
   };
 
@@ -1938,13 +1932,35 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
     data && typeof data === "object" && !Array.isArray(data);
 
   const fin = {
-    languages: isFinalizeData(finalize) && Array.isArray(finalize.languages) ? finalize.languages : [],
-    certifications: isFinalizeData(finalize) && Array.isArray(finalize.certificationsAndLicenses) ? finalize.certificationsAndLicenses : [],
-    hobbies: isFinalizeData(finalize) && Array.isArray(finalize.hobbiesAndInterests) ? finalize.hobbiesAndInterests : [],
-    awards: isFinalizeData(finalize) && Array.isArray(finalize.awardsAndHonors) ? finalize.awardsAndHonors : [],
-    websites: isFinalizeData(finalize) && Array.isArray(finalize.websitesAndSocialMedia) ? finalize.websitesAndSocialMedia : [],
-    references: isFinalizeData(finalize) && Array.isArray(finalize.references) ? finalize.references : [],
-    customSection: isFinalizeData(finalize) && Array.isArray(finalize.customSection) ? finalize.customSection : [],
+    languages:
+      isFinalizeData(finalize) && Array.isArray(finalize.languages)
+        ? finalize.languages
+        : [],
+    certifications:
+      isFinalizeData(finalize) &&
+      Array.isArray(finalize.certificationsAndLicenses)
+        ? finalize.certificationsAndLicenses
+        : [],
+    hobbies:
+      isFinalizeData(finalize) && Array.isArray(finalize.hobbiesAndInterests)
+        ? finalize.hobbiesAndInterests
+        : [],
+    awards:
+      isFinalizeData(finalize) && Array.isArray(finalize.awardsAndHonors)
+        ? finalize.awardsAndHonors
+        : [],
+    websites:
+      isFinalizeData(finalize) && Array.isArray(finalize.websitesAndSocialMedia)
+        ? finalize.websitesAndSocialMedia
+        : [],
+    references:
+      isFinalizeData(finalize) && Array.isArray(finalize.references)
+        ? finalize.references
+        : [],
+    customSection:
+      isFinalizeData(finalize) && Array.isArray(finalize.customSection)
+        ? finalize.customSection
+        : [],
   };
 
   const stripHtml = (html: string) => html?.replace(/<[^>]*>/g, "") || "";
@@ -2012,7 +2028,11 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
                 <div className="t5-project-links">
                   {project.liveUrl && (
                     <a
-                      href={project.liveUrl.startsWith("http") ? project.liveUrl : `https://${project.liveUrl}`}
+                      href={
+                        project.liveUrl.startsWith("http")
+                          ? project.liveUrl
+                          : `https://${project.liveUrl}`
+                      }
                       target="_blank"
                       rel="noreferrer"
                       className="t5-project-link"
@@ -2022,7 +2042,11 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
                   )}
                   {project.githubUrl && (
                     <a
-                      href={project.githubUrl.startsWith("http") ? project.githubUrl : `https://${project.githubUrl}`}
+                      href={
+                        project.githubUrl.startsWith("http")
+                          ? project.githubUrl
+                          : `https://${project.githubUrl}`
+                      }
                       target="_blank"
                       rel="noreferrer"
                       className="t5-project-link"
@@ -2445,7 +2469,14 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
      HTML GENERATION — no Tailwind, shared CSS classes
   ====================================================== */
   const generateHTML = () => {
-    const addressStr = [contact?.address, contact?.city, contact?.postcode, contact?.country].filter(Boolean).join(", ");
+    const addressStr = [
+      contact?.address,
+      contact?.city,
+      contact?.postcode,
+      contact?.country,
+    ]
+      .filter(Boolean)
+      .join(", ");
     const photoHtml = previewUrl
       ? `<img src="${previewUrl}" alt="Profile" class="t5-photo" />`
       : `<div class="t5-photo-placeholder"><span style="color:#9ca3af;font-size:12px;font-family:'Nunito',Arial,sans-serif">No Photo</span></div>`;
@@ -2454,32 +2485,44 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
     // Generate skills HTML for PDF
     const generateSkillsHTML = () => {
       if (!skills || skills.length === 0) return "";
-      
+
       const isCategorized = isCategorizedSkills(skills);
-      
+
       if (isCategorized) {
         return `
           <div class="t5-section-title">Skills</div>
           <div class="t5-skills-container">
-            ${skills.map((category: any) => `
+            ${skills
+              .map(
+                (category: any) => `
               <div class="t5-skill-category">
                 <div class="t5-skill-category-title">${category.title}</div>
                 <div class="t5-skills-list">
-                  ${category.skills.map((skill: any) => `
+                  ${category.skills
+                    .map(
+                      (skill: any) => `
                     <span class="t5-skill-item">${skill.name}</span>
-                  `).join("")}
+                  `,
+                    )
+                    .join("")}
                 </div>
               </div>
-            `).join("")}
+            `,
+              )
+              .join("")}
           </div>
         `;
       } else {
         return `
           <div class="t5-section-title">Skills</div>
           <div class="t5-skills-list">
-            ${skills.map((skill: any) => `
+            ${skills
+              .map(
+                (skill: any) => `
               <span class="t5-skill-item">${skill.name || skill.skill}</span>
-            `).join("")}
+            `,
+              )
+              .join("")}
           </div>
         `;
       }
@@ -2488,10 +2531,12 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
     // Generate projects HTML for PDF
     const generateProjectsHTML = () => {
       if (!projects || projects.length === 0) return "";
-      
+
       return `
         <div class="t5-section-title">Projects</div>
-        ${projects.map((project: any) => `
+        ${projects
+          .map(
+            (project: any) => `
           <div class="t5-entry">
             <div class="t5-project-header">
               <div class="t5-entry-heading">${project.title || ""}</div>
@@ -2500,14 +2545,24 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
                 ${project.githubUrl ? `<a href="${project.githubUrl.startsWith("http") ? project.githubUrl : `https://${project.githubUrl}`}" class="t5-project-link">GitHub</a>` : ""}
               </div>
             </div>
-            ${project.techStack && project.techStack.length > 0 ? `
+            ${
+              project.techStack && project.techStack.length > 0
+                ? `
               <div class="t5-project-tech"><strong>Tech:</strong> ${project.techStack.join(" • ")}</div>
-            ` : ""}
-            ${project.description ? `
+            `
+                : ""
+            }
+            ${
+              project.description
+                ? `
               <div class="t5-entry-content">${stripHtml(project.description)}</div>
-            ` : ""}
+            `
+                : ""
+            }
           </div>
-        `).join("")}
+        `,
+          )
+          .join("")}
       `;
     };
 
@@ -2545,53 +2600,80 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
         ${formattedDob ? `<div class="t5-details-text">${formattedDob}</div>` : ""}
       </div>
     </div>
-    ${linkedinUrl?.trim() || githubUrl?.trim() || portfolioUrl?.trim() ? `
+    ${
+      linkedinUrl?.trim() || githubUrl?.trim() || portfolioUrl?.trim()
+        ? `
     <div class="t5-links">
       ${linkedinUrl?.trim() ? `<a href="${linkedinUrl.startsWith("http") ? linkedinUrl : `https://${linkedinUrl}`}" class="t5-link-btn t5-link-linkedin">LinkedIn</a>` : ""}
       ${githubUrl?.trim() ? `<a href="${githubUrl.startsWith("http") ? githubUrl : `https://${githubUrl}`}" class="t5-link-btn t5-link-github">GitHub</a>` : ""}
       ${portfolioUrl?.trim() ? `<a href="${portfolioUrl.startsWith("http") ? portfolioUrl : `https://${portfolioUrl}`}" class="t5-link-btn t5-link-portfolio">Portfolio</a>` : ""}
-    </div>` : ""}
+    </div>`
+        : ""
+    }
   </div>
 
   <!-- SUMMARY -->
-  ${summary ? `
+  ${
+    summary
+      ? `
   <div class="t5-section">
     <div class="t5-section-title">Summary</div>
     <div class="t5-extra">${stripHtml(summary)}</div>
-  </div>` : ""}
+  </div>`
+      : ""
+  }
 
   <!-- EXPERIENCE -->
-  ${experiences?.length > 0 ? `
+  ${
+    experiences?.length > 0
+      ? `
   <div class="t5-section">
     <div class="t5-section-title">Experience</div>
-    ${experiences.map((exp) => {
-      const start = formatMonthYear(exp.startDate, true);
-      const end = exp.endDate ? formatMonthYear(exp.endDate, true) : (exp.startDate ? "Present" : "");
-      return `
+    ${experiences
+      .map((exp) => {
+        const start = formatMonthYear(exp.startDate, true);
+        const end = exp.endDate
+          ? formatMonthYear(exp.endDate, true)
+          : exp.startDate
+            ? "Present"
+            : "";
+        return `
     <div class="t5-entry">
-      ${exp.jobTitle || exp.employer || exp.location ? `
+      ${
+        exp.jobTitle || exp.employer || exp.location
+          ? `
       <div class="t5-entry-heading">
         ${exp.jobTitle || ""}
         ${exp.employer ? `<span class="t5-entry-heading-muted"> — ${exp.employer}</span>` : ""}
         ${exp.location ? `<span class="t5-entry-heading-muted"> — ${exp.location}</span>` : ""}
-      </div>` : ""}
+      </div>`
+          : ""
+      }
       <div class="t5-entry-date">${start}${start && end ? " - " : ""}${end}</div>
       ${exp.text ? `<div class="t5-entry-content">${stripHtml(exp.text)}</div>` : ""}
     </div>`;
-    }).join("")}
-  </div>` : ""}
+      })
+      .join("")}
+  </div>`
+      : ""
+  }
 
   <!-- PROJECTS -->
   ${generateProjectsHTML()}
 
   <!-- EDUCATION -->
-  ${educations?.length > 0 ? `
+  ${
+    educations?.length > 0
+      ? `
   <div class="t5-section">
     <div class="t5-section-title">Education</div>
-    ${educations.map((edu) => {
-      const dateStr = [edu.startDate, edu.endDate].filter(Boolean).join(" — ");
-      const formattedGrade = formatGrade(edu.grade || " ");
-      return `
+    ${educations
+      .map((edu) => {
+        const dateStr = [edu.startDate, edu.endDate]
+          .filter(Boolean)
+          .join(" — ");
+        const formattedGrade = formatGrade(edu.grade || " ");
+        return `
     <div class="t5-entry">
       ${edu.schoolname ? `<div class="t5-entry-heading">${edu.schoolname}</div>` : ""}
       ${edu.degree ? `<div class="t5-entry-sub">${edu.degree}</div>` : ""}
@@ -2600,70 +2682,124 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
       ${formattedGrade ? `<div class="t5-education-grade">${formattedGrade}</div>` : ""}
       ${edu.text ? `<div class="t5-entry-content">${stripHtml(edu.text)}</div>` : ""}
     </div>`;
-    }).join("")}
-  </div>` : ""}
+      })
+      .join("")}
+  </div>`
+      : ""
+  }
 
   <!-- SKILLS (NEW CLEAN STYLE - NO BARS) -->
   ${generateSkillsHTML()}
 
   <!-- LANGUAGES -->
-  ${fin.languages.some((l) => l.name?.trim()) ? `
+  ${
+    fin.languages.some((l) => l.name?.trim())
+      ? `
   <div class="t5-section">
     <div class="t5-section-title">Languages</div>
     <div class="t5-skills-list">
-      ${fin.languages.filter((l) => l.name?.trim()).map((l) => `
+      ${fin.languages
+        .filter((l) => l.name?.trim())
+        .map(
+          (l) => `
         <span class="t5-skill-item">${l.name}${l.level ? ` (${l.level})` : ""}</span>
-      `).join("")}
+      `,
+        )
+        .join("")}
     </div>
-  </div>` : ""}
+  </div>`
+      : ""
+  }
 
   <!-- CERTIFICATIONS -->
-  ${fin.certifications.some((i) => i.name?.replace(/<[^>]*>/g, "").trim()) ? `
+  ${
+    fin.certifications.some((i) => i.name?.replace(/<[^>]*>/g, "").trim())
+      ? `
   <div class="t5-section">
     <div class="t5-section-title">Certifications and Licenses</div>
-    <div class="t5-extra">${fin.certifications.filter((i) => i.name?.replace(/<[^>]*>/g, "").trim()).map((i) => `<div>${stripHtml(i.name || "")}</div>`).join("")}</div>
-  </div>` : ""}
+    <div class="t5-extra">${fin.certifications
+      .filter((i) => i.name?.replace(/<[^>]*>/g, "").trim())
+      .map((i) => `<div>${stripHtml(i.name || "")}</div>`)
+      .join("")}</div>
+  </div>`
+      : ""
+  }
 
   <!-- HOBBIES -->
-  ${fin.hobbies.some((i) => i.name?.replace(/<[^>]*>/g, "").trim()) ? `
+  ${
+    fin.hobbies.some((i) => i.name?.replace(/<[^>]*>/g, "").trim())
+      ? `
   <div class="t5-section">
     <div class="t5-section-title">Hobbies and Interests</div>
-    <div class="t5-extra">${fin.hobbies.filter((i) => i.name?.replace(/<[^>]*>/g, "").trim()).map((i) => `<div>${stripHtml(i.name || "")}</div>`).join("")}</div>
-  </div>` : ""}
+    <div class="t5-extra">${fin.hobbies
+      .filter((i) => i.name?.replace(/<[^>]*>/g, "").trim())
+      .map((i) => `<div>${stripHtml(i.name || "")}</div>`)
+      .join("")}</div>
+  </div>`
+      : ""
+  }
 
   <!-- AWARDS -->
-  ${fin.awards.some((i) => i.name?.replace(/<[^>]*>/g, "").trim()) ? `
+  ${
+    fin.awards.some((i) => i.name?.replace(/<[^>]*>/g, "").trim())
+      ? `
   <div class="t5-section">
     <div class="t5-section-title">Awards and Honors</div>
-    <div class="t5-extra">${fin.awards.filter((i) => i.name?.replace(/<[^>]*>/g, "").trim()).map((i) => `<div>${stripHtml(i.name || "")}</div>`).join("")}</div>
-  </div>` : ""}
+    <div class="t5-extra">${fin.awards
+      .filter((i) => i.name?.replace(/<[^>]*>/g, "").trim())
+      .map((i) => `<div>${stripHtml(i.name || "")}</div>`)
+      .join("")}</div>
+  </div>`
+      : ""
+  }
 
   <!-- WEBSITES -->
-  ${fin.websites.some((i) => i.websiteUrl?.trim() || i.socialMedia?.trim()) ? `
+  ${
+    fin.websites.some((i) => i.websiteUrl?.trim() || i.socialMedia?.trim())
+      ? `
   <div class="t5-section">
     <div class="t5-section-title">Websites and Social Media</div>
     <div class="t5-extra">
-      ${fin.websites.filter((i) => i.websiteUrl?.trim() || i.socialMedia?.trim()).map((i) => `
+      ${fin.websites
+        .filter((i) => i.websiteUrl?.trim() || i.socialMedia?.trim())
+        .map(
+          (i) => `
       <div style="margin-bottom:6px">
         ${i.websiteUrl ? `<div><span class="t5-website-label">Website URL: </span><a href="${i.websiteUrl.startsWith("http") ? i.websiteUrl : `https://${i.websiteUrl}`}" class="t5-website-link">${i.websiteUrl}</a></div>` : ""}
         ${i.socialMedia ? `<div><span class="t5-website-label">Social Media URL: </span><a href="${i.socialMedia.startsWith("http") ? i.socialMedia : `https://${i.socialMedia}`}" class="t5-website-link">${i.socialMedia}</a></div>` : ""}
-      </div>`).join("")}
+      </div>`,
+        )
+        .join("")}
     </div>
-  </div>` : ""}
+  </div>`
+      : ""
+  }
 
   <!-- REFERENCES -->
-  ${fin.references.some((i) => i.name?.replace(/<[^>]*>/g, "").trim()) ? `
+  ${
+    fin.references.some((i) => i.name?.replace(/<[^>]*>/g, "").trim())
+      ? `
   <div class="t5-section">
     <div class="t5-section-title">References</div>
-    <div class="t5-extra">${fin.references.filter((i) => i.name?.replace(/<[^>]*>/g, "").trim()).map((i) => `<div>${stripHtml(i.name || "")}</div>`).join("")}</div>
-  </div>` : ""}
+    <div class="t5-extra">${fin.references
+      .filter((i) => i.name?.replace(/<[^>]*>/g, "").trim())
+      .map((i) => `<div>${stripHtml(i.name || "")}</div>`)
+      .join("")}</div>
+  </div>`
+      : ""
+  }
 
   <!-- CUSTOM SECTIONS -->
-  ${fin.customSection.filter((s) => s?.name?.trim() || s?.description?.trim()).map((s) => `
+  ${fin.customSection
+    .filter((s) => s?.name?.trim() || s?.description?.trim())
+    .map(
+      (s) => `
   <div class="t5-section">
     ${s.name ? `<div class="t5-section-title">${s.name}</div>` : ""}
     ${s.description ? `<div class="t5-extra">${stripHtml(s.description)}</div>` : ""}
-  </div>`).join("")}
+  </div>`,
+    )
+    .join("")}
 
 </div>
 </body>
@@ -2676,7 +2812,11 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
   const handleDownload = async () => {
     try {
       const html = generateHTML();
-      const res = await axios.post(`${API_URL}/api/candidates/generate-pdf`, { html }, { responseType: "blob" });
+      const res = await axios.post(
+        `${API_URL}/api/candidates/generate-pdf`,
+        { html },
+        { responseType: "blob" },
+      );
       const url = window.URL.createObjectURL(res.data);
       const a = document.createElement("a");
       a.href = url;
@@ -2698,17 +2838,26 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
 
   return (
     <>
-      {lastSegment === "download-resume" && (
-        <div style={{ textAlign: "center", marginTop: "20px", marginBottom: "20px" }}>
-          <button onClick={handleDownload} className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+    
+    {lastSegment === "download-resume" && (
+        <div className="text-center my-5">
+          <motion.button
+            onClick={handleDownload}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-emerald-500 text-2xl md:text-base hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 cursor-pointer shadow-md hover:shadow-lg"
+          >
             Download Resume
-          </button>
+          </motion.button>
         </div>
       )}
 
-      <div 
-        className={`resume-t5 ${alldata ? 'is-preview' : ''}`}
-        style={{ margin: "0 auto", boxShadow: !alldata ? "0 0 10px rgba(0,0,0,0.1)" : "" }}
+      <div
+        className={`resume-t5 ${alldata ? "is-preview" : ""}`}
+        style={{
+          margin: "0 auto",
+          boxShadow: !alldata ? "0 0 10px rgba(0,0,0,0.1)" : "",
+        }}
       >
         <style>{`@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap');`}</style>
         <style>{styles}</style>
@@ -2717,35 +2866,101 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
         <div className="t5-header">
           <div className="t5-header-top">
             <div className="t5-header-left">
-              {previewUrl
-                ? <img src={previewUrl} alt="Profile" className="t5-photo" />
-                : <div className="t5-photo-placeholder"><IoPersonOutline style={{ width: 40, height: 40, color: "#9ca3af" }} /></div>
-              }
+              {previewUrl ? (
+                <img src={previewUrl} alt="Profile" className="t5-photo" />
+              ) : (
+                <div className="t5-photo-placeholder">
+                  <IoPersonOutline
+                    style={{ width: 40, height: 40, color: "#9ca3af" }}
+                  />
+                </div>
+              )}
               <div>
-                <div className="t5-name">{contact?.firstName || ""} {contact?.lastName || ""}</div>
-                {contact?.jobTitle && <div className="t5-jobtitle">{getJobTitle(contact.jobTitle)}</div>}
+                <div className="t5-name">
+                  {contact?.firstName || ""} {contact?.lastName || ""}
+                </div>
+                {contact?.jobTitle && (
+                  <div className="t5-jobtitle">
+                    {getJobTitle(contact.jobTitle)}
+                  </div>
+                )}
               </div>
             </div>
             <div className="t5-details-block">
               <div className="t5-details-label">DETAILS</div>
-              {[contact?.address, contact?.city, contact?.postcode, contact?.country].filter(Boolean).length > 0 && (
-                <div className="t5-details-text">{[contact?.address, contact?.city, contact?.postcode, contact?.country].filter(Boolean).join(", ")}</div>
+              {[
+                contact?.address,
+                contact?.city,
+                contact?.postcode,
+                contact?.country,
+              ].filter(Boolean).length > 0 && (
+                <div className="t5-details-text">
+                  {[
+                    contact?.address,
+                    contact?.city,
+                    contact?.postcode,
+                    contact?.country,
+                  ]
+                    .filter(Boolean)
+                    .join(", ")}
+                </div>
               )}
-              {contact?.phone && <div className="t5-details-text">{contact.phone}</div>}
-              {contact?.email && <div className="t5-details-text">{contact.email}</div>}
-              {formattedDob && <div className="t5-details-text">{formattedDob}</div>}
+              {contact?.phone && (
+                <div className="t5-details-text">{contact.phone}</div>
+              )}
+              {contact?.email && (
+                <div className="t5-details-text">{contact.email}</div>
+              )}
+              {formattedDob && (
+                <div className="t5-details-text">{formattedDob}</div>
+              )}
             </div>
           </div>
-          {(linkedinUrl?.trim() || githubUrl?.trim() || portfolioUrl?.trim()) && (
+          {(linkedinUrl?.trim() ||
+            githubUrl?.trim() ||
+            portfolioUrl?.trim()) && (
             <div className="t5-links">
               {linkedinUrl?.trim() && (
-                <a href={linkedinUrl.startsWith("http") ? linkedinUrl : `https://${linkedinUrl}`} target="_blank" rel="noreferrer" className="t5-link-btn t5-link-linkedin">LinkedIn</a>
+                <a
+                  href={
+                    linkedinUrl.startsWith("http")
+                      ? linkedinUrl
+                      : `https://${linkedinUrl}`
+                  }
+                  target="_blank"
+                  rel="noreferrer"
+                  className="t5-link-btn t5-link-linkedin"
+                >
+                  LinkedIn
+                </a>
               )}
               {githubUrl?.trim() && (
-                <a href={githubUrl.startsWith("http") ? githubUrl : `https://${githubUrl}`} target="_blank" rel="noreferrer" className="t5-link-btn t5-link-github">GitHub</a>
+                <a
+                  href={
+                    githubUrl.startsWith("http")
+                      ? githubUrl
+                      : `https://${githubUrl}`
+                  }
+                  target="_blank"
+                  rel="noreferrer"
+                  className="t5-link-btn t5-link-github"
+                >
+                  GitHub
+                </a>
               )}
               {portfolioUrl?.trim() && (
-                <a href={portfolioUrl.startsWith("http") ? portfolioUrl : `https://${portfolioUrl}`} target="_blank" rel="noreferrer" className="t5-link-btn t5-link-portfolio">Portfolio</a>
+                <a
+                  href={
+                    portfolioUrl.startsWith("http")
+                      ? portfolioUrl
+                      : `https://${portfolioUrl}`
+                  }
+                  target="_blank"
+                  rel="noreferrer"
+                  className="t5-link-btn t5-link-portfolio"
+                >
+                  Portfolio
+                </a>
               )}
             </div>
           )}
@@ -2768,16 +2983,32 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
                 {(exp.jobTitle || exp.employer || exp.location) && (
                   <div className="t5-entry-heading">
                     {exp.jobTitle || ""}
-                    {exp.employer && <span className="t5-entry-heading-muted"> — {exp.employer}</span>}
-                    {exp.location && <span className="t5-entry-heading-muted"> — {exp.location}</span>}
+                    {exp.employer && (
+                      <span className="t5-entry-heading-muted">
+                        {" "}
+                        — {exp.employer}
+                      </span>
+                    )}
+                    {exp.location && (
+                      <span className="t5-entry-heading-muted">
+                        {" "}
+                        — {exp.location}
+                      </span>
+                    )}
                   </div>
                 )}
                 <div className="t5-entry-date">
                   <MonthYearDisplay value={exp.startDate} shortYear={true} />
                   {exp.startDate && (exp.endDate || true) && <span> - </span>}
-                  {exp.endDate ? <MonthYearDisplay value={exp.endDate} shortYear={true} /> : exp.startDate && <span>Present</span>}
+                  {exp.endDate ? (
+                    <MonthYearDisplay value={exp.endDate} shortYear={true} />
+                  ) : (
+                    exp.startDate && <span>Present</span>
+                  )}
                 </div>
-                {exp.text && <div className="t5-entry-content">{stripHtml(exp.text)}</div>}
+                {exp.text && (
+                  <div className="t5-entry-content">{stripHtml(exp.text)}</div>
+                )}
               </div>
             ))}
           </div>
@@ -2794,14 +3025,28 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
               const formattedGrade = formatGrade(edu.grade || "");
               return (
                 <div key={edu._id || index} className="t5-entry">
-                  {edu.schoolname && <div className="t5-entry-heading">{edu.schoolname}</div>}
-                  {edu.degree && <div className="t5-entry-sub">{edu.degree}</div>}
-                  {edu.location && <div className="t5-entry-sub">{edu.location}</div>}
-                  {(edu.startDate || edu.endDate) && (
-                    <div className="t5-entry-date">{[edu.startDate, edu.endDate].filter(Boolean).join(" — ")}</div>
+                  {edu.schoolname && (
+                    <div className="t5-entry-heading">{edu.schoolname}</div>
                   )}
-                  {formattedGrade && <div className="t5-education-grade">{formattedGrade}</div>}
-                  {edu.text && <div className="t5-entry-content">{stripHtml(edu.text)}</div>}
+                  {edu.degree && (
+                    <div className="t5-entry-sub">{edu.degree}</div>
+                  )}
+                  {edu.location && (
+                    <div className="t5-entry-sub">{edu.location}</div>
+                  )}
+                  {(edu.startDate || edu.endDate) && (
+                    <div className="t5-entry-date">
+                      {[edu.startDate, edu.endDate].filter(Boolean).join(" — ")}
+                    </div>
+                  )}
+                  {formattedGrade && (
+                    <div className="t5-education-grade">{formattedGrade}</div>
+                  )}
+                  {edu.text && (
+                    <div className="t5-entry-content">
+                      {stripHtml(edu.text)}
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -2816,20 +3061,31 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
           <div className="t5-section">
             <div className="t5-section-title">Languages</div>
             <div className="t5-skills-list">
-              {fin.languages.filter((l) => l.name?.trim()).map((l, i) => (
-                <span key={l._id || i} className="t5-skill-item">
-                  {l.name}{l.level && ` (${l.level})`}
-                </span>
-              ))}
+              {fin.languages
+                .filter((l) => l.name?.trim())
+                .map((l, i) => (
+                  <span key={l._id || i} className="t5-skill-item">
+                    {l.name}
+                    {l.level && ` (${l.level})`}
+                  </span>
+                ))}
             </div>
           </div>
         )}
 
         {/* CERTIFICATIONS */}
-        {fin.certifications.some((i) => i.name?.replace(/<[^>]*>/g, "").trim()) && (
+        {fin.certifications.some((i) =>
+          i.name?.replace(/<[^>]*>/g, "").trim(),
+        ) && (
           <div className="t5-section">
             <div className="t5-section-title">Certifications and Licenses</div>
-            <div className="t5-extra">{fin.certifications.filter((i) => i.name?.replace(/<[^>]*>/g, "").trim()).map((item, i) => <div key={item.id || i}>{stripHtml(item.name || "")}</div>)}</div>
+            <div className="t5-extra">
+              {fin.certifications
+                .filter((i) => i.name?.replace(/<[^>]*>/g, "").trim())
+                .map((item, i) => (
+                  <div key={item.id || i}>{stripHtml(item.name || "")}</div>
+                ))}
+            </div>
           </div>
         )}
 
@@ -2837,7 +3093,13 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
         {fin.hobbies.some((i) => i.name?.replace(/<[^>]*>/g, "").trim()) && (
           <div className="t5-section">
             <div className="t5-section-title">Hobbies and Interests</div>
-            <div className="t5-extra">{fin.hobbies.filter((i) => i.name?.replace(/<[^>]*>/g, "").trim()).map((item, i) => <div key={item.id || i}>{stripHtml(item.name || "")}</div>)}</div>
+            <div className="t5-extra">
+              {fin.hobbies
+                .filter((i) => i.name?.replace(/<[^>]*>/g, "").trim())
+                .map((item, i) => (
+                  <div key={item.id || i}>{stripHtml(item.name || "")}</div>
+                ))}
+            </div>
           </div>
         )}
 
@@ -2845,21 +3107,65 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
         {fin.awards.some((i) => i.name?.replace(/<[^>]*>/g, "").trim()) && (
           <div className="t5-section">
             <div className="t5-section-title">Awards and Honors</div>
-            <div className="t5-extra">{fin.awards.filter((i) => i.name?.replace(/<[^>]*>/g, "").trim()).map((item, i) => <div key={item.id || i}>{stripHtml(item.name || "")}</div>)}</div>
+            <div className="t5-extra">
+              {fin.awards
+                .filter((i) => i.name?.replace(/<[^>]*>/g, "").trim())
+                .map((item, i) => (
+                  <div key={item.id || i}>{stripHtml(item.name || "")}</div>
+                ))}
+            </div>
           </div>
         )}
 
         {/* WEBSITES */}
-        {fin.websites.some((i) => i.websiteUrl?.trim() || i.socialMedia?.trim()) && (
+        {fin.websites.some(
+          (i) => i.websiteUrl?.trim() || i.socialMedia?.trim(),
+        ) && (
           <div className="t5-section">
             <div className="t5-section-title">Websites and Social Media</div>
             <div className="t5-extra">
-              {fin.websites.filter((i) => i.websiteUrl?.trim() || i.socialMedia?.trim()).map((item, i) => (
-                <div key={item.id || i} style={{ marginBottom: "6px" }}>
-                  {item.websiteUrl && <div><span className="t5-website-label">Website URL: </span><a href={item.websiteUrl.startsWith("http") ? item.websiteUrl : `https://${item.websiteUrl}`} target="_blank" rel="noreferrer" className="t5-website-link">{item.websiteUrl}</a></div>}
-                  {item.socialMedia && <div><span className="t5-website-label">Social Media URL: </span><a href={item.socialMedia.startsWith("http") ? item.socialMedia : `https://${item.socialMedia}`} target="_blank" rel="noreferrer" className="t5-website-link">{item.socialMedia}</a></div>}
-                </div>
-              ))}
+              {fin.websites
+                .filter((i) => i.websiteUrl?.trim() || i.socialMedia?.trim())
+                .map((item, i) => (
+                  <div key={item.id || i} style={{ marginBottom: "6px" }}>
+                    {item.websiteUrl && (
+                      <div>
+                        <span className="t5-website-label">Website URL: </span>
+                        <a
+                          href={
+                            item.websiteUrl.startsWith("http")
+                              ? item.websiteUrl
+                              : `https://${item.websiteUrl}`
+                          }
+                          target="_blank"
+                          rel="noreferrer"
+                          className="t5-website-link"
+                        >
+                          {item.websiteUrl}
+                        </a>
+                      </div>
+                    )}
+                    {item.socialMedia && (
+                      <div>
+                        <span className="t5-website-label">
+                          Social Media URL:{" "}
+                        </span>
+                        <a
+                          href={
+                            item.socialMedia.startsWith("http")
+                              ? item.socialMedia
+                              : `https://${item.socialMedia}`
+                          }
+                          target="_blank"
+                          rel="noreferrer"
+                          className="t5-website-link"
+                        >
+                          {item.socialMedia}
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                ))}
             </div>
           </div>
         )}
@@ -2868,18 +3174,29 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
         {fin.references.some((i) => i.name?.replace(/<[^>]*>/g, "").trim()) && (
           <div className="t5-section">
             <div className="t5-section-title">References</div>
-            <div className="t5-extra">{fin.references.filter((i) => i.name?.replace(/<[^>]*>/g, "").trim()).map((item, i) => <div key={item.id || i}>{stripHtml(item.name || "")}</div>)}</div>
+            <div className="t5-extra">
+              {fin.references
+                .filter((i) => i.name?.replace(/<[^>]*>/g, "").trim())
+                .map((item, i) => (
+                  <div key={item.id || i}>{stripHtml(item.name || "")}</div>
+                ))}
+            </div>
           </div>
         )}
 
         {/* CUSTOM SECTIONS */}
-        {fin.customSection.filter((s) => s?.name?.trim() || s?.description?.trim()).map((section, i) => (
-          <div key={section.id || i} className="t5-section">
-            {section.name && <div className="t5-section-title">{section.name}</div>}
-            {section.description && <div className="t5-extra">{stripHtml(section.description)}</div>}
-          </div>
-        ))}
-
+        {fin.customSection
+          .filter((s) => s?.name?.trim() || s?.description?.trim())
+          .map((section, i) => (
+            <div key={section.id || i} className="t5-section">
+              {section.name && (
+                <div className="t5-section-title">{section.name}</div>
+              )}
+              {section.description && (
+                <div className="t5-extra">{stripHtml(section.description)}</div>
+              )}
+            </div>
+          ))}
       </div>
     </>
   );

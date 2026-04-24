@@ -2589,6 +2589,8 @@ import { API_URL } from "@/app/config/api";
 import { formatMonthYear, MonthYearDisplay } from "@/app/utils";
 import { usePathname } from "next/navigation";
 import { ResumeProps } from "@/app/types";
+import { motion } from "framer-motion";
+
 
 const TemplateNine: React.FC<ResumeProps> = ({ alldata }) => {
   const context = useContext(CreateContext);
@@ -3593,14 +3595,17 @@ const TemplateNine: React.FC<ResumeProps> = ({ alldata }) => {
   ====================================================== */
   return (
     <div style={{ textAlign: "center", marginTop: 0 }}>
-      {lastSegment === "download-resume" && (
-        <div style={{ textAlign: "center", marginTop: "20px", marginBottom: "20px" }}>
-          <button
+   
+   {lastSegment === "download-resume" && (
+        <div className="text-center my-5">
+          <motion.button
             onClick={handleDownload}
-            className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors cursor-pointer"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-emerald-500 text-2xl md:text-base hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 cursor-pointer shadow-md hover:shadow-lg"
           >
             Download Resume
-          </button>
+          </motion.button>
         </div>
       )}
 

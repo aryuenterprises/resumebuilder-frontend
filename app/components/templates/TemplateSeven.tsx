@@ -2434,6 +2434,8 @@ import { API_URL } from "@/app/config/api";
 import { formatMonthYear, MonthYearDisplay } from "@/app/utils";
 import { usePathname } from "next/navigation";
 import { AllData, ResumeProps } from "@/app/types";
+import { motion } from "framer-motion";
+
 
 const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
   const context = useContext(CreateContext);
@@ -3395,30 +3397,17 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
 
   return (
     <div style={{ textAlign: "center", marginTop: 0 }}>
-      {lastSegment === "download-resume" && (
-        <div
-          style={{
-            textAlign: "center",
-            marginTop: "20px",
-            marginBottom: "20px",
-          }}
-        >
-          <button
+    
+    {lastSegment === "download-resume" && (
+        <div className="text-center my-5">
+          <motion.button
             onClick={handleDownload}
-            style={{
-              backgroundColor: "#000000",
-              color: "#ffffff",
-              padding: "12px 24px",
-              fontSize: "14px",
-              fontWeight: "600",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-              fontFamily: "inherit",
-            }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-emerald-500 text-2xl md:text-base hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 cursor-pointer shadow-md hover:shadow-lg"
           >
             Download Resume
-          </button>
+          </motion.button>
         </div>
       )}
 
