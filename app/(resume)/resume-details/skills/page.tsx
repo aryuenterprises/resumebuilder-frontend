@@ -1853,17 +1853,39 @@ const SkillsForm = () => {
       </div>
 
       {/* Sticky Footer Buttons */}
-      <div className="sticky bottom-0 z-20 bg-white/80 backdrop-blur-md border-t border-gray-100 shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-          <div className="flex justify-between items-center gap-3">
+   
+
+
+         <div className="sticky bottom-0 z-20 bg-white/75 backdrop-blur-md border-t border-gray-100 shadow-lg shadow-gray-200/50">
+        <div className=" mx-auto px-2 sm:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="flex justify-between items-center gap-3 sm:gap-4">
+            {/* Back Button - Icon only on mobile, full text on desktop */}
             <button
-              className="text-xs sm:text-sm font-medium text-gray-500 hover:text-indigo-600 transition flex items-center gap-1 cursor-pointer"
+              className="group px-4 sm:px-5 py-2.5 sm:py-2 text-sm font-medium text-gray-600 hover:text-indigo-600 transition-all duration-300 flex items-center justify-center gap-2 rounded-xl hover:bg-indigo-50/50 cursor-pointer"
               onClick={() => router.push("/resume-details/education")}
             >
-              ← Back to Education
+              <svg
+                className="w-4 h-4 transition-transform group-hover:-translate-x-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                />
+              </svg>
+              {/* Hide text on mobile, show on sm and up */}
+              <span className="hidden sm:inline">Back to Education</span>
+              {/* Optional: Show just "Back" on medium screens */}
+              <span className="inline sm:hidden">Back</span>
             </button>
+
+            {/* Continue Button - Premium Design */}
             <button
-              className="px-4 sm:px-6 py-2 sm:py-2.5 bg-linear-to-r from-indigo-600 to-indigo-500 text-white font-medium rounded-lg sm:rounded-xl shadow-md transition-all hover:shadow-indigo-300 flex items-center gap-1.5 sm:gap-2 cursor-pointer"
+              className="group relative px-6 sm:px-8 py-2.5 sm:py-3 text-sm sm:text-base font-medium md:font-semibold text-white rounded-lg md:rounded-xl shadow-lg transition-all duration-300 overflow-hidden whitespace-nowrap cursor-pointer"
               onClick={() => {
                 const currentSkills =
                   skillsMode === "simple" ? simpleSkills : categorizedSkills;
@@ -1872,8 +1894,35 @@ const SkillsForm = () => {
                 );
               }}
             >
-              <span>Continue to Projects</span>
-              <IoArrowForward className="w-3 h-3 sm:w-4 sm:h-4" />
+              {/* Gradient Background with Animation */}
+              <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-indigo-500 to-indigo-600 transition-all duration-300 group-hover:scale-105 group-hover:from-indigo-500 group-hover:via-indigo-400 group-hover:to-indigo-500"></div>
+
+              {/* Shine Effect */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform translate-x-full group-hover:translate-x-[-200%] transition-transform duration-1000"></div>
+              </div>
+
+              {/* Button Content */}
+              <div className="relative flex items-center justify-center gap-2">
+                {/* Different text for mobile vs desktop */}
+                <span>Continue to Projects</span>
+                <svg
+                  className="w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:translate-x-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 7l5 5m0 0l-5 5m5-5H6"
+                  />
+                </svg>
+              </div>
+
+              {/* Shadow Enhancement */}
+              <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-[0_0_20px_rgba(79,70,229,0.5)]"></div>
             </button>
           </div>
         </div>

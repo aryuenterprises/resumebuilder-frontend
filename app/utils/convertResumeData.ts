@@ -122,7 +122,7 @@ export const convertParsedResumeToFrontendFormat = (
 
   const experiences =
     parsedData.experience?.map((exp, index) => ({
-      _id: `temp_exp_${index}`,
+      id: `temp_exp_${index}`,
       jobTitle: exp.position || "",
       employer: exp.company || "",
       location: exp.location || "",
@@ -138,7 +138,7 @@ export const convertParsedResumeToFrontendFormat = (
 
   const educations =
     parsedData.education?.map((edu, index) => ({
-      _id: `temp_edu_${index}`,
+      id: `temp_edu_${index}`,
       schoolname: edu.institution || "",
       degree: edu.degree || "",
       location: edu.location || "",
@@ -163,7 +163,7 @@ export const convertParsedResumeToFrontendFormat = (
 
   const projects =
     parsedData.projects?.map((project, index) => ({
-      _id: crypto.randomUUID(),
+      id: crypto.randomUUID(),
       title: `${project.title}`,
       description: formatBulletsToHTML(project.bullets || []),
       techStack: project.technologies || [],

@@ -17,10 +17,10 @@
 // import axios from "axios";
 // import { toast } from "react-toastify";
 // import { useRouter } from "next/navigation";
-// import Stepper from "../../../components/resume/Steppers";
 // import { getLocalStorage, setLocalStorage } from "@/app/utils";
 // import { API_URL } from "@/app/config/api";
 // import { Project } from "@/app/types";
+// import { Stepper } from "@/app/components/resume";
 
 // // Dynamically import Editor to avoid SSR issues
 // const Editor = dynamic(
@@ -37,9 +37,9 @@
 
 // const ProjectsForm = () => {
 //   const UseContext = useContext(CreateContext);
-//   // const contactId = UseContext?.contact._id;
+//   // const contactId = UseContext?.contact.id;
 
-//   const contactId = UseContext?.contact._id || UseContext?.contact.contactId;
+//   const contactId = UseContext?.contact.id || UseContext?.contact.contactId;
 
 //   const { fullResumeData, setFullResumeData, projects, setProjects } =
 //     UseContext || {};
@@ -209,7 +209,7 @@
 
 //       if (projectsList.length > 0) {
 //         const formattedData = projectsList.map((item: any) => ({
-//           id: item._id || Date.now(),
+//           id: item.id || Date.now(),
 //           title: item.title || "",
 //           techStack: item.techStack || [],
 //           description: item.description || "",
@@ -761,6 +761,14 @@
 
 // export default ProjectsForm;
 
+
+
+
+
+
+
+
+
 "use client";
 
 import React, {
@@ -831,7 +839,7 @@ const ProjectsForm = () => {
       const updated = [
         ...prev,
         {
-          _id: Date.now(),
+          id: Date.now(),
           title: "",
           techStack: [],
           description: "",
@@ -877,7 +885,7 @@ const ProjectsForm = () => {
     if (!setProjects) return;
     setProjects((prev: Project[]) =>
       prev.map((project) =>
-        project._id === id ? { ...project, isOpen: !project.isOpen } : project,
+        project.id === id ? { ...project, isOpen: !project.isOpen } : project,
       ),
     );
   };
@@ -890,7 +898,7 @@ const ProjectsForm = () => {
     if (!setProjects) return;
     setProjects((prev: Project[]) => {
       const updated = prev.map((project) =>
-        project._id === id ? { ...project, [field]: value } : project,
+        project.id === id ? { ...project, [field]: value } : project,
       );
       return updated;
     });
@@ -899,7 +907,7 @@ const ProjectsForm = () => {
   const deleteProject = (id: string | number) => {
     if (!setProjects) return;
     setProjects((prev: Project[]) => {
-      const updated = prev.filter((project) => project._id !== id);
+      const updated = prev.filter((project) => project.id !== id);
       return updated;
     });
   };
@@ -907,7 +915,7 @@ const ProjectsForm = () => {
   const addTechStack = (projectId: string | number) => {
     const techValue = techInput[projectId] || "";
     if (techValue.trim()) {
-      const project = projects?.find((p: Project) => p._id === projectId);
+      const project = projects?.find((p: Project) => p.id === projectId);
       if (project && !project?.techStack?.includes(techValue.trim())) {
         handleChange(projectId, "techStack", [
           ...project.techStack,
@@ -919,7 +927,7 @@ const ProjectsForm = () => {
   };
 
   const removeTechStack = (projectId: string | number, tech: string) => {
-    const project = projects?.find((p: Project) => p._id === projectId);
+    const project = projects?.find((p: Project) => p.id === projectId);
     if (project) {
       handleChange(
         projectId,
@@ -941,7 +949,7 @@ const ProjectsForm = () => {
 
       if (projectsList.length > 0) {
         const formattedData = projectsList.map((item: any) => ({
-          id: item._id || Date.now(),
+          id: item.id || Date.now(),
           title: item.title || "",
           techStack: item.techStack || [],
           description: item.description || "",
@@ -956,15 +964,9 @@ const ProjectsForm = () => {
     }
   };
 
-
   return (
     <div className="min-h-screen flex flex-col bg-linear-to-br from-slate-50 via-white to-indigo-50/40">
-      {/* Sticky Stepper */}
-      {/* <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
-        <Stepper />
-      </div> */}
-
-      <Stepper/>
+      <Stepper />
 
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto">
@@ -1027,7 +1029,7 @@ const ProjectsForm = () => {
                 >
                   {/* Header */}
                   <div
-                    onClick={() => toggleForm(project._id)}
+                    onClick={() => toggleForm(project.id)}
                     className="flex justify-between items-center cursor-pointer p-4 sm:p-5 group hover:bg-gray-50/50 transition-all duration-300"
                   >
                     <div className="flex-1 min-w-0">
@@ -1054,7 +1056,7 @@ const ProjectsForm = () => {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          deleteProject(project._id);
+                          deleteProject(project.id);
                         }}
                         className="p-1.5 sm:p-2 rounded-lg bg-gray-100 text-red-500 hover:bg-red-50 hover:text-red-600 transition-all duration-200 cursor-pointer"
                         type="button"
@@ -1082,7 +1084,7 @@ const ProjectsForm = () => {
                           type="text"
                           value={project.title || ""}
                           onChange={(e) =>
-                            handleChange(project._id, "title", e.target.value)
+                            handleChange(project.id, "title", e.target.value)
                           }
                           placeholder="E-Commerce Platform"
                           className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
@@ -1097,21 +1099,21 @@ const ProjectsForm = () => {
                         <div className="flex gap-2 mb-3">
                           <input
                             type="text"
-                            value={techInput[project._id] || ""}
+                            value={techInput[project.id] || ""}
                             onChange={(e) =>
                               setTechInput((prev) => ({
                                 ...prev,
-                                [project._id]: e.target.value,
+                                [project.id]: e.target.value,
                               }))
                             }
                             onKeyPress={(e) =>
-                              e.key === "Enter" && addTechStack(project._id)
+                              e.key === "Enter" && addTechStack(project.id)
                             }
                             className="flex-1 px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
                             placeholder="React, Node.js, MongoDB"
                           />
                           <button
-                            onClick={() => addTechStack(project._id)}
+                            onClick={() => addTechStack(project.id)}
                             className="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-indigo-100 hover:text-indigo-600 transition-colors text-sm font-medium"
                           >
                             Add
@@ -1126,7 +1128,7 @@ const ProjectsForm = () => {
                               {tech}
                               <button
                                 onClick={() =>
-                                  removeTechStack(project._id, tech)
+                                  removeTechStack(project.id, tech)
                                 }
                                 className="hover:text-indigo-900 ml-1"
                               >
@@ -1148,7 +1150,7 @@ const ProjectsForm = () => {
                             value={project.liveUrl || ""}
                             onChange={(e) =>
                               handleChange(
-                                project._id,
+                                project.id,
                                 "liveUrl",
                                 e.target.value,
                               )
@@ -1167,7 +1169,7 @@ const ProjectsForm = () => {
                             value={project.githubUrl || ""}
                             onChange={(e) =>
                               handleChange(
-                                project._id,
+                                project.id,
                                 "githubUrl",
                                 e.target.value,
                               )
@@ -1230,7 +1232,7 @@ const ProjectsForm = () => {
                           }
                           onTextChange={(e: any) => {
                             handleChange(
-                              project._id,
+                              project.id,
                               "description",
                               e.htmlValue,
                             );
@@ -1266,17 +1268,39 @@ const ProjectsForm = () => {
       </div>
 
       {/* Sticky Footer Buttons */}
-      <div className="sticky bottom-0 z-20 bg-white/80 backdrop-blur-md border-t border-gray-100 shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 ">
-          <div className="flex justify-between items-center gap-3">
+     
+
+
+   <div className="sticky bottom-0 z-20 bg-white/75 backdrop-blur-md border-t border-gray-100 shadow-lg shadow-gray-200/50">
+        <div className=" mx-auto px-2 sm:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="flex justify-between items-center gap-3 sm:gap-4">
+            {/* Back Button - Icon only on mobile, full text on desktop */}
             <button
-              className="text-xs sm:text-sm font-medium text-gray-500 hover:text-indigo-600 transition flex items-center gap-1 cursor-pointer"
+              className="group px-4 sm:px-5 py-2.5 sm:py-2 text-sm font-medium text-gray-600 hover:text-indigo-600 transition-all duration-300 flex items-center justify-center gap-2 rounded-xl hover:bg-indigo-50/50 cursor-pointer"
               onClick={() => router.push("/resume-details/skills")}
             >
-              ← Back to Skills
+              <svg
+                className="w-4 h-4 transition-transform group-hover:-translate-x-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                />
+              </svg>
+              {/* Hide text on mobile, show on sm and up */}
+              <span className="hidden sm:inline">Back to Skills</span>
+              {/* Optional: Show just "Back" on medium screens */}
+              <span className="inline sm:hidden">Back</span>
             </button>
+
+            {/* Continue Button - Premium Design */}
             <button
-              className="px-4 sm:px-6 py-2 sm:py-2.5  bg-linear-to-r from-indigo-600 to-indigo-500 text-white t font-medium rounded-lg sm:rounded-xl shadow-md transition-all hover:shadow-indigo-300 flex items-center gap-1.5 sm:gap-2 cursor-pointer"
+              className="group relative px-6 sm:px-8 py-2.5 sm:py-3 text-sm sm:text-base font-medium md:font-semibold text-white rounded-lg md:rounded-xl shadow-lg transition-all duration-300 overflow-hidden whitespace-nowrap cursor-pointer"
               onClick={() => {
                 if (projects) {
                   saveToAPI(projects).then(() =>
@@ -1287,30 +1311,64 @@ const ProjectsForm = () => {
                 }
               }}
             >
-              <span>Continue to Summary</span>
-              <IoArrowForward className="w-3 h-3 sm:w-4 sm:h-4" />
+              {/* Gradient Background with Animation */}
+              <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-indigo-500 to-indigo-600 transition-all duration-300 group-hover:scale-105 group-hover:from-indigo-500 group-hover:via-indigo-400 group-hover:to-indigo-500"></div>
+
+              {/* Shine Effect */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform translate-x-full group-hover:translate-x-[-200%] transition-transform duration-1000"></div>
+              </div>
+
+              {/* Button Content */}
+              <div className="relative flex items-center justify-center gap-2">
+                {/* Different text for mobile vs desktop */}
+                <span>Continue to Summary</span>
+                <svg
+                  className="w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:translate-x-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 7l5 5m0 0l-5 5m5-5H6"
+                  />
+                </svg>
+              </div>
+
+              {/* Shadow Enhancement */}
+              <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-[0_0_20px_rgba(79,70,229,0.5)]"></div>
             </button>
           </div>
         </div>
       </div>
 
-    <TipsModal
-  isOpen={projectsTipsClicked}
-  onClose={() => setProjectsTipsClicked(false)}
-  title="Project Tips"
-  subtitle="Showcase your best work"
-  hasAI={false}
-  proTip="Pick 3-5 projects that best match the job you're applying for"
-  bestPractices={[
-    { tip: "Showcase your best and relevant work", example: "Pick projects related to the job" },
-    { tip: "Include measurable results", example: "Reduced load time by 40%" },
-    { tip: "Add live demo links", example: "Deployed project URL" },
-  ]}
-  avoidList={[
-    "Adding unfinished projects",
-    "Making it too technical for recruiters",
-  ]}
-/>
+
+      <TipsModal
+        isOpen={projectsTipsClicked}
+        onClose={() => setProjectsTipsClicked(false)}
+        title="Project Tips"
+        subtitle="Showcase your best work"
+        hasAI={false}
+        proTip="Pick 3-5 projects that best match the job you're applying for"
+        bestPractices={[
+          {
+            tip: "Showcase your best and relevant work",
+            example: "Pick projects related to the job",
+          },
+          {
+            tip: "Include measurable results",
+            example: "Reduced load time by 40%",
+          },
+          { tip: "Add live demo links", example: "Deployed project URL" },
+        ]}
+        avoidList={[
+          "Adding unfinished projects",
+          "Making it too technical for recruiters",
+        ]}
+      />
     </div>
   );
 };

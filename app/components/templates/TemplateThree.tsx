@@ -2826,7 +2826,7 @@ const TemplateThree: React.FC<ResumeProps> = ({ alldata }) => {
                     ? "Present"
                     : "";
                 return (
-                  <div key={exp._id || i} className="t3-entry">
+                  <div key={exp.id || i} className="t3-entry">
                     {(exp.jobTitle || exp.employer || exp.location) && (
                       <div className="t3-entry-title">
                         {exp.jobTitle && `${exp.jobTitle} `}
@@ -2870,7 +2870,7 @@ const TemplateThree: React.FC<ResumeProps> = ({ alldata }) => {
               {educations.map((edu, i) => {
                 const formattedGrade = formatGrade(edu.grade || "");
                 return (
-                  <div key={edu._id || i} className="t3-entry">
+                  <div key={edu.id || i} className="t3-entry">
                     {(edu.schoolname || edu.degree || edu.location) && (
                       <div className="t3-entry-title">
                         {edu.schoolname || ""}

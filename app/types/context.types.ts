@@ -20,7 +20,7 @@ export interface Contact {
   croppedImage: string | null;
 }
 export interface Experience {
-  _id: number | string;
+  id: number | string;
   jobTitle?: string;
   employer?: string;
   startDate?: string;
@@ -33,7 +33,7 @@ export interface Experience {
   year?: number;
 }
 export interface Education {
-  _id: string | number;
+  id: string | number;
   schoolname: string;
   degree: string;
   location: string;
@@ -78,7 +78,7 @@ export interface SkillCategory {
 export type SkillsType = SimpleSkill[] | SkillCategory[];
 
 export interface Project {
-  _id: string | number;
+  id: string | number;
   title?: string;
   techStack: string[];
   description?: string;

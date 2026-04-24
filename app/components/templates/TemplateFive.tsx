@@ -1864,19 +1864,19 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
     let url: string | null = null;
     let objectUrl: string | null = null;
 
-    if (croppedImage) {
+    if (contact.photo) {
       if (
-        typeof croppedImage === "string" &&
-        croppedImage.startsWith("blob:")
+        typeof contact.photo === "string" &&
+        contact.photo.startsWith("blob:")
       ) {
-        url = croppedImage;
-      } else if (typeof croppedImage === "string") {
-        url = `${API_URL}/api/uploads/photos/${croppedImage}`;
+        url = contact.photo;
+      } else if (typeof contact.photo === "string") {
+        url = `${API_URL}/api/uploads/photos/${contact.photo}`;
       } else if (
-        (croppedImage as any) instanceof Blob ||
-        (croppedImage as any) instanceof File
+        (contact.photo as any) instanceof Blob ||
+        (contact.photo as any) instanceof File
       ) {
-        objectUrl = URL.createObjectURL(croppedImage as Blob);
+        objectUrl = URL.createObjectURL(contact.photo as Blob);
         url = objectUrl;
       }
       setPreviewUrl(url);
@@ -2979,7 +2979,7 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
           <div className="t5-section">
             <div className="t5-section-title">Experience</div>
             {experiences.map((exp, index) => (
-              <div key={exp._id || index} className="t5-entry">
+              <div key={exp.id || index} className="t5-entry">
                 {(exp.jobTitle || exp.employer || exp.location) && (
                   <div className="t5-entry-heading">
                     {exp.jobTitle || ""}
@@ -3024,7 +3024,7 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
             {educations.map((edu, index) => {
               const formattedGrade = formatGrade(edu.grade || "");
               return (
-                <div key={edu._id || index} className="t5-entry">
+                <div key={edu.id || index} className="t5-entry">
                   {edu.schoolname && (
                     <div className="t5-entry-heading">{edu.schoolname}</div>
                   )}

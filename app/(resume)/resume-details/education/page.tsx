@@ -28,7 +28,6 @@
 // import { toast } from "react-toastify";
 // import { BsArrowLeftCircleFill } from "react-icons/bs";
 // import { useRouter } from "next/navigation";
-// import Stepper from "../../../components/resume/Steppers";
 // import { Education } from "@/app/types/context.types";
 // import {
 //   getLocalStorage,
@@ -37,6 +36,7 @@
 //   setSessionStorage,
 // } from "@/app/utils";
 // import { API_URL } from "@/app/config/api";
+// import { Stepper } from "@/app/components/resume";
 
 // // Dynamically import Editor to avoid SSR issues
 // const Editor = dynamic(
@@ -53,7 +53,7 @@
 
 // const Education_form = () => {
 //   const UseContext = useContext(CreateContext);
-//   const contactId = UseContext?.contact._id || UseContext?.contact.contactId;
+//   const contactId = UseContext?.contact.id || UseContext?.contact.contactId;
 
 //   const { fullResumeData, setFullResumeData } = UseContext || {};
 
@@ -168,7 +168,7 @@
 
 //       if (educationList.length > 0) {
 //         const formattedData = educationList.map((item: any) => ({
-//           id: item._id || Date.now(),
+//           id: item.id || Date.now(),
 //           schoolname: item?.schoolname || "",
 //           degree: item?.degree || "",
 //           location: item?.location || "",
@@ -1074,7 +1074,7 @@ const Education_form = () => {
       const updated = [
         ...prev,
         {
-          _id: Date.now(),
+          id: Date.now(),
           schoolname: "",
           degree: "",
           location: "",
@@ -1137,7 +1137,7 @@ const Education_form = () => {
 
       if (educationList.length > 0) {
         const formattedData = educationList.map((item: any) => ({
-          id: item._id || Date.now(),
+          id: item.id || Date.now(),
           schoolname: item?.schoolname || "",
           degree: item?.degree || "",
           location: item?.location || "",
@@ -1168,7 +1168,7 @@ const Education_form = () => {
   const toggleForm = (id: string | number) => {
     setEducation((prev) =>
       prev.map((exp) =>
-        exp._id === id ? { ...exp, isOpen: !exp.isOpen } : exp,
+        exp.id === id ? { ...exp, isOpen: !exp.isOpen } : exp,
       ),
     );
   };
@@ -1180,7 +1180,7 @@ const Education_form = () => {
   ) => {
     setEducation((prev) => {
       const updated = prev.map((exp) =>
-        exp._id === id ? { ...exp, [field]: value } : exp,
+        exp.id === id ? { ...exp, [field]: value } : exp,
       );
       return updated;
     });
@@ -1188,7 +1188,7 @@ const Education_form = () => {
 
   const deleteEducation = (id: string | number) => {
     setEducation((prev) => {
-      const updated = prev.filter((exp) => exp._id !== id);
+      const updated = prev.filter((exp) => exp.id !== id);
       return updated;
     });
   };
@@ -1263,14 +1263,13 @@ const Education_form = () => {
 
   const [educationTipsClicked, setEducationTipsClicked] = useState(false);
 
-
   return (
     <div className="min-h-screen flex flex-col bg-linear-to-br from-slate-50 via-white to-indigo-50/40">
       {/* Sticky Stepper */}
       {/* <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <Stepper />
       </div> */}
-      <Stepper/>
+      <Stepper />
 
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto">
@@ -1334,7 +1333,7 @@ const Education_form = () => {
                   >
                     {/* Header */}
                     <div
-                      onClick={() => toggleForm(exp._id)}
+                      onClick={() => toggleForm(exp.id)}
                       className="flex justify-between items-center cursor-pointer p-4 sm:p-5 group hover:bg-gray-50/50 transition-all duration-300"
                     >
                       <div className="flex-1 min-w-0">
@@ -1384,7 +1383,7 @@ const Education_form = () => {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            deleteEducation(exp._id);
+                            deleteEducation(exp.id);
                           }}
                           className="p-1.5 sm:p-2 rounded-lg bg-gray-100 text-red-500 hover:bg-red-50 hover:text-red-600 transition-all duration-200 cursor-pointer"
                           type="button"
@@ -1414,7 +1413,7 @@ const Education_form = () => {
                               value={exp.schoolname || ""}
                               onChange={(e) =>
                                 handleChange(
-                                  exp._id,
+                                  exp.id,
                                   "schoolname",
                                   e.target.value,
                                 )
@@ -1432,11 +1431,7 @@ const Education_form = () => {
                               type="text"
                               value={exp.location || ""}
                               onChange={(e) =>
-                                handleChange(
-                                  exp._id,
-                                  "location",
-                                  e.target.value,
-                                )
+                                handleChange(exp.id, "location", e.target.value)
                               }
                               placeholder="City, State"
                               className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
@@ -1454,7 +1449,7 @@ const Education_form = () => {
                               type="text"
                               value={exp.degree || ""}
                               onChange={(e) =>
-                                handleChange(exp._id, "degree", e.target.value)
+                                handleChange(exp.id, "degree", e.target.value)
                               }
                               placeholder="B.Sc in Computer Science"
                               className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
@@ -1475,7 +1470,7 @@ const Education_form = () => {
                                 let value = e.target.value;
                                 if (parseFloat(value) > 100) value = "100";
                                 if (parseFloat(value) < 0) value = "0";
-                                handleChange(exp._id, "grade", value);
+                                handleChange(exp.id, "grade", value);
                               }}
                               placeholder="Enter CGPA  or Percentage"
                               className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
@@ -1502,7 +1497,7 @@ const Education_form = () => {
                                     ? e.value.getFullYear().toString()
                                     : "";
                                 handleChange(
-                                  exp._id,
+                                  exp.id,
                                   "startDate",
                                   selectedValue,
                                 );
@@ -1530,7 +1525,7 @@ const Education_form = () => {
                                   e.value instanceof Date
                                     ? e.value.getFullYear().toString()
                                     : "";
-                                handleChange(exp._id, "endDate", value);
+                                handleChange(exp.id, "endDate", value);
                               }}
                               view="year"
                               dateFormat="yy"
@@ -1552,23 +1547,23 @@ const Education_form = () => {
                         <div className="flex items-center gap-2">
                           <input
                             type="checkbox"
-                            id={`currently-studying-${exp._id}`}
+                            id={`currently-studying-${exp.id}`}
                             checked={exp.isCurrentlyStudying || false}
                             onChange={(e) => {
                               const isChecked = e.target.checked;
                               handleChange(
-                                exp._id,
+                                exp.id,
                                 "isCurrentlyStudying",
                                 isChecked,
                               );
                               if (isChecked) {
-                                handleChange(exp._id, "endDate", "");
+                                handleChange(exp.id, "endDate", "");
                               }
                             }}
                             className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 cursor-pointer"
                           />
                           <label
-                            htmlFor={`currently-studying-${exp._id}`}
+                            htmlFor={`currently-studying-${exp.id}`}
                             className="text-sm text-gray-700 cursor-pointer hover:text-indigo-600 transition-colors"
                           >
                             I am currently studying here
@@ -1671,7 +1666,7 @@ const Education_form = () => {
                               </div>
                             }
                             onTextChange={(e: any) => {
-                              handleChange(exp._id, "text", e.htmlValue);
+                              handleChange(exp.id, "text", e.htmlValue);
                             }}
                             style={{
                               height: "140px",
@@ -1705,25 +1700,72 @@ const Education_form = () => {
       </div>
 
       {/* Sticky Footer Buttons */}
-      <div className="sticky bottom-0 z-20 bg-white/80 backdrop-blur-md border-t border-gray-100 shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 ">
-          <div className="flex justify-between items-center gap-3">
+
+      <div className="sticky bottom-0 z-20 bg-white/75 backdrop-blur-md border-t border-gray-100 shadow-lg shadow-gray-200/50">
+        <div className=" mx-auto px-2 sm:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="flex justify-between items-center gap-3 sm:gap-4">
+            {/* Back Button - Icon only on mobile, full text on desktop */}
             <button
-              className="text-xs sm:text-sm font-medium text-gray-500 hover:text-indigo-600 transition flex items-center gap-1 cursor-pointer"
+              className="group px-4 sm:px-5 py-2.5 sm:py-2 text-sm font-medium text-gray-600 hover:text-indigo-600 transition-all duration-300 flex items-center justify-center gap-2 rounded-xl hover:bg-indigo-50/50 cursor-pointer"
               onClick={() => router.push("/resume-details/experience")}
             >
-              ← Back to Experience
+              <svg
+                className="w-4 h-4 transition-transform group-hover:-translate-x-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                />
+              </svg>
+              {/* Hide text on mobile, show on sm and up */}
+              <span className="hidden sm:inline">Back to Experience</span>
+              {/* Optional: Show just "Back" on medium screens */}
+              <span className="inline sm:hidden">Back</span>
             </button>
+
+            {/* Continue Button - Premium Design */}
             <button
-              className="px-4 sm:px-6 py-2 sm:py-2.5  bg-linear-to-r from-indigo-600 to-indigo-500 text-white t font-medium rounded-lg sm:rounded-xl shadow-md transition-all hover:shadow-indigo-300 flex items-center gap-1.5 sm:gap-2 cursor-pointer"
+              className="group relative px-6 sm:px-8 py-2.5 sm:py-3 text-sm sm:text-base font-medium md:font-semibold text-white rounded-lg md:rounded-xl shadow-lg transition-all duration-300 overflow-hidden whitespace-nowrap cursor-pointer"
               onClick={() => {
                 saveToAPI(education).then(() => {
                   router.push("/resume-details/skills");
                 });
               }}
             >
-              <span>Continue to Skills</span>
-              <IoArrowForward className="w-3 h-3 sm:w-4 sm:h-4" />
+              {/* Gradient Background with Animation */}
+              <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-indigo-500 to-indigo-600 transition-all duration-300 group-hover:scale-105 group-hover:from-indigo-500 group-hover:via-indigo-400 group-hover:to-indigo-500"></div>
+
+              {/* Shine Effect */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform translate-x-full group-hover:translate-x-[-200%] transition-transform duration-1000"></div>
+              </div>
+
+              {/* Button Content */}
+              <div className="relative flex items-center justify-center gap-2">
+                {/* Different text for mobile vs desktop */}
+                <span>Continue to Skills</span>
+                <svg
+                  className="w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:translate-x-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 7l5 5m0 0l-5 5m5-5H6"
+                  />
+                </svg>
+              </div>
+
+              {/* Shadow Enhancement */}
+              <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-[0_0_20px_rgba(79,70,229,0.5)]"></div>
             </button>
           </div>
         </div>

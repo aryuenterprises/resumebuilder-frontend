@@ -139,7 +139,7 @@ export default function RootLayout({
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setShowMobilePreview(true)}
-          className="lg:hidden fixed top-20 right-4 z-50 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white p-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+          className="lg:hidden fixed top-16 right-4 z-50 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white p-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
         >
           <FiEye className="w-3 h-3" />
         </motion.button>

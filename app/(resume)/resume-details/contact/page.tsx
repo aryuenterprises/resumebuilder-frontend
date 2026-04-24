@@ -1465,15 +1465,11 @@ const ContactForm = () => {
     router.push("/resume-details/experience");
   };
 
-
   return (
     <div className="min-h-screen flex flex-col bg-linear-to-br from-slate-50 via-white to-indigo-50/40">
-      {/* Sticky Stepper - Always at top */}
-      {/* <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
-        <Stepper />
-      </div> */}
+      
 
-      <Stepper/>
+      <Stepper />
 
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto">
@@ -1899,9 +1895,9 @@ const ContactForm = () => {
         </div>
       </div>
 
-      {/* Sticky Footer Buttons - Always at bottom - Responsive */}
+      {/* Sticky Footer Buttons - Always at bottom - Responsive
       <div className="sticky bottom-0 z-20 bg-white/80 backdrop-blur-md border-t border-gray-100 shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 ">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 ">
           <div className="flex justify-between items-center gap-3">
             <button
               className="text-xs sm:text-sm font-medium text-gray-500 hover:text-indigo-600 transition flex items-center gap-1 cursor-pointer"
@@ -1910,7 +1906,7 @@ const ContactForm = () => {
               ← Back to Templates
             </button>
             <button
-              className="px-4 sm:px-6 py-2 sm:py-2.5  bg-linear-to-r from-indigo-600 to-indigo-500 text-white t font-medium rounded-lg sm:rounded-xl shadow-md transition-all hover:shadow-indigo-300 flex items-center gap-1.5 sm:gap-2 cursor-pointer"
+              className="px-4 sm:px-6 py-2 sm:py-2.5  text-sm md:text-base bg-linear-to-r from-indigo-600 to-indigo-500 text-white t md:font-medium rounded-lg sm:rounded-xl shadow-md transition-all hover:shadow-indigo-300 flex items-center gap-1.5 sm:gap-2 cursor-pointer"
               onClick={handleNext}
             >
               <span>Continue to Experience</span>
@@ -1918,7 +1914,57 @@ const ContactForm = () => {
             </button>
           </div>
         </div>
-      </div>
+      </div> */}
+
+
+
+
+      {/* Sticky Footer Buttons - Single Line Layout */}
+<div className="sticky bottom-0 z-20 bg-white/75 backdrop-blur-md border-t border-gray-100 shadow-lg shadow-gray-200/50">
+  <div className="mx-auto px-2 sm:px-6 lg:px-8 py-3 sm:py-4">
+    <div className="flex justify-between items-center gap-3 sm:gap-4">
+      {/* Back Button - Icon only on mobile, full text on desktop */}
+      <button
+        className="group px-4 sm:px-5 py-2.5 sm:py-2 text-sm font-medium text-gray-600 hover:text-indigo-600 transition-all duration-300 flex items-center justify-center gap-2 rounded-xl hover:bg-indigo-50/50 cursor-pointer"
+        onClick={() => router.push("/choose-template")}
+      >
+        <svg className="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        {/* Hide text on mobile, show on sm and up */}
+        <span className="hidden sm:inline">Back to Templates</span>
+        {/* Optional: Show just "Back" on medium screens */}
+        <span className="inline sm:hidden">Back</span>
+      </button>
+
+      {/* Continue Button - Premium Design */}
+      <button
+        className="group relative px-6 sm:px-8 py-2.5 sm:py-3 text-sm sm:text-base font-medium md:font-semibold text-white rounded-lg md:rounded-xl shadow-lg transition-all duration-300 overflow-hidden whitespace-nowrap cursor-pointer"
+        onClick={handleNext}
+      >
+        {/* Gradient Background with Animation */}
+        <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-indigo-500 to-indigo-600 transition-all duration-300 group-hover:scale-105 group-hover:from-indigo-500 group-hover:via-indigo-400 group-hover:to-indigo-500"></div>
+        
+        {/* Shine Effect */}
+        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform translate-x-full group-hover:translate-x-[-200%] transition-transform duration-1000"></div>
+        </div>
+        
+        {/* Button Content */}
+        <div className="relative flex items-center justify-center gap-2">
+          {/* Different text for mobile vs desktop */}
+          <span >Continue to Experience</span>
+          <svg className="w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
+        </div>
+
+        {/* Shadow Enhancement */}
+        <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-[0_0_20px_rgba(79,70,229,0.5)]"></div>
+      </button>
+    </div>
+  </div>
+</div>
 
       {/* Modals - Keep responsive */}
       {showPhotoViewer && contact.croppedImage && (
@@ -2136,44 +2182,74 @@ const ContactForm = () => {
         </AnimatePresence>
       )} */}
 
+      <TipsModal
+        isOpen={contactTipsClicked}
+        onClose={() => setContactTipsClicked(false)}
+        title="Contact Tips"
+        subtitle="Make it easy for recruiters to reach you"
+        hasAI={false}
+        proTip="Complete contact info = 40% more responses from recruiters"
+        bestPractices={[
+          {
+            tip: "Use your legal full name",
+            example: "No nicknames or abbreviations",
+          },
+          { tip: "Use a professional email", example: "name@domain.com" },
+          {
+            tip: "Include country code in phone",
+            example: "+1 (555) 123-4567",
+          },
+          {
+            tip: "Add your target job title",
+            example: "Senior Software Engineer",
+          },
+          {
+            tip: "Include LinkedIn profile URL",
+            example: "linkedin.com/in/username",
+          },
+          { tip: "Include city & country", example: "Shows work eligibility" },
+        ]}
+        avoidList={[
+          "Unprofessional email addresses",
+          "Missing country code in phone",
+          "Outdated contact information",
+          "Missing LinkedIn profile",
+        ]}
+        customContent={
+          <div className="bg-indigo-50 rounded-lg p-3">
+            <p className="text-xs sm:text-sm font-semibold text-indigo-700 mb-2">
+              Quick Checklist
+            </p>
+            <div className="grid sm:grid-cols-2 gap-1">
+              <div className="flex items-center gap-1">
+                <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full" />
+                <span className="text-xs sm:text-sm text-gray-600">
+                  Legal name
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full" />
+                <span className="text-xs sm:text-sm text-gray-600">
+                  LinkedIn URL
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full" />
+                <span className="text-xs sm:text-sm text-gray-600">
+                  Phone with code
+                </span>
+              </div>
 
-
-<TipsModal
-  isOpen={contactTipsClicked}
-  onClose={() => setContactTipsClicked(false)}
-  title="Contact Tips"
-  subtitle="Make it easy for recruiters to reach you"
-  hasAI={false}
-  proTip="Complete contact info = 40% more responses from recruiters"
-  bestPractices={[
-    { tip: "Use your legal full name", example: "No nicknames or abbreviations" },
-    { tip: "Use a professional email", example: "name@domain.com" },
-    { tip: "Include country code in phone", example: "+1 (555) 123-4567" },
-    { tip: "Add your target job title", example: "Senior Software Engineer" },
-    { tip: "Include LinkedIn profile URL", example: "linkedin.com/in/username" },
-    { tip: "Include city & country", example: "Shows work eligibility" },
-  ]}
-  avoidList={[
-    "Unprofessional email addresses",
-    "Missing country code in phone",
-    "Outdated contact information",
-    "Missing LinkedIn profile",
-  ]}
-  customContent={
-    <div className="bg-indigo-50 rounded-lg p-3">
-      <p className="text-xs sm:text-sm font-semibold text-indigo-700 mb-2">Quick Checklist</p>
-      <div className="grid sm:grid-cols-2 gap-1">
-        <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 bg-indigo-400 rounded-full" /><span className="text-xs sm:text-sm text-gray-600">Legal name</span></div>
-       <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 bg-indigo-400 rounded-full" /><span className="text-xs sm:text-sm text-gray-600">LinkedIn URL</span></div>
-        <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 bg-indigo-400 rounded-full" /><span className="text-xs sm:text-sm text-gray-600">Phone with code</span></div>
-        
-         <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 bg-indigo-400 rounded-full" /><span className="text-xs sm:text-sm text-gray-600">Professional email</span></div>
-      </div>
-    </div>
-  }
-/>
-
-  
+              <div className="flex items-center gap-1">
+                <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full" />
+                <span className="text-xs sm:text-sm text-gray-600">
+                  Professional email
+                </span>
+              </div>
+            </div>
+          </div>
+        }
+      />
     </div>
   );
 };

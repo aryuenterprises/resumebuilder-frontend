@@ -3609,7 +3609,7 @@ const TemplateEight: React.FC<ResumeProps> = ({ alldata }) => {
               }
 
               return (
-                <div key={edu._id || index} className="entry-block">
+                <div key={edu.id || index} className="entry-block">
                   <div className="entry-top-row">
                     <div className="entry-title">{edu.schoolname || ""}</div>
                     {(edu.startDate || edu.endDate) && (

@@ -29,11 +29,11 @@
 
 // import { CreateContext } from "@/app/context/CreateContext";
 // import { useRouter } from "next/navigation";
-// import Stepper from "../../../components/resume/Steppers";
 // import { Experience } from "@/app/types";
 // import { getLocalStorage, setLocalStorage } from "@/app/utils";
 // import { User } from "@/app/types/user.types";
 // import { API_URL } from "@/app/config/api";
+// import { Stepper } from "@/app/components/resume";
 
 // // Dynamically import Editor to avoid SSR issues
 // const Editor = dynamic(
@@ -931,12 +931,7 @@
 // export default ExperienceForm;
 
 "use client";
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  useContext,
-} from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import dynamic from "next/dynamic";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -999,11 +994,13 @@ const ExperienceForm = () => {
     UseContext;
 
 
+    console.log("experiences",experiences)
+
   const addExperience = () => {
     setExperiences([
       ...experiences,
       {
-        _id: Date.now(),
+        id: Date.now(),
         jobTitle: "",
         employer: "",
         location: "",
@@ -1028,7 +1025,7 @@ const ExperienceForm = () => {
 
       if (experienceList.length > 0) {
         const formattedData = experienceList.map((item: any) => ({
-          id: item._id || Date.now(),
+          id: item.id || Date.now(),
           jobTitle: item?.jobTitle || "",
           employer: item?.employer || "",
           location: item?.location || "",
@@ -1091,7 +1088,7 @@ const ExperienceForm = () => {
   const toggleForm = (id: string | number) => {
     setExperiences((prev) =>
       prev.map((exp) =>
-        exp._id === id ? { ...exp, isOpen: !exp.isOpen } : exp,
+        exp.id === id ? { ...exp, isOpen: !exp.isOpen } : exp,
       ),
     );
   };
@@ -1103,7 +1100,7 @@ const ExperienceForm = () => {
   ) => {
     setExperiences((prev) => {
       const updated = prev.map((exp) =>
-        exp._id === id ? { ...exp, [field]: value } : exp,
+        exp.id === id ? { ...exp, [field]: value } : exp,
       );
       return updated;
     });
@@ -1111,7 +1108,7 @@ const ExperienceForm = () => {
 
   const deleteExperience = (id: string | number) => {
     setExperiences((prev) => {
-      const updated = prev.filter((exp) => exp._id !== id);
+      const updated = prev.filter((exp) => exp.id !== id);
       return updated;
     });
   };
@@ -1210,9 +1207,7 @@ const ExperienceForm = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-linear-to-br from-slate-50 via-white to-indigo-50/40">
-      
-
-<Stepper/>
+      <Stepper />
 
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto">
@@ -1312,7 +1307,7 @@ const ExperienceForm = () => {
                     >
                       {/* Header */}
                       <div
-                        onClick={() => toggleForm(exp._id)}
+                        onClick={() => toggleForm(exp.id)}
                         className="flex justify-between items-center cursor-pointer p-4 sm:p-5 group hover:bg-gray-50/50 transition-all duration-300"
                       >
                         <div className="flex-1 min-w-0">
@@ -1360,7 +1355,7 @@ const ExperienceForm = () => {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              deleteExperience(exp._id);
+                              deleteExperience(exp.id);
                             }}
                             className="p-1.5 sm:p-2 rounded-lg bg-gray-100 text-red-500 hover:bg-red-50 hover:text-red-600 transition-all duration-200 cursor-pointer"
                             type="button"
@@ -1390,7 +1385,7 @@ const ExperienceForm = () => {
                                 value={exp.jobTitle || ""}
                                 onChange={(e) =>
                                   handleChange(
-                                    exp._id,
+                                    exp.id,
                                     "jobTitle",
                                     e.target.value,
                                   )
@@ -1409,7 +1404,7 @@ const ExperienceForm = () => {
                                 value={exp.employer || ""}
                                 onChange={(e) =>
                                   handleChange(
-                                    exp._id,
+                                    exp.id,
                                     "employer",
                                     e.target.value,
                                   )
@@ -1429,11 +1424,7 @@ const ExperienceForm = () => {
                               type="text"
                               value={exp.location || ""}
                               onChange={(e) =>
-                                handleChange(
-                                  exp._id,
-                                  "location",
-                                  e.target.value,
-                                )
+                                handleChange(exp.id, "location", e.target.value)
                               }
                               placeholder="City, State or Remote"
                               className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
@@ -1452,7 +1443,7 @@ const ExperienceForm = () => {
                                   value={exp.startDate || ""}
                                   onChange={(e) =>
                                     handleChange(
-                                      exp._id,
+                                      exp.id,
                                       "startDate",
                                       e.target.value,
                                     )
@@ -1470,7 +1461,7 @@ const ExperienceForm = () => {
                                   value={exp.endDate || ""}
                                   onChange={(e) =>
                                     handleChange(
-                                      exp._id,
+                                      exp.id,
                                       "endDate",
                                       e.target.value,
                                     )
@@ -1492,23 +1483,23 @@ const ExperienceForm = () => {
                             <div className="mt-3 flex items-center gap-2">
                               <input
                                 type="checkbox"
-                                id={`currently-working-${exp._id}`}
+                                id={`currently-working-${exp.id}`}
                                 checked={exp.isCurrentlyWorking || false}
                                 onChange={(e) => {
                                   const isChecked = e.target.checked;
                                   handleChange(
-                                    exp._id,
+                                    exp.id,
                                     "isCurrentlyWorking",
                                     isChecked,
                                   );
                                   if (isChecked) {
-                                    handleChange(exp._id, "endDate", "");
+                                    handleChange(exp.id, "endDate", "");
                                   }
                                 }}
                                 className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 cursor-pointer"
                               />
                               <label
-                                htmlFor={`currently-working-${exp._id}`}
+                                htmlFor={`currently-working-${exp.id}`}
                                 className="text-sm text-gray-700 cursor-pointer hover:text-indigo-600 transition-colors"
                               >
                                 I currently work here
@@ -1548,7 +1539,9 @@ const ExperienceForm = () => {
                                       d="M13 10V3L4 14h7v7l9-11h-7z"
                                     />
                                   </svg>
-                                  {loading ? "Generating..." : "Generate With AI"}
+                                  {loading
+                                    ? "Generating..."
+                                    : "Generate With AI"}
                                 </button>
 
                                 {/* Tooltip - Desktop only */}
@@ -1615,7 +1608,7 @@ const ExperienceForm = () => {
                                 </div>
                               }
                               onTextChange={(e: any) => {
-                                handleChange(exp._id, "text", e.htmlValue);
+                                handleChange(exp.id, "text", e.htmlValue);
                               }}
                               style={{
                                 height: "140px",
@@ -1650,27 +1643,72 @@ const ExperienceForm = () => {
       </div>
 
       {/* Sticky Footer Buttons */}
-      <div className="sticky bottom-0 z-20 bg-white/80 backdrop-blur-md border-t border-gray-100 shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 ">
-          <div className="flex justify-between items-center gap-3">
+
+      <div className="sticky bottom-0 z-20 bg-white/75 backdrop-blur-md border-t border-gray-100 shadow-lg shadow-gray-200/50">
+        <div className=" mx-auto px-2 sm:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="flex justify-between items-center gap-3 sm:gap-4">
+            {/* Back Button - Icon only on mobile, full text on desktop */}
             <button
-              className="text-xs sm:text-sm font-medium text-gray-500 hover:text-indigo-600 transition flex items-center gap-1 cursor-pointer"
+              className="group px-4 sm:px-5 py-2.5 sm:py-2 text-sm font-medium text-gray-600 hover:text-indigo-600 transition-all duration-300 flex items-center justify-center gap-2 rounded-xl hover:bg-indigo-50/50 cursor-pointer"
               onClick={() => router.push("/resume-details/contact")}
             >
-              ← Back to Contact
+              <svg
+                className="w-4 h-4 transition-transform group-hover:-translate-x-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                />
+              </svg>
+              {/* Hide text on mobile, show on sm and up */}
+              <span className="hidden sm:inline">Back to Contact</span>
+              {/* Optional: Show just "Back" on medium screens */}
+              <span className="inline sm:hidden">Back</span>
             </button>
+
+            {/* Continue Button - Premium Design */}
             <button
-              className="px-4 sm:px-6 py-2 sm:py-2.5  bg-linear-to-r from-indigo-600 to-indigo-500 text-white t font-medium rounded-lg sm:rounded-xl shadow-md transition-all hover:shadow-indigo-300 flex items-center gap-1.5 sm:gap-2 cursor-pointer"
+              className="group relative px-6 sm:px-8 py-2.5 sm:py-3 text-sm sm:text-base font-medium md:font-semibold text-white rounded-lg md:rounded-xl shadow-lg transition-all duration-300 overflow-hidden whitespace-nowrap cursor-pointer"
               onClick={() => {
-              
-                
                 saveToAPI(experiences).then(() => {
                   router.push("/resume-details/education");
                 });
               }}
             >
-              <span>Continue to Education</span>
-              <IoArrowForward className="w-3 h-3 sm:w-4 sm:h-4" />
+              {/* Gradient Background with Animation */}
+              <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-indigo-500 to-indigo-600 transition-all duration-300 group-hover:scale-105 group-hover:from-indigo-500 group-hover:via-indigo-400 group-hover:to-indigo-500"></div>
+
+              {/* Shine Effect */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform translate-x-full group-hover:translate-x-[-200%] transition-transform duration-1000"></div>
+              </div>
+
+              {/* Button Content */}
+              <div className="relative flex items-center justify-center gap-2">
+                {/* Different text for mobile vs desktop */}
+                <span>Continue to Education</span>
+                <svg
+                  className="w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:translate-x-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 7l5 5m0 0l-5 5m5-5H6"
+                  />
+                </svg>
+              </div>
+
+              {/* Shadow Enhancement */}
+              <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-[0_0_20px_rgba(79,70,229,0.5)]"></div>
             </button>
           </div>
         </div>
@@ -1843,30 +1881,43 @@ const ExperienceForm = () => {
         </AnimatePresence>
       )} */}
 
-   <TipsModal
-  isOpen={experienceTipsButtonClicked}
-  onClose={() => setExperienceTipsButtonClicked(false)}
-  title="Experience Tips"
-  subtitle="Make your work history stand out"
-  hasAI={true}
-  aiFeatureDescription= "get intelligent bullet points based on your job title."
-  proTip="Use bullet points and action verbs to highlight achievements"
-  bestPractices={[
-    { tip: "Use bullet points for achievements", example: "• Led team of 5 developers" },
-    { tip: "Start with strong action verbs", example: "Developed, Managed, Created" },
-    { tip: "Quantify your accomplishments", example: "Increased sales by 40%" },
-    { tip: "Focus on results, not just duties", example: "Improved efficiency by 25%" },
-  ]}
-  avoidList={[
-    "Using generic descriptions",
-    "Writing long paragraphs",
-    "Listing duties without results",
-  ]}
-  examples={{
-    before: "Responsible for managing team",
-    after: "Led a team of 8 developers, delivering projects 30% ahead of schedule"
-  }}
-/>
+      <TipsModal
+        isOpen={experienceTipsButtonClicked}
+        onClose={() => setExperienceTipsButtonClicked(false)}
+        title="Experience Tips"
+        subtitle="Make your work history stand out"
+        hasAI={true}
+        aiFeatureDescription="get intelligent bullet points based on your job title."
+        proTip="Use bullet points and action verbs to highlight achievements"
+        bestPractices={[
+          {
+            tip: "Use bullet points for achievements",
+            example: "• Led team of 5 developers",
+          },
+          {
+            tip: "Start with strong action verbs",
+            example: "Developed, Managed, Created",
+          },
+          {
+            tip: "Quantify your accomplishments",
+            example: "Increased sales by 40%",
+          },
+          {
+            tip: "Focus on results, not just duties",
+            example: "Improved efficiency by 25%",
+          },
+        ]}
+        avoidList={[
+          "Using generic descriptions",
+          "Writing long paragraphs",
+          "Listing duties without results",
+        ]}
+        examples={{
+          before: "Responsible for managing team",
+          after:
+            "Led a team of 8 developers, delivering projects 30% ahead of schedule",
+        }}
+      />
     </div>
   );
 };

@@ -775,7 +775,7 @@ export  function SimpleCanvasPreview({ children }: SimpleCanvasPreviewProps) {
       {/* Preview Container */}
       <div
         ref={containerRef}
-        className="absolute inset-0 overflow-hidden"
+        className="absolute inset-0 overflow-hidden bg-gray-100 rounded-lg shadow-inner"
         style={{ cursor: isDragging ? "grabbing" : "grab" }}
       >
         <div
@@ -801,33 +801,33 @@ export  function SimpleCanvasPreview({ children }: SimpleCanvasPreviewProps) {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={handleZoomIn}
-          className="w-10 h-10 flex items-center justify-center bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
+          className="w-7 h-7 md:w-8 md:w-8 lg:w-10 lg:h-10 flex items-center justify-center bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-lg md:rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
           title="Zoom In (Ctrl +)"
           type="button"
         >
-          <FiZoomIn className="w-5 h-5" />
+          <FiZoomIn className= "w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5" />
         </motion.button>
 
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={handleZoomOut}
-          className="w-10 h-10 flex items-center justify-center bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
+          className="w-7 h-7 md:w-8 md:w-8 lg:w-10 lg:h-10 flex items-center justify-center bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-lg md:rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
           title="Zoom Out (Ctrl -)"
           type="button"
         >
-          <FiZoomOut className="w-5 h-5" />
+          <FiZoomOut className= "w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5" />
         </motion.button>
 
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={handleReset}
-          className="w-10 h-10 flex items-center justify-center bg-gray-700 text-white rounded-xl shadow-lg hover:bg-gray-800 transition-all duration-300 cursor-pointer"
+          className="w-7 h-7 md:w-8 md:w-8 lg:w-10 lg:h-10 flex items-center justify-center bg-gray-700 text-white rounded-lg md:rounded-xl shadow-lg hover:bg-gray-800 transition-all duration-300 cursor-pointer"
           title="Reset View (0)"
           type="button"
         >
-          <FiRefreshCw className="w-5 h-5" />
+          <FiRefreshCw className= "w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5" />
         </motion.button>
       </div>
 
