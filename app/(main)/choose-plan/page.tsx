@@ -578,8 +578,6 @@ export default function ChoosePlanPage() {
                   transition={{ duration: 0.3, type: "spring", stiffness: 300 }}
                   className="relative h-full bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300"
                 >
-                
-
                   {/* Card Header */}
                   <motion.div
                     className={`bg-gradient-to-r ${plan.color} p-6 text-white relative overflow-hidden`}

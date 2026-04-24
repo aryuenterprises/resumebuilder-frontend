@@ -2759,7 +2759,7 @@ import {
 import { getLocalStorage, setLocalStorage } from "@/app/utils";
 import { API_URL } from "@/app/config/api";
 import { IoArrowForward, IoDiamondOutline, IoSparkles } from "react-icons/io5";
-import { TipsModal } from "@/app/components/resume";
+import { Stepper, TipsModal } from "@/app/components/resume";
 
 // Define interfaces
 interface Section {
@@ -3203,6 +3203,8 @@ const FinalizeForm = () => {
       {/* <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <Stepper />
       </div> */}
+
+      <Stepper/>
 
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto">

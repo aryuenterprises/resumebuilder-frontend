@@ -969,7 +969,7 @@ import {
   IoDiamondOutline,
   IoSparkles,
 } from "react-icons/io5";
-import { TipsModal } from "@/app/components/resume";
+import { Stepper, TipsModal } from "@/app/components/resume";
 
 // Dynamically import Editor to avoid SSR issues
 const Editor = dynamic(
@@ -1210,10 +1210,9 @@ const ExperienceForm = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-linear-to-br from-slate-50 via-white to-indigo-50/40">
-      {/* Sticky Stepper */}
-      {/* <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
-        <Stepper />
-      </div> */}
+      
+
+<Stepper/>
 
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto">

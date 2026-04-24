@@ -18,9 +18,7 @@ interface Template {
 
 function ResumeCarousel() {
   const router = useRouter();
-  const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(
-    null,
-  );
+
   const [isMobile, setIsMobile] = useState(false);
 
   // Check mobile on mount and resize
@@ -174,16 +172,7 @@ function ResumeCarousel() {
             ))}
           </Carousel>
 
-          {/* Popup */}
-          {/* <SubscriptionPopup
-              show={showPopup}
-              onClose={() => {
-                setShowPopup(false);
-                setSelectedTemplate(null);
-              }}
-              onUnlock={handleUnlockSuccess}
-              template={selectedTemplate}
-            /> */}
+         
         </div>
 
         {/* Bottom CTA (Optional - commented out in original) */}

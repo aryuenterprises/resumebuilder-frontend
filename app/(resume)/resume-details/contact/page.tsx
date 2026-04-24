@@ -1218,7 +1218,7 @@ import {
 import { Contact, Template } from "@/app/types";
 import { User } from "@/app/types/user.types";
 import { IoIosArrowDown } from "react-icons/io";
-import { TipsModal } from "@/app/components/resume";
+import { Stepper, TipsModal } from "@/app/components/resume";
 
 const ContactForm = () => {
   const router = useRouter();
@@ -1472,6 +1472,8 @@ const ContactForm = () => {
       {/* <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <Stepper />
       </div> */}
+
+      <Stepper/>
 
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto">

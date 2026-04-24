@@ -1059,7 +1059,7 @@ import { useRouter } from "next/navigation";
 import { getLocalStorage, setLocalStorage } from "@/app/utils";
 import { API_URL } from "@/app/config/api";
 import { SimpleSkill, SkillCategory, SkillsType } from "@/app/types";
-import { TipsModal } from "@/app/components/resume";
+import { Stepper, TipsModal } from "@/app/components/resume";
 
 type SkillsMode = "simple" | "categorized";
 
@@ -1483,6 +1483,9 @@ const SkillsForm = () => {
       {/* <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <Stepper />
       </div> */}
+
+            <Stepper/>
+
 
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto">

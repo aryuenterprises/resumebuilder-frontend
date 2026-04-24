@@ -562,7 +562,7 @@ import {
 } from "react-icons/io5";
 import { FaRegLightbulb, FaStar, FaGem, FaMagic } from "react-icons/fa";
 import { FiCheckCircle, FiShield, FiX, FiXCircle } from "react-icons/fi";
-import { TipsModal } from "@/app/components/resume";
+import { Stepper, TipsModal } from "@/app/components/resume";
 
 // Dynamically import Editor to avoid SSR issues
 const Editor = dynamic(
@@ -716,6 +716,9 @@ const SummaryForm = () => {
       {/* <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <Stepper />
       </div> */}
+
+            <Stepper/>
+
 
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto">

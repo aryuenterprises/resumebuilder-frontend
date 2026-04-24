@@ -801,7 +801,7 @@ export  function SimpleCanvasPreview({ children }: SimpleCanvasPreviewProps) {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={handleZoomIn}
-          className="w-10 h-10 flex items-center justify-center bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+          className="w-10 h-10 flex items-center justify-center bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
           title="Zoom In (Ctrl +)"
           type="button"
         >
@@ -812,7 +812,7 @@ export  function SimpleCanvasPreview({ children }: SimpleCanvasPreviewProps) {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={handleZoomOut}
-          className="w-10 h-10 flex items-center justify-center bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+          className="w-10 h-10 flex items-center justify-center bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
           title="Zoom Out (Ctrl -)"
           type="button"
         >
@@ -823,7 +823,7 @@ export  function SimpleCanvasPreview({ children }: SimpleCanvasPreviewProps) {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={handleReset}
-          className="w-10 h-10 flex items-center justify-center bg-gray-700 text-white rounded-xl shadow-lg hover:bg-gray-800 transition-all duration-300"
+          className="w-10 h-10 flex items-center justify-center bg-gray-700 text-white rounded-xl shadow-lg hover:bg-gray-800 transition-all duration-300 cursor-pointer"
           title="Reset View (0)"
           type="button"
         >

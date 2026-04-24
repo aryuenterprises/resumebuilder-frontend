@@ -11,6 +11,7 @@ import {
 import { usePathname } from "next/navigation";
 import { User } from "@/app/types/user.types";
 import { ResumeProps } from "@/app/types";
+import { motion } from "framer-motion";
 
 const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
   const context = useContext(CreateContext);
@@ -23,7 +24,6 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
   const projects = alldata?.projects || context?.projects || [];
   const finalize = alldata?.finalize || context?.finalize || {};
   const summary = alldata?.summary || context?.summary || "";
-
 
   const addressParts = [
     contact?.address,
@@ -1076,24 +1076,20 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
   return (
     <>
       {lastSegment === "download-resume" && (
-        <div
-          style={{
-            textAlign: "center",
-            marginTop: "20px",
-            marginBottom: "20px",
-          }}
-        >
-          <button
+        <div className="text-center my-5">
+          <motion.button
             onClick={handleDownload}
-            className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors cursor-pointer"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 cursor-pointer shadow-md hover:shadow-lg"
           >
             Download Resume
-          </button>
+          </motion.button>
         </div>
       )}
 
       <div
-        className={`t1-resume bg-white ${alldata ? "is-preview" : ""}`}
+        className={`t1-resume bg-white ${alldata ? "is-preview" : ""} `}
         style={{
           margin: "0 auto",
           boxShadow: !alldata ? "0 0 10px rgba(0,0,0,0.1)" : "",
@@ -1296,7 +1292,7 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
                     {(edu.startDate || edu.endDate) && (
                       <div className="item-date education-date">
                         {edu.startDate || ""}
-                        { " - "}
+                        {" - "}
                         {edu.endDate || "present"}
                       </div>
                     )}

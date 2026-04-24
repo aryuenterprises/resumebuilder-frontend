@@ -796,7 +796,7 @@ import { useRouter } from "next/navigation";
 import { getLocalStorage, setLocalStorage } from "@/app/utils";
 import { API_URL } from "@/app/config/api";
 import { Project } from "@/app/types";
-import { TipsModal } from "@/app/components/resume";
+import { Stepper, TipsModal } from "@/app/components/resume";
 
 // Dynamically import Editor to avoid SSR issues
 const Editor = dynamic(
@@ -963,6 +963,8 @@ const ProjectsForm = () => {
       {/* <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <Stepper />
       </div> */}
+
+      <Stepper/>
 
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto">
