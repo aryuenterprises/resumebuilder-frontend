@@ -260,9 +260,9 @@ const Page = () => {
           <div
             ref={containerRef}
             className="flex justify-center overflow-hidden"
-            style={{
-              height: `${297 * scale}mm`, // Set exact height to match scaled content
-            }}
+            // style={{
+            //   minHeight: `${297 * scale}mm`, // Set exact height to match scaled content
+            // }}
           >
             <div
               ref={resumeRef}
@@ -270,7 +270,7 @@ const Page = () => {
               style={{
                 transform: `scale(${scale})`,
                 transformOrigin: "top center",
-                height: `${297 / scale}mm`, // Compensate for scale
+                // height: `${297 / scale}mm`, // Compensate for scale
                 width: `${210 / scale}mm`,
               }}
             >

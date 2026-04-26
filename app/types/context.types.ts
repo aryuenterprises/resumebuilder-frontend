@@ -9,13 +9,13 @@ export interface Contact {
   dob?: string;
   phone?: string;
   email?: string;
-  linkedin?: string;
+  linkedIn?: string;
   github?: string;
   portfolio: string;
   address: string;
   city: string;
   country: string;
-  postcode: string;
+  postCode?: string;
   photo?: string | null;
   croppedImage: string | null;
 }
