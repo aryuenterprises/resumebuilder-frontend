@@ -688,6 +688,7 @@ export default function Home() {
         <div className="relative z-10 text-center ">
        
 
+
           {/* Main Headline */}
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
@@ -700,13 +701,13 @@ export default function Home() {
               <span className="relative z-10 bg-linear-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent animate-linear">
                 Job opportunity
               </span>
-              <motion.span
+              {/* <motion.span
                 initial={{ width: 0 }}
                 animate={{ width: "100%" }}
                 transition={{ delay: 0.8, duration: 0.8 }}
                 className="absolute bottom-2 left-0 h-3 bg-indigo-300 -z-0 rounded-full sm:block"
                 style={{ width: "100%" }}
-              />
+              /> */}
             </span>
             <br />
             <span className="bg-linear-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
@@ -734,6 +735,17 @@ export default function Home() {
             transition={{ delay: 0.3, duration: 0.6 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-5 mb-12"
           >
+            
+
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => router.push("/choose-plan")}
+              className="px-6 sm:px-8 py-3 sm:py-4 bg-white border-2 border-gray-200 text-gray-700 font-semibold rounded-2xl hover:border-indigo-300 hover:text-indigo-600 transition-all duration-300 cursor-pointer text-base sm:text-lg"
+            >
+              View Plans
+            </motion.button>
+
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -745,15 +757,6 @@ export default function Home() {
                 Create My Resume 
                 <FiArrowRight className="transition-transform group-hover:translate-x-1" />
               </span>
-            </motion.button>
-
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => router.push("/choose-plan")}
-              className="px-6 sm:px-8 py-3 sm:py-4 bg-white border-2 border-gray-200 text-gray-700 font-semibold rounded-2xl hover:border-indigo-300 hover:text-indigo-600 transition-all duration-300 cursor-pointer text-base sm:text-lg"
-            >
-              View Plans
             </motion.button>
           </motion.div>
 

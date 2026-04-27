@@ -2501,6 +2501,8 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
   ====================================================== */
   return (
     <>
+        {lastSegment === "download-resume" && (
+
         <div className="text-center my-5">
           <motion.button
             onClick={handleDownload}
@@ -2511,12 +2513,15 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
             Download Resume
           </motion.button>
         </div>
+        )}
 
       <div
         className={`t1-resume bg-white ${alldata ? "is-preview" : ""} `}
         style={{
           margin: "0 auto",
           boxShadow: !alldata ? "0 0 10px rgba(0,0,0,0.1)" : "",
+                            minHeight: "297mm",
+
         }}
       >
         <style>{`@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');`}</style>

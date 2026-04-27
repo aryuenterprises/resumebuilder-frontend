@@ -3597,6 +3597,8 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
   ====================================================== */
   return (
     <>
+            {lastSegment === "download-resume" && (
+
       <div className="text-center my-5">
         <motion.button
           onClick={handleDownload}
@@ -3607,6 +3609,7 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
           Download Resume
         </motion.button>
       </div>
+            )}
 
       <div
         className={`t2-resume ${alldata ? "is-preview" : ""}`}

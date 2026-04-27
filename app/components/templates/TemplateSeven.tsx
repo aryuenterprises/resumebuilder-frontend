@@ -54,9 +54,8 @@
 //  .t7-resume  body{
 //   margin:0;
 //   padding:0;
-  
+
 //   }
-   
 
 //     .t7-resume  {
 //     width: 210mm;
@@ -69,7 +68,7 @@
 //        transform: scale(0.36);
 
 //     transform-origin: top left;
-//     width: 210mm; 
+//     width: 210mm;
 //     height: auto;
 //     max-height: none;
 //     min-height: auto;
@@ -77,7 +76,6 @@
 //     min-width: auto;
 //     overflow: visible;
 // }
-
 
 //     /* Header Section */
 //     .t7-resume .resume-header {
@@ -193,8 +191,6 @@
 //       margin-bottom: 6px;
 //     }
 
-  
-
 //     .t7-resume .experience-title {
 //       font-size: 15px;
 //       font-weight: 700;
@@ -273,8 +269,6 @@
 //       gap: 10px;
 //       margin-bottom: 5px;
 //     }
-
-
 
 //     .t7-resume .education-school {
 //       font-size: 15px;
@@ -358,7 +352,6 @@
 //     }
 
 //     .t7-resume .custom-section-title {
-     
 
 //        font-size: 16px;
 //       font-weight: 700;
@@ -1145,21 +1138,6 @@
 
 // export default TemplateSeven;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // ─── Professional Black & White Single Column Resume Template ───────────
 // "use client";
 // import React, { useContext } from "react";
@@ -1316,7 +1294,7 @@
 //     .t7-resume.is-preview {
 //       transform: scale(0.36);
 //       transform-origin: top left;
-//       width: 210mm; 
+//       width: 210mm;
 //       height: auto;
 //       max-height: none;
 //       min-height: auto;
@@ -1815,9 +1793,9 @@
 //     // Generate skills HTML for PDF
 //     const generateSkillsHTML = () => {
 //       if (!skills || skills.length === 0) return "";
-      
+
 //       const isCategorized = isCategorizedSkills(skills);
-      
+
 //       if (isCategorized) {
 //         return `
 //           <div class="section">
@@ -1853,7 +1831,7 @@
 //     // Generate projects HTML for PDF
 //     const generateProjectsHTML = () => {
 //       if (!projects || projects.length === 0) return "";
-      
+
 //       return `
 //         <div class="section">
 //           <h2 class="section-title">Projects</h2>
@@ -2411,20 +2389,6 @@
 
 // export default TemplateSeven;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
 // import React, { useContext } from "react";
 // import axios from "axios";
@@ -2434,7 +2398,6 @@
 // import { usePathname } from "next/navigation";
 // import { AllData, ResumeProps } from "@/app/types";
 // import { motion } from "framer-motion";
-
 
 // const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
 //   const context = useContext(CreateContext);
@@ -2476,13 +2439,13 @@
 //   // Helper function to format grade (CGPA/Percentage)
 //   const formatGrade = (grade: string, gradeType?: string) => {
 //     if (!grade) return "";
-    
+
 //     if (gradeType === "cgpa") {
 //       return `CGPA: ${grade}`;
 //     } else if (gradeType === "percentage") {
 //       return `Percentage: ${grade}%`;
 //     }
-    
+
 //     const numGrade = parseFloat(grade);
 //     if (!isNaN(numGrade)) {
 //       if (numGrade <= 10 && grade.includes('.')) {
@@ -2491,7 +2454,7 @@
 //         return `Percentage: ${grade}%`;
 //       }
 //     }
-    
+
 //     return grade;
 //   };
 
@@ -2619,7 +2582,7 @@
 //     .t7-resume.is-preview {
 //       transform: scale(0.36);
 //       transform-origin: top left;
-//       width: 210mm; 
+//       width: 210mm;
 //       height: auto;
 //       max-height: none;
 //       min-height: auto;
@@ -3129,9 +3092,9 @@
 //     // Generate skills HTML for PDF
 //     const generateSkillsHTML = () => {
 //       if (!skills || skills.length === 0) return "";
-      
+
 //       const isCategorized = isCategorizedSkills(skills);
-      
+
 //       if (isCategorized) {
 //         return `
 //           <div class="section">
@@ -3167,7 +3130,7 @@
 //     // Generate projects HTML for PDF
 //     const generateProjectsHTML = () => {
 //       if (!projects || projects.length === 0) return "";
-      
+
 //       return `
 //         <div class="section">
 //           <h2 class="section-title">Projects</h2>
@@ -3396,7 +3359,7 @@
 
 //   return (
 //     <div style={{ textAlign: "center", marginTop: 0 }}>
-    
+
 //     {lastSegment === "download-resume" && (
 //         <div className="text-center my-5">
 //           <motion.button
@@ -3741,30 +3704,21 @@
 
 // export default TemplateSeven;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 import React, { useContext } from "react";
 import axios from "axios";
 import { CreateContext } from "@/app/context/CreateContext";
 import { API_URL } from "@/app/config/api";
-import { formatMonthYear, MonthYearDisplay, cleanQuillHTML } from "@/app/utils";
+import {
+  formatMonthYear,
+  MonthYearDisplay,
+  cleanQuillHTML,
+  formatDateOfBirth,
+  formatGradeToCgpdAndPercentage,
+} from "@/app/utils";
 import { usePathname } from "next/navigation";
 import { AllData, ResumeProps } from "@/app/types";
 import { motion } from "framer-motion";
-
 
 const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
   const context = useContext(CreateContext);
@@ -3791,39 +3745,7 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
   const portfolioUrl = contact?.portfolio;
   const githubUrl = contact?.github;
   const dateOfBirth = contact?.dob;
-
-  // Format date of birth for display
-  const formatDateOfBirth = (dob: string) => {
-    if (!dob) return "";
-    try {
-      const date = new Date(dob);
-      return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-    } catch {
-      return dob;
-    }
-  };
-
-  // Helper function to format grade (CGPA/Percentage)
-  const formatGrade = (grade: string, gradeType?: string) => {
-    if (!grade) return "";
-    
-    if (gradeType === "cgpa") {
-      return `CGPA: ${grade}`;
-    } else if (gradeType === "percentage") {
-      return `Percentage: ${grade}%`;
-    }
-    
-    const numGrade = parseFloat(grade);
-    if (!isNaN(numGrade)) {
-      if (numGrade <= 10 && grade.includes('.')) {
-        return `CGPA: ${grade}`;
-      } else if (numGrade > 10) {
-        return `Percentage: ${grade}%`;
-      }
-    }
-    
-    return grade;
-  };
+  const formattedDob = formatDateOfBirth(dateOfBirth ? dateOfBirth : "");
 
   // Helper function to check if skills are categorized
   const isCategorizedSkills = (skillsData: any[]) => {
@@ -3890,7 +3812,11 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
                 <div className="project-links">
                   {project.liveUrl && (
                     <a
-                      href={project.liveUrl.startsWith("http") ? project.liveUrl : `https://${project.liveUrl}`}
+                      href={
+                        project.liveUrl.startsWith("http")
+                          ? project.liveUrl
+                          : `https://${project.liveUrl}`
+                      }
                       target="_blank"
                       rel="noreferrer"
                       className="project-link"
@@ -3900,7 +3826,11 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
                   )}
                   {project.githubUrl && (
                     <a
-                      href={project.githubUrl.startsWith("http") ? project.githubUrl : `https://${project.githubUrl}`}
+                      href={
+                        project.githubUrl.startsWith("http")
+                          ? project.githubUrl
+                          : `https://${project.githubUrl}`
+                      }
                       target="_blank"
                       rel="noreferrer"
                       className="project-link"
@@ -3919,7 +3849,9 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
             {project.description && (
               <div
                 className="project-description"
-                dangerouslySetInnerHTML={{ __html: cleanQuillHTML(project.description) }}
+                dangerouslySetInnerHTML={{
+                  __html: cleanQuillHTML(project.description),
+                }}
               />
             )}
           </div>
@@ -4465,10 +4397,6 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
     }
   `;
 
-  const stripHtml = (html: string) => {
-    return html?.replace(/<\/?[^>]+(>|$)/g, "") || "";
-  };
-
   const renderDescription = (text: string) => {
     if (!text) return "";
 
@@ -4509,24 +4437,32 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
     // Generate skills HTML for PDF
     const generateSkillsHTML = () => {
       if (!skills || skills.length === 0) return "";
-      
+
       const isCategorized = isCategorizedSkills(skills);
-      
+
       if (isCategorized) {
         return `
           <div class="section">
             <h2 class="section-title">Skills</h2>
             <div class="skills-categorized">
-              ${skills.map((category: any) => `
+              ${skills
+                .map(
+                  (category: any) => `
                 <div class="skill-category">
                   <div class="skill-category-title">${category.title}</div>
                   <div class="skills-chips">
-                    ${category.skills.map((skill: any) => `
+                    ${category.skills
+                      .map(
+                        (skill: any) => `
                       <span class="skill-chip">${skill.name}</span>
-                    `).join("")}
+                    `,
+                      )
+                      .join("")}
                   </div>
                 </div>
-              `).join("")}
+              `,
+                )
+                .join("")}
             </div>
           </div>
         `;
@@ -4535,9 +4471,13 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
           <div class="section">
             <h2 class="section-title">Skills</h2>
             <div class="skills-list">
-              ${skills.map((skill: any) => `
+              ${skills
+                .map(
+                  (skill: any) => `
                 <div class="skill-item">${skill.name || skill.skill}</div>
-              `).join("")}
+              `,
+                )
+                .join("")}
             </div>
           </div>
         `;
@@ -4547,11 +4487,13 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
     // Generate projects HTML for PDF
     const generateProjectsHTML = () => {
       if (!projects || projects.length === 0) return "";
-      
+
       return `
         <div class="section">
           <h2 class="section-title">Projects</h2>
-          ${projects.map((project: any) => `
+          ${projects
+            .map(
+              (project: any) => `
             <div class="project-item">
               <div class="project-header">
                 <div class="project-title">${project.title || ""}</div>
@@ -4560,14 +4502,24 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
                   ${project.githubUrl ? `<a href="${project.githubUrl.startsWith("http") ? project.githubUrl : `https://${project.githubUrl}`}" class="project-link">GitHub</a>` : ""}
                 </div>
               </div>
-              ${project.techStack && project.techStack.length > 0 ? `
+              ${
+                project.techStack && project.techStack.length > 0
+                  ? `
                 <div class="project-tech-stack"><strong>Tech:</strong> ${project.techStack.join(" • ")}</div>
-              ` : ""}
-              ${project.description ? `
+              `
+                  : ""
+              }
+              ${
+                project.description
+                  ? `
                 <div class="project-description">${cleanQuillHTML(project.description)}</div>
-              ` : ""}
+              `
+                  : ""
+              }
             </div>
-          `).join("")}
+          `,
+            )
+            .join("")}
         </div>
       `;
     };
@@ -4608,23 +4560,30 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
           <!-- MAIN CONTENT -->
           <div class="resume-main">
             <!-- SUMMARY -->
-            ${summary ? `
+            ${
+              summary
+                ? `
               <div class="section">
                 <h2 class="section-title">Professional Summary</h2>
                 <div class="summary-text">${cleanQuillHTML(summary)}</div>
               </div>
-            ` : ""}
+            `
+                : ""
+            }
 
             <!-- EXPERIENCE - NEW LAYOUT -->
-            ${experiences.length > 0 ? `
+            ${
+              experiences.length > 0
+                ? `
               <div class="section">
                 <h2 class="section-title">Experience</h2>
-                ${experiences.map((exp) => {
-                  const startFormatted = formatMonthYear(exp.startDate, true);
-                  const endFormatted = exp.endDate
-                    ? formatMonthYear(exp.endDate, true)
-                    : "Present";
-                  return `
+                ${experiences
+                  .map((exp) => {
+                    const startFormatted = formatMonthYear(exp.startDate, true);
+                    const endFormatted = exp.endDate
+                      ? formatMonthYear(exp.endDate, true)
+                      : "Present";
+                    return `
                     <div class="experience-item">
                       <div class="experience-header">
                         <div>
@@ -4636,20 +4595,28 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
                       ${exp.text ? renderDescription(exp.text) : ""}
                     </div>
                   `;
-                }).join("")}
+                  })
+                  .join("")}
               </div>
-            ` : ""}
+            `
+                : ""
+            }
 
             <!-- PROJECTS -->
             ${generateProjectsHTML()}
 
             <!-- EDUCATION - NEW LAYOUT -->
-            ${educations.length > 0 ? `
+            ${
+              educations.length > 0
+                ? `
               <div class="section">
                 <h2 class="section-title">Education</h2>
-                ${educations.map((edu) => {
-                  const formattedGrade = formatGrade(edu.grade || "");
-                  return `
+                ${educations
+                  .map((edu) => {
+                    const formattedGrade = formatGradeToCgpdAndPercentage(
+                      edu.grade || "",
+                    );
+                    return `
                     <div class="education-item">
                       <div class="education-header">
                         <div>
@@ -4662,84 +4629,169 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
                       ${edu.text ? `<div class="education-description">${renderDescription(edu.text)}</div>` : ""}
                     </div>
                   `;
-                }).join("")}
+                  })
+                  .join("")}
               </div>
-            ` : ""}
+            `
+                : ""
+            }
 
             <!-- SKILLS -->
             ${generateSkillsHTML()}
 
             <!-- LANGUAGES -->
-            ${finalize && !Array.isArray(finalize) && Array.isArray(finalize.languages) && finalize.languages.some((l) => l.name?.trim()) ? `
+            ${
+              finalize &&
+              !Array.isArray(finalize) &&
+              Array.isArray(finalize.languages) &&
+              finalize.languages.some((l) => l.name?.trim())
+                ? `
               <div class="section">
                 <h2 class="section-title">Languages</h2>
                 <div class="skills-list">
-                  ${finalize.languages.filter((l) => l.name?.trim()).map((l) => `
+                  ${finalize.languages
+                    .filter((l) => l.name?.trim())
+                    .map(
+                      (l) => `
                     <div class="skill-item">${l.name}${l.level ? ` — ${Math.round((Number(l.level) / 4) * 100)}%` : ""}</div>
-                  `).join("")}
+                  `,
+                    )
+                    .join("")}
                 </div>
               </div>
-            ` : ""}
+            `
+                : ""
+            }
 
             <!-- CERTIFICATIONS -->
-            ${finalize && !Array.isArray(finalize) && Array.isArray(finalize.certificationsAndLicenses) && finalize.certificationsAndLicenses.some((c) => c.name?.replace(/<[^>]*>/g, "").trim()) ? `
+            ${
+              finalize &&
+              !Array.isArray(finalize) &&
+              Array.isArray(finalize.certificationsAndLicenses) &&
+              finalize.certificationsAndLicenses.some((c) =>
+                c.name?.replace(/<[^>]*>/g, "").trim(),
+              )
+                ? `
               <div class="section">
                 <h2 class="section-title">Certifications</h2>
                 <div class="additional-content">
-                  ${finalize.certificationsAndLicenses.filter((c) => c.name?.replace(/<[^>]*>/g, "").trim()).map((c) => `
+                  ${finalize.certificationsAndLicenses
+                    .filter((c) => c.name?.replace(/<[^>]*>/g, "").trim())
+                    .map(
+                      (c) => `
                     <div class="additional-item">${cleanQuillHTML(c.name || "")}</div>
-                  `).join("")}
+                  `,
+                    )
+                    .join("")}
                 </div>
               </div>
-            ` : ""}
+            `
+                : ""
+            }
 
             <!-- AWARDS -->
-            ${finalize && !Array.isArray(finalize) && Array.isArray(finalize.awardsAndHonors) && finalize.awardsAndHonors.some((a) => a.name?.replace(/<[^>]*>/g, "").trim()) ? `
+            ${
+              finalize &&
+              !Array.isArray(finalize) &&
+              Array.isArray(finalize.awardsAndHonors) &&
+              finalize.awardsAndHonors.some((a) =>
+                a.name?.replace(/<[^>]*>/g, "").trim(),
+              )
+                ? `
               <div class="section">
                 <h2 class="section-title">Awards & Honors</h2>
                 <div class="additional-content">
-                  ${finalize.awardsAndHonors.filter((a) => a.name?.replace(/<[^>]*>/g, "").trim()).map((a) => `
+                  ${finalize.awardsAndHonors
+                    .filter((a) => a.name?.replace(/<[^>]*>/g, "").trim())
+                    .map(
+                      (a) => `
                     <div class="additional-item">${cleanQuillHTML(a.name || "")}</div>
-                  `).join("")}
+                  `,
+                    )
+                    .join("")}
                 </div>
               </div>
-            ` : ""}
+            `
+                : ""
+            }
 
             <!-- INTERESTS -->
-            ${finalize && !Array.isArray(finalize) && Array.isArray(finalize.hobbiesAndInterests) && finalize.hobbiesAndInterests.some((h) => h.name?.replace(/<[^>]*>/g, "").trim()) ? `
+            ${
+              finalize &&
+              !Array.isArray(finalize) &&
+              Array.isArray(finalize.hobbiesAndInterests) &&
+              finalize.hobbiesAndInterests.some((h) =>
+                h.name?.replace(/<[^>]*>/g, "").trim(),
+              )
+                ? `
               <div class="section">
                 <h2 class="section-title">Interests</h2>
                 <div class="additional-content">
-                  ${finalize.hobbiesAndInterests.filter((h) => h.name?.replace(/<[^>]*>/g, "").trim()).map((h) => `
+                  ${finalize.hobbiesAndInterests
+                    .filter((h) => h.name?.replace(/<[^>]*>/g, "").trim())
+                    .map(
+                      (h) => `
                     <div class="additional-item">${cleanQuillHTML(h.name || "")}</div>
-                  `).join("")}
+                  `,
+                    )
+                    .join("")}
                 </div>
               </div>
-            ` : ""}
+            `
+                : ""
+            }
 
             <!-- REFERENCES -->
-            ${finalize && !Array.isArray(finalize) && Array.isArray(finalize.references) && finalize.references.some((r) => r.name?.replace(/<[^>]*>/g, "").trim()) ? `
+            ${
+              finalize &&
+              !Array.isArray(finalize) &&
+              Array.isArray(finalize.references) &&
+              finalize.references.some((r) =>
+                r.name?.replace(/<[^>]*>/g, "").trim(),
+              )
+                ? `
               <div class="section">
                 <h2 class="section-title">References</h2>
                 <div class="additional-content">
-                  ${finalize.references.filter((r) => r.name?.replace(/<[^>]*>/g, "").trim()).map((r) => `
+                  ${finalize.references
+                    .filter((r) => r.name?.replace(/<[^>]*>/g, "").trim())
+                    .map(
+                      (r) => `
                     <div class="additional-item">${cleanQuillHTML(r.name || "")}</div>
-                  `).join("")}
+                  `,
+                    )
+                    .join("")}
                 </div>
               </div>
-            ` : ""}
+            `
+                : ""
+            }
 
             <!-- CUSTOM SECTIONS -->
-            ${finalize && !Array.isArray(finalize) && Array.isArray(finalize.customSection) && finalize.customSection.some((s) => s?.name?.trim() || s?.description?.trim()) ? `
+            ${
+              finalize &&
+              !Array.isArray(finalize) &&
+              Array.isArray(finalize.customSection) &&
+              finalize.customSection.some(
+                (s) => s?.name?.trim() || s?.description?.trim(),
+              )
+                ? `
               <div class="section">
-                ${finalize.customSection.filter((s) => s?.name?.trim() || s?.description?.trim()).map((s) => `
+                ${finalize.customSection
+                  .filter((s) => s?.name?.trim() || s?.description?.trim())
+                  .map(
+                    (s) => `
                   <div class="custom-section">
                     ${s.name ? `<h3 class="custom-section-title">${s.name}</h3>` : ""}
                     ${s.description ? `<div class="custom-section-content">${cleanQuillHTML(s.description)}</div>` : ""}
                   </div>
-                `).join("")}
+                `,
+                  )
+                  .join("")}
               </div>
-            ` : ""}
+            `
+                : ""
+            }
           </div>
         </div>
       </body>
@@ -4769,12 +4821,9 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
     }
   };
 
-  const formattedDob = formatDateOfBirth(dateOfBirth ? dateOfBirth : "");
-
   return (
     <div style={{ textAlign: "center", marginTop: 0 }}>
-    
-    {lastSegment === "download-resume" && (
+      {lastSegment === "download-resume" && (
         <div className="text-center my-5">
           <motion.button
             onClick={handleDownload}
@@ -4899,9 +4948,13 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
                   <div key={i} className="experience-item">
                     <div className="experience-header">
                       <div>
-                        <div className="experience-title">{exp.jobTitle || ""}</div>
+                        <div className="experience-title">
+                          {exp.jobTitle || ""}
+                        </div>
                         <div className="experience-subtitle">
-                          {[exp.employer, exp.location].filter(Boolean).join(" — ")}
+                          {[exp.employer, exp.location]
+                            .filter(Boolean)
+                            .join(" — ")}
                         </div>
                       </div>
                       <div className="experience-date">
@@ -4911,7 +4964,9 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
                     {exp.text && (
                       <div
                         className="experience-description"
-                        dangerouslySetInnerHTML={{ __html: cleanQuillHTML(exp.text) }}
+                        dangerouslySetInnerHTML={{
+                          __html: cleanQuillHTML(exp.text),
+                        }}
                       />
                     )}
                   </div>
@@ -4928,17 +4983,25 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
             <div className="section">
               <h2 className="section-title">Education</h2>
               {educations.map((edu, i) => {
-                const formattedGrade = formatGrade(edu.grade || "");
+                const formattedGrade = formatGradeToCgpdAndPercentage(
+                  edu.grade || "",
+                );
                 return (
                   <div key={i} className="education-item">
                     <div className="education-header">
                       <div>
-                        <div className="education-school">{edu.schoolname || ""}</div>
+                        <div className="education-school">
+                          {edu.schoolname || ""}
+                        </div>
                         <div className="education-subtitle">
-                          {[edu.degree, edu.location].filter(Boolean).join(" — ")}
+                          {[edu.degree, edu.location]
+                            .filter(Boolean)
+                            .join(" — ")}
                         </div>
                         {formattedGrade && (
-                          <div className="education-grade">{formattedGrade}</div>
+                          <div className="education-grade">
+                            {formattedGrade}
+                          </div>
                         )}
                       </div>
                       <div className="education-date">
@@ -4950,7 +5013,9 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
                     {edu.text && (
                       <div
                         className="education-description"
-                        dangerouslySetInnerHTML={{ __html: cleanQuillHTML(edu.text) }}
+                        dangerouslySetInnerHTML={{
+                          __html: cleanQuillHTML(edu.text),
+                        }}
                       />
                     )}
                   </div>
@@ -5000,7 +5065,9 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
                         <div
                           key={i}
                           className="additional-item"
-                          dangerouslySetInnerHTML={{ __html: cleanQuillHTML(item.name || "") }}
+                          dangerouslySetInnerHTML={{
+                            __html: cleanQuillHTML(item.name || ""),
+                          }}
                         />
                       ),
                   )}
@@ -5024,7 +5091,9 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
                         <div
                           key={i}
                           className="additional-item"
-                          dangerouslySetInnerHTML={{ __html: cleanQuillHTML(item.name || "") }}
+                          dangerouslySetInnerHTML={{
+                            __html: cleanQuillHTML(item.name || ""),
+                          }}
                         />
                       ),
                   )}
@@ -5048,7 +5117,9 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
                         <div
                           key={i}
                           className="additional-item"
-                          dangerouslySetInnerHTML={{ __html: cleanQuillHTML(item.name || "") }}
+                          dangerouslySetInnerHTML={{
+                            __html: cleanQuillHTML(item.name || ""),
+                          }}
                         />
                       ),
                   )}
@@ -5072,7 +5143,9 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
                         <div
                           key={i}
                           className="additional-item"
-                          dangerouslySetInnerHTML={{ __html: cleanQuillHTML(item.name || "") }}
+                          dangerouslySetInnerHTML={{
+                            __html: cleanQuillHTML(item.name || ""),
+                          }}
                         />
                       ),
                   )}
