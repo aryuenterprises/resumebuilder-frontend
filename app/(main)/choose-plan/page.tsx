@@ -851,37 +851,7 @@ export default function ChoosePlanPage() {
           </div>
         </motion.div>
 
-        {/* Trust Section */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.9 }}
-          className="mt-20 text-center"
-        >
-          <p className="text-xs text-gray-400 mb-6">
-            Trusted by professionals from leading companies
-          </p>
-          <div className="flex flex-wrap justify-center items-center gap-8 opacity-50">
-            <span className="text-base font-semibold text-gray-500 hover:text-gray-700 transition-colors cursor-pointer">
-              Google
-            </span>
-            <span className="text-base font-semibold text-gray-500 hover:text-gray-700 transition-colors cursor-pointer">
-              Microsoft
-            </span>
-            <span className="text-base font-semibold text-gray-500 hover:text-gray-700 transition-colors cursor-pointer">
-              Amazon
-            </span>
-            <span className="text-base font-semibold text-gray-500 hover:text-gray-700 transition-colors cursor-pointer">
-              Meta
-            </span>
-            <span className="text-base font-semibold text-gray-500 hover:text-gray-700 transition-colors cursor-pointer">
-              Apple
-            </span>
-            <span className="text-base font-semibold text-gray-500 hover:text-gray-700 transition-colors cursor-pointer">
-              Netflix
-            </span>
-          </div>
-        </motion.div>
+        
       </div>
 
       {/* Checkout Modal */}
