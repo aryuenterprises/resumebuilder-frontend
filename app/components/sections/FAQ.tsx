@@ -299,6 +299,18 @@ const faqs: FAQItem[] = [
     answer:
       "Yes. You can save your resume and come back anytime to make changes or download updated versions.",
   },
+
+
+   {
+    question: "What makes PassATS different from other resume builders?",
+    answer:
+      "PassATS is built specifically for the Indian job market. We offer INR pricing (₹49/month vs ₹2,400+ for global tools), templates designed for Indian roles and campus placements, and AI that understands local hiring. Backed by Aryu Academy",
+  },
+   {
+    question: "Is my data safe with PassATS?",
+    answer:
+      "Yes. Your resume data is stored securely and never shared with third parties, employers, or advertising platforms",
+  },
 ];
 
 export default function Faq() {

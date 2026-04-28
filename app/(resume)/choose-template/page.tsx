@@ -2482,7 +2482,7 @@ function Choose_template() {
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
               className="bg-white rounded-2xl sm:rounded-3xl max-w-[95%] sm:max-w-4xl w-full shadow-2xl overflow-hidden my-4 mx-auto"
             >
-              <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 px-4 sm:px-6 md:px-8 py-6 sm:py-8 text-white relative overflow-hidden">
+              <div className="bg-gradient-to-br from-indigo-700 via-indigo-600 to-purple-700 px-4 sm:px-6 md:px-8 py-6 sm:py-8 text-white relative overflow-hidden">
                 <div className="flex justify-end">
                   <button onClick={() => setShowInitialPopup(false)} className="p-1.5 sm:p-2 hover:bg-white/20 rounded-lg sm:rounded-xl transition-all duration-200">
                     <X className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -2692,7 +2692,7 @@ function Choose_template() {
       </AnimatePresence>
 
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-indigo-700 via-purple-700 to-indigo-800">
+      <div className="relative overflow-hidden bg-gradient-to-br from-indigo-700 via-indigo-600 to-purple-700">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-center">
             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring", stiffness: 200 }} className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-md rounded-full text-white text-sm font-semibold mb-6">

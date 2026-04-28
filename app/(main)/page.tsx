@@ -585,14 +585,12 @@
 //   );
 // }
 
-// "use client";
-
 "use client";
 
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { ReactNode, useRef, useState } from "react";
 import {
   FiArrowRight,
   FiZap,
@@ -639,10 +637,12 @@ import {
   FaGem,
   FaPalette,
   FaGraduationCap,
+  FaStar,
+  FaCheckCircle,
+  FaMountain,
+  FaHandHoldingUsd,
 } from "react-icons/fa";
-import { IoCheckmarkCircle } from "react-icons/io5";
 
-import { templateData } from "@/app/data";
 import { HiSparkles } from "react-icons/hi";
 import Testimonial from "../components/sections/Testimonial";
 import Faq from "../components/sections/FAQ";
@@ -654,19 +654,63 @@ const atsFeatures = [
     icon: <FiSearch className="w-5 h-5" />,
     title: "ATS Compatibility Check",
     description:
-      "Scan for complex formatting, tables, or images that confuse ATS systems.",
+      "Scans 15 criteria including formatting, keywords, action verbs, and section completeness.",
   },
   {
     icon: <FiBarChart2 className="w-5 h-5" />,
-    title: "Keyword Optimization",
+    title: "JD Keyword Tailoring ",
     description:
-      "Compare your resume against job descriptions and see which keywords you're missing.",
+      "Paste any job description. PassATS identifies missing keywords and injects them into the right sections automatically.'  (upgrade to active feature name)",
   },
   {
     icon: <FiEye className="w-5 h-5" />,
     title: "Recruiter Preview",
     description:
       "See exactly how recruiters see your resume in their first 6-second scan.",
+  },
+];
+
+interface Feature {
+  icon: ReactNode;
+  title: string;
+  description: string;
+}
+
+const features: Feature[] = [
+  {
+    icon: <FaFileAlt className="w-5 h-5" />,
+    title: "Professional Templates",
+    description:
+      "6+ ATS-safe templates built for Indian job roles — from fresher to senior professional.",
+  },
+  {
+    icon: <FaCheckCircle className="w-5 h-5" />,
+    title: "ATS Score 0–100",
+    description:
+      "Get a real score, see every issue, fix it in one click. Not a vague 'looks good' ",
+  },
+  {
+    icon: <FaMagic className="w-5 h-5" />,
+    title: "JD Keyword Tailoring",
+    description:
+      "Paste a job description and PassATS matches your resume to it automatically.",
+  },
+  {
+    icon: <FaRocket className="w-5 h-5" />,
+    title: "AI Bullet Writer",
+    description:
+      "Turns your raw experience into achievement-focused bullets with action verbs and metrics.",
+  },
+  {
+    icon: <FaMountain className="w-5 h-5" />,
+    title: "AI Cover Letter ",
+    description:
+      "Generate a matching cover letter in 30 seconds. Three tone options.",
+  },
+  {
+    icon: <FaHandHoldingUsd className="w-5 h-5" />,
+    title: "Download & Share",
+    description: "PDF download + WhatsApp sharing. Ready to send in seconds.",
   },
 ];
 
@@ -683,11 +727,20 @@ export default function Home() {
   return (
     <>
       {/* ========== HERO SECTION ========== */}
-
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8">
         <div className="relative z-10 text-center ">
-       
-
+          {/* Top Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 mb-6"
+          >
+            <span className="flex h-2 w-2 rounded-full bg-indigo-500" />
+            <span className="text-xs font-medium text-indigo-700 tracking-wide uppercase">
+              Intelligent Resume Builder
+            </span>
+          </motion.div>
 
           {/* Main Headline */}
           <motion.h1
@@ -701,13 +754,6 @@ export default function Home() {
               <span className="relative z-10 bg-linear-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent animate-linear">
                 Job opportunity
               </span>
-              {/* <motion.span
-                initial={{ width: 0 }}
-                animate={{ width: "100%" }}
-                transition={{ delay: 0.8, duration: 0.8 }}
-                className="absolute bottom-2 left-0 h-3 bg-indigo-300 -z-0 rounded-full sm:block"
-                style={{ width: "100%" }}
-              /> */}
             </span>
             <br />
             <span className="bg-linear-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
@@ -720,13 +766,14 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
-            className="max-w-2xl mx-auto text-base sm:text-lg md:text-xl text-gray-500 mb-10 leading-relaxed px-4"
+            className=" max-w-5xl mx-auto text-base sm:text-lg md:text-xl text-gray-500 mb-10 leading-relaxed px-4"
           >
-            AI-powered resume builder trusted by candidates at Google, Amazon,
-            and Microsoft. Get hired{" "}
-            <span className="font-semibold text-indigo-600">3x faster</span>{" "}
-            with ATS-perfected resumes.
+            Build a professional, ATS-optimised resume in minutes — with AI that
+            understands the Indian job market. Backed by Aryu Academy — trusted by students and professionals
+            across India
           </motion.p>
+
+          
 
           {/* CTA Buttons */}
           <motion.div
@@ -735,8 +782,6 @@ export default function Home() {
             transition={{ delay: 0.3, duration: 0.6 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-5 mb-12"
           >
-            
-
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -754,7 +799,7 @@ export default function Home() {
             >
               <span className="absolute inset-0 bg-linear-to-r from-white/20 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
               <span className="relative flex items-center gap-2">
-                Create My Resume 
+                Build My Resume{" "}
                 <FiArrowRight className="transition-transform group-hover:translate-x-1" />
               </span>
             </motion.button>
@@ -804,10 +849,77 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Card-Style Trust Bar */}
+      <div className="w-full px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-gradient-to-br from-white to-indigo-50/30 rounded-2xl border border-indigo-100 shadow-sm p-6 sm:p-8">
+            {/* Optional Heading */}
+            <div className="text-center mb-8">
+              <p className="text-indigo-600 text-sm font-semibold uppercase tracking-wide">
+                Trusted by Job Seekers
+              </p>
+              <p className="text-gray-800 text-lg sm:text-xl mt-1">
+                Join thousands who've built their careers with us
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
+              {/* Stat 1 */}
+              <div className="text-center">
+                <div className="text-3xl sm:text-4xl font-bold text-indigo-600 mb-2">
+                  50K+
+                </div>
+                <div className="h-0.5 w-12 bg-indigo-200 mx-auto mb-3"></div>
+                <p className="text-gray-700 font-medium">Resumes Built</p>
+                <p className="text-xs text-gray-400 mt-1">by professionals</p>
+              </div>
+
+              {/* Stat 2 */}
+              <div className="text-center">
+                <div className="text-3xl sm:text-4xl font-bold text-indigo-600 mb-2">
+                  10K+
+                </div>
+                <div className="h-0.5 w-12 bg-indigo-200 mx-auto mb-3"></div>
+                <p className="text-gray-700 font-medium">ATS Scores Checked</p>
+                <p className="text-xs text-gray-400 mt-1">this month</p>
+              </div>
+
+              {/* Stat 3 */}
+              <div className="text-center">
+                <div className="text-3xl sm:text-4xl font-bold text-indigo-600 mb-2">
+                  ✓
+                </div>
+                <div className="h-0.5 w-12 bg-indigo-200 mx-auto mb-3"></div>
+                <p className="text-gray-700 font-medium">Backed by Academy</p>
+                <p className="text-xs text-gray-400 mt-1">Aryu certified</p>
+              </div>
+
+              {/* Stat 4 */}
+              <div className="text-center">
+                <div className="text-3xl sm:text-4xl font-bold text-indigo-600 mb-2">
+                  100%
+                </div>
+                <div className="h-0.5 w-12 bg-indigo-200 mx-auto mb-3"></div>
+                <p className="text-gray-700 font-medium">ATS-Compatible</p>
+                <p className="text-xs text-gray-400 mt-1">guaranteed format</p>
+              </div>
+
+              {/* Stat 5 */}
+              <div className="text-center">
+                <div className="text-3xl sm:text-4xl font-bold text-emerald-600 mb-2">
+                  $0
+                </div>
+                <div className="h-0.5 w-12 bg-emerald-200 mx-auto mb-3"></div>
+                <p className="text-gray-700 font-medium">Free to Start</p>
+                <p className="text-xs text-gray-400 mt-1">no card required</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* ========== AI FEATURES SECTION - COMPREHENSIVE ========== */}
       <section className="relative py-14 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 overflow-hidden bg-linear-to-b from-white to-indigo-50/20">
-        
-
         <div className="relative z-10 max-w-7xl mx-auto">
           {/* Section Header */}
           <div className="text-center  mx-auto mb-16">
@@ -826,18 +938,19 @@ export default function Home() {
               </span>
             </motion.div>
 
-           <motion.h2
-  initial={{ opacity: 0, y: 20 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  transition={{ delay: 0.1 }}
-  viewport={{ once: true }}
-  className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight"
->
-  AI That Enhances Your
-  <span className="block bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mt-2">
-    Resume with Smart Suggestions
-  </span>
-</motion.h2>
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              viewport={{ once: true }}
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight"
+            >
+              AI That Writes, Scores, and Optimises{" "}
+              <span className="block bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mt-2">
+                {/* Resume with Smart Suggestions */}
+                For the Indian Job Market
+              </span>
+            </motion.h2>
 
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -846,8 +959,8 @@ export default function Home() {
               viewport={{ once: true }}
               className="mt-4 text-lg text-gray-500 max-w-2xl mx-auto"
             >
-              From education to experience, skills to summary - our AI crafts
-              professional content that recruiters love
+              PassATS handles every section of your resume — with AI trained to
+              pass ATS systems used by Indian recruiters.
             </motion.p>
           </div>
 
@@ -874,7 +987,8 @@ export default function Home() {
                       Education Section
                     </h3>
                     <p className="text-gray-500 text-sm mb-3">
-                      AI formats your academic background perfectly
+                      Formats your academic background, CGPA, and coursework for
+                      Indian recruiter expectations.{" "}
                     </p>
                   </div>
                 </div>
@@ -887,9 +1001,9 @@ export default function Home() {
                         AI Example
                       </span>
                       <p className="text-sm text-gray-700 mt-1">
-                        "Master of Science in Computer Science, Stanford
-                        University | GPA: 3.9/4.0 | Relevant Coursework: Machine
-                        Learning, Data Structures, Algorithms"
+                        B.Tech Computer Science, Anna University | CGPA: 8.4/10
+                        | Relevant Coursework: Data Structures, Operating
+                        Systems, DBMS, Machine Learning' (India-specific format)
                       </p>
                     </div>
                   </div>
@@ -900,7 +1014,7 @@ export default function Home() {
                     Degree Formatting
                   </span>
                   <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">
-                    GPA Optimization
+                    CGPA Optimization
                   </span>
                   <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">
                     Coursework Highlight
@@ -930,7 +1044,8 @@ export default function Home() {
                       Experience Section
                     </h3>
                     <p className="text-gray-500 text-sm mb-3">
-                      Transform job duties into measurable achievements
+                      Rewrites job duties into measurable achievements that pass
+                      ATS and impress hiring managers.
                     </p>
                   </div>
                 </div>
@@ -943,9 +1058,10 @@ export default function Home() {
                         AI Example
                       </span>
                       <p className="text-sm text-gray-700 mt-1">
-                        "Led a team of 8 engineers to develop a microservices
-                        architecture, reducing system latency by 40% and serving
-                        1M+ daily requests"
+                        "Led a team of 6 developers to build a
+                        microservices-based payment gateway, reducing API
+                        response time by 38% and processing 2L+ daily
+                        transactions."
                       </p>
                     </div>
                   </div>
@@ -986,7 +1102,8 @@ export default function Home() {
                       Skills Section
                     </h3>
                     <p className="text-gray-500 text-sm mb-3">
-                      AI suggests relevant skills for your target role
+                      Suggests role-specific skills and keywords that match
+                      Indian job descriptions — automatically{" "}
                     </p>
                   </div>
                 </div>
@@ -1009,13 +1126,13 @@ export default function Home() {
 
                 <div className="mt-4 flex flex-wrap gap-2">
                   <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full">
-                    Skill Categories
+                    Technical Skills
                   </span>
                   <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full">
-                    Industry Keywords
+                    Soft Skills
                   </span>
                   <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full">
-                    ATS Keywords
+                    Keywords Match
                   </span>
                 </div>
               </div>
@@ -1042,7 +1159,8 @@ export default function Home() {
                       Professional Summary
                     </h3>
                     <p className="text-gray-500 text-sm mb-3">
-                      AI crafts compelling career summaries that stand out
+                      Writes a 3-line summary that tells recruiters who you are,
+                      what you do best, and why you fit the role.{" "}
                     </p>
                   </div>
                 </div>
@@ -1055,11 +1173,10 @@ export default function Home() {
                         AI Example
                       </span>
                       <p className="text-sm text-gray-700 mt-1">
-                        "Results-driven Software Engineer with 5+ years of
-                        experience in full-stack development. Proven track
-                        record of delivering scalable solutions that increased
-                        revenue by 30%. Passionate about AI and cloud
-                        technologies."
+                        "Results-driven Full Stack Developer with 4 years of
+                        experience building scalable web applications.
+                        Proficient in React, Node.js, and AWS. Passionate about
+                        clean code and fast delivery."
                       </p>
                     </div>
                   </div>
@@ -1089,26 +1206,26 @@ export default function Home() {
             className="text-center mb-12"
           >
             <h3 className="text-2xl font-bold text-gray-900 mb-8">
-              How Our AI Works
+              How PassATS Works{" "}
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
               {[
                 {
                   step: "01",
-                  title: "Input Your Info",
-                  desc: "Tell us about your education, work history, and skills",
+                  title: "Enter Your Details",
+                  desc: "                    Add your work history, education, and skills. Or upload your existing resume — PassATS reads it automatically.",
                   icon: "📝",
                 },
                 {
                   step: "02",
-                  title: "AI Analysis",
-                  desc: "Our AI analyzes your input and suggests improvements",
+                  title: " AI Builds + Optimises ",
+                  desc: "PassATS writes your bullet points, scores your ATS compatibility, and tailors keywords to the job description.",
                   icon: "🤖",
                 },
                 {
                   step: "03",
-                  title: "Get Optimized Resume",
-                  desc: "Download your ATS-friendly professional resume",
+                  title: "'Download & Apply ",
+                  desc: "Download a polished PDF. Share via WhatsApp or LinkedIn. Start applying with confidence.",
                   icon: "📄",
                 },
               ].map((item, idx) => (
@@ -1156,8 +1273,6 @@ export default function Home() {
               </button>
             </div>
           </motion.div>
-
-        
         </div>
       </section>
 
@@ -1180,9 +1295,9 @@ export default function Home() {
               </div>
 
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
-                Stop guessing what recruiters want.
-                <span className="block bg-linear-to-r from-indigo-600 to-indigo-500 bg-clip-text text-transparent mt-2">
-                  Let AI do it.
+                From vague to interview-ready{" "}
+                <span className="block bg-linear-to-r from-indigo-600 to-indigo-500 bg-clip-text text-transparent ">
+                  in one click.{" "}
                 </span>
               </h2>
 
@@ -1294,8 +1409,9 @@ export default function Home() {
                       <div className="w-8 h-px bg-indigo-200" />
                     </div>
                     <div className="text-sm sm:text-base font-medium text-gray-900">
-                      "Built REST APIs for payments, reducing latency by 32% and
-                      increasing reliability."
+                      "Built REST APIs for the payments module, reducing average
+                      response latency by 32% and cutting error rate from 4.2%
+                      to 0.6%."
                     </div>
                   </div>
                 </div>
@@ -1324,8 +1440,6 @@ export default function Home() {
 
       {/* ========== UPLOAD & EDIT RESUME SECTION - AUTO-FILL WITH AI ========== */}
       <section className="relative py-14 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 overflow-hidden bg-linear-to-br from-indigo-50/50 via-white to-purple-50/50">
-        
-
         <div className="relative z-10 max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Left Content */}
@@ -1335,19 +1449,17 @@ export default function Home() {
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-            
-
               <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
                 Upload Your Resume,
-                <span className="block bg-linear-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mt-2">
+                <span className="block bg-linear-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent ">
                   Let AI Do the Rest
                 </span>
               </h2>
 
-              <p className="mt-4 text-sm sm:text-base md:text-lg text-gray-500 leading-relaxed">
-                Upload your existing resume (PDF/DOCX). Our AI automatically
-                extracts and fills all your information, then provides smart
-                suggestions to improve every section.
+              <p className="mt-4 text-sm sm:text-base md:text-lg text-gray-500 leading-tight">
+                Already have a resume? Upload it as a PDF or Word file. PassATS
+                reads every section automatically and gives you AI-powered
+                suggestions to improve each one — without starting from scratch.
               </p>
 
               {/* How it works steps */}
@@ -1371,10 +1483,11 @@ export default function Home() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900">
-                      AI Auto-Fills Everything
+                      PassATS Reads Everything{" "}
                     </h4>
                     <p className="text-sm text-gray-500">
-                      We extract your experience, education, skills, and more
+                      Your work history, education, skills, and contact details
+                      are parsed instantly.{" "}
                     </p>
                   </div>
                 </div>
@@ -1384,10 +1497,11 @@ export default function Home() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900">
-                      Get AI Suggestions
+                      Get AI Improvements
                     </h4>
                     <p className="text-sm text-gray-500">
-                      Improve each section with one-click AI enhancements
+                      One-click rewrites, keyword additions, and ATS fixes
+                      applied to your existing content.{" "}
                     </p>
                   </div>
                 </div>
@@ -1402,11 +1516,9 @@ export default function Home() {
               >
                 <span className="absolute inset-0 bg-linear-to-r from-white/20 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
                 <FiUpload className="w-5 h-5" />
-                <span>Upload & Auto-Fill Resume</span>
+                <span>Upload My Resume & Improve It</span>
                 <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
               </motion.button>
-
-            
             </motion.div>
 
             {/* Right Content - Editor Preview with Auto-filled Data */}
@@ -1417,8 +1529,6 @@ export default function Home() {
               viewport={{ once: true }}
               className="relative"
             >
-            
-
               {/* Main Editor Card */}
               <div className="bg-gray-900 rounded-2xl overflow-hidden shadow-2xl ring-1 ring-white/10">
                 {/* Editor Header */}
@@ -1476,25 +1586,25 @@ export default function Home() {
                       <div>
                         <span className="text-gray-500">Name:</span>{" "}
                         <span className="font-medium text-gray-900">
-                          John Anderson
+                          Kamal Hassan
                         </span>
                       </div>
                       <div>
                         <span className="text-gray-500">Email:</span>{" "}
                         <span className="font-medium text-gray-900">
-                          john.anderson@email.com
+                          Kamal.hassan01@email.com
                         </span>
                       </div>
                       <div>
                         <span className="text-gray-500">Phone:</span>{" "}
                         <span className="font-medium text-gray-900">
-                          +1 (555) 123-4567
+                          12345 67890
                         </span>
                       </div>
                       <div>
                         <span className="text-gray-500">Location:</span>{" "}
                         <span className="font-medium text-gray-900">
-                          San Francisco, CA
+                          Chennai, IN
                         </span>
                       </div>
                     </div>
@@ -1594,8 +1704,6 @@ export default function Home() {
                     </div>
                   </div>
 
-                
-
                   {/* Skills Section - Auto-filled with AI Categories */}
                   <div className="border rounded-xl overflow-hidden">
                     <div className="bg-gray-50 px-4 py-3 border-b flex items-center justify-between">
@@ -1637,11 +1745,7 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-
-                
               </div>
-
-            
             </motion.div>
           </div>
 
@@ -1681,6 +1785,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* DUMMY RESUME */}
       <section className="relative bg-white py-14 sm:py-16 md:py-20 lg:py-24  overflow-hidden">
         {/* Decorative Background Elements */}
         <div className="absolute -top-24 -right-24 w-80 h-80 bg-indigo-100 rounded-full blur-3xl opacity-30 pointer-events-none" />
@@ -1843,8 +1948,6 @@ export default function Home() {
 
       {/* ========== ATS CHECKER SECTION - LIGHT PREMIUM ========== */}
       <section className="relative py-14 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 overflow-hidden bg-linear-to-br from-gray-50 to-white">
-       
-
         <div className="relative z-10 max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             {/* Left Content - ATS Score Card */}
@@ -1864,19 +1967,15 @@ export default function Home() {
                     <div>
                       <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 mb-3">
                         <FiShield className="w-3 h-3 text-indigo-600" />
-                        <span className="text-xs font-medium text-indigo-700">
-                          ATS SCORE
+                        <span className=" font-medium text-indigo-700">
+                          Your ATS SCORE
                         </span>
                       </div>
-                      <h3 className="text-base sm:text-xl md:text-2xl font-bold text-gray-900">
-                        Overall Compatibility
-                      </h3>
                     </div>
-                     
-                        <span className="text-xl sm:text-2xl md:text-3xl font-semibold md:font-bold text-blue-600 ">
-                          98 %
-                        </span>
-                    
+
+                    <span className="text-xl sm:text-2xl md:text-3xl font-semibold md:font-bold text-blue-600 ">
+                      98 %
+                    </span>
                   </div>
 
                   {/* Score Bars */}
@@ -1941,7 +2040,10 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <button onClick={()=>router.push('/ats-checker')} className="mt-6 w-full py-3 bg-linear-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer">
+                  <button
+                    onClick={() => router.push("/ats-checker")}
+                    className="mt-6 w-full py-3 bg-linear-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  >
                     <FiBarChart2 className="w-4 h-4" />
                     Run Full ATS Check
                   </button>
@@ -1957,19 +2059,18 @@ export default function Home() {
               viewport={{ once: true }}
               className="order-1 lg:order-2"
             >
-              
-
               <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
                 Don't Get Filtered Out
-                <span className="block bg-linear-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mt-2">
+                <span className="block bg-linear-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent ">
                   Pass ATS with Confidence
                 </span>
               </h2>
 
               <p className="mt-4 text-base md:text-lg text-gray-500 leading-relaxed">
                 <span className="font-bold text-red-500">75% of resumes</span>{" "}
-                never reach human eyes. Our ATS checker ensures yours makes it
-                through to hiring managers.
+                are filtered out before a recruiter reads them. PassATS gives
+                you a real score from 0 to 100 — and shows you exactly what to
+                fix before you apply.
               </p>
 
               <div className="mt-8 space-y-4">
@@ -2062,8 +2163,222 @@ export default function Home() {
         </div>
       </section>
 
+      {/* WhyChooseUs */}
+      <section className="relative bg-gray-50 py-16 sm:py-20 md:py-24  px-4 sm:px-6 lg:px-8 overflow-hidden">
+        <div className="relative max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="text-center max-w-3xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 mb-4"
+            >
+              <FiTrendingUp className="w-3.5 h-3.5 text-indigo-600" />
+              <span className="text-xs font-medium text-indigo-700 uppercase tracking-wide">
+                Built for India's job market
+              </span>
+            </motion.div>
+
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              viewport={{ once: true }}
+              className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 leading-tight"
+            >
+              Everything You Need to Pass
+              <span className="block bg-linear-to-r from-indigo-600 to-indigo-500 bg-clip-text text-transparent ">
+                ATS and Get Shortlisted
+              </span>
+            </motion.h2>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="mt-4 text-base sm:text-lg text-gray-500 leading-relaxed"
+            >
+              From campus placement to senior roles — PassATS gives you the
+              tools to compete with confidence in the Indian job market.
+            </motion.p>
+          </div>
+
+          {/* Feature Cards Grid */}
+          <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {features.map((feature, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: idx * 0.05 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -4 }}
+                className="group bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 p-6"
+              >
+                <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 mb-4 group-hover:scale-110 transition-transform duration-300">
+                  {feature.icon}
+                </div>
+
+                <h3 className="text-lg font-bold text-gray-900 mb-2">
+                  {feature.title}
+                </h3>
+
+                <p className="text-sm text-gray-500 leading-relaxed">
+                  {feature.description}
+                </p>
+
+                <div className="mt-4 w-10 h-0.5 bg-indigo-200 rounded-full transition-all duration-300 group-hover:w-14 group-hover:bg-indigo-600" />
+              </motion.div>
+            ))}
+          </div>
+
+          {/* CTA Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            viewport={{ once: true }}
+            className="mt-12 text-center"
+          >
+            <h3 className="text-xl sm:text-2xl font-bold text-gray-900">
+              Your next opportunity is one resume away.
+            </h3>
+
+            <p className="mt-2 text-sm text-gray-500 max-w-md mx-auto">
+              Build your resume free — no signup required. Ready in under 3
+              minutes.
+            </p>
+
+            <button
+              onClick={() => router.push("/choose-template")}
+              className="group mt-6 px-8 py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/25 flex items-center justify-center gap-2 mx-auto cursor-pointer"
+            >
+              Create My Resume Now
+              <FiArrowRight className="transition-transform group-hover:translate-x-1" />
+            </button>
+          </motion.div>
+
+          {/* Trust Indicator */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+            viewport={{ once: true }}
+            className="mt-8 pt-6 flex flex-wrap justify-center items-center gap-6 text-xs text-gray-400"
+          >
+            <div className="flex items-center gap-1">
+              <FaStar className="w-3 h-3 text-yellow-500" />
+              <span>4.9/5 Rating</span>
+            </div>
+            <div className="w-1 h-1 bg-gray-300 rounded-full" />
+            <div className="flex items-center gap-1">
+              <FiUsers className="w-3 h-3 text-indigo-500" />
+              <span>10,000+ Users</span>
+            </div>
+            <div className="w-1 h-1 bg-gray-300 rounded-full" />
+            <div className="flex items-center gap-1">
+              <FaShieldAlt className="w-3 h-3 text-green-500" />
+              <span>98% ATS Pass Rate</span>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       <Testimonial />
       <Faq />
+
+      {/* Full Width with Animated Gradient */}
+      <div className="w-full relative overflow-hidden bg-gradient-to-br from-indigo-700 via-indigo-600 to-purple-700 animate-gradient">
+        <div className="relative  mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24">
+          {/* Heading with gradient text */}
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-center text-white mb-4 sm:mb-6 leading-tight">
+            Your Next Job Starts with{" "}
+            <span className="bg-gradient-to-r from-yellow-200 via-amber-200 to-yellow-100 bg-clip-text text-transparent">
+              the Right Resume.
+            </span>
+          </h2>
+
+          {/* Body */}
+          <p className="text-base sm:text-lg text-indigo-100 text-center max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed">
+            Whether you are applying for campus placement, your first role, or
+            your next big move — PassATS gives you the resume that gets you in
+            the room.
+          </p>
+
+          {/* CTA Buttons Row */}
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-4">
+            <button
+              onClick={() => router.push("/choose-template")}
+              className="group px-6 sm:px-8 py-3 sm:py-3.5 text-sm sm:text-base font-semibold bg-white text-indigo-600 rounded-xl shadow-lg hover:shadow-xl hover:shadow-indigo-900/40 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2 cursor-pointer"
+            >
+              Build My Resume — It's Free
+              <svg
+                className="w-4 h-4 transition-transform group-hover:translate-x-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M13 7l5 5m0 0l-5 5m5-5H6"
+                />
+              </svg>
+            </button>
+
+            {/* Optional Secondary Button */}
+            <button
+              onClick={() => router.push("/choose-plan")}
+              className="px-6 sm:px-8 py-3 sm:py-3.5 text-sm sm:text-base font-medium text-white border border-white/30 rounded-xl hover:bg-white/10 transition-all duration-300 cursor-pointer"
+            >
+              Choose Plan
+            </button>
+          </div>
+
+          {/* Trust Message */}
+          <div className="flex justify-center">
+            <div className="flex flex-col sm:flex-row items-center gap-2 text-sm text-indigo-100">
+              <div className="flex items-center gap-1">
+                <svg
+                  className="w-4 h-4 text-emerald-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                  />
+                </svg>
+                <span>No credit card required</span>
+              </div>
+              <span className="hidden sm:inline text-indigo-300">•</span>
+              <div className="flex items-center gap-1">
+                <svg
+                  className="w-4 h-4 text-emerald-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <span>Start in under 2 minutes</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 }

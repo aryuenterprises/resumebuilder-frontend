@@ -60,7 +60,7 @@ const Header: React.FC = () => {
       transition={{ duration: 0.4, ease: "easeInOut" }}
       className="bg-white backdrop-blur-lg border-b overflow-hidden! shadow-red-300/10 border-gray-100 sticky top-0 z-50"
     >
-      <div className="flex justify-between items-center px-4 sm:px-6 md:px-8 lg:px-10 py-3 sm:py-4 mx-auto">
+      <div className="flex justify-between items-center px-4 md:px-6 lg:px-8 xl:px-10 py-3 sm:py-4 mx-auto">
         {/* Logo */}
         <button onClick={() => router.push("/")} className="cursor-pointer">
           <Image
@@ -73,73 +73,53 @@ const Header: React.FC = () => {
         </button>
 
         {/* Desktop Menu */}
-        <nav className="max-md:hidden flex gap-4">
+        <nav className="max-md:hidden flex gap-2 lg:gap-3 xl:gap-4">
           <button
-            className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito text-gray-700 font-semibold hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200 text-sm lg:text-base cursor-pointer"
+            className="px-3 lg:px-4 xl:px-5 py-1.5 lg:py-2 rounded-lg font-nunito text-gray-700 font-semibold hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200 text-sm cursor-pointer"
             onClick={() => router.push("/")}
           >
             Home
           </button>
 
           <button
-            className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito text-gray-700 font-semibold hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200 text-sm lg:text-base cursor-pointer"
+            className="px-3 lg:px-4 xl:px-5 py-1.5 lg:py-2 rounded-lg font-nunito text-gray-700 font-semibold hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200 text-sm cursor-pointer"
             onClick={() => router.push("/choose-template")}
           >
-            Create Resume
+            Build Resume
           </button>
 
           <button
-            className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito text-gray-700 font-semibold hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200 text-sm lg:text-base cursor-pointer"
+            className="px-3 lg:px-4 xl:px-5 py-1.5 lg:py-2 rounded-lg font-nunito text-gray-700 font-semibold hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200 text-sm cursor-pointer"
             onClick={() => router.push("/ats-checker")}
           >
             ATS Checker
           </button>
 
-          {/* <button
-            className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito text-gray-700 font-semibold hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200 text-sm lg:text-base cursor-pointer"
-            onClick={() => router.push("/cover-letter")}
-          >
-            Cover Letter
-          </button> */}
-
-          {/* <button
-            className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito text-gray-700 font-semibold hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200 text-sm lg:text-base cursor-pointer"
-            onClick={() => router.push("/voice-to-text")}
-          >
-Speech-to-CV          </button> */}
-
-          {/* <button
-            className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito text-gray-700 font-semibold hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200 text-sm lg:text-base cursor-pointer"
+          <button
+            className="px-3 lg:px-4 xl:px-5 py-1.5 lg:py-2 rounded-lg font-nunito text-gray-700 font-semibold hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200 text-sm cursor-pointer"
             onClick={() => router.push("/about-us")}
           >
             About Us
-          </button> */}
-
-          <button
-            className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito text-gray-700 font-semibold hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200 text-sm lg:text-base cursor-pointer"
-            onClick={() => router.push("/choose-plan")}
-          >
-            Plans
           </button>
 
-          {/* <button
-            className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-lg font-nunito text-gray-700 font-semibold hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200 text-sm lg:text-base cursor-pointer"
-            onClick={() => router.push("/contact-us")}
+          <button
+            className="px-3 lg:px-4 xl:px-5 py-1.5 lg:py-2 rounded-lg font-nunito text-gray-700 font-semibold hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200 text-sm cursor-pointer"
+            onClick={() => router.push("/choose-plan")}
           >
-            Contact Us
-          </button> */}
+            Pricing
+          </button>
 
           {userLoggedIn ? (
             <button
               onClick={() => router.push("/dashboard")}
-              className="ml-3 px-5 lg:px-6 py-2 rounded-lg font-semibold text-white bg-indigo-600 hover:bg-indigo-700 shadow-md hover:shadow-lg transition-all duration-200 text-sm lg:text-base cursor-pointer flex items-center gap-2"
+              className="lg:ml-3 px-5 lg:px-6 py-2 rounded-lg font-semibold text-white bg-indigo-600 hover:bg-indigo-700 shadow-md hover:shadow-lg transition-all duration-200 text-sm cursor-pointer flex items-center gap-2"
             >
               Dashboard
             </button>
           ) : (
             <button
               onClick={() => router.push("/login")}
-              className="ml-3 px-5 lg:px-6 py-2 rounded-lg font-semibold text-white bg-indigo-600 hover:bg-indigo-700 shadow-md hover:shadow-lg transition-all duration-200 text-sm lg:text-base cursor-pointer flex items-center gap-2"
+              className="lg:ml-3 px-5 lg:px-6 py-2 rounded-lg font-semibold text-white bg-indigo-600 hover:bg-indigo-700 shadow-md hover:shadow-lg transition-all duration-200 text-sm cursor-pointer flex items-center gap-2"
             >
               Sign In
             </button>
@@ -157,12 +137,13 @@ Speech-to-CV          </button> */}
       </div>
 
       {/* Mobile Menu */}
+
       <AnimatePresence>
         {menuOpen && (
-          <div className="h-dvh overflow-hidden  md:hidden">
+          <div className="h-dvh overflow-hidden md:hidden">
             {/* Backdrop Overlay */}
             <motion.div
-              className="fixed  inset-0 bg-black/10 backdrop-blur-sm z-400 "
+              className="fixed inset-0 bg-black/10 backdrop-blur-sm z-400"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -171,18 +152,18 @@ Speech-to-CV          </button> */}
 
             {/* Sidebar Menu */}
             <motion.div
-              className="fixed top-0 right-0 z-500 h-screen w-[85%] max-w-sm bg-white shadow-2xl  flex flex-col"
+              className="fixed top-0 right-0 z-500 h-screen w-[85%] max-w-sm bg-white shadow-2xl flex flex-col"
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
             >
               {/* Sidebar Header */}
-              <div className="flex items-center bg-white justify-between p-4 sm:p-6 border-b border-gray-100">
+              <div className="flex items-center bg-white justify-between p-4 sm:p-6 border-b border-indigo-100">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-linear-to-br from-[#c40116]/10 to-[#be0117]/10 rounded-lg">
+                  <div className="p-2 bg-linear-to-br from-indigo-500/10 to-indigo-600/10 rounded-lg">
                     <svg
-                      className="w-5 h-5 text-[#c40116]"
+                      className="w-5 h-5 text-indigo-600"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -201,10 +182,10 @@ Speech-to-CV          </button> */}
                 </div>
                 <button
                   onClick={() => setMenuOpen(false)}
-                  className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                  className="p-2 rounded-lg hover:bg-indigo-50 transition-colors"
                   aria-label="Close menu"
                 >
-                  <FiX className="text-gray-800 hover:text-gray-900 font-semibold text-2xl" />
+                  <FiX className="text-gray-800 hover:text-indigo-600 font-semibold text-2xl" />
                 </button>
               </div>
 
@@ -217,11 +198,11 @@ Speech-to-CV          </button> */}
                       router.push("/");
                       setMenuOpen(false);
                     }}
-                    className="w-full flex items-center gap-3 p-3 sm:p-4 rounded-xl font-nunito font-semibold bg-linear-to-r from-[#c40116]/5 to-[#be0117]/5 text-[#c40116] hover:from-[#c40116]/10 hover:to-[#be0117]/10 transition-all duration-200 group"
+                    className="w-full flex items-center gap-3 p-3 sm:p-4 rounded-xl font-nunito font-semibold bg-linear-to-r from-indigo-500/5 to-indigo-600/5 text-indigo-600 hover:from-indigo-500/10 hover:to-indigo-600/10 transition-all duration-200 group"
                   >
                     <div className="p-2 bg-white rounded-lg group-hover:scale-110 transition-transform">
                       <svg
-                        className="w-5 h-5 text-[#c40116]"
+                        className="w-5 h-5 text-indigo-600"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -242,12 +223,12 @@ Speech-to-CV          </button> */}
                       router.push("/choose-template");
                       setMenuOpen(false);
                     }}
-                    className="w-full flex items-center gap-3 p-3 sm:p-4 rounded-xl font-nunito font-semibold bg-linear-to-r from-[#c40116]/5 to-[#be0117]/5 text-[#c40116] hover:from-[#c40116]/10 hover:to-[#be0117]/10 transition-all duration-200 group"
+                    className="w-full flex items-center gap-3 p-3 sm:p-4 rounded-xl font-nunito font-semibold bg-linear-to-r from-indigo-500/5 to-indigo-600/5 text-indigo-600 hover:from-indigo-500/10 hover:to-indigo-600/10 transition-all duration-200 group"
                   >
                     <div className="p-2 bg-white rounded-lg group-hover:scale-110 transition-transform">
-                      <SiReaddotcv className="text-red-500 font-extrabold" />
+                      <SiReaddotcv className="text-indigo-600 font-extrabold" />
                     </div>
-                    <span className="text-left flex-1">Create Resume</span>
+                    <span className="text-left flex-1">Build Resume</span>
                   </button>
 
                   <button
@@ -255,26 +236,38 @@ Speech-to-CV          </button> */}
                       router.push("/choose-plan");
                       setMenuOpen(false);
                     }}
-                    className="w-full flex items-center gap-3 p-3 sm:p-4 rounded-xl font-nunito font-semibold bg-linear-to-r from-[#c40116]/5 to-[#be0117]/5 text-[#c40116] hover:from-[#c40116]/10 hover:to-[#be0117]/10 transition-all duration-200 group"
+                    className="w-full flex items-center gap-3 p-3 sm:p-4 rounded-xl font-nunito font-semibold bg-linear-to-r from-indigo-500/5 to-indigo-600/5 text-indigo-600 hover:from-indigo-500/10 hover:to-indigo-600/10 transition-all duration-200 group"
                   >
                     <div className="p-2 bg-white rounded-lg group-hover:scale-110 transition-transform">
-                      <SiReaddotcv className="text-red-500 font-extrabold" />
+                      <SiReaddotcv className="text-indigo-600 font-extrabold" />
                     </div>
-                    <span className="text-left flex-1">Plans</span>
+                    <span className="text-left flex-1">Pricing</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      router.push("/ats-checker");
+                      setMenuOpen(false);
+                    }}
+                    className="w-full flex items-center gap-3 p-3 sm:p-4 rounded-xl font-nunito font-semibold bg-linear-to-r from-indigo-500/5 to-indigo-600/5 text-indigo-600 hover:from-indigo-500/10 hover:to-indigo-600/10 transition-all duration-200 group"
+                  >
+                    <div className="p-2 bg-white rounded-lg group-hover:scale-110 transition-transform">
+                      <SiReaddotcv className="text-indigo-600 font-extrabold" />
+                    </div>
+                    <span className="text-left flex-1">ATS Checker</span>
                   </button>
 
                   {/* Contact Us Button */}
                   <button
                     onClick={() => {
                       router.push("/contact-us");
-
                       setMenuOpen(false);
                     }}
-                    className="w-full flex items-center bg-linear-to-r from-[#c40116]/5 to-[#be0117]/5  gap-3 p-3 sm:p-4 rounded-xl font-nunito font-semibold border border-[#c40116]/20 text-[#c40116] hover:bg-[#c40116]/5 transition-all duration-200 group"
+                    className="w-full flex items-center bg-linear-to-r from-indigo-500/5 to-indigo-600/5 gap-3 p-3 sm:p-4 rounded-xl font-nunito font-semibold border border-indigo-600/20 text-indigo-600 hover:bg-indigo-500/5 transition-all duration-200 group"
                   >
                     <div className="p-2 bg-white rounded-lg group-hover:scale-110 transition-transform">
                       <svg
-                        className="w-5 h-5 text-[#c40116]"
+                        className="w-5 h-5 text-indigo-600"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -293,29 +286,27 @@ Speech-to-CV          </button> */}
                   <button
                     onClick={() => {
                       router.push("/about-us");
-
                       setMenuOpen(false);
                     }}
-                    className="w-full flex items-center bg-linear-to-r from-[#c40116]/5 to-[#be0117]/5  gap-3 p-3 sm:p-4 rounded-xl font-nunito font-semibold border border-[#c40116]/20 text-[#c40116] hover:bg-[#c40116]/5 transition-all duration-200 group"
+                    className="w-full flex items-center bg-linear-to-r from-indigo-500/5 to-indigo-600/5 gap-3 p-3 sm:p-4 rounded-xl font-nunito font-semibold border border-indigo-600/20 text-indigo-600 hover:bg-indigo-500/5 transition-all duration-200 group"
                   >
                     <div className="p-2 bg-white rounded-lg group-hover:scale-110 transition-transform">
-                      <IoIosInformationCircleOutline className="font-extrabold text-2xl" />
+                      <IoIosInformationCircleOutline className="font-extrabold text-2xl text-indigo-600" />
                     </div>
                     <span className="text-left flex-1">About Us</span>
                   </button>
 
                   {/* Divider */}
-                  <div className="my-4 border-t border-gray-100"></div>
+                  <div className="my-4 border-t border-indigo-100"></div>
 
                   {/* Login Button (if not logged in) */}
                   {userLoggedIn ? (
                     <button
                       onClick={() => {
                         router.push("/dashboard");
-
                         setMenuOpen(false);
                       }}
-                      className="w-full flex items-center gap-3 p-3 sm:p-4 rounded-xl font-nunito font-semibold bg-linear-to-r from-[#c40116] to-[#be0117] text-white shadow-md hover:shadow-lg hover:scale-[1.02] transition-all duration-200 group"
+                      className="w-full flex items-center gap-3 p-3 sm:p-4 rounded-xl font-nunito font-semibold bg-linear-to-r from-indigo-600 to-indigo-500 text-white shadow-md hover:shadow-lg hover:scale-[1.02] transition-all duration-200 group"
                     >
                       <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm group-hover:scale-110 transition-transform">
                         <svg
@@ -338,10 +329,9 @@ Speech-to-CV          </button> */}
                     <button
                       onClick={() => {
                         router.push("/login");
-
                         setMenuOpen(false);
                       }}
-                      className="w-full flex items-center gap-3 p-3 sm:p-4 rounded-xl font-nunito font-semibold bg-linear-to-r from-[#c40116] to-[#be0117] text-white shadow-md hover:shadow-lg hover:scale-[1.02] transition-all duration-200 group"
+                      className="w-full flex items-center gap-3 p-3 sm:p-4 rounded-xl font-nunito font-semibold bg-linear-to-r from-indigo-600 to-indigo-500 text-white shadow-md hover:shadow-lg hover:scale-[1.02] transition-all duration-200 group"
                     >
                       <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm group-hover:scale-110 transition-transform">
                         <svg
@@ -361,41 +351,13 @@ Speech-to-CV          </button> */}
                       <span className="text-left flex-1">Log in</span>
                     </button>
                   )}
-
-                  {/* Dashboard Button (if logged in) */}
-                  {/* {userLoggedIn && (
-                    <button
-                      onClick={() => {
-                        clickDashboardpage();
-                        setMenuOpen(false);
-                      }}
-                      className="w-full flex items-center gap-3 p-3 sm:p-4 rounded-xl font-nunito font-semibold bg-linear-to-r from-gray-800 to-gray-900 text-white shadow-md hover:shadow-lg hover:scale-[1.02] transition-all duration-200 group"
-                    >
-                      <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm group-hover:scale-110 transition-transform">
-                        <svg
-                          className="w-5 h-5 text-white"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                          />
-                        </svg>
-                      </div>
-                      <span className="text-left flex-1">Dashboard</span>
-                    </button>
-                  )} */}
                 </div>
 
                 {/* Additional Info */}
-                <div className="mt-8 pt-6 border-t border-gray-100">
+                <div className="mt-8 pt-6 border-t border-indigo-100">
                   <div className="text-center text-gray-500 text-xs sm:text-sm">
                     <p>Need help? Contact us at</p>
-                    <p className="font-semibold text-gray-700 mt-1">
+                    <p className="font-semibold text-indigo-600 mt-1">
                       aryusmartcv@gmail.com
                     </p>
                   </div>
@@ -403,7 +365,7 @@ Speech-to-CV          </button> */}
               </div>
 
               {/* Footer */}
-              <div className="border-t border-gray-100 p-4">
+              <div className="border-t border-indigo-100 p-4">
                 <div className="text-center text-gray-400 text-xs">
                   © {new Date().getFullYear()} Aryu SmartCV. All rights
                   reserved.
