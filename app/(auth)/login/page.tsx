@@ -353,8 +353,9 @@ const Login = () => {
         password,
       };
 
-      const response = await axios.post(`${API_URL}/api/users/login`, formData);
-
+      const response = await axios.post(`${API_URL}/api/users/login`, formData, {
+  withCredentials: true,
+});
       if (response.data && response.data.token) {
         const { user, token } = response.data;
 

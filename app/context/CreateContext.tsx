@@ -12,7 +12,8 @@ import {
   Template,
   FullResumeData,
   Project,
-  SkillsType,
+  Skill,
+  // SkillsType,
 } from "@/app/types";
 import {
   getLocalStorage,
@@ -116,7 +117,7 @@ export const CreateProvider: React.FC<CreateProviderProps> = ({ children }) => {
 
     // setSkills([{ skill: "", id: Date.now() + Math.random() }]);
     
-    setSkills([])
+    setSkills({})
 
     setSummary(""); // Clear summary here
 
@@ -195,7 +196,9 @@ export const CreateProvider: React.FC<CreateProviderProps> = ({ children }) => {
   ]);
 
   // Skills
-  const [skills, setSkills] = useState<SkillsType>([]);
+  const [skills, setSkills] = useState<Skill>({
+    text: "",
+  });
 
 
   const [summary, setSummary] = useState<string>("");

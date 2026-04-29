@@ -926,11 +926,11 @@
 //               }}
 //             >
 //               {/* Gradient Background with Animation */}
-//               <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-indigo-500 to-indigo-600 transition-all duration-300 group-hover:scale-105 group-hover:from-indigo-500 group-hover:via-indigo-400 group-hover:to-indigo-500"></div>
+//               <div className="absolute inset-0 bg-linear-to-r from-indigo-600 via-indigo-500 to-indigo-600 transition-all duration-300 group-hover:scale-105 group-hover:from-indigo-500 group-hover:via-indigo-400 group-hover:to-indigo-500"></div>
 
 //               {/* Shine Effect */}
 //               <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
-//                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform translate-x-full group-hover:translate-x-[-200%] transition-transform duration-1000"></div>
+//                 <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform translate-x-full group-hover:translate-x-[-200%] transition-transform duration-1000"></div>
 //               </div>
 
 //               {/* Button Content */}
@@ -1215,8 +1215,6 @@ import { FiShield, FiTrendingUp, FiCheckCircle } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import {
   Finalize as FinalizeType,
-  SimpleSkill,
-  SkillCategory,
   Template,
 } from "@/app/types/context.types";
 import { getLocalStorage } from "@/app/utils";
@@ -1246,7 +1244,7 @@ const FinalizeForm = () => {
   const {
     contact,
     summary = "",
-    skills = [],
+    skills = {},
     experiences = [],
     education = [],
     finalize = {},
@@ -1283,13 +1281,33 @@ const FinalizeForm = () => {
       .filter(Boolean) || [];
   };
 
+  // const getFilteredSkills = () => {
+  //   if (!skills?.length) return [];
+  //   if ("title" in skills[0]) {
+  //     return (skills as SkillCategory[]).flatMap((c) => c.skills.map((s) => s.name));
+  //   }
+  //   return (skills as SimpleSkill[]).map((s) => s.name);
+  // };
+
+
   const getFilteredSkills = () => {
-    if (!skills?.length) return [];
-    if ("title" in skills[0]) {
-      return (skills as SkillCategory[]).flatMap((c) => c.skills.map((s) => s.name));
-    }
-    return (skills as SimpleSkill[]).map((s) => s.name);
-  };
+  // Get the text content from skills object
+  const skillsText = skills?.text || '';
+  
+  if (!skillsText || !skillsText.trim()) return [];
+  
+  // Remove all HTML tags
+  const plainText = skillsText.replace(/<[^>]*>/g, '');
+  
+  // Split by new lines or bullet points and clean up
+  const skillsArray = plainText
+    .split(/[\n•]/) // Split by new lines or bullet points
+    .map(skill => skill.trim())
+    .filter(skill => skill.length > 0);
+  
+  return skillsArray;
+};
+
 
   const getFilteredExperiences = () => {
     return experiences.map((item) => ({
@@ -1498,7 +1516,7 @@ const FinalizeForm = () => {
   const customSections = finalize.customSection || [];
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-indigo-50/40">
+    <div className="min-h-screen flex flex-col bg-linear-to-br from-slate-50 via-white to-indigo-50/40">
       <Stepper />
 
       <div className="flex-1 overflow-y-auto">
@@ -1511,7 +1529,7 @@ const FinalizeForm = () => {
               <IoSparkles className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
             </div>
 
-            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2 px-4">
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold bg-linear-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2 px-4">
               Additional Information
             </h1>
 
@@ -1521,7 +1539,7 @@ const FinalizeForm = () => {
 
             <button
               onClick={() => setShowTips(true)}
-              className="mt-3 sm:mt-4 inline-flex items-center gap-1.5 px-3 sm:px-4 py-1 sm:py-1.5 bg-gradient-to-r from-amber-400 to-orange-400 text-white rounded-full text-[10px] sm:text-xs font-semibold shadow-md hover:shadow-lg transition-all"
+              className="mt-3 sm:mt-4 inline-flex items-center gap-1.5 px-3 sm:px-4 py-1 sm:py-1.5 bg-linear-to-r from-amber-400 to-orange-400 text-white rounded-full text-[10px] sm:text-xs font-semibold shadow-md hover:shadow-lg transition-all"
             >
               <FaRegLightbulb className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
               <span>Section Tips</span>
@@ -1530,7 +1548,7 @@ const FinalizeForm = () => {
 
           {/* ATS Score Checker */}
           <div className="mb-6 sm:mb-8">
-            <div className="bg-gradient-to-br from-indigo-50 via-purple-50 to-indigo-100 rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-indigo-200 shadow-lg">
+            <div className="bg-linear-to-br from-indigo-50 via-purple-50 to-indigo-100 rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-indigo-200 shadow-lg">
               <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 sm:gap-6">
                 <div className="flex items-start gap-3 sm:gap-4">
                   <div className="p-2 sm:p-3 bg-indigo-600 rounded-lg sm:rounded-xl shadow-lg">
@@ -1551,7 +1569,7 @@ const FinalizeForm = () => {
                 <button
                   onClick={checkAtsScore}
                   disabled={loading}
-                  className="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-lg sm:rounded-xl shadow-md hover:shadow-xl transition-all flex items-center cursor-pointer justify-center gap-2 disabled:opacity-70 text-sm sm:text-base shrink-0"
+                  className="px-4 sm:px-6 py-2 sm:py-3 bg-linear-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-lg sm:rounded-xl shadow-md hover:shadow-xl transition-all flex items-center cursor-pointer justify-center gap-2 disabled:opacity-70 text-sm sm:text-base shrink-0"
                 >
                   {loading ? (
                     <>
@@ -1572,7 +1590,7 @@ const FinalizeForm = () => {
 
           {/* Custom Sections */}
           <div className="bg-white rounded-xl sm:rounded-2xl md:rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-            <div className="px-4 sm:px-6 lg:px-8 py-3 sm:py-4 lg:py-6 bg-gradient-to-r from-indigo-50 to-white border-b border-gray-100">
+            <div className="px-4 sm:px-6 lg:px-8 py-3 sm:py-4 lg:py-6 bg-linear-to-r from-indigo-50 to-white border-b border-gray-100">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-2 sm:gap-3">
                   <div className="p-1.5 sm:p-2 bg-indigo-100 rounded-lg">
@@ -1737,11 +1755,11 @@ const FinalizeForm = () => {
 
             >
               {/* Gradient Background with Animation */}
-              <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-indigo-500 to-indigo-600 transition-all duration-300 group-hover:scale-105 group-hover:from-indigo-500 group-hover:via-indigo-400 group-hover:to-indigo-500"></div>
+              <div className="absolute inset-0 bg-linear-to-r from-indigo-600 via-indigo-500 to-indigo-600 transition-all duration-300 group-hover:scale-105 group-hover:from-indigo-500 group-hover:via-indigo-400 group-hover:to-indigo-500"></div>
 
               {/* Shine Effect */}
               <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform translate-x-full group-hover:translate-x-[-200%] transition-transform duration-1000"></div>
+                <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform translate-x-full group-hover:translate-x-[-200%] transition-transform duration-1000"></div>
               </div>
 
               {/* Button Content */}
@@ -1849,7 +1867,7 @@ const FinalizeForm = () => {
               className="fixed inset-0 flex items-center justify-center z-80 p-4 pointer-events-none"
             >
               <div className="bg-white rounded-xl sm:rounded-2xl shadow-2xl max-w-md w-full pointer-events-auto">
-                <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-4 sm:px-6 py-4">
+                <div className="bg-linear-to-r from-indigo-600 to-purple-600 px-4 sm:px-6 py-4">
                   <div className="flex items-center gap-3">
                     <div className="p-1.5 bg-white/20 rounded-lg">
                       <FaChartLine className="w-4 h-4 text-white" />
@@ -1904,7 +1922,7 @@ const FinalizeForm = () => {
                         </button>
                         <button
                           onClick={() => setShowAtsModal(false)}
-                          className="flex-1 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-lg hover:shadow-lg transition-all text-sm flex items-center justify-center gap-2"
+                          className="flex-1 py-2 bg-linear-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-lg hover:shadow-lg transition-all text-sm flex items-center justify-center gap-2"
                         >
                           <FaRocket className="w-4 h-4" />
                           Improve Resume

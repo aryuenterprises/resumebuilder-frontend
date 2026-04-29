@@ -904,6 +904,8 @@ const ProjectsForm = () => {
     });
   };
 
+console.log("projects",projects)
+
   const deleteProject = (id: string | number) => {
     if (!setProjects) return;
     setProjects((prev: Project[]) => {

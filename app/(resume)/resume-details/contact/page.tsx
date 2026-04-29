@@ -1392,7 +1392,7 @@ const ContactForm = () => {
           contact: updatedContact,
           experiences: [],
           education: [],
-          skills: [],
+          skills: {},
           summary: "",
           finalize: {},
         });

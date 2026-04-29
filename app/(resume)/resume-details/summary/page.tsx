@@ -552,7 +552,6 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { getLocalStorage, setLocalStorage } from "@/app/utils";
 import { API_URL } from "@/app/config/api";
-import { SimpleSkill, SkillCategory } from "@/app/types";
 // import {  } from "react-icons/io";
 import {
   IoArrowForward,
@@ -617,11 +616,18 @@ const SummaryForm = () => {
       year: edu.year,
     })) || [];
 
-  const filteredSkills = skills?.length
-    ? "title" in skills[0]
-      ? (skills as SkillCategory[]).flatMap((c) => c.skills.map((s) => s.name))
-      : (skills as SimpleSkill[]).map((s) => s.name)
-    : [];
+  // const filteredSkills = skills?.length
+  //   ? "title" in skills[0]
+  //     ? (skills as SkillCategory[]).flatMap((c) => c.skills.map((s) => s.name))
+  //     : (skills as SimpleSkill[]).map((s) => s.name)
+  //   : [];
+
+const filteredSkills = skills?.text
+  ? (skills.text.match(/<li>(.*?)<\/li>/g) || [])
+      .map((item: string) => item.replace(/<\/?li>/g, '').trim())
+      .filter(Boolean)
+  : [];
+    
 
   const formData = {
     experiences: filteredExperiences,

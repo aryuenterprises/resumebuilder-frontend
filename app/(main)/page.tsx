@@ -786,7 +786,7 @@ export default function Home() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => router.push("/choose-plan")}
-              className="px-6 sm:px-8 py-3 sm:py-4 bg-white border-2 border-gray-200 text-gray-700 font-semibold rounded-2xl hover:border-indigo-300 hover:text-indigo-600 transition-all duration-300 cursor-pointer text-base sm:text-lg"
+              className="px-6 sm:px-8 py-3 sm:py-4 h-15 bg-white border-2 border-gray-200 text-gray-700 font-semibold rounded-2xl hover:border-indigo-300 hover:text-indigo-600 transition-all duration-300 cursor-pointer text-base sm:text-lg"
             >
               View Plans
             </motion.button>
@@ -795,7 +795,7 @@ export default function Home() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => router.push("/choose-template")}
-              className="group relative px-6 sm:px-8 py-3 sm:py-4 bg-linear-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-2xl shadow-lg shadow-indigo-500/25 hover:shadow-xl transition-all duration-300 flex items-center gap-2 cursor-pointer text-base sm:text-lg overflow-hidden"
+              className="group relative px-6 sm:px-8 py-3 sm:py-4 h-15 bg-linear-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-2xl shadow-lg shadow-indigo-500/25 hover:shadow-xl transition-all duration-300 flex items-center gap-2 cursor-pointer text-base sm:text-lg overflow-hidden"
             >
               <span className="absolute inset-0 bg-linear-to-r from-white/20 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
               <span className="relative flex items-center gap-2">

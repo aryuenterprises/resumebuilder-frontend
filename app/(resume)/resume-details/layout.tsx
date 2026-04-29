@@ -41,7 +41,7 @@ export default function RootLayout({
 
   return (
     <div className="flex h-screen bg-gray-100 gap-5 relative">
-      <LoginModel />
+      {/* <LoginModel /> */}
 
       <aside className="w-full lg:w-1/2 overflow-y-auto ">
         <ResumeDataFetcher>{children}</ResumeDataFetcher>

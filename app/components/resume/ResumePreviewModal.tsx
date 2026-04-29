@@ -217,7 +217,7 @@
 //                       onClick={() => {
 //                         if (onUse) {
 //                           onUse();
-//                         } 
+//                         }
 //                       }}
 //                       className="relative px-6 lg:px-8 py-2.5 lg:py-3 rounded-xl font-semibold text-white overflow-hidden group shadow-xl hover:shadow-2xl transition-all duration-300 cursor-pointer"
 //                     >
@@ -276,22 +276,18 @@
 
 // export default ResumePreviewModal;
 
-
-
-
-
-
-
-
-
-
-
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { 
-  Check, X, Sparkles, Zap, Maximize2, Minimize2, ArrowRight 
+import {
+  Check,
+  X,
+  Sparkles,
+  Zap,
+  Maximize2,
+  Minimize2,
+  ArrowRight,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -319,14 +315,16 @@ export const ResumePreviewModal = ({
   onUse,
 }: ResumePreviewModalProps) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [zoom, setZoom] = useState(1);
+  const [zoom, setZoom] = useState(0.5);
 
   if (!show || !template) return null;
 
   return (
     <AnimatePresence>
       {show && (
-        <div className={`fixed inset-0 z-[9999] flex items-center justify-center ${isFullscreen ? 'p-0' : 'p-2 sm:p-4 md:p-6'}`}>
+        <div
+          className={`fixed inset-0 z-[9999] flex items-center justify-center ${isFullscreen ? "p-0" : "p-2 sm:p-4 md:p-6"}`}
+        >
           {/* Premium Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -348,9 +346,9 @@ export const ResumePreviewModal = ({
               stiffness: 300,
             }}
             className={`relative bg-white w-full shadow-2xl overflow-hidden flex flex-col transition-all duration-300 ${
-              isFullscreen 
-                ? 'h-screen w-screen rounded-none' 
-                : 'h-[95vh] sm:h-[90vh] max-w-7xl rounded-3xl sm:rounded-4xl'
+              isFullscreen
+                ? "h-screen w-screen rounded-none"
+                : "h-[95vh] sm:h-[90vh] max-w-7xl rounded-3xl sm:rounded-4xl"
             }`}
           >
             {/* Premium Header - Minimal */}
@@ -395,8 +393,12 @@ export const ResumePreviewModal = ({
             </div>
 
             {/* Main Content */}
-            <div className={`relative flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar bg-gradient-to-br from-gray-50 via-white to-gray-50 ${isFullscreen ? '' : 'p-4 sm:p-6 lg:p-8'}`}>
-              <div className={`mx-auto ${isFullscreen ? 'w-full' : 'max-w-6xl'}`}>
+            <div
+              className={`relative flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar bg-gradient-to-br from-gray-50 via-white to-gray-50 ${isFullscreen ? "" : "p-4 sm:p-6 lg:p-8"}`}
+            >
+              <div
+                className={`mx-auto ${isFullscreen ? "w-full" : "max-w-6xl"}`}
+              >
                 {/* Resume Preview Card */}
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
@@ -405,8 +407,10 @@ export const ResumePreviewModal = ({
                   className="relative group w-full"
                 >
                   {/* Glow Effect */}
-                  <div className={`absolute -inset-4 bg-gradient-to-r from-indigo-100/50 via-purple-100/50 to-indigo-100/50 rounded-3xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 ${isFullscreen ? 'hidden' : ''}`} />
-                  
+                  <div
+                    className={`absolute -inset-4 bg-gradient-to-r from-indigo-100/50 via-purple-100/50 to-indigo-100/50 rounded-3xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 ${isFullscreen ? "hidden" : ""}`}
+                  />
+
                   {/* Zoom Controls */}
                   <div className="absolute top-4 right-4 z-20 flex gap-2 bg-white/90 backdrop-blur-md rounded-xl shadow-lg border border-gray-200 p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <button
@@ -415,7 +419,9 @@ export const ResumePreviewModal = ({
                     >
                       -
                     </button>
-                    <span className="text-gray-700 text-xs px-2 py-1">{Math.round(zoom * 100)}%</span>
+                    <span className="text-gray-700 text-xs px-2 py-1">
+                      {Math.round(zoom * 100)}%
+                    </span>
                     <button
                       onClick={() => setZoom(Math.min(2, zoom + 0.1))}
                       className="p-1.5 hover:bg-gray-100 rounded-lg transition text-gray-600 text-sm"
@@ -426,9 +432,12 @@ export const ResumePreviewModal = ({
 
                   {/* Resume Image */}
                   <div className="relative bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 w-full">
-                    <div 
+                    <div
                       className="relative w-full transition-transform duration-300"
-                      style={{ transform: `scale(${zoom})`, transformOrigin: 'center top' }}
+                      style={{
+                        transform: `scale(${zoom})`,
+                        transformOrigin: "center top",
+                      }}
                     >
                       <Image
                         src={template.image || template.img}
@@ -459,7 +468,9 @@ export const ResumePreviewModal = ({
                             <div className="p-2 bg-gradient-to-r from-indigo-600 to-indigo-500 rounded-xl">
                               <Zap className="w-4 h-4 text-white" />
                             </div>
-                            <h3 className="text-lg font-bold text-gray-900">Template Features</h3>
+                            <h3 className="text-lg font-bold text-gray-900">
+                              Template Features
+                            </h3>
                             <div className="flex-1 h-px bg-gradient-to-r from-gray-200 to-transparent" />
                           </div>
 
@@ -543,7 +554,9 @@ export const ResumePreviewModal = ({
               <div className="relative shrink-0 border-t border-gray-100 bg-gray-50/50 px-4 sm:px-6 lg:px-8 py-3 z-10">
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs">
                   <div className="flex items-center gap-4">
-                    <span className="text-gray-600 font-medium">ARYU SmartCV</span>
+                    <span className="text-gray-600 font-medium">
+                      ARYU SmartCV
+                    </span>
                     <span className="w-1 h-1 bg-gray-300 rounded-full" />
                     <span className="text-gray-400">© 2024</span>
                   </div>
@@ -551,7 +564,11 @@ export const ResumePreviewModal = ({
                   <div className="flex items-center gap-3">
                     <motion.div
                       animate={{ y: [0, -3, 0] }}
-                      transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                      transition={{
+                        repeat: Infinity,
+                        duration: 2,
+                        ease: "easeInOut",
+                      }}
                       className="flex items-center gap-1 text-gray-400"
                     >
                       <span>✨ Get Hired Faster</span>
@@ -566,4 +583,3 @@ export const ResumePreviewModal = ({
     </AnimatePresence>
   );
 };
-

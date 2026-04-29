@@ -47,35 +47,32 @@ export interface Education {
   year: number;
   error?: Record<string, string>;
 }
-// export interface Skill {
-//   id: string | number;
-//   level: number | null;
-//   skill: string;
-//   error?: Record<string, string>;
-// }
+export interface Skill {
+  text?: string | undefined;
+}
 
 // Simple Skill (no categories)
-export interface SimpleSkill {
-  id: number | string;
-  name: string;
-}
+// export interface SimpleSkill {
+//   id: number | string;
+//   name: string;
+// }
 
-// Category Skill (for categorized mode)
-export interface CategorySkill {
-  id: number | string;
-  name: string;
-}
+// // Category Skill (for categorized mode)
+// export interface CategorySkill {
+//   id: number | string;
+//   name: string;
+// }
 
-// Skill Category
-export interface SkillCategory {
-  id: number | string;
-  title: string;
-  skills: CategorySkill[];
-  isOpen?: boolean;
-}
+// // Skill Category
+// export interface SkillCategory {
+//   id: number | string;
+//   title: string;
+//   skills: CategorySkill[];
+//   isOpen?: boolean;
+// }
 
-// Combined skills type
-export type SkillsType = SimpleSkill[] | SkillCategory[];
+// // Combined skills type
+// export type SkillsType = SimpleSkill[] | SkillCategory[];
 
 export interface Project {
   id: string | number;
@@ -179,7 +176,7 @@ export interface FullResumeData {
   contact: Contact;
   experiences: Experience[];
   education: Education[];
-  skills: SkillsType;
+  skills: Skill;
   summary: string;
   finalize: Finalize;
   projects?: Project[];
@@ -189,7 +186,7 @@ export interface AllData {
   contact?: Contact;
   educations?: Education[];
   experiences?: Experience[];
-  skills?: SkillsType;
+  skills?: Skill;
   finalize?: Finalize;
   summary?: string;
   projects?: Project[];
@@ -215,8 +212,9 @@ export interface CreateContextType {
   setEducation: React.Dispatch<React.SetStateAction<Education[]>>;
 
   // Skills
-  skills: SkillsType;
-  setSkills: (skills: SkillsType | ((prev: SkillsType) => SkillsType)) => void;
+  skills: Skill;
+  setSkills: React.Dispatch<React.SetStateAction<Skill>>;
+
 
   projects: Project[];
   setProjects: React.Dispatch<React.SetStateAction<Project[]>>;

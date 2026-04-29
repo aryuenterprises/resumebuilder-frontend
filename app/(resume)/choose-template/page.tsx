@@ -2401,6 +2401,8 @@ function Choose_template() {
       const parsedResumeData = response.data.parsed;
       const convertedData = convertParsedResumeToFrontendFormat(parsedResumeData);
 
+      console.log("convertedData",convertedData)
+
       if (convertedData.contact) setContact(convertedData.contact);
       if (convertedData.experiences) setExperiences(convertedData.experiences);
       if (convertedData.educations) setEducation(convertedData.educations);
