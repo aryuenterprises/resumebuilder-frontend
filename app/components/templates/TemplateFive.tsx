@@ -4650,7 +4650,7 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
             </div>
             {project.techStack && project.techStack.length > 0 && (
               <div className="t5-project-tech">
-                <strong>Tech:</strong> {project.techStack.join(" • ")}
+                <strong>Tech:</strong> {project.techStack.join(" , ")}
               </div>
             )}
             {project.description && (
@@ -4798,8 +4798,6 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 16px;
     }
 
     .resume-t5 .t5-header-left {
@@ -5198,7 +5196,7 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
               ${
                 project.techStack && project.techStack.length > 0
                   ? `
-                <div class="t5-project-tech"><strong>Tech:</strong> ${project.techStack.join(" • ")}</div>
+                <div class="t5-project-tech"><strong>Tech:</strong> ${project.techStack.join(" , ")}</div>
               `
                   : ""
               }

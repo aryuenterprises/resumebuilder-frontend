@@ -440,7 +440,7 @@ const Testimonial = () => {
         name: "Arun Kumar",
         role: "Python Developer Fresher",
         rating: 5,
-        text: "I had zero experience. This tool built my entire resume — got 3 interview calls in 10 days.",
+        text: "I had zero experience. This tool built my entire resume - got 3 interview calls in 10 days",
         profileImage: "/images/linkedin-arun.jpg",
         linkedin: "https://www.linkedin.com/in/arun-kumar-76a825200/",
       },
@@ -448,7 +448,7 @@ const Testimonial = () => {
         name: "Jagadeesh Balakrishnan",
         role: "Java Developer",
         rating: 5,
-        text: "Super fast. I created and downloaded my resume in under 5 minutes.",
+        text: "Super fast. I created and downloaded my resume in under 5 minutes",
         linkedin: "https://www.linkedin.com/in/jagadeesh-balakrishnan/",
         profileImage: "/images/linkedin-jagadesh.jpeg",
       },
@@ -456,7 +456,7 @@ const Testimonial = () => {
         name: "Rahul Rajeev",
         role: "UI UX Designer",
         rating: 5,
-        text: "ATS score feature showed what I was missing. Fixed it and finally started getting responses.",
+        text: "ATS score feature showed what I was missing. Fixed it and finally started getting responses",
         linkedin: "https://www.linkedin.com/in/rahulrajeev01/",
         profileImage: "/images/linkedin-rahul.jpg",
       },
@@ -464,7 +464,7 @@ const Testimonial = () => {
         name: "Balaji Srinivasan",
         role: "Business Analyst",
         rating: 4,
-        text: "Before: blank resume. After: professional CV with projects & skills added automatically.",
+        text: "Before: blank resume, After: professional CV with projects & skills added automatically",
         linkedin: "https://www.linkedin.com/in/balaji-srinivasan-606465247/",
         profileImage: "/images/linkedin-balaji.jpg",
       },
@@ -472,7 +472,7 @@ const Testimonial = () => {
         name: "Amala Christober Babiyans",
         role: "HR Executive",
         rating: 5,
-        text: "Better than Canva. This actually helps you get shortlisted.",
+        text: "Better than Canva. This actually helps you get shortlisted",
         linkedin: "https://www.linkedin.com/in/christoberbabiyans/",
         profileImage: "/images/linkedin-amala.jpg",
       },
@@ -480,7 +480,7 @@ const Testimonial = () => {
         name: "Bharathwaj S",
         role: "Next.js Developer",
         rating: 5,
-        text: "This resume builder is a game-changer.",
+        text: "This resume builder is a game-changer",
         linkedin: "https://www.linkedin.com/in/bharathwaj-s-0aba95281/",
         profileImage: "/images/linkedin-bharathwaj.jpg",
       },
@@ -488,7 +488,7 @@ const Testimonial = () => {
         name: "Gopi Raman",
         role: "HR Executive",
         rating: 5,
-        text: "The ATS optimization helped me land interviews at top tech companies.",
+        text: "The ATS optimization helped me land interviews at top tech companies",
         linkedin: "https://www.linkedin.com/in/gopi-raman-472228206/",
         profileImage: "/images/linkedin-gopi.jpg",
       },
@@ -504,7 +504,7 @@ const Testimonial = () => {
         name: "PONARASU",
         role: "React Developer",
         rating: 4,
-        text: "The AI-powered resume builder helped me create a standout resume that got me multiple interview calls.",
+        text: "The AI-powered resume builder helped me create a standout resume that got me multiple interview calls",
         linkedin: "https://www.linkedin.com/in/ponarasu-ak/",
         profileImage: "/images/linkedin-ponarasu.jpg",
       },
@@ -512,7 +512,7 @@ const Testimonial = () => {
         name: "Kishore Kumar",
         role: "Brand Strategist",
         rating: 4,
-        text: "The AI suggestions highlighted my skills and achievements in a way that really resonated with recruiters.",
+        text: "The AI suggestions highlighted my skills and achievements in a way that really resonated with recruiters",
         linkedin: "https://www.linkedin.com/in/kishore-kumar-a9296a16b/",
         profileImage: "/images/linkedin-kishore.jpg",
       },
@@ -520,7 +520,7 @@ const Testimonial = () => {
         name: "Barath K",
         role: "Laravel Developer",
         rating: 4,
-        text: "User-friendly interface. Created a professional resume in no time with ATS optimization.",
+        text: "User-friendly interface. Created a professional resume in no time with ATS optimization",
         linkedin: "https://www.linkedin.com/in/barath-k-678a29250/",
         profileImage: "/images/linkedin-barath.jpg",
       },
@@ -617,15 +617,15 @@ const Testimonial = () => {
           </div>
 
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
-            Trusted by students & professionals
-            <span className="block bg-gradient-to-r from-indigo-600 to-indigo-500 bg-clip-text text-transparent mt-2">
-              across India
-            </span>
+            Trusted by Students & Professionals
+            {/* <span className="block bg-gradient-to-r from-indigo-600 to-indigo-500 bg-clip-text text-transparent mt-2"> */}
+              
+            {/* </span> */}
           </h2>
 
           <p className="mt-4 text-base sm:text-lg text-gray-500 max-w-2xl mx-auto">
             From first-time job seekers to experienced professionals — see how
-            ARYU SmartCV helped them build resumes that got results.
+            ARYU SmartCV helped them build resumes that got results
           </p>
         </motion.div>
 

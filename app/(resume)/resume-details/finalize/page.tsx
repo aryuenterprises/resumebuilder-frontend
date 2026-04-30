@@ -1262,7 +1262,11 @@ const FinalizeForm = () => {
   const [progress, setProgress] = useState(0);
   const [showTips, setShowTips] = useState(false);
 
-  const contactId = context?.contact?._id || context?.contact?.contactId;
+  // const contactId = context?.contact?.contactId;
+
+  const contactId = contact.contactId ||  contact._id ;
+
+
   const chosenTemplate = getLocalStorage<Template>("chosenTemplate");
 
   // Helper functions

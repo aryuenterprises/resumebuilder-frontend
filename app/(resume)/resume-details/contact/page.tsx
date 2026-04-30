@@ -1344,6 +1344,9 @@ const ContactForm = () => {
       setIsSaving(false);
     }
   };
+
+  console.log("contact", contact);
+
   const fetchContact = async (data1: string | number) => {
     try {
       const response = await axios.get(
@@ -1467,8 +1470,6 @@ const ContactForm = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-linear-to-br from-slate-50 via-white to-indigo-50/40">
-      
-
       <Stepper />
 
       {/* Scrollable Content Area */}
@@ -1895,55 +1896,72 @@ const ContactForm = () => {
         </div>
       </div>
 
-      
-
-
       {/* Sticky Footer Buttons - Single Line Layout */}
-<div className="sticky bottom-0 z-20 bg-white/75 backdrop-blur-md border-t border-gray-100 shadow-lg shadow-gray-200/50">
-  <div className="mx-auto px-2 sm:px-6 lg:px-8 py-3 sm:py-4">
-    <div className="flex justify-between items-center gap-3 sm:gap-4">
-      {/* Back Button - Icon only on mobile, full text on desktop */}
-      <button
-        className="group px-4 sm:px-5 py-2.5 sm:py-2 text-sm font-medium text-gray-600 hover:text-indigo-600 transition-all duration-300 flex items-center justify-center gap-2 rounded-xl hover:bg-indigo-50/50 cursor-pointer"
-        onClick={() => router.push("/choose-template")}
-      >
-        <svg className="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-        </svg>
-        {/* Hide text on mobile, show on sm and up */}
-        <span className="hidden sm:inline">Back to Templates</span>
-        {/* Optional: Show just "Back" on medium screens */}
-        <span className="inline sm:hidden">Back</span>
-      </button>
+      <div className="sticky bottom-0 z-20 bg-white/75 backdrop-blur-md border-t border-gray-100 shadow-lg shadow-gray-200/50">
+        <div className="mx-auto px-2 sm:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="flex justify-between items-center gap-3 sm:gap-4">
+            {/* Back Button - Icon only on mobile, full text on desktop */}
+            <button
+              className="group px-4 sm:px-5 py-2.5 sm:py-2 text-sm font-medium text-gray-600 hover:text-indigo-600 transition-all duration-300 flex items-center justify-center gap-2 rounded-xl hover:bg-indigo-50/50 cursor-pointer"
+              onClick={() => router.push("/choose-template")}
+            >
+              <svg
+                className="w-4 h-4 transition-transform group-hover:-translate-x-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                />
+              </svg>
+              {/* Hide text on mobile, show on sm and up */}
+              <span className="hidden sm:inline">Back to Templates</span>
+              {/* Optional: Show just "Back" on medium screens */}
+              <span className="inline sm:hidden">Back</span>
+            </button>
 
-      {/* Continue Button - Premium Design */}
-      <button
-        className="group relative px-6 sm:px-8 py-2.5 sm:py-3 text-sm sm:text-base font-medium md:font-semibold text-white rounded-lg md:rounded-xl shadow-lg transition-all duration-300 overflow-hidden whitespace-nowrap cursor-pointer"
-        onClick={handleNext}
-      >
-        {/* Gradient Background with Animation */}
-        <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-indigo-500 to-indigo-600 transition-all duration-300 group-hover:scale-105 group-hover:from-indigo-500 group-hover:via-indigo-400 group-hover:to-indigo-500"></div>
-        
-        {/* Shine Effect */}
-        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform translate-x-full group-hover:translate-x-[-200%] transition-transform duration-1000"></div>
-        </div>
-        
-        {/* Button Content */}
-        <div className="relative flex items-center justify-center gap-2">
-          {/* Different text for mobile vs desktop */}
-          <span >Continue to Experience</span>
-          <svg className="w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-          </svg>
-        </div>
+            {/* Continue Button - Premium Design */}
+            <button
+              className="group relative px-6 sm:px-8 py-2.5 sm:py-3 text-sm sm:text-base font-medium md:font-semibold text-white rounded-lg md:rounded-xl shadow-lg transition-all duration-300 overflow-hidden whitespace-nowrap cursor-pointer"
+              onClick={handleNext}
+            >
+              {/* Gradient Background with Animation */}
+              <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-indigo-500 to-indigo-600 transition-all duration-300 group-hover:scale-105 group-hover:from-indigo-500 group-hover:via-indigo-400 group-hover:to-indigo-500"></div>
 
-        {/* Shadow Enhancement */}
-        <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-[0_0_20px_rgba(79,70,229,0.5)]"></div>
-      </button>
-    </div>
-  </div>
-</div>
+              {/* Shine Effect */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform translate-x-full group-hover:translate-x-[-200%] transition-transform duration-1000"></div>
+              </div>
+
+              {/* Button Content */}
+              <div className="relative flex items-center justify-center gap-2">
+                {/* Different text for mobile vs desktop */}
+                <span>Continue to Experience</span>
+                <svg
+                  className="w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:translate-x-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 7l5 5m0 0l-5 5m5-5H6"
+                  />
+                </svg>
+              </div>
+
+              {/* Shadow Enhancement */}
+              <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-[0_0_20px_rgba(79,70,229,0.5)]"></div>
+            </button>
+          </div>
+        </div>
+      </div>
 
       {/* Modals - Keep responsive */}
       {showPhotoViewer && contact.croppedImage && (

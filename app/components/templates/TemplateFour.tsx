@@ -4430,7 +4430,7 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
             </div>
             {project.techStack && project.techStack.length > 0 && (
               <div className="project-tech-stack">
-                <strong>Tech:</strong> {project.techStack.join(" • ")}
+                <strong>Tech:</strong> {project.techStack.join(" , ")}
               </div>
             )}
             {project.description && (
@@ -4883,7 +4883,7 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
             ${
               project.techStack && project.techStack.length > 0
                 ? `
-              <div class="project-tech-stack"><strong>Tech:</strong> ${project.techStack.join(" • ")}</div>
+              <div class="project-tech-stack"><strong>Tech:</strong> ${project.techStack.join(" , ")}</div>
             `
                 : ""
             }
@@ -4955,9 +4955,9 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
   <div class="section-title">Experience</div>
   ${experiences
     .map((exp) => {
-      const start = formatMonthYear(exp.startDate, true);
+      const start = formatMonthYear(exp.startDate, false);
       const end = exp.endDate
-        ? formatMonthYear(exp.endDate, true)
+        ? formatMonthYear(exp.endDate, false)
         : exp.startDate
           ? "Present"
           : "";
@@ -5055,7 +5055,7 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
   ====================================================== */
   return (
     <>
-      {lastSegment === "download-resume" && (
+      {/* {lastSegment === "download-resume" && ( */}
       <div className="text-center my-5">
         <motion.button
           onClick={handleDownload}
@@ -5066,7 +5066,7 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
           Download Resume
         </motion.button>
       </div>
-       )}
+       {/* )} */}
 
       <div
         className={`t4-resume ${alldata ? "is-preview" : ""}`}

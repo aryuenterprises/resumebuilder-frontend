@@ -52,7 +52,7 @@
 //     icon: <FaCheckCircle className="w-5 h-5" />,
 //     title: "ATS-Optimized by Default",
 //     description:
-//       "Every resume is structured to pass applicant tracking systems at top Indian and global companies.",
+//       "Every resume is structured to pass applicant tracking systems at top Global and global companies.",
 //   },
 //   {
 //     icon: <FaMagic className="w-5 h-5" />,
@@ -465,7 +465,7 @@
 //             >
 //               <FiTrendingUp className="w-3.5 h-3.5 text-indigo-600" />
 //               <span className="text-xs font-medium text-indigo-700 uppercase tracking-wide">
-//                 Built for India's job market
+//                 Built for Global's job market
 //               </span>
 //             </motion.div>
 
@@ -654,19 +654,19 @@ const atsFeatures = [
     icon: <FiSearch className="w-5 h-5" />,
     title: "ATS Compatibility Check",
     description:
-      "Scans 15 criteria including formatting, keywords, action verbs, and section completeness.",
+      "Scans 15 criteria including formatting, keywords, action verbs, and section completeness",
   },
   {
     icon: <FiBarChart2 className="w-5 h-5" />,
     title: "JD Keyword Tailoring ",
     description:
-      "Paste any job description. PassATS identifies missing keywords and injects them into the right sections automatically.'  (upgrade to active feature name)",
+      "Paste any job description. PassATS identifies missing keywords and injects them into the right sections automatically  (Upgrade to active feature name)",
   },
   {
     icon: <FiEye className="w-5 h-5" />,
     title: "Recruiter Preview",
     description:
-      "See exactly how recruiters see your resume in their first 6-second scan.",
+      "See exactly how recruiters see your resume in their first 6-second scan",
   },
 ];
 
@@ -681,36 +681,36 @@ const features: Feature[] = [
     icon: <FaFileAlt className="w-5 h-5" />,
     title: "Professional Templates",
     description:
-      "6+ ATS-safe templates built for Indian job roles — from fresher to senior professional.",
+      "6+ ATS-safe templates built for Global job roles - from fresher to senior professional",
   },
   {
     icon: <FaCheckCircle className="w-5 h-5" />,
-    title: "ATS Score 0–100",
+    title: "ATS Score 0 - 100",
     description:
-      "Get a real score, see every issue, fix it in one click. Not a vague 'looks good' ",
+      "Get a real score, see every issue, fix it in one click Not a vague 'looks good' ",
   },
   {
     icon: <FaMagic className="w-5 h-5" />,
     title: "JD Keyword Tailoring",
     description:
-      "Paste a job description and PassATS matches your resume to it automatically.",
+      "Paste a job description and PassATS matches your resume to it automatically",
   },
   {
     icon: <FaRocket className="w-5 h-5" />,
     title: "AI Bullet Writer",
     description:
-      "Turns your raw experience into achievement-focused bullets with action verbs and metrics.",
+      "Turns your raw experience into achievement-focused bullets with action verbs and metrics",
   },
   {
     icon: <FaMountain className="w-5 h-5" />,
     title: "AI Cover Letter ",
     description:
-      "Generate a matching cover letter in 30 seconds. Three tone options.",
+      "Generate a matching cover letter in 30 seconds Three tone options",
   },
   {
     icon: <FaHandHoldingUsd className="w-5 h-5" />,
     title: "Download & Share",
-    description: "PDF download + WhatsApp sharing. Ready to send in seconds.",
+    description: "PDF download + WhatsApp sharing Ready to send in seconds",
   },
 ];
 
@@ -734,7 +734,7 @@ export default function Home() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 mb-6"
+            className="inline-flex items-center max-sm:hidden gap-2 px-3 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 mb-6"
           >
             <span className="flex h-2 w-2 rounded-full bg-indigo-500" />
             <span className="text-xs font-medium text-indigo-700 tracking-wide uppercase">
@@ -749,7 +749,7 @@ export default function Home() {
             transition={{ delay: 0.1, duration: 0.6 }}
             className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-gray-900 tracking-tight mb-6 leading-[1.15] sm:leading-[1.2] mt-8 sm:mt-0"
           >
-            Your next{" "}
+            Your Dream{" "}
             <span className="relative inline-block">
               <span className="relative z-10 bg-linear-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent animate-linear">
                 Job opportunity
@@ -768,9 +768,9 @@ export default function Home() {
             transition={{ delay: 0.2, duration: 0.6 }}
             className=" max-w-5xl mx-auto text-base sm:text-lg md:text-xl text-gray-500 mb-10 leading-relaxed px-4"
           >
-            Build a professional, ATS-optimised resume in minutes — with AI that
-            understands the Indian job market. Backed by Aryu Academy — trusted by students and professionals
-            across India
+            Build a professional, ATS-optimised resume in minutes - with AI that
+            understands the Global job market. Backed by Aryu Academy - trusted by students and professionals
+            across Global
           </motion.p>
 
           
@@ -786,7 +786,7 @@ export default function Home() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => router.push("/choose-plan")}
-              className="px-6 sm:px-8 py-3 sm:py-4 h-15 bg-white border-2 border-gray-200 text-gray-700 font-semibold rounded-2xl hover:border-indigo-300 hover:text-indigo-600 transition-all duration-300 cursor-pointer text-base sm:text-lg"
+              className="px-6 sm:px-8 py-3 sm:py-4 h-15 bg-white border-2 border-gray-200 text-gray-700 font-semibold rounded-2xl hover:border-indigo-300 w-60 sm:w-auto hover:text-indigo-600 transition-all duration-300 cursor-pointer text-base sm:text-lg"
             >
               View Plans
             </motion.button>
@@ -795,7 +795,7 @@ export default function Home() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => router.push("/choose-template")}
-              className="group relative px-6 sm:px-8 py-3 sm:py-4 h-15 bg-linear-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-2xl shadow-lg shadow-indigo-500/25 hover:shadow-xl transition-all duration-300 flex items-center gap-2 cursor-pointer text-base sm:text-lg overflow-hidden"
+              className="group relative px-6 sm:px-8 py-3 sm:py-4 h-15 bg-linear-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-2xl shadow-lg shadow-indigo-500/25 hover:shadow-xl transition-all duration-300 flex items-center gap-2 cursor-pointer text-base sm:text-lg overflow-hidden  justify-center w-60 sm:w-auto"
             >
               <span className="absolute inset-0 bg-linear-to-r from-white/20 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
               <span className="relative flex items-center gap-2">
@@ -841,7 +841,7 @@ export default function Home() {
             <div className="flex items-center gap-2">
               <FiShield className="w-4 h-4 text-green-500" />
               <span className="text-sm text-gray-500">
-                <span className="font-bold text-gray-900">98%</span> ATS pass
+                <span className="font-bold text-gray-900">98%</span> ATS Pass
                 rate
               </span>
             </div>
@@ -871,7 +871,7 @@ export default function Home() {
                 </div>
                 <div className="h-0.5 w-12 bg-indigo-200 mx-auto mb-3"></div>
                 <p className="text-gray-700 font-medium">Resumes Built</p>
-                <p className="text-xs text-gray-400 mt-1">by professionals</p>
+                <p className="text-xs text-gray-500 mt-1">By Professionals</p>
               </div>
 
               {/* Stat 2 */}
@@ -881,7 +881,7 @@ export default function Home() {
                 </div>
                 <div className="h-0.5 w-12 bg-indigo-200 mx-auto mb-3"></div>
                 <p className="text-gray-700 font-medium">ATS Scores Checked</p>
-                <p className="text-xs text-gray-400 mt-1">this month</p>
+                <p className="text-xs text-gray-500 mt-1">This Month</p>
               </div>
 
               {/* Stat 3 */}
@@ -891,7 +891,7 @@ export default function Home() {
                 </div>
                 <div className="h-0.5 w-12 bg-indigo-200 mx-auto mb-3"></div>
                 <p className="text-gray-700 font-medium">Backed by Academy</p>
-                <p className="text-xs text-gray-400 mt-1">Aryu certified</p>
+                <p className="text-xs text-gray-500 mt-1">Aryu Certified</p>
               </div>
 
               {/* Stat 4 */}
@@ -901,7 +901,7 @@ export default function Home() {
                 </div>
                 <div className="h-0.5 w-12 bg-indigo-200 mx-auto mb-3"></div>
                 <p className="text-gray-700 font-medium">ATS-Compatible</p>
-                <p className="text-xs text-gray-400 mt-1">guaranteed format</p>
+                <p className="text-xs text-gray-500 mt-1">Guaranteed Format</p>
               </div>
 
               {/* Stat 5 */}
@@ -911,7 +911,7 @@ export default function Home() {
                 </div>
                 <div className="h-0.5 w-12 bg-emerald-200 mx-auto mb-3"></div>
                 <p className="text-gray-700 font-medium">Free to Start</p>
-                <p className="text-xs text-gray-400 mt-1">no card required</p>
+                <p className="text-xs text-gray-500 mt-1">Payment Not Required</p>
               </div>
             </div>
           </div>
@@ -945,10 +945,10 @@ export default function Home() {
               viewport={{ once: true }}
               className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight"
             >
-              AI That Writes, Scores, and Optimises{" "}
+              AI that Writes, Scores and Optimises{" "}
               <span className="block bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mt-2">
                 {/* Resume with Smart Suggestions */}
-                For the Indian Job Market
+                For the Global Job Market
               </span>
             </motion.h2>
 
@@ -959,8 +959,8 @@ export default function Home() {
               viewport={{ once: true }}
               className="mt-4 text-lg text-gray-500 max-w-2xl mx-auto"
             >
-              PassATS handles every section of your resume — with AI trained to
-              pass ATS systems used by Indian recruiters.
+              PassATS handles every section of your resume - with AI trained to
+              Pass ATS systems used by Global recruiters
             </motion.p>
           </div>
 
@@ -976,7 +976,6 @@ export default function Home() {
               className="group"
             >
               <div className="relative h-full bg-white rounded-2xl p-4 sm:p-5 md:p-6 border border-gray-100 shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-br from-blue-500/5 to-transparent rounded-full" />
 
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-xl bg-linear-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform">
@@ -988,7 +987,7 @@ export default function Home() {
                     </h3>
                     <p className="text-gray-500 text-sm mb-3">
                       Formats your academic background, CGPA, and coursework for
-                      Indian recruiter expectations.{" "}
+                      Global recruiter expectations{" "}
                     </p>
                   </div>
                 </div>
@@ -1001,9 +1000,9 @@ export default function Home() {
                         AI Example
                       </span>
                       <p className="text-sm text-gray-700 mt-1">
-                        B.Tech Computer Science, Anna University | CGPA: 8.4/10
+                        "B.Tech Computer Science, Anna University | CGPA: 8.4/10
                         | Relevant Coursework: Data Structures, Operating
-                        Systems, DBMS, Machine Learning' (India-specific format)
+                        Systems, DBMS, Machine Learning (Global-specific format)
                       </p>
                     </div>
                   </div>
@@ -1033,10 +1032,9 @@ export default function Home() {
               className="group"
             >
               <div className="relative h-full bg-white rounded-2xl p-4 sm:p-5 md:p-6 border border-gray-100 shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-br from-indigo-500/5 to-transparent rounded-full" />
 
                 <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-xl bg-linear-to-br from-indigo-500 to-indigo-600 flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-xl bg-linear-to-br from-orange-500 to-orange-600 flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform">
                     <FiBriefcase className="w-6 h-6" />
                   </div>
                   <div className="flex-1">
@@ -1044,8 +1042,8 @@ export default function Home() {
                       Experience Section
                     </h3>
                     <p className="text-gray-500 text-sm mb-3">
-                      Rewrites job duties into measurable achievements that pass
-                      ATS and impress hiring managers.
+                      Rewrites job duties into measurable achievements that Pass
+                      ATS and impress hiring managers
                     </p>
                   </div>
                 </div>
@@ -1061,7 +1059,7 @@ export default function Home() {
                         "Led a team of 6 developers to build a
                         microservices-based payment gateway, reducing API
                         response time by 38% and processing 2L+ daily
-                        transactions."
+                        transactions"
                       </p>
                     </div>
                   </div>
@@ -1091,7 +1089,6 @@ export default function Home() {
               className="group"
             >
               <div className="relative h-full bg-white rounded-2xl p-4 sm:p-5 md:p-6 border border-gray-100 shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-br from-purple-500/5 to-transparent rounded-full" />
 
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-xl bg-linear-to-br from-purple-500 to-purple-600 flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform">
@@ -1103,7 +1100,7 @@ export default function Home() {
                     </h3>
                     <p className="text-gray-500 text-sm mb-3">
                       Suggests role-specific skills and keywords that match
-                      Indian job descriptions — automatically{" "}
+                      Global job descriptions - automatically{" "}
                     </p>
                   </div>
                 </div>
@@ -1118,7 +1115,7 @@ export default function Home() {
                       <p className="text-sm text-gray-700 mt-1">
                         "Technical: Python, Java, AWS, Docker, Kubernetes |
                         Soft: Leadership, Communication, Problem-solving |
-                        Tools: Git, Jira, Figma"
+                        Tools: git, Jira, Figma"
                       </p>
                     </div>
                   </div>
@@ -1148,7 +1145,6 @@ export default function Home() {
               className="group"
             >
               <div className="relative h-full bg-white rounded-2xl p-4 sm:p-5 md:p-6 border border-gray-100 shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-br from-pink-500/5 to-transparent rounded-full" />
 
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-xl bg-linear-to-br from-pink-500 to-pink-600 flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform">
@@ -1160,7 +1156,7 @@ export default function Home() {
                     </h3>
                     <p className="text-gray-500 text-sm mb-3">
                       Writes a 3-line summary that tells recruiters who you are,
-                      what you do best, and why you fit the role.{" "}
+                      what you do best, and why you fit the role{" "}
                     </p>
                   </div>
                 </div>
@@ -1176,7 +1172,7 @@ export default function Home() {
                         "Results-driven Full Stack Developer with 4 years of
                         experience building scalable web applications.
                         Proficient in React, Node.js, and AWS. Passionate about
-                        clean code and fast delivery."
+                        clean code and fast delivery"
                       </p>
                     </div>
                   </div>
@@ -1213,19 +1209,19 @@ export default function Home() {
                 {
                   step: "01",
                   title: "Enter Your Details",
-                  desc: "                    Add your work history, education, and skills. Or upload your existing resume — PassATS reads it automatically.",
+                  desc: "Add your work History, Education, and Skills or Upload your existing resume — PassATS reads it Automatically",
                   icon: "📝",
                 },
                 {
                   step: "02",
                   title: " AI Builds + Optimises ",
-                  desc: "PassATS writes your bullet points, scores your ATS compatibility, and tailors keywords to the job description.",
+                  desc: "PassATS writes your bullet points, scores your ATS compatibility, and tailors keywords to the Job Description",
                   icon: "🤖",
                 },
                 {
                   step: "03",
-                  title: "'Download & Apply ",
-                  desc: "Download a polished PDF. Share via WhatsApp or LinkedIn. Start applying with confidence.",
+                  title: "Download & Apply ",
+                  desc: "Download a polished PDF Share via WhatsApp or LinkedIn Start applying with confidence",
                   icon: "📄",
                 },
               ].map((item, idx) => (
@@ -1277,7 +1273,7 @@ export default function Home() {
       </section>
 
       {/* BeforeAfter */}
-      <section className="bg-white py-14 sm:py-16 md:py-20 lg:py-24  px-4 sm:px-6 lg:px-8">
+      <section className="bg-white py-14 sm:py-16 md:py-20 lg:py-24  px-4 sm:px-6 lg:px-8 overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 xl:gap-20 items-center">
             {/* Left Content */}
@@ -1297,15 +1293,15 @@ export default function Home() {
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
                 From vague to interview-ready{" "}
                 <span className="block bg-linear-to-r from-indigo-600 to-indigo-500 bg-clip-text text-transparent ">
-                  in one click.{" "}
+                  in one click
                 </span>
               </h2>
 
               <p className="mt-6 text-base sm:text-lg text-gray-500 leading-relaxed">
                 ARYU SmartCV analyzes your experience, suggests powerful
                 industry specific skills, and rewrites your achievements as
-                measurable impact statements — the kind that pass ATS filters
-                and get callbacks.
+                measurable impact statements - the kind that Pass ATS filters
+                and get callbacks
               </p>
 
               <div className="mt-8 flex flex-wrap gap-4">
@@ -1411,7 +1407,7 @@ export default function Home() {
                     <div className="text-sm sm:text-base font-medium text-gray-900">
                       "Built REST APIs for the payments module, reducing average
                       response latency by 32% and cutting error rate from 4.2%
-                      to 0.6%."
+                      to 0.6%"
                     </div>
                   </div>
                 </div>
@@ -1450,7 +1446,7 @@ export default function Home() {
               viewport={{ once: true }}
             >
               <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
-                Upload Your Resume,
+                Upload Your Resume
                 <span className="block bg-linear-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent ">
                   Let AI Do the Rest
                 </span>
@@ -1459,7 +1455,7 @@ export default function Home() {
               <p className="mt-4 text-sm sm:text-base md:text-lg text-gray-500 leading-tight">
                 Already have a resume? Upload it as a PDF or Word file. PassATS
                 reads every section automatically and gives you AI-powered
-                suggestions to improve each one — without starting from scratch.
+                suggestions to improve each one - without starting from scratch
               </p>
 
               {/* How it works steps */}
@@ -1487,7 +1483,7 @@ export default function Home() {
                     </h4>
                     <p className="text-sm text-gray-500">
                       Your work history, education, skills, and contact details
-                      are parsed instantly.{" "}
+                      are parsed instantly{" "}
                     </p>
                   </div>
                 </div>
@@ -1501,7 +1497,7 @@ export default function Home() {
                     </h4>
                     <p className="text-sm text-gray-500">
                       One-click rewrites, keyword additions, and ATS fixes
-                      applied to your existing content.{" "}
+                      applied to your existing content
                     </p>
                   </div>
                 </div>
@@ -1540,7 +1536,7 @@ export default function Home() {
                       <div className="w-3 h-3 rounded-full bg-green-500" />
                     </div>
                     <span className="text-xs text-gray-400 ml-2 font-mono">
-                      resume-builder.aryu.com
+                      https://passats.aryuacademy.com/
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -1817,7 +1813,7 @@ export default function Home() {
 
               <p className="mt-4 text-base sm:text-lg text-gray-500 leading-relaxed">
                 AI builds, writes, and optimizes your resume for real job roles
-                so you get shortlisted faster. No experience? No problem.
+                so you get shortlisted faster No experience? No problem
               </p>
 
               {/* CTA Buttons */}
@@ -2068,9 +2064,9 @@ export default function Home() {
 
               <p className="mt-4 text-base md:text-lg text-gray-500 leading-relaxed">
                 <span className="font-bold text-red-500">75% of resumes</span>{" "}
-                are filtered out before a recruiter reads them. PassATS gives
-                you a real score from 0 to 100 — and shows you exactly what to
-                fix before you apply.
+                are filtered out before a recruiter reads them PassATS gives
+                you a real score from 0 to 100 - and shows you exactly what to
+                fix before you apply
               </p>
 
               <div className="mt-8 space-y-4">
@@ -2177,7 +2173,7 @@ export default function Home() {
             >
               <FiTrendingUp className="w-3.5 h-3.5 text-indigo-600" />
               <span className="text-xs font-medium text-indigo-700 uppercase tracking-wide">
-                Built for India's job market
+                Built for Global's job market
               </span>
             </motion.div>
 
@@ -2201,8 +2197,8 @@ export default function Home() {
               viewport={{ once: true }}
               className="mt-4 text-base sm:text-lg text-gray-500 leading-relaxed"
             >
-              From campus placement to senior roles — PassATS gives you the
-              tools to compete with confidence in the Indian job market.
+              From campus placement to senior roles - PassATS gives you the
+              tools to compete with confidence in the Global job market
             </motion.p>
           </div>
 
@@ -2235,63 +2231,18 @@ export default function Home() {
             ))}
           </div>
 
-          {/* CTA Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            viewport={{ once: true }}
-            className="mt-12 text-center"
-          >
-            <h3 className="text-xl sm:text-2xl font-bold text-gray-900">
-              Your next opportunity is one resume away.
-            </h3>
+        
 
-            <p className="mt-2 text-sm text-gray-500 max-w-md mx-auto">
-              Build your resume free — no signup required. Ready in under 3
-              minutes.
-            </p>
-
-            <button
-              onClick={() => router.push("/choose-template")}
-              className="group mt-6 px-8 py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/25 flex items-center justify-center gap-2 mx-auto cursor-pointer"
-            >
-              Create My Resume Now
-              <FiArrowRight className="transition-transform group-hover:translate-x-1" />
-            </button>
-          </motion.div>
-
-          {/* Trust Indicator */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
-            viewport={{ once: true }}
-            className="mt-8 pt-6 flex flex-wrap justify-center items-center gap-6 text-xs text-gray-400"
-          >
-            <div className="flex items-center gap-1">
-              <FaStar className="w-3 h-3 text-yellow-500" />
-              <span>4.9/5 Rating</span>
-            </div>
-            <div className="w-1 h-1 bg-gray-300 rounded-full" />
-            <div className="flex items-center gap-1">
-              <FiUsers className="w-3 h-3 text-indigo-500" />
-              <span>10,000+ Users</span>
-            </div>
-            <div className="w-1 h-1 bg-gray-300 rounded-full" />
-            <div className="flex items-center gap-1">
-              <FaShieldAlt className="w-3 h-3 text-green-500" />
-              <span>98% ATS Pass Rate</span>
-            </div>
-          </motion.div>
+          
         </div>
       </section>
 
-      <Testimonial />
-      <Faq />
 
-      {/* Full Width with Animated Gradient */}
-      <div className="w-full relative overflow-hidden bg-gradient-to-br from-indigo-700 via-indigo-600 to-purple-700 animate-gradient">
+      
+
+      <Testimonial />
+
+        <div className="w-full relative overflow-hidden bg-gradient-to-br from-indigo-700 via-indigo-600 to-purple-700 animate-gradient">
         <div className="relative  mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24">
           {/* Heading with gradient text */}
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-center text-white mb-4 sm:mb-6 leading-tight">
@@ -2339,46 +2290,13 @@ export default function Home() {
             </button>
           </div>
 
-          {/* Trust Message */}
-          <div className="flex justify-center">
-            <div className="flex flex-col sm:flex-row items-center gap-2 text-sm text-indigo-100">
-              <div className="flex items-center gap-1">
-                <svg
-                  className="w-4 h-4 text-emerald-300"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                  />
-                </svg>
-                <span>No credit card required</span>
-              </div>
-              <span className="hidden sm:inline text-indigo-300">•</span>
-              <div className="flex items-center gap-1">
-                <svg
-                  className="w-4 h-4 text-emerald-300"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                <span>Start in under 2 minutes</span>
-              </div>
-            </div>
-          </div>
+        
         </div>
       </div>
+      <Faq />
+
+      {/* Full Width with Animated Gradient */}
+    
     </>
   );
 }

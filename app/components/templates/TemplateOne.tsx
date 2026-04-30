@@ -1429,29 +1429,6 @@
 
 // export default TemplateOne;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
 // import React, { useContext } from "react";
 // import axios, { AxiosResponse } from "axios";
@@ -2802,20 +2779,6 @@
 
 // export default TemplateOne;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 import React, { useContext } from "react";
 import axios, { AxiosResponse } from "axios";
@@ -2861,17 +2824,22 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
 
   // Helper function to render skills (now just a string with HTML content)
   const renderSkills = () => {
-    if (!skills || (typeof skills === 'string' && !skills.trim())) return null;
-    
+    if (!skills || (typeof skills === "string" && !skills.trim())) return null;
+
     // Clean the HTML content from Quill editor
     const cleanedSkills = cleanQuillHTML(skills);
-    
-    if (!cleanedSkills || cleanedSkills === "<p><br></p>" || cleanedSkills === "") return null;
-    
+
+    if (
+      !cleanedSkills ||
+      cleanedSkills === "<p><br></p>" ||
+      cleanedSkills === ""
+    )
+      return null;
+
     return (
       <div className="section-content">
         <div className="section-title">Skills</div>
-        <div 
+        <div
           className="skills-content"
           dangerouslySetInnerHTML={{ __html: cleanedSkills }}
         />
@@ -2925,13 +2893,15 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
             </div>
             {project.techStack && project.techStack.length > 0 && (
               <div className="project-tech-stack">
-                <strong>Tech:</strong> {project.techStack.join(" • ")}
+                <strong>Tech:</strong> {project.techStack.join(" , ")}
               </div>
             )}
             {project.description && (
               <div
                 className="project-description"
-                dangerouslySetInnerHTML={{ __html: cleanQuillHTML(project.description) }}
+                dangerouslySetInnerHTML={{
+                  __html: cleanQuillHTML(project.description),
+                }}
               />
             )}
           </div>
@@ -3572,11 +3542,16 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
 
     // Generate skills HTML for PDF (now just clean the HTML string)
     const generateSkillsHTML = () => {
-      if (!skills || (typeof skills === 'string' && !skills.trim())) return "";
-      
+      if (!skills || (typeof skills === "string" && !skills.trim())) return "";
+
       const cleanedSkills = cleanQuillHTML(skills);
-      if (!cleanedSkills || cleanedSkills === "<p><br></p>" || cleanedSkills === "") return "";
-      
+      if (
+        !cleanedSkills ||
+        cleanedSkills === "<p><br></p>" ||
+        cleanedSkills === ""
+      )
+        return "";
+
       return `
         <div class="section-content">
           <div class="section-title">Skills</div>
@@ -3612,7 +3587,7 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
               ${
                 project.techStack && project.techStack.length > 0
                   ? `
-                <div class="project-tech-stack"><strong>Tech:</strong> ${project.techStack.join(" • ")}</div>
+                <div class="project-tech-stack"><strong>Tech:</strong> ${project.techStack.join(" , ")}</div>
               `
                   : ""
               }
@@ -3638,7 +3613,7 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
         Array.isArray(finalize) ||
         !Array.isArray(finalize.customSection) ||
         !finalize.customSection.some(
-          (s) => s?.name?.trim() || s?.description?.trim()
+          (s) => s?.name?.trim() || s?.description?.trim(),
         )
       ) {
         return "";
@@ -3654,7 +3629,7 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
               ${s.name ? `<div class="section-title custom-section-title">${s.name}</div>` : ""}
               ${s.description ? `<div class="item-content custom-section-content">${cleanQuillHTML(s.description)}</div>` : ""}
             </div>
-          `
+          `,
             )
             .join("")}
         </div>
@@ -3708,8 +3683,8 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
     <div class="section-title">Experience</div>
     ${experiences
       .map((exp) => {
-        const s = formatMonthYear(exp.startDate,  false);
-        const e = exp.endDate ? formatMonthYear(exp.endDate,  false) : "Present";
+        const s = formatMonthYear(exp.startDate, false);
+        const e = exp.endDate ? formatMonthYear(exp.endDate, false) : "Present";
         return `<div class="experience-item" style="margin-bottom:16px">
         <div class="item-header experience-header">
           <div class="item-title-container">
@@ -3808,34 +3783,31 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
     }
   };
 
-  console.log("context",context)
-
   /* ======================================================
      JSX PREVIEW
   ====================================================== */
   return (
     <>
-        {lastSegment === "download-resume" && (
+      {lastSegment === "download-resume" && (
 
-        <div className="text-center my-5">
-          <motion.button
-            onClick={handleDownload}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-emerald-500 text-2xl md:text-base hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 cursor-pointer shadow-md hover:shadow-lg"
-          >
-            Download Resume
-          </motion.button>
-        </div>
-        )}
+      <div className="text-center my-5">
+        <motion.button
+          onClick={handleDownload}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="bg-emerald-500 text-2xl md:text-base hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 cursor-pointer shadow-md hover:shadow-lg"
+        >
+          Download Resume
+        </motion.button>
+      </div>
+      )} 
 
       <div
         className={`t1-resume bg-white ${alldata ? "is-preview" : ""} `}
         style={{
           margin: "0 auto",
           boxShadow: !alldata ? "0 0 10px rgba(0,0,0,0.1)" : "",
-                            minHeight: "297mm",
-
+          minHeight: "297mm",
         }}
       >
         <style>{`@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');`}</style>
@@ -3924,7 +3896,9 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
             <div className="section-title">Experience</div>
             {experiences.map((exp, i) => {
               const s = formatMonthYear(exp.startDate, false);
-              const e = exp.endDate ? formatMonthYear(exp.endDate, false) : "Present";
+              const e = exp.endDate
+                ? formatMonthYear(exp.endDate, false)
+                : "Present";
 
               return (
                 <div
@@ -3947,7 +3921,9 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
                   {exp.text && (
                     <div
                       className="item-content experience-description wrap-break-word"
-                      dangerouslySetInnerHTML={{ __html: cleanQuillHTML(exp.text) }}
+                      dangerouslySetInnerHTML={{
+                        __html: cleanQuillHTML(exp.text),
+                      }}
                     />
                   )}
                 </div>
@@ -3964,7 +3940,9 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
           <div className="section-content">
             <div className="section-title">Education</div>
             {educations.map((edu, index) => {
-              const formattedGrade = formatGradeToCgpdAndPercentage(edu.grade || "");
+              const formattedGrade = formatGradeToCgpdAndPercentage(
+                edu.grade || "",
+              );
 
               return (
                 <div
@@ -4002,7 +3980,9 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
                   {edu.text && (
                     <div
                       className="item-content education-description"
-                      dangerouslySetInnerHTML={{ __html: cleanQuillHTML(edu.text) }}
+                      dangerouslySetInnerHTML={{
+                        __html: cleanQuillHTML(edu.text),
+                      }}
                     />
                   )}
                 </div>

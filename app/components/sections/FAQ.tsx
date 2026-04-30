@@ -272,32 +272,32 @@ const faqs: FAQItem[] = [
   {
     question: "Can I create a resume without any experience?",
     answer:
-      "Yes. This tool is built for freshers. The AI automatically creates projects, skills, and experience-style content so your resume doesn't look empty.",
+      "Yes. This tool is built for freshers. The AI automatically creates projects, skills, and experience-style content so your resume doesn't look empty",
   },
   {
     question: "Will my resume pass ATS (Applicant Tracking Systems)?",
     answer:
-      "Yes. Every resume is optimized with the right format and keywords to pass ATS and get shortlisted by recruiters.",
+      "Yes. Every resume is optimized with the right format and keywords to pass ATS and get shortlisted by recruiters",
   },
   {
     question: "How long does it take to build a resume?",
     answer:
-      "Less than 2 minutes. You enter basic details and the AI generates a complete, job-ready resume instantly.",
+      "Less than 2 minutes. You enter basic details and the AI generates a complete, job-ready resume instantly",
   },
   {
     question: "Will this help me get interview calls?",
     answer:
-      "Yes. The resume is designed to improve your chances of getting shortlisted, and many users start receiving interview calls within 7 to 14 days.",
+      "Yes. The resume is designed to improve your chances of getting shortlisted, and many users start receiving interview calls within 7 to 14 days",
   },
   {
     question: "Is my data secure?",
     answer:
-      "Yes. We take data security seriously. Your information is encrypted and never shared with third parties without your consent.",
+      "Yes. We take data security seriously. Your information is encrypted and never shared with third parties without your consent",
   },
   {
     question: "Can I edit my resume after downloading?",
     answer:
-      "Yes. You can save your resume and come back anytime to make changes or download updated versions.",
+      "Yes. You can save your resume and come back anytime to make changes or download updated versions",
   },
 
 

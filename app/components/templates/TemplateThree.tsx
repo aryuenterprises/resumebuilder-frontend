@@ -5303,8 +5303,6 @@ const styles = `
   }
 
   .t3-skills-content {
-    padding-top: 6px;
-    padding-bottom: 6px;
     color: #374151;
     font-size: 15px;
     word-wrap: break-word;
@@ -5348,7 +5346,6 @@ const styles = `
   .t3-experience-subtitle {
     font-size: 15px;
     color: #6b7280;
-    margin-bottom: 8px;
     font-weight: 500;
   }
 
@@ -5613,7 +5610,7 @@ const TemplateThree: React.FC<ResumeProps> = ({ alldata }) => {
             </div>
             {project.techStack && project.techStack.length > 0 && (
               <div className="t3-project-tech-stack">
-                <strong>Tech:</strong> {project.techStack.join(" • ")}
+                <strong>Tech:</strong> {project.techStack.join(" , ")}
               </div>
             )}
             {project.description && (

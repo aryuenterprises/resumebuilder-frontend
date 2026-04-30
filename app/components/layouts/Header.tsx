@@ -499,10 +499,10 @@ const Header: React.FC = () => {
         {/* Logo */}
         <button onClick={() => router.push("/")} className="cursor-pointer">
           <Image
-            src="/icons/logo.png"
-            alt="Aryu SmartCV"
+            src="/logo.png"
+            alt="ATS Pass"
             height={50}
-            width={180}
+            width={150}
             priority
           />
         </button>

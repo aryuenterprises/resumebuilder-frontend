@@ -1500,7 +1500,7 @@ export default function AboutPage() {
             >
               We Built the Resume Tool
               <span className="block bg-gradient-to-r from-yellow-300 to-amber-200 bg-clip-text text-transparent mt-2">
-                Indian Job Seekers Actually Needed!
+                 Job Seekers Actually Needed!
               </span>
             </motion.h1>
 

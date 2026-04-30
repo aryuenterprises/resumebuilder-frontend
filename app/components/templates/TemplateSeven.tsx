@@ -3880,7 +3880,7 @@
 //     .t7-resume.is-preview {
 //       transform: scale(0.36);
 //       transform-origin: top left;
-//       width: 210mm; 
+//       width: 210mm;
 //       height: auto;
 //       max-height: none;
 //       min-height: auto;
@@ -5216,6 +5216,8 @@
 
 
 
+
+
 "use client";
 import React, { useContext } from "react";
 import axios from "axios";
@@ -5261,17 +5263,22 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
 
   // Helper function to render skills (now just a string with HTML content)
   const renderSkills = () => {
-    if (!skills || (typeof skills === 'string' && !skills.trim())) return null;
-    
+    if (!skills || (typeof skills === "string" && !skills.trim())) return null;
+
     // Clean the HTML content from Quill editor
     const cleanedSkills = cleanQuillHTML(skills);
-    
-    if (!cleanedSkills || cleanedSkills === "<p><br></p>" || cleanedSkills === "") return null;
-    
+
+    if (
+      !cleanedSkills ||
+      cleanedSkills === "<p><br></p>" ||
+      cleanedSkills === ""
+    )
+      return null;
+
     return (
       <div className="section">
         <h2 className="section-title">Skills</h2>
-        <div 
+        <div
           className="skills-content"
           dangerouslySetInnerHTML={{ __html: cleanedSkills }}
         />
@@ -5454,7 +5461,7 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
     }
 
     .t7-resume .name {
-      font-size: 32px;
+      font-size: 26px;
       font-weight: 700;
       letter-spacing: 2px;
       text-transform: uppercase;
@@ -5573,6 +5580,7 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
       font-size: 15px;
       font-weight: 700;
       color: #000000;
+      text-align: start;
     }
 
     .t7-resume .experience-subtitle {
@@ -5617,6 +5625,7 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
       font-size: 15px;
       font-weight: 700;
       color: #000000;
+      text-align: start;
     }
 
     .t7-resume .education-subtitle {
@@ -5879,11 +5888,16 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
 
     // Generate skills HTML for PDF (now just clean the HTML string)
     const generateSkillsHTML = () => {
-      if (!skills || (typeof skills === 'string' && !skills.trim())) return "";
-      
+      if (!skills || (typeof skills === "string" && !skills.trim())) return "";
+
       const cleanedSkills = cleanQuillHTML(skills);
-      if (!cleanedSkills || cleanedSkills === "<p><br></p>" || cleanedSkills === "") return "";
-      
+      if (
+        !cleanedSkills ||
+        cleanedSkills === "<p><br></p>" ||
+        cleanedSkills === ""
+      )
+        return "";
+
       return `
         <div class="section">
           <h2 class="section-title">Skills</h2>
@@ -5946,18 +5960,13 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
           <div class="resume-header">
             <h1 class="name">${contact?.firstName || ""} ${contact?.lastName || ""}</h1>
             <div class="job-title">${
-              contact?.jobTitle
-                ? typeof contact.jobTitle === "string"
-                  ? contact.jobTitle
-                  : (contact.jobTitle as any)?.name || ""
-                : ""
-            }</div>
+              contact?.jobTitle}</div>
             <div class="contact-row">
               ${contact?.email ? `<div class="contact-item">${contact.email}</div>` : ""}
               ${contact?.phone ? `<div class="contact-item">${contact.phone}</div>` : ""}
               ${formattedDob ? `<div class="contact-item">${formattedDob}</div>` : ""}
             </div>
-            ${addressParts.length ? `<div class="address">${addressParts.join(" | ")}</div>` : ""}
+            ${addressParts.length ? `<div class="address">${addressParts.join(" , ")}</div>` : ""}
             <div class="links">
               ${linkedinUrl ? `<a href="${linkedinUrl.startsWith("http") ? linkedinUrl : `https://${linkedinUrl}`}" class="link-item">LinkedIn</a>` : ""}
               ${githubUrl ? `<a href="${githubUrl.startsWith("http") ? githubUrl : `https://${githubUrl}`}" class="link-item">GitHub</a>` : ""}
@@ -6242,7 +6251,7 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
             Download Resume
           </motion.button>
         </div>
-      )}
+       )} 
 
       {/* Resume Preview */}
       <div
@@ -6260,11 +6269,7 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
             {contact?.firstName} {contact?.lastName}
           </h1>
           <div className="job-title">
-            {contact?.jobTitle
-              ? typeof contact.jobTitle === "string"
-                ? contact.jobTitle
-                : (contact.jobTitle as any)?.name || ""
-              : ""}
+            {contact?.jobTitle}
           </div>
           <div className="contact-row">
             {contact?.email && (
@@ -6278,7 +6283,7 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
             )}
           </div>
           {addressParts.length > 0 && (
-            <div className="address">{addressParts.join(" | ")}</div>
+            <div className="address">{addressParts.join(" , ")}</div>
           )}
           <div className="links">
             {linkedinUrl && (
@@ -6346,9 +6351,9 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
             <div className="section">
               <h2 className="section-title">Experience</h2>
               {experiences.map((exp, i) => {
-                const start = formatMonthYear(exp.startDate, true);
+                const start = formatMonthYear(exp.startDate, false);
                 const end = exp.endDate
-                  ? formatMonthYear(exp.endDate, true)
+                  ? formatMonthYear(exp.endDate, false)
                   : exp.startDate
                     ? "Present"
                     : "";

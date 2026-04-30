@@ -1041,7 +1041,7 @@ const Editor = dynamic(
 
 const Education_form = () => {
   const UseContext = useContext(CreateContext);
-  const contactId = UseContext?.contact._id || UseContext?.contact.contactId;
+  const contactId = UseContext?.contact.contactId ||  UseContext?.contact._id ;
 
   const { fullResumeData, setFullResumeData } = UseContext || {};
 

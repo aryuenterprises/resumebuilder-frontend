@@ -984,8 +984,12 @@ const Editor = dynamic(
 const ExperienceForm = () => {
   const router = useRouter();
   const UseContext = useContext(CreateContext);
-  const contactId = UseContext?.contact._id || UseContext?.contact.contactId;
+  // const contactId =  UseContext?.contact.contactId;
 
+
+    const contactId = UseContext?.contact.contactId ||  UseContext?.contact._id ;
+
+  
   const [isExperienced, setIsExperienced] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   removeSessionStorage("oldRouteNameDashboard");

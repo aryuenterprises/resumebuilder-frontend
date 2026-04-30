@@ -2638,12 +2638,6 @@
 
 // export default TemplateTwo;
 
-
-
-
-
-
-
 // "use client";
 // import React, { useContext, useState, useEffect } from "react";
 // import axios, { AxiosResponse } from "axios";
@@ -2883,7 +2877,7 @@
 //     .t2-resume.is-preview {
 //       transform: scale(0.36);
 //       transform-origin: top left;
-//       width: 210mm; 
+//       width: 210mm;
 //       padding: 20px;
 //       height: auto;
 //       max-height: none;
@@ -2958,7 +2952,6 @@
 //       border-bottom: 1px solid #d1d5db;
 //       gap: 16px;
 //         flex-shrink: 0;         /* Add this - prevent header from shrinking */
-
 
 //     }
 
@@ -3278,8 +3271,7 @@
 //         page-break-after: avoid;
 //         break-after: avoid;
 //       }
-        
-      
+
 //     }
 //   `;
 
@@ -3858,41 +3850,6 @@
 
 // export default TemplateTwo;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 import React, { useContext, useState, useEffect } from "react";
 import axios, { AxiosResponse } from "axios";
@@ -3989,17 +3946,22 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
 
   // Helper function to render skills (now just a string with HTML content)
   const renderSkills = () => {
-    if (!skills || (typeof skills === 'string' && !skills.trim())) return null;
-    
+    if (!skills || (typeof skills === "string" && !skills.trim())) return null;
+
     // Clean the HTML content from Quill editor
     const cleanedSkills = cleanQuillHTML(skills);
-    
-    if (!cleanedSkills || cleanedSkills === "<p><br></p>" || cleanedSkills === "") return null;
-    
+
+    if (
+      !cleanedSkills ||
+      cleanedSkills === "<p><br></p>" ||
+      cleanedSkills === ""
+    )
+      return null;
+
     return (
       <div className="skills-block">
         <div className="section-title">Skills</div>
-        <div 
+        <div
           className="skills-content"
           dangerouslySetInnerHTML={{ __html: cleanedSkills }}
         />
@@ -4053,7 +4015,7 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
             </div>
             {project.techStack && project.techStack.length > 0 && (
               <div className="project-tech-stack">
-                <strong>Tech:</strong> {project.techStack.join(" • ")}
+                <strong>Tech:</strong> {project.techStack.join(" , ")}
               </div>
             )}
             {project.description && (
@@ -4486,10 +4448,10 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
   ====================================================== */
   const generateHTML = () => {
     const photoHtml = base64Image
-    ? `<div class="header-photo-col">
+      ? `<div class="header-photo-col">
          <img src="${base64Image}" alt="Profile" class="header-photo" style="width:100px;height:100px;object-fit:cover;border-radius:6px;" />
        </div>`
-    : '';
+      : "";
 
     const addressStr = [
       contact?.address,
@@ -4504,11 +4466,16 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
 
     // Generate skills HTML for PDF (now just clean the HTML string)
     const generateSkillsHTML = () => {
-      if (!skills || (typeof skills === 'string' && !skills.trim())) return "";
-      
+      if (!skills || (typeof skills === "string" && !skills.trim())) return "";
+
       const cleanedSkills = cleanQuillHTML(skills);
-      if (!cleanedSkills || cleanedSkills === "<p><br></p>" || cleanedSkills === "") return "";
-      
+      if (
+        !cleanedSkills ||
+        cleanedSkills === "<p><br></p>" ||
+        cleanedSkills === ""
+      )
+        return "";
+
       return `
         <div class="skills-block">
           <div class="section-title">Skills</div>
@@ -4538,7 +4505,7 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
               ${
                 project.techStack && project.techStack.length > 0
                   ? `
-                <div class="project-tech-stack"><strong>Tech:</strong> ${project.techStack.join(" • ")}</div>
+                <div class="project-tech-stack"><strong>Tech:</strong> ${project.techStack.join(" , ")}</div>
               `
                   : ""
               }
@@ -4762,27 +4729,25 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
   ====================================================== */
   return (
     <>
-            {lastSegment === "download-resume" && (
-
-      <div className="text-center my-5">
-        <motion.button
-          onClick={handleDownload}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="bg-emerald-500 text-2xl md:text-base hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 cursor-pointer shadow-md hover:shadow-lg"
-        >
-          Download Resume
-        </motion.button>
-      </div>
-            )}
+      {lastSegment === "download-resume" && (
+        <div className="text-center my-5">
+          <motion.button
+            onClick={handleDownload}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-emerald-500 text-2xl md:text-base hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 cursor-pointer shadow-md hover:shadow-lg"
+          >
+            Download Resume
+          </motion.button>
+        </div>
+      )}
 
       <div
         className={`t2-resume ${alldata ? "is-preview" : ""}`}
         style={{
           margin: "0 auto",
           boxShadow: !alldata ? "0 0 10px rgba(0,0,0,0.1)" : "",
-                  minHeight: "297mm",
-
+          minHeight: "297mm",
         }}
       >
         <style>{`@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap');`}</style>

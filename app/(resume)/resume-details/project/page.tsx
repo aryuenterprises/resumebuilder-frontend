@@ -823,7 +823,10 @@ const Editor = dynamic(
 
 const ProjectsForm = () => {
   const UseContext = useContext(CreateContext);
-  const contactId = UseContext?.contact._id || UseContext?.contact.contactId;
+  // const contactId =  UseContext?.contact.contactId;
+
+
+    const contactId = UseContext?.contact.contactId ||  UseContext?.contact._id ;
 
   const { projects, setProjects } = UseContext || {};
 
