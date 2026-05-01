@@ -73,6 +73,8 @@ const poppins = Poppins({
 })
 
 export const metadata: Metadata = {
+    metadataBase: new URL('https://passats.aryuacademy.com'), 
+
   title: "PassATS - AI-Powered Resume Builder That Beats Applicant Tracking Systems",
   description: "Create ATS-optimized resumes that get past automated screening systems. Professional templates, AI suggestions, and keyword optimization to land your dream job.",
   keywords: "resume builder, ATS resume, applicant tracking system, resume optimizer, job application, CV builder, professional resume, AI resume, resume templates, job search, career tools",
@@ -93,7 +95,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://passats.aryuacademy.com/",
+    url: "https://passats.aryuacademy.com",
     siteName: "PassATS",
     title: "PassATS - AI-Powered Resume Builder That Beats Applicant Tracking Systems",
     description: "Create ATS-optimized resumes that get past automated screening systems. Professional templates, AI suggestions, and keyword optimization.",
