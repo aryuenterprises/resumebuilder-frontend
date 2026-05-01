@@ -38,7 +38,7 @@ export const ResumePreviewModal = ({
   onUse,
 }: ResumePreviewModalProps) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [zoom, setZoom] = useState(0.5);
+  const [zoom, setZoom] = useState(0.7);
 
   if (!show || !template) return null;
 
