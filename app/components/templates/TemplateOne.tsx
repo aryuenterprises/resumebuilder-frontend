@@ -1429,6 +1429,58 @@
 
 // export default TemplateOne;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // "use client";
 // import React, { useContext } from "react";
 // import axios, { AxiosResponse } from "axios";
@@ -2779,6 +2831,87 @@
 
 // export default TemplateOne;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 "use client";
 import React, { useContext } from "react";
 import axios, { AxiosResponse } from "axios";
@@ -3401,76 +3534,88 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
   }
 
   /* PRINT */
-  @media print {
-    @page {
-      size: A4;
-      margin-top: 15mm;
-      margin-bottom: 15mm;
-    }
-
-    @page :first {
-      margin-top: 0;
-    }
-
-    .t1-resume body {
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
-      margin: 0;
-      padding: 0;
-    }
-
-    .t1-resume {
-      width: 210mm !important;
-      padding: 15mm !important;
-      margin: 0 !important;
-      box-shadow: none !important;
-      box-sizing: border-box !important;
-    }
-
-    .no-print {
-      display: none !important;
-    }
-
-    .t1-resume .experience-item,
-    .t1-resume .education-item,
-    .t1-resume .project-item,
-    .t1-resume .skill-category,
-    .t1-resume .custom-section {
-      page-break-inside: avoid;
-      break-inside: avoid;
-    }
-
-    .t1-resume .section-title,
-    .t1-resume h1.resume-heading,
-    .t1-resume h2.resume-heading,
-    .t1-resume h3.resume-heading {
-      page-break-after: avoid;
-      break-after: avoid;
-    }
-
-    .t1-resume .experience-description,
-    .t1-resume .education-description {
-      page-break-inside: auto;
-      break-inside: auto;
-    }
-
-    .t1-resume .resume-list li {
-      page-break-inside: avoid;
-      break-inside: avoid;
-    }
-
-    .t1-resume .item-header {
-      page-break-after: avoid;
-      break-after: avoid;
-    }
-
-    .t1-resume p,
-    .t1-resume li,
-    .t1-resume .item-content {
-      orphans: 3;
-      widows: 3;
-    }
+  /* Print Styles - Most reliable approach */
+@media print {
+  @page {
+    size: A4;
+    margin: 0mm !important;
   }
+  
+  @page :first {
+    margin: 0mm !important;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Nunito', sans-serif !important;
+    background: white;
+  }
+
+  .t7-resume {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    border: none;
+    box-shadow: none;
+    font-family: 'Nunito', sans-serif !important;
+    position: relative;
+  }
+
+  /* First page - no top margin/padding */
+  .t7-resume .resume-header {
+    margin-top: 0;
+    padding-top: 20px;
+    padding-left: 50px;
+    padding-right: 50px;
+  }
+
+  /* Regular margins for main content on all pages */
+  .t7-resume .resume-main {
+    padding: 30px 50px 45px 50px;
+  }
+
+  /* Add top margin for elements that flow to second page */
+  .t7-resume .resume-main {
+    page-break-before: auto;
+  }
+
+  /* Ensure proper page breaks */
+  .t7-resume .section {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  .t7-resume .experience-item {
+    page-break-inside: avoid;
+  }
+
+  /* Add space at the bottom of each page */
+  .t7-resume {
+    margin-bottom: 15mm;
+  }
+
+  .t7-resume .project-link,
+  .t7-resume .link-item {
+    color: #000000 !important;
+    text-decoration: underline !important;
+  }
+  
+  /* Ensure all text uses Nunito in print */
+  .t7-resume * {
+    font-family: 'Nunito', sans-serif !important;
+  }
+  
+  /* Add margin to the top of the second page by targeting the first element after a page break */
+  .t7-resume .resume-main > :first-child {
+    margin-top: 15mm;
+  }
+}
 `;
 
   /* ======================================================
@@ -3789,18 +3934,17 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
   return (
     <>
       {lastSegment === "download-resume" && (
-
-      <div className="text-center my-5">
-        <motion.button
-          onClick={handleDownload}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="bg-emerald-500 text-2xl md:text-base hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 cursor-pointer shadow-md hover:shadow-lg"
-        >
-          Download Resume
-        </motion.button>
-      </div>
-      )} 
+        <div className="text-center my-5">
+          <motion.button
+            onClick={handleDownload}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-emerald-500 text-2xl md:text-base hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 cursor-pointer shadow-md hover:shadow-lg"
+          >
+            Download Resume
+          </motion.button>
+        </div>
+      )}
 
       <div
         className={`t1-resume bg-white ${alldata ? "is-preview" : ""} `}
@@ -4029,3 +4173,88 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
 };
 
 export default TemplateOne;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1700,6 +1700,7 @@ import {
   FiEdit2,
   FiDollarSign,
   FiShoppingBag,
+  FiStar,
 } from "react-icons/fi";
 import { HiOutlineTemplate, HiOutlineBadgeCheck, HiOutlineReceiptRefund } from "react-icons/hi";
 import { IoSparkles, IoEllipsisVertical, IoCheckmarkCircle } from "react-icons/io5";
@@ -1751,7 +1752,6 @@ const DashboardPage = () => {
   const [paymentRecords, setPaymentRecords] = useState<BillingRecord[] | null>(null);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [filteredOldResumeData, setFilteredOldResumeData] = useState<ResumeItem[]>([]);
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [isMobile, setIsMobile] = useState(false);
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
@@ -1958,13 +1958,13 @@ const DashboardPage = () => {
             </div>
           </motion.div>
 
-          {/* Stats Grid with Micro Animations */}
-          {/* <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+
+ {/* Stats Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
             {[
-              { label: "Total Resumes", value: totalResumes, icon: FiFileText, delay: 0 },
-              { label: "Templates", value: templateData.length, icon: FiLayout, delay: 0.1 },
-              { label: "Current Plan", value: usersCurrentPlan?.plan || "Free", icon: FiBriefcase, delay: 0.2 },
-              { label: "ATS Score", value: "85%", icon: FiBarChart2, delay: 0.3 },
+              { label: "Total Resumes", value: totalResumes, icon: FiFileText, color: "purple", delay: 0 },
+              { label: "Available Templates", value: templateData.length, icon: FiLayout, color: "pink", delay: 0.1 },
+              { label: "Current Plan", value: usersCurrentPlan?.plan || "Free", icon: FiStar, color: "amber", delay: 0.2 },
             ].map((stat, idx) => (
               <motion.div
                 key={idx}
@@ -1973,13 +1973,13 @@ const DashboardPage = () => {
                 transition={{ delay: stat.delay, duration: 0.4 }}
                 onMouseEnter={() => setHoveredStat(idx)}
                 onMouseLeave={() => setHoveredStat(null)}
-                className="bg-white rounded-2xl p-4 shadow-sm border border-indigo-100 hover:shadow-md hover:border-indigo-200 transition-all duration-300 group cursor-pointer"
+                className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:shadow-lg hover:border-transparent transition-all duration-300 group cursor-pointer"
               >
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-xs text-gray-500">{stat.label}</p>
                     <motion.p 
-                      className="text-2xl font-bold text-indigo-600"
+                      className={`md:text-lg lg:text-2xl font-bold text-${stat.color}-600`}
                       animate={{ scale: hoveredStat === idx ? 1.05 : 1 }}
                       transition={{ duration: 0.2 }}
                     >
@@ -1987,25 +1987,17 @@ const DashboardPage = () => {
                     </motion.p>
                   </div>
                   <motion.div 
-                    className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center group-hover:bg-indigo-100 transition-all"
+                    className={`w-10 h-10 bg-${stat.color}-50 rounded-xl flex items-center justify-center group-hover:bg-${stat.color}-100 transition-all`}
                     animate={{ rotate: hoveredStat === idx ? 5 : 0 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <stat.icon className="w-5 h-5 text-indigo-600" />
+                    <stat.icon className={`w-5 h-5 text-${stat.color}-600`} />
                   </motion.div>
                 </div>
-                <motion.div 
-                  className="mt-3 h-0.5 w-full bg-indigo-100 rounded-full overflow-hidden"
-                  initial={{ width: "0%" }}
-                  animate={{ width: "100%" }}
-                  transition={{ delay: stat.delay + 0.2, duration: 0.6 }}
-                >
-                  <div className="h-full w-2/3 bg-gradient-to-r from-indigo-400 to-indigo-600 rounded-full"></div>
-                </motion.div>
               </motion.div>
             ))}
-          </div> */}
-
+          </div>
+         
           {/* Profile and Plan Section */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
             {/* Profile Card */}
@@ -2016,20 +2008,16 @@ const DashboardPage = () => {
               className="lg:col-span-1"
             >
               <div className="bg-white rounded-2xl shadow-sm border border-indigo-100 overflow-hidden hover:shadow-md transition-all duration-300 group">
-                <div className="relative h-24 bg-gradient-to-r from-indigo-600 to-indigo-500">
+                <div className="relative h-24 bg-gradient-to-br from-indigo-700  to-purple-500">
                   <motion.div 
                     className="absolute -bottom-10 left-6"
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-lg border-4 border-white">
-                      <div className="w-16 h-16 bg-gradient-to-br from-indigo-100 to-indigo-200 rounded-xl flex items-center justify-center">
-                        <FiUser className="w-8 h-8 text-indigo-600" />
-                      </div>
-                    </div>
+                    
                   </motion.div>
                 </div>
-                <div className="p-6 pt-12">
+                <div className="p-4 sm:p-5 md:p-6 pt-12">
                   <h3 className="text-xl font-bold text-gray-900 mb-4">{userName}</h3>
                   <div className="space-y-3">
                     {[
@@ -2048,7 +2036,7 @@ const DashboardPage = () => {
                         </div>
                         <div className="flex-1">
                           <p className="text-xs text-gray-500">{item.label}</p>
-                          <p className="text-sm font-medium text-gray-900 truncate">{item.value}</p>
+                          <p className="text-sm font-medium text-gray-900 break-all">{item.value}</p>
                         </div>
                       </motion.div>
                     ))}
@@ -2081,7 +2069,7 @@ const DashboardPage = () => {
                 className="lg:col-span-2"
               >
                 <div className="bg-white rounded-2xl shadow-sm border border-indigo-100 overflow-hidden hover:shadow-md transition-all duration-300">
-                  <div className="bg-gradient-to-r from-indigo-600 to-indigo-500 p-6">
+                  <div className="bg-gradient-to-r from-indigo-600 to-purple-500 p-6">
                     <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                       <div>
                         <div className="flex items-center gap-2 mb-2">
@@ -2187,17 +2175,19 @@ const DashboardPage = () => {
             )}
           </div>
 
-          {/* Resumes Section with Count Display */}
+        
+
+        {/* Resumes Section - Grid View Only */}
           <div>
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-5">
               <div>
                 <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                  <FiFileText className="w-5 h-5 text-indigo-600" /> Your Resumes
+                  <FiFileText className="w-5 h-5 text-purple-600" /> Your Resumes
                 </h3>
                 <div className="flex items-center gap-2 mt-1">
                   <p className="text-gray-500 text-sm">Create, edit, and manage all your resumes in one place</p>
                   <motion.div 
-                    className="px-2 py-0.5 bg-indigo-100 rounded-full text-indigo-600 text-xs font-semibold"
+                    className="px-2 py-0.5 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full text-purple-600 text-xs font-semibold"
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ type: "spring", stiffness: 300 }}
@@ -2206,169 +2196,126 @@ const DashboardPage = () => {
                   </motion.div>
                 </div>
               </div>
-              {!isMobile && (
-                <div className="flex bg-indigo-50 rounded-lg p-1">
-                  <motion.button 
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setViewMode("grid")} 
-                    className={`p-2 rounded-md cursor-pointer transition-all ${viewMode === "grid" ? "bg-white text-indigo-600 shadow-sm" : "text-gray-500"}`}
-                  >
-                    <FiGrid className="w-4 h-4" />
-                  </motion.button>
-                  <motion.button 
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setViewMode("list")} 
-                    className={`p-2 rounded-md cursor-pointer transition-all ${viewMode === "list" ? "bg-white text-indigo-600 shadow-sm" : "text-gray-500"}`}
-                  >
-                    <FiList className="w-4 h-4" />
-                  </motion.button>
-                </div>
-              )}
             </div>
 
             {/* Resume Count Badge - Mobile */}
             {isMobile && (
               <motion.div 
-                className="mb-4 px-3 py-1.5 bg-indigo-100 rounded-full inline-flex items-center gap-2"
+                className="mb-4 px-3 py-1.5 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full inline-flex items-center gap-2"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", stiffness: 300 }}
               >
-                <FiFileText className="w-3 h-3 text-indigo-600" />
-                <span className="text-xs font-semibold text-indigo-600">{totalResumes} {totalResumes === 1 ? "Resume" : "Resumes"}</span>
+                <FiFileText className="w-3 h-3 text-purple-600" />
+                <span className="text-xs font-semibold text-purple-600">{totalResumes} {totalResumes === 1 ? "Resume" : "Resumes"}</span>
               </motion.div>
             )}
 
-            <div className={`${viewMode === "grid" && !isMobile ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5" : "flex flex-col gap-4"}`}>
+            {/* Grid View Only */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredOldResumeData.length > 0 ? (
                 filteredOldResumeData.map((item, index) => {
                   const ComponentToRender = item.component;
                   
-                  if (isMobile) {
-                    return (
-                      <motion.div 
-                        key={index}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.05 }}
-                        className="relative"
-                      >
-                        <div className="bg-white rounded-xl border border-indigo-100 overflow-hidden shadow-sm hover:shadow-md transition-all">
-                          <div className="relative h-48 bg-indigo-50/30">
-                            <div className="w-full h-full scale-50"><ComponentToRender alldata={item} /></div>
-                            <button onClick={() => setActiveMenuId(activeMenuId === item.contact?._id ? null : item.contact?._id)} className="absolute top-2 right-2 p-2 bg-white rounded-lg shadow-md z-10 hover:bg-indigo-50 transition">
-                              <IoEllipsisVertical className="w-5 h-5 text-indigo-600" />
-                            </button>
-                            {activeMenuId === item.contact?._id && (
-                              <>
-                                <div className="fixed inset-0 z-10" onClick={() => setActiveMenuId(null)} />
-                                <motion.div 
-                                  initial={{ opacity: 0, scale: 0.9 }}
-                                  animate={{ opacity: 1, scale: 1 }}
-                                  className="absolute right-2 top-12 z-20 w-36 bg-white rounded-xl shadow-lg border border-indigo-100 py-1"
-                                >
-                                  <button onClick={() => { router.push(`/resume-details/contact`); setLocalStorage("chosenTemplate", item); setSessionStorage("oldRouteNameDashboard", true); setIsUploadMode(false); setActiveMenuId(null); }} className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors flex items-center gap-2">
-                                    <FiEdit2 className="w-4 h-4" /> Edit
-                                  </button>
-                                  <button onClick={() => { handleDeleteResume(item.contact?._id, item.name); setActiveMenuId(null); }} className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors flex items-center gap-2">
-                                    <FiTrash2 className="w-4 h-4" /> Delete
-                                  </button>
-                                </motion.div>
-                              </>
-                            )}
-                          </div>
-                          <div className="p-3">
-                            <h4 className="text-sm font-semibold text-gray-900 truncate">{item.name || `Resume ${index + 1}`}</h4>
-                            <p className="text-xs text-gray-500 mt-1">Template: {item.templateId}</p>
-                          </div>
-                        </div>
-                      </motion.div>
-                    );
-                  }
-
-                  if (viewMode === "grid") {
-                    return (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: index * 0.05 }}
-                        whileHover={{ y: -4 }}
-                        onMouseEnter={() => setHoveredCard(item.contact?._id)}
-                        onMouseLeave={() => setHoveredCard(null)}
-                        className="relative group cursor-pointer"
-                        style={{ height: "clamp(260px, 40vw, 320px)", overflow: "hidden", borderRadius: "16px", backgroundColor: "white", boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)" }}
-                      >
-                        <div className="w-full h-full"><ComponentToRender alldata={item} /></div>
-                        <motion.div 
-                          className="absolute inset-0 bg-gradient-to-t from-indigo-900/80 via-indigo-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"
-                          initial={{ opacity: 0 }}
-                          whileHover={{ opacity: 1 }}
-                        >
-                          <div className="absolute bottom-0 left-0 right-0 p-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                            <div className="flex items-center justify-center gap-3">
-                              <motion.button 
-                                whileHover={{ scale: 1.1 }}
-                                whileTap={{ scale: 0.95 }}
-                                onClick={() => { router.push(`/resume-details/contact`); setLocalStorage("chosenTemplate", item); setSessionStorage("oldRouteNameDashboard", true); setIsUploadMode(false); }} 
-                                className="bg-white rounded-full p-2.5 hover:bg-indigo-50 transition-all duration-300 shadow-lg cursor-pointer"
-                              >
-                                <FiEdit2 className="h-4 w-4 text-indigo-600" />
-                              </motion.button>
-                              <motion.button 
-                                whileHover={{ scale: 1.1 }}
-                                whileTap={{ scale: 0.95 }}
-                                onClick={() => handleDeleteResume(item.contact?._id, item.name)} 
-                                className="bg-white rounded-full p-2.5 hover:bg-red-50 transition-all duration-300 shadow-lg cursor-pointer"
-                              >
-                                <FiTrash2 className="h-4 w-4 text-red-600" />
-                              </motion.button>
-                            </div>
-                            <p className="text-white text-xs font-medium text-center mt-3 truncate">{item.name || `Resume ${index + 1}`}</p>
-                          </div>
-                        </motion.div>
-                      </motion.div>
-                    );
-                  }
-
                   return (
                     <motion.div
                       key={index}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: index * 0.05 }}
-                      whileHover={{ x: 5 }}
-                      className="bg-white rounded-xl border border-indigo-100 overflow-hidden hover:shadow-md hover:border-indigo-200 transition-all duration-300"
+                      whileHover={{ y: -8 }}
+                      onMouseEnter={() => setHoveredCard(item.contact?._id)}
+                      onMouseLeave={() => setHoveredCard(null)}
+                      className="relative group cursor-pointer"
+                      style={{ 
+                        height: "clamp(280px, 35vw, 340px)", 
+                        overflow: "hidden", 
+                        borderRadius: "20px", 
+                        backgroundColor: "white", 
+                        boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.02)",
+                        transition: "all 0.3s ease"
+                      }}
                     >
-                      <div className="flex items-center p-4 gap-4">
-                        <div className="w-16 h-16 rounded-lg bg-indigo-50 overflow-hidden flex-shrink-0">
-                          <div className="w-full h-full scale-50"><ComponentToRender alldata={item} /></div>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h4 className="text-sm font-semibold text-gray-900 truncate">{item.name || `Resume ${index + 1}`}</h4>
-                          <p className="text-xs text-gray-500 mt-1">Template: {item.templateId}</p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <motion.button 
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => { router.push(`/resume-details/contact`); setLocalStorage("chosenTemplate", item); setSessionStorage("oldRouteNameDashboard", true); setIsUploadMode(false); }} 
-                            className="p-2 bg-indigo-50 rounded-lg hover:bg-indigo-100 text-indigo-600 transition-all cursor-pointer"
-                          >
-                            <FiEdit2 className="w-4 h-4" />
-                          </motion.button>
-                          <motion.button 
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => handleDeleteResume(item.contact?._id, item.name)} 
-                            className="p-2 bg-indigo-50 rounded-lg hover:bg-red-100 text-red-600 transition-all cursor-pointer"
-                          >
-                            <FiTrash2 className="w-4 h-4" />
-                          </motion.button>
-                        </div>
+                      <div className="w-full h-full">
+                        <ComponentToRender alldata={item} />
                       </div>
+                      
+                      {/* Overlay with actions */}
+                      <motion.div 
+                        className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"
+                        initial={{ opacity: 0 }}
+                        whileHover={{ opacity: 1 }}
+                      >
+                        <div className="absolute bottom-0 left-0 right-0 p-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                          <div className="flex items-center justify-center gap-3 mb-3">
+                            <motion.button 
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.95 }}
+                              onClick={() => { 
+                                router.push(`/resume-details/contact`); 
+                                setLocalStorage("chosenTemplate", item); 
+                                setSessionStorage("oldRouteNameDashboard", true); 
+                                setIsUploadMode(false); 
+                              }} 
+                              className="bg-white rounded-full p-2.5 hover:bg-purple-50 transition-all duration-300 shadow-lg cursor-pointer group/btn"
+                            >
+                              <FiEdit2 className="h-4 w-4 text-purple-600 group-hover/btn:scale-110 transition-transform" />
+                            </motion.button>
+                            <motion.button 
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.95 }}
+                              onClick={() => handleDeleteResume(item.contact?._id, item.name)} 
+                              className="bg-white rounded-full p-2.5 hover:bg-rose-50 transition-all duration-300 shadow-lg cursor-pointer group/btn"
+                            >
+                              <FiTrash2 className="h-4 w-4 text-rose-600 group-hover/btn:scale-110 transition-transform" />
+                            </motion.button>
+                          </div>
+                          <p className="text-white text-sm font-medium text-center truncate px-2">
+                            {item.name || `Resume ${index + 1}`}
+                          </p>
+                          <p className="text-white/60 text-xs text-center mt-1">
+                            Template: {item.templateId}
+                          </p>
+                        </div>
+                      </motion.div>
+                      
+                      {/* Mobile menu button */}
+                      {isMobile && (
+                        <>
+                          <button 
+                            onClick={() => setActiveMenuId(activeMenuId === item.contact?._id ? null : item.contact?._id)} 
+                            className="absolute top-3 right-3 p-2 bg-white rounded-xl shadow-md z-10 hover:bg-gray-50 transition"
+                          >
+                            <IoEllipsisVertical className="w-5 h-5 text-gray-700" />
+                          </button>
+                          {activeMenuId === item.contact?._id && (
+                            <>
+                              <div className="fixed inset-0 z-10" onClick={() => setActiveMenuId(null)} />
+                              <motion.div 
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                className="absolute right-3 top-14 z-20 w-40 bg-white rounded-xl shadow-xl border border-gray-100 py-2"
+                              >
+                                <button onClick={() => { 
+                                  router.push(`/resume-details/contact`); 
+                                  setLocalStorage("chosenTemplate", item); 
+                                  setSessionStorage("oldRouteNameDashboard", true); 
+                                  setIsUploadMode(false); 
+                                  setActiveMenuId(null); 
+                                }} className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors flex items-center gap-2">
+                                  <FiEdit2 className="w-4 h-4" /> Edit
+                                </button>
+                                <button onClick={() => { 
+                                  handleDeleteResume(item.contact?._id, item.name); 
+                                  setActiveMenuId(null); 
+                                }} className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-rose-50 hover:text-rose-600 transition-colors flex items-center gap-2">
+                                  <FiTrash2 className="w-4 h-4" /> Delete
+                                </button>
+                              </motion.div>
+                            </>
+                          )}
+                        </>
+                      )}
                     </motion.div>
                   );
                 })
@@ -2376,15 +2323,20 @@ const DashboardPage = () => {
                 <motion.div 
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="col-span-full flex flex-col items-center justify-center py-16"
+                  className="col-span-full flex flex-col items-center justify-center py-20"
                 >
                   <div className="text-center">
-                    <div className="w-20 h-20 mx-auto mb-4 bg-indigo-100 rounded-full flex items-center justify-center">
-                      <FiFileText className="w-10 h-10 text-indigo-600" />
+                    <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl flex items-center justify-center">
+                      <FiFileText className="w-12 h-12 text-purple-600" />
                     </div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No Resumes Found</h3>
-                    <p className="text-gray-500 text-sm mb-4">Create your first resume to get started</p>
-                    <button onClick={() => router.push("/choose-template")} className="px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-all text-sm cursor-pointer">Create Resume</button>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">No Resumes Found</h3>
+                    <p className="text-gray-500 text-sm mb-6">Create your first resume to get started</p>
+                    <button 
+                      onClick={() => router.push("/choose-template")} 
+                      className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-500 text-white rounded-xl font-medium hover:shadow-lg transition-all text-sm cursor-pointer"
+                    >
+                      Create Resume
+                    </button>
                   </div>
                 </motion.div>
               )}
@@ -2392,6 +2344,9 @@ const DashboardPage = () => {
           </div>
         </div>
       </div>
+
+
+
 
       {/* Billing History Modal with Enhanced UI */}
       <AnimatePresence>
