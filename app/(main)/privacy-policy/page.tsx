@@ -404,10 +404,7 @@ export default function PrivacyPolicy() {
               policy.
             </p>
             
-            <div className="mt-4 sm:mt-5 inline-flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs text-gray-400">
-              <FiClock className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-              <span>Last updated: January 2024</span>
-            </div>
+            
           </motion.div>
         </div>
       </section>

@@ -376,13 +376,13 @@ export default function TermsAndConditions() {
         • Free: ₹0/month — basic resume building with 1 template and basic ATS optimisation
         • Pro: ₹49/month — 3 templates, AI suggestions, ATS optimisation, photo upload
         • Pro Plus: ₹199/3 months (approximately ₹66/month) — 5 templates, advanced ATS, cover letter builder
-        • Lifetime: ₹1,999 one-time payment — all templates, unlimited AI, interview prep kit, no renewal
+        • Lifetime: ₹999 one-time payment — all templates, unlimited AI, interview prep kit, no renewal
         
         All payments are processed in Indian Rupees (INR) through Razorpay. We accept UPI, debit cards, credit cards, and net banking.
         
         Monthly and Pro Plus subscriptions renew automatically at the end of each billing period unless cancelled before the renewal date. The Lifetime plan is a one-time purchase and does not auto-renew.
         
-        We will provide 7 days' advance notice of any price changes to existing subscribers.`,
+        We will provide 7 days advance notice of any price changes to existing subscribers.`,
     },
     {
       id: 5,
@@ -513,10 +513,7 @@ export default function TermsAndConditions() {
               the Service.
             </p>
             
-            <div className="mt-4 sm:mt-5 inline-flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs text-gray-400">
-              <FiClock className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-              <span>Last updated: January 2024</span>
-            </div>
+           
           </motion.div>
         </div>
       </section>

@@ -1,1810 +1,1873 @@
-// // "use client";
+// "use client";
 
-// // import React, { useState, useEffect } from "react";
-// // import { motion, AnimatePresence } from "framer-motion";
-// // import Header from "../components/layouts/Header";
-// // import Footer from "../components/layouts/Footer";
-// // import {
-// //   Upload,
-// //   FileText,
-// //   Award,
-// //   CheckCircle,
-// //   AlertCircle,
-// //   X,
-// //   Loader2,
-// //   Star,
-// //   Target,
-// //   Zap,
-// //   Shield,
-// //   Sparkles,
-// //   ChevronRight,
-// //   Clock,
-// //   FileCheck,
-// //   Brain,
-// //   Rocket,
-// //   Users,
-// //   Building2,
-// //   GraduationCap,
-// //   Briefcase,
-// //   Download,
-// //   Share2,
-// //   BookmarkPlus,
-// //   Info,
-// //   ChevronDown,
-// //   Eye,
-// //   ArrowRight,
-// //   Globe,
-// //   Mail,
-// //   Phone,
-// //   MapPin,
-// //   Linkedin,
-// //   Github,
-// //   Calendar,
-// //   Edit3,
-// //   Plus,
-// //   Save,
-// //   Printer,
-// //   DownloadCloud,
-// //   UploadCloud,
-// //   Share,
-// //   Star as StarIcon,
-// //   Settings2,
-// //   UserPlus,
-// //   Zap as ZapIcon,
-// //   Code,
-// //   Palette,
-// //   Layout,
-// //   Monitor,
-// //   Smartphone,
-// //   Tablet,
-// //   Moon,
-// //   Sun,
-// //   Check,
-// //   ExternalLink,
-// //   Layers,
-// //   Grid3x3,
-// //   AlignLeft,
-// //   Medal,
-// //   Trophy,
-// //   BookOpen,
-// //   Users as UsersIcon,
-// //   Heart,
-// //   Menu,
-// //   X as XIcon,
-// //   Wand2,
-// //   UserCircle,
-// //   AtSign,
-// //   PhoneCall,
-// //   MapPinned,
-// // } from "lucide-react";
-// // import axios from "axios";
+// import React, { useState, useEffect } from "react";
+// import { motion, AnimatePresence } from "framer-motion";
+// import {
+//   Upload,
+//   FileText,
+//   Award,
+//   CheckCircle,
+//   AlertCircle,
+//   X,
+//   Loader2,
+//   Star,
+//   Target,
+//   Zap,
+//   Shield,
+//   Sparkles,
+//   ChevronRight,
+//   Clock,
+//   FileCheck,
+//   Brain,
+//   Rocket,
+//   Users,
+//   Building2,
+//   GraduationCap,
+//   Briefcase,
+//   Download,
+//   Share2,
+//   BookmarkPlus,
+//   Info,
+//   ChevronDown,
+//   Eye,
+//   ArrowRight,
+//   Globe,
+//   Mail,
+//   Phone,
+//   MapPin,
+//   Linkedin,
+//   Github,
+//   Calendar,
+//   Edit3,
+//   Plus,
+//   Save,
+//   Printer,
+//   DownloadCloud,
+//   UploadCloud,
+//   Share,
+//   Star as StarIcon,
+//   Settings2,
+//   UserPlus,
+//   Zap as ZapIcon,
+//   Code,
+//   Palette,
+//   Layout,
+//   Monitor,
+//   Smartphone,
+//   Tablet,
+//   Moon,
+//   Sun,
+//   Check,
+//   ExternalLink,
+//   Layers,
+//   Grid3x3,
+//   AlignLeft,
+//   Medal,
+//   Trophy,
+//   BookOpen,
+//   Users as UsersIcon,
+//   Heart,
+//   Menu,
+//   X as XIcon,
+//   Wand2,
+//   UserCircle,
+//   AtSign,
+//   PhoneCall,
+//   MapPinned,
+// } from "lucide-react";
+// import axios from "axios";
 
-// // // Types for parsed CV data
-// // interface ParsedCVData {
-// //   personalInfo: {
-// //     fullName: string;
-// //     title: string;
-// //     email: string;
-// //     phone: string;
-// //     location: string;
-// //     address?: string;
-// //     summary: string;
-// //     photo?: string;
-// //   };
-// //   coreCompetencies: {
-// //     technical: string[];
-// //     leadership: string[];
-// //     domainExpertise: string[];
-// //   };
-// //   experience: Array<{
-// //     id: string;
-// //     title: string;
-// //     company: string;
-// //     period: string;
-// //     description: string[];
-// //     achievements: string[];
-// //     link?: string;
-// //     isPresent?: boolean;
-// //   }>;
-// //   education: Array<{
-// //     id: string;
-// //     degree: string;
-// //     institution: string;
-// //     period?: string;
-// //     description?: string;
-// //   }>;
-// //   skills: Array<{
-// //     id: string;
-// //     name: string;
-// //     category: string;
-// //     level?: "beginner" | "intermediate" | "advanced" | "expert";
-// //   }>;
-// //   additionalCredentials: {
-// //     certifications: string[];
-// //     languages: string[];
-// //     awards: string[];
-// //   };
-// //   raw?: string;
-// // }
+// // Types for parsed CV data
+// interface ParsedCVData {
+//   personalInfo: {
+//     fullName: string;
+//     title: string;
+//     email: string;
+//     phone: string;
+//     location: string;
+//     address?: string;
+//     summary: string;
+//     photo?: string;
+//   };
+//   coreCompetencies: {
+//     technical: string[];
+//     leadership: string[];
+//     domainExpertise: string[];
+//   };
+//   experience: Array<{
+//     id: string;
+//     title: string;
+//     company: string;
+//     period: string;
+//     description: string[];
+//     achievements: string[];
+//     link?: string;
+//     isPresent?: boolean;
+//   }>;
+//   education: Array<{
+//     id: string;
+//     degree: string;
+//     institution: string;
+//     period?: string;
+//     description?: string;
+//   }>;
+//   skills: Array<{
+//     id: string;
+//     name: string;
+//     category: string;
+//     level?: "beginner" | "intermediate" | "advanced" | "expert";
+//   }>;
+//   additionalCredentials: {
+//     certifications: string[];
+//     languages: string[];
+//     awards: string[];
+//   };
+//   raw?: string;
+// }
 
-// // // Template types
-// // type TemplateStyle = "modern" | "professional" | "creative" | "minimal";
-// // type ColorScheme = "red" | "blue" | "green" | "purple" | "orange" | "black";
-// // const colorSchemes = {
-// //   red: { primary: "#c40116", secondary: "#be0117", accent: "#e63545", light: "#fee2e2" },
-// //   blue: { primary: "#2563eb", secondary: "#1d4ed8", accent: "#3b82f6", light: "#dbeafe" },
-// //   green: { primary: "#059669", secondary: "#047857", accent: "#10b981", light: "#d1fae5" },
-// //   purple: { primary: "#7c3aed", secondary: "#6d28d9", accent: "#8b5cf6", light: "#ede9fe" },
-// //   orange: { primary: "#ea580c", secondary: "#c2410c", accent: "#f97316", light: "#ffedd5" },
-// //   black: { primary: "#000000", secondary: "#1a1a1a", accent: "#333333", light: "#f5f5f5" },
-// // };
-// // // Custom parser for the specific API response format
-// // const parseCVText = (text: string): ParsedCVData => {
+// // Template types
+// type TemplateStyle = "modern" | "professional" | "creative" | "minimal";
+// type ColorScheme = "red" | "blue" | "green" | "purple" | "orange" | "black";
+// const colorSchemes = {
+//   red: { primary: "#c40116", secondary: "#be0117", accent: "#e63545", light: "#fee2e2" },
+//   blue: { primary: "#2563eb", secondary: "#1d4ed8", accent: "#3b82f6", light: "#dbeafe" },
+//   green: { primary: "#059669", secondary: "#047857", accent: "#10b981", light: "#d1fae5" },
+//   purple: { primary: "#7c3aed", secondary: "#6d28d9", accent: "#8b5cf6", light: "#ede9fe" },
+//   orange: { primary: "#ea580c", secondary: "#c2410c", accent: "#f97316", light: "#ffedd5" },
+//   black: { primary: "#000000", secondary: "#1a1a1a", accent: "#333333", light: "#f5f5f5" },
+// };
+// // Custom parser for the specific API response format
+// const parseCVText = (text: string): ParsedCVData => {
 
-// //   console.log("text",text)
+//   console.log("text",text)
 
-// //   const lines = text.split('\n').map(line => line.trim());
+//   const lines = text.split('\n').map(line => line.trim());
   
-// //   console.log("lines",lines)
+//   console.log("lines",lines)
 
-// //   const data: ParsedCVData = {
-// //     personalInfo: {
-// //       fullName: "",
-// //       title: "",
-// //       email: "",
-// //       phone: "",
-// //       location: "",
-// //       address: "",
-// //       summary: "",
-// //     },
-// //     coreCompetencies: {
-// //       technical: [],
-// //       leadership: [],
-// //       domainExpertise: [],
-// //     },
-// //     experience: [],
-// //     education: [],
-// //     skills: [],
-// //     additionalCredentials: {
-// //       certifications: [],
-// //       languages: [],
-// //       awards: [],
-// //     },
-// //     raw: text,
-// //   };
+//   const data: ParsedCVData = {
+//     personalInfo: {
+//       fullName: "",
+//       title: "",
+//       email: "",
+//       phone: "",
+//       location: "",
+//       address: "",
+//       summary: "",
+//     },
+//     coreCompetencies: {
+//       technical: [],
+//       leadership: [],
+//       domainExpertise: [],
+//     },
+//     experience: [],
+//     education: [],
+//     skills: [],
+//     additionalCredentials: {
+//       certifications: [],
+//       languages: [],
+//       awards: [],
+//     },
+//     raw: text,
+//   };
 
-// //   let currentSection = "";
-// //   let currentExperience: any = null;
-// //   let currentCompetencyType = "";
+//   let currentSection = "";
+//   let currentExperience: any = null;
+//   let currentCompetencyType = "";
 
-// //   for (let i = 0; i < lines.length; i++) {
-// //     const line = lines[i];
+//   for (let i = 0; i < lines.length; i++) {
+//     const line = lines[i];
 
-// //     // Parse personal info from the top section
-// //     if (i === 0 && line && !line.includes('**') && !line.includes('•')) {
-// //       data.personalInfo.fullName = line;
-// //     }
-// //     else if (i === 1 && line && !line.includes('**') && !line.includes('•') && !line.includes('@')) {
-// //       data.personalInfo.title = line;
-// //     }
-// //     else if (line.includes('@') && line.includes('.')) {
-// //       data.personalInfo.email = line;
-// //     }
-// //     else if (line.match(/\(\d{3}\) \d{3}-\d{4}|\d{3}-\d{3}-\d{4}/)) {
-// //       data.personalInfo.phone = line;
-// //     }
-// //     else if (line.includes('Street') || line.includes('Avenue') || line.includes('Road') || line.includes('Lane')) {
-// //       data.personalInfo.address = line;
-// //       // Extract location from address
-// //       const locationMatch = line.match(/,?\s*([^,]+(?:,\s*[A-Z]{2})?)/);
-// //       if (locationMatch) {
-// //         data.personalInfo.location = locationMatch[1].trim();
-// //       }
-// //     }
+//     // Parse personal info from the top section
+//     if (i === 0 && line && !line.includes('**') && !line.includes('•')) {
+//       data.personalInfo.fullName = line;
+//     }
+//     else if (i === 1 && line && !line.includes('**') && !line.includes('•') && !line.includes('@')) {
+//       data.personalInfo.title = line;
+//     }
+//     else if (line.includes('@') && line.includes('.')) {
+//       data.personalInfo.email = line;
+//     }
+//     else if (line.match(/\(\d{3}\) \d{3}-\d{4}|\d{3}-\d{3}-\d{4}/)) {
+//       data.personalInfo.phone = line;
+//     }
+//     else if (line.includes('Street') || line.includes('Avenue') || line.includes('Road') || line.includes('Lane')) {
+//       data.personalInfo.address = line;
+//       // Extract location from address
+//       const locationMatch = line.match(/,?\s*([^,]+(?:,\s*[A-Z]{2})?)/);
+//       if (locationMatch) {
+//         data.personalInfo.location = locationMatch[1].trim();
+//       }
+//     }
 
-// //     // Section detection
-// //     if (line === "**PROFESSIONAL SUMMARY**" || line === "PROFESSIONAL SUMMARY") {
-// //       currentSection = "summary";
-// //       continue;
-// //     }
-// //     else if (line === "**CORE COMPETENCIES**" || line === "CORE COMPETENCIES") {
-// //       currentSection = "competencies";
-// //       continue;
-// //     }
-// //     else if (line === "**PROFESSIONAL EXPERIENCE**" || line === "PROFESSIONAL EXPERIENCE") {
-// //       currentSection = "experience";
-// //       continue;
-// //     }
-// //     else if (line === "**EDUCATION**" || line === "EDUCATION") {
-// //       currentSection = "education";
-// //       continue;
-// //     }
-// //     else if (line === "**TECHNICAL SKILLS**" || line === "TECHNICAL SKILLS" || line === "KEY SKILLS") {
-// //       currentSection = "skills";
-// //       continue;
-// //     }
-// //     else if (line === "**ADDITIONAL INFORMATION**" || line === "ADDITIONAL CREDENTIALS") {
-// //       currentSection = "credentials";
-// //       continue;
-// //     }
+//     // Section detection
+//     if (line === "**PROFESSIONAL SUMMARY**" || line === "PROFESSIONAL SUMMARY") {
+//       currentSection = "summary";
+//       continue;
+//     }
+//     else if (line === "**CORE COMPETENCIES**" || line === "CORE COMPETENCIES") {
+//       currentSection = "competencies";
+//       continue;
+//     }
+//     else if (line === "**PROFESSIONAL EXPERIENCE**" || line === "PROFESSIONAL EXPERIENCE") {
+//       currentSection = "experience";
+//       continue;
+//     }
+//     else if (line === "**EDUCATION**" || line === "EDUCATION") {
+//       currentSection = "education";
+//       continue;
+//     }
+//     else if (line === "**TECHNICAL SKILLS**" || line === "TECHNICAL SKILLS" || line === "KEY SKILLS") {
+//       currentSection = "skills";
+//       continue;
+//     }
+//     else if (line === "**ADDITIONAL INFORMATION**" || line === "ADDITIONAL CREDENTIALS") {
+//       currentSection = "credentials";
+//       continue;
+//     }
 
-// //     // Competency type detection
-// //     if (line === "**Technical**" || line === "Technical") {
-// //       currentCompetencyType = "technical";
-// //       continue;
-// //     }
-// //     else if (line === "**Leadership**" || line === "Leadership") {
-// //       currentCompetencyType = "leadership";
-// //       continue;
-// //     }
-// //     else if (line === "**Domain Expertise**" || line === "Domain Expertise") {
-// //       currentCompetencyType = "domainExpertise";
-// //       continue;
-// //     }
+//     // Competency type detection
+//     if (line === "**Technical**" || line === "Technical") {
+//       currentCompetencyType = "technical";
+//       continue;
+//     }
+//     else if (line === "**Leadership**" || line === "Leadership") {
+//       currentCompetencyType = "leadership";
+//       continue;
+//     }
+//     else if (line === "**Domain Expertise**" || line === "Domain Expertise") {
+//       currentCompetencyType = "domainExpertise";
+//       continue;
+//     }
 
-// //     // Summary section
-// //     if (currentSection === "summary" && line && !line.startsWith('**')) {
-// //       data.personalInfo.summary += (data.personalInfo.summary ? " " : "") + line;
-// //     }
+//     // Summary section
+//     if (currentSection === "summary" && line && !line.startsWith('**')) {
+//       data.personalInfo.summary += (data.personalInfo.summary ? " " : "") + line;
+//     }
 
-// //     // Competencies section
-// //     if (currentSection === "competencies" && line.startsWith('•')) {
-// //       const competency = line.replace('•', '').trim();
-// //       if (currentCompetencyType) {
-// //         switch (currentCompetencyType) {
-// //           case "technical":
-// //             data.coreCompetencies.technical.push(competency);
-// //             break;
-// //           case "leadership":
-// //             data.coreCompetencies.leadership.push(competency);
-// //             break;
-// //           case "domainExpertise":
-// //             data.coreCompetencies.domainExpertise.push(competency);
-// //             break;
-// //         }
-// //       }
-// //     }
+//     // Competencies section
+//     if (currentSection === "competencies" && line.startsWith('•')) {
+//       const competency = line.replace('•', '').trim();
+//       if (currentCompetencyType) {
+//         switch (currentCompetencyType) {
+//           case "technical":
+//             data.coreCompetencies.technical.push(competency);
+//             break;
+//           case "leadership":
+//             data.coreCompetencies.leadership.push(competency);
+//             break;
+//           case "domainExpertise":
+//             data.coreCompetencies.domainExpertise.push(competency);
+//             break;
+//         }
+//       }
+//     }
 
-// //     // Experience section
-// //     if (currentSection === "experience") {
-// //       // Check for job title (bolded text)
-// //       if (line.startsWith('**') && line.endsWith('**') && !line.includes('•')) {
-// //         if (currentExperience) {
-// //           data.experience.push(currentExperience);
-// //         }
-// //         currentExperience = {
-// //           id: Date.now() + Math.random().toString(),
-// //           title: line.replace(/\*\*/g, '').trim(),
-// //           company: "",
-// //           period: "",
-// //           description: [],
-// //           achievements: [],
-// //         };
-// //       }
-// //       // Company and period
-// //       else if (currentExperience && line.includes(',')) {
-// //         const parts = line.split(',').map(s => s.trim());
-// //         if (parts.length >= 2) {
-// //           currentExperience.company = parts[0];
-// //           currentExperience.period = parts.slice(1).join(', ');
-// //           currentExperience.isPresent = currentExperience.period.includes('Present');
-// //         }
-// //       }
-// //       // Achievements (bullet points)
-// //       else if (currentExperience && line.startsWith('•')) {
-// //         currentExperience.achievements.push(line.replace('•', '').trim());
-// //       }
-// //       // Description (non-bullet text)
-// //       else if (currentExperience && line && !line.startsWith('•') && !line.startsWith('**')) {
-// //         currentExperience.description.push(line);
-// //       }
-// //     }
+//     // Experience section
+//     if (currentSection === "experience") {
+//       // Check for job title (bolded text)
+//       if (line.startsWith('**') && line.endsWith('**') && !line.includes('•')) {
+//         if (currentExperience) {
+//           data.experience.push(currentExperience);
+//         }
+//         currentExperience = {
+//           id: Date.now() + Math.random().toString(),
+//           title: line.replace(/\*\*/g, '').trim(),
+//           company: "",
+//           period: "",
+//           description: [],
+//           achievements: [],
+//         };
+//       }
+//       // Company and period
+//       else if (currentExperience && line.includes(',')) {
+//         const parts = line.split(',').map(s => s.trim());
+//         if (parts.length >= 2) {
+//           currentExperience.company = parts[0];
+//           currentExperience.period = parts.slice(1).join(', ');
+//           currentExperience.isPresent = currentExperience.period.includes('Present');
+//         }
+//       }
+//       // Achievements (bullet points)
+//       else if (currentExperience && line.startsWith('•')) {
+//         currentExperience.achievements.push(line.replace('•', '').trim());
+//       }
+//       // Description (non-bullet text)
+//       else if (currentExperience && line && !line.startsWith('•') && !line.startsWith('**')) {
+//         currentExperience.description.push(line);
+//       }
+//     }
 
-// //     // Skills section
-// //     if (currentSection === "skills" && line && !line.startsWith('**')) {
-// //       // Handle comma-separated skills
-// //       if (line.includes(',')) {
-// //         const skills = line.split(',').map(s => s.trim()).filter(s => s);
-// //         skills.forEach(skill => {
-// //           if (skill && !skill.startsWith('•')) {
-// //             data.skills.push({
-// //               id: Date.now() + Math.random().toString(),
-// //               name: skill,
-// //               category: "technical",
-// //             });
-// //           }
-// //         });
-// //       }
-// //       // Handle bullet-point skills
-// //       else if (line.startsWith('•')) {
-// //         const skill = line.replace('•', '').trim();
-// //         if (skill) {
-// //           data.skills.push({
-// //             id: Date.now() + Math.random().toString(),
-// //             name: skill,
-// //             category: "technical",
-// //           });
-// //         }
-// //       }
-// //     }
+//     // Skills section
+//     if (currentSection === "skills" && line && !line.startsWith('**')) {
+//       // Handle comma-separated skills
+//       if (line.includes(',')) {
+//         const skills = line.split(',').map(s => s.trim()).filter(s => s);
+//         skills.forEach(skill => {
+//           if (skill && !skill.startsWith('•')) {
+//             data.skills.push({
+//               id: Date.now() + Math.random().toString(),
+//               name: skill,
+//               category: "technical",
+//             });
+//           }
+//         });
+//       }
+//       // Handle bullet-point skills
+//       else if (line.startsWith('•')) {
+//         const skill = line.replace('•', '').trim();
+//         if (skill) {
+//           data.skills.push({
+//             id: Date.now() + Math.random().toString(),
+//             name: skill,
+//             category: "technical",
+//           });
+//         }
+//       }
+//     }
 
-// //     // Education section
-// //     if (currentSection === "education" && line && !line.startsWith('**')) {
-// //       if (line.includes(',')) {
-// //         const parts = line.split(',').map(s => s.trim());
-// //         if (parts.length >= 2) {
-// //           data.education.push({
-// //             id: Date.now() + Math.random().toString(),
-// //             degree: parts[0],
-// //             institution: parts.slice(1, -1).join(', '),
-// //             period: parts[parts.length - 1],
-// //           });
-// //         }
-// //       }
-// //     }
+//     // Education section
+//     if (currentSection === "education" && line && !line.startsWith('**')) {
+//       if (line.includes(',')) {
+//         const parts = line.split(',').map(s => s.trim());
+//         if (parts.length >= 2) {
+//           data.education.push({
+//             id: Date.now() + Math.random().toString(),
+//             degree: parts[0],
+//             institution: parts.slice(1, -1).join(', '),
+//             period: parts[parts.length - 1],
+//           });
+//         }
+//       }
+//     }
 
-// //     // Additional Credentials
-// //     if (currentSection === "credentials") {
-// //       if (line.toLowerCase().includes('language')) {
-// //         const langs = line.replace(/language[s]?:/i, '').trim();
-// //         if (langs && langs !== 'None' && langs !== 'none') {
-// //           data.additionalCredentials.languages = langs.split(',').map(l => l.trim());
-// //         }
-// //       } else if (line.toLowerCase().includes('certification')) {
-// //         const certs = line.replace(/certification[s]?:/i, '').trim();
-// //         if (certs && certs !== 'None' && certs !== 'none') {
-// //           data.additionalCredentials.certifications = certs.split(',').map(c => c.trim());
-// //         }
-// //       } else if (line.toLowerCase().includes('award')) {
-// //         const awards = line.replace(/award[s]?:/i, '').trim();
-// //         if (awards && awards !== 'None' && awards !== 'none') {
-// //           data.additionalCredentials.awards = awards.split(',').map(a => a.trim());
-// //         }
-// //       }
-// //     }
-// //   }
+//     // Additional Credentials
+//     if (currentSection === "credentials") {
+//       if (line.toLowerCase().includes('language')) {
+//         const langs = line.replace(/language[s]?:/i, '').trim();
+//         if (langs && langs !== 'None' && langs !== 'none') {
+//           data.additionalCredentials.languages = langs.split(',').map(l => l.trim());
+//         }
+//       } else if (line.toLowerCase().includes('certification')) {
+//         const certs = line.replace(/certification[s]?:/i, '').trim();
+//         if (certs && certs !== 'None' && certs !== 'none') {
+//           data.additionalCredentials.certifications = certs.split(',').map(c => c.trim());
+//         }
+//       } else if (line.toLowerCase().includes('award')) {
+//         const awards = line.replace(/award[s]?:/i, '').trim();
+//         if (awards && awards !== 'None' && awards !== 'none') {
+//           data.additionalCredentials.awards = awards.split(',').map(a => a.trim());
+//         }
+//       }
+//     }
+//   }
 
-// //   // Push last experience
-// //   if (currentExperience) {
-// //     data.experience.push(currentExperience);
-// //   }
+//   // Push last experience
+//   if (currentExperience) {
+//     data.experience.push(currentExperience);
+//   }
 
-// //   // Remove duplicates from skills
-// //   data.skills = data.skills.filter((skill, index, self) =>
-// //     index === self.findIndex(s => s.name.toLowerCase() === skill.name.toLowerCase())
-// //   );
+//   // Remove duplicates from skills
+//   data.skills = data.skills.filter((skill, index, self) =>
+//     index === self.findIndex(s => s.name.toLowerCase() === skill.name.toLowerCase())
+//   );
 
-// //   // Clean up summary (remove any remaining markdown)
-// //   data.personalInfo.summary = data.personalInfo.summary.replace(/\*\*/g, '').trim();
+//   // Clean up summary (remove any remaining markdown)
+//   data.personalInfo.summary = data.personalInfo.summary.replace(/\*\*/g, '').trim();
 
-// //   return data;
-// // };
+//   return data;
+// };
 
-// // // Experience Card Component
-// // const ExperienceCard = ({ exp, colorScheme }: { exp: any; colorScheme: ColorScheme }) => {
-// //   const [isExpanded, setIsExpanded] = useState(false);
+// // Experience Card Component
+// const ExperienceCard = ({ exp, colorScheme }: { exp: any; colorScheme: ColorScheme }) => {
+//   const [isExpanded, setIsExpanded] = useState(false);
 
-// //   return (
-// //     <motion.div
-// //       initial={{ opacity: 0, y: 20 }}
-// //       animate={{ opacity: 1, y: 0 }}
-// //       className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-all group"
-// //     >
-// //       <div className="p-6">
-// //         <div className="flex items-start justify-between mb-4">
-// //           <div>
-// //             <h3 className="text-lg font-semibold text-gray-900 mb-1">{exp.title}</h3>
-// //             <p className="text-sm" style={{ color: colorSchemes[colorScheme].primary }}>
-// //               {exp.company}
-// //             </p>
-// //           </div>
-// //           <div className="flex items-center gap-2">
-// //             <span className="text-xs text-gray-500 flex items-center gap-1">
-// //               <Calendar className="w-3 h-3" />
-// //               {exp.period}
-// //             </span>
-// //             {exp.link && (
-// //               <a
-// //                 href={exp.link}
-// //                 target="_blank"
-// //                 rel="noopener noreferrer"
-// //                 className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
-// //               >
-// //                 <ExternalLink className="w-4 h-4 text-gray-400" />
-// //               </a>
-// //             )}
-// //           </div>
-// //         </div>
+//   return (
+//     <motion.div
+//       initial={{ opacity: 0, y: 20 }}
+//       animate={{ opacity: 1, y: 0 }}
+//       className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-all group"
+//     >
+//       <div className="p-6">
+//         <div className="flex items-start justify-between mb-4">
+//           <div>
+//             <h3 className="text-lg font-semibold text-gray-900 mb-1">{exp.title}</h3>
+//             <p className="text-sm" style={{ color: colorSchemes[colorScheme].primary }}>
+//               {exp.company}
+//             </p>
+//           </div>
+//           <div className="flex items-center gap-2">
+//             <span className="text-xs text-gray-500 flex items-center gap-1">
+//               <Calendar className="w-3 h-3" />
+//               {exp.period}
+//             </span>
+//             {exp.link && (
+//               <a
+//                 href={exp.link}
+//                 target="_blank"
+//                 rel="noopener noreferrer"
+//                 className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+//               >
+//                 <ExternalLink className="w-4 h-4 text-gray-400" />
+//               </a>
+//             )}
+//           </div>
+//         </div>
 
-// //         {exp.description.length > 0 && (
-// //           <p className="text-sm text-gray-600 mb-4">{exp.description[0]}</p>
-// //         )}
+//         {exp.description.length > 0 && (
+//           <p className="text-sm text-gray-600 mb-4">{exp.description[0]}</p>
+//         )}
 
        
-// //       </div>
-// //     </motion.div>
-// //   );
-// // };
+//       </div>
+//     </motion.div>
+//   );
+// };
 
-// // // Main Component
-// // const CVGeneratorPage = () => {
-// //   const [file, setFile] = useState<File | null>(null);
-// //   const [uploading, setUploading] = useState(false);
-// //   const [processing, setProcessing] = useState(false);
-// //   const [cvData, setCvData] = useState<ParsedCVData | null>(null);
-// //   const [dragActive, setDragActive] = useState(false);
-// //   const [activeStep, setActiveStep] = useState<"upload" | "preview" | "download">("upload");
-// //   const [selectedTemplate, setSelectedTemplate] = useState<TemplateStyle>("modern");
-// //   const [colorScheme, setColorScheme] = useState<ColorScheme>("red");
-// //   const [previewMode, setPreviewMode] = useState<"desktop" | "tablet" | "mobile">("desktop");
-// //   const [darkMode, setDarkMode] = useState(false);
-// //   const [exportFormat, setExportFormat] = useState<"pdf" | "docx" | "txt">("pdf");
-// //   const [exporting, setExporting] = useState(false);
-// //   const [rawText, setRawText] = useState("");
+// // Main Component
+// const CVGeneratorPage = () => {
+//   const [file, setFile] = useState<File | null>(null);
+//   const [uploading, setUploading] = useState(false);
+//   const [processing, setProcessing] = useState(false);
+//   const [cvData, setCvData] = useState<ParsedCVData | null>(null);
+//   const [dragActive, setDragActive] = useState(false);
+//   const [activeStep, setActiveStep] = useState<"upload" | "preview" | "download">("upload");
+//   const [selectedTemplate, setSelectedTemplate] = useState<TemplateStyle>("modern");
+//   const [colorScheme, setColorScheme] = useState<ColorScheme>("red");
+//   const [previewMode, setPreviewMode] = useState<"desktop" | "tablet" | "mobile">("desktop");
+//   const [darkMode, setDarkMode] = useState(false);
+//   const [exportFormat, setExportFormat] = useState<"pdf" | "docx" | "txt">("pdf");
+//   const [exporting, setExporting] = useState(false);
+//   const [rawText, setRawText] = useState("");
 
-// //   // Handle file upload
-// //   const handleDrag = (e: React.DragEvent) => {
-// //     e.preventDefault();
-// //     e.stopPropagation();
-// //     if (e.type === "dragenter" || e.type === "dragover") {
-// //       setDragActive(true);
-// //     } else if (e.type === "dragleave") {
-// //       setDragActive(false);
-// //     }
-// //   };
+//   // Handle file upload
+//   const handleDrag = (e: React.DragEvent) => {
+//     e.preventDefault();
+//     e.stopPropagation();
+//     if (e.type === "dragenter" || e.type === "dragover") {
+//       setDragActive(true);
+//     } else if (e.type === "dragleave") {
+//       setDragActive(false);
+//     }
+//   };
 
-// //   const handleDrop = (e: React.DragEvent) => {
-// //     e.preventDefault();
-// //     e.stopPropagation();
-// //     setDragActive(false);
+//   const handleDrop = (e: React.DragEvent) => {
+//     e.preventDefault();
+//     e.stopPropagation();
+//     setDragActive(false);
 
-// //     const droppedFile = e.dataTransfer.files[0];
-// //     if (
-// //       droppedFile &&
-// //       (droppedFile.type === "application/pdf" ||
-// //         droppedFile.type === "application/msword" ||
-// //         droppedFile.type ===
-// //           "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
-// //         droppedFile.type === "text/plain")
-// //     ) {
-// //       setFile(droppedFile);
-// //     }
-// //   };
+//     const droppedFile = e.dataTransfer.files[0];
+//     if (
+//       droppedFile &&
+//       (droppedFile.type === "application/pdf" ||
+//         droppedFile.type === "application/msword" ||
+//         droppedFile.type ===
+//           "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
+//         droppedFile.type === "text/plain")
+//     ) {
+//       setFile(droppedFile);
+//     }
+//   };
 
-// //   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-// //     if (e.target.files && e.target.files[0]) {
-// //       setFile(e.target.files[0]);
-// //     }
-// //   };
+//   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     if (e.target.files && e.target.files[0]) {
+//       setFile(e.target.files[0]);
+//     }
+//   };
 
-// //   const removeFile = () => {
-// //     setFile(null);
-// //     setCvData(null);
-// //     setRawText("");
-// //     setActiveStep("upload");
-// //   };
+//   const removeFile = () => {
+//     setFile(null);
+//     setCvData(null);
+//     setRawText("");
+//     setActiveStep("upload");
+//   };
 
-// //   // Process resume data
-// //   const processResume = async () => {
-// //     if (!file) return;
+//   // Process resume data
+//   const processResume = async () => {
+//     if (!file) return;
 
-// //     setUploading(true);
-// //     setProcessing(true);
+//     setUploading(true);
+//     setProcessing(true);
 
-// //     try {
-// //       const formData = new FormData();
-// //       formData.append("file", file);
+//     try {
+//       const formData = new FormData();
+//       formData.append("file", file);
 
-// //       const response = await axios.post(
-// //         `https://ai.aryuacademy.com/api/v1/resume/cv/generate-from-file`,
-// //         formData,
-// //         {
-// //           headers: {
-// //             "Content-Type": "multipart/form-data",
-// //           },
-// //         }
-// //       );
+//       const response = await axios.post(
+//         `https://ai.aryuacademy.com/api/v1/resume/cv/generate-from-file`,
+//         formData,
+//         {
+//           headers: {
+//             "Content-Type": "multipart/form-data",
+//           },
+//         }
+//       );
 
-// //       console.log("API Response:", response.data.data.cv_content);
+//       console.log("API Response:", response.data.data.cv_content);
       
-// //       // Get the cv_content from the response
-// //       const cvContent = response.data.data.cv_content;
-// //       setRawText(cvContent);
+//       // Get the cv_content from the response
+//       const cvContent = response.data.data.cv_content;
+//       setRawText(cvContent);
       
-// //       // Parse the text data
-// //       const parsed = parseCVText(cvContent);
-// //       console.log("Parsed CV Data:", parsed);
+//       // Parse the text data
+//       const parsed = parseCVText(cvContent);
+//       console.log("Parsed CV Data:", parsed);
       
-// //       setCvData(parsed);
-// //       setActiveStep("preview");
+//       setCvData(parsed);
+//       setActiveStep("preview");
       
-// //     } catch (error) {
-// //       console.error("Error processing resume:", error);
-// //     } finally {
-// //       setUploading(false);
-// //       setProcessing(false);
-// //     }
-// //   };
+//     } catch (error) {
+//       console.error("Error processing resume:", error);
+//     } finally {
+//       setUploading(false);
+//       setProcessing(false);
+//     }
+//   };
 
 
-// //   // Export CV
-// //  // Export CV as PDF with exact same styling as preview
-// // const exportCV = async () => {
-// //   setExporting(true);
-// //   try {
-// //     await new Promise(resolve => setTimeout(resolve, 1500));
+//   // Export CV
+//  // Export CV as PDF with exact same styling as preview
+// const exportCV = async () => {
+//   setExporting(true);
+//   try {
+//     await new Promise(resolve => setTimeout(resolve, 1500));
     
-// //     // Create a new window for PDF generation
-// //     const printWindow = window.open('', '_blank');
-// //     if (!printWindow) {
-// //       alert('Please allow pop-ups to download PDF');
-// //       setExporting(false);
-// //       return;
-// //     }
+//     // Create a new window for PDF generation
+//     const printWindow = window.open('', '_blank');
+//     if (!printWindow) {
+//       alert('Please allow pop-ups to download PDF');
+//       setExporting(false);
+//       return;
+//     }
 
-// //     // Get the current color scheme
-// //     const colors = colorSchemes[colorScheme];
+//     // Get the current color scheme
+//     const colors = colorSchemes[colorScheme];
 
-// //     // Generate HTML content for PDF with exact same styling as preview
-// //     const htmlContent = `
-// //       <!DOCTYPE html>
-// //       <html>
-// //         <head>
-// //           <title>${cvData?.personalInfo.fullName} - CV</title>
-// //           <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-// //           <style>
-// //             * {
-// //               margin: 0;
-// //               padding: 0;
-// //               box-sizing: border-box;
-// //             }
+//     // Generate HTML content for PDF with exact same styling as preview
+//     const htmlContent = `
+//       <!DOCTYPE html>
+//       <html>
+//         <head>
+//           <title>${cvData?.personalInfo.fullName} - CV</title>
+//           <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+//           <style>
+//             * {
+//               margin: 0;
+//               padding: 0;
+//               box-sizing: border-box;
+//             }
             
-// //             body {
-// //               font-family: 'Inter', sans-serif;
-// //               background: #f3f4f6;
-// //               padding: 40px;
-// //               line-height: 1.5;
-// //             }
+//             body {
+//               font-family: 'Inter', sans-serif;
+//               background: #f3f4f6;
+//               padding: 40px;
+//               line-height: 1.5;
+//             }
             
-// //             .cv-container {
-// //               max-width: 900px;
-// //               margin: 0 auto;
-// //               background: white;
-// //               border-radius: 24px;
-// //               box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-// //               overflow: hidden;
-// //             }
+//             .cv-container {
+//               max-width: 900px;
+//               margin: 0 auto;
+//               background: white;
+//               border-radius: 24px;
+//               box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+//               overflow: hidden;
+//             }
             
-// //             .cv-content {
-// //               padding: 32px;
-// //             }
+//             .cv-content {
+//               padding: 32px;
+//             }
             
-// //             /* Header Styles */
-// //             .header {
-// //               text-align: center;
-// //               margin-bottom: 32px;
-// //             }
+//             /* Header Styles */
+//             .header {
+//               text-align: center;
+//               margin-bottom: 32px;
+//             }
             
-// //             .name {
-// //               font-size: 36px;
-// //               font-weight: 700;
-// //               margin-bottom: 8px;
-// //               color: ${colors.primary};
-// //             }
+//             .name {
+//               font-size: 36px;
+//               font-weight: 700;
+//               margin-bottom: 8px;
+//               color: ${colors.primary};
+//             }
             
-// //             .title {
-// //               font-size: 18px;
-// //               color: #4b5563;
-// //               margin-bottom: 16px;
-// //             }
+//             .title {
+//               font-size: 18px;
+//               color: #4b5563;
+//               margin-bottom: 16px;
+//             }
             
-// //             .contact-info {
-// //               display: flex;
-// //               flex-wrap: wrap;
-// //               justify-content: center;
-// //               gap: 16px;
-// //               font-size: 14px;
-// //             }
+//             .contact-info {
+//               display: flex;
+//               flex-wrap: wrap;
+//               justify-content: center;
+//               gap: 16px;
+//               font-size: 14px;
+//             }
             
-// //             .contact-item {
-// //               display: flex;
-// //               align-items: center;
-// //               gap: 4px;
-// //               color: #6b7280;
-// //             }
+//             .contact-item {
+//               display: flex;
+//               align-items: center;
+//               gap: 4px;
+//               color: #6b7280;
+//             }
             
-// //             .contact-icon {
-// //               color: ${colors.primary};
-// //             }
+//             .contact-icon {
+//               color: ${colors.primary};
+//             }
             
-// //             .address {
-// //               font-size: 13px;
-// //               color: #9ca3af;
-// //               margin-top: 8px;
-// //             }
+//             .address {
+//               font-size: 13px;
+//               color: #9ca3af;
+//               margin-top: 8px;
+//             }
             
-// //             /* Section Styles */
-// //             .section {
-// //               margin-bottom: 32px;
-// //             }
+//             /* Section Styles */
+//             .section {
+//               margin-bottom: 32px;
+//             }
             
-// //             .section-title {
-// //               display: flex;
-// //               align-items: center;
-// //               gap: 8px;
-// //               font-size: 20px;
-// //               font-weight: 600;
-// //               margin-bottom: 16px;
-// //               color: #111827;
-// //             }
+//             .section-title {
+//               display: flex;
+//               align-items: center;
+//               gap: 8px;
+//               font-size: 20px;
+//               font-weight: 600;
+//               margin-bottom: 16px;
+//               color: #111827;
+//             }
             
-// //             .section-title-bar {
-// //               width: 4px;
-// //               height: 24px;
-// //               background: ${colors.primary};
-// //               border-radius: 2px;
-// //             }
+//             .section-title-bar {
+//               width: 4px;
+//               height: 24px;
+//               background: ${colors.primary};
+//               border-radius: 2px;
+//             }
             
-// //             /* Summary Styles */
-// //             .summary-text {
-// //               color: #374151;
-// //               line-height: 1.7;
-// //               font-size: 14px;
-// //             }
+//             /* Summary Styles */
+//             .summary-text {
+//               color: #374151;
+//               line-height: 1.7;
+//               font-size: 14px;
+//             }
             
-// //             /* Competencies Grid */
-// //             .competencies-grid {
-// //               display: grid;
-// //               grid-template-columns: repeat(3, 1fr);
-// //               gap: 24px;
-// //             }
+//             /* Competencies Grid */
+//             .competencies-grid {
+//               display: grid;
+//               grid-template-columns: repeat(3, 1fr);
+//               gap: 24px;
+//             }
             
-// //             .competency-category {
-// //               background: #f9fafb;
-// //               padding: 16px;
-// //               border-radius: 12px;
-// //             }
+//             .competency-category {
+//               background: #f9fafb;
+//               padding: 16px;
+//               border-radius: 12px;
+//             }
             
-// //             .competency-title {
-// //               font-size: 16px;
-// //               font-weight: 600;
-// //               margin-bottom: 12px;
-// //               color: ${colors.primary};
-// //             }
+//             .competency-title {
+//               font-size: 16px;
+//               font-weight: 600;
+//               margin-bottom: 12px;
+//               color: ${colors.primary};
+//             }
             
-// //             .competency-list {
-// //               list-style: none;
-// //             }
+//             .competency-list {
+//               list-style: none;
+//             }
             
-// //             .competency-item {
-// //               display: flex;
-// //               align-items: center;
-// //               gap: 8px;
-// //               margin-bottom: 8px;
-// //               font-size: 14px;
-// //               color: #374151;
-// //             }
+//             .competency-item {
+//               display: flex;
+//               align-items: center;
+//               gap: 8px;
+//               margin-bottom: 8px;
+//               font-size: 14px;
+//               color: #374151;
+//             }
             
-// //             .competency-bullet {
-// //               width: 6px;
-// //               height: 6px;
-// //               border-radius: 50%;
-// //               background: ${colors.primary};
-// //             }
+//             .competency-bullet {
+//               width: 6px;
+//               height: 6px;
+//               border-radius: 50%;
+//               background: ${colors.primary};
+//             }
             
-// //             /* Experience Styles */
-// //             .experience-item {
-// //               background: white;
-// //               border: 1px solid #e5e7eb;
-// //               border-radius: 12px;
-// //               overflow: hidden;
-// //               margin-bottom: 16px;
-// //               box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-// //             }
+//             /* Experience Styles */
+//             .experience-item {
+//               background: white;
+//               border: 1px solid #e5e7eb;
+//               border-radius: 12px;
+//               overflow: hidden;
+//               margin-bottom: 16px;
+//               box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+//             }
             
-// //             .experience-content {
-// //               padding: 20px;
-// //             }
+//             .experience-content {
+//               padding: 20px;
+//             }
             
-// //             .experience-header {
-// //               display: flex;
-// //               justify-content: space-between;
-// //               align-items: flex-start;
-// //               margin-bottom: 12px;
-// //             }
+//             .experience-header {
+//               display: flex;
+//               justify-content: space-between;
+//               align-items: flex-start;
+//               margin-bottom: 12px;
+//             }
             
-// //             .experience-title {
-// //               font-size: 18px;
-// //               font-weight: 600;
-// //               color: #111827;
-// //               margin-bottom: 4px;
-// //             }
+//             .experience-title {
+//               font-size: 18px;
+//               font-weight: 600;
+//               color: #111827;
+//               margin-bottom: 4px;
+//             }
             
-// //             .experience-company {
-// //               font-size: 14px;
-// //               color: ${colors.primary};
-// //             }
+//             .experience-company {
+//               font-size: 14px;
+//               color: ${colors.primary};
+//             }
             
-// //             .experience-period {
-// //               display: flex;
-// //               align-items: center;
-// //               gap: 4px;
-// //               font-size: 12px;
-// //               color: #6b7280;
-// //             }
+//             .experience-period {
+//               display: flex;
+//               align-items: center;
+//               gap: 4px;
+//               font-size: 12px;
+//               color: #6b7280;
+//             }
             
-// //             .experience-description {
-// //               font-size: 14px;
-// //               color: #4b5563;
-// //               margin-bottom: 12px;
-// //             }
+//             .experience-description {
+//               font-size: 14px;
+//               color: #4b5563;
+//               margin-bottom: 12px;
+//             }
             
-// //             .achievements-button {
-// //               display: flex;
-// //               align-items: center;
-// //               gap: 4px;
-// //               font-size: 14px;
-// //               font-weight: 500;
-// //               color: ${colors.primary};
-// //               background: none;
-// //               border: none;
-// //               cursor: pointer;
-// //               padding: 0;
-// //               margin-bottom: 12px;
-// //             }
+//             .achievements-button {
+//               display: flex;
+//               align-items: center;
+//               gap: 4px;
+//               font-size: 14px;
+//               font-weight: 500;
+//               color: ${colors.primary};
+//               background: none;
+//               border: none;
+//               cursor: pointer;
+//               padding: 0;
+//               margin-bottom: 12px;
+//             }
             
-// //             .achievements-list {
-// //               list-style: none;
-// //               margin-top: 12px;
-// //             }
+//             .achievements-list {
+//               list-style: none;
+//               margin-top: 12px;
+//             }
             
-// //             .achievement-item {
-// //               display: flex;
-// //               align-items: flex-start;
-// //               gap: 8px;
-// //               margin-bottom: 8px;
-// //               font-size: 14px;
-// //               color: #4b5563;
-// //             }
+//             .achievement-item {
+//               display: flex;
+//               align-items: flex-start;
+//               gap: 8px;
+//               margin-bottom: 8px;
+//               font-size: 14px;
+//               color: #4b5563;
+//             }
             
-// //             .achievement-bullet {
-// //               width: 6px;
-// //               height: 6px;
-// //               border-radius: 50%;
-// //               background: ${colors.primary};
-// //               margin-top: 6px;
-// //             }
+//             .achievement-bullet {
+//               width: 6px;
+//               height: 6px;
+//               border-radius: 50%;
+//               background: ${colors.primary};
+//               margin-top: 6px;
+//             }
             
-// //             /* Skills Styles */
-// //             .skills-container {
-// //               display: flex;
-// //               flex-wrap: wrap;
-// //               gap: 8px;
-// //             }
+//             /* Skills Styles */
+//             .skills-container {
+//               display: flex;
+//               flex-wrap: wrap;
+//               gap: 8px;
+//             }
             
-// //             .skill-tag {
-// //               padding: 8px 16px;
-// //               background: ${colors.primary}10;
-// //               color: ${colors.primary};
-// //               border: 1px solid ${colors.primary}20;
-// //               border-radius: 8px;
-// //               font-size: 14px;
-// //               font-weight: 500;
-// //             }
+//             .skill-tag {
+//               padding: 8px 16px;
+//               background: ${colors.primary}10;
+//               color: ${colors.primary};
+//               border: 1px solid ${colors.primary}20;
+//               border-radius: 8px;
+//               font-size: 14px;
+//               font-weight: 500;
+//             }
             
-// //             /* Education Styles */
-// //             .education-item {
-// //               display: flex;
-// //               justify-content: space-between;
-// //               align-items: center;
-// //               padding: 16px;
-// //               background: #f9fafb;
-// //               border-radius: 12px;
-// //               margin-bottom: 8px;
-// //             }
+//             /* Education Styles */
+//             .education-item {
+//               display: flex;
+//               justify-content: space-between;
+//               align-items: center;
+//               padding: 16px;
+//               background: #f9fafb;
+//               border-radius: 12px;
+//               margin-bottom: 8px;
+//             }
             
-// //             .education-degree {
-// //               font-size: 16px;
-// //               font-weight: 600;
-// //               color: #111827;
-// //               margin-bottom: 4px;
-// //             }
+//             .education-degree {
+//               font-size: 16px;
+//               font-weight: 600;
+//               color: #111827;
+//               margin-bottom: 4px;
+//             }
             
-// //             .education-institution {
-// //               font-size: 14px;
-// //               color: #6b7280;
-// //             }
+//             .education-institution {
+//               font-size: 14px;
+//               color: #6b7280;
+//             }
             
-// //             .education-period {
-// //               font-size: 12px;
-// //               color: #9ca3af;
-// //             }
+//             .education-period {
+//               font-size: 12px;
+//               color: #9ca3af;
+//             }
             
-// //             /* Additional Info Styles */
-// //             .additional-grid {
-// //               display: grid;
-// //               grid-template-columns: repeat(2, 1fr);
-// //               gap: 16px;
-// //             }
+//             /* Additional Info Styles */
+//             .additional-grid {
+//               display: grid;
+//               grid-template-columns: repeat(2, 1fr);
+//               gap: 16px;
+//             }
             
-// //             .additional-item {
-// //               background: #f9fafb;
-// //               padding: 16px;
-// //               border-radius: 12px;
-// //             }
+//             .additional-item {
+//               background: #f9fafb;
+//               padding: 16px;
+//               border-radius: 12px;
+//             }
             
-// //             .additional-title {
-// //               font-size: 16px;
-// //               font-weight: 600;
-// //               margin-bottom: 12px;
-// //               color: ${colors.primary};
-// //             }
+//             .additional-title {
+//               font-size: 16px;
+//               font-weight: 600;
+//               margin-bottom: 12px;
+//               color: ${colors.primary};
+//             }
             
-// //             .additional-list {
-// //               list-style: none;
-// //             }
+//             .additional-list {
+//               list-style: none;
+//             }
             
-// //             .additional-list-item {
-// //               display: flex;
-// //               align-items: center;
-// //               gap: 8px;
-// //               margin-bottom: 6px;
-// //               font-size: 14px;
-// //               color: #4b5563;
-// //             }
+//             .additional-list-item {
+//               display: flex;
+//               align-items: center;
+//               gap: 8px;
+//               margin-bottom: 6px;
+//               font-size: 14px;
+//               color: #4b5563;
+//             }
             
-// //             .additional-bullet {
-// //               width: 4px;
-// //               height: 4px;
-// //               border-radius: 50%;
-// //               background: ${colors.primary};
-// //             }
+//             .additional-bullet {
+//               width: 4px;
+//               height: 4px;
+//               border-radius: 50%;
+//               background: ${colors.primary};
+//             }
             
-// //             /* Print Styles */
-// //             @media print {
-// //               body {
-// //                 background: white;
-// //                 padding: 0;
-// //               }
+//             /* Print Styles */
+//             @media print {
+//               body {
+//                 background: white;
+//                 padding: 0;
+//               }
               
-// //               .cv-container {
-// //                 box-shadow: none;
-// //                 border-radius: 0;
-// //               }
+//               .cv-container {
+//                 box-shadow: none;
+//                 border-radius: 0;
+//               }
               
-// //               .experience-item {
-// //                 break-inside: avoid;
-// //               }
-// //             }
-// //           </style>
-// //         </head>
-// //         <body>
-// //           <div class="cv-container">
-// //             <div class="cv-content">
-// //               <!-- Header -->
-// //               <div class="header">
-// //                 <h1 class="name">${cvData?.personalInfo.fullName || ''}</h1>
-// //                 <p class="title">${cvData?.personalInfo.title || ''}</p>
+//               .experience-item {
+//                 break-inside: avoid;
+//               }
+//             }
+//           </style>
+//         </head>
+//         <body>
+//           <div class="cv-container">
+//             <div class="cv-content">
+//               <!-- Header -->
+//               <div class="header">
+//                 <h1 class="name">${cvData?.personalInfo.fullName || ''}</h1>
+//                 <p class="title">${cvData?.personalInfo.title || ''}</p>
                 
-// //                 <div class="contact-info">
-// //                   ${cvData?.personalInfo.email ? `
-// //                     <span class="contact-item">
-// //                       <span class="contact-icon">✉️</span>
-// //                       ${cvData.personalInfo.email}
-// //                     </span>
-// //                   ` : ''}
-// //                   ${cvData?.personalInfo.phone ? `
-// //                     <span class="contact-item">
-// //                       <span class="contact-icon">📱</span>
-// //                       ${cvData.personalInfo.phone}
-// //                     </span>
-// //                   ` : ''}
-// //                   ${cvData?.personalInfo.location ? `
-// //                     <span class="contact-item">
-// //                       <span class="contact-icon">📍</span>
-// //                       ${cvData.personalInfo.location}
-// //                     </span>
-// //                   ` : ''}
-// //                 </div>
+//                 <div class="contact-info">
+//                   ${cvData?.personalInfo.email ? `
+//                     <span class="contact-item">
+//                       <span class="contact-icon">✉️</span>
+//                       ${cvData.personalInfo.email}
+//                     </span>
+//                   ` : ''}
+//                   ${cvData?.personalInfo.phone ? `
+//                     <span class="contact-item">
+//                       <span class="contact-icon">📱</span>
+//                       ${cvData.personalInfo.phone}
+//                     </span>
+//                   ` : ''}
+//                   ${cvData?.personalInfo.location ? `
+//                     <span class="contact-item">
+//                       <span class="contact-icon">📍</span>
+//                       ${cvData.personalInfo.location}
+//                     </span>
+//                   ` : ''}
+//                 </div>
                 
-// //                 ${cvData?.personalInfo.address ? `
-// //                   <p class="address">${cvData.personalInfo.address}</p>
-// //                 ` : ''}
-// //               </div>
+//                 ${cvData?.personalInfo.address ? `
+//                   <p class="address">${cvData.personalInfo.address}</p>
+//                 ` : ''}
+//               </div>
 
-// //               <!-- Professional Summary -->
-// //               ${cvData?.personalInfo.summary ? `
-// //                 <div class="section">
-// //                   <h2 class="section-title">
-// //                     <div class="section-title-bar"></div>
-// //                     Professional Summary
-// //                   </h2>
-// //                   <p class="summary-text">${cvData.personalInfo.summary}</p>
-// //                 </div>
-// //               ` : ''}
+//               <!-- Professional Summary -->
+//               ${cvData?.personalInfo.summary ? `
+//                 <div class="section">
+//                   <h2 class="section-title">
+//                     <div class="section-title-bar"></div>
+//                     Professional Summary
+//                   </h2>
+//                   <p class="summary-text">${cvData.personalInfo.summary}</p>
+//                 </div>
+//               ` : ''}
 
-// //               <!-- Core Competencies -->
-// //               ${(cvData?.coreCompetencies.technical.length > 0 || 
-// //                  cvData?.coreCompetencies.leadership.length > 0 || 
-// //                  cvData?.coreCompetencies.domainExpertise.length > 0) ? `
-// //                 <div class="section">
-// //                   <h2 class="section-title">
-// //                     <div class="section-title-bar"></div>
-// //                     Core Competencies
-// //                   </h2>
+//               <!-- Core Competencies -->
+//               ${(cvData?.coreCompetencies.technical.length > 0 || 
+//                  cvData?.coreCompetencies.leadership.length > 0 || 
+//                  cvData?.coreCompetencies.domainExpertise.length > 0) ? `
+//                 <div class="section">
+//                   <h2 class="section-title">
+//                     <div class="section-title-bar"></div>
+//                     Core Competencies
+//                   </h2>
                   
-// //                   <div class="competencies-grid">
-// //                     ${cvData?.coreCompetencies.technical.length > 0 ? `
-// //                       <div class="competency-category">
-// //                         <h3 class="competency-title">Technical</h3>
-// //                         <ul class="competency-list">
-// //                           ${cvData.coreCompetencies.technical.map(skill => `
-// //                             <li class="competency-item">
-// //                               <span class="competency-bullet"></span>
-// //                               ${skill}
-// //                             </li>
-// //                           `).join('')}
-// //                         </ul>
-// //                       </div>
-// //                     ` : ''}
+//                   <div class="competencies-grid">
+//                     ${cvData?.coreCompetencies.technical.length > 0 ? `
+//                       <div class="competency-category">
+//                         <h3 class="competency-title">Technical</h3>
+//                         <ul class="competency-list">
+//                           ${cvData.coreCompetencies.technical.map(skill => `
+//                             <li class="competency-item">
+//                               <span class="competency-bullet"></span>
+//                               ${skill}
+//                             </li>
+//                           `).join('')}
+//                         </ul>
+//                       </div>
+//                     ` : ''}
 
-// //                     ${cvData?.coreCompetencies.leadership.length > 0 ? `
-// //                       <div class="competency-category">
-// //                         <h3 class="competency-title">Leadership</h3>
-// //                         <ul class="competency-list">
-// //                           ${cvData.coreCompetencies.leadership.map(skill => `
-// //                             <li class="competency-item">
-// //                               <span class="competency-bullet"></span>
-// //                               ${skill}
-// //                             </li>
-// //                           `).join('')}
-// //                         </ul>
-// //                       </div>
-// //                     ` : ''}
+//                     ${cvData?.coreCompetencies.leadership.length > 0 ? `
+//                       <div class="competency-category">
+//                         <h3 class="competency-title">Leadership</h3>
+//                         <ul class="competency-list">
+//                           ${cvData.coreCompetencies.leadership.map(skill => `
+//                             <li class="competency-item">
+//                               <span class="competency-bullet"></span>
+//                               ${skill}
+//                             </li>
+//                           `).join('')}
+//                         </ul>
+//                       </div>
+//                     ` : ''}
 
-// //                     ${cvData?.coreCompetencies.domainExpertise.length > 0 ? `
-// //                       <div class="competency-category">
-// //                         <h3 class="competency-title">Domain Expertise</h3>
-// //                         <ul class="competency-list">
-// //                           ${cvData.coreCompetencies.domainExpertise.map(skill => `
-// //                             <li class="competency-item">
-// //                               <span class="competency-bullet"></span>
-// //                               ${skill}
-// //                             </li>
-// //                           `).join('')}
-// //                         </ul>
-// //                       </div>
-// //                     ` : ''}
-// //                   </div>
-// //                 </div>
-// //               ` : ''}
+//                     ${cvData?.coreCompetencies.domainExpertise.length > 0 ? `
+//                       <div class="competency-category">
+//                         <h3 class="competency-title">Domain Expertise</h3>
+//                         <ul class="competency-list">
+//                           ${cvData.coreCompetencies.domainExpertise.map(skill => `
+//                             <li class="competency-item">
+//                               <span class="competency-bullet"></span>
+//                               ${skill}
+//                             </li>
+//                           `).join('')}
+//                         </ul>
+//                       </div>
+//                     ` : ''}
+//                   </div>
+//                 </div>
+//               ` : ''}
 
-// //               <!-- Professional Experience -->
-// //               ${cvData?.experience.length > 0 ? `
-// //                 <div class="section">
-// //                   <h2 class="section-title">
-// //                     <div class="section-title-bar"></div>
-// //                     Professional Experience
-// //                   </h2>
+//               <!-- Professional Experience -->
+//               ${cvData?.experience.length > 0 ? `
+//                 <div class="section">
+//                   <h2 class="section-title">
+//                     <div class="section-title-bar"></div>
+//                     Professional Experience
+//                   </h2>
                   
-// //                   <div>
-// //                     ${cvData.experience.map(exp => `
-// //                       <div class="experience-item">
-// //                         <div class="experience-content">
-// //                           <div class="experience-header">
-// //                             <div>
-// //                               <h3 class="experience-title">${exp.title}</h3>
-// //                               <p class="experience-company">${exp.company}</p>
-// //                             </div>
-// //                             <div class="experience-period">
-// //                               <span>📅</span>
-// //                               <span>${exp.period}</span>
-// //                             </div>
-// //                           </div>
+//                   <div>
+//                     ${cvData.experience.map(exp => `
+//                       <div class="experience-item">
+//                         <div class="experience-content">
+//                           <div class="experience-header">
+//                             <div>
+//                               <h3 class="experience-title">${exp.title}</h3>
+//                               <p class="experience-company">${exp.company}</p>
+//                             </div>
+//                             <div class="experience-period">
+//                               <span>📅</span>
+//                               <span>${exp.period}</span>
+//                             </div>
+//                           </div>
 
-// //                           ${exp.description.length > 0 ? `
-// //                             <p class="experience-description">${exp.description[0]}</p>
-// //                           ` : ''}
+//                           ${exp.description.length > 0 ? `
+//                             <p class="experience-description">${exp.description[0]}</p>
+//                           ` : ''}
 
-// //                           ${exp.achievements.length > 0 ? `
-// //                             <div class="achievements-button">
-// //                               <span>✨</span>
-// //                               <span>Achievements</span>
-// //                             </div>
+//                           ${exp.achievements.length > 0 ? `
+//                             <div class="achievements-button">
+//                               <span>✨</span>
+//                               <span>Achievements</span>
+//                             </div>
 
-// //                             <ul class="achievements-list">
-// //                               ${exp.achievements.map(achievement => `
-// //                                 <li class="achievement-item">
-// //                                   <span class="achievement-bullet"></span>
-// //                                   <span>${achievement}</span>
-// //                                 </li>
-// //                               `).join('')}
-// //                             </ul>
-// //                           ` : ''}
-// //                         </div>
-// //                       </div>
-// //                     `).join('')}
-// //                   </div>
-// //                 </div>
-// //               ` : ''}
+//                             <ul class="achievements-list">
+//                               ${exp.achievements.map(achievement => `
+//                                 <li class="achievement-item">
+//                                   <span class="achievement-bullet"></span>
+//                                   <span>${achievement}</span>
+//                                 </li>
+//                               `).join('')}
+//                             </ul>
+//                           ` : ''}
+//                         </div>
+//                       </div>
+//                     `).join('')}
+//                   </div>
+//                 </div>
+//               ` : ''}
 
-// //               <!-- Technical Skills -->
-// //               ${cvData?.skills.length > 0 ? `
-// //                 <div class="section">
-// //                   <h2 class="section-title">
-// //                     <div class="section-title-bar"></div>
-// //                     Technical Skills
-// //                   </h2>
+//               <!-- Technical Skills -->
+//               ${cvData?.skills.length > 0 ? `
+//                 <div class="section">
+//                   <h2 class="section-title">
+//                     <div class="section-title-bar"></div>
+//                     Technical Skills
+//                   </h2>
                   
-// //                   <div class="skills-container">
-// //                     ${cvData.skills.map(skill => `
-// //                       <span class="skill-tag">${skill.name}</span>
-// //                     `).join('')}
-// //                   </div>
-// //                 </div>
-// //               ` : ''}
+//                   <div class="skills-container">
+//                     ${cvData.skills.map(skill => `
+//                       <span class="skill-tag">${skill.name}</span>
+//                     `).join('')}
+//                   </div>
+//                 </div>
+//               ` : ''}
 
-// //               <!-- Education -->
-// //               ${cvData?.education.length > 0 ? `
-// //                 <div class="section">
-// //                   <h2 class="section-title">
-// //                     <div class="section-title-bar"></div>
-// //                     Education
-// //                   </h2>
+//               <!-- Education -->
+//               ${cvData?.education.length > 0 ? `
+//                 <div class="section">
+//                   <h2 class="section-title">
+//                     <div class="section-title-bar"></div>
+//                     Education
+//                   </h2>
                   
-// //                   <div>
-// //                     ${cvData.education.map(edu => `
-// //                       <div class="education-item">
-// //                         <div>
-// //                           <p class="education-degree">${edu.degree}</p>
-// //                           <p class="education-institution">${edu.institution}</p>
-// //                         </div>
-// //                         ${edu.period ? `
-// //                           <span class="education-period">${edu.period}</span>
-// //                         ` : ''}
-// //                       </div>
-// //                     `).join('')}
-// //                   </div>
-// //                 </div>
-// //               ` : ''}
+//                   <div>
+//                     ${cvData.education.map(edu => `
+//                       <div class="education-item">
+//                         <div>
+//                           <p class="education-degree">${edu.degree}</p>
+//                           <p class="education-institution">${edu.institution}</p>
+//                         </div>
+//                         ${edu.period ? `
+//                           <span class="education-period">${edu.period}</span>
+//                         ` : ''}
+//                       </div>
+//                     `).join('')}
+//                   </div>
+//                 </div>
+//               ` : ''}
 
-// //               <!-- Additional Information -->
-// //               ${(cvData?.additionalCredentials.languages.length > 0 || 
-// //                  cvData?.additionalCredentials.certifications.length > 0 ||
-// //                  cvData?.additionalCredentials.awards.length > 0) ? `
-// //                 <div class="section">
-// //                   <h2 class="section-title">
-// //                     <div class="section-title-bar"></div>
-// //                     Additional Information
-// //                   </h2>
+//               <!-- Additional Information -->
+//               ${(cvData?.additionalCredentials.languages.length > 0 || 
+//                  cvData?.additionalCredentials.certifications.length > 0 ||
+//                  cvData?.additionalCredentials.awards.length > 0) ? `
+//                 <div class="section">
+//                   <h2 class="section-title">
+//                     <div class="section-title-bar"></div>
+//                     Additional Information
+//                   </h2>
                   
-// //                   <div class="additional-grid">
-// //                     ${cvData?.additionalCredentials.languages.length > 0 ? `
-// //                       <div class="additional-item">
-// //                         <h3 class="additional-title">Languages</h3>
-// //                         <ul class="additional-list">
-// //                           ${cvData.additionalCredentials.languages.map(lang => `
-// //                             <li class="additional-list-item">
-// //                               <span class="additional-bullet"></span>
-// //                               ${lang}
-// //                             </li>
-// //                           `).join('')}
-// //                         </ul>
-// //                       </div>
-// //                     ` : ''}
+//                   <div class="additional-grid">
+//                     ${cvData?.additionalCredentials.languages.length > 0 ? `
+//                       <div class="additional-item">
+//                         <h3 class="additional-title">Languages</h3>
+//                         <ul class="additional-list">
+//                           ${cvData.additionalCredentials.languages.map(lang => `
+//                             <li class="additional-list-item">
+//                               <span class="additional-bullet"></span>
+//                               ${lang}
+//                             </li>
+//                           `).join('')}
+//                         </ul>
+//                       </div>
+//                     ` : ''}
 
-// //                     ${cvData?.additionalCredentials.certifications.length > 0 ? `
-// //                       <div class="additional-item">
-// //                         <h3 class="additional-title">Certifications</h3>
-// //                         <ul class="additional-list">
-// //                           ${cvData.additionalCredentials.certifications.map(cert => `
-// //                             <li class="additional-list-item">
-// //                               <span class="additional-bullet"></span>
-// //                               ${cert}
-// //                             </li>
-// //                           `).join('')}
-// //                         </ul>
-// //                       </div>
-// //                     ` : ''}
+//                     ${cvData?.additionalCredentials.certifications.length > 0 ? `
+//                       <div class="additional-item">
+//                         <h3 class="additional-title">Certifications</h3>
+//                         <ul class="additional-list">
+//                           ${cvData.additionalCredentials.certifications.map(cert => `
+//                             <li class="additional-list-item">
+//                               <span class="additional-bullet"></span>
+//                               ${cert}
+//                             </li>
+//                           `).join('')}
+//                         </ul>
+//                       </div>
+//                     ` : ''}
 
-// //                     ${cvData?.additionalCredentials.awards.length > 0 ? `
-// //                       <div class="additional-item">
-// //                         <h3 class="additional-title">Awards</h3>
-// //                         <ul class="additional-list">
-// //                           ${cvData.additionalCredentials.awards.map(award => `
-// //                             <li class="additional-list-item">
-// //                               <span class="additional-bullet"></span>
-// //                               ${award}
-// //                             </li>
-// //                           `).join('')}
-// //                         </ul>
-// //                       </div>
-// //                     ` : ''}
-// //                   </div>
-// //                 </div>
-// //               ` : ''}
-// //             </div>
-// //           </div>
+//                     ${cvData?.additionalCredentials.awards.length > 0 ? `
+//                       <div class="additional-item">
+//                         <h3 class="additional-title">Awards</h3>
+//                         <ul class="additional-list">
+//                           ${cvData.additionalCredentials.awards.map(award => `
+//                             <li class="additional-list-item">
+//                               <span class="additional-bullet"></span>
+//                               ${award}
+//                             </li>
+//                           `).join('')}
+//                         </ul>
+//                       </div>
+//                     ` : ''}
+//                   </div>
+//                 </div>
+//               ` : ''}
+//             </div>
+//           </div>
           
-// //           <script>
-// //             window.onload = function() {
-// //               setTimeout(() => {
-// //                 window.print();
-// //               }, 500);
-// //             }
-// //           </script>
-// //         </body>
-// //       </html>
-// //     `;
+//           <script>
+//             window.onload = function() {
+//               setTimeout(() => {
+//                 window.print();
+//               }, 500);
+//             }
+//           </script>
+//         </body>
+//       </html>
+//     `;
 
-// //     // Write the HTML to the new window
-// //     printWindow.document.write(htmlContent);
-// //     printWindow.document.close();
+//     // Write the HTML to the new window
+//     printWindow.document.write(htmlContent);
+//     printWindow.document.close();
     
-// //     setActiveStep("download");
-// //   } catch (error) {
-// //     console.error("Export failed:", error);
-// //   } finally {
-// //     setExporting(false);
-// //   }
-// // };
+//     setActiveStep("download");
+//   } catch (error) {
+//     console.error("Export failed:", error);
+//   } finally {
+//     setExporting(false);
+//   }
+// };
 
 
-// //   return (
-// //     <>
-// //       <Header />
+//   return (
+//     <>
       
-// //       <section className="relative pt-28 pb-20 overflow-hidden min-h-screen">
-// //         {/* Background Effects */}
-// //         <div className="absolute inset-0 bg-gradient-to-br from-[#c40116]/5 via-transparent to-[#be0117]/5" />
-// //         <div className="absolute top-20 left-10 w-96 h-96 bg-[#c40116]/10 rounded-full blur-3xl animate-pulse" />
-// //         <div className="absolute bottom-20 right-10 w-96 h-96 bg-[#be0117]/10 rounded-full blur-3xl animate-pulse delay-1000" />
-// //         <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-5" />
+//       <section className="relative pt-28 pb-20 overflow-hidden min-h-screen">
+//         {/* Background Effects */}
+//         <div className="absolute inset-0 bg-gradient-to-br from-[#c40116]/5 via-transparent to-[#be0117]/5" />
+//         <div className="absolute top-20 left-10 w-96 h-96 bg-[#c40116]/10 rounded-full blur-3xl animate-pulse" />
+//         <div className="absolute bottom-20 right-10 w-96 h-96 bg-[#be0117]/10 rounded-full blur-3xl animate-pulse delay-1000" />
+//         <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-5" />
 
-// //         <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
-// //           {/* Header */}
-// //           <motion.div
-// //             initial={{ opacity: 0, y: 20 }}
-// //             animate={{ opacity: 1, y: 0 }}
-// //             className="text-center max-w-5xl mx-auto mb-12"
-// //           >
-// //             <motion.div
-// //               initial={{ scale: 0.9, opacity: 0 }}
-// //               animate={{ scale: 1, opacity: 1 }}
-// //               transition={{ delay: 0.2 }}
-// //               className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#c40116]/10 to-[#be0117]/10 rounded-full mb-6 border border-[#c40116]/20 backdrop-blur-sm"
-// //             >
-// //               <Brain className="w-4 h-4 text-[#c40116]" />
-// //               <span className="text-sm font-medium bg-gradient-to-r from-[#c40116] to-[#be0117] bg-clip-text text-transparent">
-// //                 AI-Powered Cover Letter Generator
-// //               </span>
-// //               <Sparkles className="w-3 h-3 text-[#c40116]" />
-// //             </motion.div>
+//         <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
+//           {/* Header */}
+//           <motion.div
+//             initial={{ opacity: 0, y: 20 }}
+//             animate={{ opacity: 1, y: 0 }}
+//             className="text-center max-w-5xl mx-auto mb-12"
+//           >
+//             <motion.div
+//               initial={{ scale: 0.9, opacity: 0 }}
+//               animate={{ scale: 1, opacity: 1 }}
+//               transition={{ delay: 0.2 }}
+//               className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#c40116]/10 to-[#be0117]/10 rounded-full mb-6 border border-[#c40116]/20 backdrop-blur-sm"
+//             >
+//               <Brain className="w-4 h-4 text-[#c40116]" />
+//               <span className="text-sm font-medium bg-gradient-to-r from-[#c40116] to-[#be0117] bg-clip-text text-transparent">
+//                 AI-Powered Cover Letter Generator
+//               </span>
+//               <Sparkles className="w-3 h-3 text-[#c40116]" />
+//             </motion.div>
 
-// //             <motion.h1 className="text-5xl md:text-6xl font-bold mb-6">
-// //               <span className="bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-// //                 Upload Your Resume
-// //               </span>
-// //               <br />
+//             <motion.h1 className="text-5xl md:text-6xl font-bold mb-6">
+//               <span className="bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+//                 Upload Your Resume
+//               </span>
+//               <br />
               
-// //               <span className="bg-gradient-to-r from-[#c40116]  to-[#be0117] bg-clip-text text-transparent">
-// //                 Get a Professional Cover letter
-// //               </span>
-// //             </motion.h1>
+//               <span className="bg-gradient-to-r from-[#c40116]  to-[#be0117] bg-clip-text text-transparent">
+//                 Get a Professional Cover letter
+//               </span>
+//             </motion.h1>
 
-// //             <motion.p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-// //               Our AI automatically extracts and formats your information into a stunning, ATS-friendly CV.
-// //             </motion.p>
+//             <motion.p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+//               Our AI automatically extracts and formats your information into a stunning, ATS-friendly CV.
+//             </motion.p>
 
-// //             {/* Progress Steps */}
-// //             <div className="flex items-center justify-center gap-4 mb-8">
-// //               {[
-// //                 { step: "upload", label: "Upload", icon: UploadCloud },
-// //                 { step: "preview", label: "Preview", icon: Eye },
-// //                 { step: "download", label: "Download", icon: DownloadCloud },
-// //               ].map((step, index) => {
-// //                 const Icon = step.icon;
-// //                 const isActive = activeStep === step.step;
-// //                 const isComplete = 
-// //                   (step.step === "upload" && file) ||
-// //                   (step.step === "preview" && cvData) ||
-// //                   (step.step === "download" && activeStep === "download");
+//             {/* Progress Steps */}
+//             <div className="flex items-center justify-center gap-4 mb-8">
+//               {[
+//                 { step: "upload", label: "Upload", icon: UploadCloud },
+//                 { step: "preview", label: "Preview", icon: Eye },
+//                 { step: "download", label: "Download", icon: DownloadCloud },
+//               ].map((step, index) => {
+//                 const Icon = step.icon;
+//                 const isActive = activeStep === step.step;
+//                 const isComplete = 
+//                   (step.step === "upload" && file) ||
+//                   (step.step === "preview" && cvData) ||
+//                   (step.step === "download" && activeStep === "download");
 
-// //                 return (
-// //                   <React.Fragment key={step.step}>
-// //                     {index > 0 && (
-// //                       <div className={`w-12 h-0.5 ${
-// //                         isComplete ? "bg-[#c40116]" : "bg-gray-200"
-// //                       }`} />
-// //                     )}
-// //                     <div className="flex flex-col items-center">
-// //                       <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
-// //                         isActive
-// //                           ? "bg-gradient-to-r from-[#c40116] to-[#be0117] text-white shadow-lg shadow-[#c40116]/20 scale-110"
-// //                           : isComplete
-// //                           ? "bg-green-500 text-white"
-// //                           : "bg-gray-100 text-gray-400"
-// //                       }`}>
-// //                         <Icon className="w-5 h-5" />
-// //                       </div>
-// //                       <span className="text-xs mt-2 text-gray-600">{step.label}</span>
-// //                     </div>
-// //                   </React.Fragment>
-// //                 );
-// //               })}
-// //             </div>
+//                 return (
+//                   <React.Fragment key={step.step}>
+//                     {index > 0 && (
+//                       <div className={`w-12 h-0.5 ${
+//                         isComplete ? "bg-[#c40116]" : "bg-gray-200"
+//                       }`} />
+//                     )}
+//                     <div className="flex flex-col items-center">
+//                       <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+//                         isActive
+//                           ? "bg-gradient-to-r from-[#c40116] to-[#be0117] text-white shadow-lg shadow-[#c40116]/20 scale-110"
+//                           : isComplete
+//                           ? "bg-green-500 text-white"
+//                           : "bg-gray-100 text-gray-400"
+//                       }`}>
+//                         <Icon className="w-5 h-5" />
+//                       </div>
+//                       <span className="text-xs mt-2 text-gray-600">{step.label}</span>
+//                     </div>
+//                   </React.Fragment>
+//                 );
+//               })}
+//             </div>
 
             
-// //           </motion.div>
+//           </motion.div>
 
-// //           {/* Main Content */}
-// //           <motion.div className="max-w-7xl mx-auto">
-// //             <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden backdrop-blur-xl">
+//           {/* Main Content */}
+//           <motion.div className="max-w-7xl mx-auto">
+//             <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden backdrop-blur-xl">
               
-// //               {/* Upload Step */}
-// //               {activeStep === "upload" && (
-// //                 <div className="p-8">
-// //                   <div
-// //                     onDragEnter={handleDrag}
-// //                     onDragLeave={handleDrag}
-// //                     onDragOver={handleDrag}
-// //                     onDrop={handleDrop}
-// //                     className={`relative border-3 border-dashed rounded-2xl p-16 transition-all duration-300 ${
-// //                       dragActive
-// //                         ? "border-[#c40116] bg-[#c40116]/5 scale-[1.02]"
-// //                         : file
-// //                         ? "border-green-500 bg-green-50/30"
-// //                         : "border-gray-200 hover:border-[#c40116]/30 hover:bg-gray-50/50"
-// //                     }`}
-// //                   >
-// //                     <input
-// //                       type="file"
-// //                       id="resume-upload"
-// //                       className="hidden"
-// //                       accept=".pdf,.doc,.docx,.txt"
-// //                       onChange={handleFileChange}
-// //                     />
+//               {/* Upload Step */}
+//               {activeStep === "upload" && (
+//                 <div className="p-8">
+//                   <div
+//                     onDragEnter={handleDrag}
+//                     onDragLeave={handleDrag}
+//                     onDragOver={handleDrag}
+//                     onDrop={handleDrop}
+//                     className={`relative border-3 border-dashed rounded-2xl p-16 transition-all duration-300 ${
+//                       dragActive
+//                         ? "border-[#c40116] bg-[#c40116]/5 scale-[1.02]"
+//                         : file
+//                         ? "border-green-500 bg-green-50/30"
+//                         : "border-gray-200 hover:border-[#c40116]/30 hover:bg-gray-50/50"
+//                     }`}
+//                   >
+//                     <input
+//                       type="file"
+//                       id="resume-upload"
+//                       className="hidden"
+//                       accept=".pdf,.doc,.docx,.txt"
+//                       onChange={handleFileChange}
+//                     />
 
-// //                     {!file ? (
-// //                       <div className="text-center">
-// //                         <motion.div
-// //                           animate={{ y: [0, -10, 0], scale: [1, 1.05, 1] }}
-// //                           transition={{ repeat: Infinity, duration: 3 }}
-// //                           className="inline-flex p-8 bg-gradient-to-br from-[#c40116]/10 to-[#be0117]/10 rounded-3xl mb-8"
-// //                         >
-// //                           <UploadCloud className="w-16 h-16 text-[#c40116]" />
-// //                         </motion.div>
+//                     {!file ? (
+//                       <div className="text-center">
+//                         <motion.div
+//                           animate={{ y: [0, -10, 0], scale: [1, 1.05, 1] }}
+//                           transition={{ repeat: Infinity, duration: 3 }}
+//                           className="inline-flex p-8 bg-gradient-to-br from-[#c40116]/10 to-[#be0117]/10 rounded-3xl mb-8"
+//                         >
+//                           <UploadCloud className="w-16 h-16 text-[#c40116]" />
+//                         </motion.div>
                         
-// //                         <h3 className="text-2xl font-bold text-gray-900 mb-3">
-// //                           Drag & Drop Your Resume
-// //                         </h3>
-// //                         <p className="text-gray-500 mb-8">
-// //                           or{" "}
-// //                           <label
-// //                             htmlFor="resume-upload"
-// //                             className="text-[#c40116] font-semibold cursor-pointer hover:underline"
-// //                           >
-// //                             browse files
-// //                           </label>
-// //                         </p>
+//                         <h3 className="text-2xl font-bold text-gray-900 mb-3">
+//                           Drag & Drop Your Resume
+//                         </h3>
+//                         <p className="text-gray-500 mb-8">
+//                           or{" "}
+//                           <label
+//                             htmlFor="resume-upload"
+//                             className="text-[#c40116] font-semibold cursor-pointer hover:underline"
+//                           >
+//                             browse files
+//                           </label>
+//                         </p>
                         
-// //                         <div className="flex items-center justify-center gap-4 mb-8">
-// //                           <div className="flex -space-x-3">
-// //                             {[1, 2, 3].map((i) => (
-// //                               <div
-// //                                 key={i}
-// //                                 className="w-12 h-12 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 border-3 border-white"
-// //                               />
-// //                             ))}
-// //                           </div>
-// //                           <span className="text-sm text-gray-500">
-// //                             <span className="font-semibold text-[#c40116]">10,000+</span> CVs generated
-// //                           </span>
-// //                         </div>
+//                         <div className="flex items-center justify-center gap-4 mb-8">
+//                           <div className="flex -space-x-3">
+//                             {[1, 2, 3].map((i) => (
+//                               <div
+//                                 key={i}
+//                                 className="w-12 h-12 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 border-3 border-white"
+//                               />
+//                             ))}
+//                           </div>
+//                           <span className="text-sm text-gray-500">
+//                             <span className="font-semibold text-[#c40116]">10,000+</span> CVs generated
+//                           </span>
+//                         </div>
 
-// //                         <div className="space-y-6">
-// //                           <label
-// //                             htmlFor="resume-upload"
-// //                             className="inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-[#c40116] to-[#be0117] text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all cursor-pointer hover:scale-105 text-lg"
-// //                           >
-// //                             <Upload className="w-5 h-5" />
-// //                             Choose File
-// //                           </label>
+//                         <div className="space-y-6">
+//                           <label
+//                             htmlFor="resume-upload"
+//                             className="inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-[#c40116] to-[#be0117] text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all cursor-pointer hover:scale-105 text-lg"
+//                           >
+//                             <Upload className="w-5 h-5" />
+//                             Choose File
+//                           </label>
                           
-// //                           <div className="flex items-center justify-center gap-6 text-sm text-gray-400">
-// //                             <span className="flex items-center gap-2">📄 PDF</span>
-// //                             <span className="w-1 h-1 bg-gray-300 rounded-full" />
-// //                             <span className="flex items-center gap-2">📝 DOC</span>
-// //                             <span className="w-1 h-1 bg-gray-300 rounded-full" />
-// //                             <span className="flex items-center gap-2">📃 TXT</span>
-// //                           </div>
-// //                         </div>
-// //                       </div>
-// //                     ) : (
-// //                       <motion.div
-// //                         initial={{ opacity: 0, y: 10 }}
-// //                         animate={{ opacity: 1, y: 0 }}
-// //                         className="flex items-center justify-between"
-// //                       >
-// //                         <div className="flex items-center gap-6">
-// //                           <div className="p-5 bg-gradient-to-br from-[#c40116]/10 to-[#be0117]/10 rounded-2xl">
-// //                             <FileText className="w-12 h-12 text-[#c40116]" />
-// //                           </div>
-// //                           <div>
-// //                             <p className="font-semibold text-gray-900 text-xl mb-2">{file.name}</p>
-// //                             <div className="flex items-center gap-4">
-// //                               <span className="text-sm text-gray-500">
-// //                                 {(file.size / 1024).toFixed(2)} KB
-// //                               </span>
-// //                               <span className="w-1 h-1 bg-gray-300 rounded-full" />
-// //                               <span className="text-sm text-green-600 flex items-center gap-1">
-// //                                 <CheckCircle className="w-4 h-4" />
-// //                                 Ready to process
-// //                               </span>
-// //                             </div>
-// //                           </div>
-// //                         </div>
-// //                         <button
-// //                           onClick={removeFile}
-// //                           className="p-3 hover:bg-gray-100 rounded-full transition-colors group"
-// //                         >
-// //                           <X className="w-5 h-5 text-gray-500 group-hover:text-red-500" />
-// //                         </button>
-// //                       </motion.div>
-// //                     )}
-// //                   </div>
+//                           <div className="flex items-center justify-center gap-6 text-sm text-gray-400">
+//                             <span className="flex items-center gap-2">📄 PDF</span>
+//                             <span className="w-1 h-1 bg-gray-300 rounded-full" />
+//                             <span className="flex items-center gap-2">📝 DOC</span>
+//                             <span className="w-1 h-1 bg-gray-300 rounded-full" />
+//                             <span className="flex items-center gap-2">📃 TXT</span>
+//                           </div>
+//                         </div>
+//                       </div>
+//                     ) : (
+//                       <motion.div
+//                         initial={{ opacity: 0, y: 10 }}
+//                         animate={{ opacity: 1, y: 0 }}
+//                         className="flex items-center justify-between"
+//                       >
+//                         <div className="flex items-center gap-6">
+//                           <div className="p-5 bg-gradient-to-br from-[#c40116]/10 to-[#be0117]/10 rounded-2xl">
+//                             <FileText className="w-12 h-12 text-[#c40116]" />
+//                           </div>
+//                           <div>
+//                             <p className="font-semibold text-gray-900 text-xl mb-2">{file.name}</p>
+//                             <div className="flex items-center gap-4">
+//                               <span className="text-sm text-gray-500">
+//                                 {(file.size / 1024).toFixed(2)} KB
+//                               </span>
+//                               <span className="w-1 h-1 bg-gray-300 rounded-full" />
+//                               <span className="text-sm text-green-600 flex items-center gap-1">
+//                                 <CheckCircle className="w-4 h-4" />
+//                                 Ready to process
+//                               </span>
+//                             </div>
+//                           </div>
+//                         </div>
+//                         <button
+//                           onClick={removeFile}
+//                           className="p-3 hover:bg-gray-100 rounded-full transition-colors group"
+//                         >
+//                           <X className="w-5 h-5 text-gray-500 group-hover:text-red-500" />
+//                         </button>
+//                       </motion.div>
+//                     )}
+//                   </div>
 
-// //                   {/* Process Button */}
-// //                   {file && !uploading && (
-// //                     <motion.div
-// //                       initial={{ opacity: 0, y: 10 }}
-// //                       animate={{ opacity: 1, y: 0 }}
-// //                       className="mt-8"
-// //                     >
-// //                       <button
-// //                         onClick={processResume}
-// //                         className="w-full py-5 bg-gradient-to-r from-[#c40116] to-[#be0117] text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-3 text-lg"
-// //                       >
-// //                         <Wand2 className="w-5 h-5" />
-// //                         Parse and Generate CV
-// //                         <ArrowRight className="w-5 h-5" />
-// //                       </button>
-// //                     </motion.div>
-// //                   )}
+//                   {/* Process Button */}
+//                   {file && !uploading && (
+//                     <motion.div
+//                       initial={{ opacity: 0, y: 10 }}
+//                       animate={{ opacity: 1, y: 0 }}
+//                       className="mt-8"
+//                     >
+//                       <button
+//                         onClick={processResume}
+//                         className="w-full py-5 bg-gradient-to-r from-[#c40116] to-[#be0117] text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-3 text-lg"
+//                       >
+//                         <Wand2 className="w-5 h-5" />
+//                         Parse and Generate CV
+//                         <ArrowRight className="w-5 h-5" />
+//                       </button>
+//                     </motion.div>
+//                   )}
 
-// //                   {/* Processing State */}
-// //                   {processing && (
-// //                     <motion.div
-// //                       initial={{ opacity: 0 }}
-// //                       animate={{ opacity: 1 }}
-// //                       className="mt-12 text-center"
-// //                     >
-// //                       <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-[#c40116]/10 to-[#be0117]/10 rounded-full">
-// //                         <Loader2 className="w-5 h-5 animate-spin text-[#c40116]" />
-// //                         <span className="text-sm font-medium text-gray-700">
-// //                           Parsing your resume...
-// //                         </span>
-// //                       </div>
+//                   {/* Processing State */}
+//                   {processing && (
+//                     <motion.div
+//                       initial={{ opacity: 0 }}
+//                       animate={{ opacity: 1 }}
+//                       className="mt-12 text-center"
+//                     >
+//                       <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-[#c40116]/10 to-[#be0117]/10 rounded-full">
+//                         <Loader2 className="w-5 h-5 animate-spin text-[#c40116]" />
+//                         <span className="text-sm font-medium text-gray-700">
+//                           Parsing your resume...
+//                         </span>
+//                       </div>
                       
-// //                       <div className="mt-8 max-w-md mx-auto">
-// //                         <div className="space-y-4">
-// //                           {[
-// //                             "Extracting personal information",
-// //                             "Parsing work experience",
-// //                             "Identifying skills",
-// //                             "Analyzing competencies",
-// //                             "Formatting CV",
-// //                           ].map((step, index) => (
-// //                             <motion.div
-// //                               key={index}
-// //                               initial={{ opacity: 0, x: -20 }}
-// //                               animate={{ opacity: 1, x: 0 }}
-// //                               transition={{ delay: index * 0.2 }}
-// //                               className="flex items-center gap-3"
-// //                             >
-// //                               <div className="w-5 h-5 rounded-full border-2 border-[#c40116]/30 flex items-center justify-center">
-// //                                 <motion.div
-// //                                   animate={{ scale: [1, 1.2, 1] }}
-// //                                   transition={{ repeat: Infinity, duration: 2, delay: index * 0.3 }}
-// //                                   className="w-2 h-2 rounded-full bg-[#c40116]"
-// //                                 />
-// //                               </div>
-// //                               <span className="text-sm text-gray-600">{step}</span>
-// //                             </motion.div>
-// //                           ))}
-// //                         </div>
-// //                       </div>
-// //                     </motion.div>
-// //                   )}
-// //                 </div>
-// //               )}
+//                       <div className="mt-8 max-w-md mx-auto">
+//                         <div className="space-y-4">
+//                           {[
+//                             "Extracting personal information",
+//                             "Parsing work experience",
+//                             "Identifying skills",
+//                             "Analyzing competencies",
+//                             "Formatting CV",
+//                           ].map((step, index) => (
+//                             <motion.div
+//                               key={index}
+//                               initial={{ opacity: 0, x: -20 }}
+//                               animate={{ opacity: 1, x: 0 }}
+//                               transition={{ delay: index * 0.2 }}
+//                               className="flex items-center gap-3"
+//                             >
+//                               <div className="w-5 h-5 rounded-full border-2 border-[#c40116]/30 flex items-center justify-center">
+//                                 <motion.div
+//                                   animate={{ scale: [1, 1.2, 1] }}
+//                                   transition={{ repeat: Infinity, duration: 2, delay: index * 0.3 }}
+//                                   className="w-2 h-2 rounded-full bg-[#c40116]"
+//                                 />
+//                               </div>
+//                               <span className="text-sm text-gray-600">{step}</span>
+//                             </motion.div>
+//                           ))}
+//                         </div>
+//                       </div>
+//                     </motion.div>
+//                   )}
+//                 </div>
+//               )}
 
-// //               {/* Preview Step */}
-// //               {activeStep === "preview" && cvData && (
-// //                 <div className="flex flex-col">
-// //                   {/* Preview Toolbar */}
-// //                   <div className="border-b border-gray-200 p-4 bg-gray-50/50">
-// //                     <div className="flex items-center justify-between flex-wrap gap-4">
-// //                       <div className="flex items-center gap-4 flex-wrap">
+//               {/* Preview Step */}
+//               {activeStep === "preview" && cvData && (
+//                 <div className="flex flex-col">
+//                   {/* Preview Toolbar */}
+//                   <div className="border-b border-gray-200 p-4 bg-gray-50/50">
+//                     <div className="flex items-center justify-between flex-wrap gap-4">
+//                       <div className="flex items-center gap-4 flex-wrap">
                      
 
-// //                         {/* Color Scheme */}
-// //                         <div className="flex items-center gap-2">
-// //                           {(Object.keys(colorSchemes) as ColorScheme[]).map((color) => (
-// //                             <button
-// //                               key={color}
-// //                               onClick={() => setColorScheme(color)}
-// //                               className={`w-8 h-8 rounded-full transition-all ${
-// //                                 colorScheme === color ? 'ring-2 ring-offset-2 ring-[#c40116] scale-110' : ''
-// //                               }`}
-// //                               style={{ backgroundColor: colorSchemes[color].primary }}
-// //                             />
-// //                           ))}
-// //                         </div>
+//                         {/* Color Scheme */}
+//                         <div className="flex items-center gap-2">
+//                           {(Object.keys(colorSchemes) as ColorScheme[]).map((color) => (
+//                             <button
+//                               key={color}
+//                               onClick={() => setColorScheme(color)}
+//                               className={`w-8 h-8 rounded-full transition-all ${
+//                                 colorScheme === color ? 'ring-2 ring-offset-2 ring-[#c40116] scale-110' : ''
+//                               }`}
+//                               style={{ backgroundColor: colorSchemes[color].primary }}
+//                             />
+//                           ))}
+//                         </div>
 
                        
 
                         
-// //                       </div>
+//                       </div>
 
-// //                       <button
-// //                         onClick={() => setActiveStep("download")}
-// //                         className="px-6 py-2 bg-gradient-to-r from-[#c40116] to-[#be0117] text-white rounded-lg font-medium flex items-center gap-2 hover:scale-105 transition-transform"
-// //                       >
-// //                         Continue to Download
-// //                         <ArrowRight className="w-4 h-4" />
-// //                       </button>
-// //                     </div>
-// //                   </div>
+//                       <button
+//                         onClick={() => setActiveStep("download")}
+//                         className="px-6 py-2 bg-gradient-to-r from-[#c40116] to-[#be0117] text-white rounded-lg font-medium flex items-center gap-2 hover:scale-105 transition-transform"
+//                       >
+//                         Continue to Download
+//                         <ArrowRight className="w-4 h-4" />
+//                       </button>
+//                     </div>
+//                   </div>
 
-// //                   {/* Preview Area */}
-// //                   <div className={`p-8 ${darkMode ? 'bg-gray-900' : 'bg-gray-100'}`}>
-// //                     <motion.div
-// //                       initial={{ scale: 0.95, opacity: 0 }}
-// //                       animate={{ scale: 1, opacity: 1 }}
-// //                       className={`mx-auto transition-all duration-300 ${
-// //                         previewMode === "mobile" ? "max-w-sm" :
-// //                         previewMode === "tablet" ? "max-w-2xl" :
-// //                         "max-w-4xl"
-// //                       }`}
-// //                     >
-// //                       <div className={`bg-white rounded-2xl shadow-2xl overflow-hidden ${
-// //                         darkMode ? 'bg-gray-800 text-white' : ''
-// //                       }`}>
-// //                         {/* CV Content */}
-// //                         <div className="p-8">
-// //                           {/* Header */}
-// //                           <div className="text-center mb-8">
-// //                             <h1 className="text-4xl font-bold mb-2" style={{ color: colorSchemes[colorScheme].primary }}>
-// //                               {cvData.personalInfo.fullName || "Name Not Available"}
-// //                             </h1>
-// //                             <p className="text-lg text-gray-600 mb-4">{cvData.personalInfo.title || "Professional"}</p>
+//                   {/* Preview Area */}
+//                   <div className={`p-8 ${darkMode ? 'bg-gray-900' : 'bg-gray-100'}`}>
+//                     <motion.div
+//                       initial={{ scale: 0.95, opacity: 0 }}
+//                       animate={{ scale: 1, opacity: 1 }}
+//                       className={`mx-auto transition-all duration-300 ${
+//                         previewMode === "mobile" ? "max-w-sm" :
+//                         previewMode === "tablet" ? "max-w-2xl" :
+//                         "max-w-4xl"
+//                       }`}
+//                     >
+//                       <div className={`bg-white rounded-2xl shadow-2xl overflow-hidden ${
+//                         darkMode ? 'bg-gray-800 text-white' : ''
+//                       }`}>
+//                         {/* CV Content */}
+//                         <div className="p-8">
+//                           {/* Header */}
+//                           <div className="text-center mb-8">
+//                             <h1 className="text-4xl font-bold mb-2" style={{ color: colorSchemes[colorScheme].primary }}>
+//                               {cvData.personalInfo.fullName || "Name Not Available"}
+//                             </h1>
+//                             <p className="text-lg text-gray-600 mb-4">{cvData.personalInfo.title || "Professional"}</p>
                             
-// //                             <div className="flex flex-wrap items-center justify-center gap-4 text-sm">
-// //                               {cvData.personalInfo.email && (
-// //                                 <span className="flex items-center gap-1">
-// //                                   <Mail className="w-4 h-4" style={{ color: colorSchemes[colorScheme].primary }} />
-// //                                   {cvData.personalInfo.email}
-// //                                 </span>
-// //                               )}
-// //                               {cvData.personalInfo.phone && (
-// //                                 <span className="flex items-center gap-1">
-// //                                   <Phone className="w-4 h-4" style={{ color: colorSchemes[colorScheme].primary }} />
-// //                                   {cvData.personalInfo.phone}
-// //                                 </span>
-// //                               )}
-// //                               {cvData.personalInfo.location && (
-// //                                 <span className="flex items-center gap-1">
-// //                                   <MapPin className="w-4 h-4" style={{ color: colorSchemes[colorScheme].primary }} />
-// //                                   {cvData.personalInfo.location}
-// //                                 </span>
-// //                               )}
-// //                             </div>
+//                             <div className="flex flex-wrap items-center justify-center gap-4 text-sm">
+//                               {cvData.personalInfo.email && (
+//                                 <span className="flex items-center gap-1">
+//                                   <Mail className="w-4 h-4" style={{ color: colorSchemes[colorScheme].primary }} />
+//                                   {cvData.personalInfo.email}
+//                                 </span>
+//                               )}
+//                               {cvData.personalInfo.phone && (
+//                                 <span className="flex items-center gap-1">
+//                                   <Phone className="w-4 h-4" style={{ color: colorSchemes[colorScheme].primary }} />
+//                                   {cvData.personalInfo.phone}
+//                                 </span>
+//                               )}
+//                               {cvData.personalInfo.location && (
+//                                 <span className="flex items-center gap-1">
+//                                   <MapPin className="w-4 h-4" style={{ color: colorSchemes[colorScheme].primary }} />
+//                                   {cvData.personalInfo.location}
+//                                 </span>
+//                               )}
+//                             </div>
                             
-// //                             {cvData.personalInfo.address && (
-// //                               <p className="text-sm text-gray-500 mt-2">{cvData.personalInfo.address}</p>
-// //                             )}
-// //                           </div>
+//                             {cvData.personalInfo.address && (
+//                               <p className="text-sm text-gray-500 mt-2">{cvData.personalInfo.address}</p>
+//                             )}
+//                           </div>
 
-// //                           {/* Summary */}
-// //                           {cvData.personalInfo.summary && (
-// //                             <div className="mb-8">
-// //                               <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
-// //                                 <div className="w-1 h-6 rounded-full" style={{ backgroundColor: colorSchemes[colorScheme].primary }} />
-// //                                 Professional Summary
-// //                               </h2>
-// //                               <p className="text-gray-700 leading-relaxed">
-// //                                 {cvData.personalInfo.summary}
-// //                               </p>
-// //                             </div>
-// //                           )}
+//                           {/* Summary */}
+//                           {cvData.personalInfo.summary && (
+//                             <div className="mb-8">
+//                               <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
+//                                 <div className="w-1 h-6 rounded-full" style={{ backgroundColor: colorSchemes[colorScheme].primary }} />
+//                                 Professional Summary
+//                               </h2>
+//                               <p className="text-gray-700 leading-relaxed">
+//                                 {cvData.personalInfo.summary}
+//                               </p>
+//                             </div>
+//                           )}
 
-// //                           {/* Core Competencies */}
-// //                           {(cvData.coreCompetencies.technical.length > 0 || 
-// //                             cvData.coreCompetencies.leadership.length > 0 || 
-// //                             cvData.coreCompetencies.domainExpertise.length > 0) && (
-// //                             <div className="mb-8">
-// //                               <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-// //                                 <div className="w-1 h-6 rounded-full" style={{ backgroundColor: colorSchemes[colorScheme].primary }} />
-// //                                 Core Competencies
-// //                               </h2>
+//                           {/* Core Competencies */}
+//                           {(cvData.coreCompetencies.technical.length > 0 || 
+//                             cvData.coreCompetencies.leadership.length > 0 || 
+//                             cvData.coreCompetencies.domainExpertise.length > 0) && (
+//                             <div className="mb-8">
+//                               <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+//                                 <div className="w-1 h-6 rounded-full" style={{ backgroundColor: colorSchemes[colorScheme].primary }} />
+//                                 Core Competencies
+//                               </h2>
                               
-// //                               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-// //                                 {cvData.coreCompetencies.technical.length > 0 && (
-// //                                   <div>
-// //                                     <h3 className="font-medium mb-3" style={{ color: colorSchemes[colorScheme].primary }}>
-// //                                       Technical
-// //                                     </h3>
-// //                                     <div className="space-y-2">
-// //                                       {cvData.coreCompetencies.technical.map((skill, idx) => (
-// //                                         <div key={idx} className="flex items-center gap-2">
-// //                                           <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: colorSchemes[colorScheme].primary }} />
-// //                                           <span className="text-sm text-gray-700">{skill}</span>
-// //                                         </div>
-// //                                       ))}
-// //                                     </div>
-// //                                   </div>
-// //                                 )}
+//                               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+//                                 {cvData.coreCompetencies.technical.length > 0 && (
+//                                   <div>
+//                                     <h3 className="font-medium mb-3" style={{ color: colorSchemes[colorScheme].primary }}>
+//                                       Technical
+//                                     </h3>
+//                                     <div className="space-y-2">
+//                                       {cvData.coreCompetencies.technical.map((skill, idx) => (
+//                                         <div key={idx} className="flex items-center gap-2">
+//                                           <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: colorSchemes[colorScheme].primary }} />
+//                                           <span className="text-sm text-gray-700">{skill}</span>
+//                                         </div>
+//                                       ))}
+//                                     </div>
+//                                   </div>
+//                                 )}
 
-// //                                 {cvData.coreCompetencies.leadership.length > 0 && (
-// //                                   <div>
-// //                                     <h3 className="font-medium mb-3" style={{ color: colorSchemes[colorScheme].primary }}>
-// //                                       Leadership
-// //                                     </h3>
-// //                                     <div className="space-y-2">
-// //                                       {cvData.coreCompetencies.leadership.map((skill, idx) => (
-// //                                         <div key={idx} className="flex items-center gap-2">
-// //                                           <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: colorSchemes[colorScheme].primary }} />
-// //                                           <span className="text-sm text-gray-700">{skill}</span>
-// //                                         </div>
-// //                                       ))}
-// //                                     </div>
-// //                                   </div>
-// //                                 )}
+//                                 {cvData.coreCompetencies.leadership.length > 0 && (
+//                                   <div>
+//                                     <h3 className="font-medium mb-3" style={{ color: colorSchemes[colorScheme].primary }}>
+//                                       Leadership
+//                                     </h3>
+//                                     <div className="space-y-2">
+//                                       {cvData.coreCompetencies.leadership.map((skill, idx) => (
+//                                         <div key={idx} className="flex items-center gap-2">
+//                                           <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: colorSchemes[colorScheme].primary }} />
+//                                           <span className="text-sm text-gray-700">{skill}</span>
+//                                         </div>
+//                                       ))}
+//                                     </div>
+//                                   </div>
+//                                 )}
 
-// //                                 {cvData.coreCompetencies.domainExpertise.length > 0 && (
-// //                                   <div>
-// //                                     <h3 className="font-medium mb-3" style={{ color: colorSchemes[colorScheme].primary }}>
-// //                                       Domain Expertise
-// //                                     </h3>
-// //                                     <div className="space-y-2">
-// //                                       {cvData.coreCompetencies.domainExpertise.map((skill, idx) => (
-// //                                         <div key={idx} className="flex items-center gap-2">
-// //                                           <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: colorSchemes[colorScheme].primary }} />
-// //                                           <span className="text-sm text-gray-700">{skill}</span>
-// //                                         </div>
-// //                                       ))}
-// //                                     </div>
-// //                                   </div>
-// //                                 )}
-// //                               </div>
-// //                             </div>
-// //                           )}
+//                                 {cvData.coreCompetencies.domainExpertise.length > 0 && (
+//                                   <div>
+//                                     <h3 className="font-medium mb-3" style={{ color: colorSchemes[colorScheme].primary }}>
+//                                       Domain Expertise
+//                                     </h3>
+//                                     <div className="space-y-2">
+//                                       {cvData.coreCompetencies.domainExpertise.map((skill, idx) => (
+//                                         <div key={idx} className="flex items-center gap-2">
+//                                           <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: colorSchemes[colorScheme].primary }} />
+//                                           <span className="text-sm text-gray-700">{skill}</span>
+//                                         </div>
+//                                       ))}
+//                                     </div>
+//                                   </div>
+//                                 )}
+//                               </div>
+//                             </div>
+//                           )}
 
-// //                           {/* Experience */}
-// //                           {cvData.experience.length > 0 && (
-// //                             <div className="mb-8">
-// //                               <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-// //                                 <div className="w-1 h-6 rounded-full" style={{ backgroundColor: colorSchemes[colorScheme].primary }} />
-// //                                 Professional Experience
-// //                               </h2>
+//                           {/* Experience */}
+//                           {cvData.experience.length > 0 && (
+//                             <div className="mb-8">
+//                               <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+//                                 <div className="w-1 h-6 rounded-full" style={{ backgroundColor: colorSchemes[colorScheme].primary }} />
+//                                 Professional Experience
+//                               </h2>
                               
-// //                               <div className="space-y-4">
-// //                                 {cvData.experience.map((exp) => (
-// //                                   <ExperienceCard key={exp.id} exp={exp} colorScheme={colorScheme} />
-// //                                 ))}
-// //                               </div>
-// //                             </div>
-// //                           )}
+//                               <div className="space-y-4">
+//                                 {cvData.experience.map((exp) => (
+//                                   <ExperienceCard key={exp.id} exp={exp} colorScheme={colorScheme} />
+//                                 ))}
+//                               </div>
+//                             </div>
+//                           )}
 
-// //                           {/* Skills */}
-// //                           {cvData.skills.length > 0 && (
-// //                             <div className="mb-8">
-// //                               <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-// //                                 <div className="w-1 h-6 rounded-full" style={{ backgroundColor: colorSchemes[colorScheme].primary }} />
-// //                                 Technical Skills
-// //                               </h2>
+//                           {/* Skills */}
+//                           {cvData.skills.length > 0 && (
+//                             <div className="mb-8">
+//                               <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+//                                 <div className="w-1 h-6 rounded-full" style={{ backgroundColor: colorSchemes[colorScheme].primary }} />
+//                                 Technical Skills
+//                               </h2>
                               
-// //                               <div className="flex flex-wrap gap-2">
-// //                                 {cvData.skills.map((skill) => (
-// //                                   <span
-// //                                     key={skill.id}
-// //                                     className="px-3 py-1.5 rounded-lg text-sm"
-// //                                     style={{
-// //                                       backgroundColor: `${colorSchemes[colorScheme].primary}10`,
-// //                                       color: colorSchemes[colorScheme].primary,
-// //                                       border: `1px solid ${colorSchemes[colorScheme].primary}20`
-// //                                     }}
-// //                                   >
-// //                                     {skill.name}
-// //                                   </span>
-// //                                 ))}
-// //                               </div>
-// //                             </div>
-// //                           )}
+//                               <div className="flex flex-wrap gap-2">
+//                                 {cvData.skills.map((skill) => (
+//                                   <span
+//                                     key={skill.id}
+//                                     className="px-3 py-1.5 rounded-lg text-sm"
+//                                     style={{
+//                                       backgroundColor: `${colorSchemes[colorScheme].primary}10`,
+//                                       color: colorSchemes[colorScheme].primary,
+//                                       border: `1px solid ${colorSchemes[colorScheme].primary}20`
+//                                     }}
+//                                   >
+//                                     {skill.name}
+//                                   </span>
+//                                 ))}
+//                               </div>
+//                             </div>
+//                           )}
 
-// //                           {/* Education */}
-// //                           {cvData.education.length > 0 && (
-// //                             <div className="mb-8">
-// //                               <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-// //                                 <div className="w-1 h-6 rounded-full" style={{ backgroundColor: colorSchemes[colorScheme].primary }} />
-// //                                 Education
-// //                               </h2>
+//                           {/* Education */}
+//                           {cvData.education.length > 0 && (
+//                             <div className="mb-8">
+//                               <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+//                                 <div className="w-1 h-6 rounded-full" style={{ backgroundColor: colorSchemes[colorScheme].primary }} />
+//                                 Education
+//                               </h2>
                               
-// //                               <div className="space-y-3">
-// //                                 {cvData.education.map((edu) => (
-// //                                   <div key={edu.id} className="flex items-start justify-between">
-// //                                     <div>
-// //                                       <h3 className="font-medium text-gray-900">{edu.degree}</h3>
-// //                                       <p className="text-sm text-gray-600">{edu.institution}</p>
-// //                                     </div>
-// //                                     {edu.period && (
-// //                                       <span className="text-xs text-gray-500">{edu.period}</span>
-// //                                     )}
-// //                                   </div>
-// //                                 ))}
-// //                               </div>
-// //                             </div>
-// //                           )}
+//                               <div className="space-y-3">
+//                                 {cvData.education.map((edu) => (
+//                                   <div key={edu.id} className="flex items-start justify-between">
+//                                     <div>
+//                                       <h3 className="font-medium text-gray-900">{edu.degree}</h3>
+//                                       <p className="text-sm text-gray-600">{edu.institution}</p>
+//                                     </div>
+//                                     {edu.period && (
+//                                       <span className="text-xs text-gray-500">{edu.period}</span>
+//                                     )}
+//                                   </div>
+//                                 ))}
+//                               </div>
+//                             </div>
+//                           )}
 
-// //                           {/* Additional Information */}
-// //                           {(cvData.additionalCredentials.languages.length > 0 || 
-// //                             cvData.additionalCredentials.certifications.length > 0 ||
-// //                             cvData.additionalCredentials.awards.length > 0) && (
-// //                             <div>
-// //                               <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-// //                                 <div className="w-1 h-6 rounded-full" style={{ backgroundColor: colorSchemes[colorScheme].primary }} />
-// //                                 Additional Information
-// //                               </h2>
+//                           {/* Additional Information */}
+//                           {(cvData.additionalCredentials.languages.length > 0 || 
+//                             cvData.additionalCredentials.certifications.length > 0 ||
+//                             cvData.additionalCredentials.awards.length > 0) && (
+//                             <div>
+//                               <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+//                                 <div className="w-1 h-6 rounded-full" style={{ backgroundColor: colorSchemes[colorScheme].primary }} />
+//                                 Additional Information
+//                               </h2>
                               
-// //                               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-// //                                 {cvData.additionalCredentials.languages.length > 0 && (
-// //                                   <div>
-// //                                     <h3 className="font-medium mb-2" style={{ color: colorSchemes[colorScheme].primary }}>
-// //                                       Languages
-// //                                     </h3>
-// //                                     <div className="space-y-1">
-// //                                       {cvData.additionalCredentials.languages.map((lang, idx) => (
-// //                                         <div key={idx} className="text-sm text-gray-700">{lang}</div>
-// //                                       ))}
-// //                                     </div>
-// //                                   </div>
-// //                                 )}
+//                               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//                                 {cvData.additionalCredentials.languages.length > 0 && (
+//                                   <div>
+//                                     <h3 className="font-medium mb-2" style={{ color: colorSchemes[colorScheme].primary }}>
+//                                       Languages
+//                                     </h3>
+//                                     <div className="space-y-1">
+//                                       {cvData.additionalCredentials.languages.map((lang, idx) => (
+//                                         <div key={idx} className="text-sm text-gray-700">{lang}</div>
+//                                       ))}
+//                                     </div>
+//                                   </div>
+//                                 )}
                                 
-// //                                 {cvData.additionalCredentials.certifications.length > 0 && (
-// //                                   <div>
-// //                                     <h3 className="font-medium mb-2" style={{ color: colorSchemes[colorScheme].primary }}>
-// //                                       Certifications
-// //                                     </h3>
-// //                                     <div className="space-y-1">
-// //                                       {cvData.additionalCredentials.certifications.map((cert, idx) => (
-// //                                         <div key={idx} className="text-sm text-gray-700">{cert}</div>
-// //                                       ))}
-// //                                     </div>
-// //                                   </div>
-// //                                 )}
+//                                 {cvData.additionalCredentials.certifications.length > 0 && (
+//                                   <div>
+//                                     <h3 className="font-medium mb-2" style={{ color: colorSchemes[colorScheme].primary }}>
+//                                       Certifications
+//                                     </h3>
+//                                     <div className="space-y-1">
+//                                       {cvData.additionalCredentials.certifications.map((cert, idx) => (
+//                                         <div key={idx} className="text-sm text-gray-700">{cert}</div>
+//                                       ))}
+//                                     </div>
+//                                   </div>
+//                                 )}
 
-// //                                 {cvData.additionalCredentials.awards.length > 0 && (
-// //                                   <div>
-// //                                     <h3 className="font-medium mb-2" style={{ color: colorSchemes[colorScheme].primary }}>
-// //                                       Awards
-// //                                     </h3>
-// //                                     <div className="space-y-1">
-// //                                       {cvData.additionalCredentials.awards.map((award, idx) => (
-// //                                         <div key={idx} className="text-sm text-gray-700">{award}</div>
-// //                                       ))}
-// //                                     </div>
-// //                                   </div>
-// //                                 )}
-// //                               </div>
-// //                             </div>
-// //                           )}
-// //                         </div>
-// //                       </div>
-// //                     </motion.div>
-// //                   </div>
-// //                 </div>
-// //               )}
+//                                 {cvData.additionalCredentials.awards.length > 0 && (
+//                                   <div>
+//                                     <h3 className="font-medium mb-2" style={{ color: colorSchemes[colorScheme].primary }}>
+//                                       Awards
+//                                     </h3>
+//                                     <div className="space-y-1">
+//                                       {cvData.additionalCredentials.awards.map((award, idx) => (
+//                                         <div key={idx} className="text-sm text-gray-700">{award}</div>
+//                                       ))}
+//                                     </div>
+//                                   </div>
+//                                 )}
+//                               </div>
+//                             </div>
+//                           )}
+//                         </div>
+//                       </div>
+//                     </motion.div>
+//                   </div>
+//                 </div>
+//               )}
 
-// //               {/* Download Step */}
-// //               {activeStep === "download" && cvData && (
-// //                 <div className="p-12 text-center">
-// //                   <motion.div
-// //                     initial={{ scale: 0.9, opacity: 0 }}
-// //                     animate={{ scale: 1, opacity: 1 }}
-// //                     className="max-w-md mx-auto"
-// //                   >
-// //                     <div className="inline-flex p-6 bg-gradient-to-br from-green-500/10 to-emerald-500/10 rounded-full mb-6">
-// //                       <CheckCircle className="w-16 h-16 text-green-500" />
-// //                     </div>
+//               {/* Download Step */}
+//               {activeStep === "download" && cvData && (
+//                 <div className="p-12 text-center">
+//                   <motion.div
+//                     initial={{ scale: 0.9, opacity: 0 }}
+//                     animate={{ scale: 1, opacity: 1 }}
+//                     className="max-w-md mx-auto"
+//                   >
+//                     <div className="inline-flex p-6 bg-gradient-to-br from-green-500/10 to-emerald-500/10 rounded-full mb-6">
+//                       <CheckCircle className="w-16 h-16 text-green-500" />
+//                     </div>
                     
-// //                     <h3 className="text-2xl font-bold text-gray-900 mb-3">
-// //                       Your CV is Ready!
-// //                     </h3>
-// //                     <p className="text-gray-600 mb-8">
-// //                       Choose your preferred format and download your professional CV
-// //                     </p>
+//                     <h3 className="text-2xl font-bold text-gray-900 mb-3">
+//                       Your CV is Ready!
+//                     </h3>
+//                     <p className="text-gray-600 mb-8">
+//                       Choose your preferred format and download your professional CV
+//                     </p>
 
-// //                     <div className="space-y-4 mb-8">
-// //                       <div className="grid grid-cols-3 gap-3">
-// //                         {[
-// //                           { format: "pdf", label: "PDF", icon: FileText, color: "red" },
-// //                           { format: "docx", label: "Word", icon: FileText, color: "blue" },
-// //                           { format: "txt", label: "Text", icon: FileText, color: "gray" },
-// //                         ].map(({ format, label, color }) => (
-// //                           <button
-// //                             key={format}
-// //                             onClick={() => setExportFormat(format as any)}
-// //                             className={`p-4 border-2 rounded-xl transition-all ${
-// //                               exportFormat === format
-// //                                 ? `border-${color}-500 bg-${color}-50`
-// //                                 : 'border-gray-200 hover:border-gray-300'
-// //                             }`}
-// //                           >
-// //                             <FileText className={`w-8 h-8 mx-auto mb-2 ${
-// //                               exportFormat === format ? `text-${color}-500` : 'text-gray-400'
-// //                             }`} />
-// //                             <span className={`text-sm font-medium ${
-// //                               exportFormat === format ? `text-${color}-500` : 'text-gray-600'
-// //                             }`}>
-// //                               {label}
-// //                             </span>
-// //                           </button>
-// //                         ))}
-// //                       </div>
+//                     <div className="space-y-4 mb-8">
+//                       <div className="grid grid-cols-3 gap-3">
+//                         {[
+//                           { format: "pdf", label: "PDF", icon: FileText, color: "red" },
+//                           { format: "docx", label: "Word", icon: FileText, color: "blue" },
+//                           { format: "txt", label: "Text", icon: FileText, color: "gray" },
+//                         ].map(({ format, label, color }) => (
+//                           <button
+//                             key={format}
+//                             onClick={() => setExportFormat(format as any)}
+//                             className={`p-4 border-2 rounded-xl transition-all ${
+//                               exportFormat === format
+//                                 ? `border-${color}-500 bg-${color}-50`
+//                                 : 'border-gray-200 hover:border-gray-300'
+//                             }`}
+//                           >
+//                             <FileText className={`w-8 h-8 mx-auto mb-2 ${
+//                               exportFormat === format ? `text-${color}-500` : 'text-gray-400'
+//                             }`} />
+//                             <span className={`text-sm font-medium ${
+//                               exportFormat === format ? `text-${color}-500` : 'text-gray-600'
+//                             }`}>
+//                               {label}
+//                             </span>
+//                           </button>
+//                         ))}
+//                       </div>
 
-// //                       <button
-// //                         onClick={exportCV}
-// //                         disabled={exporting}
-// //                         className="w-full py-5 bg-gradient-to-r from-[#c40116] to-[#be0117] text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all disabled:opacity-50 flex items-center justify-center gap-3 text-lg"
-// //                       >
-// //                         {exporting ? (
-// //                           <>
-// //                             <Loader2 className="w-5 h-5 animate-spin" />
-// //                             Generating CV...
-// //                           </>
-// //                         ) : (
-// //                           <>
-// //                             <DownloadCloud className="w-5 h-5" />
-// //                             Download CV
-// //                           </>
-// //                         )}
-// //                       </button>
-// //                     </div>
+//                       <button
+//                         onClick={exportCV}
+//                         disabled={exporting}
+//                         className="w-full py-5 bg-gradient-to-r from-[#c40116] to-[#be0117] text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all disabled:opacity-50 flex items-center justify-center gap-3 text-lg"
+//                       >
+//                         {exporting ? (
+//                           <>
+//                             <Loader2 className="w-5 h-5 animate-spin" />
+//                             Generating CV...
+//                           </>
+//                         ) : (
+//                           <>
+//                             <DownloadCloud className="w-5 h-5" />
+//                             Download CV
+//                           </>
+//                         )}
+//                       </button>
+//                     </div>
 
-// //                     <div className="flex items-center justify-center gap-4">
-// //                       <button className="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1">
-// //                         <Printer className="w-4 h-4" />
-// //                         Print
-// //                       </button>
-// //                       <span className="w-1 h-1 bg-gray-300 rounded-full" />
-// //                       <button className="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1">
-// //                         <Share className="w-4 h-4" />
-// //                         Share
-// //                       </button>
-// //                       <span className="w-1 h-1 bg-gray-300 rounded-full" />
-// //                       <button
-// //                         onClick={() => setActiveStep("preview")}
-// //                         className="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1"
-// //                       >
-// //                         <Eye className="w-4 h-4" />
-// //                         Preview Again
-// //                       </button>
-// //                     </div>
-// //                   </motion.div>
-// //                 </div>
-// //               )}
-// //             </div>
-// //           </motion.div>
-// //         </div>
-// //       </section>
+//                     <div className="flex items-center justify-center gap-4">
+//                       <button className="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1">
+//                         <Printer className="w-4 h-4" />
+//                         Print
+//                       </button>
+//                       <span className="w-1 h-1 bg-gray-300 rounded-full" />
+//                       <button className="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1">
+//                         <Share className="w-4 h-4" />
+//                         Share
+//                       </button>
+//                       <span className="w-1 h-1 bg-gray-300 rounded-full" />
+//                       <button
+//                         onClick={() => setActiveStep("preview")}
+//                         className="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1"
+//                       >
+//                         <Eye className="w-4 h-4" />
+//                         Preview Again
+//                       </button>
+//                     </div>
+//                   </motion.div>
+//                 </div>
+//               )}
+//             </div>
+//           </motion.div>
+//         </div>
+//       </section>
 
-// //       <Footer />
-// //     </>
-// //   );
-// // };
+//     </>
+//   );
+// };
 
-// // export default CVGeneratorPage;
+// export default CVGeneratorPage;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // // "use client";
@@ -4504,1436 +4567,2754 @@
 
 
 
-"use client";
+// "use client";
 
-import React, { useState, useCallback, useRef } from "react";
-import {
-  UploadCloud,
-  FileText,
-  CheckCircle,
-  X,
-  Loader2,
-  Sparkles,
-  ArrowRight,
-  Eye,
-  Wand2,
-  Mail,
-  Phone,
-  MapPin,
-  Briefcase,
-  GraduationCap,
-  Award,
-  ChevronDown,
-  ChevronUp,
-  Copy,
-  User,
-  Building,
-  Target,
-  Edit3,
-  FileUp,
-  UserCircle,
-} from "lucide-react";
+// import React, { useState, useCallback, useRef } from "react";
+// import {
+//   UploadCloud,
+//   FileText,
+//   CheckCircle,
+//   X,
+//   Loader2,
+//   Sparkles,
+//   ArrowRight,
+//   Eye,
+//   Wand2,
+//   Mail,
+//   Phone,
+//   MapPin,
+//   Briefcase,
+//   GraduationCap,
+//   Award,
+//   ChevronDown,
+//   ChevronUp,
+//   Copy,
+//   User,
+//   Building,
+//   Target,
+//   Edit3,
+//   FileUp,
+//   UserCircle,
+// } from "lucide-react";
 
-// ============================================================
-// TYPES
-// ============================================================
-interface Experience {
-  id: string;
-  title: string;
-  company: string;
-  period: string;
-  description: string[];
-  achievements: string[];
-  isPresent: boolean;
-  location?: string;
-}
+// // ============================================================
+// // TYPES
+// // ============================================================
+// interface Experience {
+//   id: string;
+//   title: string;
+//   company: string;
+//   period: string;
+//   description: string[];
+//   achievements: string[];
+//   isPresent: boolean;
+//   location?: string;
+// }
 
-interface Education {
-  id: string;
-  degree: string;
-  institution: string;
-  period: string;
-}
+// interface Education {
+//   id: string;
+//   degree: string;
+//   institution: string;
+//   period: string;
+// }
 
-interface Skill {
-  id: string;
-  name: string;
-  category: string;
-}
+// interface Skill {
+//   id: string;
+//   name: string;
+//   category: string;
+// }
 
-interface CoreCompetencies {
-  technical: string[];
-  leadership: string[];
-  domainExpertise: string[];
-}
+// interface CoreCompetencies {
+//   technical: string[];
+//   leadership: string[];
+//   domainExpertise: string[];
+// }
 
-interface AdditionalCredentials {
-  certifications: string[];
-  languages: string[];
-  awards: string[];
-}
+// interface AdditionalCredentials {
+//   certifications: string[];
+//   languages: string[];
+//   awards: string[];
+// }
 
-interface PersonalInfo {
-  fullName: string;
-  title: string;
-  email: string;
-  phone: string;
-  location: string;
-  summary: string;
-}
+// interface PersonalInfo {
+//   fullName: string;
+//   title: string;
+//   email: string;
+//   phone: string;
+//   location: string;
+//   summary: string;
+// }
 
-interface CVData {
-  personalInfo: PersonalInfo;
-  coreCompetencies: CoreCompetencies;
-  experience: Experience[];
-  education: Education[];
-  skills: Skill[];
-  additionalCredentials: AdditionalCredentials;
-  raw: string;
-}
+// interface CVData {
+//   personalInfo: PersonalInfo;
+//   coreCompetencies: CoreCompetencies;
+//   experience: Experience[];
+//   education: Education[];
+//   skills: Skill[];
+//   additionalCredentials: AdditionalCredentials;
+//   raw: string;
+// }
 
-interface ManualFormData {
-  fullName: string;
-  title: string;
-  email: string;
-  phone: string;
-  location: string;
-  summary: string;
-  skills: string;
-  experience: string;
-  education: string;
-}
+// interface ManualFormData {
+//   fullName: string;
+//   title: string;
+//   email: string;
+//   phone: string;
+//   location: string;
+//   summary: string;
+//   skills: string;
+//   experience: string;
+//   education: string;
+// }
 
-interface CoverLetterForm {
-  companyName: string;
-  jobTitle: string;
-  hiringManager: string;
-  additionalNotes: string;
-  tone: "professional" | "enthusiastic" | "concise";
-}
+// interface CoverLetterForm {
+//   companyName: string;
+//   jobTitle: string;
+//   hiringManager: string;
+//   additionalNotes: string;
+//   tone: "professional" | "enthusiastic" | "concise";
+// }
 
-// ============================================================
-// THEME COLORS - INDIGO & PURPLE
-// ============================================================
-const THEME = {
-  primary: "#4f46e5", // indigo
-  primaryDark: "#4338ca",
-  primaryLight: "#e0e7ff",
-  secondary: "#7c3aed", // purple
-  secondaryDark: "#6d28d9",
-  secondaryLight: "#ede9fe",
-  accent: "#8b5cf6",
-  gradient: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #8b5cf6 100%)",
-};
+// // ============================================================
+// // THEME COLORS - INDIGO & PURPLE
+// // ============================================================
+// const THEME = {
+//   primary: "#4f46e5", // indigo
+//   primaryDark: "#4338ca",
+//   primaryLight: "#e0e7ff",
+//   secondary: "#7c3aed", // purple
+//   secondaryDark: "#6d28d9",
+//   secondaryLight: "#ede9fe",
+//   accent: "#8b5cf6",
+//   gradient: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #8b5cf6 100%)",
+// };
 
-// ============================================================
-// CV PARSING LOGIC (Enhanced for better extraction)
-// ============================================================
-function parseCVText(text: string): CVData {
-  const data: CVData = {
-    personalInfo: {
-      fullName: "",
-      title: "",
-      email: "",
-      phone: "",
-      location: "",
-      summary: "",
-    },
-    coreCompetencies: { technical: [], leadership: [], domainExpertise: [] },
-    experience: [],
-    education: [],
-    skills: [],
-    additionalCredentials: { certifications: [], languages: [], awards: [] },
-    raw: text,
-  };
+// // ============================================================
+// // CV PARSING LOGIC (Enhanced for better extraction)
+// // ============================================================
+// function parseCVText(text: string): CVData {
+//   const data: CVData = {
+//     personalInfo: {
+//       fullName: "",
+//       title: "",
+//       email: "",
+//       phone: "",
+//       location: "",
+//       summary: "",
+//     },
+//     coreCompetencies: { technical: [], leadership: [], domainExpertise: [] },
+//     experience: [],
+//     education: [],
+//     skills: [],
+//     additionalCredentials: { certifications: [], languages: [], awards: [] },
+//     raw: text,
+//   };
 
-  const lines = text.split("\n").map((l) => l.trim()).filter((l) => l.length > 0);
+//   const lines = text.split("\n").map((l) => l.trim()).filter((l) => l.length > 0);
 
-  // Email extraction
-  const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
-  // Phone extraction
-  const phoneRegex = /(\+\d{1,3}[-.\s]?)?\(?\d{2,4}\)?[-.\s]?\d{3,4}[-.\s]?\d{3,4}/;
+//   // Email extraction
+//   const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
+//   // Phone extraction
+//   const phoneRegex = /(\+\d{1,3}[-.\s]?)?\(?\d{2,4}\)?[-.\s]?\d{3,4}[-.\s]?\d{3,4}/;
 
-  // First pass: extract contact info from anywhere in text
-  for (const line of lines) {
-    const emailMatch = line.match(emailRegex);
-    if (emailMatch && !data.personalInfo.email) {
-      data.personalInfo.email = emailMatch[0];
-    }
-    const phoneMatch = line.match(phoneRegex);
-    if (phoneMatch && !data.personalInfo.phone && phoneMatch[0].length > 5) {
-      data.personalInfo.phone = phoneMatch[0];
-    }
-  }
+//   // First pass: extract contact info from anywhere in text
+//   for (const line of lines) {
+//     const emailMatch = line.match(emailRegex);
+//     if (emailMatch && !data.personalInfo.email) {
+//       data.personalInfo.email = emailMatch[0];
+//     }
+//     const phoneMatch = line.match(phoneRegex);
+//     if (phoneMatch && !data.personalInfo.phone && phoneMatch[0].length > 5) {
+//       data.personalInfo.phone = phoneMatch[0];
+//     }
+//   }
 
-  const SECTIONS = {
-    summary: /^professional\s+summary[:\s]*|^summary[:\s]*/i,
-    competencies: /^core\s+competencies[:\s]*/i,
-    experience: /^professional\s+experience[:\s]*|^work\s+experience[:\s]*|^experience[:\s]*/i,
-    education: /^education[:\s]*/i,
-    skills: /^(technical\s+)?skills[:\s]*|^key\s+skills[:\s]*/i,
-    credentials: /^certifications[:\s]*|^languages[:\s]*|^awards[:\s]*/i,
-  };
+//   const SECTIONS = {
+//     summary: /^professional\s+summary[:\s]*|^summary[:\s]*/i,
+//     competencies: /^core\s+competencies[:\s]*/i,
+//     experience: /^professional\s+experience[:\s]*|^work\s+experience[:\s]*|^experience[:\s]*/i,
+//     education: /^education[:\s]*/i,
+//     skills: /^(technical\s+)?skills[:\s]*|^key\s+skills[:\s]*/i,
+//     credentials: /^certifications[:\s]*|^languages[:\s]*|^awards[:\s]*/i,
+//   };
 
-  // Find first section
-  let firstSectionIdx = lines.findIndex((l) =>
-    Object.values(SECTIONS).some((re) => re.test(l))
-  );
-  if (firstSectionIdx === -1) firstSectionIdx = Math.min(6, lines.length);
+//   // Find first section
+//   let firstSectionIdx = lines.findIndex((l) =>
+//     Object.values(SECTIONS).some((re) => re.test(l))
+//   );
+//   if (firstSectionIdx === -1) firstSectionIdx = Math.min(6, lines.length);
 
-  // Extract name from top lines (usually first non-empty line)
-  const topLines = lines.slice(0, firstSectionIdx);
-  for (const line of topLines) {
-    if (!data.personalInfo.fullName && !line.match(emailRegex) && !line.match(phoneRegex) && line.length < 50) {
-      data.personalInfo.fullName = line;
-      continue;
-    }
-    if (!data.personalInfo.title && data.personalInfo.fullName && line.length < 60 && !line.match(emailRegex)) {
-      data.personalInfo.title = line;
-    }
-    if (!data.personalInfo.location && (line.includes("📍") || line.toLowerCase().includes("based in") || line.match(/[A-Z][a-z]+,\s*[A-Z]{2}/))) {
-      data.personalInfo.location = line.replace(/[📍]/g, "").trim();
-    }
-  }
+//   // Extract name from top lines (usually first non-empty line)
+//   const topLines = lines.slice(0, firstSectionIdx);
+//   for (const line of topLines) {
+//     if (!data.personalInfo.fullName && !line.match(emailRegex) && !line.match(phoneRegex) && line.length < 50) {
+//       data.personalInfo.fullName = line;
+//       continue;
+//     }
+//     if (!data.personalInfo.title && data.personalInfo.fullName && line.length < 60 && !line.match(emailRegex)) {
+//       data.personalInfo.title = line;
+//     }
+//     if (!data.personalInfo.location && (line.includes("📍") || line.toLowerCase().includes("based in") || line.match(/[A-Z][a-z]+,\s*[A-Z]{2}/))) {
+//       data.personalInfo.location = line.replace(/[📍]/g, "").trim();
+//     }
+//   }
 
-  // Parse sections
-  let section = "";
-  let currentExp: Experience | null = null;
+//   // Parse sections
+//   let section = "";
+//   let currentExp: Experience | null = null;
 
-  for (let i = firstSectionIdx; i < lines.length; i++) {
-    const line = lines[i];
+//   for (let i = firstSectionIdx; i < lines.length; i++) {
+//     const line = lines[i];
 
-    // Check for section headers
-    let matched = false;
-    for (const [key, re] of Object.entries(SECTIONS)) {
-      if (re.test(line)) {
-        if (section === "experience" && currentExp) {
-          data.experience.push(currentExp);
-          currentExp = null;
-        }
-        section = key;
-        matched = true;
-        break;
-      }
-    }
-    if (matched) continue;
+//     // Check for section headers
+//     let matched = false;
+//     for (const [key, re] of Object.entries(SECTIONS)) {
+//       if (re.test(line)) {
+//         if (section === "experience" && currentExp) {
+//           data.experience.push(currentExp);
+//           currentExp = null;
+//         }
+//         section = key;
+//         matched = true;
+//         break;
+//       }
+//     }
+//     if (matched) continue;
 
-    // Parse based on section
-    if (section === "summary") {
-      data.personalInfo.summary += (data.personalInfo.summary ? " " : "") + line;
-      continue;
-    }
+//     // Parse based on section
+//     if (section === "summary") {
+//       data.personalInfo.summary += (data.personalInfo.summary ? " " : "") + line;
+//       continue;
+//     }
 
-    if (section === "skills") {
-      const skillsLine = line.replace(/^[-•*]\s*/, "");
-      skillsLine.split(/[,•·\-|]/).forEach((s) => {
-        const name = s.trim();
-        if (name && name.length > 1 && name.length < 30) {
-          data.skills.push({ id: crypto.randomUUID(), name, category: "technical" });
-        }
-      });
-      continue;
-    }
+//     if (section === "skills") {
+//       const skillsLine = line.replace(/^[-•*]\s*/, "");
+//       skillsLine.split(/[,•·\-|]/).forEach((s) => {
+//         const name = s.trim();
+//         if (name && name.length > 1 && name.length < 30) {
+//           data.skills.push({ id: crypto.randomUUID(), name, category: "technical" });
+//         }
+//       });
+//       continue;
+//     }
 
-    if (section === "experience") {
-      // Check for bullet points (achievements)
-      if (/^[-•*]\s/.test(line)) {
-        if (currentExp) {
-          currentExp.achievements.push(line.replace(/^[-•*]\s*/, ""));
-        }
-        continue;
-      }
+//     if (section === "experience") {
+//       // Check for bullet points (achievements)
+//       if (/^[-•*]\s/.test(line)) {
+//         if (currentExp) {
+//           currentExp.achievements.push(line.replace(/^[-•*]\s*/, ""));
+//         }
+//         continue;
+//       }
 
-      // Check for date range pattern
-      if (/\d{4}\s*[-–]\s*(?:\d{4}|present)/i.test(line)) {
-        if (currentExp) {
-          currentExp.period = line;
-          currentExp.isPresent = /present/i.test(line);
-        }
-        continue;
-      }
+//       // Check for date range pattern
+//       if (/\d{4}\s*[-–]\s*(?:\d{4}|present)/i.test(line)) {
+//         if (currentExp) {
+//           currentExp.period = line;
+//           currentExp.isPresent = /present/i.test(line);
+//         }
+//         continue;
+//       }
 
-      // If we have a line with no bullet and not a date, it might be a job title or company
-      if (line.length > 2 && line.length < 80 && !currentExp) {
-        if (currentExp) data.experience.push(currentExp);
-        currentExp = {
-          id: crypto.randomUUID(),
-          title: line,
-          company: "",
-          period: "",
-          description: [],
-          achievements: [],
-          isPresent: false,
-        };
-      } else if (currentExp && !currentExp.company && line.length < 60 && !/\d/.test(line)) {
-        currentExp.company = line;
-      }
-    }
+//       // If we have a line with no bullet and not a date, it might be a job title or company
+//       if (line.length > 2 && line.length < 80 && !currentExp) {
+//         if (currentExp) data.experience.push(currentExp);
+//         currentExp = {
+//           id: crypto.randomUUID(),
+//           title: line,
+//           company: "",
+//           period: "",
+//           description: [],
+//           achievements: [],
+//           isPresent: false,
+//         };
+//       } else if (currentExp && !currentExp.company && line.length < 60 && !/\d/.test(line)) {
+//         currentExp.company = line;
+//       }
+//     }
 
-    if (section === "education") {
-      const eduLine = line.replace(/^[-•*]\s*/, "");
-      if (eduLine.length > 2) {
-        data.education.push({
-          id: crypto.randomUUID(),
-          degree: eduLine,
-          institution: "",
-          period: "",
-        });
-      }
-      continue;
-    }
-  }
+//     if (section === "education") {
+//       const eduLine = line.replace(/^[-•*]\s*/, "");
+//       if (eduLine.length > 2) {
+//         data.education.push({
+//           id: crypto.randomUUID(),
+//           degree: eduLine,
+//           institution: "",
+//           period: "",
+//         });
+//       }
+//       continue;
+//     }
+//   }
 
-  // Push last experience
-  if (currentExp) data.experience.push(currentExp);
+//   // Push last experience
+//   if (currentExp) data.experience.push(currentExp);
 
-  // Set defaults if missing
-  if (!data.personalInfo.fullName) data.personalInfo.fullName = "Professional Candidate";
-  if (!data.personalInfo.summary) {
-    data.personalInfo.summary = "Detail-oriented professional with strong analytical skills and passion for delivering impactful results. Proven track record in cross-functional collaboration and project leadership.";
-  }
-  if (data.skills.length === 0) {
-    data.skills = [
-      { id: crypto.randomUUID(), name: "Project Management", category: "technical" },
-      { id: crypto.randomUUID(), name: "Data Analysis", category: "technical" },
-      { id: crypto.randomUUID(), name: "Communication", category: "technical" },
-    ];
-  }
-  if (data.experience.length === 0) {
-    data.experience.push({
-      id: crypto.randomUUID(),
-      title: "Professional Experience",
-      company: "Various Organizations",
-      period: "2020 – Present",
-      description: [],
-      achievements: ["Demonstrated excellence in problem-solving", "Led cross-functional initiatives", "Delivered measurable business impact"],
-      isPresent: true,
-    });
-  }
+//   // Set defaults if missing
+//   if (!data.personalInfo.fullName) data.personalInfo.fullName = "Professional Candidate";
+//   if (!data.personalInfo.summary) {
+//     data.personalInfo.summary = "Detail-oriented professional with strong analytical skills and passion for delivering impactful results. Proven track record in cross-functional collaboration and project leadership.";
+//   }
+//   if (data.skills.length === 0) {
+//     data.skills = [
+//       { id: crypto.randomUUID(), name: "Project Management", category: "technical" },
+//       { id: crypto.randomUUID(), name: "Data Analysis", category: "technical" },
+//       { id: crypto.randomUUID(), name: "Communication", category: "technical" },
+//     ];
+//   }
+//   if (data.experience.length === 0) {
+//     data.experience.push({
+//       id: crypto.randomUUID(),
+//       title: "Professional Experience",
+//       company: "Various Organizations",
+//       period: "2020 – Present",
+//       description: [],
+//       achievements: ["Demonstrated excellence in problem-solving", "Led cross-functional initiatives", "Delivered measurable business impact"],
+//       isPresent: true,
+//     });
+//   }
 
-  return data;
-}
+//   return data;
+// }
 
-// ============================================================
-// AI COVER LETTER GENERATOR (Enhanced)
-// ============================================================
-async function generateAICoverLetter(
-  cvData: CVData | null,
-  manualData: ManualFormData | null,
-  form: CoverLetterForm
-): Promise<string> {
-  // Simulate API call delay for realism
-  await new Promise((resolve) => setTimeout(resolve, 1200));
+// // ============================================================
+// // AI COVER LETTER GENERATOR (Enhanced)
+// // ============================================================
+// async function generateAICoverLetter(
+//   cvData: CVData | null,
+//   manualData: ManualFormData | null,
+//   form: CoverLetterForm
+// ): Promise<string> {
+//   // Simulate API call delay for realism
+//   await new Promise((resolve) => setTimeout(resolve, 1200));
 
-  // Use CV data if available, otherwise use manual data
-  const name = cvData?.personalInfo.fullName || manualData?.fullName || "Candidate";
-  const title = cvData?.personalInfo.title || manualData?.title || "Professional";
-  const email = cvData?.personalInfo.email || manualData?.email || "";
-  const phone = cvData?.personalInfo.phone || manualData?.phone || "";
-  const skills = cvData?.skills.map((s) => s.name).slice(0, 5).join(", ") || manualData?.skills || "relevant skills";
-  const summary = cvData?.personalInfo.summary || manualData?.summary || "";
-  const experience = cvData?.experience[0]?.achievements.slice(0, 2).join(" ") || manualData?.experience || "";
+//   // Use CV data if available, otherwise use manual data
+//   const name = cvData?.personalInfo.fullName || manualData?.fullName || "Candidate";
+//   const title = cvData?.personalInfo.title || manualData?.title || "Professional";
+//   const email = cvData?.personalInfo.email || manualData?.email || "";
+//   const phone = cvData?.personalInfo.phone || manualData?.phone || "";
+//   const skills = cvData?.skills.map((s) => s.name).slice(0, 5).join(", ") || manualData?.skills || "relevant skills";
+//   const summary = cvData?.personalInfo.summary || manualData?.summary || "";
+//   const experience = cvData?.experience[0]?.achievements.slice(0, 2).join(" ") || manualData?.experience || "";
 
-  const { companyName, jobTitle, hiringManager, additionalNotes, tone } = form;
+//   const { companyName, jobTitle, hiringManager, additionalNotes, tone } = form;
 
-  const company = companyName.trim() || "[Company Name]";
-  const role = jobTitle.trim() || "[Target Position]";
-  const manager = hiringManager.trim() || "Hiring Manager";
+//   const company = companyName.trim() || "[Company Name]";
+//   const role = jobTitle.trim() || "[Target Position]";
+//   const manager = hiringManager.trim() || "Hiring Manager";
 
-  // Tone adjustments
-  let greeting = `Dear ${manager},`;
-  let closing = "Sincerely,";
-  let enthusiasm = "";
+//   // Tone adjustments
+//   let greeting = `Dear ${manager},`;
+//   let closing = "Sincerely,";
+//   let enthusiasm = "";
 
-  switch (tone) {
-    case "enthusiastic":
-      greeting = `Dear ${manager},`;
-      enthusiasm = "I am absolutely thrilled to apply for this opportunity! ";
-      closing = "With great enthusiasm,\n";
-      break;
-    case "concise":
-      greeting = `Dear ${manager},`;
-      enthusiasm = "I am writing to express my interest in the position. ";
-      closing = "Best regards,\n";
-      break;
-    default:
-      greeting = `Dear ${manager},`;
-      enthusiasm = "";
-      closing = "Sincerely,\n";
-  }
+//   switch (tone) {
+//     case "enthusiastic":
+//       greeting = `Dear ${manager},`;
+//       enthusiasm = "I am absolutely thrilled to apply for this opportunity! ";
+//       closing = "With great enthusiasm,\n";
+//       break;
+//     case "concise":
+//       greeting = `Dear ${manager},`;
+//       enthusiasm = "I am writing to express my interest in the position. ";
+//       closing = "Best regards,\n";
+//       break;
+//     default:
+//       greeting = `Dear ${manager},`;
+//       enthusiasm = "";
+//       closing = "Sincerely,\n";
+//   }
 
-  let letter = `${greeting}
+//   let letter = `${greeting}
 
-${enthusiasm}I am writing to enthusiastically apply for the ${role} position at ${company}.`;
+// ${enthusiasm}I am writing to enthusiastically apply for the ${role} position at ${company}.`;
 
-  if (title && title !== "Professional") {
-    letter += ` As a ${title} with a proven track record, `;
-  }
+//   if (title && title !== "Professional") {
+//     letter += ` As a ${title} with a proven track record, `;
+//   }
 
-  letter += ` I bring expertise in ${skills}.`;
+//   letter += ` I bring expertise in ${skills}.`;
 
-  if (summary) {
-    letter += `\n\n${summary.substring(0, 200)}`;
-  }
+//   if (summary) {
+//     letter += `\n\n${summary.substring(0, 200)}`;
+//   }
 
-  if (experience) {
-    letter += `\n\nIn my professional journey, I have ${experience.substring(0, 150)}.`;
-  }
+//   if (experience) {
+//     letter += `\n\nIn my professional journey, I have ${experience.substring(0, 150)}.`;
+//   }
 
-  if (additionalNotes.trim()) {
-    letter += `\n\n${additionalNotes.trim()}`;
-  }
+//   if (additionalNotes.trim()) {
+//     letter += `\n\n${additionalNotes.trim()}`;
+//   }
 
-  letter += `\n\nI am particularly drawn to ${company}'s mission and would be honored to contribute to your team's success. My background aligns perfectly with the requirements of the ${role} position, and I am confident that I can deliver immediate value.
+//   letter += `\n\nI am particularly drawn to ${company}'s mission and would be honored to contribute to your team's success. My background aligns perfectly with the requirements of the ${role} position, and I am confident that I can deliver immediate value.
 
-Thank you for considering my application. I look forward to the opportunity to discuss how my skills and experiences can benefit ${company}.
+// Thank you for considering my application. I look forward to the opportunity to discuss how my skills and experiences can benefit ${company}.
 
-${closing}
-${name}
-${email ? `📧 ${email}` : ""}
-${phone ? `📞 ${phone}` : ""}`;
+// ${closing}
+// ${name}
+// ${email ? `📧 ${email}` : ""}
+// ${phone ? `📞 ${phone}` : ""}`;
 
-  return letter;
-}
+//   return letter;
+// }
 
-// ============================================================
-// COMPONENTS
-// ============================================================
+// // ============================================================
+// // COMPONENTS
+// // ============================================================
 
-interface ExperienceCardProps {
-  exp: Experience;
-  expanded: boolean;
-  onToggle: () => void;
-}
+// interface ExperienceCardProps {
+//   exp: Experience;
+//   expanded: boolean;
+//   onToggle: () => void;
+// }
 
-function ExperienceCard({ exp, expanded, onToggle }: ExperienceCardProps) {
+// function ExperienceCard({ exp, expanded, onToggle }: ExperienceCardProps) {
+//   return (
+//     <div
+//       style={{
+//         background: "#fff",
+//         border: `1px solid ${THEME.primaryLight}`,
+//         borderRadius: 12,
+//         overflow: "hidden",
+//         marginBottom: 12,
+//       }}
+//     >
+//       <div style={{ padding: "20px 24px" }}>
+//         <div
+//           style={{
+//             display: "flex",
+//             justifyContent: "space-between",
+//             alignItems: "flex-start",
+//             marginBottom: 8,
+//             flexWrap: "wrap",
+//             gap: 8,
+//           }}
+//         >
+//           <div>
+//             <h3 style={{ margin: "0 0 4px", fontSize: 16, fontWeight: 700, color: "#111827" }}>
+//               {exp.title}
+//             </h3>
+//             <p style={{ margin: 0, fontSize: 13, color: THEME.primary, fontWeight: 500 }}>
+//               {exp.company}
+//               {exp.location && ` • ${exp.location}`}
+//             </p>
+//           </div>
+//           {exp.period && (
+//             <span
+//               style={{
+//                 fontSize: 12,
+//                 color: "#9ca3af",
+//                 display: "flex",
+//                 alignItems: "center",
+//                 gap: 4,
+//               }}
+//             >
+//               {exp.period}
+//             </span>
+//           )}
+//         </div>
+
+//         {exp.achievements.length > 0 && (
+//           <>
+//             <button
+//               onClick={onToggle}
+//               style={{
+//                 background: "none",
+//                 border: "none",
+//                 cursor: "pointer",
+//                 fontSize: 13,
+//                 color: THEME.primary,
+//                 fontWeight: 600,
+//                 padding: "4px 0",
+//                 display: "flex",
+//                 alignItems: "center",
+//                 gap: 4,
+//               }}
+//             >
+//               {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+//               {exp.achievements.length} Achievement{exp.achievements.length !== 1 ? "s" : ""}
+//             </button>
+
+//             {expanded && (
+//               <ul style={{ margin: "8px 0 0", paddingLeft: 20 }}>
+//                 {exp.achievements.map((a, i) => (
+//                   <li key={i} style={{ fontSize: 13, color: "#4b5563", marginBottom: 4, lineHeight: 1.6 }}>
+//                     {a}
+//                   </li>
+//                 ))}
+//               </ul>
+//             )}
+//           </>
+//         )}
+//       </div>
+//     </div>
+//   );
+// }
+
+// interface CVPreviewProps {
+//   cvData: CVData;
+// }
+
+// function CVPreview({ cvData }: CVPreviewProps) {
+//   const [expandedExpIds, setExpandedExpIds] = useState<Set<string>>(new Set());
+
+//   const toggleExpanded = (id: string) => {
+//     setExpandedExpIds((prev) => {
+//       const next = new Set(prev);
+//       if (next.has(id)) next.delete(id);
+//       else next.add(id);
+//       return next;
+//     });
+//   };
+
+//   const SectionTitle = ({ children, icon }: { children: React.ReactNode; icon?: React.ReactNode }) => (
+//     <h2
+//       style={{
+//         display: "flex",
+//         alignItems: "center",
+//         gap: 10,
+//         fontSize: 18,
+//         fontWeight: 700,
+//         color: "#111827",
+//         margin: "0 0 16px",
+//       }}
+//     >
+//       <div style={{ width: 4, height: 22, borderRadius: 2, background: THEME.gradient }} />
+//       {icon && <span style={{ color: THEME.primary }}>{icon}</span>}
+//       {children}
+//     </h2>
+//   );
+
+//   return (
+//     <div
+//       style={{
+//         background: "#fff",
+//         borderRadius: 20,
+//         padding: "40px 44px",
+//         boxShadow: "0 8px 32px rgba(79,70,229,0.08)",
+//         maxWidth: 900,
+//         margin: "0 auto",
+//       }}
+//     >
+//       {/* Header */}
+//       <div style={{ textAlign: "center", marginBottom: 32 }}>
+//         <h1
+//           style={{
+//             margin: "0 0 6px",
+//             fontSize: 36,
+//             fontWeight: 800,
+//             background: THEME.gradient,
+//             WebkitBackgroundClip: "text",
+//             WebkitTextFillColor: "transparent",
+//             backgroundClip: "text",
+//           }}
+//         >
+//           {cvData.personalInfo.fullName || "Your Name"}
+//         </h1>
+//         {cvData.personalInfo.title && (
+//           <p style={{ margin: "0 0 14px", fontSize: 17, color: "#6b7280" }}>
+//             {cvData.personalInfo.title}
+//           </p>
+//         )}
+//         <div
+//           style={{
+//             display: "flex",
+//             flexWrap: "wrap",
+//             justifyContent: "center",
+//             gap: 16,
+//             fontSize: 13,
+//             color: "#6b7280",
+//           }}
+//         >
+//           {cvData.personalInfo.email && (
+//             <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
+//               <Mail size={13} color={THEME.primary} /> {cvData.personalInfo.email}
+//             </span>
+//           )}
+//           {cvData.personalInfo.phone && (
+//             <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
+//               <Phone size={13} color={THEME.primary} /> {cvData.personalInfo.phone}
+//             </span>
+//           )}
+//           {cvData.personalInfo.location && (
+//             <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
+//               <MapPin size={13} color={THEME.primary} /> {cvData.personalInfo.location}
+//             </span>
+//           )}
+//         </div>
+//       </div>
+
+//       {/* Summary */}
+//       {cvData.personalInfo.summary && (
+//         <div style={{ marginBottom: 28 }}>
+//           <SectionTitle>Professional Summary</SectionTitle>
+//           <p style={{ margin: 0, color: "#374151", lineHeight: 1.75, fontSize: 14 }}>
+//             {cvData.personalInfo.summary}
+//           </p>
+//         </div>
+//       )}
+
+//       {/* Experience */}
+//       {cvData.experience.length > 0 && (
+//         <div style={{ marginBottom: 28 }}>
+//           <SectionTitle icon={<Briefcase size={18} />}>Professional Experience</SectionTitle>
+//           {cvData.experience.map((exp) => (
+//             <ExperienceCard
+//               key={exp.id}
+//               exp={exp}
+//               expanded={expandedExpIds.has(exp.id)}
+//               onToggle={() => toggleExpanded(exp.id)}
+//             />
+//           ))}
+//         </div>
+//       )}
+
+//       {/* Skills */}
+//       {cvData.skills.length > 0 && (
+//         <div style={{ marginBottom: 28 }}>
+//           <SectionTitle>Technical Skills</SectionTitle>
+//           <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+//             {cvData.skills.map((skill) => (
+//               <span
+//                 key={skill.id}
+//                 style={{
+//                   padding: "6px 14px",
+//                   borderRadius: 20,
+//                   fontSize: 13,
+//                   fontWeight: 500,
+//                   background: THEME.primaryLight,
+//                   color: THEME.primaryDark,
+//                 }}
+//               >
+//                 {skill.name}
+//               </span>
+//             ))}
+//           </div>
+//         </div>
+//       )}
+
+//       {/* Education */}
+//       {cvData.education.length > 0 && (
+//         <div style={{ marginBottom: 28 }}>
+//           <SectionTitle icon={<GraduationCap size={18} />}>Education</SectionTitle>
+//           {cvData.education.map((edu) => (
+//             <div
+//               key={edu.id}
+//               style={{
+//                 display: "flex",
+//                 justifyContent: "space-between",
+//                 alignItems: "center",
+//                 padding: "12px 16px",
+//                 background: "#f9fafb",
+//                 borderRadius: 10,
+//                 marginBottom: 8,
+//                 flexWrap: "wrap",
+//                 gap: 8,
+//               }}
+//             >
+//               <div>
+//                 <p style={{ margin: "0 0 2px", fontWeight: 600, fontSize: 14, color: "#111827" }}>
+//                   {edu.degree}
+//                 </p>
+//                 {edu.institution && (
+//                   <p style={{ margin: 0, fontSize: 13, color: "#6b7280" }}>{edu.institution}</p>
+//                 )}
+//               </div>
+//               {edu.period && <span style={{ fontSize: 12, color: "#9ca3af" }}>{edu.period}</span>}
+//             </div>
+//           ))}
+//         </div>
+//       )}
+//     </div>
+//   );
+// }
+
+// // ============================================================
+// // MAIN COMPONENT
+// // ============================================================
+// export default function CVGeneratorPage() {
+//   // Data sources
+//   const [inputMethod, setInputMethod] = useState<"upload" | "manual">("upload");
+//   const [file, setFile] = useState<File | null>(null);
+//   const [dragActive, setDragActive] = useState(false);
+//   const [uploading, setUploading] = useState(false);
+//   const [cvData, setCvData] = useState<CVData | null>(null);
+//   const [manualData, setManualData] = useState<ManualFormData>({
+//     fullName: "",
+//     title: "",
+//     email: "",
+//     phone: "",
+//     location: "",
+//     summary: "",
+//     skills: "",
+//     experience: "",
+//     education: "",
+//   });
+//   const [activeStep, setActiveStep] = useState<"input" | "preview" | "letter">("input");
+//   const [error, setError] = useState("");
+//   const [coverLetter, setCoverLetter] = useState("");
+//   const [generatingLetter, setGeneratingLetter] = useState(false);
+//   const [letterForm, setLetterForm] = useState<CoverLetterForm>({
+//     companyName: "",
+//     jobTitle: "",
+//     hiringManager: "",
+//     additionalNotes: "",
+//     tone: "professional",
+//   });
+
+//   const fileInputRef = useRef<HTMLInputElement>(null);
+
+//   const ALLOWED_TYPES = [
+//     "application/pdf",
+//     "application/msword",
+//     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+//     "text/plain",
+//   ];
+
+//   // File handlers
+//   const handleDrag = (e: React.DragEvent) => {
+//     e.preventDefault();
+//     e.stopPropagation();
+//     if (e.type === "dragenter" || e.type === "dragover") setDragActive(true);
+//     else if (e.type === "dragleave") setDragActive(false);
+//   };
+
+//   const handleDrop = (e: React.DragEvent) => {
+//     e.preventDefault();
+//     e.stopPropagation();
+//     setDragActive(false);
+
+//     const droppedFile = e.dataTransfer.files[0];
+//     if (droppedFile && ALLOWED_TYPES.includes(droppedFile.type)) {
+//       setFile(droppedFile);
+//       setError("");
+//     } else {
+//       setError("Please upload a PDF, DOC, DOCX, or TXT file");
+//     }
+//   };
+
+//   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     const selectedFile = e.target.files?.[0];
+//     if (selectedFile && ALLOWED_TYPES.includes(selectedFile.type)) {
+//       setFile(selectedFile);
+//       setError("");
+//     } else if (selectedFile) {
+//       setError("Please upload a PDF, DOC, DOCX, or TXT file");
+//     }
+//   };
+
+//   const clearFile = () => {
+//     setFile(null);
+//     setCvData(null);
+//     if (fileInputRef.current) fileInputRef.current.value = "";
+//   };
+
+//   const readFileAsText = (file: File): Promise<string> => {
+//     return new Promise((resolve, reject) => {
+//       const reader = new FileReader();
+//       reader.onload = (e) => resolve(e.target?.result as string);
+//       reader.onerror = (e) => reject(e);
+//       reader.readAsText(file);
+//     });
+//   };
+
+//   const processResume = async () => {
+//     if (!file) return;
+//     setUploading(true);
+//     setError("");
+
+//     try {
+//       const text = await readFileAsText(file);
+//       const parsed = parseCVText(text);
+//       setCvData(parsed);
+//       setActiveStep("preview");
+//     } catch (err) {
+//       console.error(err);
+//       setError("Failed to process resume. Please try again.");
+//     } finally {
+//       setUploading(false);
+//     }
+//   };
+
+//   const handleManualSubmit = () => {
+//     if (!manualData.fullName) {
+//       setError("Please enter your full name");
+//       return;
+//     }
+//     setActiveStep("preview");
+//   };
+
+//   const handleGenerateLetter = async () => {
+//     setGeneratingLetter(true);
+//     try {
+//       const letter = await generateAICoverLetter(cvData, manualData, letterForm);
+//       setCoverLetter(letter);
+//     } catch (err) {
+//       console.error(err);
+//       setError("Failed to generate cover letter");
+//     } finally {
+//       setGeneratingLetter(false);
+//     }
+//   };
+
+//   const copyCoverLetter = () => {
+//     if (coverLetter) {
+//       navigator.clipboard.writeText(coverLetter);
+//       alert("Cover letter copied to clipboard!");
+//     }
+//   };
+
+//   const resetAll = () => {
+//     setFile(null);
+//     setCvData(null);
+//     setManualData({
+//       fullName: "",
+//       title: "",
+//       email: "",
+//       phone: "",
+//       location: "",
+//       summary: "",
+//       skills: "",
+//       experience: "",
+//       education: "",
+//     });
+//     setActiveStep("input");
+//     setError("");
+//     setCoverLetter("");
+//     if (fileInputRef.current) fileInputRef.current.value = "";
+//   };
+
+//   return (
+//     <div
+//       style={{
+//         minHeight: "100vh",
+//         background: "linear-gradient(135deg, #f5f3ff 0%, #ffffff 50%, #eef2ff 100%)",
+//         padding: "40px 16px",
+//       }}
+//     >
+//       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+//         {/* Hero Section */}
+//         <div style={{ textAlign: "center", marginBottom: 36 }}>
+//           <div
+//             style={{
+//               display: "inline-flex",
+//               alignItems: "center",
+//               gap: 6,
+//               padding: "5px 14px",
+//               background: THEME.primaryLight,
+//               borderRadius: 100,
+//               marginBottom: 14,
+//             }}
+//           >
+//             <Sparkles size={13} color={THEME.primary} />
+//             <span style={{ fontSize: 13, fontWeight: 600, color: THEME.primary }}>
+//               AI-Powered CV Studio
+//             </span>
+//           </div>
+//           <h1
+//             style={{
+//               fontSize: "clamp(28px,5vw,44px)",
+//               fontWeight: 800,
+//               background: THEME.gradient,
+//               WebkitBackgroundClip: "text",
+//               WebkitTextFillColor: "transparent",
+//               backgroundClip: "text",
+//               margin: "0 0 10px",
+//               lineHeight: 1.2,
+//             }}
+//           >
+//             Resume + Cover Letter Generator
+//           </h1>
+//           <p style={{ color: "#6b7280", fontSize: 15, maxWidth: 520, margin: "0 auto" }}>
+//             Upload your resume or enter details manually, then generate a personalized AI cover letter
+//           </p>
+//         </div>
+
+//         {/* Main Card */}
+//         <div
+//           style={{
+//             background: "#fff",
+//             borderRadius: 28,
+//             border: "1px solid #f0f0f0",
+//             boxShadow: "0 20px 40px rgba(79,70,229,0.08)",
+//             overflow: "hidden",
+//           }}
+//         >
+//           {/* INPUT STEP */}
+//           {activeStep === "input" && (
+//             <div style={{ padding: 36 }}>
+//               {/* Toggle between upload and manual input */}
+//               <div
+//                 style={{
+//                   display: "flex",
+//                   gap: 12,
+//                   marginBottom: 32,
+//                   background: "#f9fafb",
+//                   padding: 6,
+//                   borderRadius: 60,
+//                 }}
+//               >
+//                 <button
+//                   onClick={() => setInputMethod("upload")}
+//                   style={{
+//                     flex: 1,
+//                     padding: "12px 20px",
+//                     borderRadius: 50,
+//                     border: "none",
+//                     background: inputMethod === "upload" ? THEME.gradient : "transparent",
+//                     color: inputMethod === "upload" ? "#fff" : "#6b7280",
+//                     fontWeight: 600,
+//                     cursor: "pointer",
+//                     display: "flex",
+//                     alignItems: "center",
+//                     justifyContent: "center",
+//                     gap: 8,
+//                     transition: "all 0.2s",
+//                   }}
+//                 >
+//                   <FileUp size={18} /> Upload Resume
+//                 </button>
+//                 <button
+//                   onClick={() => setInputMethod("manual")}
+//                   style={{
+//                     flex: 1,
+//                     padding: "12px 20px",
+//                     borderRadius: 50,
+//                     border: "none",
+//                     background: inputMethod === "manual" ? THEME.gradient : "transparent",
+//                     color: inputMethod === "manual" ? "#fff" : "#6b7280",
+//                     fontWeight: 600,
+//                     cursor: "pointer",
+//                     display: "flex",
+//                     alignItems: "center",
+//                     justifyContent: "center",
+//                     gap: 8,
+//                   }}
+//                 >
+//                   <UserCircle size={18} /> Enter Manually
+//                 </button>
+//               </div>
+
+//               {inputMethod === "upload" ? (
+//                 // Upload UI
+//                 <div>
+//                   <div
+//                     onDragEnter={handleDrag}
+//                     onDragLeave={handleDrag}
+//                     onDragOver={handleDrag}
+//                     onDrop={handleDrop}
+//                     onClick={() => fileInputRef.current?.click()}
+//                     style={{
+//                       border: `2px dashed ${dragActive ? THEME.primary : file ? "#22c55e" : "#e5e7eb"}`,
+//                       borderRadius: 20,
+//                       padding: "52px 32px",
+//                       textAlign: "center",
+//                       background: dragActive ? `${THEME.primary}06` : file ? "#f0fdf4" : "#fafafa",
+//                       transition: "all .25s",
+//                       cursor: "pointer",
+//                     }}
+//                   >
+//                     <input
+//                       ref={fileInputRef}
+//                       type="file"
+//                       accept=".pdf,.doc,.docx,.txt"
+//                       style={{ display: "none" }}
+//                       onChange={handleFileSelect}
+//                     />
+
+//                     {!file ? (
+//                       <>
+//                         <div
+//                           style={{
+//                             width: 80,
+//                             height: 80,
+//                             borderRadius: 24,
+//                             background: THEME.primaryLight,
+//                             display: "flex",
+//                             alignItems: "center",
+//                             justifyContent: "center",
+//                             margin: "0 auto 20px",
+//                           }}
+//                         >
+//                           <UploadCloud size={36} color={THEME.primary} />
+//                         </div>
+//                         <p style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", margin: "0 0 8px" }}>
+//                           Drag & Drop Your Resume
+//                         </p>
+//                         <p style={{ color: "#9ca3af", fontSize: 14 }}>
+//                           or <span style={{ color: THEME.primary, fontWeight: 600 }}>browse files</span>
+//                         </p>
+//                         <div style={{ display: "flex", gap: 8, justifyContent: "center", marginTop: 20 }}>
+//                           {["PDF", "DOC", "DOCX", "TXT"].map((f) => (
+//                             <span
+//                               key={f}
+//                               style={{
+//                                 padding: "4px 12px",
+//                                 background: "#f3f4f6",
+//                                 borderRadius: 6,
+//                                 fontSize: 12,
+//                                 color: "#6b7280",
+//                                 fontWeight: 600,
+//                               }}
+//                             >
+//                               {f}
+//                             </span>
+//                           ))}
+//                         </div>
+//                       </>
+//                     ) : (
+//                       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+//                         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+//                           <div
+//                             style={{
+//                               width: 56,
+//                               height: 56,
+//                               background: THEME.primaryLight,
+//                               borderRadius: 14,
+//                               display: "flex",
+//                               alignItems: "center",
+//                               justifyContent: "center",
+//                             }}
+//                           >
+//                             <FileText size={26} color={THEME.primary} />
+//                           </div>
+//                           <div style={{ textAlign: "left" }}>
+//                             <p style={{ fontWeight: 700, color: "#0f172a", margin: "0 0 4px", fontSize: 15 }}>
+//                               {file.name}
+//                             </p>
+//                             <p style={{ color: "#6b7280", margin: 0, fontSize: 13 }}>
+//                               {(file.size / 1024).toFixed(1)} KB ·{" "}
+//                               <span style={{ color: "#22c55e", fontWeight: 600 }}>✓ Ready</span>
+//                             </p>
+//                           </div>
+//                         </div>
+//                         <button
+//                           onClick={(e) => {
+//                             e.stopPropagation();
+//                             clearFile();
+//                           }}
+//                           style={{
+//                             background: "#fee2e2",
+//                             border: "none",
+//                             borderRadius: 8,
+//                             padding: 8,
+//                             cursor: "pointer",
+//                           }}
+//                         >
+//                           <X size={16} color="#ef4444" />
+//                         </button>
+//                       </div>
+//                     )}
+//                   </div>
+
+//                   {error && (
+//                     <div
+//                       style={{
+//                         marginTop: 14,
+//                         padding: "10px 16px",
+//                         background: "#fee2e2",
+//                         borderRadius: 10,
+//                         color: "#b91c1c",
+//                         fontSize: 13,
+//                       }}
+//                     >
+//                       ⚠️ {error}
+//                     </div>
+//                   )}
+
+//                   {file && !uploading && (
+//                     <button
+//                       onClick={processResume}
+//                       style={{
+//                         marginTop: 20,
+//                         width: "100%",
+//                         padding: "16px",
+//                         background: THEME.gradient,
+//                         color: "#fff",
+//                         border: "none",
+//                         borderRadius: 14,
+//                         fontSize: 16,
+//                         fontWeight: 700,
+//                         cursor: "pointer",
+//                         display: "flex",
+//                         alignItems: "center",
+//                         justifyContent: "center",
+//                         gap: 10,
+//                       }}
+//                     >
+//                       <Wand2 size={20} /> Parse & Continue <ArrowRight size={18} />
+//                     </button>
+//                   )}
+
+//                   {uploading && (
+//                     <div style={{ marginTop: 24, textAlign: "center" }}>
+//                       <div
+//                         style={{
+//                           display: "inline-flex",
+//                           alignItems: "center",
+//                           gap: 10,
+//                           padding: "10px 20px",
+//                           background: THEME.primaryLight,
+//                           borderRadius: 100,
+//                         }}
+//                       >
+//                         <Loader2 size={18} color={THEME.primary} style={{ animation: "spin 1s linear infinite" }} />
+//                         <span style={{ fontSize: 14, fontWeight: 500, color: "#374151" }}>
+//                           Parsing your resume...
+//                         </span>
+//                       </div>
+//                     </div>
+//                   )}
+//                 </div>
+//               ) : (
+//                 // Manual Input UI
+//                 <div>
+//                   <h3 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", marginBottom: 20, display: "flex", alignItems: "center", gap: 8 }}>
+//                     <User size={20} color={THEME.primary} /> Enter Your Details
+//                   </h3>
+//                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+//                     <input
+//                       type="text"
+//                       placeholder="Full Name *"
+//                       value={manualData.fullName}
+//                       onChange={(e) => setManualData({ ...manualData, fullName: e.target.value })}
+//                       style={{ padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14 }}
+//                     />
+//                     <input
+//                       type="text"
+//                       placeholder="Professional Title"
+//                       value={manualData.title}
+//                       onChange={(e) => setManualData({ ...manualData, title: e.target.value })}
+//                       style={{ padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14 }}
+//                     />
+//                     <input
+//                       type="email"
+//                       placeholder="Email"
+//                       value={manualData.email}
+//                       onChange={(e) => setManualData({ ...manualData, email: e.target.value })}
+//                       style={{ padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14 }}
+//                     />
+//                     <input
+//                       type="text"
+//                       placeholder="Phone"
+//                       value={manualData.phone}
+//                       onChange={(e) => setManualData({ ...manualData, phone: e.target.value })}
+//                       style={{ padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14 }}
+//                     />
+//                     <input
+//                       type="text"
+//                       placeholder="Location (City, State)"
+//                       value={manualData.location}
+//                       onChange={(e) => setManualData({ ...manualData, location: e.target.value })}
+//                       style={{ padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14 }}
+//                     />
+//                   </div>
+//                   <textarea
+//                     placeholder="Professional Summary (2-3 sentences about yourself)"
+//                     value={manualData.summary}
+//                     onChange={(e) => setManualData({ ...manualData, summary: e.target.value })}
+//                     rows={3}
+//                     style={{ width: "100%", marginTop: 16, padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14, resize: "vertical" }}
+//                   />
+//                   <textarea
+//                     placeholder="Key Skills (comma separated, e.g., JavaScript, Project Management, Data Analysis)"
+//                     value={manualData.skills}
+//                     onChange={(e) => setManualData({ ...manualData, skills: e.target.value })}
+//                     rows={2}
+//                     style={{ width: "100%", marginTop: 16, padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14, resize: "vertical" }}
+//                   />
+//                   <textarea
+//                     placeholder="Work Experience (key achievements and responsibilities)"
+//                     value={manualData.experience}
+//                     onChange={(e) => setManualData({ ...manualData, experience: e.target.value })}
+//                     rows={3}
+//                     style={{ width: "100%", marginTop: 16, padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14, resize: "vertical" }}
+//                   />
+
+//                   {error && (
+//                     <div style={{ marginTop: 14, padding: "10px 16px", background: "#fee2e2", borderRadius: 10, color: "#b91c1c", fontSize: 13 }}>
+//                       ⚠️ {error}
+//                     </div>
+//                   )}
+
+//                   <button
+//                     onClick={handleManualSubmit}
+//                     style={{
+//                       marginTop: 20,
+//                       width: "100%",
+//                       padding: "16px",
+//                       background: THEME.gradient,
+//                       color: "#fff",
+//                       border: "none",
+//                       borderRadius: 14,
+//                       fontSize: 16,
+//                       fontWeight: 700,
+//                       cursor: "pointer",
+//                       display: "flex",
+//                       alignItems: "center",
+//                       justifyContent: "center",
+//                       gap: 10,
+//                     }}
+//                   >
+//                     Continue to Preview <ArrowRight size={18} />
+//                   </button>
+//                 </div>
+//               )}
+//             </div>
+//           )}
+
+//           {/* PREVIEW STEP */}
+//           {activeStep === "preview" && (cvData || manualData.fullName) && (
+//             <div>
+//               <div
+//                 style={{
+//                   borderBottom: "1px solid #f0f0f0",
+//                   padding: "14px 24px",
+//                   background: "#fafafa",
+//                   display: "flex",
+//                   alignItems: "center",
+//                   justifyContent: "space-between",
+//                   flexWrap: "wrap",
+//                   gap: 12,
+//                 }}
+//               >
+//                 <span style={{ fontSize: 13, fontWeight: 600, color: "#374151" }}>
+//                   {cvData ? "📄 CV Extracted from Resume" : "✏️ Manually Entered Profile"}
+//                 </span>
+//                 <button
+//                   onClick={() => setActiveStep("letter")}
+//                   style={{
+//                     padding: "10px 24px",
+//                     background: THEME.gradient,
+//                     color: "#fff",
+//                     border: "none",
+//                     borderRadius: 40,
+//                     fontSize: 14,
+//                     fontWeight: 600,
+//                     cursor: "pointer",
+//                     display: "flex",
+//                     alignItems: "center",
+//                     gap: 8,
+//                   }}
+//                 >
+//                   Generate Cover Letter <ArrowRight size={16} />
+//                 </button>
+//               </div>
+//               <div style={{ padding: 32, background: "#f9fafb" }}>
+//                 {cvData ? (
+//                   <CVPreview cvData={cvData} />
+//                 ) : (
+//                   <div style={{ background: "#fff", borderRadius: 20, padding: 40, textAlign: "center" }}>
+//                     <h2 style={{ fontSize: 24, fontWeight: 700, color: "#0f172a" }}>{manualData.fullName}</h2>
+//                     {manualData.title && <p style={{ color: THEME.primary, fontWeight: 500 }}>{manualData.title}</p>}
+//                     <div style={{ display: "flex", justifyContent: "center", gap: 16, marginTop: 12, flexWrap: "wrap" }}>
+//                       {manualData.email && <span><Mail size={14} /> {manualData.email}</span>}
+//                       {manualData.phone && <span><Phone size={14} /> {manualData.phone}</span>}
+//                       {manualData.location && <span><MapPin size={14} /> {manualData.location}</span>}
+//                     </div>
+//                     {manualData.summary && <p style={{ marginTop: 24, textAlign: "left" }}><strong>Summary:</strong> {manualData.summary}</p>}
+//                     {manualData.skills && <p style={{ marginTop: 16, textAlign: "left" }}><strong>Skills:</strong> {manualData.skills}</p>}
+//                     {manualData.experience && <p style={{ marginTop: 16, textAlign: "left" }}><strong>Experience:</strong> {manualData.experience}</p>}
+//                   </div>
+//                 )}
+//               </div>
+//             </div>
+//           )}
+
+//           {/* COVER LETTER STEP */}
+//           {activeStep === "letter" && (
+//             <div style={{ padding: 32 }}>
+//               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 32 }}>
+//                 {/* Left Panel */}
+//                 <div>
+//                   <h3 style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", marginBottom: 20, display: "flex", alignItems: "center", gap: 8 }}>
+//                     <Edit3 size={20} color={THEME.primary} /> Customize Your Letter
+//                   </h3>
+//                   <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+//                     <div>
+//                       <label style={{ fontWeight: 600, fontSize: 14, color: "#374151", display: "block", marginBottom: 6 }}>
+//                         <Building size={14} style={{ display: "inline", marginRight: 6 }} /> Company Name
+//                       </label>
+//                       <input
+//                         type="text"
+//                         value={letterForm.companyName}
+//                         onChange={(e) => setLetterForm({ ...letterForm, companyName: e.target.value })}
+//                         placeholder="e.g., Google, Microsoft, Startup X"
+//                         style={{ width: "100%", padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14 }}
+//                       />
+//                     </div>
+//                     <div>
+//                       <label style={{ fontWeight: 600, fontSize: 14, color: "#374151", display: "block", marginBottom: 6 }}>
+//                         <Target size={14} style={{ display: "inline", marginRight: 6 }} /> Job Title / Role
+//                       </label>
+//                       <input
+//                         type="text"
+//                         value={letterForm.jobTitle}
+//                         onChange={(e) => setLetterForm({ ...letterForm, jobTitle: e.target.value })}
+//                         placeholder="e.g., Frontend Engineer, Product Manager"
+//                         style={{ width: "100%", padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14 }}
+//                       />
+//                     </div>
+//                     <div>
+//                       <label style={{ fontWeight: 600, fontSize: 14, color: "#374151", display: "block", marginBottom: 6 }}>
+//                         <User size={14} style={{ display: "inline", marginRight: 6 }} /> Hiring Manager Name (optional)
+//                       </label>
+//                       <input
+//                         type="text"
+//                         value={letterForm.hiringManager}
+//                         onChange={(e) => setLetterForm({ ...letterForm, hiringManager: e.target.value })}
+//                         placeholder="e.g., Sarah Johnson"
+//                         style={{ width: "100%", padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14 }}
+//                       />
+//                     </div>
+//                     <div>
+//                       <label style={{ fontWeight: 600, fontSize: 14, color: "#374151", display: "block", marginBottom: 6 }}>
+//                         Tone
+//                       </label>
+//                       <select
+//                         value={letterForm.tone}
+//                         onChange={(e) => setLetterForm({ ...letterForm, tone: e.target.value as CoverLetterForm["tone"] })}
+//                         style={{ width: "100%", padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14, background: "#fff" }}
+//                       >
+//                         <option value="professional">Professional & Formal</option>
+//                         <option value="enthusiastic">Enthusiastic & Energetic</option>
+//                         <option value="concise">Concise & Direct</option>
+//                       </select>
+//                     </div>
+//                     <div>
+//                       <label style={{ fontWeight: 600, fontSize: 14, color: "#374151", display: "block", marginBottom: 6 }}>
+//                         Additional Notes (optional)
+//                       </label>
+//                       <textarea
+//                         rows={4}
+//                         value={letterForm.additionalNotes}
+//                         onChange={(e) => setLetterForm({ ...letterForm, additionalNotes: e.target.value })}
+//                         placeholder="Mention specific achievements, projects, or why you're interested..."
+//                         style={{ width: "100%", padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14, resize: "vertical" }}
+//                       />
+//                     </div>
+//                     <button
+//                       onClick={handleGenerateLetter}
+//                       disabled={generatingLetter}
+//                       style={{
+//                         background: generatingLetter ? "#e5e7eb" : THEME.gradient,
+//                         color: generatingLetter ? "#9ca3af" : "#fff",
+//                         border: "none",
+//                         borderRadius: 40,
+//                         padding: "14px",
+//                         fontSize: 15,
+//                         fontWeight: 700,
+//                         cursor: generatingLetter ? "not-allowed" : "pointer",
+//                         display: "flex",
+//                         alignItems: "center",
+//                         justifyContent: "center",
+//                         gap: 8,
+//                         marginTop: 8,
+//                       }}
+//                     >
+//                       {generatingLetter ? (
+//                         <><Loader2 size={18} style={{ animation: "spin 1s linear infinite" }} /> Generating...</>
+//                       ) : (
+//                         <><Sparkles size={18} /> Generate AI Cover Letter</>
+//                       )}
+//                     </button>
+//                   </div>
+//                 </div>
+
+//                 {/* Right Panel */}
+//                 <div>
+//                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+//                     <h3 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a" }}>📄 Your Cover Letter</h3>
+//                     {coverLetter && (
+//                       <button
+//                         onClick={copyCoverLetter}
+//                         style={{
+//                           background: "none",
+//                           border: `1px solid ${THEME.primaryLight}`,
+//                           borderRadius: 40,
+//                           padding: "6px 14px",
+//                           fontSize: 12,
+//                           fontWeight: 500,
+//                           color: THEME.primary,
+//                           cursor: "pointer",
+//                           display: "flex",
+//                           alignItems: "center",
+//                           gap: 6,
+//                         }}
+//                       >
+//                         <Copy size={14} /> Copy
+//                       </button>
+//                     )}
+//                   </div>
+//                   <div
+//                     style={{
+//                       background: "linear-gradient(135deg, #faf5ff 0%, #ffffff 100%)",
+//                       borderRadius: 20,
+//                       padding: 28,
+//                       border: `1px solid ${THEME.primaryLight}`,
+//                       minHeight: 450,
+//                       maxHeight: 550,
+//                       overflowY: "auto",
+//                     }}
+//                   >
+//                     {coverLetter ? (
+//                       <div style={{ whiteSpace: "pre-wrap", lineHeight: 1.7, fontSize: 14, color: "#1f2937" }}>
+//                         {coverLetter}
+//                       </div>
+//                     ) : (
+//                       <div style={{ textAlign: "center", color: "#9ca3af", padding: "60px 20px" }}>
+//                         <Wand2 size={40} style={{ marginBottom: 16, opacity: 0.5, color: THEME.primary }} />
+//                         <p>Click "Generate AI Cover Letter" above</p>
+//                         <p style={{ fontSize: 13, marginTop: 8 }}>Your personalized letter will appear here</p>
+//                       </div>
+//                     )}
+//                   </div>
+//                 </div>
+//               </div>
+
+//               <div style={{ marginTop: 32, display: "flex", justifyContent: "center", gap: 16 }}>
+//                 <button
+//                   onClick={() => setActiveStep("preview")}
+//                   style={{ background: "none", border: `1px solid ${THEME.primaryLight}`, borderRadius: 40, padding: "10px 24px", cursor: "pointer", color: "#6b7280" }}
+//                 >
+//                   ← Back to Profile
+//                 </button>
+//                 <button
+//                   onClick={resetAll}
+//                   style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af", fontSize: 13 }}
+//                 >
+//                   Start Over
+//                 </button>
+//               </div>
+//             </div>
+//           )}
+//         </div>
+//       </div>
+
+//       <style>{`
+//         @keyframes spin {
+//           to { transform: rotate(360deg); }
+//         }
+//       `}</style>
+//     </div>
+//   );
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// "use client";
+
+// import React, { useState, useRef, useEffect, useCallback } from "react";
+// import axios, { AxiosResponse } from "axios";
+// import {
+//   Sparkles,
+//   Mail,
+//   Phone,
+//   MapPin,
+//   Building,
+//   Target,
+//   User,
+//   Copy,
+//   Download,
+//   Loader2,
+//   Check,
+//   Palette,
+//   FileText,
+//   Heart,
+//   Shield,
+//   Zap,
+//   Feather,
+//   Layout,
+//   Eye,
+//   RefreshCw,
+//   Briefcase,
+//   Award,
+//   Star,
+//   Crown,
+//   Diamond,
+//   Sparkle,
+//   Leaf,
+//   Waves,
+//   Sun,
+//   Compass,
+//   Plus,
+//   Trash2,
+//   Linkedin,
+//   Globe2,
+//   Quote,
+//   PenLine,
+//   X,
+//   ArrowRight,
+//   Instagram,
+//   Twitter,
+//   Youtube,
+//   Figma,
+//   Github,
+//   Dribbble,
+//   Minimize2,
+//   Maximize2,
+  
+// } from "lucide-react";
+
+// // ============================================================
+// // TYPES
+// // ============================================================
+
+// interface PersonalInfo {
+//   fullName: string;
+//   title: string;
+//   email: string;
+//   phone: string;
+//   location: string;
+//   website: string;
+//   linkedin: string;
+//   github: string;
+//   twitter?: string;
+//   instagram?: string;
+// }
+
+// interface CompanyInfo {
+//   name: string;
+//   jobTitle: string;
+//   hiringManager: string;
+//   hiringManagerTitle: string;
+//   address: string;
+//   city: string;
+//   state: string;
+//   zipCode: string;
+//   department: string;
+// }
+
+// interface LetterSection {
+//   id: string;
+//   title: string;
+//   content: string;
+//   placeholder: string;
+// }
+
+// interface CoverLetterData {
+//   personal: PersonalInfo;
+//   company: CompanyInfo;
+//   sections: LetterSection[];
+//   tone: string;
+//   achievements: string[];
+//   additionalNotes: string;
+// }
+
+// interface Template {
+//   id: string;
+//   name: string;
+//   description: string;
+//   icon: React.ReactNode;
+//   primaryColor: string;
+//   secondaryColor: string;
+//   accentColor: string;
+//   fontFamily: string;
+//   category: string;
+//   layout: string;
+//   structure: "two-column" | "sidebar" | "header-centered" | "minimal" | "bold" | "elegant" | "modern" | "creative";
+// }
+
+// // ============================================================
+// // 8 UNIQUE TEMPLATES
+// // ============================================================
+
+// const templates: Template[] = [
+//   {
+//     id: "split-screen",
+//     name: "Split Screen",
+//     description: "Modern two-column design with colored sidebar",
+//     icon: <Layout size={20} />,
+//     primaryColor: "#4f46e5",
+//     secondaryColor: "#818cf8",
+//     accentColor: "#c7d2fe",
+//     fontFamily: "'Inter', sans-serif",
+//     category: "modern",
+//     layout: "split",
+//     structure: "two-column",
+//   },
+//   {
+//     id: "sidebar-pro",
+//     name: "Sidebar Pro",
+//     description: "Professional with left sidebar contact panel",
+//     icon: <User size={20} />,
+//     primaryColor: "#1e293b",
+//     secondaryColor: "#475569",
+//     accentColor: "#94a3b8",
+//     fontFamily: "'Plus Jakarta Sans', sans-serif",
+//     category: "professional",
+//     layout: "sidebar",
+//     structure: "sidebar",
+//   },
+//   {
+//     id: "minimal-elegant",
+//     name: "Minimal Elegant",
+//     description: "Clean whitespace-focused design",
+//     icon: <Leaf size={20} />,
+//     primaryColor: "#059669",
+//     secondaryColor: "#10b981",
+//     accentColor: "#34d399",
+//     fontFamily: "'SF Pro Display', sans-serif",
+//     category: "minimal",
+//     layout: "minimal",
+//     structure: "minimal",
+//   },
+//   {
+//     id: "bold-header",
+//     name: "Bold Header",
+//     description: "Dramatic colored header section",
+//     icon: <Zap size={20} />,
+//     primaryColor: "#ec4899",
+//     secondaryColor: "#f43f5e",
+//     accentColor: "#fbcfe8",
+//     fontFamily: "'Poppins', sans-serif",
+//     category: "creative",
+//     layout: "bold",
+//     structure: "bold",
+//   },
+//   {
+//     id: "classic-serif",
+//     name: "Classic Serif",
+//     description: "Traditional serif font formal design",
+//     icon: <Feather size={20} />,
+//     primaryColor: "#78350f",
+//     secondaryColor: "#b45309",
+//     accentColor: "#fef3c7",
+//     fontFamily: "'Georgia', 'Times New Roman', serif",
+//     category: "classic",
+//     layout: "classic",
+//     structure: "elegant",
+//   },
+//   {
+//     id: "tech-modern",
+//     name: "Tech Modern",
+//     description: "Geometric tech-inspired layout",
+//     icon: <Diamond size={20} />,
+//     primaryColor: "#1e1b4b",
+//     secondaryColor: "#4f46e5",
+//     accentColor: "#a5b4fc",
+//     fontFamily: "'Space Grotesk', sans-serif",
+//     category: "tech",
+//     layout: "tech",
+//     structure: "modern",
+//   },
+//   {
+//     id: "warm-organic",
+//     name: "Warm Organic",
+//     description: "Soft rounded friendly design",
+//     icon: <Sun size={20} />,
+//     primaryColor: "#ea580c",
+//     secondaryColor: "#f59e0b",
+//     accentColor: "#fed7aa",
+//     fontFamily: "'Nunito', sans-serif",
+//     category: "warm",
+//     layout: "warm",
+//     structure: "minimal",
+//   },
+//   {
+//     id: "creative-wave",
+//     name: "Creative Wave",
+//     description: "Artistic wavy accent design",
+//     icon: <Waves size={20} />,
+//     primaryColor: "#0d9488",
+//     secondaryColor: "#14b8a6",
+//     accentColor: "#99f6e4",
+//     fontFamily: "'Quicksand', sans-serif",
+//     category: "creative",
+//     layout: "wave",
+//     structure: "creative",
+//   },
+// ];
+
+// // ============================================================
+// // UNIQUE TEMPLATE RENDERERS
+// // ============================================================
+
+// // Template 1: Split Screen (Two Column)
+// const renderSplitScreenTemplate = (data: CoverLetterData, contentSections: LetterSection[], isPreview: boolean = false) => {
+//   const currentDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+//   const fullCompanyAddress = [data.company.address, data.company.city, data.company.state, data.company.zipCode].filter(Boolean).join(', ');
+  
+//   const sectionsHtml = contentSections
+//     .filter(section => section.content.trim())
+//     .map(section => `
+//       <div style="margin-bottom: 20px;">
+//         <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 8px; color: #4f46e5;">${section.title}</h3>
+//         <div style="line-height: 1.6; font-size: 14px;">${section.content.replace(/\n/g, '<br/>')}</div>
+//       </div>
+//     `).join('');
+  
+//   const achievementsHtml = data.achievements.length > 0 ? `
+//     <div style="margin: 20px 0;">
+//       <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 12px; color: #4f46e5;">✨ Key Achievements</h3>
+//       ${data.achievements.map(ach => `<div style="margin-bottom: 8px; display: flex; align-items: center; gap: 8px;"><span style="color: #4f46e5;">▹</span> ${ach}</div>`).join('')}
+//     </div>
+//   ` : '';
+  
+//   return `<!DOCTYPE html>
+// <html>
+// <head>
+//   <meta charset="UTF-8">
+//   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+//   <title>Cover Letter - ${data.personal.fullName}</title>
+//   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+//   <style>
+//     * { margin: 0; padding: 0; box-sizing: border-box; }
+//     body { font-family: 'Inter', sans-serif; background: ${isPreview ? '#f8fafc' : 'white'}; padding: ${isPreview ? '20px' : '0'}; }
+//     .container { max-width: 1000px; margin: 0 auto; background: white; box-shadow: ${isPreview ? '0 20px 40px -12px rgba(0,0,0,0.1)' : 'none'}; display: flex; flex-wrap: wrap; }
+//     .sidebar { width: 33%; background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: white; padding: 40px 25px; }
+//     .main { width: 67%; padding: 40px 35px; }
+//     .name { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
+//     .title { font-size: 14px; opacity: 0.9; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 2px solid rgba(255,255,255,0.2); }
+//     .contact-item { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 12px; opacity: 0.9; }
+//     .section-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; color: #1f2937; border-left: 4px solid #4f46e5; padding-left: 12px; }
+//     .greeting { font-size: 16px; font-weight: 600; margin: 20px 0 15px; color: #1f2937; }
+//     .date { margin-bottom: 20px; color: #6b7280; font-size: 13px; }
+//     @media (max-width: 768px) { .sidebar, .main { width: 100%; } }
+//     @media print { body { padding: 0; } .container { box-shadow: none; } .sidebar { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+//   </style>
+// </head>
+// <body>
+// <div class="container">
+//   <div class="sidebar">
+//     <div class="name">${data.personal.fullName || "Your Name"}</div>
+//     <div class="title">${data.personal.title || "Professional"}</div>
+//     ${data.personal.email ? `<div class="contact-item">📧 ${data.personal.email}</div>` : ''}
+//     ${data.personal.phone ? `<div class="contact-item">📞 ${data.personal.phone}</div>` : ''}
+//     ${data.personal.location ? `<div class="contact-item">📍 ${data.personal.location}</div>` : ''}
+//     ${data.personal.linkedin ? `<div class="contact-item">🔗 ${data.personal.linkedin}</div>` : ''}
+//   </div>
+//   <div class="main">
+//     <div class="date">${currentDate}</div>
+//     <div><strong>${data.company.hiringManager || "Hiring Manager"}</strong>${data.company.hiringManagerTitle ? `, ${data.company.hiringManagerTitle}` : ''}<br/>
+//     ${data.company.name}<br/>
+//     ${fullCompanyAddress}</div>
+//     <div class="greeting">Dear ${data.company.hiringManager || "Hiring Manager"},</div>
+//     ${sectionsHtml}
+//     ${achievementsHtml}
+//     ${data.additionalNotes ? `<div style="margin-top: 20px; padding: 15px; background: #fefce8; border-radius: 12px;">${data.additionalNotes}</div>` : ''}
+//     <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+//       <div style="font-weight: 700;">${data.personal.fullName || "Your Name"}</div>
+//     </div>
+//   </div>
+// </div>
+// </body>
+// </html>`;
+// };
+
+// // Template 2: Sidebar Pro
+// const renderSidebarTemplate = (data: CoverLetterData, contentSections: LetterSection[], isPreview: boolean = false) => {
+//   const currentDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+//   const fullCompanyAddress = [data.company.address, data.company.city, data.company.state, data.company.zipCode].filter(Boolean).join(', ');
+  
+//   const sectionsHtml = contentSections
+//     .filter(section => section.content.trim())
+//     .map(section => `<div style="margin-bottom: 24px;"><h3 style="font-size: 16px; font-weight: 700; margin-bottom: 8px; color: #1e293b;">${section.title}</h3><div style="line-height: 1.6;">${section.content.replace(/\n/g, '<br/>')}</div></div>`).join('');
+  
+//   return `<!DOCTYPE html>
+// <html>
+// <head>
+//   <meta charset="UTF-8">
+//   <title>Cover Letter - ${data.personal.fullName}</title>
+//   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+//   <style>
+//     * { margin: 0; padding: 0; box-sizing: border-box; }
+//     body { font-family: 'Plus Jakarta Sans', sans-serif; background: ${isPreview ? '#f1f5f9' : 'white'}; padding: ${isPreview ? '20px' : '0'}; }
+//     .container { max-width: 900px; margin: 0 auto; background: white; display: flex; box-shadow: ${isPreview ? '0 20px 40px -12px rgba(0,0,0,0.1)' : 'none'}; }
+//     .sidebar { width: 30%; background: #1e293b; color: white; padding: 30px 20px; }
+//     .main { width: 70%; padding: 35px; }
+//     .name { font-size: 22px; font-weight: 700; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #475569; }
+//     .contact-line { font-size: 11px; margin-bottom: 8px; opacity: 0.8; }
+//     .section-title { font-size: 16px; font-weight: 700; margin: 20px 0 12px; color: #1e293b; letter-spacing: 1px; }
+//     .greeting { font-weight: 600; margin: 20px 0 15px; }
+//     @media (max-width: 768px) { .sidebar, .main { width: 100%; } .container { flex-direction: column; } }
+//   </style>
+// </head>
+// <body>
+// <div class="container">
+//   <div class="sidebar">
+//     <div class="name">${data.personal.fullName || "Your Name"}</div>
+//     <div style="font-size: 12px; margin-bottom: 20px;">${data.personal.title || "Professional"}</div>
+//     ${data.personal.email ? `<div class="contact-line">✉ ${data.personal.email}</div>` : ''}
+//     ${data.personal.phone ? `<div class="contact-line">📞 ${data.personal.phone}</div>` : ''}
+//     ${data.personal.location ? `<div class="contact-line">📍 ${data.personal.location}</div>` : ''}
+//   </div>
+//   <div class="main">
+//     <div style="color: #64748b; margin-bottom: 20px;">${currentDate}</div>
+//     <div style="margin-bottom: 20px;"><strong>${data.company.hiringManager || "Hiring Manager"}</strong><br/>${data.company.name}<br/>${fullCompanyAddress}</div>
+//     <div class="greeting">Dear ${data.company.hiringManager || "Hiring Manager"},</div>
+//     ${sectionsHtml}
+//     <div style="margin-top: 30px;">Sincerely,<br/><strong>${data.personal.fullName || "Your Name"}</strong></div>
+//   </div>
+// </div>
+// </body>
+// </html>`;
+// };
+
+// // Template 3: Minimal Elegant
+// const renderMinimalTemplate = (data: CoverLetterData, contentSections: LetterSection[], isPreview: boolean = false) => {
+//   const currentDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  
+//   const sectionsHtml = contentSections
+//     .filter(section => section.content.trim())
+//     .map(section => `<div style="margin-bottom: 28px;"><h3 style="font-size: 15px; font-weight: 600; margin-bottom: 8px; letter-spacing: 1px; color: #059669; text-transform: uppercase;">${section.title}</h3><div style="line-height: 1.7; color: #334155;">${section.content.replace(/\n/g, '<br/>')}</div></div>`).join('');
+  
+//   return `<!DOCTYPE html>
+// <html>
+// <head>
+//   <meta charset="UTF-8">
+//   <title>Cover Letter - ${data.personal.fullName}</title>
+//   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+//   <style>
+//     * { margin: 0; padding: 0; box-sizing: border-box; }
+//     body { font-family: 'Inter', sans-serif; background: ${isPreview ? '#fafafa' : 'white'}; padding: ${isPreview ? '20px' : '0'}; }
+//     .letter { max-width: 700px; margin: 0 auto; background: white; padding: 50px; box-shadow: ${isPreview ? '0 10px 30px rgba(0,0,0,0.05)' : 'none'}; }
+//     .name { font-size: 32px; font-weight: 300; letter-spacing: -0.5px; margin-bottom: 5px; }
+//     .title { font-size: 14px; color: #6b7280; margin-bottom: 30px; }
+//     .divider { height: 1px; background: #e5e7eb; margin: 20px 0; }
+//     @media (max-width: 768px) { .letter { padding: 30px; } }
+//   </style>
+// </head>
+// <body>
+// <div class="letter">
+//   <div class="name">${data.personal.fullName || "Your Name"}</div>
+//   <div class="title">${data.personal.title || "Professional"}</div>
+//   <div style="font-size: 13px; color: #9ca3af; margin-bottom: 5px;">${data.personal.email || ''} ${data.personal.phone ? `| ${data.personal.phone}` : ''}</div>
+//   <div class="divider"></div>
+//   <div style="margin: 20px 0;">${currentDate}</div>
+//   <div><strong>${data.company.hiringManager || "Hiring Manager"}</strong><br/>${data.company.name}</div>
+//   <div style="margin: 20px 0;"><strong>Dear ${data.company.hiringManager || "Hiring Manager"},</strong></div>
+//   ${sectionsHtml}
+//   <div style="margin-top: 40px;">Best regards,<br/><strong>${data.personal.fullName || "Your Name"}</strong></div>
+// </div>
+// </body>
+// </html>`;
+// };
+
+// // Template 4: Bold Header
+// const renderBoldHeaderTemplate = (data: CoverLetterData, contentSections: LetterSection[], isPreview: boolean = false) => {
+//   const currentDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  
+//   const sectionsHtml = contentSections
+//     .filter(section => section.content.trim())
+//     .map(section => `<div style="margin-bottom: 20px;"><h3 style="font-size: 17px; font-weight: 700; margin-bottom: 8px; color: #ec4899;">${section.title}</h3><div style="line-height: 1.6;">${section.content.replace(/\n/g, '<br/>')}</div></div>`).join('');
+  
+//   return `<!DOCTYPE html>
+// <html>
+// <head>
+//   <meta charset="UTF-8">
+//   <title>Cover Letter - ${data.personal.fullName}</title>
+//   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+//   <style>
+//     * { margin: 0; padding: 0; box-sizing: border-box; }
+//     body { font-family: 'Poppins', sans-serif; background: ${isPreview ? '#fdf2f8' : 'white'}; padding: ${isPreview ? '20px' : '0'}; }
+//     .letter { max-width: 800px; margin: 0 auto; background: white; box-shadow: ${isPreview ? '0 20px 40px -12px rgba(236,72,153,0.2)' : 'none'}; }
+//     .header { background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%); color: white; padding: 50px; text-align: center; }
+//     .name { font-size: 36px; font-weight: 800; margin-bottom: 10px; }
+//     .title { font-size: 16px; opacity: 0.9; }
+//     .content { padding: 40px 50px; }
+//     .contact-bar { background: #fdf2f8; padding: 15px 50px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; font-size: 13px; }
+//     @media (max-width: 768px) { .header { padding: 30px; } .content { padding: 25px; } }
+//   </style>
+// </head>
+// <body>
+// <div class="letter">
+//   <div class="header">
+//     <div class="name">${data.personal.fullName || "Your Name"}</div>
+//     <div class="title">${data.personal.title || "Professional"}</div>
+//   </div>
+//   <div class="contact-bar">
+//     ${data.personal.email ? `<span>✉️ ${data.personal.email}</span>` : ''}
+//     ${data.personal.phone ? `<span>📞 ${data.personal.phone}</span>` : ''}
+//     ${data.personal.location ? `<span>📍 ${data.personal.location}</span>` : ''}
+//   </div>
+//   <div class="content">
+//     <div style="margin-bottom: 20px;">${currentDate}</div>
+//     <div><strong>${data.company.hiringManager || "Hiring Manager"}</strong><br/>${data.company.name}</div>
+//     <div style="margin: 20px 0; font-size: 18px; font-weight: 600;">Dear ${data.company.hiringManager || "Hiring Manager"},</div>
+//     ${sectionsHtml}
+//     <div style="margin-top: 30px;">Sincerely,<br/><strong>${data.personal.fullName || "Your Name"}</strong></div>
+//   </div>
+// </div>
+// </body>
+// </html>`;
+// };
+
+// // Template 5: Classic Serif
+// const renderClassicSerifTemplate = (data: CoverLetterData, contentSections: LetterSection[], isPreview: boolean = false) => {
+//   const currentDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  
+//   const sectionsHtml = contentSections
+//     .filter(section => section.content.trim())
+//     .map(section => `<div style="margin-bottom: 20px;"><h3 style="font-size: 16px; font-weight: 700; margin-bottom: 8px; font-style: italic; color: #78350f;">${section.title}</h3><div style="line-height: 1.6;">${section.content.replace(/\n/g, '<br/>')}</div></div>`).join('');
+  
+//   return `<!DOCTYPE html>
+// <html>
+// <head>
+//   <meta charset="UTF-8">
+//   <title>Cover Letter - ${data.personal.fullName}</title>
+//   <link href="https://fonts.googleapis.com/css2?family=Georgia&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+//   <style>
+//     * { margin: 0; padding: 0; box-sizing: border-box; }
+//     body { font-family: 'Georgia', 'Times New Roman', serif; background: ${isPreview ? '#fef3c7' : 'white'}; padding: ${isPreview ? '20px' : '0'}; }
+//     .letter { max-width: 750px; margin: 40px auto; background: #fffbeb; padding: 50px; box-shadow: ${isPreview ? '0 10px 30px rgba(0,0,0,0.05)' : 'none'}; border: 1px solid #fde68a; }
+//     .name { font-family: 'Playfair Display', serif; font-size: 38px; font-weight: 700; letter-spacing: 2px; text-align: center; margin-bottom: 10px; }
+//     .title { text-align: center; font-size: 14px; color: #78350f; margin-bottom: 20px; font-style: italic; }
+//     .divider { height: 1px; background: #fde68a; margin: 20px 0; }
+//     @media (max-width: 768px) { .letter { padding: 30px; margin: 20px; } }
+//   </style>
+// </head>
+// <body>
+// <div class="letter">
+//   <div class="name">${data.personal.fullName || "Your Name"}</div>
+//   <div class="title">${data.personal.title || "Professional"}</div>
+//   <div style="text-align: center; font-size: 12px;">${data.personal.email || ''} ${data.personal.phone ? `| ${data.personal.phone}` : ''}</div>
+//   <div class="divider"></div>
+//   <div style="margin: 30px 0;">${currentDate}</div>
+//   <div>${data.company.hiringManager || "Hiring Manager"}<br/>${data.company.name}</div>
+//   <div style="margin: 20px 0;">Dear ${data.company.hiringManager || "Hiring Manager"},</div>
+//   ${sectionsHtml}
+//   <div style="margin-top: 40px;">Yours faithfully,<br/><strong>${data.personal.fullName || "Your Name"}</strong></div>
+// </div>
+// </body>
+// </html>`;
+// };
+
+// // Template 6: Tech Modern
+// const renderTechModernTemplate = (data: CoverLetterData, contentSections: LetterSection[], isPreview: boolean = false) => {
+//   const currentDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  
+//   const sectionsHtml = contentSections
+//     .filter(section => section.content.trim())
+//     .map(section => `<div style="margin-bottom: 20px; border-left: 3px solid #4f46e5; padding-left: 15px;"><h3 style="font-size: 15px; font-weight: 700; margin-bottom: 8px; color: #1e1b4b; text-transform: uppercase;">${section.title}</h3><div style="line-height: 1.6;">${section.content.replace(/\n/g, '<br/>')}</div></div>`).join('');
+  
+//   return `<!DOCTYPE html>
+// <html>
+// <head>
+//   <meta charset="UTF-8">
+//   <title>Cover Letter - ${data.personal.fullName}</title>
+//   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+//   <style>
+//     * { margin: 0; padding: 0; box-sizing: border-box; }
+//     body { font-family: 'Space Grotesk', sans-serif; background: ${isPreview ? '#0f172a' : 'white'}; padding: ${isPreview ? '20px' : '0'}; }
+//     .letter { max-width: 800px; margin: 0 auto; background: white; box-shadow: ${isPreview ? '0 20px 40px -12px rgba(0,0,0,0.2)' : 'none'}; }
+//     .header { background: #1e1b4b; padding: 40px; color: white; clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%); }
+//     .name { font-size: 32px; font-weight: 700; letter-spacing: -1px; }
+//     .content { padding: 40px; }
+//     .stats { display: flex; gap: 20px; margin: 20px 0; padding: 15px; background: #f8fafc; border-radius: 12px; }
+//     @media (max-width: 768px) { .header { padding: 25px; } .content { padding: 25px; } }
+//   </style>
+// </head>
+// <body>
+// <div class="letter">
+//   <div class="header">
+//     <div class="name">${data.personal.fullName || "Your Name"}</div>
+//     <div style="font-size: 14px; opacity: 0.8; margin-top: 8px;">${data.personal.title || "Professional"}</div>
+//     <div style="display: flex; gap: 15px; margin-top: 20px; font-size: 12px;">
+//       ${data.personal.email ? `<span>📧 ${data.personal.email}</span>` : ''}
+//       ${data.personal.phone ? `<span>📱 ${data.personal.phone}</span>` : ''}
+//     </div>
+//   </div>
+//   <div class="content">
+//     <div>${currentDate}</div>
+//     <div style="margin: 20px 0;"><strong>${data.company.hiringManager || "Hiring Manager"}</strong><br/>${data.company.name}</div>
+//     <div style="font-weight: 600; margin: 15px 0;">Re: ${data.company.jobTitle} Position</div>
+//     ${sectionsHtml}
+//     <div style="margin-top: 30px;">Best regards,<br/><strong>${data.personal.fullName || "Your Name"}</strong></div>
+//   </div>
+// </div>
+// </body>
+// </html>`;
+// };
+
+// // Template 7: Warm Organic
+// const renderWarmOrganicTemplate = (data: CoverLetterData, contentSections: LetterSection[], isPreview: boolean = false) => {
+//   const currentDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  
+//   const sectionsHtml = contentSections
+//     .filter(section => section.content.trim())
+//     .map(section => `<div style="margin-bottom: 24px; background: #fff7ed; padding: 15px; border-radius: 16px;"><h3 style="font-size: 16px; font-weight: 700; margin-bottom: 8px; color: #ea580c;">${section.title}</h3><div style="line-height: 1.6;">${section.content.replace(/\n/g, '<br/>')}</div></div>`).join('');
+  
+//   return `<!DOCTYPE html>
+// <html>
+// <head>
+//   <meta charset="UTF-8">
+//   <title>Cover Letter - ${data.personal.fullName}</title>
+//   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+//   <style>
+//     * { margin: 0; padding: 0; box-sizing: border-box; }
+//     body { font-family: 'Nunito', sans-serif; background: ${isPreview ? '#fffbeb' : 'white'}; padding: ${isPreview ? '20px' : '0'}; }
+//     .letter { max-width: 750px; margin: 0 auto; background: white; border-radius: 32px; overflow: hidden; box-shadow: ${isPreview ? '0 20px 40px -12px rgba(234,88,12,0.15)' : 'none'}; }
+//     .header { background: linear-gradient(135deg, #ea580c 0%, #f59e0b 100%); padding: 40px; color: white; text-align: center; }
+//     .name { font-size: 34px; font-weight: 800; }
+//     .content { padding: 35px; }
+//     @media (max-width: 768px) { .header { padding: 25px; } .content { padding: 25px; } }
+//   </style>
+// </head>
+// <body>
+// <div class="letter">
+//   <div class="header">
+//     <div class="name">${data.personal.fullName || "Your Name"}</div>
+//     <div style="font-size: 15px; margin-top: 8px;">${data.personal.title || "Professional"}</div>
+//   </div>
+//   <div class="content">
+//     <div>${currentDate}</div>
+//     <div style="margin: 20px 0;"><strong>${data.company.hiringManager || "Hiring Manager"}</strong><br/>${data.company.name}</div>
+//     <div style="font-size: 18px; font-weight: 600; margin: 15px 0;">Hello ${data.company.hiringManager || "Hiring Manager"},</div>
+//     ${sectionsHtml}
+//     <div style="margin-top: 30px; text-align: center; padding-top: 20px; border-top: 2px solid #fed7aa;">
+//       With warmth,<br/><strong>${data.personal.fullName || "Your Name"}</strong>
+//     </div>
+//   </div>
+// </div>
+// </body>
+// </html>`;
+// };
+
+// // Template 8: Creative Wave
+// const renderCreativeWaveTemplate = (data: CoverLetterData, contentSections: LetterSection[], isPreview: boolean = false) => {
+//   const currentDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  
+//   const sectionsHtml = contentSections
+//     .filter(section => section.content.trim())
+//     .map(section => `<div style="margin-bottom: 20px;"><h3 style="font-size: 16px; font-weight: 700; margin-bottom: 8px; color: #0d9488;">✨ ${section.title}</h3><div style="line-height: 1.6;">${section.content.replace(/\n/g, '<br/>')}</div></div>`).join('');
+  
+//   return `<!DOCTYPE html>
+// <html>
+// <head>
+//   <meta charset="UTF-8">
+//   <title>Cover Letter - ${data.personal.fullName}</title>
+//   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+//   <style>
+//     * { margin: 0; padding: 0; box-sizing: border-box; }
+//     body { font-family: 'Quicksand', sans-serif; background: ${isPreview ? '#f0fdfa' : 'white'}; padding: ${isPreview ? '20px' : '0'}; }
+//     .letter { max-width: 800px; margin: 0 auto; background: white; position: relative; box-shadow: ${isPreview ? '0 20px 40px -12px rgba(13,148,136,0.15)' : 'none'}; }
+//     .wave { position: absolute; top: 0; left: 0; right: 0; height: 8px; background: linear-gradient(90deg, #0d9488, #14b8a6, #5eead4, #14b8a6, #0d9488); background-size: 200% 100%; animation: wave 3s ease infinite; }
+//     @keyframes wave { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+//     .header { padding: 50px 40px 20px; text-align: center; }
+//     .name { font-size: 36px; font-weight: 700; color: #0d9488; }
+//     .content { padding: 20px 40px 40px; }
+//     @media (max-width: 768px) { .header { padding: 40px 25px 15px; } .content { padding: 20px 25px 30px; } }
+//   </style>
+// </head>
+// <body>
+// <div class="letter">
+//   <div class="wave"></div>
+//   <div class="header">
+//     <div class="name">${data.personal.fullName || "Your Name"}</div>
+//     <div style="font-size: 14px; color: #64748b; margin-top: 8px;">${data.personal.title || "Professional"}</div>
+//     <div style="display: flex; justify-content: center; gap: 15px; margin-top: 15px; font-size: 12px; color: #0d9488;">
+//       ${data.personal.email ? `<span>✉️ ${data.personal.email}</span>` : ''}
+//       ${data.personal.phone ? `<span>📞 ${data.personal.phone}</span>` : ''}
+//     </div>
+//   </div>
+//   <div class="content">
+//     <div>${currentDate}</div>
+//     <div style="margin: 20px 0;"><strong>${data.company.hiringManager || "Hiring Manager"}</strong><br/>${data.company.name}</div>
+//     <div style="font-size: 18px; font-weight: 600; margin: 15px 0;">Dear ${data.company.hiringManager || "Hiring Manager"},</div>
+//     ${sectionsHtml}
+//     <div style="margin-top: 30px;">Creatively yours,<br/><strong>${data.personal.fullName || "Your Name"}</strong></div>
+//   </div>
+// </div>
+// </body>
+// </html>`;
+// };
+
+// // ============================================================
+// // PREVIEW FRAME
+// // ============================================================
+
+// function PreviewFrame({ html, isGenerating }: { html: string; isGenerating: boolean }) {
+//   const iframeRef = useRef<HTMLIFrameElement>(null);
+//   const [isFullscreen, setIsFullscreen] = useState(false);
+
+//   useEffect(() => {
+//     if (iframeRef.current && html && !isGenerating) {
+//       const iframe = iframeRef.current;
+//       const doc = iframe.contentDocument || iframe.contentWindow?.document;
+//       if (doc) {
+//         doc.open();
+//         doc.write(html);
+//         doc.close();
+//       }
+//     }
+//   }, [html, isGenerating]);
+
+//   if (isGenerating) {
+//     return (
+//       <div className="preview-loading">
+//         <div className="loading-spinner"></div>
+//         <p>Generating preview...</p>
+//       </div>
+//     );
+//   }
+
+//   if (!html) {
+//     return (
+//       <div className="preview-empty">
+//         <div className="empty-icon">✨</div>
+//         <p>Your cover letter preview will appear here</p>
+//         <span>Fill in your details and generate</span>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="preview-container">
+//       <button className="fullscreen-btn" onClick={() => setIsFullscreen(!isFullscreen)}>
+//         {isFullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
+//         {isFullscreen ? "Exit" : "Fullscreen"}
+//       </button>
+//       <iframe
+//         ref={iframeRef}
+//         title="Cover Letter Preview"
+//         className={`preview-iframe ${isFullscreen ? 'fullscreen' : ''}`}
+//         sandbox="allow-same-origin allow-scripts"
+//       />
+//       <style>{`
+//         .preview-container { position: relative; height: 100%; min-height: 500px; }
+//         .fullscreen-btn { position: absolute; top: 12px; right: 12px; z-index: 10; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); border: 1px solid #e2e8f0; border-radius: 30px; padding: 6px 14px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 500; color: #475569; transition: all 0.2s; }
+//         .preview-iframe { width: 100%; height: 550px; border: none; border-radius: 20px; background: #f8fafc; transition: all 0.3s ease; }
+//         .preview-iframe.fullscreen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1000; border-radius: 0; }
+//         .preview-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 550px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 20px; }
+//         .loading-spinner { width: 48px; height: 48px; border: 3px solid #e2e8f0; border-top-color: #4f46e5; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 16px; }
+//         .preview-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 550px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 20px; text-align: center; padding: 20px; }
+//         .empty-icon { font-size: 64px; margin-bottom: 16px; opacity: 0.5; }
+//         .preview-empty p { font-size: 16px; font-weight: 500; color: #334155; margin-bottom: 8px; }
+//         .preview-empty span { font-size: 13px; color: #64748b; }
+//         @keyframes spin { to { transform: rotate(360deg); } }
+//         @media (max-width: 768px) { .preview-iframe, .preview-loading, .preview-empty { height: 450px; } }
+//       `}</style>
+//     </div>
+//   );
+// }
+
+// // ============================================================
+// // MAIN COMPONENT
+// // ============================================================
+
+// export default function UniqueCoverLetterGenerator() {
+//   const [selectedTemplate, setSelectedTemplate] = useState<string>("split-screen");
+//   const [showTemplates, setShowTemplates] = useState(true);
+//   const [formData, setFormData] = useState<CoverLetterData>({
+//     personal: {
+//       fullName: "",
+//       title: "",
+//       email: "",
+//       phone: "",
+//       location: "",
+//       website: "",
+//       linkedin: "",
+//       github: "",
+//     },
+//     company: {
+//       name: "",
+//       jobTitle: "",
+//       hiringManager: "",
+//       hiringManagerTitle: "",
+//       address: "",
+//       city: "",
+//       state: "",
+//       zipCode: "",
+//       department: "",
+//     },
+//     sections: [
+//       { id: "1", title: "Introduction", content: "", placeholder: "Introduce yourself and express your interest in the role..." },
+//       { id: "2", title: "Experience & Skills", content: "", placeholder: "Highlight your relevant experience, skills, and qualifications..." },
+//       { id: "3", title: "Why This Company", content: "", placeholder: "Explain why you're interested in this specific company..." },
+//       { id: "4", title: "Closing", content: "", placeholder: "Wrap up with a call to action and professional closing..." },
+//     ],
+//     tone: "professional",
+//     achievements: [],
+//     additionalNotes: "",
+//   });
+  
+//   const [achievementInput, setAchievementInput] = useState("");
+//   const [previewHtml, setPreviewHtml] = useState<string>("");
+//   const [isGenerating, setIsGenerating] = useState(false);
+//   const [isDownloading, setIsDownloading] = useState(false);
+//   const [activeStep, setActiveStep] = useState<"personal" | "company" | "content">("personal");
+//   const [error, setError] = useState("");
+//   const [success, setSuccess] = useState("");
+
+//   const currentTemplate = templates.find(t => t.id === selectedTemplate);
+
+//   const getTemplateRenderer = (templateId: string) => {
+//     const renderers: Record<string, any> = {
+//       "split-screen": renderSplitScreenTemplate,
+//       "sidebar-pro": renderSidebarTemplate,
+//       "minimal-elegant": renderMinimalTemplate,
+//       "bold-header": renderBoldHeaderTemplate,
+//       "classic-serif": renderClassicSerifTemplate,
+//       "tech-modern": renderTechModernTemplate,
+//       "warm-organic": renderWarmOrganicTemplate,
+//       "creative-wave": renderCreativeWaveTemplate,
+//     };
+//     return renderers[templateId] || renderSplitScreenTemplate;
+//   };
+
+//   const addSection = () => {
+//     setFormData(prev => ({
+//       ...prev,
+//       sections: [...prev.sections, { 
+//         id: Date.now().toString(), 
+//         title: "New Section", 
+//         content: "", 
+//         placeholder: "Write your content here..." 
+//       }]
+//     }));
+//   };
+
+//   const removeSection = (id: string) => {
+//     if (formData.sections.length > 1) {
+//       setFormData(prev => ({
+//         ...prev,
+//         sections: prev.sections.filter(s => s.id !== id)
+//       }));
+//     }
+//   };
+
+//   const updateSection = (id: string, field: "title" | "content", value: string) => {
+//     setFormData(prev => ({
+//       ...prev,
+//       sections: prev.sections.map(s => s.id === id ? { ...s, [field]: value } : s)
+//     }));
+//   };
+
+//   const addAchievement = () => {
+//     if (achievementInput.trim()) {
+//       setFormData(prev => ({
+//         ...prev,
+//         achievements: [...prev.achievements, achievementInput.trim()]
+//       }));
+//       setAchievementInput("");
+//     }
+//   };
+
+//   const removeAchievement = (index: number) => {
+//     setFormData(prev => ({
+//       ...prev,
+//       achievements: prev.achievements.filter((_, i) => i !== index)
+//     }));
+//   };
+
+//   const generatePreview = useCallback(() => {
+//     if (currentTemplate) {
+//       const renderer = getTemplateRenderer(selectedTemplate);
+//       const html = renderer(formData, formData.sections, true);
+//       setPreviewHtml(html);
+//     }
+//   }, [currentTemplate, formData, selectedTemplate]);
+
+//   useEffect(() => {
+//     const timer = setTimeout(generatePreview, 300);
+//     return () => clearTimeout(timer);
+//   }, [formData, selectedTemplate, generatePreview]);
+
+//   const handleGenerate = () => {
+//     if (!formData.personal.fullName) {
+//       setError("Please enter your full name");
+//       return;
+//     }
+//     if (!formData.company.name) {
+//       setError("Please enter the company name");
+//       return;
+//     }
+//     if (!formData.company.jobTitle) {
+//       setError("Please enter the job title");
+//       return;
+//     }
+
+//     setIsGenerating(true);
+//     setError("");
+    
+//     setTimeout(() => {
+//       const renderer = getTemplateRenderer(selectedTemplate);
+//       const html = renderer(formData, formData.sections, true);
+//       setPreviewHtml(html);
+//       setIsGenerating(false);
+//       setSuccess("✨ Cover letter generated!");
+//       setTimeout(() => setSuccess(""), 3000);
+//     }, 800);
+//   };
+
+//   const handleDownloadPDF = async () => {
+//     if (!previewHtml) {
+//       setError("Please generate a cover letter first");
+//       return;
+//     }
+
+//     setIsDownloading(true);
+//     try {
+//       const renderer = getTemplateRenderer(selectedTemplate);
+//       const html = renderer(formData, formData.sections, false);
+      
+//       const response: AxiosResponse<Blob> = await axios.post(
+//         `${process.env.NEXT_PUBLIC_API_URL}/api/candidates/generate-pdf`,
+//         { html },
+//         { responseType: "blob" }
+//       );
+
+//       const pdfBlob: Blob = response.data;
+//       const url: string = URL.createObjectURL(pdfBlob);
+//       const a: HTMLAnchorElement = document.createElement("a");
+      
+//       const fileName = `Cover_Letter_${formData.personal.fullName.replace(/\s/g, "_")}.pdf`;
+//       a.href = url;
+//       a.download = fileName;
+//       document.body.appendChild(a);
+//       a.click();
+//       document.body.removeChild(a);
+//       URL.revokeObjectURL(url);
+      
+//       setSuccess("📄 PDF downloaded!");
+//       setTimeout(() => setSuccess(""), 3000);
+//     } catch (error) {
+//       console.error("Error generating PDF:", error);
+//       setError("Failed to generate PDF. Please try again.");
+//     } finally {
+//       setIsDownloading(false);
+//     }
+//   };
+
+//   const copyToClipboard = () => {
+//     const plainText = formData.sections.map(s => `${s.title}\n${s.content}`).join("\n\n");
+//     navigator.clipboard.writeText(plainText);
+//     setSuccess("📋 Copied to clipboard!");
+//     setTimeout(() => setSuccess(""), 3000);
+//   };
+
+//   const resetAll = () => {
+//     setFormData({
+//       personal: {
+//         fullName: "",
+//         title: "",
+//         email: "",
+//         phone: "",
+//         location: "",
+//         website: "",
+//         linkedin: "",
+//         github: "",
+//       },
+//       company: {
+//         name: "",
+//         jobTitle: "",
+//         hiringManager: "",
+//         hiringManagerTitle: "",
+//         address: "",
+//         city: "",
+//         state: "",
+//         zipCode: "",
+//         department: "",
+//       },
+//       sections: [
+//         { id: "1", title: "Introduction", content: "", placeholder: "Introduce yourself and express your interest in the role..." },
+//         { id: "2", title: "Experience & Skills", content: "", placeholder: "Highlight your relevant experience, skills, and qualifications..." },
+//         { id: "3", title: "Why This Company", content: "", placeholder: "Explain why you're interested in this specific company..." },
+//         { id: "4", title: "Closing", content: "", placeholder: "Wrap up with a call to action and professional closing..." },
+//       ],
+//       tone: "professional",
+//       achievements: [],
+//       additionalNotes: "",
+//     });
+//     setAchievementInput("");
+//     setPreviewHtml("");
+//     setError("");
+//   };
+
+//   return (
+//     <>
+//       <style>{`
+       
+
+//         /* Header */
+//         .saas-header { background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(226,232,240,0.6); position: sticky; top: 0; z-index: 100; }
+//         .header-content { max-width: 1400px; margin: 0 auto; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+//         .logo-area h1 { font-size: clamp(20px, 5vw, 26px); font-weight: 800; background: linear-gradient(135deg, #4f46e5 0%, #8b5cf6 50%, #ec4899 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0; }
+//         .logo-area p { font-size: 12px; color: #64748b; margin-top: 4px; }
+//         .header-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+//         .btn-outline { padding: 8px 20px; background: white; border: 1px solid #e2e8f0; border-radius: 40px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s; color: #475569; }
+//         .btn-outline:hover { background: #f8fafc; border-color: #cbd5e1; }
+//         .btn-primary { padding: 8px 24px; background: linear-gradient(135deg, #4f46e5 0%, #8b5cf6 100%); border: none; border-radius: 40px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; color: white; transition: all 0.2s; }
+//         .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(79,70,229,0.3); }
+//         .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
+
+//         /* Layout */
+//         .main-layout { max-width: 1400px; margin: 0 auto; padding: 24px; }
+
+//         /* Template Gallery */
+//         .template-gallery { margin-bottom: 32px; }
+//         .section-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 20px; }
+//         .section-header h2 { font-size: clamp(18px, 4vw, 22px); font-weight: 700; color: #0f172a; }
+//         .template-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; }
+//         .template-card { padding: 16px; border-radius: 20px; background: white; border: 1px solid #e2e8f0; cursor: pointer; transition: all 0.3s ease; }
+//         .template-card:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -12px rgba(0,0,0,0.1); }
+//         .template-card.selected { border: 2px solid #4f46e5; background: #f5f3ff; }
+//         .template-preview { height: 70px; border-radius: 12px; margin-bottom: 12px; }
+//         .template-info { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+//         .template-name { font-weight: 700; font-size: 14px; color: #1f2937; }
+//         .template-desc { font-size: 11px; color: #6b7280; line-height: 1.4; }
+
+//         /* Form Container */
+//         .form-container { background: white; border-radius: 28px; box-shadow: 0 20px 35px -12px rgba(0,0,0,0.08); border: 1px solid rgba(226,232,240,0.4); overflow: hidden; }
+
+//         /* Steps */
+//         .steps { display: flex; border-bottom: 1px solid #f1f5f9; background: #fafcff; padding: 0 20px; overflow-x: auto; scrollbar-width: none; }
+//         .steps::-webkit-scrollbar { display: none; }
+//         .step-btn { padding: 16px 20px; background: transparent; border: none; border-bottom: 2px solid transparent; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: #64748b; transition: all 0.2s; white-space: nowrap; }
+//         .step-btn.active { color: #4f46e5; border-bottom-color: #4f46e5; }
+//         .step-number { width: 24px; height: 24px; border-radius: 12px; background: #e2e8f0; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
+//         .step-btn.active .step-number { background: #4f46e5; color: white; }
+
+//         /* Form Content */
+//         .form-content { padding: 28px; max-height: calc(100vh - 200px); overflow-y: auto; }
+//         @media (max-width: 768px) { .form-content { padding: 20px; } }
+
+//         /* Form Elements */
+//         .form-group { margin-bottom: 20px; }
+//         .form-label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 8px; }
+//         .input-wrapper { position: relative; }
+//         .input-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #9ca3af; pointer-events: none; }
+//         input, textarea, select { width: 100%; padding: 12px 16px; padding-left: 42px; border-radius: 14px; border: 1px solid #e2e8f0; font-size: 14px; font-family: inherit; transition: all 0.2s; background: white; }
+//         textarea { padding-left: 16px; resize: vertical; }
+//         input:focus, textarea:focus, select:focus { outline: none; border-color: #4f46e5; box-shadow: 0 0 0 3px rgba(79,70,229,0.1); }
+
+//         /* Grids */
+//         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+//         .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+//         @media (max-width: 640px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+//         /* Section Cards */
+//         .section-card { margin-bottom: 20px; padding: 16px; background: #fafcff; border-radius: 20px; border: 1px solid #f1f5f9; }
+//         .section-header-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+//         .section-number { width: 28px; height: 28px; border-radius: 8px; background: #e0e7ff; display: flex; align-items: center; justify-content: center; color: #4f46e5; font-weight: 600; font-size: 12px; }
+//         .section-title-input { flex: 1; padding: 8px 12px; border-radius: 10px; border: 1px solid #e2e8f0; font-size: 14px; font-weight: 600; background: white; }
+//         .remove-section { padding: 8px; background: #fef2f2; border: none; border-radius: 10px; cursor: pointer; color: #ef4444; }
+
+//         /* Achievements */
+//         .achievements-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+//         .achievement-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; background: linear-gradient(135deg, #e0e7ff 0%, #ede9fe 100%); border-radius: 40px; font-size: 12px; font-weight: 500; color: #4f46e5; }
+
+//         /* Buttons */
+//         .action-buttons { display: flex; gap: 12px; margin-top: 24px; }
+//         .btn-generate { flex: 2; padding: 14px; background: linear-gradient(135deg, #4f46e5 0%, #8b5cf6 100%); color: white; border: none; border-radius: 18px; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+//         .btn-reset { flex: 1; padding: 14px; background: white; color: #64748b; border: 1px solid #e2e8f0; border-radius: 18px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+//         /* Preview Panel */
+//         .preview-panel { background: white; border-radius: 28px; box-shadow: 0 20px 35px -12px rgba(0,0,0,0.08); border: 1px solid rgba(226,232,240,0.4); overflow: hidden; position: sticky; top: 90px; }
+//         .preview-header { padding: 16px 24px; border-bottom: 1px solid #f1f5f9; background: #fafcff; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+//         .preview-title { display: flex; align-items: center; gap: 10px; }
+//         .preview-icon { width: 36px; height: 36px; border-radius: 12px; background: linear-gradient(135deg, #4f46e5 10%, #8b5cf6 100%); display: flex; align-items: center; justify-content: center; }
+//         .preview-badge { padding: 4px 12px; background: #f1f5f9; border-radius: 30px; font-size: 11px; font-weight: 600; color: #475569; }
+//         .preview-content { padding: 20px; background: #f8fafc; }
+
+//         /* Messages */
+//         .error-message { margin-top: 20px; padding: 12px 16px; background: #fef2f2; border-radius: 14px; color: #dc2626; font-size: 13px; border: 1px solid #fee2e2; }
+//         .success-message { margin-top: 20px; padding: 12px 16px; background: #f0fdf4; border-radius: 14px; color: #16a34a; font-size: 13px; border: 1px solid #dcfce7; display: flex; align-items: center; gap: 8px; }
+
+//         /* Main Grid */
+//         .main-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 28px; }
+//         @media (max-width: 1024px) { .main-grid { grid-template-columns: 1fr; gap: 24px; } .preview-panel { position: relative; top: 0; } }
+
+//         /* Animations */
+//         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+//         .fade-in { animation: fadeIn 0.3s ease-out; }
+//       `}</style>
+
+//       <div className="app-container">
+//         {/* Header */}
+//         <header className="saas-header">
+//           <div className="header-content">
+//             <div className="logo-area">
+//               <h1>✨ Cover Letter Studio</h1>
+//               <p>8 unique templates • Professional results</p>
+//             </div>
+//             <div className="header-actions">
+//               <button className="btn-outline" onClick={() => setShowTemplates(!showTemplates)}>
+//                 <Palette size={16} /> {showTemplates ? "Hide" : "Show"} Templates
+//               </button>
+//               <button className="btn-outline" onClick={copyToClipboard}>
+//                 <Copy size={16} /> Copy
+//               </button>
+//               <button className="btn-primary" onClick={handleDownloadPDF} disabled={isDownloading}>
+//                 {isDownloading ? <Loader2 size={16} style={{ animation: "spin 1s linear infinite" }} /> : <Download size={16} />}
+//                 Download PDF
+//               </button>
+//             </div>
+//           </div>
+//         </header>
+
+//         <div className="main-layout">
+//           {/* Template Gallery */}
+//           {showTemplates && (
+//             <div className="template-gallery fade-in">
+//               <div className="section-header">
+//                 <div>
+//                   <h2>Choose Your Unique Template</h2>
+//                   <p>Each template has its own distinct layout and personality</p>
+//                 </div>
+//               </div>
+//               <div className="template-grid">
+//                 {templates.map((template) => (
+//                   <div
+//                     key={template.id}
+//                     className={`template-card ${selectedTemplate === template.id ? 'selected' : ''}`}
+//                     onClick={() => setSelectedTemplate(template.id)}
+//                   >
+//                     <div className="template-preview" style={{ background: template.previewBg || `linear-gradient(135deg, ${template.primaryColor}20, ${template.secondaryColor}20)` }} />
+//                     <div className="template-info">
+//                       <span style={{ color: template.primaryColor }}>{template.icon}</span>
+//                       <span className="template-name">{template.name}</span>
+//                     </div>
+//                     <p className="template-desc">{template.description}</p>
+//                   </div>
+//                 ))}
+//               </div>
+//             </div>
+//           )}
+
+//           {/* Main Grid */}
+//           <div className="main-grid">
+//             {/* Left Column - Form */}
+//             <div className="form-container">
+//               <div className="steps">
+//                 <button className={`step-btn ${activeStep === 'personal' ? 'active' : ''}`} onClick={() => setActiveStep('personal')}>
+//                   <span className="step-number">1</span><span>Personal</span>
+//                 </button>
+//                 <button className={`step-btn ${activeStep === 'company' ? 'active' : ''}`} onClick={() => setActiveStep('company')}>
+//                   <span className="step-number">2</span><span>Company</span>
+//                 </button>
+//                 <button className={`step-btn ${activeStep === 'content' ? 'active' : ''}`} onClick={() => setActiveStep('content')}>
+//                   <span className="step-number">3</span><span>Content</span>
+//                 </button>
+//               </div>
+
+//               <div className="form-content">
+//                 {activeStep === 'personal' && (
+//                   <div className="fade-in">
+//                     <div className="form-group">
+//                       <label className="form-label">Full Name <span>*</span></label>
+//                       <div className="input-wrapper">
+//                         <span className="input-icon"><User size={16} /></span>
+//                         <input type="text" placeholder="Johnathan M. Doe" value={formData.personal.fullName} onChange={(e) => setFormData(prev => ({ ...prev, personal: { ...prev.personal, fullName: e.target.value } }))} />
+//                       </div>
+//                     </div>
+//                     <div className="form-group">
+//                       <label className="form-label">Professional Title</label>
+//                       <div className="input-wrapper">
+//                         <span className="input-icon"><Briefcase size={16} /></span>
+//                         <input type="text" placeholder="Senior Software Engineer" value={formData.personal.title} onChange={(e) => setFormData(prev => ({ ...prev, personal: { ...prev.personal, title: e.target.value } }))} />
+//                       </div>
+//                     </div>
+//                     <div className="grid-2">
+//                       <div className="form-group">
+//                         <label className="form-label">Email</label>
+//                         <div className="input-wrapper"><span className="input-icon"><Mail size={16} /></span><input type="email" placeholder="john@example.com" value={formData.personal.email} onChange={(e) => setFormData(prev => ({ ...prev, personal: { ...prev.personal, email: e.target.value } }))} /></div>
+//                       </div>
+//                       <div className="form-group">
+//                         <label className="form-label">Phone</label>
+//                         <div className="input-wrapper"><span className="input-icon"><Phone size={16} /></span><input type="tel" placeholder="+1 (555) 000-9999" value={formData.personal.phone} onChange={(e) => setFormData(prev => ({ ...prev, personal: { ...prev.personal, phone: e.target.value } }))} /></div>
+//                       </div>
+//                     </div>
+//                     <div className="form-group">
+//                       <label className="form-label">Location</label>
+//                       <div className="input-wrapper"><span className="input-icon"><MapPin size={16} /></span><input type="text" placeholder="San Francisco, CA" value={formData.personal.location} onChange={(e) => setFormData(prev => ({ ...prev, personal: { ...prev.personal, location: e.target.value } }))} /></div>
+//                     </div>
+//                     <div className="grid-2">
+//                       <div className="form-group">
+//                         <label className="form-label">LinkedIn</label>
+//                         <div className="input-wrapper"><span className="input-icon"><Linkedin size={16} /></span><input type="text" placeholder="linkedin.com/in/johndoe" value={formData.personal.linkedin} onChange={(e) => setFormData(prev => ({ ...prev, personal: { ...prev.personal, linkedin: e.target.value } }))} /></div>
+//                       </div>
+//                       <div className="form-group">
+//                         <label className="form-label">Portfolio</label>
+//                         <div className="input-wrapper"><span className="input-icon"><Globe2 size={16} /></span><input type="text" placeholder="johndoe.com" value={formData.personal.website} onChange={(e) => setFormData(prev => ({ ...prev, personal: { ...prev.personal, website: e.target.value } }))} /></div>
+//                       </div>
+//                     </div>
+//                   </div>
+//                 )}
+
+//                 {activeStep === 'company' && (
+//                   <div className="fade-in">
+//                     <div className="form-group">
+//                       <label className="form-label">Company Name <span>*</span></label>
+//                       <div className="input-wrapper"><span className="input-icon"><Building size={16} /></span><input type="text" placeholder="Google, Microsoft, Tesla" value={formData.company.name} onChange={(e) => setFormData(prev => ({ ...prev, company: { ...prev.company, name: e.target.value } }))} /></div>
+//                     </div>
+//                     <div className="form-group">
+//                       <label className="form-label">Job Title <span>*</span></label>
+//                       <div className="input-wrapper"><span className="input-icon"><Target size={16} /></span><input type="text" placeholder="Senior Frontend Engineer" value={formData.company.jobTitle} onChange={(e) => setFormData(prev => ({ ...prev, company: { ...prev.company, jobTitle: e.target.value } }))} /></div>
+//                     </div>
+//                     <div className="grid-2">
+//                       <div className="form-group">
+//                         <label className="form-label">Hiring Manager</label>
+//                         <div className="input-wrapper"><span className="input-icon"><User size={16} /></span><input type="text" placeholder="Sarah Johnson" value={formData.company.hiringManager} onChange={(e) => setFormData(prev => ({ ...prev, company: { ...prev.company, hiringManager: e.target.value } }))} /></div>
+//                       </div>
+//                       <div className="form-group">
+//                         <label className="form-label">Their Title</label>
+//                         <div className="input-wrapper"><span className="input-icon"><Briefcase size={16} /></span><input type="text" placeholder="Director of Engineering" value={formData.company.hiringManagerTitle} onChange={(e) => setFormData(prev => ({ ...prev, company: { ...prev.company, hiringManagerTitle: e.target.value } }))} /></div>
+//                       </div>
+//                     </div>
+//                     <div className="form-group">
+//                       <label className="form-label">Street Address</label>
+//                       <input type="text" placeholder="1600 Amphitheatre Parkway" value={formData.company.address} onChange={(e) => setFormData(prev => ({ ...prev, company: { ...prev.company, address: e.target.value } }))} style={{ paddingLeft: "16px" }} />
+//                     </div>
+//                     <div className="grid-3">
+//                       <input type="text" placeholder="City" value={formData.company.city} onChange={(e) => setFormData(prev => ({ ...prev, company: { ...prev.company, city: e.target.value } }))} style={{ paddingLeft: "16px" }} />
+//                       <input type="text" placeholder="State" value={formData.company.state} onChange={(e) => setFormData(prev => ({ ...prev, company: { ...prev.company, state: e.target.value } }))} style={{ paddingLeft: "16px" }} />
+//                       <input type="text" placeholder="ZIP" value={formData.company.zipCode} onChange={(e) => setFormData(prev => ({ ...prev, company: { ...prev.company, zipCode: e.target.value } }))} style={{ paddingLeft: "16px" }} />
+//                     </div>
+//                   </div>
+//                 )}
+
+//                 {activeStep === 'content' && (
+//                   <div className="fade-in">
+//                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+//                       <h3 style={{ fontSize: 16, fontWeight: 700 }}>📝 Letter Sections</h3>
+//                       <button onClick={addSection} style={{ padding: "6px 14px", background: "#4f46e5", color: "white", border: "none", borderRadius: 30, fontSize: 12, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}><Plus size={14} /> Add</button>
+//                     </div>
+//                     {formData.sections.map((section, index) => (
+//                       <div key={section.id} className="section-card">
+//                         <div className="section-header-row">
+//                           <div className="section-number">{index + 1}</div>
+//                           <input className="section-title-input" value={section.title} onChange={(e) => updateSection(section.id, "title", e.target.value)} placeholder="Section Title" />
+//                           {formData.sections.length > 1 && <button className="remove-section" onClick={() => removeSection(section.id)}><Trash2 size={14} /></button>}
+//                         </div>
+//                         <textarea rows={4} value={section.content} onChange={(e) => updateSection(section.id, "content", e.target.value)} placeholder={section.placeholder} style={{ width: "100%", padding: "12px", borderRadius: 12, border: "1px solid #e2e8f0", fontSize: 13, resize: "vertical" }} />
+//                       </div>
+//                     ))}
+//                     <div style={{ marginTop: 24, padding: "16px", background: "#fafcff", borderRadius: 20, border: "1px solid #f1f5f9" }}>
+//                       <h3 style={{ fontSize: 14, fontWeight: 700, marginBottom: 12, display: "flex", alignItems: "center", gap: 6 }}><Award size={16} /> Key Achievements</h3>
+//                       <div style={{ display: "flex", gap: 8 }}><input type="text" placeholder="e.g., Increased revenue by 40%" value={achievementInput} onChange={(e) => setAchievementInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && addAchievement()} style={{ flex: 1, padding: "10px 14px", borderRadius: 12, border: "1px solid #e2e8f0", fontSize: 13 }} /><button onClick={addAchievement} style={{ padding: "10px 20px", background: "#4f46e5", color: "white", border: "none", borderRadius: 12, cursor: "pointer", fontWeight: 600, fontSize: 12 }}>Add</button></div>
+//                       <div className="achievements-list">{formData.achievements.map((achievement, idx) => (<div key={idx} className="achievement-badge"><Star size={12} /><span>{achievement}</span><button onClick={() => removeAchievement(idx)} style={{ background: "none", border: "none", cursor: "pointer", color: "#4f46e5", padding: 0, display: "flex" }}><X size={12} /></button></div>))}</div>
+//                     </div>
+//                     <div className="form-group" style={{ marginTop: 20 }}>
+//                       <label className="form-label">Additional Notes</label>
+//                       <textarea rows={3} placeholder="Add any special notes or context..." value={formData.additionalNotes} onChange={(e) => setFormData(prev => ({ ...prev, additionalNotes: e.target.value }))} />
+//                     </div>
+//                   </div>
+//                 )}
+
+//                 {error && <div className="error-message">⚠️ {error}</div>}
+//                 {success && <div className="success-message"><Check size={16} /> {success}</div>}
+
+//                 <div className="action-buttons">
+//                   <button className="btn-generate" onClick={handleGenerate} disabled={isGenerating}>{isGenerating ? <Loader2 size={18} style={{ animation: "spin 1s linear infinite" }} /> : <Sparkles size={18} />}{isGenerating ? "Generating..." : "Generate Cover Letter"}</button>
+//                   <button className="btn-reset" onClick={resetAll}><RefreshCw size={16} /> Reset</button>
+//                 </div>
+//               </div>
+//             </div>
+
+//             {/* Right Column - Preview */}
+//             <div className="preview-panel">
+//               <div className="preview-header">
+//                 <div className="preview-title"><div className="preview-icon"><Eye size={16} color="white" /></div><div><h3 style={{ fontSize: 16, fontWeight: 700, margin: 0 }}>Live Preview</h3><p style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>Exactly as PDF will appear</p></div></div>
+//                 {currentTemplate && <div className="preview-badge">{currentTemplate.name}</div>}
+//               </div>
+//               <div className="preview-content"><PreviewFrame html={previewHtml} isGenerating={isGenerating} /></div>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </>
+//   );
+// }
+
+
+import React from 'react'
+
+const page = () => {
   return (
-    <div
-      style={{
-        background: "#fff",
-        border: `1px solid ${THEME.primaryLight}`,
-        borderRadius: 12,
-        overflow: "hidden",
-        marginBottom: 12,
-      }}
-    >
-      <div style={{ padding: "20px 24px" }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-            marginBottom: 8,
-            flexWrap: "wrap",
-            gap: 8,
-          }}
-        >
-          <div>
-            <h3 style={{ margin: "0 0 4px", fontSize: 16, fontWeight: 700, color: "#111827" }}>
-              {exp.title}
-            </h3>
-            <p style={{ margin: 0, fontSize: 13, color: THEME.primary, fontWeight: 500 }}>
-              {exp.company}
-              {exp.location && ` • ${exp.location}`}
-            </p>
-          </div>
-          {exp.period && (
-            <span
-              style={{
-                fontSize: 12,
-                color: "#9ca3af",
-                display: "flex",
-                alignItems: "center",
-                gap: 4,
-              }}
-            >
-              {exp.period}
-            </span>
-          )}
-        </div>
-
-        {exp.achievements.length > 0 && (
-          <>
-            <button
-              onClick={onToggle}
-              style={{
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                fontSize: 13,
-                color: THEME.primary,
-                fontWeight: 600,
-                padding: "4px 0",
-                display: "flex",
-                alignItems: "center",
-                gap: 4,
-              }}
-            >
-              {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-              {exp.achievements.length} Achievement{exp.achievements.length !== 1 ? "s" : ""}
-            </button>
-
-            {expanded && (
-              <ul style={{ margin: "8px 0 0", paddingLeft: 20 }}>
-                {exp.achievements.map((a, i) => (
-                  <li key={i} style={{ fontSize: 13, color: "#4b5563", marginBottom: 4, lineHeight: 1.6 }}>
-                    {a}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </>
-        )}
-      </div>
-    </div>
-  );
+    <div>page</div>
+  )
 }
 
-interface CVPreviewProps {
-  cvData: CVData;
-}
-
-function CVPreview({ cvData }: CVPreviewProps) {
-  const [expandedExpIds, setExpandedExpIds] = useState<Set<string>>(new Set());
-
-  const toggleExpanded = (id: string) => {
-    setExpandedExpIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  };
-
-  const SectionTitle = ({ children, icon }: { children: React.ReactNode; icon?: React.ReactNode }) => (
-    <h2
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 10,
-        fontSize: 18,
-        fontWeight: 700,
-        color: "#111827",
-        margin: "0 0 16px",
-      }}
-    >
-      <div style={{ width: 4, height: 22, borderRadius: 2, background: THEME.gradient }} />
-      {icon && <span style={{ color: THEME.primary }}>{icon}</span>}
-      {children}
-    </h2>
-  );
-
-  return (
-    <div
-      style={{
-        background: "#fff",
-        borderRadius: 20,
-        padding: "40px 44px",
-        boxShadow: "0 8px 32px rgba(79,70,229,0.08)",
-        maxWidth: 900,
-        margin: "0 auto",
-      }}
-    >
-      {/* Header */}
-      <div style={{ textAlign: "center", marginBottom: 32 }}>
-        <h1
-          style={{
-            margin: "0 0 6px",
-            fontSize: 36,
-            fontWeight: 800,
-            background: THEME.gradient,
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
-          }}
-        >
-          {cvData.personalInfo.fullName || "Your Name"}
-        </h1>
-        {cvData.personalInfo.title && (
-          <p style={{ margin: "0 0 14px", fontSize: 17, color: "#6b7280" }}>
-            {cvData.personalInfo.title}
-          </p>
-        )}
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            justifyContent: "center",
-            gap: 16,
-            fontSize: 13,
-            color: "#6b7280",
-          }}
-        >
-          {cvData.personalInfo.email && (
-            <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
-              <Mail size={13} color={THEME.primary} /> {cvData.personalInfo.email}
-            </span>
-          )}
-          {cvData.personalInfo.phone && (
-            <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
-              <Phone size={13} color={THEME.primary} /> {cvData.personalInfo.phone}
-            </span>
-          )}
-          {cvData.personalInfo.location && (
-            <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
-              <MapPin size={13} color={THEME.primary} /> {cvData.personalInfo.location}
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* Summary */}
-      {cvData.personalInfo.summary && (
-        <div style={{ marginBottom: 28 }}>
-          <SectionTitle>Professional Summary</SectionTitle>
-          <p style={{ margin: 0, color: "#374151", lineHeight: 1.75, fontSize: 14 }}>
-            {cvData.personalInfo.summary}
-          </p>
-        </div>
-      )}
-
-      {/* Experience */}
-      {cvData.experience.length > 0 && (
-        <div style={{ marginBottom: 28 }}>
-          <SectionTitle icon={<Briefcase size={18} />}>Professional Experience</SectionTitle>
-          {cvData.experience.map((exp) => (
-            <ExperienceCard
-              key={exp.id}
-              exp={exp}
-              expanded={expandedExpIds.has(exp.id)}
-              onToggle={() => toggleExpanded(exp.id)}
-            />
-          ))}
-        </div>
-      )}
-
-      {/* Skills */}
-      {cvData.skills.length > 0 && (
-        <div style={{ marginBottom: 28 }}>
-          <SectionTitle>Technical Skills</SectionTitle>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-            {cvData.skills.map((skill) => (
-              <span
-                key={skill.id}
-                style={{
-                  padding: "6px 14px",
-                  borderRadius: 20,
-                  fontSize: 13,
-                  fontWeight: 500,
-                  background: THEME.primaryLight,
-                  color: THEME.primaryDark,
-                }}
-              >
-                {skill.name}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Education */}
-      {cvData.education.length > 0 && (
-        <div style={{ marginBottom: 28 }}>
-          <SectionTitle icon={<GraduationCap size={18} />}>Education</SectionTitle>
-          {cvData.education.map((edu) => (
-            <div
-              key={edu.id}
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: "12px 16px",
-                background: "#f9fafb",
-                borderRadius: 10,
-                marginBottom: 8,
-                flexWrap: "wrap",
-                gap: 8,
-              }}
-            >
-              <div>
-                <p style={{ margin: "0 0 2px", fontWeight: 600, fontSize: 14, color: "#111827" }}>
-                  {edu.degree}
-                </p>
-                {edu.institution && (
-                  <p style={{ margin: 0, fontSize: 13, color: "#6b7280" }}>{edu.institution}</p>
-                )}
-              </div>
-              {edu.period && <span style={{ fontSize: 12, color: "#9ca3af" }}>{edu.period}</span>}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ============================================================
-// MAIN COMPONENT
-// ============================================================
-export default function CVGeneratorPage() {
-  // Data sources
-  const [inputMethod, setInputMethod] = useState<"upload" | "manual">("upload");
-  const [file, setFile] = useState<File | null>(null);
-  const [dragActive, setDragActive] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const [cvData, setCvData] = useState<CVData | null>(null);
-  const [manualData, setManualData] = useState<ManualFormData>({
-    fullName: "",
-    title: "",
-    email: "",
-    phone: "",
-    location: "",
-    summary: "",
-    skills: "",
-    experience: "",
-    education: "",
-  });
-  const [activeStep, setActiveStep] = useState<"input" | "preview" | "letter">("input");
-  const [error, setError] = useState("");
-  const [coverLetter, setCoverLetter] = useState("");
-  const [generatingLetter, setGeneratingLetter] = useState(false);
-  const [letterForm, setLetterForm] = useState<CoverLetterForm>({
-    companyName: "",
-    jobTitle: "",
-    hiringManager: "",
-    additionalNotes: "",
-    tone: "professional",
-  });
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const ALLOWED_TYPES = [
-    "application/pdf",
-    "application/msword",
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    "text/plain",
-  ];
-
-  // File handlers
-  const handleDrag = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") setDragActive(true);
-    else if (e.type === "dragleave") setDragActive(false);
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-
-    const droppedFile = e.dataTransfer.files[0];
-    if (droppedFile && ALLOWED_TYPES.includes(droppedFile.type)) {
-      setFile(droppedFile);
-      setError("");
-    } else {
-      setError("Please upload a PDF, DOC, DOCX, or TXT file");
-    }
-  };
-
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile && ALLOWED_TYPES.includes(selectedFile.type)) {
-      setFile(selectedFile);
-      setError("");
-    } else if (selectedFile) {
-      setError("Please upload a PDF, DOC, DOCX, or TXT file");
-    }
-  };
-
-  const clearFile = () => {
-    setFile(null);
-    setCvData(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
-  };
-
-  const readFileAsText = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (e) => resolve(e.target?.result as string);
-      reader.onerror = (e) => reject(e);
-      reader.readAsText(file);
-    });
-  };
-
-  const processResume = async () => {
-    if (!file) return;
-    setUploading(true);
-    setError("");
-
-    try {
-      const text = await readFileAsText(file);
-      const parsed = parseCVText(text);
-      setCvData(parsed);
-      setActiveStep("preview");
-    } catch (err) {
-      console.error(err);
-      setError("Failed to process resume. Please try again.");
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  const handleManualSubmit = () => {
-    if (!manualData.fullName) {
-      setError("Please enter your full name");
-      return;
-    }
-    setActiveStep("preview");
-  };
-
-  const handleGenerateLetter = async () => {
-    setGeneratingLetter(true);
-    try {
-      const letter = await generateAICoverLetter(cvData, manualData, letterForm);
-      setCoverLetter(letter);
-    } catch (err) {
-      console.error(err);
-      setError("Failed to generate cover letter");
-    } finally {
-      setGeneratingLetter(false);
-    }
-  };
-
-  const copyCoverLetter = () => {
-    if (coverLetter) {
-      navigator.clipboard.writeText(coverLetter);
-      alert("Cover letter copied to clipboard!");
-    }
-  };
-
-  const resetAll = () => {
-    setFile(null);
-    setCvData(null);
-    setManualData({
-      fullName: "",
-      title: "",
-      email: "",
-      phone: "",
-      location: "",
-      summary: "",
-      skills: "",
-      experience: "",
-      education: "",
-    });
-    setActiveStep("input");
-    setError("");
-    setCoverLetter("");
-    if (fileInputRef.current) fileInputRef.current.value = "";
-  };
-
-  return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "linear-gradient(135deg, #f5f3ff 0%, #ffffff 50%, #eef2ff 100%)",
-        padding: "40px 16px",
-      }}
-    >
-      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-        {/* Hero Section */}
-        <div style={{ textAlign: "center", marginBottom: 36 }}>
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              padding: "5px 14px",
-              background: THEME.primaryLight,
-              borderRadius: 100,
-              marginBottom: 14,
-            }}
-          >
-            <Sparkles size={13} color={THEME.primary} />
-            <span style={{ fontSize: 13, fontWeight: 600, color: THEME.primary }}>
-              AI-Powered CV Studio
-            </span>
-          </div>
-          <h1
-            style={{
-              fontSize: "clamp(28px,5vw,44px)",
-              fontWeight: 800,
-              background: THEME.gradient,
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-              margin: "0 0 10px",
-              lineHeight: 1.2,
-            }}
-          >
-            Resume + Cover Letter Generator
-          </h1>
-          <p style={{ color: "#6b7280", fontSize: 15, maxWidth: 520, margin: "0 auto" }}>
-            Upload your resume or enter details manually, then generate a personalized AI cover letter
-          </p>
-        </div>
-
-        {/* Main Card */}
-        <div
-          style={{
-            background: "#fff",
-            borderRadius: 28,
-            border: "1px solid #f0f0f0",
-            boxShadow: "0 20px 40px rgba(79,70,229,0.08)",
-            overflow: "hidden",
-          }}
-        >
-          {/* INPUT STEP */}
-          {activeStep === "input" && (
-            <div style={{ padding: 36 }}>
-              {/* Toggle between upload and manual input */}
-              <div
-                style={{
-                  display: "flex",
-                  gap: 12,
-                  marginBottom: 32,
-                  background: "#f9fafb",
-                  padding: 6,
-                  borderRadius: 60,
-                }}
-              >
-                <button
-                  onClick={() => setInputMethod("upload")}
-                  style={{
-                    flex: 1,
-                    padding: "12px 20px",
-                    borderRadius: 50,
-                    border: "none",
-                    background: inputMethod === "upload" ? THEME.gradient : "transparent",
-                    color: inputMethod === "upload" ? "#fff" : "#6b7280",
-                    fontWeight: 600,
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8,
-                    transition: "all 0.2s",
-                  }}
-                >
-                  <FileUp size={18} /> Upload Resume
-                </button>
-                <button
-                  onClick={() => setInputMethod("manual")}
-                  style={{
-                    flex: 1,
-                    padding: "12px 20px",
-                    borderRadius: 50,
-                    border: "none",
-                    background: inputMethod === "manual" ? THEME.gradient : "transparent",
-                    color: inputMethod === "manual" ? "#fff" : "#6b7280",
-                    fontWeight: 600,
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8,
-                  }}
-                >
-                  <UserCircle size={18} /> Enter Manually
-                </button>
-              </div>
-
-              {inputMethod === "upload" ? (
-                // Upload UI
-                <div>
-                  <div
-                    onDragEnter={handleDrag}
-                    onDragLeave={handleDrag}
-                    onDragOver={handleDrag}
-                    onDrop={handleDrop}
-                    onClick={() => fileInputRef.current?.click()}
-                    style={{
-                      border: `2px dashed ${dragActive ? THEME.primary : file ? "#22c55e" : "#e5e7eb"}`,
-                      borderRadius: 20,
-                      padding: "52px 32px",
-                      textAlign: "center",
-                      background: dragActive ? `${THEME.primary}06` : file ? "#f0fdf4" : "#fafafa",
-                      transition: "all .25s",
-                      cursor: "pointer",
-                    }}
-                  >
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept=".pdf,.doc,.docx,.txt"
-                      style={{ display: "none" }}
-                      onChange={handleFileSelect}
-                    />
-
-                    {!file ? (
-                      <>
-                        <div
-                          style={{
-                            width: 80,
-                            height: 80,
-                            borderRadius: 24,
-                            background: THEME.primaryLight,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            margin: "0 auto 20px",
-                          }}
-                        >
-                          <UploadCloud size={36} color={THEME.primary} />
-                        </div>
-                        <p style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", margin: "0 0 8px" }}>
-                          Drag & Drop Your Resume
-                        </p>
-                        <p style={{ color: "#9ca3af", fontSize: 14 }}>
-                          or <span style={{ color: THEME.primary, fontWeight: 600 }}>browse files</span>
-                        </p>
-                        <div style={{ display: "flex", gap: 8, justifyContent: "center", marginTop: 20 }}>
-                          {["PDF", "DOC", "DOCX", "TXT"].map((f) => (
-                            <span
-                              key={f}
-                              style={{
-                                padding: "4px 12px",
-                                background: "#f3f4f6",
-                                borderRadius: 6,
-                                fontSize: 12,
-                                color: "#6b7280",
-                                fontWeight: 600,
-                              }}
-                            >
-                              {f}
-                            </span>
-                          ))}
-                        </div>
-                      </>
-                    ) : (
-                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-                          <div
-                            style={{
-                              width: 56,
-                              height: 56,
-                              background: THEME.primaryLight,
-                              borderRadius: 14,
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }}
-                          >
-                            <FileText size={26} color={THEME.primary} />
-                          </div>
-                          <div style={{ textAlign: "left" }}>
-                            <p style={{ fontWeight: 700, color: "#0f172a", margin: "0 0 4px", fontSize: 15 }}>
-                              {file.name}
-                            </p>
-                            <p style={{ color: "#6b7280", margin: 0, fontSize: 13 }}>
-                              {(file.size / 1024).toFixed(1)} KB ·{" "}
-                              <span style={{ color: "#22c55e", fontWeight: 600 }}>✓ Ready</span>
-                            </p>
-                          </div>
-                        </div>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            clearFile();
-                          }}
-                          style={{
-                            background: "#fee2e2",
-                            border: "none",
-                            borderRadius: 8,
-                            padding: 8,
-                            cursor: "pointer",
-                          }}
-                        >
-                          <X size={16} color="#ef4444" />
-                        </button>
-                      </div>
-                    )}
-                  </div>
-
-                  {error && (
-                    <div
-                      style={{
-                        marginTop: 14,
-                        padding: "10px 16px",
-                        background: "#fee2e2",
-                        borderRadius: 10,
-                        color: "#b91c1c",
-                        fontSize: 13,
-                      }}
-                    >
-                      ⚠️ {error}
-                    </div>
-                  )}
-
-                  {file && !uploading && (
-                    <button
-                      onClick={processResume}
-                      style={{
-                        marginTop: 20,
-                        width: "100%",
-                        padding: "16px",
-                        background: THEME.gradient,
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: 14,
-                        fontSize: 16,
-                        fontWeight: 700,
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 10,
-                      }}
-                    >
-                      <Wand2 size={20} /> Parse & Continue <ArrowRight size={18} />
-                    </button>
-                  )}
-
-                  {uploading && (
-                    <div style={{ marginTop: 24, textAlign: "center" }}>
-                      <div
-                        style={{
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: 10,
-                          padding: "10px 20px",
-                          background: THEME.primaryLight,
-                          borderRadius: 100,
-                        }}
-                      >
-                        <Loader2 size={18} color={THEME.primary} style={{ animation: "spin 1s linear infinite" }} />
-                        <span style={{ fontSize: 14, fontWeight: 500, color: "#374151" }}>
-                          Parsing your resume...
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                // Manual Input UI
-                <div>
-                  <h3 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", marginBottom: 20, display: "flex", alignItems: "center", gap: 8 }}>
-                    <User size={20} color={THEME.primary} /> Enter Your Details
-                  </h3>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-                    <input
-                      type="text"
-                      placeholder="Full Name *"
-                      value={manualData.fullName}
-                      onChange={(e) => setManualData({ ...manualData, fullName: e.target.value })}
-                      style={{ padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14 }}
-                    />
-                    <input
-                      type="text"
-                      placeholder="Professional Title"
-                      value={manualData.title}
-                      onChange={(e) => setManualData({ ...manualData, title: e.target.value })}
-                      style={{ padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14 }}
-                    />
-                    <input
-                      type="email"
-                      placeholder="Email"
-                      value={manualData.email}
-                      onChange={(e) => setManualData({ ...manualData, email: e.target.value })}
-                      style={{ padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14 }}
-                    />
-                    <input
-                      type="text"
-                      placeholder="Phone"
-                      value={manualData.phone}
-                      onChange={(e) => setManualData({ ...manualData, phone: e.target.value })}
-                      style={{ padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14 }}
-                    />
-                    <input
-                      type="text"
-                      placeholder="Location (City, State)"
-                      value={manualData.location}
-                      onChange={(e) => setManualData({ ...manualData, location: e.target.value })}
-                      style={{ padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14 }}
-                    />
-                  </div>
-                  <textarea
-                    placeholder="Professional Summary (2-3 sentences about yourself)"
-                    value={manualData.summary}
-                    onChange={(e) => setManualData({ ...manualData, summary: e.target.value })}
-                    rows={3}
-                    style={{ width: "100%", marginTop: 16, padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14, resize: "vertical" }}
-                  />
-                  <textarea
-                    placeholder="Key Skills (comma separated, e.g., JavaScript, Project Management, Data Analysis)"
-                    value={manualData.skills}
-                    onChange={(e) => setManualData({ ...manualData, skills: e.target.value })}
-                    rows={2}
-                    style={{ width: "100%", marginTop: 16, padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14, resize: "vertical" }}
-                  />
-                  <textarea
-                    placeholder="Work Experience (key achievements and responsibilities)"
-                    value={manualData.experience}
-                    onChange={(e) => setManualData({ ...manualData, experience: e.target.value })}
-                    rows={3}
-                    style={{ width: "100%", marginTop: 16, padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14, resize: "vertical" }}
-                  />
-
-                  {error && (
-                    <div style={{ marginTop: 14, padding: "10px 16px", background: "#fee2e2", borderRadius: 10, color: "#b91c1c", fontSize: 13 }}>
-                      ⚠️ {error}
-                    </div>
-                  )}
-
-                  <button
-                    onClick={handleManualSubmit}
-                    style={{
-                      marginTop: 20,
-                      width: "100%",
-                      padding: "16px",
-                      background: THEME.gradient,
-                      color: "#fff",
-                      border: "none",
-                      borderRadius: 14,
-                      fontSize: 16,
-                      fontWeight: 700,
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: 10,
-                    }}
-                  >
-                    Continue to Preview <ArrowRight size={18} />
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* PREVIEW STEP */}
-          {activeStep === "preview" && (cvData || manualData.fullName) && (
-            <div>
-              <div
-                style={{
-                  borderBottom: "1px solid #f0f0f0",
-                  padding: "14px 24px",
-                  background: "#fafafa",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  flexWrap: "wrap",
-                  gap: 12,
-                }}
-              >
-                <span style={{ fontSize: 13, fontWeight: 600, color: "#374151" }}>
-                  {cvData ? "📄 CV Extracted from Resume" : "✏️ Manually Entered Profile"}
-                </span>
-                <button
-                  onClick={() => setActiveStep("letter")}
-                  style={{
-                    padding: "10px 24px",
-                    background: THEME.gradient,
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: 40,
-                    fontSize: 14,
-                    fontWeight: 600,
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                  }}
-                >
-                  Generate Cover Letter <ArrowRight size={16} />
-                </button>
-              </div>
-              <div style={{ padding: 32, background: "#f9fafb" }}>
-                {cvData ? (
-                  <CVPreview cvData={cvData} />
-                ) : (
-                  <div style={{ background: "#fff", borderRadius: 20, padding: 40, textAlign: "center" }}>
-                    <h2 style={{ fontSize: 24, fontWeight: 700, color: "#0f172a" }}>{manualData.fullName}</h2>
-                    {manualData.title && <p style={{ color: THEME.primary, fontWeight: 500 }}>{manualData.title}</p>}
-                    <div style={{ display: "flex", justifyContent: "center", gap: 16, marginTop: 12, flexWrap: "wrap" }}>
-                      {manualData.email && <span><Mail size={14} /> {manualData.email}</span>}
-                      {manualData.phone && <span><Phone size={14} /> {manualData.phone}</span>}
-                      {manualData.location && <span><MapPin size={14} /> {manualData.location}</span>}
-                    </div>
-                    {manualData.summary && <p style={{ marginTop: 24, textAlign: "left" }}><strong>Summary:</strong> {manualData.summary}</p>}
-                    {manualData.skills && <p style={{ marginTop: 16, textAlign: "left" }}><strong>Skills:</strong> {manualData.skills}</p>}
-                    {manualData.experience && <p style={{ marginTop: 16, textAlign: "left" }}><strong>Experience:</strong> {manualData.experience}</p>}
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* COVER LETTER STEP */}
-          {activeStep === "letter" && (
-            <div style={{ padding: 32 }}>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 32 }}>
-                {/* Left Panel */}
-                <div>
-                  <h3 style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", marginBottom: 20, display: "flex", alignItems: "center", gap: 8 }}>
-                    <Edit3 size={20} color={THEME.primary} /> Customize Your Letter
-                  </h3>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-                    <div>
-                      <label style={{ fontWeight: 600, fontSize: 14, color: "#374151", display: "block", marginBottom: 6 }}>
-                        <Building size={14} style={{ display: "inline", marginRight: 6 }} /> Company Name
-                      </label>
-                      <input
-                        type="text"
-                        value={letterForm.companyName}
-                        onChange={(e) => setLetterForm({ ...letterForm, companyName: e.target.value })}
-                        placeholder="e.g., Google, Microsoft, Startup X"
-                        style={{ width: "100%", padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14 }}
-                      />
-                    </div>
-                    <div>
-                      <label style={{ fontWeight: 600, fontSize: 14, color: "#374151", display: "block", marginBottom: 6 }}>
-                        <Target size={14} style={{ display: "inline", marginRight: 6 }} /> Job Title / Role
-                      </label>
-                      <input
-                        type="text"
-                        value={letterForm.jobTitle}
-                        onChange={(e) => setLetterForm({ ...letterForm, jobTitle: e.target.value })}
-                        placeholder="e.g., Frontend Engineer, Product Manager"
-                        style={{ width: "100%", padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14 }}
-                      />
-                    </div>
-                    <div>
-                      <label style={{ fontWeight: 600, fontSize: 14, color: "#374151", display: "block", marginBottom: 6 }}>
-                        <User size={14} style={{ display: "inline", marginRight: 6 }} /> Hiring Manager Name (optional)
-                      </label>
-                      <input
-                        type="text"
-                        value={letterForm.hiringManager}
-                        onChange={(e) => setLetterForm({ ...letterForm, hiringManager: e.target.value })}
-                        placeholder="e.g., Sarah Johnson"
-                        style={{ width: "100%", padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14 }}
-                      />
-                    </div>
-                    <div>
-                      <label style={{ fontWeight: 600, fontSize: 14, color: "#374151", display: "block", marginBottom: 6 }}>
-                        Tone
-                      </label>
-                      <select
-                        value={letterForm.tone}
-                        onChange={(e) => setLetterForm({ ...letterForm, tone: e.target.value as CoverLetterForm["tone"] })}
-                        style={{ width: "100%", padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14, background: "#fff" }}
-                      >
-                        <option value="professional">Professional & Formal</option>
-                        <option value="enthusiastic">Enthusiastic & Energetic</option>
-                        <option value="concise">Concise & Direct</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label style={{ fontWeight: 600, fontSize: 14, color: "#374151", display: "block", marginBottom: 6 }}>
-                        Additional Notes (optional)
-                      </label>
-                      <textarea
-                        rows={4}
-                        value={letterForm.additionalNotes}
-                        onChange={(e) => setLetterForm({ ...letterForm, additionalNotes: e.target.value })}
-                        placeholder="Mention specific achievements, projects, or why you're interested..."
-                        style={{ width: "100%", padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14, resize: "vertical" }}
-                      />
-                    </div>
-                    <button
-                      onClick={handleGenerateLetter}
-                      disabled={generatingLetter}
-                      style={{
-                        background: generatingLetter ? "#e5e7eb" : THEME.gradient,
-                        color: generatingLetter ? "#9ca3af" : "#fff",
-                        border: "none",
-                        borderRadius: 40,
-                        padding: "14px",
-                        fontSize: 15,
-                        fontWeight: 700,
-                        cursor: generatingLetter ? "not-allowed" : "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 8,
-                        marginTop: 8,
-                      }}
-                    >
-                      {generatingLetter ? (
-                        <><Loader2 size={18} style={{ animation: "spin 1s linear infinite" }} /> Generating...</>
-                      ) : (
-                        <><Sparkles size={18} /> Generate AI Cover Letter</>
-                      )}
-                    </button>
-                  </div>
-                </div>
-
-                {/* Right Panel */}
-                <div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-                    <h3 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a" }}>📄 Your Cover Letter</h3>
-                    {coverLetter && (
-                      <button
-                        onClick={copyCoverLetter}
-                        style={{
-                          background: "none",
-                          border: `1px solid ${THEME.primaryLight}`,
-                          borderRadius: 40,
-                          padding: "6px 14px",
-                          fontSize: 12,
-                          fontWeight: 500,
-                          color: THEME.primary,
-                          cursor: "pointer",
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 6,
-                        }}
-                      >
-                        <Copy size={14} /> Copy
-                      </button>
-                    )}
-                  </div>
-                  <div
-                    style={{
-                      background: "linear-gradient(135deg, #faf5ff 0%, #ffffff 100%)",
-                      borderRadius: 20,
-                      padding: 28,
-                      border: `1px solid ${THEME.primaryLight}`,
-                      minHeight: 450,
-                      maxHeight: 550,
-                      overflowY: "auto",
-                    }}
-                  >
-                    {coverLetter ? (
-                      <div style={{ whiteSpace: "pre-wrap", lineHeight: 1.7, fontSize: 14, color: "#1f2937" }}>
-                        {coverLetter}
-                      </div>
-                    ) : (
-                      <div style={{ textAlign: "center", color: "#9ca3af", padding: "60px 20px" }}>
-                        <Wand2 size={40} style={{ marginBottom: 16, opacity: 0.5, color: THEME.primary }} />
-                        <p>Click "Generate AI Cover Letter" above</p>
-                        <p style={{ fontSize: 13, marginTop: 8 }}>Your personalized letter will appear here</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              <div style={{ marginTop: 32, display: "flex", justifyContent: "center", gap: 16 }}>
-                <button
-                  onClick={() => setActiveStep("preview")}
-                  style={{ background: "none", border: `1px solid ${THEME.primaryLight}`, borderRadius: 40, padding: "10px 24px", cursor: "pointer", color: "#6b7280" }}
-                >
-                  ← Back to Profile
-                </button>
-                <button
-                  onClick={resetAll}
-                  style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af", fontSize: 13 }}
-                >
-                  Start Over
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <style>{`
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
-    </div>
-  );
-}
+export default page

@@ -808,7 +808,7 @@ export default function AboutPage() {
       name: "Aryu Academy",
       icon: <FaGraduationCap className="w-3 h-3 sm:w-4 sm:h-4" />,
       description:
-        "Global ed-tech platform — courses in Python, data science, web development, digital marketing, and more.",
+        "Global ed-tech platform — courses in Python, data science, web development, digital marketing, and more",
       gradient: "from-blue-500 to-cyan-500",
       bgGradient: "from-blue-50 to-cyan-50",
       borderColor: "border-blue-100",
@@ -819,7 +819,7 @@ export default function AboutPage() {
       name: "Aryu Technologies",
       icon: <FaLaptopCode className="w-3 h-3 sm:w-4 sm:h-4" />,
       description:
-        "Technology solutions and software development for businesses across the globe.",
+        "Technology solutions and software development for businesses across the globe",
       gradient: "from-indigo-500 to-purple-500",
       bgGradient: "from-indigo-50 to-purple-50",
       borderColor: "border-indigo-100",
@@ -830,7 +830,7 @@ export default function AboutPage() {
       name: "Aryu Agency",
       icon: <FaChartLine className="w-3 h-3 sm:w-4 sm:h-4" />,
       description:
-        "Digital marketing agency — SEO, paid ads, social media, and content strategy for global brands.",
+        "Digital marketing agency — SEO, paid ads, social media, and content strategy for global brands",
       gradient: "from-purple-500 to-pink-500",
       bgGradient: "from-purple-50 to-pink-50",
       borderColor: "border-purple-100",
@@ -841,7 +841,7 @@ export default function AboutPage() {
       name: "Aryu Enterprises",
       icon: <FaBuilding className="w-3 h-3 sm:w-4 sm:h-4" />,
       description:
-        "Business consulting and enterprise solutions for growing organisations worldwide.",
+        "Business consulting and enterprise solutions for growing organisations worldwide",
       gradient: "from-emerald-500 to-teal-500",
       bgGradient: "from-emerald-50 to-teal-50",
       borderColor: "border-emerald-100",
@@ -855,35 +855,35 @@ export default function AboutPage() {
       title: "Fresh Graduates",
       icon: "📚",
       description:
-        "Entering the job market for the first time with a degree and limited work history. PassATS gives you a professional resume that competes with experienced candidates on ATS scoring.",
+        "Entering the job market for the first time with a degree and limited work history. PassATS gives you a professional resume that competes with experienced candidates on ATS scoring",
       gradient: "from-indigo-500 to-purple-500",
     },
     {
       title: "Global Job Seekers",
       icon: "🌍",
       description:
-        "Targeting roles across the globe. PassATS ensures your resume meets international standards and passes any ATS system.",
+        "Targeting roles across the globe. PassATS ensures your resume meets international standards and passes any ATS system",
       gradient: "from-emerald-500 to-teal-500",
     },
     {
       title: "Working Professionals",
       icon: "💼",
       description:
-        "Ready for your next role, a promotion, or a career switch. PassATS helps you reframe experience as achievements, tailor your resume to each JD, and improve your ATS score before applying.",
+        "Ready for your next role, a promotion, or a career switch. PassATS helps you reframe experience as achievements, tailor your resume to each JD, and improve your ATS score before applying",
       gradient: "from-purple-500 to-pink-500",
     },
     {
       title: "Career Switchers",
       icon: "🔄",
       description:
-        "Moving from one industry or function to another. PassATS helps you highlight transferable skills and reposition your experience for a new direction.",
+        "Moving from one industry or function to another. PassATS helps you highlight transferable skills and reposition your experience for a new direction",
       gradient: "from-orange-500 to-red-500",
     },
     {
       title: "Remote Job Hunters",
       icon: "🏠",
       description:
-        "Applying for remote positions worldwide. PassATS optimizes your resume for global ATS systems and remote-first companies.",
+        "Applying for remote positions worldwide. PassATS optimizes your resume for global ATS systems and remote-first companies",
       gradient: "from-blue-500 to-cyan-500",
     },
   ];
@@ -893,37 +893,37 @@ export default function AboutPage() {
       icon: <FiShield className="w-3 h-3 sm:w-4 sm:h-4" />,
       title: "Never Sell Your Data",
       description:
-        "We will never sell your resume data to employers, recruiters, or data brokers.",
+        "We will never sell your resume data to employers, recruiters, or data brokers",
     },
     {
       icon: <FiLock className="w-3 h-3 sm:w-4 sm:h-4" />,
       title: "No AI Training Without Consent",
       description:
-        "We will never use your resume content to train AI models without your explicit consent.",
+        "We will never use your resume content to train AI models without your explicit consent",
     },
     {
       icon: <FiCreditCard className="w-3 h-3 sm:w-4 sm:h-4" />,
       title: "No Billing Tricks",
       description:
-        "We will never auto-charge you without clear notice — no trial traps, no billing tricks.",
+        "We will never auto-charge you without clear notice — no trial traps, no billing tricks",
     },
     {
       icon: <FiEye className="w-3 h-3 sm:w-4 sm:h-4" />,
       title: "Real Numbers",
       description:
-        "We will always show you real numbers — not inflated stats designed to look impressive.",
+        "We will always show you real numbers — not inflated stats designed to look impressive",
     },
     {
       icon: <FiHeart className="w-3 h-3 sm:w-4 sm:h-4" />,
       title: "Genuinely Useful Free Plan",
       description:
-        "We will always offer a free plan that is genuinely useful — not a tease that forces you to pay immediately.",
+        "We will always offer a free plan that is genuinely useful — not a tease that forces you to pay immediately",
     },
     {
       icon: <FiDollarSign className="w-3 h-3 sm:w-4 sm:h-4" />,
       title: "Fair Global Pricing",
       description:
-        "You can pay in USD or your local currency — because fair pricing means paying what's right for you.",
+        "You can pay in USD or your local currency — because fair pricing means paying what's right for you",
     },
   ];
 
@@ -958,7 +958,7 @@ export default function AboutPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 px-2"
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl  font-bold mb-4 sm:mb-6 px-2"
             >
               <span className="text-white">We Built the Resume Tool</span>
               <span className="block bg-gradient-to-r from-yellow-300 via-amber-200 to-orange-300 bg-clip-text text-transparent mt-2 sm:mt-3">
@@ -973,7 +973,7 @@ export default function AboutPage() {
             >
               PassATS is an AI-powered resume builder built from the ground up
               for the global job market — by the team behind Aryu Academy, one of
-              the world's growing ed-tech platforms.
+              the world's growing ed-tech platforms
             </motion.p>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -991,7 +991,7 @@ export default function AboutPage() {
             </motion.div>
           </motion.div>
         </motion.div>
-        <div className="absolute bottom-0 left-0 right-0">
+        <div className="absolute bottom-0 left-0 right-0 max-md:hidden">
           <svg viewBox="0 0 1440 100" preserveAspectRatio="none" className="w-full h-6 sm:h-8 md:h-12">
             <path d="M0 100L1440 0V100H0Z" fill="white" />
           </svg>
@@ -1048,15 +1048,15 @@ export default function AboutPage() {
               className="space-y-4 sm:space-y-5"
             >
               <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
-                PassATS is a product of Aryu Academy — an ed-tech platform that has been training students and
-                working professionals globally in technology, digital marketing, and career-ready skills.
+                PassATS is a product of Aryu Academy - an ed-tech platform that has been training students and
+                working professionals globally in technology, digital marketing, and career-ready skills
               </p>
               <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
                 Aryu Academy was built on a single belief: that the gap between
                 learning a skill and getting hired for it should not exist. Our
                 courses are practical, our instructors are industry
-                professionals, and our focus has always been on real outcomes —
-                not just certificates.
+                professionals, and our focus has always been on real outcomes -
+                not just certificates
               </p>
               <div className="bg-white rounded-xl p-5 sm:p-6 border border-gray-100 shadow-sm">
                 <FaQuoteLeft className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-400 mb-2 sm:mb-3" />
@@ -1064,7 +1064,7 @@ export default function AboutPage() {
                   PassATS is the next step in that mission. Once a student
                   completes a course at Aryu Academy, they need a resume that
                   communicates their new skills clearly, gets past ATS, and
-                  lands them interviews — anywhere in the world. PassATS is that bridge.
+                  lands them interviews - anywhere in the world. PassATS is that bridge
                 </p>
               </div>
             </motion.div>
@@ -1127,12 +1127,12 @@ export default function AboutPage() {
               <div className="space-y-3 sm:space-y-4 text-gray-600">
                 <p className="text-sm sm:text-base">
                   At Aryu Academy, we have trained thousands of students
-                  globally in Python, data science, full-stack, and more.
+                  globally in Python, data science, full-stack, and more
                 </p>
                 <p className="font-semibold text-gray-800 text-sm sm:text-base">
-                  Then we watched them struggle to get shortlisted.
+                  Then we watched them struggle to get shortlisted
                 </p>
-                <p className="text-sm sm:text-base">The problem was never their skills. It was their resume.</p>
+                <p className="text-sm sm:text-base">The problem was never their skills. It was their resume</p>
                 <div className="bg-gray-900 rounded-xl p-4 sm:p-5 mt-3 sm:mt-4">
                   <p className="text-white text-xl sm:text-2xl font-bold">
                     75%{" "}
@@ -1151,7 +1151,7 @@ export default function AboutPage() {
                     </svg>
                   </div>
                   <p className="font-semibold text-xs sm:text-sm text-indigo-600">
-                    We built a tool that actually fixes the problem.
+                    We built a tool that actually fixes the problem
                   </p>
                 </div>
               </div>
@@ -1170,9 +1170,9 @@ export default function AboutPage() {
               </div>
               <div className="space-y-2 sm:space-y-3">
                 {[
-                  { feature: "Pricing", other: "$30-60/month", pass: "$3.99/month" },
+                  { feature: "Pricing", other: "₹1000-₹2000/month", pass: "₹49/month" },
                   { feature: "Templates", other: "Generic", pass: "Role & region-specific" },
-                  { feature: "Currency", other: "USD only", pass: "Multi-currency support" },
+                  { feature: "Currency", other: "USD only", pass: "Indian Rupees" },
                   { feature: "ATS Optimization", other: "Limited", pass: "Advanced AI (global ATS)" },
                   { feature: "Billing", other: "Hidden fees", pass: "100% transparent" },
                 ].map((item, idx) => (
@@ -1199,9 +1199,9 @@ export default function AboutPage() {
           </div>
           <FaQuoteLeft className="w-7 h-7 sm:w-10 sm:h-10 text-white/30 mx-auto mb-3 sm:mb-4" />
           <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-medium text-white leading-relaxed px-3">
-            "To empower every job seeker — regardless of location, background,
+            " To empower every job seeker — regardless of location, background,
             or education — to present their skills on a resume that gets through ATS,
-            gets read by recruiters, and gets them in the room."
+            gets read by recruiters, and gets them in the room "
           </p>
         </div>
       </section>
@@ -1217,21 +1217,21 @@ export default function AboutPage() {
               {
                 icon: <FiHeart className="w-4 h-4 sm:w-5 sm:h-5" />,
                 title: "Honesty First",
-                description: "No fake stats. No trial traps. No inflated numbers.",
+                description: "No fake stats. No trial traps. No inflated numbers",
                 bg: "bg-rose-50",
                 color: "text-rose-600",
               },
               {
                 icon: <FiGlobe className="w-4 h-4 sm:w-5 sm:h-5" />,
                 title: "Global First",
-                description: "Every feature, every template, every pricing decision is made with the global job seeker in mind.",
+                description: "Every feature, every template, every pricing decision is made with the global job seeker in mind",
                 bg: "bg-indigo-50",
                 color: "text-indigo-600",
               },
               {
                 icon: <FiTrendingUp className="w-4 h-4 sm:w-5 sm:h-5" />,
                 title: "Outcomes Over Aesthetics",
-                description: "A beautiful resume that doesn't get viewed is useless. We optimize for results.",
+                description: "A beautiful resume that doesn't get viewed is useless. We optimize for results",
                 bg: "bg-emerald-50",
                 color: "text-emerald-600",
               },
@@ -1503,7 +1503,7 @@ export default function AboutPage() {
           </h2>
           <p className="text-white/80 text-sm sm:text-base mb-6 px-4">
             Join job seekers across the globe who are using PassATS to get
-            past ATS, get noticed by recruiters, and get the interview.
+            past ATS, get noticed by recruiters, and get the interview
           </p>
           <Link
             href="/choose-template"
