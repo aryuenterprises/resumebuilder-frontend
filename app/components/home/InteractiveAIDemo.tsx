@@ -397,7 +397,7 @@ export const InteractiveAIDemo = () => {
         </h2>
         <p className="mt-2 sm:mt-3 text-xs sm:text-sm md:text-base text-gray-500 max-w-2xl mx-auto px-4">
           Experience the magic of our AI as it analyzes, enhances, and
-          optimizes your resume for maximum impact.
+          optimizes your resume for maximum impact
         </p>
       </div>
 
@@ -408,7 +408,7 @@ export const InteractiveAIDemo = () => {
             <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-yellow-500" />
             <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-green-500" />
           </div>
-          <div className="text-[10px] sm:text-xs text-gray-400">AI Demo</div>
+          <div className="text-[10px] sm:text-xs text-gray-400">Demo</div>
         </div>
 
         <div className="p-3 sm:p-4 md:p-5 lg:p-6">

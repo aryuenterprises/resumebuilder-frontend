@@ -633,12 +633,7 @@ const Footer = () => {
       label: "LinkedIn",
       color: "hover:text-[#0077b5]",
     },
-    {
-      icon: FiTwitter,
-      url: "https://twitter.com",
-      label: "Twitter",
-      color: "hover:text-[#1DA1F2]",
-    },
+    
     {
       icon: FiFacebook,
       url: "https://facebook.com",
@@ -711,7 +706,7 @@ const Footer = () => {
                       </div>
 
             <p className="text-sm text-gray-600 leading-relaxed max-w-md">
-              Create an ATS-friendly resume in minutes with AI. Get shortlisted. Get hired faster.
+              Create an ATS-friendly resume in minutes with AI. Get shortlisted. Get hired faster
             </p>
 
             {/* Contact Info */}
@@ -885,7 +880,7 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             {/* Copyright */}
             <p className="text-xs text-gray-500">
-              © {new Date().getFullYear()} Ats Pass. All rights reserved.
+              © {new Date().getFullYear()} PassATS. All rights reserved.
             </p>
 
             {/* Social Links */}
@@ -906,17 +901,7 @@ const Footer = () => {
               ))}
             </div>
 
-            {/* Made with love */}
-            <div className="flex items-center gap-1.5 text-[11px] text-gray-500">
-              <span>Made with</span>
-              <motion.div
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-              >
-                <FiHeart className="w-3 h-3 text-red-500" />
-              </motion.div>
-              <span>for your career journey</span>
-            </div>
+           
           </div>
         </motion.div>
       </div>
