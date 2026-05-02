@@ -4472,12 +4472,1468 @@
 
 
 
-import React from 'react'
 
-const page = () => {
-  return (
-    <div>page</div>
-  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"use client";
+
+import React, { useState, useCallback, useRef } from "react";
+import {
+  UploadCloud,
+  FileText,
+  CheckCircle,
+  X,
+  Loader2,
+  Sparkles,
+  ArrowRight,
+  Eye,
+  Wand2,
+  Mail,
+  Phone,
+  MapPin,
+  Briefcase,
+  GraduationCap,
+  Award,
+  ChevronDown,
+  ChevronUp,
+  Copy,
+  User,
+  Building,
+  Target,
+  Edit3,
+  FileUp,
+  UserCircle,
+} from "lucide-react";
+
+// ============================================================
+// TYPES
+// ============================================================
+interface Experience {
+  id: string;
+  title: string;
+  company: string;
+  period: string;
+  description: string[];
+  achievements: string[];
+  isPresent: boolean;
+  location?: string;
 }
 
-export default page
+interface Education {
+  id: string;
+  degree: string;
+  institution: string;
+  period: string;
+}
+
+interface Skill {
+  id: string;
+  name: string;
+  category: string;
+}
+
+interface CoreCompetencies {
+  technical: string[];
+  leadership: string[];
+  domainExpertise: string[];
+}
+
+interface AdditionalCredentials {
+  certifications: string[];
+  languages: string[];
+  awards: string[];
+}
+
+interface PersonalInfo {
+  fullName: string;
+  title: string;
+  email: string;
+  phone: string;
+  location: string;
+  summary: string;
+}
+
+interface CVData {
+  personalInfo: PersonalInfo;
+  coreCompetencies: CoreCompetencies;
+  experience: Experience[];
+  education: Education[];
+  skills: Skill[];
+  additionalCredentials: AdditionalCredentials;
+  raw: string;
+}
+
+interface ManualFormData {
+  fullName: string;
+  title: string;
+  email: string;
+  phone: string;
+  location: string;
+  summary: string;
+  skills: string;
+  experience: string;
+  education: string;
+}
+
+interface CoverLetterForm {
+  companyName: string;
+  jobTitle: string;
+  hiringManager: string;
+  additionalNotes: string;
+  tone: "professional" | "enthusiastic" | "concise";
+}
+
+// ============================================================
+// THEME COLORS - INDIGO & PURPLE
+// ============================================================
+const THEME = {
+  primary: "#4f46e5", // indigo
+  primaryDark: "#4338ca",
+  primaryLight: "#e0e7ff",
+  secondary: "#7c3aed", // purple
+  secondaryDark: "#6d28d9",
+  secondaryLight: "#ede9fe",
+  accent: "#8b5cf6",
+  gradient: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #8b5cf6 100%)",
+};
+
+// ============================================================
+// CV PARSING LOGIC (Enhanced for better extraction)
+// ============================================================
+function parseCVText(text: string): CVData {
+  const data: CVData = {
+    personalInfo: {
+      fullName: "",
+      title: "",
+      email: "",
+      phone: "",
+      location: "",
+      summary: "",
+    },
+    coreCompetencies: { technical: [], leadership: [], domainExpertise: [] },
+    experience: [],
+    education: [],
+    skills: [],
+    additionalCredentials: { certifications: [], languages: [], awards: [] },
+    raw: text,
+  };
+
+  const lines = text.split("\n").map((l) => l.trim()).filter((l) => l.length > 0);
+
+  // Email extraction
+  const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
+  // Phone extraction
+  const phoneRegex = /(\+\d{1,3}[-.\s]?)?\(?\d{2,4}\)?[-.\s]?\d{3,4}[-.\s]?\d{3,4}/;
+
+  // First pass: extract contact info from anywhere in text
+  for (const line of lines) {
+    const emailMatch = line.match(emailRegex);
+    if (emailMatch && !data.personalInfo.email) {
+      data.personalInfo.email = emailMatch[0];
+    }
+    const phoneMatch = line.match(phoneRegex);
+    if (phoneMatch && !data.personalInfo.phone && phoneMatch[0].length > 5) {
+      data.personalInfo.phone = phoneMatch[0];
+    }
+  }
+
+  const SECTIONS = {
+    summary: /^professional\s+summary[:\s]*|^summary[:\s]*/i,
+    competencies: /^core\s+competencies[:\s]*/i,
+    experience: /^professional\s+experience[:\s]*|^work\s+experience[:\s]*|^experience[:\s]*/i,
+    education: /^education[:\s]*/i,
+    skills: /^(technical\s+)?skills[:\s]*|^key\s+skills[:\s]*/i,
+    credentials: /^certifications[:\s]*|^languages[:\s]*|^awards[:\s]*/i,
+  };
+
+  // Find first section
+  let firstSectionIdx = lines.findIndex((l) =>
+    Object.values(SECTIONS).some((re) => re.test(l))
+  );
+  if (firstSectionIdx === -1) firstSectionIdx = Math.min(6, lines.length);
+
+  // Extract name from top lines (usually first non-empty line)
+  const topLines = lines.slice(0, firstSectionIdx);
+  for (const line of topLines) {
+    if (!data.personalInfo.fullName && !line.match(emailRegex) && !line.match(phoneRegex) && line.length < 50) {
+      data.personalInfo.fullName = line;
+      continue;
+    }
+    if (!data.personalInfo.title && data.personalInfo.fullName && line.length < 60 && !line.match(emailRegex)) {
+      data.personalInfo.title = line;
+    }
+    if (!data.personalInfo.location && (line.includes("📍") || line.toLowerCase().includes("based in") || line.match(/[A-Z][a-z]+,\s*[A-Z]{2}/))) {
+      data.personalInfo.location = line.replace(/[📍]/g, "").trim();
+    }
+  }
+
+  // Parse sections
+  let section = "";
+  let currentExp: Experience | null = null;
+
+  for (let i = firstSectionIdx; i < lines.length; i++) {
+    const line = lines[i];
+
+    // Check for section headers
+    let matched = false;
+    for (const [key, re] of Object.entries(SECTIONS)) {
+      if (re.test(line)) {
+        if (section === "experience" && currentExp) {
+          data.experience.push(currentExp);
+          currentExp = null;
+        }
+        section = key;
+        matched = true;
+        break;
+      }
+    }
+    if (matched) continue;
+
+    // Parse based on section
+    if (section === "summary") {
+      data.personalInfo.summary += (data.personalInfo.summary ? " " : "") + line;
+      continue;
+    }
+
+    if (section === "skills") {
+      const skillsLine = line.replace(/^[-•*]\s*/, "");
+      skillsLine.split(/[,•·\-|]/).forEach((s) => {
+        const name = s.trim();
+        if (name && name.length > 1 && name.length < 30) {
+          data.skills.push({ id: crypto.randomUUID(), name, category: "technical" });
+        }
+      });
+      continue;
+    }
+
+    if (section === "experience") {
+      // Check for bullet points (achievements)
+      if (/^[-•*]\s/.test(line)) {
+        if (currentExp) {
+          currentExp.achievements.push(line.replace(/^[-•*]\s*/, ""));
+        }
+        continue;
+      }
+
+      // Check for date range pattern
+      if (/\d{4}\s*[-–]\s*(?:\d{4}|present)/i.test(line)) {
+        if (currentExp) {
+          currentExp.period = line;
+          currentExp.isPresent = /present/i.test(line);
+        }
+        continue;
+      }
+
+      // If we have a line with no bullet and not a date, it might be a job title or company
+      if (line.length > 2 && line.length < 80 && !currentExp) {
+        if (currentExp) data.experience.push(currentExp);
+        currentExp = {
+          id: crypto.randomUUID(),
+          title: line,
+          company: "",
+          period: "",
+          description: [],
+          achievements: [],
+          isPresent: false,
+        };
+      } else if (currentExp && !currentExp.company && line.length < 60 && !/\d/.test(line)) {
+        currentExp.company = line;
+      }
+    }
+
+    if (section === "education") {
+      const eduLine = line.replace(/^[-•*]\s*/, "");
+      if (eduLine.length > 2) {
+        data.education.push({
+          id: crypto.randomUUID(),
+          degree: eduLine,
+          institution: "",
+          period: "",
+        });
+      }
+      continue;
+    }
+  }
+
+  // Push last experience
+  if (currentExp) data.experience.push(currentExp);
+
+  // Set defaults if missing
+  if (!data.personalInfo.fullName) data.personalInfo.fullName = "Professional Candidate";
+  if (!data.personalInfo.summary) {
+    data.personalInfo.summary = "Detail-oriented professional with strong analytical skills and passion for delivering impactful results. Proven track record in cross-functional collaboration and project leadership.";
+  }
+  if (data.skills.length === 0) {
+    data.skills = [
+      { id: crypto.randomUUID(), name: "Project Management", category: "technical" },
+      { id: crypto.randomUUID(), name: "Data Analysis", category: "technical" },
+      { id: crypto.randomUUID(), name: "Communication", category: "technical" },
+    ];
+  }
+  if (data.experience.length === 0) {
+    data.experience.push({
+      id: crypto.randomUUID(),
+      title: "Professional Experience",
+      company: "Various Organizations",
+      period: "2020 – Present",
+      description: [],
+      achievements: ["Demonstrated excellence in problem-solving", "Led cross-functional initiatives", "Delivered measurable business impact"],
+      isPresent: true,
+    });
+  }
+
+  return data;
+}
+
+// ============================================================
+// AI COVER LETTER GENERATOR (Enhanced)
+// ============================================================
+async function generateAICoverLetter(
+  cvData: CVData | null,
+  manualData: ManualFormData | null,
+  form: CoverLetterForm
+): Promise<string> {
+  // Simulate API call delay for realism
+  await new Promise((resolve) => setTimeout(resolve, 1200));
+
+  // Use CV data if available, otherwise use manual data
+  const name = cvData?.personalInfo.fullName || manualData?.fullName || "Candidate";
+  const title = cvData?.personalInfo.title || manualData?.title || "Professional";
+  const email = cvData?.personalInfo.email || manualData?.email || "";
+  const phone = cvData?.personalInfo.phone || manualData?.phone || "";
+  const skills = cvData?.skills.map((s) => s.name).slice(0, 5).join(", ") || manualData?.skills || "relevant skills";
+  const summary = cvData?.personalInfo.summary || manualData?.summary || "";
+  const experience = cvData?.experience[0]?.achievements.slice(0, 2).join(" ") || manualData?.experience || "";
+
+  const { companyName, jobTitle, hiringManager, additionalNotes, tone } = form;
+
+  const company = companyName.trim() || "[Company Name]";
+  const role = jobTitle.trim() || "[Target Position]";
+  const manager = hiringManager.trim() || "Hiring Manager";
+
+  // Tone adjustments
+  let greeting = `Dear ${manager},`;
+  let closing = "Sincerely,";
+  let enthusiasm = "";
+
+  switch (tone) {
+    case "enthusiastic":
+      greeting = `Dear ${manager},`;
+      enthusiasm = "I am absolutely thrilled to apply for this opportunity! ";
+      closing = "With great enthusiasm,\n";
+      break;
+    case "concise":
+      greeting = `Dear ${manager},`;
+      enthusiasm = "I am writing to express my interest in the position. ";
+      closing = "Best regards,\n";
+      break;
+    default:
+      greeting = `Dear ${manager},`;
+      enthusiasm = "";
+      closing = "Sincerely,\n";
+  }
+
+  let letter = `${greeting}
+
+${enthusiasm}I am writing to enthusiastically apply for the ${role} position at ${company}.`;
+
+  if (title && title !== "Professional") {
+    letter += ` As a ${title} with a proven track record, `;
+  }
+
+  letter += ` I bring expertise in ${skills}.`;
+
+  if (summary) {
+    letter += `\n\n${summary.substring(0, 200)}`;
+  }
+
+  if (experience) {
+    letter += `\n\nIn my professional journey, I have ${experience.substring(0, 150)}.`;
+  }
+
+  if (additionalNotes.trim()) {
+    letter += `\n\n${additionalNotes.trim()}`;
+  }
+
+  letter += `\n\nI am particularly drawn to ${company}'s mission and would be honored to contribute to your team's success. My background aligns perfectly with the requirements of the ${role} position, and I am confident that I can deliver immediate value.
+
+Thank you for considering my application. I look forward to the opportunity to discuss how my skills and experiences can benefit ${company}.
+
+${closing}
+${name}
+${email ? `📧 ${email}` : ""}
+${phone ? `📞 ${phone}` : ""}`;
+
+  return letter;
+}
+
+// ============================================================
+// COMPONENTS
+// ============================================================
+
+interface ExperienceCardProps {
+  exp: Experience;
+  expanded: boolean;
+  onToggle: () => void;
+}
+
+function ExperienceCard({ exp, expanded, onToggle }: ExperienceCardProps) {
+  return (
+    <div
+      style={{
+        background: "#fff",
+        border: `1px solid ${THEME.primaryLight}`,
+        borderRadius: 12,
+        overflow: "hidden",
+        marginBottom: 12,
+      }}
+    >
+      <div style={{ padding: "20px 24px" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            marginBottom: 8,
+            flexWrap: "wrap",
+            gap: 8,
+          }}
+        >
+          <div>
+            <h3 style={{ margin: "0 0 4px", fontSize: 16, fontWeight: 700, color: "#111827" }}>
+              {exp.title}
+            </h3>
+            <p style={{ margin: 0, fontSize: 13, color: THEME.primary, fontWeight: 500 }}>
+              {exp.company}
+              {exp.location && ` • ${exp.location}`}
+            </p>
+          </div>
+          {exp.period && (
+            <span
+              style={{
+                fontSize: 12,
+                color: "#9ca3af",
+                display: "flex",
+                alignItems: "center",
+                gap: 4,
+              }}
+            >
+              {exp.period}
+            </span>
+          )}
+        </div>
+
+        {exp.achievements.length > 0 && (
+          <>
+            <button
+              onClick={onToggle}
+              style={{
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                fontSize: 13,
+                color: THEME.primary,
+                fontWeight: 600,
+                padding: "4px 0",
+                display: "flex",
+                alignItems: "center",
+                gap: 4,
+              }}
+            >
+              {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+              {exp.achievements.length} Achievement{exp.achievements.length !== 1 ? "s" : ""}
+            </button>
+
+            {expanded && (
+              <ul style={{ margin: "8px 0 0", paddingLeft: 20 }}>
+                {exp.achievements.map((a, i) => (
+                  <li key={i} style={{ fontSize: 13, color: "#4b5563", marginBottom: 4, lineHeight: 1.6 }}>
+                    {a}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+interface CVPreviewProps {
+  cvData: CVData;
+}
+
+function CVPreview({ cvData }: CVPreviewProps) {
+  const [expandedExpIds, setExpandedExpIds] = useState<Set<string>>(new Set());
+
+  const toggleExpanded = (id: string) => {
+    setExpandedExpIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const SectionTitle = ({ children, icon }: { children: React.ReactNode; icon?: React.ReactNode }) => (
+    <h2
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 10,
+        fontSize: 18,
+        fontWeight: 700,
+        color: "#111827",
+        margin: "0 0 16px",
+      }}
+    >
+      <div style={{ width: 4, height: 22, borderRadius: 2, background: THEME.gradient }} />
+      {icon && <span style={{ color: THEME.primary }}>{icon}</span>}
+      {children}
+    </h2>
+  );
+
+  return (
+    <div
+      style={{
+        background: "#fff",
+        borderRadius: 20,
+        padding: "40px 44px",
+        boxShadow: "0 8px 32px rgba(79,70,229,0.08)",
+        maxWidth: 900,
+        margin: "0 auto",
+      }}
+    >
+      {/* Header */}
+      <div style={{ textAlign: "center", marginBottom: 32 }}>
+        <h1
+          style={{
+            margin: "0 0 6px",
+            fontSize: 36,
+            fontWeight: 800,
+            background: THEME.gradient,
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+          }}
+        >
+          {cvData.personalInfo.fullName || "Your Name"}
+        </h1>
+        {cvData.personalInfo.title && (
+          <p style={{ margin: "0 0 14px", fontSize: 17, color: "#6b7280" }}>
+            {cvData.personalInfo.title}
+          </p>
+        )}
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            gap: 16,
+            fontSize: 13,
+            color: "#6b7280",
+          }}
+        >
+          {cvData.personalInfo.email && (
+            <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
+              <Mail size={13} color={THEME.primary} /> {cvData.personalInfo.email}
+            </span>
+          )}
+          {cvData.personalInfo.phone && (
+            <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
+              <Phone size={13} color={THEME.primary} /> {cvData.personalInfo.phone}
+            </span>
+          )}
+          {cvData.personalInfo.location && (
+            <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
+              <MapPin size={13} color={THEME.primary} /> {cvData.personalInfo.location}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Summary */}
+      {cvData.personalInfo.summary && (
+        <div style={{ marginBottom: 28 }}>
+          <SectionTitle>Professional Summary</SectionTitle>
+          <p style={{ margin: 0, color: "#374151", lineHeight: 1.75, fontSize: 14 }}>
+            {cvData.personalInfo.summary}
+          </p>
+        </div>
+      )}
+
+      {/* Experience */}
+      {cvData.experience.length > 0 && (
+        <div style={{ marginBottom: 28 }}>
+          <SectionTitle icon={<Briefcase size={18} />}>Professional Experience</SectionTitle>
+          {cvData.experience.map((exp) => (
+            <ExperienceCard
+              key={exp.id}
+              exp={exp}
+              expanded={expandedExpIds.has(exp.id)}
+              onToggle={() => toggleExpanded(exp.id)}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Skills */}
+      {cvData.skills.length > 0 && (
+        <div style={{ marginBottom: 28 }}>
+          <SectionTitle>Technical Skills</SectionTitle>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+            {cvData.skills.map((skill) => (
+              <span
+                key={skill.id}
+                style={{
+                  padding: "6px 14px",
+                  borderRadius: 20,
+                  fontSize: 13,
+                  fontWeight: 500,
+                  background: THEME.primaryLight,
+                  color: THEME.primaryDark,
+                }}
+              >
+                {skill.name}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Education */}
+      {cvData.education.length > 0 && (
+        <div style={{ marginBottom: 28 }}>
+          <SectionTitle icon={<GraduationCap size={18} />}>Education</SectionTitle>
+          {cvData.education.map((edu) => (
+            <div
+              key={edu.id}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: "12px 16px",
+                background: "#f9fafb",
+                borderRadius: 10,
+                marginBottom: 8,
+                flexWrap: "wrap",
+                gap: 8,
+              }}
+            >
+              <div>
+                <p style={{ margin: "0 0 2px", fontWeight: 600, fontSize: 14, color: "#111827" }}>
+                  {edu.degree}
+                </p>
+                {edu.institution && (
+                  <p style={{ margin: 0, fontSize: 13, color: "#6b7280" }}>{edu.institution}</p>
+                )}
+              </div>
+              {edu.period && <span style={{ fontSize: 12, color: "#9ca3af" }}>{edu.period}</span>}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ============================================================
+// MAIN COMPONENT
+// ============================================================
+export default function CVGeneratorPage() {
+  // Data sources
+  const [inputMethod, setInputMethod] = useState<"upload" | "manual">("upload");
+  const [file, setFile] = useState<File | null>(null);
+  const [dragActive, setDragActive] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [cvData, setCvData] = useState<CVData | null>(null);
+  const [manualData, setManualData] = useState<ManualFormData>({
+    fullName: "",
+    title: "",
+    email: "",
+    phone: "",
+    location: "",
+    summary: "",
+    skills: "",
+    experience: "",
+    education: "",
+  });
+  const [activeStep, setActiveStep] = useState<"input" | "preview" | "letter">("input");
+  const [error, setError] = useState("");
+  const [coverLetter, setCoverLetter] = useState("");
+  const [generatingLetter, setGeneratingLetter] = useState(false);
+  const [letterForm, setLetterForm] = useState<CoverLetterForm>({
+    companyName: "",
+    jobTitle: "",
+    hiringManager: "",
+    additionalNotes: "",
+    tone: "professional",
+  });
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const ALLOWED_TYPES = [
+    "application/pdf",
+    "application/msword",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "text/plain",
+  ];
+
+  // File handlers
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") setDragActive(true);
+    else if (e.type === "dragleave") setDragActive(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+
+    const droppedFile = e.dataTransfer.files[0];
+    if (droppedFile && ALLOWED_TYPES.includes(droppedFile.type)) {
+      setFile(droppedFile);
+      setError("");
+    } else {
+      setError("Please upload a PDF, DOC, DOCX, or TXT file");
+    }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile && ALLOWED_TYPES.includes(selectedFile.type)) {
+      setFile(selectedFile);
+      setError("");
+    } else if (selectedFile) {
+      setError("Please upload a PDF, DOC, DOCX, or TXT file");
+    }
+  };
+
+  const clearFile = () => {
+    setFile(null);
+    setCvData(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const readFileAsText = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target?.result as string);
+      reader.onerror = (e) => reject(e);
+      reader.readAsText(file);
+    });
+  };
+
+  const processResume = async () => {
+    if (!file) return;
+    setUploading(true);
+    setError("");
+
+    try {
+      const text = await readFileAsText(file);
+      const parsed = parseCVText(text);
+      setCvData(parsed);
+      setActiveStep("preview");
+    } catch (err) {
+      console.error(err);
+      setError("Failed to process resume. Please try again.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleManualSubmit = () => {
+    if (!manualData.fullName) {
+      setError("Please enter your full name");
+      return;
+    }
+    setActiveStep("preview");
+  };
+
+  const handleGenerateLetter = async () => {
+    setGeneratingLetter(true);
+    try {
+      const letter = await generateAICoverLetter(cvData, manualData, letterForm);
+      setCoverLetter(letter);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to generate cover letter");
+    } finally {
+      setGeneratingLetter(false);
+    }
+  };
+
+  const copyCoverLetter = () => {
+    if (coverLetter) {
+      navigator.clipboard.writeText(coverLetter);
+      alert("Cover letter copied to clipboard!");
+    }
+  };
+
+  const resetAll = () => {
+    setFile(null);
+    setCvData(null);
+    setManualData({
+      fullName: "",
+      title: "",
+      email: "",
+      phone: "",
+      location: "",
+      summary: "",
+      skills: "",
+      experience: "",
+      education: "",
+    });
+    setActiveStep("input");
+    setError("");
+    setCoverLetter("");
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #f5f3ff 0%, #ffffff 50%, #eef2ff 100%)",
+        padding: "40px 16px",
+      }}
+    >
+      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        {/* Hero Section */}
+        <div style={{ textAlign: "center", marginBottom: 36 }}>
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              padding: "5px 14px",
+              background: THEME.primaryLight,
+              borderRadius: 100,
+              marginBottom: 14,
+            }}
+          >
+            <Sparkles size={13} color={THEME.primary} />
+            <span style={{ fontSize: 13, fontWeight: 600, color: THEME.primary }}>
+              AI-Powered CV Studio
+            </span>
+          </div>
+          <h1
+            style={{
+              fontSize: "clamp(28px,5vw,44px)",
+              fontWeight: 800,
+              background: THEME.gradient,
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+              margin: "0 0 10px",
+              lineHeight: 1.2,
+            }}
+          >
+            Resume + Cover Letter Generator
+          </h1>
+          <p style={{ color: "#6b7280", fontSize: 15, maxWidth: 520, margin: "0 auto" }}>
+            Upload your resume or enter details manually, then generate a personalized AI cover letter
+          </p>
+        </div>
+
+        {/* Main Card */}
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: 28,
+            border: "1px solid #f0f0f0",
+            boxShadow: "0 20px 40px rgba(79,70,229,0.08)",
+            overflow: "hidden",
+          }}
+        >
+          {/* INPUT STEP */}
+          {activeStep === "input" && (
+            <div style={{ padding: 36 }}>
+              {/* Toggle between upload and manual input */}
+              <div
+                style={{
+                  display: "flex",
+                  gap: 12,
+                  marginBottom: 32,
+                  background: "#f9fafb",
+                  padding: 6,
+                  borderRadius: 60,
+                }}
+              >
+                <button
+                  onClick={() => setInputMethod("upload")}
+                  style={{
+                    flex: 1,
+                    padding: "12px 20px",
+                    borderRadius: 50,
+                    border: "none",
+                    background: inputMethod === "upload" ? THEME.gradient : "transparent",
+                    color: inputMethod === "upload" ? "#fff" : "#6b7280",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8,
+                    transition: "all 0.2s",
+                  }}
+                >
+                  <FileUp size={18} /> Upload Resume
+                </button>
+                <button
+                  onClick={() => setInputMethod("manual")}
+                  style={{
+                    flex: 1,
+                    padding: "12px 20px",
+                    borderRadius: 50,
+                    border: "none",
+                    background: inputMethod === "manual" ? THEME.gradient : "transparent",
+                    color: inputMethod === "manual" ? "#fff" : "#6b7280",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8,
+                  }}
+                >
+                  <UserCircle size={18} /> Enter Manually
+                </button>
+              </div>
+
+              {inputMethod === "upload" ? (
+                // Upload UI
+                <div>
+                  <div
+                    onDragEnter={handleDrag}
+                    onDragLeave={handleDrag}
+                    onDragOver={handleDrag}
+                    onDrop={handleDrop}
+                    onClick={() => fileInputRef.current?.click()}
+                    style={{
+                      border: `2px dashed ${dragActive ? THEME.primary : file ? "#22c55e" : "#e5e7eb"}`,
+                      borderRadius: 20,
+                      padding: "52px 32px",
+                      textAlign: "center",
+                      background: dragActive ? `${THEME.primary}06` : file ? "#f0fdf4" : "#fafafa",
+                      transition: "all .25s",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept=".pdf,.doc,.docx,.txt"
+                      style={{ display: "none" }}
+                      onChange={handleFileSelect}
+                    />
+
+                    {!file ? (
+                      <>
+                        <div
+                          style={{
+                            width: 80,
+                            height: 80,
+                            borderRadius: 24,
+                            background: THEME.primaryLight,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            margin: "0 auto 20px",
+                          }}
+                        >
+                          <UploadCloud size={36} color={THEME.primary} />
+                        </div>
+                        <p style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", margin: "0 0 8px" }}>
+                          Drag & Drop Your Resume
+                        </p>
+                        <p style={{ color: "#9ca3af", fontSize: 14 }}>
+                          or <span style={{ color: THEME.primary, fontWeight: 600 }}>browse files</span>
+                        </p>
+                        <div style={{ display: "flex", gap: 8, justifyContent: "center", marginTop: 20 }}>
+                          {["PDF", "DOC", "DOCX", "TXT"].map((f) => (
+                            <span
+                              key={f}
+                              style={{
+                                padding: "4px 12px",
+                                background: "#f3f4f6",
+                                borderRadius: 6,
+                                fontSize: 12,
+                                color: "#6b7280",
+                                fontWeight: 600,
+                              }}
+                            >
+                              {f}
+                            </span>
+                          ))}
+                        </div>
+                      </>
+                    ) : (
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                          <div
+                            style={{
+                              width: 56,
+                              height: 56,
+                              background: THEME.primaryLight,
+                              borderRadius: 14,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <FileText size={26} color={THEME.primary} />
+                          </div>
+                          <div style={{ textAlign: "left" }}>
+                            <p style={{ fontWeight: 700, color: "#0f172a", margin: "0 0 4px", fontSize: 15 }}>
+                              {file.name}
+                            </p>
+                            <p style={{ color: "#6b7280", margin: 0, fontSize: 13 }}>
+                              {(file.size / 1024).toFixed(1)} KB ·{" "}
+                              <span style={{ color: "#22c55e", fontWeight: 600 }}>✓ Ready</span>
+                            </p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            clearFile();
+                          }}
+                          style={{
+                            background: "#fee2e2",
+                            border: "none",
+                            borderRadius: 8,
+                            padding: 8,
+                            cursor: "pointer",
+                          }}
+                        >
+                          <X size={16} color="#ef4444" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {error && (
+                    <div
+                      style={{
+                        marginTop: 14,
+                        padding: "10px 16px",
+                        background: "#fee2e2",
+                        borderRadius: 10,
+                        color: "#b91c1c",
+                        fontSize: 13,
+                      }}
+                    >
+                      ⚠️ {error}
+                    </div>
+                  )}
+
+                  {file && !uploading && (
+                    <button
+                      onClick={processResume}
+                      style={{
+                        marginTop: 20,
+                        width: "100%",
+                        padding: "16px",
+                        background: THEME.gradient,
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: 14,
+                        fontSize: 16,
+                        fontWeight: 700,
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: 10,
+                      }}
+                    >
+                      <Wand2 size={20} /> Parse & Continue <ArrowRight size={18} />
+                    </button>
+                  )}
+
+                  {uploading && (
+                    <div style={{ marginTop: 24, textAlign: "center" }}>
+                      <div
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 10,
+                          padding: "10px 20px",
+                          background: THEME.primaryLight,
+                          borderRadius: 100,
+                        }}
+                      >
+                        <Loader2 size={18} color={THEME.primary} style={{ animation: "spin 1s linear infinite" }} />
+                        <span style={{ fontSize: 14, fontWeight: 500, color: "#374151" }}>
+                          Parsing your resume...
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                // Manual Input UI
+                <div>
+                  <h3 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", marginBottom: 20, display: "flex", alignItems: "center", gap: 8 }}>
+                    <User size={20} color={THEME.primary} /> Enter Your Details
+                  </h3>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+                    <input
+                      type="text"
+                      placeholder="Full Name *"
+                      value={manualData.fullName}
+                      onChange={(e) => setManualData({ ...manualData, fullName: e.target.value })}
+                      style={{ padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14 }}
+                    />
+                    <input
+                      type="text"
+                      placeholder="Professional Title"
+                      value={manualData.title}
+                      onChange={(e) => setManualData({ ...manualData, title: e.target.value })}
+                      style={{ padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14 }}
+                    />
+                    <input
+                      type="email"
+                      placeholder="Email"
+                      value={manualData.email}
+                      onChange={(e) => setManualData({ ...manualData, email: e.target.value })}
+                      style={{ padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14 }}
+                    />
+                    <input
+                      type="text"
+                      placeholder="Phone"
+                      value={manualData.phone}
+                      onChange={(e) => setManualData({ ...manualData, phone: e.target.value })}
+                      style={{ padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14 }}
+                    />
+                    <input
+                      type="text"
+                      placeholder="Location (City, State)"
+                      value={manualData.location}
+                      onChange={(e) => setManualData({ ...manualData, location: e.target.value })}
+                      style={{ padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14 }}
+                    />
+                  </div>
+                  <textarea
+                    placeholder="Professional Summary (2-3 sentences about yourself)"
+                    value={manualData.summary}
+                    onChange={(e) => setManualData({ ...manualData, summary: e.target.value })}
+                    rows={3}
+                    style={{ width: "100%", marginTop: 16, padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14, resize: "vertical" }}
+                  />
+                  <textarea
+                    placeholder="Key Skills (comma separated, e.g., JavaScript, Project Management, Data Analysis)"
+                    value={manualData.skills}
+                    onChange={(e) => setManualData({ ...manualData, skills: e.target.value })}
+                    rows={2}
+                    style={{ width: "100%", marginTop: 16, padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14, resize: "vertical" }}
+                  />
+                  <textarea
+                    placeholder="Work Experience (key achievements and responsibilities)"
+                    value={manualData.experience}
+                    onChange={(e) => setManualData({ ...manualData, experience: e.target.value })}
+                    rows={3}
+                    style={{ width: "100%", marginTop: 16, padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14, resize: "vertical" }}
+                  />
+
+                  {error && (
+                    <div style={{ marginTop: 14, padding: "10px 16px", background: "#fee2e2", borderRadius: 10, color: "#b91c1c", fontSize: 13 }}>
+                      ⚠️ {error}
+                    </div>
+                  )}
+
+                  <button
+                    onClick={handleManualSubmit}
+                    style={{
+                      marginTop: 20,
+                      width: "100%",
+                      padding: "16px",
+                      background: THEME.gradient,
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: 14,
+                      fontSize: 16,
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 10,
+                    }}
+                  >
+                    Continue to Preview <ArrowRight size={18} />
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* PREVIEW STEP */}
+          {activeStep === "preview" && (cvData || manualData.fullName) && (
+            <div>
+              <div
+                style={{
+                  borderBottom: "1px solid #f0f0f0",
+                  padding: "14px 24px",
+                  background: "#fafafa",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  flexWrap: "wrap",
+                  gap: 12,
+                }}
+              >
+                <span style={{ fontSize: 13, fontWeight: 600, color: "#374151" }}>
+                  {cvData ? "📄 CV Extracted from Resume" : "✏️ Manually Entered Profile"}
+                </span>
+                <button
+                  onClick={() => setActiveStep("letter")}
+                  style={{
+                    padding: "10px 24px",
+                    background: THEME.gradient,
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: 40,
+                    fontSize: 14,
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                  }}
+                >
+                  Generate Cover Letter <ArrowRight size={16} />
+                </button>
+              </div>
+              <div style={{ padding: 32, background: "#f9fafb" }}>
+                {cvData ? (
+                  <CVPreview cvData={cvData} />
+                ) : (
+                  <div style={{ background: "#fff", borderRadius: 20, padding: 40, textAlign: "center" }}>
+                    <h2 style={{ fontSize: 24, fontWeight: 700, color: "#0f172a" }}>{manualData.fullName}</h2>
+                    {manualData.title && <p style={{ color: THEME.primary, fontWeight: 500 }}>{manualData.title}</p>}
+                    <div style={{ display: "flex", justifyContent: "center", gap: 16, marginTop: 12, flexWrap: "wrap" }}>
+                      {manualData.email && <span><Mail size={14} /> {manualData.email}</span>}
+                      {manualData.phone && <span><Phone size={14} /> {manualData.phone}</span>}
+                      {manualData.location && <span><MapPin size={14} /> {manualData.location}</span>}
+                    </div>
+                    {manualData.summary && <p style={{ marginTop: 24, textAlign: "left" }}><strong>Summary:</strong> {manualData.summary}</p>}
+                    {manualData.skills && <p style={{ marginTop: 16, textAlign: "left" }}><strong>Skills:</strong> {manualData.skills}</p>}
+                    {manualData.experience && <p style={{ marginTop: 16, textAlign: "left" }}><strong>Experience:</strong> {manualData.experience}</p>}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* COVER LETTER STEP */}
+          {activeStep === "letter" && (
+            <div style={{ padding: 32 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 32 }}>
+                {/* Left Panel */}
+                <div>
+                  <h3 style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", marginBottom: 20, display: "flex", alignItems: "center", gap: 8 }}>
+                    <Edit3 size={20} color={THEME.primary} /> Customize Your Letter
+                  </h3>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+                    <div>
+                      <label style={{ fontWeight: 600, fontSize: 14, color: "#374151", display: "block", marginBottom: 6 }}>
+                        <Building size={14} style={{ display: "inline", marginRight: 6 }} /> Company Name
+                      </label>
+                      <input
+                        type="text"
+                        value={letterForm.companyName}
+                        onChange={(e) => setLetterForm({ ...letterForm, companyName: e.target.value })}
+                        placeholder="e.g., Google, Microsoft, Startup X"
+                        style={{ width: "100%", padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14 }}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ fontWeight: 600, fontSize: 14, color: "#374151", display: "block", marginBottom: 6 }}>
+                        <Target size={14} style={{ display: "inline", marginRight: 6 }} /> Job Title / Role
+                      </label>
+                      <input
+                        type="text"
+                        value={letterForm.jobTitle}
+                        onChange={(e) => setLetterForm({ ...letterForm, jobTitle: e.target.value })}
+                        placeholder="e.g., Frontend Engineer, Product Manager"
+                        style={{ width: "100%", padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14 }}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ fontWeight: 600, fontSize: 14, color: "#374151", display: "block", marginBottom: 6 }}>
+                        <User size={14} style={{ display: "inline", marginRight: 6 }} /> Hiring Manager Name (optional)
+                      </label>
+                      <input
+                        type="text"
+                        value={letterForm.hiringManager}
+                        onChange={(e) => setLetterForm({ ...letterForm, hiringManager: e.target.value })}
+                        placeholder="e.g., Sarah Johnson"
+                        style={{ width: "100%", padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14 }}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ fontWeight: 600, fontSize: 14, color: "#374151", display: "block", marginBottom: 6 }}>
+                        Tone
+                      </label>
+                      <select
+                        value={letterForm.tone}
+                        onChange={(e) => setLetterForm({ ...letterForm, tone: e.target.value as CoverLetterForm["tone"] })}
+                        style={{ width: "100%", padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14, background: "#fff" }}
+                      >
+                        <option value="professional">Professional & Formal</option>
+                        <option value="enthusiastic">Enthusiastic & Energetic</option>
+                        <option value="concise">Concise & Direct</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label style={{ fontWeight: 600, fontSize: 14, color: "#374151", display: "block", marginBottom: 6 }}>
+                        Additional Notes (optional)
+                      </label>
+                      <textarea
+                        rows={4}
+                        value={letterForm.additionalNotes}
+                        onChange={(e) => setLetterForm({ ...letterForm, additionalNotes: e.target.value })}
+                        placeholder="Mention specific achievements, projects, or why you're interested..."
+                        style={{ width: "100%", padding: "12px 16px", borderRadius: 12, border: `1px solid ${THEME.primaryLight}`, fontSize: 14, resize: "vertical" }}
+                      />
+                    </div>
+                    <button
+                      onClick={handleGenerateLetter}
+                      disabled={generatingLetter}
+                      style={{
+                        background: generatingLetter ? "#e5e7eb" : THEME.gradient,
+                        color: generatingLetter ? "#9ca3af" : "#fff",
+                        border: "none",
+                        borderRadius: 40,
+                        padding: "14px",
+                        fontSize: 15,
+                        fontWeight: 700,
+                        cursor: generatingLetter ? "not-allowed" : "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: 8,
+                        marginTop: 8,
+                      }}
+                    >
+                      {generatingLetter ? (
+                        <><Loader2 size={18} style={{ animation: "spin 1s linear infinite" }} /> Generating...</>
+                      ) : (
+                        <><Sparkles size={18} /> Generate AI Cover Letter</>
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Right Panel */}
+                <div>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+                    <h3 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a" }}>📄 Your Cover Letter</h3>
+                    {coverLetter && (
+                      <button
+                        onClick={copyCoverLetter}
+                        style={{
+                          background: "none",
+                          border: `1px solid ${THEME.primaryLight}`,
+                          borderRadius: 40,
+                          padding: "6px 14px",
+                          fontSize: 12,
+                          fontWeight: 500,
+                          color: THEME.primary,
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 6,
+                        }}
+                      >
+                        <Copy size={14} /> Copy
+                      </button>
+                    )}
+                  </div>
+                  <div
+                    style={{
+                      background: "linear-gradient(135deg, #faf5ff 0%, #ffffff 100%)",
+                      borderRadius: 20,
+                      padding: 28,
+                      border: `1px solid ${THEME.primaryLight}`,
+                      minHeight: 450,
+                      maxHeight: 550,
+                      overflowY: "auto",
+                    }}
+                  >
+                    {coverLetter ? (
+                      <div style={{ whiteSpace: "pre-wrap", lineHeight: 1.7, fontSize: 14, color: "#1f2937" }}>
+                        {coverLetter}
+                      </div>
+                    ) : (
+                      <div style={{ textAlign: "center", color: "#9ca3af", padding: "60px 20px" }}>
+                        <Wand2 size={40} style={{ marginBottom: 16, opacity: 0.5, color: THEME.primary }} />
+                        <p>Click "Generate AI Cover Letter" above</p>
+                        <p style={{ fontSize: 13, marginTop: 8 }}>Your personalized letter will appear here</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ marginTop: 32, display: "flex", justifyContent: "center", gap: 16 }}>
+                <button
+                  onClick={() => setActiveStep("preview")}
+                  style={{ background: "none", border: `1px solid ${THEME.primaryLight}`, borderRadius: 40, padding: "10px 24px", cursor: "pointer", color: "#6b7280" }}
+                >
+                  ← Back to Profile
+                </button>
+                <button
+                  onClick={resetAll}
+                  style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af", fontSize: 13 }}
+                >
+                  Start Over
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
+    </div>
+  );
+}

@@ -1,3 +1,23 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // "use client";
 
 // import React, { useState, useEffect } from "react";
@@ -145,9 +165,9 @@
 //         animate={{ scale: 1, y: 0 }}
 //         className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 relative overflow-hidden"
 //       >
-//         <div className="absolute inset-0 bg-linear-to-br from-[#c40116]/5 via-transparent to-[#be0117]/5" />
-//         <div className="absolute top-0 right-0 w-64 h-64 bg-[#c40116]/10 rounded-full blur-3xl -translate-y-32 translate-x-32 animate-pulse" />
-//         <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#be0117]/10 rounded-full blur-3xl translate-y-32 -translate-x-32 animate-pulse delay-1000" />
+//         <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-indigo-600/5" />
+//         <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-100 rounded-full blur-3xl -translate-y-32 translate-x-32 animate-pulse" />
+//         <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-100 rounded-full blur-3xl translate-y-32 -translate-x-32 animate-pulse delay-1000" />
 
 //         <div className="relative z-10">
 //           <motion.div
@@ -156,7 +176,7 @@
 //               rotate: [0, 360, 360],
 //             }}
 //             transition={{ duration: 3, repeat: Infinity }}
-//             className="w-24 h-24 mx-auto mb-6 bg-linear-to-br from-[#c40116] to-[#be0117] rounded-2xl flex items-center justify-center shadow-xl"
+//             className="w-24 h-24 mx-auto mb-6 bg-gradient-to-r from-indigo-600 to-indigo-500 rounded-2xl flex items-center justify-center shadow-xl"
 //           >
 //             <CurrentIcon className="w-12 h-12 text-white" />
 //           </motion.div>
@@ -172,13 +192,13 @@
 //             <motion.div
 //               initial={{ width: 0 }}
 //               animate={{ width: `${progress}%` }}
-//               className="absolute inset-0 bg-linear-to-r from-[#c40116] to-[#be0117] rounded-full"
+//               className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-indigo-500 rounded-full"
 //             />
 //           </div>
 
 //           <div className="flex justify-between items-center text-sm">
 //             <span className="text-gray-500">Processing...</span>
-//             <span className="font-semibold text-[#c40116]">{progress}%</span>
+//             <span className="font-semibold text-indigo-600">{progress}%</span>
 //           </div>
 
 //           <div className="flex justify-center gap-2 mt-6">
@@ -187,7 +207,7 @@
 //                 key={i}
 //                 animate={{ y: [0, -10, 0] }}
 //                 transition={{ duration: 0.6, delay: i * 0.2, repeat: Infinity }}
-//                 className="w-2 h-2 rounded-full bg-[#c40116]"
+//                 className="w-2 h-2 rounded-full bg-indigo-600"
 //               />
 //             ))}
 //           </div>
@@ -218,7 +238,7 @@
 // }) => {
 //   return (
 //     <div className="relative">
-//       <div className="absolute inset-0 bg-linear-to-r from-[#c40116]/5 via-transparent to-[#be0117]/5 rounded-2xl blur-xl" />
+//       <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/5 via-transparent to-indigo-600/5 rounded-2xl blur-xl" />
 //       <div className="relative bg-white/80 backdrop-blur-sm rounded-2xl p-1.5 border border-gray-100 shadow-sm">
 //         <div className="flex gap-1">
 //           {tabs.map((tab) => {
@@ -238,7 +258,7 @@
 //                 {isActive && (
 //                   <motion.div
 //                     layoutId="activeTab"
-//                     className="absolute inset-0 bg-linear-to-r from-[#c40116] to-[#be0117] rounded-xl shadow-lg"
+//                     className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-indigo-500 rounded-xl shadow-lg"
 //                     transition={{ type: "spring", duration: 0.5 }}
 //                   />
 //                 )}
@@ -271,7 +291,7 @@
 //   verdict,
 // }) => {
 //   return (
-//     <div className="relative overflow-hidden bg-linear-to-r from-[#c40116] to-[#be0117] rounded-3xl p-8 text-white shadow-2xl">
+//     <div className="relative overflow-hidden bg-gradient-to-r from-indigo-600 to-indigo-500 rounded-3xl p-8 text-white shadow-2xl">
 //       <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-y-48 translate-x-48" />
 //       <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl translate-y-48 -translate-x-48" />
 
@@ -280,7 +300,7 @@
 //           <div className="text-sm font-medium text-white/80 mb-2 tracking-wider">
 //             OVERALL ATS SCORE
 //           </div>
-//           <div className="text-5xl font-bold mb-4 bg-linear-to-r from-white to-white/80 bg-clip-text text-transparent">
+//           <div className="text-5xl font-bold mb-4 bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
 //             {score}%
 //           </div>
 //           <div className="w-80 h-3 bg-white/20 rounded-full overflow-hidden">
@@ -321,7 +341,7 @@
 // }
 
 // const ModernMetricGrid: React.FC<ModernMetricGridProps> = ({ metrics }) => {
-//   const getlinear = (score: number) => {
+//   const getGradient = (score: number) => {
 //     if (score >= 80) return "from-emerald-500 to-green-500";
 //     if (score >= 60) return "from-blue-500 to-cyan-500";
 //     if (score >= 40) return "from-yellow-500 to-orange-500";
@@ -331,7 +351,7 @@
 //   return (
 //     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
 //       {metrics.map((metric, index) => {
-//         const linear = getlinear(metric.value);
+//         const gradient = getGradient(metric.value);
 //         const Icon = metric.icon;
 
 //         return (
@@ -342,12 +362,10 @@
 //             transition={{ delay: index * 0.1 }}
 //             className="group relative"
 //           >
-//             <div className="absolute inset-0 bg-linear-to-r from-[#c40116]/10 to-[#be0117]/10 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-//             <div className="relative bg-white rounded-2xl p-6 border border-gray-100 hover:border-[#c40116]/20 transition-all duration-300 hover:shadow-xl">
+//             <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-indigo-600/10 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+//             <div className="relative bg-white rounded-2xl p-6 border border-gray-100 hover:border-indigo-200 transition-all duration-300 hover:shadow-xl">
 //               <div className="flex items-center justify-between mb-4">
-//                 <div
-//                   className={`p-3 rounded-xl bg-linear-to-br ${linear} shadow-lg`}
-//                 >
+//                 <div className={`p-3 rounded-xl bg-gradient-to-r ${gradient} shadow-lg`}>
 //                   <Icon className="w-5 h-5 text-white" />
 //                 </div>
 //                 <div className="text-2xl font-semibold text-gray-900">
@@ -362,7 +380,7 @@
 //                   initial={{ width: 0 }}
 //                   animate={{ width: `${metric.value}%` }}
 //                   transition={{ duration: 0.8, delay: 0.2 + index * 0.1 }}
-//                   className={`h-full rounded-full bg-linear-to-r ${linear}`}
+//                   className={`h-full rounded-full bg-gradient-to-r ${gradient}`}
 //                 />
 //               </div>
 //             </div>
@@ -385,10 +403,10 @@
 // }) => {
 //   return (
 //     <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500">
-//       <div className="p-6 border-b border-gray-100 bg-linear-to-r from-gray-50 to-white">
+//       <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
 //         <div className="flex items-center gap-3">
-//           <div className="p-2.5 bg-linear-to-br from-[#c40116]/10 to-[#be0117]/10 rounded-xl">
-//             <HiOutlineSparkles className="w-5 h-5 text-[#c40116]" />
+//           <div className="p-2.5 bg-indigo-100 rounded-xl">
+//             <HiOutlineSparkles className="w-5 h-5 text-indigo-600" />
 //           </div>
 //           <div>
 //             <h3 className="text-lg font-semibold text-gray-900">
@@ -420,14 +438,14 @@
 //           animate={{ opacity: 1, x: 0 }}
 //           className="relative pl-6"
 //         >
-//           <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-linear-to-b from-[#c40116] to-[#be0117] rounded-full" />
+//           <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-gradient-to-b from-indigo-600 to-indigo-500 rounded-full" />
 //           <div className="space-y-2">
 //             <div className="flex items-center gap-2">
-//               <div className="w-2 h-2 rounded-full bg-[#c40116] animate-pulse" />
-//               <span className="text-xs font-bold text-[#c40116] uppercase tracking-wider">
+//               <div className="w-2 h-2 rounded-full bg-indigo-600 animate-pulse" />
+//               <span className="text-xs font-bold text-indigo-600 uppercase tracking-wider">
 //                 AI Enhanced
 //               </span>
-//               <span className="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
+//               <span className="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">
 //                 +42% Impact
 //               </span>
 //             </div>
@@ -527,11 +545,11 @@
 //       className="mt-8"
 //     >
 //       <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
-//         <div className="p-6 bg-linear-to-r from-gray-50 to-white border-b border-gray-200">
+//         <div className="p-6 bg-gradient-to-r from-gray-50 to-white border-b border-gray-200">
 //           <div className="flex items-center justify-between flex-wrap gap-4">
 //             <div className="flex items-center gap-3">
-//               <div className="p-2.5 bg-linear-to-br from-[#c40116]/10 to-[#be0117]/10 rounded-xl">
-//                 <FiAlertCircle className="w-5 h-5 text-[#c40116]" />
+//               <div className="p-2.5 bg-indigo-100 rounded-xl">
+//                 <FiAlertCircle className="w-5 h-5 text-indigo-600" />
 //               </div>
 //               <div>
 //                 <h4 className="text-lg font-semibold text-gray-900">
@@ -658,7 +676,7 @@
 
 //                                 {issue.suggestion && (
 //                                   <div className="flex items-start gap-2 p-3 bg-white rounded-lg border border-gray-100 shadow-sm">
-//                                     <HiOutlineSparkles className="w-4 h-4 text-[#c40116] mt-0.5 shrink-0" />
+//                                     <HiOutlineSparkles className="w-4 h-4 text-indigo-600 mt-0.5 shrink-0" />
 //                                     <p className="text-sm text-gray-600">
 //                                       <span className="font-semibold">
 //                                         Suggestion:
@@ -713,8 +731,8 @@
 
 //   const getGradeColor = (grade?: string): string => {
 //     const colors: Record<string, string> = {
-//       A: "text-green-600 bg-green-100",
-//       "A+": "text-green-600 bg-green-100",
+//       A: "text-emerald-600 bg-emerald-100",
+//       "A+": "text-emerald-600 bg-emerald-100",
 //       B: "text-blue-600 bg-blue-100",
 //       "B+": "text-blue-600 bg-blue-100",
 //       C: "text-yellow-600 bg-yellow-100",
@@ -727,14 +745,14 @@
 
 //   const getScoreColor = (score?: number): string => {
 //     if (!score) return "text-gray-600";
-//     if (score >= 70) return "text-green-600";
+//     if (score >= 70) return "text-emerald-600";
 //     if (score >= 40) return "text-yellow-600";
 //     return "text-red-600";
 //   };
 
 //   const getProgressColor = (score?: number): string => {
 //     if (!score) return "bg-gray-500";
-//     if (score >= 70) return "bg-green-500";
+//     if (score >= 70) return "bg-emerald-500";
 //     if (score >= 40) return "bg-yellow-500";
 //     return "bg-red-500";
 //   };
@@ -770,7 +788,7 @@
 //     }
 //     return {
 //       text: "Good",
-//       color: "bg-green-100 text-green-700",
+//       color: "bg-emerald-100 text-emerald-700",
 //       icon: FiCheckCircle,
 //     };
 //   };
@@ -783,15 +801,15 @@
 //       return (
 //         <div
 //           key={idx}
-//           className="flex items-start gap-2 p-2 hover:bg-green-50 rounded-lg transition-colors"
+//           className="flex items-start gap-2 p-2 hover:bg-emerald-50 rounded-lg transition-colors"
 //         >
-//           <FiCheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0" />
+//           <FiCheckCircle className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
 //           <div className="flex-1">
 //             <p className="text-sm text-gray-700">
 //               {win.action || JSON.stringify(win)}
 //             </p>
 //             {win.estimated_gain && (
-//               <span className="text-xs text-green-600 mt-1 inline-block">
+//               <span className="text-xs text-emerald-600 mt-1 inline-block">
 //                 +{win.estimated_gain}
 //               </span>
 //             )}
@@ -802,9 +820,9 @@
 //     return (
 //       <div
 //         key={idx}
-//         className="flex items-start gap-2 p-2 hover:bg-green-50 rounded-lg transition-colors"
+//         className="flex items-start gap-2 p-2 hover:bg-emerald-50 rounded-lg transition-colors"
 //       >
-//         <FiCheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0" />
+//         <FiCheckCircle className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
 //         <span className="text-sm text-gray-700">{win}</span>
 //       </div>
 //     );
@@ -881,7 +899,7 @@
 //             {/* Accordion Header */}
 //             <button
 //               onClick={() => toggleSection(sectionName)}
-//               className="w-full text-left px-5 py-4 bg-linear-to-r from-gray-50 to-white hover:from-gray-100 hover:to-gray-50 transition-all duration-300"
+//               className="w-full text-left px-5 py-4 bg-gradient-to-r from-gray-50 to-white hover:from-gray-100 hover:to-gray-50 transition-all duration-300"
 //             >
 //               <div className="flex items-center justify-between">
 //                 <div className="flex items-center gap-3">
@@ -984,12 +1002,12 @@
 //                       sectionData.quick_wins.length > 0 && (
 //                         <div>
 //                           <div className="flex items-center gap-2 mb-3">
-//                             <FiThumbsUp className="w-4 h-4 text-green-600" />
+//                             <FiThumbsUp className="w-4 h-4 text-emerald-600" />
 //                             <span className="text-xs font-semibold text-gray-700 uppercase tracking-wider">
 //                               Quick Wins ({sectionData.quick_wins.length})
 //                             </span>
 //                           </div>
-//                           <div className="space-y-1 bg-green-50/30 rounded-lg p-2 max-h-48 overflow-y-auto">
+//                           <div className="space-y-1 bg-emerald-50/30 rounded-lg p-2 max-h-48 overflow-y-auto">
 //                             {sectionData.quick_wins.map((win, idx) =>
 //                               renderQuickWin(win, idx),
 //                             )}
@@ -1079,8 +1097,7 @@
 //     "overview",
 //   );
 
-//     usePreventReload()
-
+//   usePreventReload();
 
 //   useEffect(() => {
 //     if (file && !uploading && !loading) {
@@ -1135,7 +1152,6 @@
 //       console.error(error);
 //     } finally {
 //       setUploading(false);
-//       // setLoading(false);
 //       setTimeout(() => {
 //         setLoading(false);
 //       }, 3000);
@@ -1192,8 +1208,8 @@
 //       <AnimatePresence>{loading && <LoadingScreen />}</AnimatePresence>
 
 //       <section className="relative pt-28 pb-20 overflow-hidden">
-//         <div className="absolute inset-0 bg-linear-to-br from-[#c40116]/5 via-transparent to-[#be0117]/5" />
-//         <div className="absolute top-20 left-10 w-96 h-96 bg-[#c40116]/10 rounded-full blur-3xl animate-pulse" />
+//         {/* <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-indigo-600/5" /> */}
+//         {/* <div className="absolute top-20 left-10 w-96 h-96 bg-indigo-100 rounded-full blur-3xl animate-pulse" /> */}
 
 //         <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
 //           <motion.div
@@ -1206,34 +1222,32 @@
 //               initial={{ scale: 0.9, opacity: 0 }}
 //               animate={{ scale: 1, opacity: 1 }}
 //               transition={{ delay: 0.2 }}
-//               className="inline-flex items-center gap-2 px-4 py-2 bg-linear-to-r from-[#c40116]/10 to-[#be0117]/10 rounded-full mb-6 border border-[#c40116]/20 backdrop-blur-sm"
+//               className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-100 rounded-full mb-6 border border-indigo-200 backdrop-blur-sm"
 //             >
-//               <FaBrain className="w-4 h-4 text-[#c40116]" />
-//               <span className="text-sm font-medium bg-linear-to-r from-[#c40116] to-[#be0117] bg-clip-text text-transparent">
+//               <FaBrain className="w-4 h-4 text-indigo-600" />
+//               <span className="text-sm font-medium text-indigo-700">
 //                 AI-Powered ATS Checker
 //               </span>
-//               <HiOutlineSparkles className="w-3 h-3 text-[#c40116]" />
+//               <HiOutlineSparkles className="w-3 h-3 text-indigo-600" />
 //             </motion.div>
 
 //             <motion.h1
 //               variants={fadeInUp}
-//               className="text-5xl md:text-6xl font-bold mb-6"
+//               className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6"
 //             >
-//               <span className="bg-linear-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent">
-//                 Optimize Your Resume
-//               </span>
+//               <span className="text-gray-900">Optimize Your Resume</span>
 //               <br />
-//               <span className="bg-linear-to-b from-black to-red-500 bg-clip-text text-transparent">
+//               <span className="bg-gradient-to-r from-indigo-600 to-indigo-500 bg-clip-text text-transparent">
 //                 From Applied to Interviewed
 //               </span>
 //             </motion.h1>
 
 //             <motion.p
 //               variants={fadeInUp}
-//               className="text-lg text-gray-600 mb-10 max-w-2xl mx-auto"
+//               className="text-lg text-gray-500 mb-10 max-w-2xl mx-auto"
 //             >
 //               Most resumes get rejected before HR even sees them. Upload yours
-//               and let AI fix what’s stopping you from getting shortlisted.
+//               and let AI fix what's stopping you from getting shortlisted.
 //             </motion.p>
 //           </motion.div>
 
@@ -1254,15 +1268,14 @@
 //                     onDrop={handleDrop}
 //                     className={`relative border-2 border-dashed rounded-2xl p-10 transition-all duration-300 ${
 //                       dragActive
-//                         ? "border-[#c40116] bg-[#c40116]/5 scale-[1.02]"
-//                         : "border-gray-200 hover:border-[#c40116]/30 hover:bg-gray-50/50"
+//                         ? "border-indigo-500 bg-indigo-50 scale-[1.02]"
+//                         : "border-gray-200 hover:border-indigo-300 hover:bg-gray-50/50"
 //                     }`}
 //                   >
 //                     <input
 //                       type="file"
 //                       id="resume-upload"
 //                       className="hidden"
-//                       // accept=".pdf,.doc,.docx"
 //                       accept=".pdf"
 //                       onChange={handleFileChange}
 //                     />
@@ -1271,9 +1284,9 @@
 //                       <motion.div
 //                         animate={{ y: [0, -10, 0], scale: [1, 1.05, 1] }}
 //                         transition={{ repeat: Infinity, duration: 3 }}
-//                         className="inline-flex p-6 bg-linear-to-br from-[#c40116]/10 to-[#be0117]/10 rounded-2xl mb-6"
+//                         className="inline-flex p-6 bg-indigo-100 rounded-2xl mb-6"
 //                       >
-//                         <FiUpload className="w-9 h-9 text-[#c40116]" />
+//                         <FiUpload className="w-9 h-9 text-indigo-600" />
 //                       </motion.div>
 
 //                       <h3 className="text-2xl font-bold text-gray-900 mb-2">
@@ -1283,7 +1296,7 @@
 //                         Drag & drop or{" "}
 //                         <label
 //                           htmlFor="resume-upload"
-//                           className="text-[#c40116] font-semibold cursor-pointer hover:underline"
+//                           className="text-indigo-600 font-semibold cursor-pointer hover:underline"
 //                         >
 //                           browse
 //                         </label>
@@ -1298,7 +1311,7 @@
 //                       <div className="space-y-4">
 //                         <label
 //                           htmlFor="resume-upload"
-//                           className="inline-flex items-center gap-3 px-8 py-4 bg-linear-to-r from-[#c40116] to-[#be0117] text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all cursor-pointer hover:scale-105"
+//                           className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all cursor-pointer hover:scale-105"
 //                         >
 //                           <FiUpload className="w-5 h-5" />
 //                           Choose File
@@ -1311,11 +1324,11 @@
 //               </div>
 //             ) : (
 //               <div className="bg-white max-w-5xl mx-auto rounded-3xl shadow-2xl border border-gray-100 overflow-hidden">
-//                 <div className="border-b border-gray-100 bg-linear-to-r from-gray-50 to-white px-6 py-4">
+//                 <div className="border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white px-6 py-4">
 //                   <div className="flex items-center justify-between">
 //                     <div className="flex items-center gap-3">
-//                       <div className="p-2 bg-linear-to-br from-[#c40116]/10 to-[#be0117]/10 rounded-xl">
-//                         <FiFileText className="w-5 h-5 text-[#c40116]" />
+//                       <div className="p-2 bg-indigo-100 rounded-xl">
+//                         <FiFileText className="w-5 h-5 text-indigo-600" />
 //                       </div>
 //                       <span className="font-semibold text-gray-900">
 //                         ATS Analysis Results
@@ -1381,7 +1394,7 @@
 //                             <IssuesDisplay issues={atsResults.issues} />
 //                           ) : (
 //                             <div className="text-center py-12 text-gray-500">
-//                               <FiCheckCircle className="w-12 h-12 mx-auto mb-3 text-green-500" />
+//                               <FiCheckCircle className="w-12 h-12 mx-auto mb-3 text-emerald-500" />
 //                               <p>No issues found! Your resume looks great!</p>
 //                             </div>
 //                           )}
@@ -1406,20 +1419,20 @@
 //                   </AnimatePresence>
 //                 </div>
 
-//                 <div className="border-t border-gray-100 bg-linear-to-r from-gray-50 to-white px-8 py-4">
+//                 <div className="border-t border-gray-100 bg-gradient-to-r from-gray-50 to-white px-8 py-4">
 //                   <div className="flex items-center justify-between">
 //                     <button
 //                       onClick={removeFile}
-//                       className="text-sm text-gray-600 hover:text-gray-900 font-medium flex items-center gap-2 group"
+//                       className="text-sm text-gray-600 hover:text-gray-900 font-medium flex items-center gap-2 group cursor-pointer"
 //                     >
 //                       <FiRefreshCw className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" />
 //                       Analyze New Resume
 //                     </button>
-//                     <button className="px-6 py-2.5 bg-linear-to-r from-[#c40116] to-[#be0117] text-white rounded-xl font-medium shadow-md hover:shadow-lg transition-all flex items-center gap-2 group hover:scale-105">
+//                     {/* <button className="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-xl font-medium shadow-md hover:shadow-lg transition-all flex items-center gap-2 group hover:scale-105">
 //                       <FaRocket className="w-4 h-4 group-hover:rotate-12 transition-transform" />
 //                       Optimize Resume
 //                       <FiArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-//                     </button>
+//                     </button> */}
 //                   </div>
 //                 </div>
 //               </div>
@@ -1432,32 +1445,6 @@
 // };
 
 // export default ATSCheckerPage;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1602,37 +1589,37 @@ const LoadingScreen = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/20 backdrop-blur-xl z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/20 backdrop-blur-xl z-50 flex items-center justify-center p-3 sm:p-4"
     >
       <motion.div
         initial={{ scale: 0.9, y: 20 }}
         animate={{ scale: 1, y: 0 }}
-        className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 relative overflow-hidden"
+        className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl max-w-md w-full p-5 sm:p-6 md:p-8 relative overflow-hidden"
       >
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-indigo-600/5" />
-        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-100 rounded-full blur-3xl -translate-y-32 translate-x-32 animate-pulse" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-100 rounded-full blur-3xl translate-y-32 -translate-x-32 animate-pulse delay-1000" />
+        <div className="absolute top-0 right-0 w-48 sm:w-64 h-48 sm:h-64 bg-indigo-100 rounded-full blur-3xl -translate-y-32 translate-x-32 animate-pulse" />
+        <div className="absolute bottom-0 left-0 w-48 sm:w-64 h-48 sm:h-64 bg-purple-100 rounded-full blur-3xl translate-y-32 -translate-x-32 animate-pulse delay-1000" />
 
         <div className="relative z-10">
           <motion.div
             animate={{
-              scale: [1, 1.2, 1],
+              scale: [1, 1.1, 1],
               rotate: [0, 360, 360],
             }}
             transition={{ duration: 3, repeat: Infinity }}
-            className="w-24 h-24 mx-auto mb-6 bg-gradient-to-r from-indigo-600 to-indigo-500 rounded-2xl flex items-center justify-center shadow-xl"
+            className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 mx-auto mb-4 sm:mb-6 bg-gradient-to-r from-indigo-600 to-indigo-500 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-xl"
           >
-            <CurrentIcon className="w-12 h-12 text-white" />
+            <CurrentIcon className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-white" />
           </motion.div>
 
-          <h3 className="text-2xl font-bold text-center text-gray-900 mb-2">
+          <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-center text-gray-900 mb-1 sm:mb-2">
             Analyzing Your Resume
           </h3>
-          <p className="text-center text-gray-600 mb-8">
+          <p className="text-center text-gray-600 text-xs sm:text-sm mb-6 sm:mb-8">
             {steps[currentStep].text}
           </p>
 
-          <div className="relative h-3 bg-gray-100 rounded-full overflow-hidden mb-4">
+          <div className="relative h-2 sm:h-3 bg-gray-100 rounded-full overflow-hidden mb-3 sm:mb-4">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${progress}%` }}
@@ -1640,18 +1627,18 @@ const LoadingScreen = () => {
             />
           </div>
 
-          <div className="flex justify-between items-center text-sm">
+          <div className="flex justify-between items-center text-xs sm:text-sm">
             <span className="text-gray-500">Processing...</span>
             <span className="font-semibold text-indigo-600">{progress}%</span>
           </div>
 
-          <div className="flex justify-center gap-2 mt-6">
+          <div className="flex justify-center gap-1.5 sm:gap-2 mt-4 sm:mt-6">
             {[0, 1, 2].map((i) => (
               <motion.div
                 key={i}
-                animate={{ y: [0, -10, 0] }}
+                animate={{ y: [0, -8, 0] }}
                 transition={{ duration: 0.6, delay: i * 0.2, repeat: Infinity }}
-                className="w-2 h-2 rounded-full bg-indigo-600"
+                className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-indigo-600"
               />
             ))}
           </div>
@@ -1682,9 +1669,9 @@ const ModernTabs: React.FC<ModernTabsProps> = ({
 }) => {
   return (
     <div className="relative">
-      <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/5 via-transparent to-indigo-600/5 rounded-2xl blur-xl" />
-      <div className="relative bg-white/80 backdrop-blur-sm rounded-2xl p-1.5 border border-gray-100 shadow-sm">
-        <div className="flex gap-1">
+      <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/5 via-transparent to-indigo-600/5 rounded-xl sm:rounded-2xl blur-xl" />
+      <div className="relative bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-1 border border-gray-100 shadow-sm">
+        <div className="flex flex-wrap gap-1">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -1693,7 +1680,7 @@ const ModernTabs: React.FC<ModernTabsProps> = ({
               <motion.button
                 key={tab.id}
                 onClick={() => onTabChange(tab.id)}
-                className={`relative flex-1 flex items-center cursor-pointer justify-center gap-2 px-6 py-3 rounded-xl text-sm font-medium transition-all duration-300 ${
+                className={`relative flex-1 flex items-center cursor-pointer justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl text-[11px] sm:text-xs md:text-sm font-medium transition-all duration-300 ${
                   isActive
                     ? "text-white"
                     : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
@@ -1702,15 +1689,15 @@ const ModernTabs: React.FC<ModernTabsProps> = ({
                 {isActive && (
                   <motion.div
                     layoutId="activeTab"
-                    className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-indigo-500 rounded-xl shadow-lg"
+                    className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-indigo-500 rounded-lg sm:rounded-xl shadow-lg"
                     transition={{ type: "spring", duration: 0.5 }}
                   />
                 )}
-                <span className="relative z-10 flex items-center gap-2">
-                  <Icon className={`w-4 h-4 ${isActive ? "text-white" : ""}`} />
-                  <span>{tab.label}</span>
+                <span className="relative z-10 flex items-center gap-1.5 sm:gap-2">
+                  <Icon className={`w-3 h-3 sm:w-3.5 sm:h-4 ${isActive ? "text-white" : ""}`} />
+                  <span className="max-sm:hidden">{tab.label}</span>
                   {tab.badge !== undefined && tab.badge > 0 && !isActive && (
-                    <span className="ml-1 px-1.5 py-0.5 text-xs bg-gray-100 text-gray-600 rounded-full">
+                    <span className="ml-0.5 sm:ml-1 px-1 sm:px-1.5 py-0.5 text-[9px] sm:text-xs bg-gray-100 text-gray-600 rounded-full">
                       {tab.badge}
                     </span>
                   )}
@@ -1735,19 +1722,19 @@ const ModernScoreCard: React.FC<ModernScoreCardProps> = ({
   verdict,
 }) => {
   return (
-    <div className="relative overflow-hidden bg-gradient-to-r from-indigo-600 to-indigo-500 rounded-3xl p-8 text-white shadow-2xl">
-      <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-y-48 translate-x-48" />
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl translate-y-48 -translate-x-48" />
+    <div className="relative overflow-hidden bg-gradient-to-r from-indigo-600 to-indigo-500 rounded-xl sm:rounded-2xl md:rounded-3xl p-5 sm:p-6 md:p-8 text-white shadow-2xl">
+      <div className="absolute top-0 right-0 w-64 sm:w-80 md:w-96 h-64 sm:h-80 md:h-96 bg-white/10 rounded-full blur-3xl -translate-y-48 translate-x-48" />
+      <div className="absolute bottom-0 left-0 w-64 sm:w-80 md:w-96 h-64 sm:h-80 md:h-96 bg-white/10 rounded-full blur-3xl translate-y-48 -translate-x-48" />
 
-      <div className="relative flex flex-col md:flex-row items-center justify-between gap-8">
+      <div className="relative flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8">
         <div className="text-center md:text-left">
-          <div className="text-sm font-medium text-white/80 mb-2 tracking-wider">
+          <div className="text-[10px] sm:text-xs md:text-sm font-medium text-white/80 mb-1 sm:mb-2 tracking-wider">
             OVERALL ATS SCORE
           </div>
-          <div className="text-5xl font-bold mb-4 bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
+          <div className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
             {score}%
           </div>
-          <div className="w-80 h-3 bg-white/20 rounded-full overflow-hidden">
+          <div className="w-48 sm:w-64 md:w-80 h-2 sm:h-3 bg-white/20 rounded-full overflow-hidden">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${score}%` }}
@@ -1762,7 +1749,7 @@ const ModernScoreCard: React.FC<ModernScoreCardProps> = ({
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="text-2xl font-bold mb-3"
+            className=" sm:text-xl md:text-2xl font-bold mb-2 sm:mb-3"
           >
             {verdict || "Good"}
           </motion.div>
@@ -1793,7 +1780,7 @@ const ModernMetricGrid: React.FC<ModernMetricGridProps> = ({ metrics }) => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-5">
       {metrics.map((metric, index) => {
         const gradient = getGradient(metric.value);
         const Icon = metric.icon;
@@ -1806,20 +1793,20 @@ const ModernMetricGrid: React.FC<ModernMetricGridProps> = ({ metrics }) => {
             transition={{ delay: index * 0.1 }}
             className="group relative"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-indigo-600/10 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            <div className="relative bg-white rounded-2xl p-6 border border-gray-100 hover:border-indigo-200 transition-all duration-300 hover:shadow-xl">
-              <div className="flex items-center justify-between mb-4">
-                <div className={`p-3 rounded-xl bg-gradient-to-r ${gradient} shadow-lg`}>
-                  <Icon className="w-5 h-5 text-white" />
+            <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-indigo-600/10 rounded-xl sm:rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="relative bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 border border-gray-100 hover:border-indigo-200 transition-all duration-300 hover:shadow-xl">
+              <div className="flex items-center justify-between mb-3 sm:mb-4">
+                <div className={`p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-gradient-to-r ${gradient} shadow-lg`}>
+                  <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 text-white" />
                 </div>
-                <div className="text-2xl font-semibold text-gray-900">
+                <div className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-900">
                   {metric.value}%
                 </div>
               </div>
-              <h3 className="text-xs font-medium text-gray-700 uppercase tracking-wider mb-2">
+              <h3 className="text-[9px] sm:text-[10px] md:text-xs font-medium text-gray-700 uppercase tracking-wider mb-1.5 sm:mb-2">
                 {metric.label}
               </h3>
-              <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+              <div className="h-1.5 sm:h-2 bg-gray-100 rounded-full overflow-hidden">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${metric.value}%` }}
@@ -1846,54 +1833,54 @@ const ModernSummaryCard: React.FC<ModernSummaryCardProps> = ({
   rewritten,
 }) => {
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500">
-      <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
-        <div className="flex items-center gap-3">
-          <div className="p-2.5 bg-indigo-100 rounded-xl">
-            <HiOutlineSparkles className="w-5 h-5 text-indigo-600" />
+    <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500">
+      <div className="p-4 sm:p-5 md:p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="p-1.5 sm:p-2 md:p-2.5 bg-indigo-100 rounded-lg sm:rounded-xl">
+            <HiOutlineSparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 text-indigo-600" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">
+            <h3 className="text-sm sm:text-base md:text-lg font-semibold text-gray-900">
               Professional Summary Enhancement
             </h3>
-            <p className="text-sm text-gray-500">
+            <p className="text-[10px] sm:text-xs md:text-sm text-gray-500">
               AI-powered rewrite for better impact
             </p>
           </div>
         </div>
       </div>
 
-      <div className="p-6 space-y-8">
-        <div className="relative pl-6">
+      <div className="p-4 sm:p-5 md:p-6 space-y-6 sm:space-y-8">
+        <div className="relative pl-4 sm:pl-5 md:pl-6">
           <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-gray-200 rounded-full" />
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-gray-400" />
-              <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+          <div className="space-y-1.5 sm:space-y-2">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-gray-400" />
+              <span className="text-[9px] sm:text-[10px] font-medium text-gray-500 uppercase tracking-wider">
                 Original
               </span>
             </div>
-            <p className="text-gray-600 text-sm leading-relaxed">{current}</p>
+            <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">{current}</p>
           </div>
         </div>
 
         <motion.div
-          initial={{ opacity: 0, x: -20 }}
+          initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
-          className="relative pl-6"
+          className="relative pl-4 sm:pl-5 md:pl-6"
         >
           <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-gradient-to-b from-indigo-600 to-indigo-500 rounded-full" />
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-indigo-600 animate-pulse" />
-              <span className="text-xs font-bold text-indigo-600 uppercase tracking-wider">
+          <div className="space-y-1.5 sm:space-y-2">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-indigo-600 animate-pulse" />
+              <span className="text-[9px] sm:text-[10px] font-bold text-indigo-600 uppercase tracking-wider">
                 AI Enhanced
               </span>
-              <span className="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">
+              <span className="text-[8px] sm:text-[9px] bg-emerald-100 text-emerald-700 px-1.5 sm:px-2 py-0.5 rounded-full">
                 +42% Impact
               </span>
             </div>
-            <p className="text-gray-900 font-medium leading-relaxed">
+            <p className="text-gray-900 font-medium text-xs sm:text-sm leading-relaxed">
               {rewritten}
             </p>
           </div>
@@ -1959,15 +1946,15 @@ const IssuesDisplay: React.FC<IssuesDisplayProps> = ({ issues }) => {
   const getSectionIcon = (section: string): React.ReactElement => {
     switch (section) {
       case "experience":
-        return <FiBriefcase className="w-4 h-4" />;
+        return <FiBriefcase className="w-3 h-3 sm:w-3.5 sm:h-3.5" />;
       case "education":
-        return <FaGraduationCap className="w-4 h-4" />;
+        return <FaGraduationCap className="w-3 h-3 sm:w-3.5 sm:h-3.5" />;
       case "skills":
-        return <FiZap className="w-4 h-4" />;
+        return <FiZap className="w-3 h-3 sm:w-3.5 sm:h-3.5" />;
       case "summary":
-        return <FiFileText className="w-4 h-4" />;
+        return <FiFileText className="w-3 h-3 sm:w-3.5 sm:h-3.5" />;
       default:
-        return <FiAlertCircle className="w-4 h-4" />;
+        return <FiAlertCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5" />;
     }
   };
 
@@ -1986,29 +1973,29 @@ const IssuesDisplay: React.FC<IssuesDisplayProps> = ({ issues }) => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="mt-8"
+      className="mt-6 sm:mt-8"
     >
-      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
-        <div className="p-6 bg-gradient-to-r from-gray-50 to-white border-b border-gray-200">
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 bg-indigo-100 rounded-xl">
-                <FiAlertCircle className="w-5 h-5 text-indigo-600" />
+      <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
+        <div className="p-4 sm:p-5 md:p-6 bg-gradient-to-r from-gray-50 to-white border-b border-gray-200">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="p-1.5 sm:p-2 md:p-2.5 bg-indigo-100 rounded-lg sm:rounded-xl">
+                <FiAlertCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 text-indigo-600" />
               </div>
               <div>
-                <h4 className="text-lg font-semibold text-gray-900">
+                <h4 className="text-sm sm:text-base md:text-lg font-semibold text-gray-900">
                   Issues Found ({totalIssues})
                 </h4>
-                <p className="text-sm text-gray-500">
+                <p className="text-[10px] sm:text-xs md:text-sm text-gray-500">
                   Address these to improve your ATS score
                 </p>
               </div>
             </div>
-            <div className="flex gap-2 flex-wrap">
+            <div className="flex gap-1.5 sm:gap-2 flex-wrap">
               {nonEmptySeverities.map(([severity, issueList]) => (
                 <span
                   key={severity}
-                  className={`px-3 py-1.5 rounded-full text-xs font-medium border ${
+                  className={`px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[9px] sm:text-[10px] md:text-xs font-medium border ${
                     severity === "critical"
                       ? "bg-red-50 text-red-700 border-red-200"
                       : severity === "high"
@@ -2034,35 +2021,33 @@ const IssuesDisplay: React.FC<IssuesDisplayProps> = ({ issues }) => {
             return (
               <div key={severity} className="overflow-hidden">
                 <div
-                  onClick={() =>
-                    setExpandedSeverity(isExpanded ? null : severity)
-                  }
-                  className="p-5 flex items-center justify-between cursor-pointer hover:bg-gray-50/50 transition-colors"
+                  onClick={() => setExpandedSeverity(isExpanded ? null : severity)}
+                  className="p-4 sm:p-5 flex items-center justify-between cursor-pointer hover:bg-gray-50/50 transition-colors"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className={`p-3 rounded-xl ${config.bg}`}>
-                      <Icon className={`w-5 h-5 ${config.color}`} />
+                  <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
+                    <div className={`p-2 sm:p-2.5 rounded-lg sm:rounded-xl ${config.bg}`}>
+                      <Icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 ${config.color}`} />
                     </div>
                     <div>
-                      <h5 className="font-semibold text-gray-900">
+                      <h5 className="text-xs sm:text-sm md:text-base font-semibold text-gray-900">
                         {config.label}
                       </h5>
-                      <p className="text-xs text-gray-500 mt-0.5">
+                      <p className="text-[9px] sm:text-[10px] md:text-xs text-gray-500 mt-0.5">
                         {config.description}
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-4">
-                    <span className="text-sm font-medium text-gray-600">
+                  <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
+                    <span className="text-[10px] sm:text-xs md:text-sm font-medium text-gray-600">
                       {issueList.length} issue{issueList.length > 1 ? "s" : ""}
                     </span>
                     <motion.div
                       animate={{ rotate: isExpanded ? 180 : 0 }}
                       transition={{ duration: 0.3 }}
-                      className={`p-1.5 rounded-full ${isExpanded ? config.bg : "bg-gray-100"}`}
+                      className={`p-1 rounded-full ${isExpanded ? config.bg : "bg-gray-100"}`}
                     >
                       <HiOutlineChevronDown
-                        className={`w-4 h-4 ${isExpanded ? config.color : "text-gray-500"}`}
+                        className={`w-3 h-3 sm:w-3.5 sm:h-3.5 ${isExpanded ? config.color : "text-gray-500"}`}
                       />
                     </motion.div>
                   </div>
@@ -2076,30 +2061,30 @@ const IssuesDisplay: React.FC<IssuesDisplayProps> = ({ issues }) => {
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <div className="px-5 pb-5 space-y-4">
+                      <div className="px-4 sm:px-5 pb-4 sm:pb-5 space-y-3 sm:space-y-4">
                         {issueList.map((issue, idx) => (
                           <motion.div
                             key={idx}
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: idx * 0.1 }}
-                            className={`p-5 rounded-xl border ${config.border} ${config.bg}/50 backdrop-blur-sm`}
+                            className={`p-3 sm:p-4 rounded-lg sm:rounded-xl border ${config.border} ${config.bg}/50 backdrop-blur-sm`}
                           >
-                            <div className="flex items-start gap-4">
+                            <div className="flex items-start gap-2 sm:gap-3 md:gap-4">
                               <div
-                                className={`p-2.5 rounded-lg ${config.bg} shrink-0`}
+                                className={`p-1.5 sm:p-2 rounded-lg ${config.bg} shrink-0`}
                               >
                                 {getSectionIcon(issue.section)}
                               </div>
 
-                              <div className="flex-1">
-                                <div className="flex items-center gap-2 mb-2 flex-wrap">
-                                  <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 capitalize">
+                              <div className="flex-1 min-w-0">
+                                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
+                                  <span className="text-[9px] sm:text-[10px] font-medium px-1.5 sm:px-2 py-0.5 rounded-full bg-gray-100 text-gray-700 capitalize">
                                     {issue.section}
                                   </span>
                                   {issue.impact && (
                                     <span
-                                      className={`text-xs px-2.5 py-1 rounded-full ${
+                                      className={`text-[8px] sm:text-[9px] px-1.5 sm:px-2 py-0.5 rounded-full ${
                                         issue.impact >= 9
                                           ? "bg-red-100 text-red-700"
                                           : issue.impact >= 7
@@ -2114,14 +2099,14 @@ const IssuesDisplay: React.FC<IssuesDisplayProps> = ({ issues }) => {
                                   )}
                                 </div>
 
-                                <p className="text-sm text-gray-800 mb-3">
+                                <p className="text-[10px] sm:text-xs md:text-sm text-gray-800 mb-2 sm:mb-3">
                                   {issue.message}
                                 </p>
 
                                 {issue.suggestion && (
-                                  <div className="flex items-start gap-2 p-3 bg-white rounded-lg border border-gray-100 shadow-sm">
-                                    <HiOutlineSparkles className="w-4 h-4 text-indigo-600 mt-0.5 shrink-0" />
-                                    <p className="text-sm text-gray-600">
+                                  <div className="flex items-start gap-1.5 sm:gap-2 p-2 sm:p-3 bg-white rounded-lg border border-gray-100 shadow-sm">
+                                    <HiOutlineSparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-indigo-600 mt-0.5 shrink-0" />
+                                    <p className="text-[9px] sm:text-[10px] md:text-xs text-gray-600">
                                       <span className="font-semibold">
                                         Suggestion:
                                       </span>{" "}
@@ -2158,7 +2143,7 @@ const SectionAnalysis: React.FC<SectionAnalysisProps> = ({ data }) => {
 
   if (!data) {
     return (
-      <div className="text-center py-8 text-gray-500">
+      <div className="text-center py-6 sm:py-8 text-gray-500 text-xs sm:text-sm">
         No section analysis available
       </div>
     );
@@ -2209,7 +2194,7 @@ const SectionAnalysis: React.FC<SectionAnalysisProps> = ({ data }) => {
       skills: FiStar,
     };
     const Icon = icons[sectionName?.toLowerCase()] || FiInfo;
-    return <Icon className="w-5 h-5" />;
+    return <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" />;
   };
 
   const getStatusBadge = (
@@ -2245,15 +2230,15 @@ const SectionAnalysis: React.FC<SectionAnalysisProps> = ({ data }) => {
       return (
         <div
           key={idx}
-          className="flex items-start gap-2 p-2 hover:bg-emerald-50 rounded-lg transition-colors"
+          className="flex items-start gap-1.5 sm:gap-2 p-1.5 sm:p-2 hover:bg-emerald-50 rounded-lg transition-colors"
         >
-          <FiCheckCircle className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+          <FiCheckCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-emerald-500 mt-0.5 shrink-0" />
           <div className="flex-1">
-            <p className="text-sm text-gray-700">
+            <p className="text-[10px] sm:text-xs text-gray-700">
               {win.action || JSON.stringify(win)}
             </p>
             {win.estimated_gain && (
-              <span className="text-xs text-emerald-600 mt-1 inline-block">
+              <span className="text-[8px] sm:text-[9px] text-emerald-600 mt-0.5 inline-block">
                 +{win.estimated_gain}
               </span>
             )}
@@ -2264,10 +2249,10 @@ const SectionAnalysis: React.FC<SectionAnalysisProps> = ({ data }) => {
     return (
       <div
         key={idx}
-        className="flex items-start gap-2 p-2 hover:bg-emerald-50 rounded-lg transition-colors"
+        className="flex items-start gap-1.5 sm:gap-2 p-1.5 sm:p-2 hover:bg-emerald-50 rounded-lg transition-colors"
       >
-        <FiCheckCircle className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
-        <span className="text-sm text-gray-700">{win}</span>
+        <FiCheckCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-emerald-500 mt-0.5 shrink-0" />
+        <span className="text-[10px] sm:text-xs text-gray-700">{win}</span>
       </div>
     );
   };
@@ -2287,7 +2272,7 @@ const SectionAnalysis: React.FC<SectionAnalysisProps> = ({ data }) => {
       return (
         <span
           key={idx}
-          className={`text-xs px-2.5 py-1 rounded-lg border ${colorClass}`}
+          className={`text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg border ${colorClass}`}
         >
           {element.element ||
             element.name ||
@@ -2299,7 +2284,7 @@ const SectionAnalysis: React.FC<SectionAnalysisProps> = ({ data }) => {
     return (
       <span
         key={idx}
-        className={`text-xs px-2.5 py-1 rounded-lg border ${colorClass}`}
+        className={`text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg border ${colorClass}`}
       >
         {element}
       </span>
@@ -2308,14 +2293,14 @@ const SectionAnalysis: React.FC<SectionAnalysisProps> = ({ data }) => {
 
   if (!sections.length) {
     return (
-      <div className="text-center py-8 text-gray-500">
+      <div className="text-center py-6 sm:py-8 text-gray-500 text-xs sm:text-sm">
         No section analysis available
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3 sm:space-y-4">
       {sections.map(([sectionName, sectionData], index) => {
         const statusBadge = getStatusBadge(
           sectionData?.status,
@@ -2337,48 +2322,48 @@ const SectionAnalysis: React.FC<SectionAnalysisProps> = ({ data }) => {
             key={sectionName}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className="bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300"
+            transition={{ delay: Math.min(index * 0.1, 0.5) }}
+            className="bg-white rounded-lg sm:rounded-xl border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300"
           >
             {/* Accordion Header */}
             <button
               onClick={() => toggleSection(sectionName)}
-              className="w-full text-left px-5 py-4 bg-gradient-to-r from-gray-50 to-white hover:from-gray-100 hover:to-gray-50 transition-all duration-300"
+              className="w-full text-left px-3 sm:px-4 md:px-5 py-3 sm:py-4 bg-gradient-to-r from-gray-50 to-white hover:from-gray-100 hover:to-gray-50 transition-all duration-300"
             >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
+                <div className="flex items-center gap-2 sm:gap-3">
                   <div
-                    className={`p-2 rounded-lg ${getGradeColor(sectionData?.grade)}`}
+                    className={`p-1.5 sm:p-2 rounded-lg ${getGradeColor(sectionData?.grade)}`}
                   >
                     {getSectionIcon(sectionName)}
                   </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 capitalize">
+                  <div className="text-left">
+                    <h3 className="text-sm sm:text-base md:text-lg font-semibold text-gray-900 capitalize">
                       {sectionName}
                     </h3>
-                    <div className="flex items-center gap-2 mt-1">
+                    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-0.5 sm:mt-1">
                       <span
-                        className={`text-xs px-2 py-0.5 rounded inline-flex items-center gap-1 ${statusBadge.color}`}
+                        className={`text-[8px] sm:text-[9px] md:text-[10px] px-1.5 sm:px-2 py-0.5 rounded inline-flex items-center gap-0.5 sm:gap-1 ${statusBadge.color}`}
                       >
-                        <StatusIcon className="w-3 h-3" />
+                        <StatusIcon className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                         {statusBadge.text}
                       </span>
-                      <span className="text-xs text-gray-400">•</span>
-                      <span className="text-xs text-gray-500 capitalize">
+                      <span className="text-[8px] sm:text-[9px] text-gray-400">•</span>
+                      <span className="text-[8px] sm:text-[9px] md:text-[10px] text-gray-500 capitalize">
                         Quality: {sectionData?.quality_level || "N/A"}
                       </span>
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3 sm:gap-4">
                   <div className="text-right">
                     <div
-                      className={`text-2xl font-bold ${getGradeColor(sectionData?.grade)}`}
+                      className={`text-base sm:text-lg md:text-xl font-bold ${getGradeColor(sectionData?.grade)}`}
                     >
                       {sectionData?.grade || "N/A"}
                     </div>
                     <div
-                      className={`text-xs font-medium mt-0.5 ${getScoreColor(sectionData?.score)}`}
+                      className={`text-[9px] sm:text-[10px] md:text-xs font-medium mt-0.5 ${getScoreColor(sectionData?.score)}`}
                     >
                       Score: {sectionData?.score || 0}%
                     </div>
@@ -2386,9 +2371,9 @@ const SectionAnalysis: React.FC<SectionAnalysisProps> = ({ data }) => {
                   <motion.div
                     animate={{ rotate: isExpanded ? 180 : 0 }}
                     transition={{ duration: 0.3 }}
-                    className="p-1.5 rounded-full bg-gray-100"
+                    className="p-1 rounded-full bg-gray-100"
                   >
-                    <HiOutlineChevronDown className="w-4 h-4 text-gray-500" />
+                    <HiOutlineChevronDown className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-gray-500" />
                   </motion.div>
                 </div>
               </div>
@@ -2404,12 +2389,12 @@ const SectionAnalysis: React.FC<SectionAnalysisProps> = ({ data }) => {
                   transition={{ duration: 0.3 }}
                   className="overflow-hidden"
                 >
-                  <div className="p-5 space-y-4 border-t border-gray-100">
+                  <div className="p-3 sm:p-4 md:p-5 space-y-3 sm:space-y-4 border-t border-gray-100">
                     {/* Score Progress */}
                     {sectionData?.target_score &&
                       sectionData.target_score > 0 && (
                         <div>
-                          <div className="flex justify-between text-xs mb-1.5">
+                          <div className="flex justify-between text-[9px] sm:text-[10px] mb-1">
                             <span className="text-gray-600">
                               Completion Score
                             </span>
@@ -2418,21 +2403,21 @@ const SectionAnalysis: React.FC<SectionAnalysisProps> = ({ data }) => {
                               {sectionData?.target_score}
                             </span>
                           </div>
-                          <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+                          <div className="w-full bg-gray-100 rounded-full h-1.5 sm:h-2 overflow-hidden">
                             <motion.div
                               initial={{ width: 0 }}
                               animate={{
                                 width: `${((sectionData?.score || 0) / sectionData.target_score) * 100}%`,
                               }}
                               transition={{ duration: 0.5 }}
-                              className={`h-2 rounded-full ${getProgressColor(sectionData?.score)}`}
+                              className={`h-1.5 sm:h-2 rounded-full ${getProgressColor(sectionData?.score)}`}
                             />
                           </div>
                           {sectionData?.impact_potential &&
                             sectionData.impact_potential > 0 && (
-                              <div className="flex items-center gap-2 mt-2">
-                                <FiTrendingUp className="w-3 h-3 text-blue-500" />
-                                <span className="text-xs text-gray-500">
+                              <div className="flex items-center gap-1.5 sm:gap-2 mt-1.5 sm:mt-2">
+                                <FiTrendingUp className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-blue-500" />
+                                <span className="text-[8px] sm:text-[9px] text-gray-500">
                                   Impact potential:{" "}
                                   {sectionData?.impact_potential}%
                                 </span>
@@ -2445,13 +2430,13 @@ const SectionAnalysis: React.FC<SectionAnalysisProps> = ({ data }) => {
                     {sectionData?.quick_wins &&
                       sectionData.quick_wins.length > 0 && (
                         <div>
-                          <div className="flex items-center gap-2 mb-3">
-                            <FiThumbsUp className="w-4 h-4 text-emerald-600" />
-                            <span className="text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                          <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
+                            <FiThumbsUp className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-emerald-600" />
+                            <span className="text-[9px] sm:text-[10px] font-semibold text-gray-700 uppercase tracking-wider">
                               Quick Wins ({sectionData.quick_wins.length})
                             </span>
                           </div>
-                          <div className="space-y-1 bg-emerald-50/30 rounded-lg p-2 max-h-48 overflow-y-auto">
+                          <div className="space-y-0.5 sm:space-y-1 bg-emerald-50/30 rounded-lg p-1.5 sm:p-2 max-h-32 sm:max-h-40 overflow-y-auto">
                             {sectionData.quick_wins.map((win, idx) =>
                               renderQuickWin(win, idx),
                             )}
@@ -2463,13 +2448,13 @@ const SectionAnalysis: React.FC<SectionAnalysisProps> = ({ data }) => {
                     {sectionData?.missing_elements &&
                       sectionData.missing_elements.length > 0 && (
                         <div>
-                          <div className="flex items-center gap-2 mb-2">
-                            <FiAlertCircle className="w-4 h-4 text-red-500" />
-                            <span className="text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                          <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
+                            <FiAlertCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-red-500" />
+                            <span className="text-[9px] sm:text-[10px] font-semibold text-gray-700 uppercase tracking-wider">
                               Missing Elements
                             </span>
                           </div>
-                          <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto p-1">
+                          <div className="flex flex-wrap gap-1 sm:gap-1.5 max-h-24 sm:max-h-32 overflow-y-auto p-0.5 sm:p-1">
                             {sectionData.missing_elements.map((element, idx) =>
                               renderElement(element, idx, "missing"),
                             )}
@@ -2481,13 +2466,13 @@ const SectionAnalysis: React.FC<SectionAnalysisProps> = ({ data }) => {
                     {sectionData?.elements_to_remove &&
                       sectionData.elements_to_remove.length > 0 && (
                         <div>
-                          <div className="flex items-center gap-2 mb-2">
-                            <FiXCircle className="w-4 h-4 text-orange-500" />
-                            <span className="text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                          <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
+                            <FiXCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-orange-500" />
+                            <span className="text-[9px] sm:text-[10px] font-semibold text-gray-700 uppercase tracking-wider">
                               Remove These
                             </span>
                           </div>
-                          <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto p-1">
+                          <div className="flex flex-wrap gap-1 sm:gap-1.5 max-h-24 sm:max-h-32 overflow-y-auto p-0.5 sm:p-1">
                             {sectionData.elements_to_remove.map(
                               (element, idx) =>
                                 renderElement(element, idx, "remove"),
@@ -2499,18 +2484,18 @@ const SectionAnalysis: React.FC<SectionAnalysisProps> = ({ data }) => {
                     {/* Top Priority Fixes */}
                     {sectionData?.top_priority_fixes &&
                       sectionData.top_priority_fixes.length > 0 && (
-                        <div className="bg-red-50 rounded-lg p-3 border border-red-100">
-                          <div className="flex items-center gap-2 mb-2">
-                            <FiAlertCircle className="w-4 h-4 text-red-600" />
-                            <span className="text-xs font-bold text-red-700 uppercase tracking-wider">
+                        <div className="bg-red-50 rounded-lg p-2 sm:p-3 border border-red-100">
+                          <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
+                            <FiAlertCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-red-600" />
+                            <span className="text-[9px] sm:text-[10px] font-bold text-red-700 uppercase tracking-wider">
                               Top Priority Fixes
                             </span>
                           </div>
-                          <div className="space-y-1 max-h-32 overflow-y-auto">
+                          <div className="space-y-0.5 sm:space-y-1 max-h-24 sm:max-h-32 overflow-y-auto">
                             {sectionData.top_priority_fixes.map((fix, idx) => (
                               <p
                                 key={idx}
-                                className="text-sm text-red-700 flex items-start gap-2"
+                                className="text-[9px] sm:text-[10px] text-red-700 flex items-start gap-1.5 sm:gap-2"
                               >
                                 <span className="text-red-500">!</span>
                                 {fix.action}
@@ -2651,10 +2636,7 @@ const ATSCheckerPage = () => {
     <>
       <AnimatePresence>{loading && <LoadingScreen />}</AnimatePresence>
 
-      <section className="relative pt-28 pb-20 overflow-hidden">
-        {/* <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-indigo-600/5" /> */}
-        {/* <div className="absolute top-20 left-10 w-96 h-96 bg-indigo-100 rounded-full blur-3xl animate-pulse" /> */}
-
+      <section className="relative pt-14 sm:pt-20 md:pt-24 lg:pt-28 pb-12 sm:pb-16 md:pb-20 overflow-hidden">
         <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             variants={fadeInUp}
@@ -2666,18 +2648,18 @@ const ATSCheckerPage = () => {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-100 rounded-full mb-6 border border-indigo-200 backdrop-blur-sm"
+              className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 bg-indigo-100 rounded-full mb-4 sm:mb-6 border border-indigo-200 backdrop-blur-sm"
             >
-              <FaBrain className="w-4 h-4 text-indigo-600" />
-              <span className="text-sm font-medium text-indigo-700">
+              <FaBrain className="w-2.5 h-2.5 sm:w-3 sm:h-3.5 text-indigo-600" />
+              <span className="text-[10px] sm:text-xs font-medium text-indigo-700">
                 AI-Powered ATS Checker
               </span>
-              <HiOutlineSparkles className="w-3 h-3 text-indigo-600" />
+              <HiOutlineSparkles className="w-2 h-2 sm:w-2.5 sm:h-3 text-indigo-600" />
             </motion.div>
 
             <motion.h1
               variants={fadeInUp}
-              className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6"
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-4 sm:mb-6 px-2"
             >
               <span className="text-gray-900">Optimize Your Resume</span>
               <br />
@@ -2688,7 +2670,7 @@ const ATSCheckerPage = () => {
 
             <motion.p
               variants={fadeInUp}
-              className="text-lg text-gray-500 mb-10 max-w-2xl mx-auto"
+              className="text-sm sm:text-base md:text-lg text-gray-500 mb-6 sm:mb-8 md:mb-10 max-w-2xl mx-auto px-3"
             >
               Most resumes get rejected before HR even sees them. Upload yours
               and let AI fix what's stopping you from getting shortlisted.
@@ -2703,14 +2685,14 @@ const ATSCheckerPage = () => {
             className="mx-auto"
           >
             {!file || !atsResults ? (
-              <div className="bg-white max-w-3xl mx-auto rounded-3xl shadow-2xl border border-gray-100 overflow-hidden">
-                <div className="p-7">
+              <div className="bg-white max-w-3xl mx-auto rounded-2xl sm:rounded-3xl shadow-2xl border border-gray-100 overflow-hidden">
+                <div className="p-4 sm:p-5 md:p-7">
                   <div
                     onDragEnter={handleDrag}
                     onDragLeave={handleDrag}
                     onDragOver={handleDrag}
                     onDrop={handleDrop}
-                    className={`relative border-2 border-dashed rounded-2xl p-10 transition-all duration-300 ${
+                    className={`relative border-2 border-dashed rounded-xl sm:rounded-2xl p-6 sm:p-8 md:p-10 transition-all duration-300 ${
                       dragActive
                         ? "border-indigo-500 bg-indigo-50 scale-[1.02]"
                         : "border-gray-200 hover:border-indigo-300 hover:bg-gray-50/50"
@@ -2726,17 +2708,17 @@ const ATSCheckerPage = () => {
 
                     <div className="text-center">
                       <motion.div
-                        animate={{ y: [0, -10, 0], scale: [1, 1.05, 1] }}
+                        animate={{ y: [0, -8, 0], scale: [1, 1.03, 1] }}
                         transition={{ repeat: Infinity, duration: 3 }}
-                        className="inline-flex p-6 bg-indigo-100 rounded-2xl mb-6"
+                        className="inline-flex p-4 sm:p-5 md:p-6 bg-indigo-100 rounded-xl sm:rounded-2xl mb-4 sm:mb-6"
                       >
-                        <FiUpload className="w-9 h-9 text-indigo-600" />
+                        <FiUpload className="w-6 h-6 sm:w-7 sm:h-7 md:w-9 md:h-9 text-indigo-600" />
                       </motion.div>
 
-                      <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                      <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-2">
                         Upload Your Resume
                       </h3>
-                      <p className="text-gray-500 mb-6">
+                      <p className="text-gray-500 text-xs sm:text-sm mb-4 sm:mb-6">
                         Drag & drop or{" "}
                         <label
                           htmlFor="resume-upload"
@@ -2746,48 +2728,48 @@ const ATSCheckerPage = () => {
                         </label>
                       </p>
 
-                      <div className="flex items-center justify-center gap-4 mb-8">
-                        <span className="text-sm text-gray-500">
+                      <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+                        <span className="text-[10px] sm:text-xs text-gray-500">
                           AI analyzing resumes instantly
                         </span>
                       </div>
 
-                      <div className="space-y-4">
+                      <div className="space-y-3 sm:space-y-4">
                         <label
                           htmlFor="resume-upload"
-                          className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all cursor-pointer hover:scale-105"
+                          className="inline-flex items-center gap-2 sm:gap-3 px-5 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-lg sm:rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all cursor-pointer hover:scale-105 text-xs sm:text-sm"
                         >
-                          <FiUpload className="w-5 h-5" />
+                          <FiUpload className="w-3.5 h-3.5 sm:w-4 sm:h-5" />
                           Choose File
                         </label>
-                        <p className="text-xs text-gray-500">Upload PDF only</p>
+                        <p className="text-[9px] sm:text-xs text-gray-500">Upload PDF only (Max 10MB)</p>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="bg-white max-w-5xl mx-auto rounded-3xl shadow-2xl border border-gray-100 overflow-hidden">
-                <div className="border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white px-6 py-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-indigo-100 rounded-xl">
-                        <FiFileText className="w-5 h-5 text-indigo-600" />
+              <div className="bg-white max-w-5xl mx-auto rounded-2xl sm:rounded-3xl shadow-2xl border border-gray-100 overflow-hidden">
+                <div className="border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white px-4 sm:px-5 md:px-6 py-3 sm:py-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <div className="p-1.5 sm:p-2 bg-indigo-100 rounded-lg sm:rounded-xl">
+                        <FiFileText className="w-3.5 h-3.5 sm:w-4 sm:h-5 text-indigo-600" />
                       </div>
-                      <span className="font-semibold text-gray-900">
+                      <span className="text-xs sm:text-sm font-semibold text-gray-900">
                         ATS Analysis Results
                       </span>
                     </div>
                     <button
                       onClick={removeFile}
-                      className="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1 cursor-pointer transition-all duration-500 hover:scale-105"
+                      className="text-[10px] sm:text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1 cursor-pointer transition-all duration-500 hover:scale-105"
                     >
-                      <FiRefreshCw className="w-4 h-4" />
+                      <FiRefreshCw className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                       Analyze New Resume
                     </button>
                   </div>
 
-                  <div className="mt-4">
+                  <div className="mt-3 sm:mt-4">
                     <ModernTabs
                       activeTab={activeTab}
                       onTabChange={setActiveTab as (tabId: string) => void}
@@ -2796,17 +2778,17 @@ const ATSCheckerPage = () => {
                   </div>
                 </div>
 
-                <div className="p-8">
+                <div className="p-4 sm:p-5 md:p-6 lg:p-8">
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={activeTab}
-                      initial={{ opacity: 0, y: 20 }}
+                      initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
+                      exit={{ opacity: 0, y: -10 }}
                       transition={{ duration: 0.3 }}
                     >
                       {activeTab === "overview" && (
-                        <div className="space-y-8">
+                        <div className="space-y-5 sm:space-y-6 md:space-y-8">
                           <ModernScoreCard
                             score={atsScore}
                             verdict={atsResults?.summary?.ats_verdict}
@@ -2833,28 +2815,28 @@ const ATSCheckerPage = () => {
                       )}
 
                       {activeTab === "issues" && (
-                        <div className="space-y-6">
+                        <div className="space-y-4 sm:space-y-6">
                           {atsResults?.issues ? (
                             <IssuesDisplay issues={atsResults.issues} />
                           ) : (
-                            <div className="text-center py-12 text-gray-500">
-                              <FiCheckCircle className="w-12 h-12 mx-auto mb-3 text-emerald-500" />
-                              <p>No issues found! Your resume looks great!</p>
+                            <div className="text-center py-8 sm:py-10 md:py-12 text-gray-500">
+                              <FiCheckCircle className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 mx-auto mb-2 sm:mb-3 text-emerald-500" />
+                              <p className="text-xs sm:text-sm">No issues found! Your resume looks great!</p>
                             </div>
                           )}
                         </div>
                       )}
 
                       {activeTab === "section" && (
-                        <div className="space-y-6">
+                        <div className="space-y-4 sm:space-y-6">
                           {atsResults?.section_analysis ? (
                             <SectionAnalysis
                               data={atsResults.section_analysis}
                             />
                           ) : (
-                            <div className="text-center py-12 text-gray-500">
-                              <FiInfo className="w-12 h-12 mx-auto mb-3" />
-                              <p>No section analysis available</p>
+                            <div className="text-center py-8 sm:py-10 md:py-12 text-gray-500">
+                              <FiInfo className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 mx-auto mb-2 sm:mb-3" />
+                              <p className="text-xs sm:text-sm">No section analysis available</p>
                             </div>
                           )}
                         </div>
@@ -2863,20 +2845,15 @@ const ATSCheckerPage = () => {
                   </AnimatePresence>
                 </div>
 
-                <div className="border-t border-gray-100 bg-gradient-to-r from-gray-50 to-white px-8 py-4">
+                <div className="border-t border-gray-100 bg-gradient-to-r from-gray-50 to-white px-4 sm:px-5 md:px-6 lg:px-8 py-3 sm:py-4">
                   <div className="flex items-center justify-between">
                     <button
                       onClick={removeFile}
-                      className="text-sm text-gray-600 hover:text-gray-900 font-medium flex items-center gap-2 group cursor-pointer"
+                      className="text-[10px] sm:text-xs text-gray-600 hover:text-gray-900 font-medium flex items-center gap-1.5 sm:gap-2 group cursor-pointer"
                     >
-                      <FiRefreshCw className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" />
+                      <FiRefreshCw className="w-3 h-3 sm:w-3.5 sm:h-3.5 group-hover:rotate-180 transition-transform duration-500" />
                       Analyze New Resume
                     </button>
-                    {/* <button className="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-xl font-medium shadow-md hover:shadow-lg transition-all flex items-center gap-2 group hover:scale-105">
-                      <FaRocket className="w-4 h-4 group-hover:rotate-12 transition-transform" />
-                      Optimize Resume
-                      <FiArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </button> */}
                   </div>
                 </div>
               </div>
