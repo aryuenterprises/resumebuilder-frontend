@@ -275,7 +275,7 @@ export  function SimpleCanvasPreview({ children }: SimpleCanvasPreviewProps) {
     
 
       {/* Zoom Level Indicator */}
-      <motion.div
+      {/* <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         className="absolute top-4 right-4 z-30 pointer-events-none"
@@ -285,7 +285,7 @@ export  function SimpleCanvasPreview({ children }: SimpleCanvasPreviewProps) {
             {Math.round(scale * 100)}%
           </span>
         </div>
-      </motion.div>
+      </motion.div> */}
 
       
     </div>

@@ -10,6 +10,7 @@ import {
   TemplateSix,
   TemplateTen,
   TemplateThree,
+  TemplateTwelve,
   TemplateTwo,
 } from "../components/templates";
 import { Template } from "../types";
@@ -100,22 +101,22 @@ export const templateData: Template[] = [
     temp: "paid",
     component: TemplateTen,
   },
-  //  {
-  //   id: 11,
-  //   style: "The Analyst",
-  //   image: "/images/resume11.png",
-  //   description: "Creative design with eye-catching sections.",
-  //   temp: "paid",
-  //   component: TemplateEleven,
-  // },
-  //  {
-  //   id: 12,
-  //   style: "The Analyst",
-  //   image: "/images/resume12.png",
-  //   description: "Creative design with eye-catching sections.",
-  //   temp: "paid",
-  //   component: TemplateTwelve,
-  // },
+   {
+    id: 11,
+    style: "The Analyst",
+    image: "/images/resume11.png",
+    description: "Creative design with eye-catching sections.",
+    temp: "paid",
+    component: TemplateEleven,
+  },
+   {
+    id: 12,
+    style: "The Analyst",
+    image: "/images/resume12.png",
+    description: "Creative design with eye-catching sections.",
+    temp: "paid",
+    component: TemplateTwelve,
+  },
   //  {
   //   id: 13,
   //   style: "The Analyst",
