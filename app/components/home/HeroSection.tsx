@@ -42,9 +42,9 @@ export const HeroSection = () => {
               Job opportunity
             </span>
           </span>
-          <br className="hidden xs:block" />
+          <br className="max-xs:hidden " />
           <span className="bg-linear-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
-            starts with the right resume
+            {" "}starts with the right resume
           </span>
         </motion.h1>
 

@@ -6720,29 +6720,7 @@ const TemplateNine: React.FC<ResumeProps> = ({ alldata }) => {
   }
 }
 
-  @media (max-width: 768px) {
-    .t9-resume {
-      width: 100%;
-    }
-
-    .t9-resume .header-banner {
-      padding: 20px;
-    }
-
-    .t9-resume .resume-body {
-      padding: 16px 20px;
-    }
-
-    .t9-resume .entry-top-row {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
-    .t9-resume .project-header {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-  }
+  
 `;
 
   /* ======================================================

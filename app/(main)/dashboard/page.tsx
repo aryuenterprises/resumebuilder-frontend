@@ -2829,14 +2829,13 @@ const DashboardPage = () => {
   };
 
 
-  console.log("usersCurrentPlan",usersCurrentPlan)
 
   return (
     <ProtectedRoute>
       <Toaster position="top-right" />
 
       <div className="min-h-screen bg-gradient-to-br from-indigo-50/30 via-white to-indigo-50/20">
-        <div className="relative z-10 max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-5 lg:px-6 py-4 sm:py-6 lg:py-8">
           {/* Header Section */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}

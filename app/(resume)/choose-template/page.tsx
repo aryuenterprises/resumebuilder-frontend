@@ -3035,6 +3035,7 @@ function Choose_template() {
 
   removeSessionStorage("oldRouteNameDashboard");
 
+  
   const [usersCurrentPlan, setUsersCurrentPlan] =
     useState<usersCurrentPlan | null>(null);
   const [showUpgradePopup, setShowUpgradePopup] = useState(false);
@@ -3052,12 +3053,12 @@ function Choose_template() {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState<string>("idle");
   const [errorMessage, setErrorMessage] = useState("");
-  const [hoveredTemplate, setHoveredTemplate] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [showPlanRequiredPopup, setShowPlanRequiredPopup] = useState(false);
   const [selectedTemplateForMobile, setSelectedTemplateForMobile] =
     useState<Template | null>(null);
+
 
   useEffect(() => {
     const checkMobile = () => {

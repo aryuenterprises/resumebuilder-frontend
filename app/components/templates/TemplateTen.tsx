@@ -4804,33 +4804,7 @@ const TemplateTen: React.FC<ResumeProps> = ({ alldata }) => {
     }
   }
 
-  @media (max-width: 768px) {
-    .t10-resume {
-      width: 100%;
-    }
 
-    .t10-resume .header-block {
-      padding: 20px 20px 16px;
-    }
-
-    .t10-resume .header-name {
-      font-size: 48px;
-    }
-
-    .t10-resume .resume-body {
-      padding: 16px 20px;
-    }
-
-    .t10-resume .entry-top-row {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
-    .t10-resume .project-header {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-  }
 `;
 
   /* ======================================================

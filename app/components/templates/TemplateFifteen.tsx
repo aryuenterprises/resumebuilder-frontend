@@ -2272,3 +2272,1107 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"use client";
+import React, { useContext } from "react";
+import axios from "axios";
+import { CreateContext } from "@/app/context/CreateContext";
+import { API_URL } from "@/app/config/api";
+import { formatMonthYear, MonthYearDisplay, cleanQuillHTML, formatDateOfBirth, formatGradeToCgpdAndPercentage } from "@/app/utils";
+import { usePathname } from "next/navigation";
+import { ResumeProps } from "@/app/types";
+import { motion } from "framer-motion";
+
+const TemplateFifteen: React.FC<ResumeProps> = ({ alldata }) => {
+  const context = useContext(CreateContext);
+
+  const pathname = usePathname();
+  const lastSegment = pathname.split("/").pop();
+
+  const contact = alldata?.contact || context.contact || {};
+  const educations = alldata?.educations || context?.education || [];
+  const experiences = alldata?.experiences || context?.experiences || [];
+  const skills = alldata?.skills?.text || context?.skills?.text || "";
+  const projects = alldata?.projects || context?.projects || [];
+  const finalize = alldata?.finalize || context?.finalize || {};
+  const summary = alldata?.summary || context?.summary || "";
+
+  const addressParts = [
+    contact?.address,
+    contact?.city,
+    contact?.postCode,
+    contact?.country,
+  ].filter(Boolean);
+
+  const linkedinUrl = contact?.linkedIn;
+  const portfolioUrl = contact?.portfolio;
+  const githubUrl = contact?.github;
+  const dateOfBirth = contact?.dob;
+  const formattedDob = formatDateOfBirth(dateOfBirth ? dateOfBirth : "");
+
+  // Helper function to render skills (using cleanQuillHTML)
+  const renderSkills = () => {
+    if (!skills || (typeof skills === "string" && !skills.trim())) return null;
+
+    const cleanedSkills = cleanQuillHTML(skills);
+
+    if (!cleanedSkills || cleanedSkills === "<p><br></p>" || cleanedSkills === "") return null;
+
+    return (
+      <div className="section">
+        <h2 className="section-title">Skills & Expertise</h2>
+        <div className="skills-container">
+          <div
+            className="skills-content"
+            dangerouslySetInnerHTML={{ __html: cleanedSkills }}
+          />
+        </div>
+      </div>
+    );
+  };
+
+  // Helper function to render projects
+  const renderProjects = () => {
+    if (!projects || projects.length === 0) return null;
+
+    return (
+      <div className="section">
+        <h2 className="section-title">Projects</h2>
+        {projects.map((project: any, index: number) => (
+          <div key={project.id || index} className="experience-item">
+            <div className="experience-header">
+              <div className="experience-title-row">
+                <span className="experience-title">{project.title}</span>
+                {(project.liveUrl || project.githubUrl) && (
+                  <div className="project-links">
+                    {project.liveUrl && (
+                      <a
+                        href={project.liveUrl.startsWith("http") ? project.liveUrl : `https://${project.liveUrl}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="project-link"
+                      >
+                        Live Demo
+                      </a>
+                    )}
+                    {project.githubUrl && (
+                      <a
+                        href={project.githubUrl.startsWith("http") ? project.githubUrl : `https://${project.githubUrl}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="project-link"
+                      >
+                        GitHub
+                      </a>
+                    )}
+                  </div>
+                )}
+              </div>
+              {project.techStack && project.techStack.length > 0 && (
+                <div className="project-tech-stack">
+                  <strong>Tech:</strong> {project.techStack.join(" • ")}
+                </div>
+              )}
+              {project.description && (
+                <div
+                  className="experience-description"
+                  dangerouslySetInnerHTML={{ __html: cleanQuillHTML(project.description) }}
+                />
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  /* ======================================================
+     CSS — CREATIVE COLORFUL RESUME
+  ====================================================== */
+  const styles = `
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+    
+
+    body {
+      font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e9eef5 100%);
+      line-height: 1.5;
+      color: #1F2937;
+    }
+
+    .resume-container {
+      max-width: 210mm;
+      margin: 0 auto;
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+    }
+
+    .resume-container.is-preview {
+      transform: scale(0.36);
+      transform-origin: top left;
+      width: 210mm;
+      height: auto;
+      max-height: none;
+      min-height: auto;
+      max-width: none;
+      min-width: auto;
+      overflow: visible;
+    }
+
+    /* Fix p tag spacing */
+    .resume-container p {
+      margin: 0 0 6px 0 !important;
+      padding: 0 !important;
+      line-height: 1.6 !important;
+    }
+
+    .resume-container p:last-child {
+      margin-bottom: 0 !important;
+    }
+
+    /* Rich text content styles */
+    .resume-container .experience-description ul,
+    .resume-container .experience-description ol,
+    .resume-container .education-description ul,
+    .resume-container .education-description ol,
+    .resume-container .skills-content ul,
+    .resume-container .skills-content ol,
+    .resume-container .custom-section-content ul,
+    .resume-container .custom-section-content ol {
+      margin: 6px 0 6px 20px !important;
+      padding-left: 20px !important;
+    }
+
+    .resume-container .experience-description li,
+    .resume-container .education-description li,
+    .resume-container .skills-content li,
+    .resume-container .custom-section-content li {
+      margin-bottom: 4px !important;
+      line-height: 1.6 !important;
+    }
+
+    .resume-container .experience-description ul,
+    .resume-container .education-description ul,
+    .resume-container .skills-content ul,
+    .resume-container .custom-section-content ul {
+      list-style-type: disc !important;
+    }
+
+    .resume-container .experience-description ol,
+    .resume-container .education-description ol,
+    .resume-container .skills-content ol,
+    .resume-container .custom-section-content ol {
+      list-style-type: decimal !important;
+    }
+
+    .resume-container .experience-description strong,
+    .resume-container .education-description strong,
+    .resume-container .skills-content strong,
+    .resume-container .custom-section-content strong {
+      font-weight: 700 !important;
+    }
+
+    .resume-container .experience-description em,
+    .resume-container .education-description em,
+    .resume-container .skills-content em,
+    .resume-container .custom-section-content em {
+      font-style: italic !important;
+    }
+
+    .resume-container .experience-description u,
+    .resume-container .education-description u,
+    .resume-container .skills-content u,
+    .resume-container .custom-section-content u {
+      text-decoration: underline !important;
+    }
+
+    /* Preserve spaces in content */
+    .resume-container .experience-description p,
+    .resume-container .education-description p,
+    .resume-container .skills-content p,
+    .resume-container .custom-section-content p {
+      white-space: pre-wrap !important;
+    }
+
+    /* Skills content styling */
+    .resume-container .skills-content {
+      font-size: 13px;
+      font-weight: 500;
+      color: #4B5563;
+      line-height: 1.6;
+    }
+
+    /* Header Section - Gradient Background */
+    .resume-header {
+      padding: 50px 50px 40px 50px;
+      background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+      color: white;
+      position: relative;
+    }
+
+    .resume-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #EC4899, #6366F1, #8B5CF6);
+    }
+
+    .name {
+      font-size: 48px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+      color: white;
+      line-height: 1.2;
+    }
+
+    .job-title {
+      font-size: 18px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.9);
+      letter-spacing: 0.5px;
+      margin-bottom: 25px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .contact-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      margin-top: 15px;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .contact-icon {
+      font-size: 16px;
+    }
+
+    .address {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.9);
+      margin-top: 12px;
+    }
+
+    .links {
+      margin-top: 15px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .link-item {
+      color: rgba(255, 255, 255, 0.9);
+      text-decoration: none;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    /* Main Content */
+    .resume-main {
+      padding: 45px 50px 50px 50px;
+    }
+
+    /* Section Styles */
+    .section {
+      margin-bottom: 35px;
+    }
+
+    .section:last-child {
+      margin-bottom: 0;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1F2937;
+      margin-bottom: 20px;
+      padding-bottom: 8px;
+      border-bottom: 3px solid #6366F1;
+      display: inline-block;
+      letter-spacing: -0.3px;
+    }
+
+    /* Summary */
+    .summary-text {
+      font-size: 14px;
+      line-height: 1.7;
+      color: #6B7280;
+      font-weight: 400;
+    }
+
+    /* Experience Items */
+    .experience-item {
+      margin-bottom: 30px;
+      position: relative;
+      padding-left: 20px;
+      border-left: 3px solid #6366F1;
+    }
+
+    .experience-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .experience-header {
+      margin-bottom: 10px;
+    }
+
+    .experience-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .experience-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1F2937;
+    }
+
+    .experience-date {
+      font-size: 12px;
+      font-weight: 500;
+      color: #6366F1;
+      background: rgba(99, 102, 241, 0.1);
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    .experience-company {
+      font-size: 14px;
+      font-weight: 500;
+      color: #8B5CF6;
+      margin-top: 4px;
+    }
+
+    .experience-description {
+      margin-top: 12px;
+    }
+
+    /* Education Items */
+    .education-item {
+      margin-bottom: 25px;
+      position: relative;
+      padding-left: 20px;
+      border-left: 3px solid #8B5CF6;
+    }
+
+    .education-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .education-header {
+      margin-bottom: 8px;
+    }
+
+    .education-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .education-school {
+      font-size: 17px;
+      font-weight: 700;
+      color: #1F2937;
+    }
+
+    .education-date {
+      font-size: 12px;
+      font-weight: 500;
+      color: #8B5CF6;
+      background: rgba(139, 92, 246, 0.1);
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    .education-degree {
+      font-size: 14px;
+      font-weight: 500;
+      color: #6B7280;
+      margin-top: 4px;
+    }
+
+    .education-description {
+      margin-top: 10px;
+    }
+
+    /* Skills - Colorful Content */
+    .skills-container {
+      margin-top: 10px;
+    }
+
+    .skills-content {
+      font-size: 13px;
+      font-weight: 500;
+      color: #4B5563;
+    }
+
+    /* Categorized Skills */
+    .skill-category-block {
+      margin-bottom: 20px;
+    }
+
+    .skill-category-block:last-child {
+      margin-bottom: 0;
+    }
+
+    .skill-category-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1F2937;
+      margin-bottom: 10px;
+      padding-bottom: 4px;
+      border-bottom: 2px solid #6366F1;
+      display: inline-block;
+    }
+
+    /* Projects */
+    .project-links {
+      display: flex;
+      gap: 15px;
+    }
+
+    .project-link {
+      font-size: 11px;
+      font-weight: 500;
+      color: #6366F1;
+      text-decoration: underline;
+    }
+
+    .project-tech-stack {
+      font-size: 12px;
+      color: #6B7280;
+      margin: 6px 0;
+    }
+
+    /* Custom Sections */
+    .custom-section {
+      margin-bottom: 22px;
+      position: relative;
+      padding-left: 20px;
+      border-left: 3px solid #EC4899;
+    }
+
+    .custom-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .custom-section-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1F2937;
+      margin-bottom: 8px;
+    }
+
+    .custom-section-content {
+      font-size: 14px;
+      color: #6B7280;
+      line-height: 1.6;
+      font-weight: 400;
+    }
+
+    /* Education Grade */
+    .education-grade {
+      font-size: 11px;
+      color: #6B7280;
+      margin-top: 4px;
+      font-weight: 500;
+    }
+
+    /* Print Styles */
+    @media print {
+      @page {
+        size: A4;
+        margin: 0;
+      }
+
+      body {
+        background: white;
+        padding: 0;
+        margin: 0;
+      }
+
+      .resume-container {
+        max-width: 100%;
+        margin: 0;
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      .resume-header {
+        background: #6366F1 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        padding: 40px 40px 30px 40px !important;
+      }
+
+      .resume-main {
+        padding: 35px 40px 40px 40px !important;
+      }
+
+      .resume-container p {
+        margin: 0 0 6px 0 !important;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      body {
+        padding: 20px;
+      }
+
+      .resume-header {
+        padding: 35px 30px 25px 30px !important;
+      }
+
+      .resume-main {
+        padding: 30px 30px 35px 30px !important;
+      }
+
+      .name {
+        font-size: 36px;
+      }
+
+      .job-title {
+        font-size: 16px;
+      }
+
+      .contact-info {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .section-title {
+        font-size: 18px;
+      }
+
+      .experience-title-row {
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .education-title-row {
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .project-links {
+        margin-top: 6px;
+      }
+    }
+  `;
+
+  const renderDescription = (text: string) => {
+    if (!text) return "";
+    return `<div class="experience-description">${cleanQuillHTML(text)}</div>`;
+  };
+
+  const generateHTML = () => {
+    // Generate skills HTML for PDF
+    const generateSkillsHTML = () => {
+      if (!skills || (typeof skills === "string" && !skills.trim())) return "";
+      
+      const cleanedSkills = cleanQuillHTML(skills);
+      if (!cleanedSkills || cleanedSkills === "<p><br></p>" || cleanedSkills === "") return "";
+      
+      return `
+        <div class="section">
+          <h2 class="section-title">Skills & Expertise</h2>
+          <div class="skills-container">
+            <div class="skills-content">${cleanedSkills}</div>
+          </div>
+        </div>
+      `;
+    };
+
+    // Generate projects HTML for PDF
+    const generateProjectsHTML = () => {
+      if (!projects || projects.length === 0) return "";
+      
+      return `
+        <div class="section">
+          <h2 class="section-title">Projects</h2>
+          ${projects.map((project: any) => `
+            <div class="experience-item">
+              <div class="experience-header">
+                <div class="experience-title-row">
+                  <span class="experience-title">${project.title || ""}</span>
+                  <div class="project-links">
+                    ${project.liveUrl ? `<a href="${project.liveUrl.startsWith("http") ? project.liveUrl : `https://${project.liveUrl}`}" class="project-link">Live Demo</a>` : ""}
+                    ${project.githubUrl ? `<a href="${project.githubUrl.startsWith("http") ? project.githubUrl : `https://${project.githubUrl}`}" class="project-link">GitHub</a>` : ""}
+                  </div>
+                </div>
+                ${project.techStack && project.techStack.length > 0 ? `
+                  <div class="project-tech-stack"><strong>Tech:</strong> ${project.techStack.join(" • ")}</div>
+                ` : ""}
+                ${project.description ? `
+                  <div class="experience-description">${cleanQuillHTML(project.description)}</div>
+                ` : ""}
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    };
+
+    // Generate custom sections HTML for PDF
+    const generateCustomSectionsHTML = () => {
+      if (
+        !finalize ||
+        Array.isArray(finalize) ||
+        !Array.isArray(finalize.customSection) ||
+        !finalize.customSection.some(
+          (s: any) => s?.name?.trim() || s?.description?.trim(),
+        )
+      ) {
+        return "";
+      }
+
+      return `
+        <div class="section">
+          ${finalize.customSection
+            .filter((s: any) => s?.name?.trim() || s?.description?.trim())
+            .map(
+              (s: any) => `
+              <div class="custom-section">
+                ${s.name ? `<h3 class="custom-section-title">${s.name}</h3>` : ""}
+                ${s.description ? `<div class="custom-section-content">${cleanQuillHTML(s.description)}</div>` : ""}
+              </div>
+            `,
+            )
+            .join("")}
+        </div>
+      `;
+    };
+
+    return `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8"/>
+        <title>Resume - ${contact?.firstName || ""} ${contact?.lastName || ""}</title>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+        <style>${styles}</style>
+      </head>
+      <body>
+        <div class="resume-container">
+          <!-- HEADER - GRADIENT -->
+          <div class="resume-header">
+            <h1 class="name">${contact?.firstName || ""} ${contact?.lastName || ""}</h1>
+            <div class="job-title">${
+              contact?.jobTitle
+                ? typeof contact.jobTitle === "string"
+                  ? contact.jobTitle
+                  : (contact.jobTitle as any)?.name || ""
+                : ""
+            }</div>
+            <div class="contact-info">
+              ${contact?.email ? `
+                <div class="contact-item">
+                  <span class="contact-icon">📧</span>
+                  <span>${contact.email}</span>
+                </div>
+              ` : ""}
+              ${contact?.phone ? `
+                <div class="contact-item">
+                  <span class="contact-icon">📱</span>
+                  <span>${contact.phone}</span>
+                </div>
+              ` : ""}
+              ${formattedDob ? `
+                <div class="contact-item">
+                  <span class="contact-icon">🎂</span>
+                  <span>${formattedDob}</span>
+                </div>
+              ` : ""}
+            </div>
+            ${addressParts.length ? `<div class="address">📍 ${addressParts.join(" • ")}</div>` : ""}
+            <div class="links">
+              ${linkedinUrl ? `<a href="${linkedinUrl.startsWith("http") ? linkedinUrl : `https://${linkedinUrl}`}" class="link-item">🔗 LinkedIn</a>` : ""}
+              ${githubUrl ? `<a href="${githubUrl.startsWith("http") ? githubUrl : `https://${githubUrl}`}" class="link-item">🐙 GitHub</a>` : ""}
+              ${portfolioUrl ? `<a href="${portfolioUrl.startsWith("http") ? portfolioUrl : `https://${portfolioUrl}`}" class="link-item">🎨 Portfolio</a>` : ""}
+            </div>
+          </div>
+
+          <!-- MAIN CONTENT -->
+          <div class="resume-main">
+            <!-- SUMMARY -->
+            ${summary ? `
+              <div class="section">
+                <h2 class="section-title">About Me</h2>
+                <div class="summary-text">${cleanQuillHTML(summary)}</div>
+              </div>
+            ` : ""}
+
+            <!-- EXPERIENCE -->
+            ${experiences.length > 0 ? `
+              <div class="section">
+                <h2 class="section-title">Work Experience</h2>
+                ${experiences.map((exp) => {
+                  const startFormatted = formatMonthYear(exp.startDate, false);
+                  const endFormatted = exp.endDate ? formatMonthYear(exp.endDate, false) : "Present";
+                  const companyLocation = [exp.employer, exp.location].filter(Boolean).join(" • ");
+                  return `
+                    <div class="experience-item">
+                      <div class="experience-header">
+                        <div class="experience-title-row">
+                          <span class="experience-title">${exp.jobTitle || ""}</span>
+                          <span class="experience-date">${startFormatted} — ${endFormatted}</span>
+                        </div>
+                        <div class="experience-company">${companyLocation}</div>
+                      </div>
+                      ${exp.text ? renderDescription(exp.text) : ""}
+                    </div>
+                  `;
+                }).join("")}
+              </div>
+            ` : ""}
+
+            <!-- PROJECTS -->
+            ${generateProjectsHTML()}
+
+            <!-- EDUCATION -->
+            ${educations.length > 0 ? `
+              <div class="section">
+                <h2 class="section-title">Education</h2>
+                ${educations.map((edu) => {
+                  const dateStr = edu.startDate || edu.endDate
+                    ? `${edu.startDate || ""}${edu.startDate && edu.endDate ? " — " : ""}${edu.endDate || ""}`
+                    : "";
+                  const formattedGrade = formatGradeToCgpdAndPercentage(edu.grade || "");
+                  const eduTextHtml = edu.text ? cleanQuillHTML(edu.text) : "";
+                  return `
+                    <div class="education-item">
+                      <div class="education-header">
+                        <div class="education-title-row">
+                          <span class="education-school">${edu.schoolname || ""}</span>
+                          ${dateStr ? `<span class="education-date">${dateStr}</span>` : ""}
+                        </div>
+                        ${edu.degree ? `<div class="education-degree">${edu.degree}</div>` : ""}
+                        ${formattedGrade ? `<div class="education-grade">${formattedGrade}</div>` : ""}
+                      </div>
+                      ${eduTextHtml ? `<div class="education-description">${eduTextHtml}</div>` : ""}
+                    </div>
+                  `;
+                }).join("")}
+              </div>
+            ` : ""}
+
+            <!-- SKILLS -->
+            ${generateSkillsHTML()}
+
+            <!-- CUSTOM SECTIONS -->
+            ${generateCustomSectionsHTML()}
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+  };
+
+  const handleDownload = async () => {
+    try {
+      const html = generateHTML();
+      const res = await axios.post(
+        `${API_URL}/api/candidates/generate-pdf`,
+        { html },
+        { responseType: "blob" }
+      );
+      const url = URL.createObjectURL(res.data);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      alert("Failed to generate PDF. Please try again.");
+    }
+  };
+
+  return (
+    <div style={{ textAlign: "left", marginTop: 0 }}>
+      {lastSegment === "download-resume" && (
+        <div className="text-center my-5">
+          <motion.button
+            onClick={handleDownload}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-indigo-500 text-2xl md:text-base hover:bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 cursor-pointer shadow-md hover:shadow-lg"
+          >
+            📄 Download Resume
+          </motion.button>
+        </div>
+      )}
+
+      {/* Resume Preview */}
+      <div className={`resume-container ${alldata ? 'is-preview' : ''}`} style={{ margin: "0 auto" }}>
+        <style>{styles}</style>
+
+        {/* HEADER - GRADIENT */}
+        <div className="resume-header">
+          <h1 className="name">
+            {contact?.firstName} {contact?.lastName}
+          </h1>
+          <div className="job-title">
+            {contact?.jobTitle
+              ? typeof contact.jobTitle === "string"
+                ? contact.jobTitle
+                : (contact.jobTitle as any)?.name || ""
+              : ""}
+          </div>
+          <div className="contact-info">
+            {contact?.email && (
+              <div className="contact-item">
+                <span className="contact-icon">📧</span>
+                <span>{contact.email}</span>
+              </div>
+            )}
+            {contact?.phone && (
+              <div className="contact-item">
+                <span className="contact-icon">📱</span>
+                <span>{contact.phone}</span>
+              </div>
+            )}
+            {formattedDob && (
+              <div className="contact-item">
+                <span className="contact-icon">🎂</span>
+                <span>{formattedDob}</span>
+              </div>
+            )}
+          </div>
+          {addressParts.length > 0 && (
+            <div className="address">📍 {addressParts.join(" • ")}</div>
+          )}
+          <div className="links">
+            {linkedinUrl && (
+              <a
+                href={linkedinUrl.startsWith("http") ? linkedinUrl : `https://${linkedinUrl}`}
+                className="link-item"
+                target="_blank"
+                rel="noreferrer"
+              >
+                🔗 LinkedIn
+              </a>
+            )}
+            {githubUrl && (
+              <a
+                href={githubUrl.startsWith("http") ? githubUrl : `https://${githubUrl}`}
+                className="link-item"
+                target="_blank"
+                rel="noreferrer"
+              >
+                🐙 GitHub
+              </a>
+            )}
+            {portfolioUrl && (
+              <a
+                href={portfolioUrl.startsWith("http") ? portfolioUrl : `https://${portfolioUrl}`}
+                className="link-item"
+                target="_blank"
+                rel="noreferrer"
+              >
+                🎨 Portfolio
+              </a>
+            )}
+          </div>
+        </div>
+
+        {/* MAIN CONTENT */}
+        <div className="resume-main">
+          {/* SUMMARY */}
+          {summary && (
+            <div className="section">
+              <h2 className="section-title">About Me</h2>
+              <div
+                className="summary-text"
+                dangerouslySetInnerHTML={{ __html: cleanQuillHTML(summary) }}
+              />
+            </div>
+          )}
+
+          {/* EXPERIENCE */}
+          {experiences.length > 0 && (
+            <div className="section">
+              <h2 className="section-title">Work Experience</h2>
+              {experiences.map((exp, i) => {
+                const start = formatMonthYear(exp.startDate, false);
+                const end = exp.endDate ? formatMonthYear(exp.endDate, false) : "Present";
+                const companyLocation = [exp.employer, exp.location].filter(Boolean).join(" • ");
+                return (
+                  <div key={i} className="experience-item">
+                    <div className="experience-header">
+                      <div className="experience-title-row">
+                        <span className="experience-title">{exp.jobTitle}</span>
+                        <span className="experience-date">{start} — {end}</span>
+                      </div>
+                      <div className="experience-company">{companyLocation}</div>
+                    </div>
+                    {exp.text && (
+                      <div
+                        className="experience-description"
+                        dangerouslySetInnerHTML={{ __html: cleanQuillHTML(exp.text) }}
+                      />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* PROJECTS */}
+          {renderProjects()}
+
+          {/* EDUCATION */}
+          {educations.length > 0 && (
+            <div className="section">
+              <h2 className="section-title">Education</h2>
+              {educations.map((edu, i) => {
+                const formattedGrade = formatGradeToCgpdAndPercentage(edu.grade || "");
+                const eduTextHtml = edu.text ? cleanQuillHTML(edu.text) : "";
+                return (
+                  <div key={i} className="education-item">
+                    <div className="education-header">
+                      <div className="education-title-row">
+                        <span className="education-school">{edu.schoolname}</span>
+                        {(edu.startDate || edu.endDate) && (
+                          <span className="education-date">
+                            {edu.startDate || ""}
+                            {edu.startDate && edu.endDate && " — "}
+                            {edu.endDate || ""}
+                          </span>
+                        )}
+                      </div>
+                      {edu.degree && <div className="education-degree">{edu.degree}</div>}
+                      {formattedGrade && <div className="education-grade">{formattedGrade}</div>}
+                    </div>
+                    {eduTextHtml && (
+                      <div
+                        className="education-description"
+                        dangerouslySetInnerHTML={{ __html: eduTextHtml }}
+                      />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* SKILLS */}
+          {renderSkills()}
+
+          {/* CUSTOM SECTIONS */}
+          {finalize &&
+            !Array.isArray(finalize) &&
+            Array.isArray(finalize.customSection) &&
+            finalize.customSection.some(
+              (s) => s?.name?.trim() || s?.description?.trim()
+            ) && (
+              <div className="section">
+                {finalize.customSection.map(
+                  (section, i) =>
+                    (section?.name?.trim() || section?.description?.trim()) && (
+                      <div key={i} className="custom-section">
+                        {section.name && (
+                          <h3 className="custom-section-title">{section.name}</h3>
+                        )}
+                        {section.description && (
+                          <div
+                            className="custom-section-content"
+                            dangerouslySetInnerHTML={{ __html: cleanQuillHTML(section.description) }}
+                          />
+                        )}
+                      </div>
+                    )
+                )}
+              </div>
+            )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default TemplateFifteen;

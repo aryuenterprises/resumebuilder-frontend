@@ -1646,7 +1646,7 @@
 //                                 Additional Information
 //                               </h2>
 
-//                               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//                               <div className="grid grid-cols-1 md:sm:grid-cols-2 gap-6">
 //                                 {cvData.additionalCredentials.languages.length > 0 && (
 //                                   <div>
 //                                     <h3 className="font-medium mb-2" style={{ color: colorSchemes[colorScheme].primary }}>
@@ -2573,7 +2573,7 @@
 // //             <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
 // //               Key Highlights
 // //             </h3>
-// //             <div className="grid grid-cols-2 gap-4">
+// //             <div className="grid sm:grid-cols-2 gap-4">
 // //               {data.highlights.skills.length > 0 && (
 // //                 <div>
 // //                   <h4 className="text-xs font-medium text-gray-400 mb-2">Skills</h4>
@@ -10625,31 +10625,5771 @@
 //   );
 // }
 
+// "use client";
+// import React, { useState, useRef, useEffect, useCallback } from "react";
+// import axios from "axios";
+// import { API_URL } from "@/app/config/api";
+// import Image from "next/image";
+// import { useRouter } from "next/navigation";
 
+// // ═══════════════════════════════════════════
+// // TYPES
+// // ═══════════════════════════════════════════
+// interface PersonalInfo {
+//   fullName: string;
+//   title: string;
+//   email: string;
+//   phone: string;
+//   location: string;
+//   website: string;
+//   linkedin: string;
+//   github: string;
+// }
+// interface CompanyInfo {
+//   name: string;
+//   jobTitle: string;
+//   hiringManager: string;
+//   hiringManagerTitle: string;
+//   city: string;
+//   state: string;
+// }
+// interface Section {
+//   id: string;
+//   title: string;
+//   content: string;
+//   placeholder: string;
+// }
+// interface CLData {
+//   personal: PersonalInfo;
+//   company: CompanyInfo;
+//   sections: Section[];
+//   achievements: string[];
+//   notes: string;
+// }
 
+// const BLANK: CLData = {
+//   personal: {
+//     fullName: "",
+//     title: "",
+//     email: "",
+//     phone: "",
+//     location: "",
+//     website: "",
+//     linkedin: "",
+//     github: "",
+//   },
+//   company: {
+//     name: "",
+//     jobTitle: "",
+//     hiringManager: "",
+//     hiringManagerTitle: "",
+//     city: "",
+//     state: "",
+//   },
+//   sections: [
+//     {
+//       id: "1",
+//       title: "Opening Statement",
+//       content: "",
+//       placeholder:
+//         "Express your enthusiasm for the role and why you are the perfect fit…",
+//     },
+//     {
+//       id: "2",
+//       title: "Experience & Skills",
+//       content: "",
+//       placeholder:
+//         "Highlight 2-3 relevant accomplishments that prove your value…",
+//     },
+//     {
+//       id: "3",
+//       title: "Why This Company",
+//       content: "",
+//       placeholder:
+//         "Show genuine research — what specifically excites you about this org…",
+//     },
+//     {
+//       id: "4",
+//       title: "Closing",
+//       content: "",
+//       placeholder: "Thank them, reiterate enthusiasm, and invite next steps…",
+//     },
+//   ],
+//   achievements: [],
+//   notes: "",
+// };
 
+// // ═══════════════════════════════════════════
+// // REAL TEMPLATE SVG THUMBNAILS
+// // ═══════════════════════════════════════════
+// const TemplateThumbnail = ({ id }: { id: string }) => {
+//   switch (id) {
+//     case "aurora":
+//       return (
+//         <svg
+//           viewBox="0 0 220 155"
+//           xmlns="http://www.w3.org/2000/svg"
+//           width="100%"
+//           height="100%"
+//         >
+//           <rect width="220" height="155" fill="#fff" />
+//           <rect width="220" height="52" fill="#4f46e5" />
+//           <circle cx="195" cy="-10" r="45" fill="#6366f1" opacity=".5" />
+//           <rect
+//             x="14"
+//             y="13"
+//             width="90"
+//             height="8"
+//             rx="2"
+//             fill="rgba(255,255,255,.9)"
+//           />
+//           <rect
+//             x="14"
+//             y="25"
+//             width="55"
+//             height="5"
+//             rx="1.5"
+//             fill="rgba(255,255,255,.6)"
+//           />
+//           <rect
+//             x="14"
+//             y="38"
+//             width="28"
+//             height="5"
+//             rx="10"
+//             fill="rgba(255,255,255,.25)"
+//             stroke="rgba(255,255,255,.4)"
+//             strokeWidth=".5"
+//           />
+//           <rect
+//             x="46"
+//             y="38"
+//             width="32"
+//             height="5"
+//             rx="10"
+//             fill="rgba(255,255,255,.25)"
+//             stroke="rgba(255,255,255,.4)"
+//             strokeWidth=".5"
+//           />
+//           <rect
+//             x="82"
+//             y="38"
+//             width="28"
+//             height="5"
+//             rx="10"
+//             fill="rgba(255,255,255,.25)"
+//             stroke="rgba(255,255,255,.4)"
+//             strokeWidth=".5"
+//           />
+//           <rect x="14" y="62" width="40" height="3" rx="1" fill="#9ca3af" />
+//           <rect x="14" y="70" width="130" height="3" rx="1" fill="#e5e7eb" />
+//           <rect x="14" y="76" width="110" height="3" rx="1" fill="#e5e7eb" />
+//           <rect x="14" y="88" width="50" height="3" rx="1" fill="#6366f1" />
+//           <rect x="14" y="95" width="180" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="14" y="100" width="165" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="14" y="105" width="175" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="14" y="116" width="50" height="3" rx="1" fill="#6366f1" />
+//           <rect x="14" y="123" width="180" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="14" y="128" width="120" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="14" y="140" width="35" height="3" rx="1" fill="#9ca3af" />
+//           <rect x="14" y="147" width="55" height="3" rx="1" fill="#374151" />
+//         </svg>
+//       );
+//     case "obsidian":
+//       return (
+//         <svg
+//           viewBox="0 0 220 155"
+//           xmlns="http://www.w3.org/2000/svg"
+//           width="100%"
+//           height="100%"
+//         >
+//           <rect width="220" height="155" fill="#fff" />
+//           <rect width="65" height="155" fill="#1e1b4b" />
+//           <rect
+//             x="8"
+//             y="14"
+//             width="48"
+//             height="7"
+//             rx="1.5"
+//             fill="rgba(233,213,255,.85)"
+//           />
+//           <rect
+//             x="8"
+//             y="25"
+//             width="35"
+//             height="3.5"
+//             rx="1"
+//             fill="rgba(165,180,252,.5)"
+//           />
+//           <rect
+//             x="8"
+//             y="38"
+//             width="48"
+//             height="1"
+//             rx=".5"
+//             fill="rgba(165,180,252,.2)"
+//           />
+//           <rect
+//             x="8"
+//             y="46"
+//             width="20"
+//             height="2.5"
+//             rx="1"
+//             fill="rgba(109,91,186,.7)"
+//           />
+//           <rect
+//             x="8"
+//             y="52"
+//             width="45"
+//             height="2.5"
+//             rx="1"
+//             fill="rgba(196,181,253,.6)"
+//           />
+//           <rect
+//             x="8"
+//             y="57"
+//             width="38"
+//             height="2.5"
+//             rx="1"
+//             fill="rgba(196,181,253,.6)"
+//           />
+//           <rect
+//             x="8"
+//             y="66"
+//             width="20"
+//             height="2.5"
+//             rx="1"
+//             fill="rgba(109,91,186,.7)"
+//           />
+//           <rect
+//             x="8"
+//             y="72"
+//             width="40"
+//             height="2.5"
+//             rx="1"
+//             fill="rgba(196,181,253,.6)"
+//           />
+//           <rect
+//             x="8"
+//             y="80"
+//             width="20"
+//             height="2.5"
+//             rx="1"
+//             fill="rgba(109,91,186,.7)"
+//           />
+//           <rect
+//             x="8"
+//             y="86"
+//             width="43"
+//             height="2.5"
+//             rx="1"
+//             fill="rgba(196,181,253,.6)"
+//           />
+//           <rect x="78" y="14" width="35" height="3" rx="1" fill="#9ca3af" />
+//           <rect x="78" y="22" width="125" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="78" y="27" width="100" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="78" y="38" width="40" height="3" rx="1" fill="#7c3aed" />
+//           <rect x="78" y="45" width="135" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="78" y="50" width="125" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="78" y="55" width="130" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="78" y="65" width="40" height="3" rx="1" fill="#7c3aed" />
+//           <rect x="78" y="72" width="135" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="78" y="77" width="110" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="78" y="90" width="40" height="3" rx="1" fill="#7c3aed" />
+//           <rect x="78" y="97" width="135" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="78" y="102" width="90" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="78" y="118" width="30" height="2.5" rx="1" fill="#9ca3af" />
+//           <rect x="78" y="125" width="50" height="3" rx="1" fill="#374151" />
+//         </svg>
+//       );
+//     case "nordic":
+//       return (
+//         <svg
+//           viewBox="0 0 220 155"
+//           xmlns="http://www.w3.org/2000/svg"
+//           width="100%"
+//           height="100%"
+//         >
+//           <rect width="220" height="155" fill="#fff" />
+//           <rect x="18" y="14" width="65" height="3" rx="1" fill="#c7d2fe" />
+//           <rect x="18" y="22" width="120" height="10" rx="1.5" fill="#1e1b4b" />
+//           <rect x="18" y="36" width="36" height="3" rx="1" fill="#4f46e5" />
+//           <rect x="18" y="44" width="185" height="1" rx=".5" fill="#e0e7ff" />
+//           <rect x="18" y="50" width="55" height="2.5" rx="1" fill="#9ca3af" />
+//           <rect x="80" y="50" width="55" height="2.5" rx="1" fill="#9ca3af" />
+//           <rect x="148" y="50" width="55" height="2.5" rx="1" fill="#9ca3af" />
+//           <rect x="18" y="62" width="35" height="2.5" rx="1" fill="#9ca3af" />
+//           <rect x="18" y="70" width="185" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="18" y="75" width="170" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="18" y="86" width="42" height="3" rx="1" fill="#4338ca" />
+//           <rect x="18" y="93" width="185" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="18" y="98" width="160" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="18" y="103" width="175" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="18" y="114" width="42" height="3" rx="1" fill="#4338ca" />
+//           <rect x="18" y="121" width="185" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="18" y="126" width="110" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="18" y="140" width="28" height="2.5" rx="1" fill="#9ca3af" />
+//           <rect x="18" y="147" width="50" height="3" rx="1" fill="#374151" />
+//         </svg>
+//       );
+//     case "slate":
+//       return (
+//         <svg
+//           viewBox="0 0 220 155"
+//           xmlns="http://www.w3.org/2000/svg"
+//           width="100%"
+//           height="100%"
+//         >
+//           <rect width="220" height="155" fill="#fff" />
+//           <rect x="14" y="14" width="95" height="9" rx="1.5" fill="#0f172a" />
+//           <rect x="14" y="27" width="55" height="3" rx="1" fill="#64748b" />
+//           <rect x="130" y="14" width="76" height="2.5" rx="1" fill="#475569" />
+//           <rect x="130" y="20" width="60" height="2.5" rx="1" fill="#475569" />
+//           <rect x="130" y="26" width="70" height="2.5" rx="1" fill="#475569" />
+//           <rect x="14" y="38" width="192" height="2" rx=".5" fill="#1e293b" />
+//           <rect
+//             x="14"
+//             y="46"
+//             width="70"
+//             height="4"
+//             rx="2"
+//             fill="#f1f5f9"
+//             stroke="#e2e8f0"
+//             strokeWidth=".5"
+//           />
+//           <rect
+//             x="16"
+//             y="47.5"
+//             width="40"
+//             height="1.5"
+//             rx=".5"
+//             fill="#64748b"
+//           />
+//           <rect x="14" y="56" width="35" height="2.5" rx="1" fill="#9ca3af" />
+//           <rect x="14" y="64" width="185" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="14" y="69" width="160" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="14" y="79" width="3" height="30" rx="1" fill="#334155" />
+//           <rect x="21" y="79" width="38" height="2.5" rx="1" fill="#334155" />
+//           <rect x="21" y="85" width="175" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="21" y="90" width="150" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="21" y="95" width="165" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="14" y="107" width="3" height="25" rx="1" fill="#334155" />
+//           <rect x="21" y="107" width="38" height="2.5" rx="1" fill="#334155" />
+//           <rect x="21" y="113" width="175" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="21" y="118" width="130" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="14" y="135" width="30" height="2.5" rx="1" fill="#9ca3af" />
+//           <rect x="14" y="142" width="50" height="3" rx="1" fill="#374151" />
+//         </svg>
+//       );
+//     case "crimson":
+//       return (
+//         <svg
+//           viewBox="0 0 220 155"
+//           xmlns="http://www.w3.org/2000/svg"
+//           width="100%"
+//           height="100%"
+//         >
+//           <rect width="220" height="155" fill="#fffbf5" />
+//           <rect width="220" height="5" fill="#9f1239" />
+//           <rect x="14" y="14" width="192" height="11" rx="1.5" fill="#1a0a0d" />
+//           <text
+//             x="110"
+//             y="23"
+//             textAnchor="middle"
+//             fontSize="10"
+//             fontWeight="800"
+//             fill="#1a0a0d"
+//             fontFamily="Georgia,serif"
+//           >
+//             Alex Johnson
+//           </text>
+//           <rect
+//             x="60"
+//             y="29"
+//             width="100"
+//             height="3"
+//             rx="1"
+//             fill="#9f1239"
+//             opacity=".7"
+//           />
+//           <text
+//             x="110"
+//             y="37"
+//             textAnchor="middle"
+//             fontSize="5.5"
+//             fill="#9f1239"
+//             fontFamily="Georgia,serif"
+//             fontStyle="italic"
+//           >
+//             Senior Product Manager
+//           </text>
+//           <rect x="80" y="40" width="60" height=".8" fill="#fecdd3" />
+//           <rect x="14" y="46" width="55" height="2" rx="1" fill="#9ca3af" />
+//           <rect x="75" y="46" width="2" height="2" rx="1" fill="#9ca3af" />
+//           <rect x="82" y="46" width="50" height="2" rx="1" fill="#9ca3af" />
+//           <rect x="138" y="46" width="2" height="2" rx="1" fill="#9ca3af" />
+//           <rect x="145" y="46" width="55" height="2" rx="1" fill="#9ca3af" />
+//           <rect x="14" y="54" width="192" height=".8" fill="#fce7ef" />
+//           <rect x="14" y="60" width="35" height="2.5" rx="1" fill="#9ca3af" />
+//           <rect x="14" y="67" width="185" height="2.5" rx="1" fill="#6b7280" />
+//           <rect x="14" y="72" width="160" height="2.5" rx="1" fill="#6b7280" />
+//           <rect x="14" y="80" width="40" height="3" rx="1" fill="#9f1239" />
+//           <rect x="14" y="87" width="185" height="2.5" rx="1" fill="#6b7280" />
+//           <rect x="14" y="92" width="170" height="2.5" rx="1" fill="#6b7280" />
+//           <rect x="14" y="97" width="175" height="2.5" rx="1" fill="#6b7280" />
+//           <rect x="14" y="107" width="40" height="3" rx="1" fill="#9f1239" />
+//           <rect x="14" y="114" width="185" height="2.5" rx="1" fill="#6b7280" />
+//           <rect x="14" y="119" width="140" height="2.5" rx="1" fill="#6b7280" />
+//           <rect x="14" y="135" width="30" height="2.5" rx="1" fill="#9ca3af" />
+//           <rect x="14" y="142" width="52" height="3" rx="1" fill="#374151" />
+//         </svg>
+//       );
+//     case "velvet":
+//       return (
+//         <svg
+//           viewBox="0 0 220 155"
+//           xmlns="http://www.w3.org/2000/svg"
+//           width="100%"
+//           height="100%"
+//         >
+//           <rect width="220" height="155" fill="#13072e" />
+//           <rect width="220" height="155" fill="url(#vlv)" opacity=".9" />
+//           <defs>
+//             <linearGradient id="vlv" x1="0" y1="0" x2="1" y2="1">
+//               <stop offset="0%" stopColor="#1e0f40" />
+//               <stop offset="100%" stopColor="#2d1b69" />
+//             </linearGradient>
+//           </defs>
+//           <circle cx="190" cy="20" r="55" fill="rgba(168,85,247,.1)" />
+//           <rect x="14" y="16" width="80" height="9" rx="1.5" fill="#f3e8ff" />
+//           <rect x="14" y="29" width="50" height="2.5" rx="1" fill="#a78bfa" />
+//           <rect
+//             x="14"
+//             y="40"
+//             width="185"
+//             height=".8"
+//             fill="rgba(196,181,253,.15)"
+//           />
+//           <rect
+//             x="14"
+//             y="47"
+//             width="22"
+//             height="2"
+//             rx="1"
+//             fill="rgba(196,181,253,.5)"
+//           />
+//           <rect
+//             x="38"
+//             y="47"
+//             width="2"
+//             height="2"
+//             rx="1"
+//             fill="rgba(196,181,253,.3)"
+//           />
+//           <rect
+//             x="43"
+//             y="47"
+//             width="30"
+//             height="2"
+//             rx="1"
+//             fill="rgba(196,181,253,.5)"
+//           />
+//           <rect
+//             x="75"
+//             y="47"
+//             width="2"
+//             height="2"
+//             rx="1"
+//             fill="rgba(196,181,253,.3)"
+//           />
+//           <rect
+//             x="80"
+//             y="47"
+//             width="35"
+//             height="2"
+//             rx="1"
+//             fill="rgba(196,181,253,.5)"
+//           />
+//           <rect x="14" y="56" width="35" height="2" rx="1" fill="#7c6fa0" />
+//           <rect
+//             x="14"
+//             y="63"
+//             width="185"
+//             height="2.5"
+//             rx="1"
+//             fill="rgba(212,201,239,.5)"
+//           />
+//           <rect
+//             x="14"
+//             y="68"
+//             width="160"
+//             height="2.5"
+//             rx="1"
+//             fill="rgba(212,201,239,.5)"
+//           />
+//           <rect x="14" y="77" width="38" height="2.5" rx="1" fill="#c084fc" />
+//           <rect
+//             x="14"
+//             y="84"
+//             width="185"
+//             height="2.5"
+//             rx="1"
+//             fill="rgba(212,201,239,.4)"
+//           />
+//           <rect
+//             x="14"
+//             y="89"
+//             width="170"
+//             height="2.5"
+//             rx="1"
+//             fill="rgba(212,201,239,.4)"
+//           />
+//           <rect
+//             x="14"
+//             y="94"
+//             width="150"
+//             height="2.5"
+//             rx="1"
+//             fill="rgba(212,201,239,.4)"
+//           />
+//           <rect x="14" y="103" width="38" height="2.5" rx="1" fill="#c084fc" />
+//           <rect
+//             x="14"
+//             y="110"
+//             width="185"
+//             height="2.5"
+//             rx="1"
+//             fill="rgba(212,201,239,.4)"
+//           />
+//           <rect
+//             x="14"
+//             y="115"
+//             width="120"
+//             height="2.5"
+//             rx="1"
+//             fill="rgba(212,201,239,.4)"
+//           />
+//           <rect x="14" y="132" width="28" height="2" rx="1" fill="#7c6fa0" />
+//           <rect x="14" y="139" width="52" height="3" rx="1" fill="#f3e8ff" />
+//         </svg>
+//       );
+//     case "frost":
+//       return (
+//         <svg
+//           viewBox="0 0 220 155"
+//           xmlns="http://www.w3.org/2000/svg"
+//           width="100%"
+//           height="100%"
+//         >
+//           <defs>
+//             <linearGradient id="frostbg" x1="0" y1="0" x2="1" y2="1">
+//               <stop offset="0%" stopColor="#dbeafe" />
+//               <stop offset="100%" stopColor="#e0f2fe" />
+//             </linearGradient>
+//           </defs>
+//           <rect width="220" height="155" fill="url(#frostbg)" />
+//           <rect
+//             x="6"
+//             y="6"
+//             width="208"
+//             height="143"
+//             rx="10"
+//             fill="rgba(255,255,255,.82)"
+//           />
+//           <rect
+//             x="6"
+//             y="6"
+//             width="208"
+//             height="48"
+//             rx="10"
+//             fill="rgba(12,74,110,.88)"
+//           />
+//           <rect
+//             x="6"
+//             y="30"
+//             width="208"
+//             height="24"
+//             fill="rgba(12,74,110,.88)"
+//           />
+//           <rect x="18" y="16" width="80" height="8" rx="1.5" fill="white" />
+//           <rect
+//             x="18"
+//             y="28"
+//             width="50"
+//             height="3"
+//             rx="1"
+//             fill="rgba(255,255,255,.7)"
+//           />
+//           <rect
+//             x="18"
+//             y="37"
+//             width="25"
+//             height="4"
+//             rx="10"
+//             fill="rgba(255,255,255,.18)"
+//             stroke="rgba(255,255,255,.3)"
+//             strokeWidth=".5"
+//           />
+//           <rect
+//             x="47"
+//             y="37"
+//             width="30"
+//             height="4"
+//             rx="10"
+//             fill="rgba(255,255,255,.18)"
+//             stroke="rgba(255,255,255,.3)"
+//             strokeWidth=".5"
+//           />
+//           <rect
+//             x="81"
+//             y="37"
+//             width="28"
+//             height="4"
+//             rx="10"
+//             fill="rgba(255,255,255,.18)"
+//             stroke="rgba(255,255,255,.3)"
+//             strokeWidth=".5"
+//           />
+//           <rect x="18" y="60" width="38" height="2.5" rx="1" fill="#9ca3af" />
+//           <rect x="18" y="67" width="185" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="18" y="72" width="155" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="18" y="82" width="42" height="3" rx="1" fill="#0369a1" />
+//           <rect x="18" y="89" width="185" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="18" y="94" width="170" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="18" y="99" width="175" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="18" y="109" width="42" height="3" rx="1" fill="#0369a1" />
+//           <rect x="18" y="116" width="185" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="18" y="121" width="130" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="18" y="135" width="30" height="2" rx="1" fill="#9ca3af" />
+//           <rect x="18" y="141" width="52" height="3" rx="1" fill="#374151" />
+//         </svg>
+//       );
+//     case "prism":
+//       return (
+//         <svg
+//           viewBox="0 0 220 155"
+//           xmlns="http://www.w3.org/2000/svg"
+//           width="100%"
+//           height="100%"
+//         >
+//           <rect width="220" height="155" fill="#fff" />
+//           <rect width="220" height="52" fill="#7c3aed" />
+//           <polygon points="100,0 220,0 220,52" fill="rgba(255,255,255,.12)" />
+//           <polygon points="140,0 220,0 220,52" fill="rgba(255,255,255,.08)" />
+//           <rect x="14" y="14" width="85" height="9" rx="1.5" fill="white" />
+//           <rect
+//             x="14"
+//             y="27"
+//             width="50"
+//             height="3.5"
+//             rx="1"
+//             fill="rgba(255,255,255,.7)"
+//           />
+//           <rect x="0" y="52" width="220" height="12" fill="#1e1b4b" />
+//           <rect x="14" y="56" width="40" height="2" rx="1" fill="#a5b4fc" />
+//           <rect x="62" y="56" width="35" height="2" rx="1" fill="#a5b4fc" />
+//           <rect x="105" y="56" width="45" height="2" rx="1" fill="#a5b4fc" />
+//           <rect x="14" y="75" width="35" height="2.5" rx="1" fill="#9ca3af" />
+//           <rect x="14" y="83" width="185" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="14" y="88" width="165" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="14" y="97" width="3" height="22" rx="1" fill="#7c3aed" />
+//           <rect x="21" y="97" width="38" height="2.5" rx="1" fill="#7c3aed" />
+//           <rect x="21" y="103" width="180" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="21" y="108" width="155" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="14" y="117" width="3" height="20" rx="1" fill="#7c3aed" />
+//           <rect x="21" y="117" width="38" height="2.5" rx="1" fill="#7c3aed" />
+//           <rect x="21" y="123" width="180" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="21" y="128" width="100" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="14" y="140" width="30" height="2.5" rx="1" fill="#9ca3af" />
+//           <rect x="14" y="147" width="52" height="3" rx="1" fill="#374151" />
+//         </svg>
+//       );
+//     case "blaze":
+//       return (
+//         <svg
+//           viewBox="0 0 220 155"
+//           xmlns="http://www.w3.org/2000/svg"
+//           width="100%"
+//           height="100%"
+//         >
+//           <rect width="220" height="155" fill="#fff" />
+//           <rect width="220" height="50" fill="#ea580c" />
+//           <polygon points="140,0 220,0 220,50" fill="rgba(255,255,255,.1)" />
+//           <rect
+//             x="14"
+//             y="10"
+//             width="100"
+//             height="12"
+//             rx="1.5"
+//             fill="rgba(255,255,255,.95)"
+//           />
+//           <rect
+//             x="14"
+//             y="27"
+//             width="60"
+//             height="4"
+//             rx="1"
+//             fill="rgba(255,255,255,.7)"
+//           />
+//           <rect x="0" y="50" width="220" height="11" fill="#1e293b" />
+//           <rect x="14" y="54" width="38" height="2" rx="1" fill="#94a3b8" />
+//           <rect x="60" y="54" width="40" height="2" rx="1" fill="#94a3b8" />
+//           <rect x="108" y="54" width="40" height="2" rx="1" fill="#94a3b8" />
+//           <rect x="14" y="70" width="35" height="2.5" rx="1" fill="#9ca3af" />
+//           <rect x="14" y="78" width="185" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="14" y="83" width="160" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="14" y="93" width="3" height="25" rx="1" fill="#ea580c" />
+//           <rect x="21" y="93" width="38" height="2.5" rx="1" fill="#ea580c" />
+//           <rect x="21" y="99" width="185" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="21" y="104" width="170" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="14" y="116" width="3" height="20" rx="1" fill="#ea580c" />
+//           <rect x="21" y="116" width="38" height="2.5" rx="1" fill="#ea580c" />
+//           <rect x="21" y="122" width="185" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="21" y="127" width="130" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="14" y="142" width="30" height="2" rx="1" fill="#9ca3af" />
+//           <rect x="14" y="149" width="52" height="3" rx="1" fill="#374151" />
+//         </svg>
+//       );
+//     case "moss":
+//       return (
+//         <svg
+//           viewBox="0 0 220 155"
+//           xmlns="http://www.w3.org/2000/svg"
+//           width="100%"
+//           height="100%"
+//         >
+//           <rect
+//             width="220"
+//             height="155"
+//             fill="white"
+//             stroke="#bbf7d0"
+//             strokeWidth="1"
+//           />
+//           <rect width="220" height="46" fill="#166534" />
+//           <text x="48" y="28" fontSize="22" fill="rgba(255,255,255,.25)">
+//             🌿
+//           </text>
+//           <rect
+//             x="58"
+//             y="13"
+//             width="75"
+//             height="8"
+//             rx="1.5"
+//             fill="rgba(255,255,255,.92)"
+//           />
+//           <rect
+//             x="58"
+//             y="25"
+//             width="50"
+//             height="3"
+//             rx="1"
+//             fill="rgba(255,255,255,.65)"
+//           />
+//           <rect x="0" y="46" width="220" height="11" fill="#f0fdf4" />
+//           <rect x="14" y="50" width="40" height="2" rx="1" fill="#166534" />
+//           <rect x="60" y="50" width="40" height="2" rx="1" fill="#166534" />
+//           <rect x="106" y="50" width="35" height="2" rx="1" fill="#166534" />
+//           <rect x="14" y="65" width="35" height="2.5" rx="1" fill="#9ca3af" />
+//           <rect x="14" y="73" width="185" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="14" y="78" width="155" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="14" y="88" width="42" height="3" rx="1" fill="#166534" />
+//           <rect x="14" y="95" width="185" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="14" y="100" width="170" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="14" y="105" width="175" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="14" y="115" width="42" height="3" rx="1" fill="#166534" />
+//           <rect x="14" y="122" width="185" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="14" y="127" width="115" height="2.5" rx="1" fill="#e5e7eb" />
+//           <rect x="14" y="140" width="30" height="2" rx="1" fill="#9ca3af" />
+//           <rect x="14" y="147" width="52" height="3" rx="1" fill="#374151" />
+//         </svg>
+//       );
+//     case "neon":
+//       return (
+//         <svg
+//           viewBox="0 0 220 155"
+//           xmlns="http://www.w3.org/2000/svg"
+//           width="100%"
+//           height="100%"
+//         >
+//           <rect width="220" height="155" fill="#0a0f1e" />
+//           <rect x="14" y="14" width="95" height="10" rx="1.5" fill="white" />
+//           <rect x="14" y="28" width="55" height="3" rx="1" fill="#22d3ee" />
+//           <rect
+//             x="14"
+//             y="38"
+//             width="192"
+//             height=".8"
+//             fill="rgba(34,211,238,.2)"
+//           />
+//           <rect x="14" y="38" width="60" height=".8" fill="#22d3ee" />
+//           <rect x="14" y="44" width="55" height="2" rx="1" fill="#64748b" />
+//           <rect x="75" y="44" width="60" height="2" rx="1" fill="#64748b" />
+//           <rect x="140" y="44" width="55" height="2" rx="1" fill="#64748b" />
+//           <rect x="14" y="56" width="35" height="2" rx="1" fill="#4a5578" />
+//           <rect
+//             x="14"
+//             y="64"
+//             width="185"
+//             height="2.5"
+//             rx="1"
+//             fill="rgba(148,163,184,.4)"
+//           />
+//           <rect
+//             x="14"
+//             y="69"
+//             width="150"
+//             height="2.5"
+//             rx="1"
+//             fill="rgba(148,163,184,.4)"
+//           />
+//           <rect x="14" y="78" width="2" height="2.5" rx=".5" fill="#22d3ee" />
+//           <rect x="20" y="78" width="35" height="2.5" rx="1" fill="#22d3ee" />
+//           <rect
+//             x="14"
+//             y="84"
+//             width="185"
+//             height="2.5"
+//             rx="1"
+//             fill="rgba(148,163,184,.35)"
+//           />
+//           <rect
+//             x="14"
+//             y="89"
+//             width="155"
+//             height="2.5"
+//             rx="1"
+//             fill="rgba(148,163,184,.35)"
+//           />
+//           <rect
+//             x="14"
+//             y="94"
+//             width="170"
+//             height="2.5"
+//             rx="1"
+//             fill="rgba(148,163,184,.35)"
+//           />
+//           <rect x="14" y="103" width="2" height="2.5" rx=".5" fill="#22d3ee" />
+//           <rect x="20" y="103" width="35" height="2.5" rx="1" fill="#22d3ee" />
+//           <rect
+//             x="14"
+//             y="109"
+//             width="185"
+//             height="2.5"
+//             rx="1"
+//             fill="rgba(148,163,184,.35)"
+//           />
+//           <rect
+//             x="14"
+//             y="114"
+//             width="130"
+//             height="2.5"
+//             rx="1"
+//             fill="rgba(148,163,184,.35)"
+//           />
+//           <rect x="14" y="130" width="28" height="2" rx="1" fill="#4a5578" />
+//           <rect x="14" y="137" width="52" height="3" rx="1" fill="white" />
+//         </svg>
+//       );
+//     case "chalk":
+//       return (
+//         <svg
+//           viewBox="0 0 220 155"
+//           xmlns="http://www.w3.org/2000/svg"
+//           width="100%"
+//           height="100%"
+//         >
+//           <rect width="220" height="155" fill="#fdfcfa" />
+//           <rect
+//             x="4"
+//             y="4"
+//             width="212"
+//             height="147"
+//             rx="3"
+//             fill="white"
+//             stroke="#d6d3d1"
+//             strokeWidth="1.5"
+//             strokeDasharray="5,3"
+//           />
+//           <rect x="14" y="14" width="95" height="11" rx="1.5" fill="#1c1917" />
+//           <rect x="14" y="29" width="55" height="4" rx="1" fill="#78716c" />
+//           <rect
+//             x="14"
+//             y="40"
+//             width="192"
+//             height="1"
+//             rx=".5"
+//             fill="#e7e5e4"
+//             strokeDasharray="4,2"
+//           />
+//           <rect
+//             x="14"
+//             y="48"
+//             width="30"
+//             height="5"
+//             rx="2"
+//             fill="white"
+//             stroke="#d6d3d1"
+//             strokeWidth="1"
+//             strokeDasharray="3,2"
+//           />
+//           <rect
+//             x="50"
+//             y="48"
+//             width="35"
+//             height="5"
+//             rx="2"
+//             fill="white"
+//             stroke="#d6d3d1"
+//             strokeWidth="1"
+//             strokeDasharray="3,2"
+//           />
+//           <rect
+//             x="91"
+//             y="48"
+//             width="40"
+//             height="5"
+//             rx="2"
+//             fill="white"
+//             stroke="#d6d3d1"
+//             strokeWidth="1"
+//             strokeDasharray="3,2"
+//           />
+//           <rect x="14" y="60" width="35" height="2.5" rx="1" fill="#9ca3af" />
+//           <rect x="14" y="68" width="185" height="2.5" rx="1" fill="#d6d3d1" />
+//           <rect x="14" y="73" width="155" height="2.5" rx="1" fill="#d6d3d1" />
+//           <rect x="14" y="82" width="38" height="2.5" rx="1.5" fill="#57534e" />
+//           <rect x="14" y="89" width="185" height="2.5" rx="1" fill="#d6d3d1" />
+//           <rect x="14" y="94" width="165" height="2.5" rx="1" fill="#d6d3d1" />
+//           <rect x="14" y="99" width="175" height="2.5" rx="1" fill="#d6d3d1" />
+//           <rect
+//             x="14"
+//             y="109"
+//             width="38"
+//             height="2.5"
+//             rx="1.5"
+//             fill="#57534e"
+//           />
+//           <rect x="14" y="116" width="185" height="2.5" rx="1" fill="#d6d3d1" />
+//           <rect x="14" y="121" width="120" height="2.5" rx="1" fill="#d6d3d1" />
+//           <rect x="14" y="135" width="30" height="2" rx="1" fill="#9ca3af" />
+//           <rect x="14" y="141" width="52" height="3" rx="1" fill="#1c1917" />
+//         </svg>
+//       );
+//     default:
+//       return (
+//         <svg viewBox="0 0 220 155" width="100%" height="100%">
+//           <rect width="220" height="155" fill="#f3f4f6" />
+//         </svg>
+//       );
+//   }
+// };
 
+// // ═══════════════════════════════════════════
+// // TEMPLATE DEFINITIONS
+// // ═══════════════════════════════════════════
+// const TEMPLATES = [
+//   { id: "aurora", name: "Aurora", tag: "Modern", accent: "#6366f1" },
+//   { id: "obsidian", name: "Obsidian", tag: "Executive", accent: "#7c3aed" },
+//   { id: "nordic", name: "Nordic", tag: "Minimal", accent: "#4338ca" },
+//   { id: "slate", name: "Slate", tag: "Corporate", accent: "#1e293b" },
+//   { id: "crimson", name: "Crimson", tag: "Editorial", accent: "#9f1239" },
+//   { id: "velvet", name: "Velvet", tag: "Luxury", accent: "#6d28d9" },
+//   { id: "frost", name: "Frost", tag: "Clean", accent: "#0369a1" },
+//   { id: "prism", name: "Prism", tag: "Creative", accent: "#7c3aed" },
+//   { id: "blaze", name: "Blaze", tag: "Bold", accent: "#c2410c" },
+//   { id: "moss", name: "Moss", tag: "Natural", accent: "#166534" },
+//   { id: "neon", name: "Neon Grid", tag: "Futuristic", accent: "#0f172a" },
+//   { id: "chalk", name: "Chalk", tag: "Artistic", accent: "#44403c" },
+// ];
 
+// // ═══════════════════════════════════════════
+// // HTML BUILDER — ALL LINKS INCLUDED
+// // ═══════════════════════════════════════════
+// function buildHTML(id: string, d: CLData): string {
+//   const dt = new Date().toLocaleDateString("en-US", {
+//     year: "numeric",
+//     month: "long",
+//     day: "numeric",
+//   });
+//   const nm = d.personal.fullName || "Your Name";
+//   const ttl = d.personal.title || "Professional";
+//   const mgr = d.company.hiringManager || "Hiring Manager";
+//   const loc = [d.company.city, d.company.state].filter(Boolean).join(", ");
 
+//   // Contact info rows — include ALL fields
+//   const contactItems = [
+//     d.personal.email && `<span>✉ ${d.personal.email}</span>`,
+//     d.personal.phone && `<span>✆ ${d.personal.phone}</span>`,
+//     d.personal.location && `<span>◎ ${d.personal.location}</span>`,
+//   ].filter(Boolean);
 
+//   const linkItems = [
+//     d.personal.linkedin &&
+//       `<a href="https://${d.personal.linkedin}" style="color:inherit;text-decoration:none">in ${d.personal.linkedin}</a>`,
+//     d.personal.github &&
+//       `<a href="https://${d.personal.github}"   style="color:inherit;text-decoration:none">⌥ ${d.personal.github}</a>`,
+//     d.personal.website &&
+//       `<a href="https://${d.personal.website}"  style="color:inherit;text-decoration:none">⊕ ${d.personal.website}</a>`,
+//   ].filter(Boolean);
 
+//   const allContacts = [...contactItems, ...linkItems];
 
+//   const addrBlock = `
+//     <div style="margin-bottom:20px;font-size:13px;line-height:1.9;color:#4a5568">
+//       <strong style="color:#1a202c;font-size:13.5px">${mgr}${d.company.hiringManagerTitle ? `, ${d.company.hiringManagerTitle}` : ""}</strong><br>
+//       ${d.company.name}${loc ? `<br>${loc}` : ""}
+//     </div>`;
 
+//   const secRows = (color: string, border = false) =>
+//     d.sections
+//       .filter((s) => s.content.trim())
+//       .map(
+//         (s) => `
+//       <div style="margin-bottom:22px${border ? `;padding-left:14px;border-left:3px solid ${color}` : ""}">
+//         <h4 style="font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:${color};margin-bottom:8px;margin-top:0">${s.title}</h4>
+//         <p style="line-height:1.8;margin:0;font-size:13.5px;color:inherit">${s.content.replace(/\n/g, "<br>")}</p>
+//       </div>`,
+//       )
+//       .join("");
 
+//   const achBlock = (color: string) =>
+//     d.achievements.length
+//       ? `
+//     <div style="margin:18px 0 22px">
+//       <h4 style="font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:${color};margin-bottom:10px;margin-top:0">Key Achievements</h4>
+//       ${d.achievements
+//         .map(
+//           (
+//             a,
+//           ) => `<div style="display:flex;gap:9px;align-items:flex-start;margin-bottom:7px;font-size:13px">
+//         <span style="color:${color};font-size:14px;line-height:1.4;flex-shrink:0">›</span><span>${a}</span>
+//       </div>`,
+//         )
+//         .join("")}
+//     </div>`
+//       : "";
 
+//   const notesBlock = d.notes
+//     ? `<div style="margin:16px 0;padding:12px 16px;background:rgba(0,0,0,.03);border-left:3px solid #e2e8f0;font-size:13px;line-height:1.7;color:#64748b">${d.notes}</div>`
+//     : "";
 
+//   const closing = (col: string) => `
+//     <div style="margin-top:36px;font-size:13.5px">
+//       Sincerely,<br><br>
+//       <strong style="font-size:15px">${nm}</strong>
+//       ${d.personal.email ? `<br><span style="font-size:12px;color:${col}">${d.personal.email}</span>` : ""}
+//       ${d.personal.linkedin ? `<br><span style="font-size:11.5px;color:#64748b">in ${d.personal.linkedin}</span>` : ""}
+//     </div>`;
 
+//   const base = (css: string, body: string) =>
+//     `<!DOCTYPE html><html><head><meta charset="UTF-8">
+//     <style>*{margin:0;padding:0;box-sizing:border-box}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}${css}</style>
+//     </head><body>${body}</body></html>`;
+
+//   /* ── AURORA ─────────────────────────── */
+//   if (id === "aurora")
+//     return base(
+//       `@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap');
+//      body{font-family:'DM Sans',sans-serif;color:#374151}
+//      .pg{max-width:860px;margin:0 auto}
+//      .hdr{background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 60%,#a78bfa 100%);padding:52px 56px 44px;color:white;position:relative;overflow:hidden}
+//      .hdr::before{content:'';position:absolute;right:-80px;top:-80px;width:280px;height:280px;background:rgba(255,255,255,.07);border-radius:50%}
+//      .nm{font-size:38px;font-weight:700;letter-spacing:-1.5px;margin-bottom:5px;position:relative}
+//      .rl{font-size:14px;opacity:.85;margin-bottom:26px;position:relative}
+//      .chips{display:flex;flex-wrap:wrap;gap:7px;position:relative}
+//      .chip{padding:5px 14px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:40px;font-size:11.5px}
+//      .body{padding:48px 56px}
+//      .dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}
+//      .gr{font-size:16px;font-weight:600;margin-bottom:22px;color:#111827}`,
+//       `<div class="pg">
+//       <div class="hdr">
+//         <div class="nm">${nm}</div>
+//         <div class="rl">${ttl}</div>
+//         <div class="chips">${allContacts.map((c) => `<span class="chip">${c}</span>`).join("")}</div>
+//       </div>
+//       <div class="body">
+//         <div class="dt">${dt}</div>${addrBlock}
+//         <div class="gr">Dear ${mgr},</div>
+//         ${secRows("#6366f1")}${achBlock("#6366f1")}${notesBlock}${closing("#6366f1")}
+//       </div>
+//     </div>`,
+//     );
+
+//   /* ── OBSIDIAN ─────────────────────── */
+//   if (id === "obsidian")
+//     return base(
+//       `@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;500&display=swap');
+//      body{font-family:'Inter',sans-serif;color:#374151}
+//      .pg{max-width:900px;margin:0 auto;display:flex;min-height:100vh}
+//      .side{width:258px;background:#1e1b4b;color:white;padding:44px 26px;flex-shrink:0}
+//      .snm{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;color:#e9d5ff;line-height:1.2;margin-bottom:6px}
+//      .srl{font-size:10px;color:#a5b4fc;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:30px;padding-bottom:26px;border-bottom:1px solid rgba(165,180,252,.2)}
+//      .slbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#6d5bba;margin-bottom:7px;margin-top:22px}
+//      .sval{font-size:11.5px;color:#c4b5fd;line-height:2;word-break:break-all}
+//      .orn{color:#7c3aed;opacity:.45;font-size:18px;margin-top:22px;letter-spacing:4px}
+//      .main{flex:1;padding:48px 44px}
+//      .dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}
+//      .gr{font-size:16px;font-weight:600;margin-bottom:22px;color:#1e1b4b}`,
+//       `<div class="pg">
+//       <div class="side">
+//         <div class="snm">${nm}</div>
+//         <div class="srl">${ttl}</div>
+//         ${d.personal.email ? `<div class="slbl">Email</div><div class="sval">${d.personal.email}</div>` : ""}
+//         ${d.personal.phone ? `<div class="slbl">Phone</div><div class="sval">${d.personal.phone}</div>` : ""}
+//         ${d.personal.location ? `<div class="slbl">Location</div><div class="sval">${d.personal.location}</div>` : ""}
+//         ${d.personal.linkedin ? `<div class="slbl">LinkedIn</div><div class="sval">${d.personal.linkedin}</div>` : ""}
+//         ${d.personal.github ? `<div class="slbl">GitHub</div><div class="sval">${d.personal.github}</div>` : ""}
+//         ${d.personal.website ? `<div class="slbl">Portfolio</div><div class="sval">${d.personal.website}</div>` : ""}
+//         <div class="orn">✦ ✦ ✦</div>
+//       </div>
+//       <div class="main">
+//         <div class="dt">${dt}</div>${addrBlock}
+//         <div class="gr">Dear ${mgr},</div>
+//         ${secRows("#7c3aed")}${achBlock("#7c3aed")}${notesBlock}${closing("#7c3aed")}
+//       </div>
+//     </div>`,
+//     );
+
+//   /* ── NORDIC ───────────────────────── */
+//   if (id === "nordic")
+//     return base(
+//       `@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+//      body{font-family:'DM Sans',sans-serif;color:#374151}
+//      .pg{max-width:750px;margin:0 auto;padding:64px 72px}
+//      .eyebrow{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:#4f46e5;margin-bottom:10px}
+//      .nm{font-family:'Libre Baskerville',serif;font-size:44px;font-weight:700;letter-spacing:-2px;color:#1e1b4b;line-height:1.05}
+//      .bar{width:52px;height:3px;background:#4f46e5;margin:16px 0 18px}
+//      .ctrow{display:flex;flex-wrap:wrap;gap:6px 20px;margin-bottom:40px}
+//      .cv{font-size:12px;color:#6b7280}
+//      .cv a{color:#4f46e5;text-decoration:none}
+//      .div{height:1px;background:#e0e7ff;margin:24px 0}
+//      .dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}
+//      .gr{font-size:17px;font-weight:600;margin-bottom:22px;color:#1e1b4b}`,
+//       `<div class="pg">
+//       <div class="eyebrow">${ttl}</div>
+//       <div class="nm">${nm}</div>
+//       <div class="bar"></div>
+//       <div class="ctrow">
+//         ${d.personal.email ? `<span class="cv">${d.personal.email}</span>` : ""}
+//         ${d.personal.phone ? `<span class="cv">${d.personal.phone}</span>` : ""}
+//         ${d.personal.location ? `<span class="cv">${d.personal.location}</span>` : ""}
+//         ${d.personal.linkedin ? `<span class="cv"><a href="#">${d.personal.linkedin}</a></span>` : ""}
+//         ${d.personal.github ? `<span class="cv"><a href="#">${d.personal.github}</a></span>` : ""}
+//         ${d.personal.website ? `<span class="cv"><a href="#">${d.personal.website}</a></span>` : ""}
+//       </div>
+//       <div class="div"></div>
+//       <div class="dt">${dt}</div>${addrBlock}
+//       <div class="gr">Dear ${mgr},</div>
+//       ${secRows("#4338ca")}${achBlock("#4338ca")}${notesBlock}${closing("#4338ca")}
+//     </div>`,
+//     );
+
+//   /* ── SLATE ────────────────────────── */
+//   if (id === "slate")
+//     return base(
+//       `@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+//      body{font-family:'IBM Plex Sans',sans-serif;color:#374151}
+//      .pg{max-width:880px;margin:0 auto}
+//      .hdr{padding:44px 52px;border-bottom:3px solid #0f172a;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px}
+//      .nm{font-size:34px;font-weight:700;color:#0f172a;letter-spacing:-1.5px}
+//      .rl{font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:#64748b;margin-top:7px}
+//      .ctcol{text-align:right}
+//      .cv{font-size:11.5px;color:#475569;font-family:'IBM Plex Mono',monospace;line-height:2.1;display:block;word-break:break-all}
+//      .cv a{color:#4f46e5;text-decoration:none}
+//      .tag-pill{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#64748b;background:#f1f5f9;border:1px solid #e2e8f0;padding:3px 10px;border-radius:4px;margin-bottom:22px}
+//      .body{padding:40px 52px}
+//      .dt{font-size:12.5px;color:#9ca3af;margin-bottom:20px}
+//      .gr{font-size:16px;font-weight:600;margin-bottom:20px;color:#0f172a}`,
+//       `<div class="pg">
+//       <div class="hdr">
+//         <div><div class="nm">${nm}</div><div class="rl">${ttl}</div></div>
+//         <div class="ctcol">
+//           ${d.personal.email ? `<span class="cv">${d.personal.email}</span>` : ""}
+//           ${d.personal.phone ? `<span class="cv">${d.personal.phone}</span>` : ""}
+//           ${d.personal.location ? `<span class="cv">${d.personal.location}</span>` : ""}
+//           ${d.personal.linkedin ? `<span class="cv"><a href="#">${d.personal.linkedin}</a></span>` : ""}
+//           ${d.personal.github ? `<span class="cv"><a href="#">${d.personal.github}</a></span>` : ""}
+//           ${d.personal.website ? `<span class="cv"><a href="#">${d.personal.website}</a></span>` : ""}
+//         </div>
+//       </div>
+//       <div class="body">
+//         <div class="tag-pill">RE: ${d.company.jobTitle || "Open Position"} · ${d.company.name || "Company"}</div>
+//         <div class="dt">${dt}</div>${addrBlock}
+//         <div class="gr">Dear ${mgr},</div>
+//         ${secRows("#334155", true)}${achBlock("#334155")}${notesBlock}${closing("#334155")}
+//       </div>
+//     </div>`,
+//     );
+
+//   /* ── CRIMSON ──────────────────────── */
+//   if (id === "crimson")
+//     return base(
+//       `@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=Lora:wght@400;500&display=swap');
+//      body{font-family:'Lora',serif;color:#374151;background:#fffbf5}
+//      .pg{max-width:800px;margin:0 auto;background:#fffbf5}
+//      .top{height:5px;background:#9f1239}
+//      .hdr{padding:48px 56px 16px;text-align:center}
+//      .nm{font-family:'Playfair Display',serif;font-size:44px;font-weight:900;color:#1a0a0d;letter-spacing:-2px;line-height:1}
+//      .rl{font-family:'Playfair Display',serif;font-style:italic;font-size:15px;color:#9f1239;margin:9px 0 16px}
+//      .orn{color:#9f1239;font-size:12px;letter-spacing:5px}
+//      .ctrow{display:flex;justify-content:center;flex-wrap:wrap;gap:5px 16px;padding:12px 0;font-size:12px;color:#6b7280}
+//      .ctrow a{color:#9f1239;text-decoration:none}
+//      .sep-wrap{display:flex;align-items:center;gap:10px;padding:0 56px;margin-bottom:4px}
+//      .sl{flex:1;height:1px;background:#fecdd3}
+//      .sd{width:5px;height:5px;background:#9f1239;border-radius:50%;flex-shrink:0}
+//      .body{padding:24px 56px 52px}
+//      .dt{font-size:12.5px;color:#9ca3af;margin-bottom:20px}
+//      .gr{font-size:16px;font-style:italic;font-weight:600;margin-bottom:20px;color:#1a0a0d}`,
+//       `<div class="pg">
+//       <div class="top"></div>
+//       <div class="hdr">
+//         <div class="nm">${nm}</div>
+//         <div class="rl">${ttl}</div>
+//         <div class="orn">✦ ✦ ✦</div>
+//         <div class="ctrow">
+//           ${d.personal.email ? `<span>${d.personal.email}</span>` : ""}
+//           ${d.personal.phone ? `<span>· ${d.personal.phone}</span>` : ""}
+//           ${d.personal.location ? `<span>· ${d.personal.location}</span>` : ""}
+//           ${d.personal.linkedin ? `<span>· <a href="#">${d.personal.linkedin}</a></span>` : ""}
+//           ${d.personal.github ? `<span>· <a href="#">${d.personal.github}</a></span>` : ""}
+//           ${d.personal.website ? `<span>· <a href="#">${d.personal.website}</a></span>` : ""}
+//         </div>
+//       </div>
+//       <div class="sep-wrap"><div class="sl"></div><div class="sd"></div><div class="sl"></div></div>
+//       <div class="body">
+//         <div class="dt">${dt}</div>${addrBlock}
+//         <div class="gr">Dear ${mgr},</div>
+//         ${secRows("#9f1239")}${achBlock("#9f1239")}${notesBlock}${closing("#9f1239")}
+//       </div>
+//     </div>`,
+//     );
+
+//   /* ── VELVET ───────────────────────── */
+//   if (id === "velvet")
+//     return base(
+//       `@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Raleway:wght@300;400;500;600&display=swap');
+//      body{font-family:'Raleway',sans-serif;background:#0f082a;color:#d4c9ef;min-height:100vh}
+//      .pg{max-width:860px;margin:0 auto;background:linear-gradient(160deg,#1e0f40 0%,#2d1b69 100%);min-height:100vh}
+//      .hdr{padding:56px 56px 40px;border-bottom:1px solid rgba(196,181,253,.15);position:relative;overflow:hidden}
+//      .hdr::after{content:'';position:absolute;right:-40px;top:-40px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(168,85,247,.15),transparent 70%)}
+//      .nm{font-family:'Cinzel',serif;font-size:36px;font-weight:600;color:#f3e8ff;letter-spacing:2px}
+//      .rl{font-size:10.5px;letter-spacing:3px;text-transform:uppercase;color:#a78bfa;margin:12px 0 20px}
+//      .chips{display:flex;flex-wrap:wrap;gap:7px}
+//      .chip{padding:4px 12px;border:1px solid rgba(196,181,253,.25);color:#c4b5fd;font-size:11px;border-radius:4px}
+//      .chip a{color:#c4b5fd;text-decoration:none}
+//      .body{padding:44px 56px}
+//      .dt{font-size:12px;color:#7c6fa0;margin-bottom:22px}
+//      .gr{font-size:16px;font-weight:600;margin-bottom:22px;color:#e9d5ff}
+//      .addr{color:#a78bfa!important;margin-bottom:22px;font-size:13px;line-height:1.9}`,
+//       `<div class="pg">
+//       <div class="hdr">
+//         <div class="nm">${nm}</div>
+//         <div class="rl">${ttl}</div>
+//         <div class="chips">
+//           ${d.personal.email ? `<span class="chip">${d.personal.email}</span>` : ""}
+//           ${d.personal.phone ? `<span class="chip">${d.personal.phone}</span>` : ""}
+//           ${d.personal.location ? `<span class="chip">${d.personal.location}</span>` : ""}
+//           ${d.personal.linkedin ? `<span class="chip"><a href="#">${d.personal.linkedin}</a></span>` : ""}
+//           ${d.personal.github ? `<span class="chip"><a href="#">${d.personal.github}</a></span>` : ""}
+//           ${d.personal.website ? `<span class="chip"><a href="#">${d.personal.website}</a></span>` : ""}
+//         </div>
+//       </div>
+//       <div class="body">
+//         <div class="dt">${dt}</div>
+//         <div class="addr"><strong style="color:#e9d5ff">${mgr}${d.company.hiringManagerTitle ? `, <span style='color:#a78bfa'>${d.company.hiringManagerTitle}</span>` : ""}</strong><br>${d.company.name}${loc ? `<br>${loc}` : ""}</div>
+//         <div class="gr">Dear ${mgr},</div>
+//         ${secRows("#c084fc")}${achBlock("#c084fc")}${notesBlock}
+//         <div style="margin-top:36px;font-size:13.5px;color:#7c6fa0">Sincerely,<br><br><strong style="font-size:15px;color:#f3e8ff">${nm}</strong></div>
+//       </div>
+//     </div>`,
+//     );
+
+//   /* ── FROST ────────────────────────── */
+//   if (id === "frost")
+//     return base(
+//       `@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+//      body{font-family:'Outfit',sans-serif;background:linear-gradient(135deg,#dbeafe,#e0f2fe);min-height:100vh;padding:20px;color:#374151}
+//      .pg{max-width:840px;margin:0 auto;background:rgba(255,255,255,.88);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.85);border-radius:16px;overflow:hidden}
+//      .hdr{background:linear-gradient(135deg,rgba(12,74,110,.92),rgba(2,132,199,.9));padding:48px;color:white}
+//      .nm{font-size:38px;font-weight:800;letter-spacing:-2px;margin-bottom:6px}
+//      .rl{font-size:12.5px;opacity:.8;letter-spacing:1px;margin-bottom:22px}
+//      .chips{display:flex;flex-wrap:wrap;gap:7px}
+//      .chip{padding:5px 14px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.22);border-radius:40px;font-size:11.5px}
+//      .chip a{color:white;text-decoration:none}
+//      .body{padding:44px}
+//      .dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}
+//      .gr{font-size:16px;font-weight:700;margin-bottom:22px;color:#0c4a6e}`,
+//       `<div class="pg">
+//       <div class="hdr">
+//         <div class="nm">${nm}</div>
+//         <div class="rl">${ttl}</div>
+//         <div class="chips">
+//           ${d.personal.email ? `<span class="chip">${d.personal.email}</span>` : ""}
+//           ${d.personal.phone ? `<span class="chip">${d.personal.phone}</span>` : ""}
+//           ${d.personal.location ? `<span class="chip">${d.personal.location}</span>` : ""}
+//           ${d.personal.linkedin ? `<span class="chip"><a href="#">${d.personal.linkedin}</a></span>` : ""}
+//           ${d.personal.github ? `<span class="chip"><a href="#">${d.personal.github}</a></span>` : ""}
+//           ${d.personal.website ? `<span class="chip"><a href="#">${d.personal.website}</a></span>` : ""}
+//         </div>
+//       </div>
+//       <div class="body">
+//         <div class="dt">${dt}</div>${addrBlock}
+//         <div class="gr">Dear ${mgr},</div>
+//         ${secRows("#0369a1")}${achBlock("#0369a1")}${notesBlock}${closing("#0369a1")}
+//       </div>
+//     </div>`,
+//     );
+
+//   /* ── PRISM ────────────────────────── */
+//   if (id === "prism")
+//     return base(
+//       `@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap');
+//      body{font-family:'Outfit',sans-serif;color:#374151}
+//      .pg{max-width:860px;margin:0 auto}
+//      .hdr{background:linear-gradient(120deg,#7c3aed,#c026d3);height:160px;position:relative;overflow:hidden}
+//      .g1{position:absolute;right:0;top:0;bottom:0;width:55%;background:rgba(255,255,255,.1);clip-path:polygon(25% 0,100% 0,100% 100%,0 100%)}
+//      .g2{position:absolute;right:0;top:0;bottom:0;width:33%;background:rgba(255,255,255,.07);clip-path:polygon(40% 0,100% 0,100% 100%,0 100%)}
+//      .hi{position:absolute;left:44px;bottom:24px;color:white}
+//      .nm{font-size:38px;font-weight:800;letter-spacing:-2px;line-height:1}
+//      .rl{font-size:13px;opacity:.8;margin-top:6px}
+//      .cbar{display:flex;background:#1e1b4b;padding:9px 44px;gap:20px;flex-wrap:wrap}
+//      .cv{font-size:11px;color:#a5b4fc;padding:3px 0;word-break:break-all}
+//      .cv a{color:#c4b5fd;text-decoration:none}
+//      .body{padding:44px}
+//      .dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}
+//      .gr{font-size:16px;font-weight:700;margin-bottom:22px;color:#1e1b4b}`,
+//       `<div class="pg">
+//       <div class="hdr">
+//         <div class="g1"></div><div class="g2"></div>
+//         <div class="hi"><div class="nm">${nm}</div><div class="rl">${ttl}</div></div>
+//       </div>
+//       <div class="cbar">
+//         ${d.personal.email ? `<span class="cv">${d.personal.email}</span>` : ""}
+//         ${d.personal.phone ? `<span class="cv">${d.personal.phone}</span>` : ""}
+//         ${d.personal.location ? `<span class="cv">${d.personal.location}</span>` : ""}
+//         ${d.personal.linkedin ? `<span class="cv"><a href="#">${d.personal.linkedin}</a></span>` : ""}
+//         ${d.personal.github ? `<span class="cv"><a href="#">${d.personal.github}</a></span>` : ""}
+//         ${d.personal.website ? `<span class="cv"><a href="#">${d.personal.website}</a></span>` : ""}
+//       </div>
+//       <div class="body">
+//         <div class="dt">${dt}</div>${addrBlock}
+//         <div class="gr">Dear ${mgr},</div>
+//         ${secRows("#7c3aed", true)}${achBlock("#7c3aed")}${notesBlock}${closing("#7c3aed")}
+//       </div>
+//     </div>`,
+//     );
+
+//   /* ── BLAZE ────────────────────────── */
+//   if (id === "blaze")
+//     return base(
+//       `@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;900&family=Barlow:wght@400;500;600&display=swap');
+//      body{font-family:'Barlow',sans-serif;color:#374151}
+//      .pg{max-width:880px;margin:0 auto}
+//      .hdr{background:linear-gradient(110deg,#ea580c,#f59e0b);padding:44px 52px;color:white;position:relative;overflow:hidden}
+//      .hdr::after{content:'';position:absolute;right:0;top:0;bottom:0;width:100px;background:rgba(255,255,255,.08);clip-path:polygon(40% 0,100% 0,100% 100%)}
+//      .nm{font-family:'Barlow Condensed',sans-serif;font-size:50px;font-weight:900;letter-spacing:-3px;text-transform:uppercase;line-height:.95;position:relative}
+//      .rl{font-size:12px;letter-spacing:3px;text-transform:uppercase;opacity:.85;margin-top:9px;position:relative}
+//      .ibar{background:#1e293b;padding:9px 52px;display:flex;gap:20px;flex-wrap:wrap}
+//      .iv{font-size:11px;color:#94a3b8}
+//      .iv a{color:#c4b5fd;text-decoration:none}
+//      .body{padding:44px 52px}
+//      .dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}
+//      .gr{font-size:16px;font-weight:700;margin-bottom:22px;color:#1e293b}`,
+//       `<div class="pg">
+//       <div class="hdr"><div class="nm">${nm}</div><div class="rl">${ttl}</div></div>
+//       <div class="ibar">
+//         ${d.personal.email ? `<span class="iv">${d.personal.email}</span>` : ""}
+//         ${d.personal.phone ? `<span class="iv">${d.personal.phone}</span>` : ""}
+//         ${d.personal.location ? `<span class="iv">${d.personal.location}</span>` : ""}
+//         ${d.personal.linkedin ? `<span class="iv"><a href="#">${d.personal.linkedin}</a></span>` : ""}
+//         ${d.personal.github ? `<span class="iv"><a href="#">${d.personal.github}</a></span>` : ""}
+//         ${d.personal.website ? `<span class="iv"><a href="#">${d.personal.website}</a></span>` : ""}
+//       </div>
+//       <div class="body">
+//         <div class="dt">${dt}</div>${addrBlock}
+//         <div class="gr">Dear ${mgr},</div>
+//         ${secRows("#ea580c", true)}${achBlock("#ea580c")}${notesBlock}${closing("#ea580c")}
+//       </div>
+//     </div>`,
+//     );
+
+//   /* ── MOSS ─────────────────────────── */
+//   if (id === "moss")
+//     return base(
+//       `@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,600;0,700;1,400&family=Source+Sans+3:wght@300;400;600&display=swap');
+//      body{font-family:'Source Sans 3',sans-serif;color:#374151}
+//      .pg{max-width:840px;margin:0 auto;border:1px solid #bbf7d0}
+//      .hdr{background:linear-gradient(135deg,#14532d,#15803d);padding:44px;color:white;display:flex;align-items:center;gap:22px}
+//      .lf{font-size:48px;opacity:.3;flex-shrink:0}
+//      .nm{font-family:'Lora',serif;font-size:34px;font-weight:700;letter-spacing:-.5px;margin-bottom:4px}
+//      .rl{font-size:11px;opacity:.8;letter-spacing:1.5px;text-transform:uppercase}
+//      .strip{background:#f0fdf4;padding:9px 44px;display:flex;flex-wrap:wrap;gap:6px 18px;border-bottom:1px solid #bbf7d0}
+//      .sv{font-size:11.5px;color:#166534}
+//      .sv a{color:#15803d;text-decoration:none}
+//      .body{padding:44px 48px}
+//      .dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}
+//      .gr{font-family:'Lora',serif;font-size:16px;font-weight:700;margin-bottom:22px;color:#14532d}`,
+//       `<div class="pg">
+//       <div class="hdr">
+//         <div class="lf">🌿</div>
+//         <div><div class="nm">${nm}</div><div class="rl">${ttl}</div></div>
+//       </div>
+//       <div class="strip">
+//         ${d.personal.email ? `<span class="sv">${d.personal.email}</span>` : ""}
+//         ${d.personal.phone ? `<span class="sv">${d.personal.phone}</span>` : ""}
+//         ${d.personal.location ? `<span class="sv">${d.personal.location}</span>` : ""}
+//         ${d.personal.linkedin ? `<span class="sv"><a href="#">${d.personal.linkedin}</a></span>` : ""}
+//         ${d.personal.github ? `<span class="sv"><a href="#">${d.personal.github}</a></span>` : ""}
+//         ${d.personal.website ? `<span class="sv"><a href="#">${d.personal.website}</a></span>` : ""}
+//       </div>
+//       <div class="body">
+//         <div class="dt">${dt}</div>${addrBlock}
+//         <div class="gr">Dear ${mgr},</div>
+//         ${secRows("#166534")}${achBlock("#166534")}${notesBlock}${closing("#166534")}
+//       </div>
+//     </div>`,
+//     );
+
+//   /* ── NEON ─────────────────────────── */
+//   if (id === "neon")
+//     return base(
+//       `@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;700;900&display=swap');
+//      body{font-family:'Exo 2',sans-serif;background:#0a0f1e;color:#94a3b8;min-height:100vh}
+//      .pg{max-width:880px;margin:0 auto;background:#0d1224;min-height:100vh}
+//      .hdr{padding:52px;border-bottom:1px solid rgba(34,211,238,.15);position:relative}
+//      .hdr::after{content:'';position:absolute;bottom:-1px;left:0;width:220px;height:2px;background:linear-gradient(90deg,#22d3ee,transparent)}
+//      .nm{font-size:44px;font-weight:900;letter-spacing:-3px;color:white;line-height:1}
+//      .rl{font-size:10.5px;letter-spacing:3px;text-transform:uppercase;color:#22d3ee;margin-top:10px;margin-bottom:20px}
+//      .chips{display:flex;flex-wrap:wrap;gap:8px}
+//      .chip{padding:3px 11px;border:1px solid rgba(34,211,238,.25);color:#64748b;font-size:10.5px;font-family:'Share Tech Mono',monospace;border-radius:4px}
+//      .chip a{color:#22d3ee;text-decoration:none}
+//      .body{padding:46px 52px}
+//      .dt{font-size:11.5px;font-family:'Share Tech Mono',monospace;color:#4a5578;margin-bottom:22px}
+//      .gr{font-size:16px;font-weight:700;color:white;margin-bottom:22px}
+//      .sh4{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#22d3ee;margin-bottom:7px;border-left:2px solid #22d3ee;padding-left:10px}`,
+//       `<div class="pg">
+//       <div class="hdr">
+//         <div class="nm">${nm}</div>
+//         <div class="rl">${ttl}</div>
+//         <div class="chips">
+//           ${d.personal.email ? `<span class="chip">${d.personal.email}</span>` : ""}
+//           ${d.personal.phone ? `<span class="chip">${d.personal.phone}</span>` : ""}
+//           ${d.personal.location ? `<span class="chip">${d.personal.location}</span>` : ""}
+//           ${d.personal.linkedin ? `<span class="chip"><a href="#">${d.personal.linkedin}</a></span>` : ""}
+//           ${d.personal.github ? `<span class="chip"><a href="#">${d.personal.github}</a></span>` : ""}
+//           ${d.personal.website ? `<span class="chip"><a href="#">${d.personal.website}</a></span>` : ""}
+//         </div>
+//       </div>
+//       <div class="body">
+//         <div class="dt">${dt}</div>
+//         <div style="margin-bottom:22px;font-size:13px;line-height:2"><strong style="color:#e2e8f0">${mgr}${d.company.hiringManagerTitle ? `, ${d.company.hiringManagerTitle}` : ""}</strong><br>${d.company.name}${loc ? `<br><span style='color:#4a5578'>${loc}</span>` : ""}</div>
+//         <div class="gr">Dear ${mgr},</div>
+//         ${d.sections
+//           .filter((s) => s.content.trim())
+//           .map(
+//             (s) =>
+//               `<div style="margin-bottom:24px"><div class="sh4">${s.title}</div><p style="line-height:1.8;font-size:13.5px">${s.content.replace(/\n/g, "<br>")}</p></div>`,
+//           )
+//           .join("")}
+//         ${achBlock("#22d3ee")}${notesBlock}
+//         <div style="margin-top:36px;color:#64748b">Sincerely,<br><br><strong style="color:white;font-size:15px">${nm}</strong></div>
+//       </div>
+//     </div>`,
+//     );
+
+//   /* ── CHALK ────────────────────────── */
+//   if (id === "chalk")
+//     return base(
+//       `@import url('https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Nunito:wght@300;400;600;700&display=swap');
+//      body{font-family:'Nunito',sans-serif;background:#fdfcfa;color:#374151}
+//      .pg{max-width:820px;margin:0 auto;background:white;border:2px dashed #d6d3d1;padding:56px 60px}
+//      .nm{font-family:'Kalam',cursive;font-size:44px;color:#1c1917;line-height:1.1;margin-bottom:6px}
+//      .rl{font-family:'Kalam',cursive;font-size:16px;color:#78716c;margin-bottom:16px}
+//      .ctrow{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px;padding-bottom:28px;border-bottom:2px dashed #e7e5e4}
+//      .ct{font-size:11.5px;color:#57534e;border:1.5px dashed #d6d3d1;padding:4px 12px;border-radius:8px}
+//      .ct a{color:#57534e;text-decoration:none}
+//      .dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}
+//      .gr{font-family:'Kalam',cursive;font-size:18px;margin-bottom:22px;color:#1c1917}`,
+//       `<div class="pg">
+//       <div class="nm">${nm}</div>
+//       <div class="rl">${ttl}</div>
+//       <div class="ctrow">
+//         ${d.personal.email ? `<span class="ct">${d.personal.email}</span>` : ""}
+//         ${d.personal.phone ? `<span class="ct">${d.personal.phone}</span>` : ""}
+//         ${d.personal.location ? `<span class="ct">${d.personal.location}</span>` : ""}
+//         ${d.personal.linkedin ? `<span class="ct"><a href="#">${d.personal.linkedin}</a></span>` : ""}
+//         ${d.personal.github ? `<span class="ct"><a href="#">${d.personal.github}</a></span>` : ""}
+//         ${d.personal.website ? `<span class="ct"><a href="#">${d.personal.website}</a></span>` : ""}
+//       </div>
+//       <div class="dt">${dt}</div>${addrBlock}
+//       <div class="gr">Dear ${mgr},</div>
+//       ${secRows("#57534e")}${achBlock("#57534e")}${notesBlock}${closing("#57534e")}
+//     </div>`,
+//     );
+
+//   return buildHTML("aurora", d);
+// }
+
+// // ═══════════════════════════════════════════
+// // STEP TYPES
+// // ═══════════════════════════════════════════
+// type Step = "template" | "personal" | "company" | "content";
+// const STEPS: { id: Step; label: string; icon: string }[] = [
+//   { id: "template", label: "Template", icon: "🎨" },
+//   { id: "personal", label: "Personal", icon: "👤" },
+//   { id: "company", label: "Company", icon: "🏢" },
+//   { id: "content", label: "Content", icon: "✍️" },
+// ];
+
+// // ═══════════════════════════════════════════
+// // MAIN COMPONENT
+// // ═══════════════════════════════════════════
+// export default function CoverLetterGenerator() {
+//        const router = useRouter();
+
+//   const [step, setStep] = useState<Step>("template");
+//   const [tplId, setTplId] = useState("aurora");
+//   const [data, setData] = useState<CLData>(JSON.parse(JSON.stringify(BLANK)));
+//   const [html, setHtml] = useState("");
+//   const [modal, setModal] = useState(false);
+//   const [achIn, setAchIn] = useState("");
+//   const [toast, setToast] = useState("");
+//   const [busy, setBusy] = useState(false);
+//   const [filter, setFilter] = useState("All");
+//   const [mobilePreview, setMobilePreview] = useState(false);
+
+//   const liveRef = useRef<HTMLIFrameElement>(null);
+//   const modalRef = useRef<HTMLIFrameElement>(null);
+
+//   const showToast = (m: string) => {
+//     setToast(m);
+//     setTimeout(() => setToast(""), 2600);
+//   };
+
+//   const rebuild = useCallback(() => {
+//     const h = buildHTML(tplId, data);
+//     setHtml(h);
+//     return h;
+//   }, [tplId, data]);
+
+//   useEffect(() => {
+//     const t = setTimeout(rebuild, 220);
+//     return () => clearTimeout(t);
+//   }, [rebuild]);
+
+//   const writeIframe = (ref: React.RefObject<HTMLIFrameElement | null>, h: string) => {
+//     if (!ref.current) return;
+//     const doc = ref.current.contentDocument;
+//     if (!doc) return;
+//     doc.open();
+//     doc.write(h);
+//     doc.close();
+//   };
+
+//   useEffect(() => {
+//     if (html) writeIframe(liveRef, html);
+//   }, [html]);
+//   useEffect(() => {
+//     if ((modal || mobilePreview) && html) writeIframe(modalRef, html);
+//   }, [modal, mobilePreview, html]);
+
+//   const set = (path: string[], val: string) =>
+//     setData((prev) => {
+//       const n = JSON.parse(JSON.stringify(prev)) as CLData;
+//       let cur: any = n;
+//       for (let i = 0; i < path.length - 1; i++) cur = cur[path[i]];
+//       cur[path[path.length - 1]] = val;
+//       return n;
+//     });
+
+//   const setSection = (id: string, f: "title" | "content", v: string) =>
+//     setData((p) => ({
+//       ...p,
+//       sections: p.sections.map((s) => (s.id === id ? { ...s, [f]: v } : s)),
+//     }));
+
+//   const addSection = () =>
+//     setData((p) => ({
+//       ...p,
+//       sections: [
+//         ...p.sections,
+//         {
+//           id: Date.now() + "",
+//           title: "New Section",
+//           content: "",
+//           placeholder: "Write here…",
+//         },
+//       ],
+//     }));
+
+//   const downloadPDF = async () => {
+//     const h = rebuild();
+//     setBusy(true);
+//     try {
+//       const r = await axios.post(
+//         `${API_URL}/api/candidates/generate-pdf`,
+//         { html: h },
+//         { responseType: "blob" },
+//       );
+//       const url = URL.createObjectURL(r.data);
+//       const a = document.createElement("a");
+//       a.href = url;
+//       a.download = `Cover_Letter_${data.personal.fullName || "Draft"}.pdf`;
+//       document.body.appendChild(a);
+//       a.click();
+//       document.body.removeChild(a);
+//       URL.revokeObjectURL(url);
+//       showToast("✓ PDF Downloaded successfully");
+//     } catch {
+//       showToast("Download failed — please try again");
+//     } finally {
+//       setBusy(false);
+//     }
+//   };
+
+//   const tpl = TEMPLATES.find((t) => t.id === tplId)!;
+//   const stepIdx = STEPS.findIndex((s) => s.id === step);
+//   const shownTpls =
+//     filter === "All" ? TEMPLATES : TEMPLATES.filter((t) => t.tag === filter);
+
+//   return (
+//     <>
+//       <style>{`
+//       @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
+//       :root {
+//         --p: #5b38f0; --p2: #7c3aed; --p3: #9f67ff;
+//         --p10: #f3f0ff; --p20: #ede9fe; --p30: #ddd6fe; --p50: #c4b5fd;
+//         --ink: #0d0b1e; --ink2: #1e1b4b; --ink3: #3730a3;
+//         --sub: #64688a; --muted: #9ca3af; --ghost: #b8bbd4;
+//         --border: #e4e1f0; --border2: #ede9fe;
+//         --bg: #f5f3ff; --bg2: #eeeafb; --white: #ffffff;
+//         --r8: 8px; --r12: 12px; --r16: 16px; --r20: 20px; --r24: 24px;
+//         --sh1: 0 1px 4px rgba(91,56,240,.08);
+//         --sh2: 0 4px 20px rgba(91,56,240,.12);
+//         --sh3: 0 12px 40px rgba(91,56,240,.18);
+//         --shw: 0 20px 60px rgba(91,56,240,.22);
+//       }
+//      //  html, body { height: 100%; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; overflow: hidden; }
+//      //  @media (max-width: 820px) { html, body { overflow: auto; } }
+
+//       /* ── NAV ─────────────────────── */
+//       .nav {
+//         height: 60px; background: var(--white); border-bottom: 1.5px solid var(--border);
+//         display: flex; align-items: center; padding: 0 24px; gap: 12px; position: relative; z-index: 200;
+//         box-shadow: var(--sh1);
+//       }
+//       .nav-logo { display: flex; align-items: center; gap: 9px; flex-shrink: 0; }
+//       .nav-logo-gem {
+//         width: 32px; height: 32px; border-radius: 9px;
+//         background: linear-gradient(135deg, var(--p), var(--p2));
+//         display: flex; align-items: center; justify-content: center; font-size: 15px;
+//         box-shadow: 0 4px 12px rgba(91,56,240,.35);
+//       }
+//       .nav-brand { font-size: 16px; font-weight: 800; color: var(--ink); letter-spacing: -.3px; }
+//       .nav-brand span { color: var(--p); }
+//       .nav-divider { width: 1px; height: 22px; background: var(--border); margin: 0 4px; }
+
+//       /* wizard */
+//       .wizard { display: flex; align-items: center; gap: 0; flex: 1; justify-content: center; overflow-x: auto; padding: 0 8px; scrollbar-width: none; }
+//       .wizard::-webkit-scrollbar { display: none; }
+//       .wz { display: flex; align-items: center; gap: 7px; padding: 5px 8px; border-radius: 30px; cursor: pointer; transition: all .2s; flex-shrink: 0; }
+//       .wz:hover:not(.wz-active) { background: var(--p10); }
+//       .wz-dot {
+//         width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--border);
+//         background: var(--white); display: flex; align-items: center; justify-content: center;
+//         font-size: 11px; font-weight: 800; color: var(--muted); transition: all .2s; flex-shrink: 0;
+//       }
+//       .wz-done .wz-dot { background: #10b981; border-color: #10b981; color: white; }
+//       .wz-active .wz-dot { background: linear-gradient(135deg,var(--p),var(--p2)); border-color: transparent; color: white; box-shadow: 0 0 0 3px rgba(91,56,240,.18); }
+//       .wz-label { font-size: 12.5px; font-weight: 700; color: var(--muted); transition: .2s; white-space: nowrap; }
+//       .wz-done .wz-label, .wz-active .wz-label { color: var(--ink); }
+//       .wz-line { width: 24px; height: 2px; background: var(--border); transition: .3s; flex-shrink: 0; }
+//       .wz-line-done { background: #10b981; }
+//       @media (max-width: 600px) { .wz-label { display: none; } .wz-line { width: 14px; } .nav { padding: 0 14px; gap: 8px; } }
+
+//       .nav-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+//       .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 40px; font-size: 12.5px; font-weight: 700; cursor: pointer; border: none; font-family: inherit; transition: all .18s; white-space: nowrap; letter-spacing: .1px; }
+//       .btn-ghost { background: transparent; color: var(--sub); border: 1.5px solid var(--border); }
+//       .btn-ghost:hover { background: var(--p10); border-color: var(--p30); color: var(--p); }
+//       .btn-primary { background: linear-gradient(135deg,var(--p),var(--p2)); color: white; box-shadow: 0 4px 14px rgba(91,56,240,.3); }
+//       .btn-primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 22px rgba(91,56,240,.38); }
+//       .btn-primary:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+//       .btn-sm { padding: 7px 14px; font-size: 11.5px; }
+//       .btn-icon { padding: 8px; border-radius: 10px; }
+
+//       /* ── SHELL ───────────────────── */
+//       .shell { display: grid; grid-template-columns: 1fr 1fr; height: calc(100vh - 60px); }
+//       @media (max-width: 1100px) { .shell { grid-template-columns: 1fr 420px; } }
+//       @media (max-width: 820px) { .shell { grid-template-columns: 1fr; height: auto; } }
+
+//       /* ── LEFT ───────────────────── */
+//       .left { display: flex; flex-direction: column; background: var(--bg); overflow: hidden; }
+//       .left-hd { flex-shrink: 0; padding: 28px 32px 0; }
+//       .page-eyebrow { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+//       .eyebrow-icon { width: 30px; height: 30px; background: linear-gradient(135deg,var(--p),var(--p2)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+//       .eyebrow-label { font-size: 12px; font-weight: 700; letter-spacing: .5px; color: var(--p); text-transform: uppercase; }
+//       .page-title { font-size: clamp(20px, 3vw, 26px); font-weight: 800; color: var(--ink); letter-spacing: -.5px; margin-bottom: 4px; }
+//       .page-sub { font-size: 13.5px; color: var(--sub); margin-bottom: 18px; }
+//       .tip-pill { display: inline-flex; align-items: center; gap: 7px; padding: 7px 16px; background: linear-gradient(135deg,var(--p),var(--p2)); color: white; border-radius: 40px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; font-family: inherit; margin-bottom: 4px; box-shadow: 0 4px 12px rgba(91,56,240,.25); transition: .18s; }
+//       .tip-pill:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(91,56,240,.32); }
+
+//       .left-body { flex: 1; overflow-y: auto; padding: 16px 32px 24px; scrollbar-width: thin; scrollbar-color: var(--p30) transparent; }
+//       .left-body::-webkit-scrollbar { width: 4px; }
+//       .left-body::-webkit-scrollbar-thumb { background: var(--p30); border-radius: 4px; }
+//       @media (max-width: 820px) { .left-body { overflow-y: visible; } .left { overflow: visible; } }
+
+//       /* ── TEMPLATE GRID ─────────── */
+//       .filter-row { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 16px; }
+//       .f-btn { padding: 5px 15px; border-radius: 30px; font-size: 11.5px; font-weight: 700; cursor: pointer; border: 1.5px solid var(--border); background: white; color: var(--sub); font-family: inherit; transition: .15s; }
+//       .f-btn:hover, .f-btn.on { border-color: var(--p); color: var(--p); background: var(--p10); }
+
+//       .tpl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px; margin-bottom: 8px; }
+//       @media (max-width: 480px) { .tpl-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
+
+//       .tpl-card { background: white; border: 2px solid var(--border2); border-radius: var(--r16); overflow: hidden; cursor: pointer; transition: all .22s; position: relative; }
+//       .tpl-card:hover { transform: translateY(-4px); box-shadow: var(--sh3); border-color: var(--p50); }
+//       .tpl-card.on { border-color: var(--p); box-shadow: 0 0 0 4px rgba(91,56,240,.14), var(--sh2); }
+//       .tpl-thumb { height: 110px; overflow: hidden; background: #f8f7ff; }
+//       .tpl-thumb svg { display: block; }
+//       .tpl-chk { position: absolute; top: 8px; right: 8px; width: 22px; height: 22px; background: var(--p); border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 0; transition: .2s; box-shadow: 0 2px 8px rgba(91,56,240,.4); }
+//       .tpl-card.on .tpl-chk { opacity: 1; }
+//       .tpl-chk svg { width: 12px; height: 12px; stroke: white; stroke-width: 2.5; fill: none; }
+//       .tpl-info { padding: 11px 13px 13px; }
+//       .tpl-tag { font-size: 9.5px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--p); margin-bottom: 3px; }
+//       .tpl-name { font-size: 13.5px; font-weight: 800; color: var(--ink); }
+//       .tpl-name-sub { font-size: 11px; color: var(--sub); margin-top: 1px; }
+
+//       /* ── FORM CARD ─────────────── */
+//       .card { background: white; border-radius: var(--r20); padding: 22px; margin-bottom: 14px; box-shadow: var(--sh1); border: 1.5px solid var(--border2); }
+//       .card-hd { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+//       .card-ico { width: 38px; height: 38px; background: linear-gradient(135deg,var(--p),var(--p2)); border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; box-shadow: 0 4px 12px rgba(91,56,240,.25); }
+//       .card-title { font-size: 14.5px; font-weight: 800; color: var(--ink); }
+//       .card-sub { font-size: 12px; color: var(--sub); margin-top: 1px; }
+
+//       /* fields */
+//       .fld { margin-bottom: 14px; }
+//       .fld-lbl { font-size: 11px; font-weight: 800; letter-spacing: .8px; text-transform: uppercase; color: var(--sub); margin-bottom: 6px; display: block; }
+//       .fld-lbl span { color: #ef4444; }
+//       .iw { position: relative; }
+//       .iw-ic { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 13px; pointer-events: none; opacity: .5; }
+//       input, textarea, select {
+//         width: 100%; padding: 10px 12px 10px 36px; border: 1.5px solid var(--border); border-radius: var(--r12);
+//         font-size: 13px; font-family: inherit; color: var(--ink); background: white; outline: none; transition: .15s;
+//       }
+//       textarea { padding-left: 12px; resize: vertical; min-height: 80px; line-height: 1.65; }
+//       .bare { padding-left: 12px; }
+//       input:focus, textarea:focus, select:focus { border-color: var(--p); box-shadow: 0 0 0 3px rgba(91,56,240,.1); }
+//       input::placeholder, textarea::placeholder { color: var(--ghost); }
+//       .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+//       .g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+//       @media (max-width: 520px) { .g2, .g3 { grid-template-columns: 1fr; } }
+
+//       /* section blocks */
+//       .sec-block { background: var(--p10); border: 1.5px solid var(--p20); border-radius: var(--r12); padding: 13px; margin-bottom: 11px; transition: .2s; }
+//       .sec-block:focus-within { background: white; border-color: var(--p); box-shadow: 0 0 0 3px rgba(91,56,240,.07); }
+//       .sec-hd { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+//       .sec-num { width: 22px; height: 22px; border-radius: 7px; background: linear-gradient(135deg,var(--p),var(--p2)); color: white; font-size: 10px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+//       .sec-ti { flex: 1; padding: 6px 10px; border-radius: 8px; border: 1.5px solid var(--border); font-size: 12.5px; font-weight: 700; background: white; font-family: inherit; color: var(--ink); outline: none; transition: .15s; }
+//       .sec-ti:focus { border-color: var(--p); }
+//       .sec-del { width: 26px; height: 26px; background: white; border: 1.5px solid var(--border); border-radius: 7px; cursor: pointer; color: #f87171; font-size: 13px; display: flex; align-items: center; justify-content: center; transition: .15s; }
+//       .sec-del:hover { background: #fef2f2; border-color: #fca5a5; }
+//       .sec-ta { width: 100%; padding: 9px 11px; border-radius: 9px; border: 1.5px solid var(--border); font-size: 12.5px; font-family: inherit; outline: none; resize: vertical; transition: .15s; background: white; }
+//       .sec-ta:focus { border-color: var(--p); box-shadow: 0 0 0 3px rgba(91,56,240,.08); }
+
+//       .add-btn { width: 100%; padding: 9px; background: white; border: 1.5px dashed var(--p30); border-radius: var(--r12); color: var(--p); font-size: 12.5px; font-weight: 700; cursor: pointer; font-family: inherit; transition: .15s; margin-bottom: 14px; }
+//       .add-btn:hover { background: var(--p10); border-color: var(--p); }
+
+//       .hdiv { height: 1px; background: var(--border2); margin: 16px 0; }
+//       .sub-lbl { font-size: 10.5px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--p); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+
+//       /* achievements */
+//       .ach-row { display: flex; gap: 7px; margin-bottom: 9px; }
+//       .ach-in { flex: 1; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: var(--r12); font-size: 12.5px; font-family: inherit; outline: none; transition: .15s; }
+//       .ach-in:focus { border-color: var(--p); box-shadow: 0 0 0 3px rgba(91,56,240,.08); }
+//       .ach-add { padding: 9px 16px; background: linear-gradient(135deg,var(--p),var(--p2)); color: white; border: none; border-radius: var(--r12); cursor: pointer; font-size: 12px; font-weight: 700; font-family: inherit; transition: .15s; }
+//       .ach-add:hover { box-shadow: 0 4px 12px rgba(91,56,240,.3); }
+//       .ach-list { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 4px; }
+//       .ach-tag { display: flex; align-items: center; gap: 5px; padding: 4px 10px 4px 9px; background: var(--p10); border: 1.5px solid var(--p20); border-radius: 30px; font-size: 12px; font-weight: 600; color: var(--p); }
+//       .ach-rm { background: none; border: none; cursor: pointer; color: var(--p50); font-size: 14px; line-height: 1; padding: 0; display: flex; transition: .15s; }
+//       .ach-rm:hover { color: #ef4444; }
+
+//       /* ── FOOTER ──────────────────── */
+//       .left-ft { flex-shrink: 0; padding: 14px 32px; border-top: 1.5px solid var(--border); background: var(--white); display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+//       .btn-back { display: flex; align-items: center; gap: 6px; padding: 10px 20px; border-radius: 40px; font-size: 13px; font-weight: 700; cursor: pointer; border: 1.5px solid var(--border); background: white; color: var(--sub); font-family: inherit; transition: .15s; }
+//       .btn-back:hover:not(:disabled) { background: var(--p10); border-color: var(--p30); color: var(--p); }
+//       .btn-back:disabled { opacity: .38; cursor: default; }
+//       .btn-next { display: flex; align-items: center; gap: 8px; padding: 12px 28px; border-radius: 40px; font-size: 13.5px; font-weight: 800; cursor: pointer; border: none; background: linear-gradient(135deg,var(--p),var(--p2)); color: white; font-family: inherit; box-shadow: 0 4px 16px rgba(91,56,240,.32); transition: .18s; }
+//       .btn-next:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(91,56,240,.4); }
+//       .btn-next:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+//       @media (max-width: 480px) { .left-hd { padding: 20px 18px 0; } .left-body { padding: 14px 18px 20px; } .left-ft { padding: 12px 18px; } .btn-next { padding: 11px 22px; font-size: 13px; } }
+
+//       /* ── RIGHT PREVIEW ───────────── */
+//       .right { background: var(--bg2); border-left: 1.5px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+//       @media (max-width: 820px) { .right { display: none; } }
+//       .right-hd { flex-shrink: 0; height: 54px; padding: 0 18px; background: var(--white); border-bottom: 1.5px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+//       .right-hd-l { display: flex; align-items: center; gap: 9px; }
+//       .live-dot { width: 7px; height: 7px; border-radius: 50%; background: #10b981; flex-shrink: 0; animation: livePulse 2s infinite; }
+//       @keyframes livePulse { 0%,100% { box-shadow: 0 0 0 2px rgba(16,185,129,.2); } 50% { box-shadow: 0 0 0 5px rgba(16,185,129,.07); } }
+//       .right-hd-info-title { font-size: 13px; font-weight: 700; }
+//       .right-hd-info-sub { font-size: 11px; color: var(--muted); }
+//       .right-hd-r { display: flex; align-items: center; gap: 7px; }
+//       .change-tpl { display: flex; align-items: center; gap: 6px; padding: 6px 13px; border-radius: 30px; background: var(--p10); border: 1.5px solid var(--p20); font-size: 11.5px; font-weight: 700; color: var(--p); cursor: pointer; font-family: inherit; transition: .15s; }
+//       .change-tpl:hover { background: var(--p20); border-color: var(--p30); }
+
+//       .prev-scroll { flex: 1; overflow-y: auto; padding: 16px; scrollbar-width: thin; scrollbar-color: var(--p30) transparent; }
+//       .prev-scroll::-webkit-scrollbar { width: 4px; }
+//       .prev-scroll::-webkit-scrollbar-thumb { background: var(--p30); border-radius: 4px; }
+//       .prev-wrap { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 32px rgba(91,56,240,.1); width: 100%; }
+//       .prev-iframe { width: 100%; height: 1080px; border: none; display: block; pointer-events: none; }
+//       .prev-empty { height: 380px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: var(--muted); text-align: center; padding: 24px; }
+//       .prev-empty-icon { font-size: 52px; opacity: .18; }
+
+//       /* ── MOBILE PREVIEW BTN ──────── */
+//       .mob-prev-btn { display: none; }
+//       @media (max-width: 820px) {
+//         .mob-prev-btn {
+//           display: flex; align-items: center; justify-content: center; gap: 8px;
+//           position: fixed; bottom: 80px; right: 18px; z-index: 150;
+//           padding: 12px 20px; border-radius: 40px; font-size: 13px; font-weight: 800;
+//           background: linear-gradient(135deg,var(--p),var(--p2)); color: white;
+//           border: none; cursor: pointer; font-family: inherit;
+//           box-shadow: 0 8px 28px rgba(91,56,240,.4);
+//         }
+//       }
+
+//       /* ── MODAL ───────────────────── */
+//       .overlay { position: fixed; inset: 0; background: rgba(10,6,30,.84); backdrop-filter: blur(14px); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; animation: fadeIn .2s ease; }
+//       @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+//       .modal { width: 100%; max-width: 960px; height: 92vh; background: white; border-radius: 24px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 48px 100px rgba(0,0,0,.45); animation: slideUp .25s ease; }
+//       @keyframes slideUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+//       .modal-hd { flex-shrink: 0; height: 58px; padding: 0 24px; background: white; border-bottom: 1.5px solid var(--border2); display: flex; align-items: center; justify-content: space-between; }
+//       .modal-hd-l { display: flex; align-items: center; gap: 10px; }
+//       .modal-ico { width: 32px; height: 32px; background: linear-gradient(135deg,var(--p),var(--p2)); border-radius: 9px; display: flex; align-items: center; justify-content: center; color: white; font-size: 15px; }
+//       .modal-title { font-size: 15px; font-weight: 800; }
+//       .modal-sub { font-size: 11.5px; color: var(--sub); }
+//       .modal-close { width: 32px; height: 32px; border-radius: 50%; background: var(--p10); border: 1.5px solid var(--p20); cursor: pointer; font-size: 17px; color: var(--sub); display: flex; align-items: center; justify-content: center; transition: .15s; font-family: sans-serif; }
+//       .modal-close:hover { background: #fef2f2; border-color: #fca5a5; color: #ef4444; }
+//       .modal-body { flex: 1; overflow-y: auto; background: var(--bg2); padding: 20px; display: flex; justify-content: center; }
+//       .modal-inner { width: 100%; max-width: 900px; background: white; border-radius: 12px; overflow: hidden; box-shadow: var(--sh3); }
+//       .modal-iframe { width: 100%; height: 1080px; border: none; display: block; }
+//       .modal-ft { flex-shrink: 0; padding: 13px 24px; border-top: 1.5px solid var(--border2); background: white; display: flex; justify-content: flex-end; gap: 10px; }
+
+//       @media (max-width: 640px) {
+//         .overlay { padding: 0; align-items: flex-end; }
+//         .modal { border-radius: 20px 20px 0 0; height: 90vh; }
+//         .modal-iframe { height: 900px; }
+//       }
+
+//       /* ── TOAST ───────────────────── */
+//       .toast { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%); background: var(--ink); color: white; padding: 11px 26px; border-radius: 40px; font-size: 13px; font-weight: 700; z-index: 9999; animation: toastIn .25s ease; box-shadow: 0 8px 28px rgba(0,0,0,.22); white-space: nowrap; }
+//       @keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(10px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+//     `}</style>
+
+//       {/* ── NAV ── */}
+//       <nav className="nav">
+
+//          {/* Logo - responsive sizing */}
+//                 <button onClick={() => router.push("/")} className="cursor-pointer flex-shrink-0">
+//                   <div className="relative w-25 xs:w-[120px] sm:w-35 md:w-[150px] h-[33px] xs:h-[40px] sm:h-[46px] md:h-[48px]">
+//                     <Image
+//                       src="/logo.png"
+//                       alt="ATS Pass"
+//                       fill
+//                       className="object-contain"
+//                       priority
+//                       sizes="(max-width: 480px) 100px, (max-width: 640px) 120px, (max-width: 768px) 140px, 150px"
+//                     />
+//                   </div>
+//                 </button>
+
+//         {/* WIZARD */}
+//         <div className="wizard">
+//           {STEPS.map((s, i) => (
+//             <React.Fragment key={s.id}>
+//               {i > 0 && (
+//                 <div
+//                   className={`wz-line${i <= stepIdx ? " wz-line-done" : ""}`}
+//                 />
+//               )}
+//               <div
+//                 className={`wz ${i < stepIdx ? "wz-done" : i === stepIdx ? "wz-active" : ""}`}
+//                 onClick={() => setStep(s.id)}
+//               >
+//                 <div className="wz-dot">
+//                   {i < stepIdx ? (
+//                     <svg viewBox="0 0 16 16" width="12" height="12" fill="none">
+//                       <polyline
+//                         points="2,9 6,13 14,4"
+//                         stroke="white"
+//                         strokeWidth="2.5"
+//                       />
+//                     </svg>
+//                   ) : (
+//                     i + 1
+//                   )}
+//                 </div>
+//                 <span className="wz-label">{s.label}</span>
+//               </div>
+//             </React.Fragment>
+//           ))}
+//         </div>
+
+//       </nav>
+
+//       {/* ── SHELL ── */}
+//       <div className="shell">
+//         {/* LEFT FORM */}
+//         <div className="left">
+//           <div className="left-hd">
+
+//             {step === "template" && (
+//               <>
+//                 <div className="page-title">Choose Your Template</div>
+//                 <div className="page-sub">
+//                   Pick a design that best represents your professional style
+//                 </div>
+//               </>
+//             )}
+//             {step === "personal" && (
+//               <>
+//                 <div className="page-title">Personal Information</div>
+//                 <div className="page-sub">
+//                   Let recruiters find you with accurate contact details
+//                 </div>
+//               </>
+//             )}
+//             {step === "company" && (
+//               <>
+//                 <div className="page-title">Company Details</div>
+//                 <div className="page-sub">
+//                   Tell us about where you're applying
+//                 </div>
+//                 <button className="tip-pill">🎯 Application Tips</button>
+//               </>
+//             )}
+//             {step === "content" && (
+//               <>
+//                 <div className="page-title">Letter Content</div>
+//                 <div className="page-sub">
+//                   Craft compelling sections that showcase your value
+//                 </div>
+//                 <button className="tip-pill">✨ Generate With AI</button>
+//               </>
+//             )}
+//           </div>
+
+//           <div className="left-body">
+//             {/* TEMPLATE PICKER */}
+//             {step === "template" && (
+
+//                 <div className="tpl-grid">
+//                   {TEMPLATES.map((t) => (
+//                     <div
+//                       key={t.id}
+//                       className={`tpl-card${tplId === t.id ? " on" : ""}`}
+//                       onClick={() => setTplId(t.id)}
+//                     >
+//                       <div className="tpl-thumb">
+//                         <TemplateThumbnail id={t.id} />
+//                       </div>
+//                       <div className="tpl-chk">
+//                         <svg viewBox="0 0 16 16">
+//                           <polyline points="2,9 6,13 14,4" />
+//                         </svg>
+//                       </div>
+//                       <div className="tpl-info">
+//                         <div className="tpl-tag">{t.tag}</div>
+//                         <div className="tpl-name">{t.name}</div>
+//                       </div>
+//                     </div>
+//                   ))}
+//                 </div>
+//             )}
+
+//             {/* PERSONAL */}
+//             {step === "personal" && (
+//               <div className="card">
+//                 <div className="card-hd">
+//                   <div>
+//                     <div className="card-title">Your Profile</div>
+//                     <div className="card-sub">
+//                       Details displayed on your cover letter
+//                     </div>
+//                   </div>
+//                 </div>
+//                 <div className="g2">
+//                   <Fld label="Full Name" icon="✏️" req>
+//                     <input
+//                       type="text"
+//                       placeholder="Alexandra Chen"
+//                       value={data.personal.fullName}
+//                       onChange={(e) =>
+//                         set(["personal", "fullName"], e.target.value)
+//                       }
+//                     />
+//                   </Fld>
+//                   <Fld label="Professional Title" icon="💼">
+//                     <input
+//                       type="text"
+//                       placeholder="Senior Designer"
+//                       value={data.personal.title}
+//                       onChange={(e) =>
+//                         set(["personal", "title"], e.target.value)
+//                       }
+//                     />
+//                   </Fld>
+//                 </div>
+//                 <div className="g2">
+//                   <Fld label="Email Address" icon="✉️" req>
+//                     <input
+//                       type="email"
+//                       placeholder="alex@email.com"
+//                       value={data.personal.email}
+//                       onChange={(e) =>
+//                         set(["personal", "email"], e.target.value)
+//                       }
+//                     />
+//                   </Fld>
+//                   <Fld label="Phone Number" icon="📞">
+//                     <input
+//                       type="tel"
+//                       placeholder="+1 555 000 1234"
+//                       value={data.personal.phone}
+//                       onChange={(e) =>
+//                         set(["personal", "phone"], e.target.value)
+//                       }
+//                     />
+//                   </Fld>
+//                 </div>
+//                 <Fld label="Location" icon="📍">
+//                   <input
+//                     type="text"
+//                     placeholder="San Francisco, CA"
+//                     value={data.personal.location}
+//                     onChange={(e) =>
+//                       set(["personal", "location"], e.target.value)
+//                     }
+//                   />
+//                 </Fld>
+//                 <div className="hdiv" />
+//                 <div className="sub-lbl">🔗 Online Presence</div>
+//                 <Fld label="LinkedIn URL" icon="💼">
+//                   <input
+//                     type="text"
+//                     placeholder="linkedin.com/in/alexchen"
+//                     value={data.personal.linkedin}
+//                     onChange={(e) =>
+//                       set(["personal", "linkedin"], e.target.value)
+//                     }
+//                   />
+//                 </Fld>
+//                 <div className="g2">
+//                   <Fld label="GitHub URL" icon="💻">
+//                     <input
+//                       type="text"
+//                       placeholder="github.com/alexchen"
+//                       value={data.personal.github}
+//                       onChange={(e) =>
+//                         set(["personal", "github"], e.target.value)
+//                       }
+//                     />
+//                   </Fld>
+//                   <Fld label="Portfolio / Website" icon="🌐">
+//                     <input
+//                       type="text"
+//                       placeholder="alexchen.io"
+//                       value={data.personal.website}
+//                       onChange={(e) =>
+//                         set(["personal", "website"], e.target.value)
+//                       }
+//                     />
+//                   </Fld>
+//                 </div>
+//               </div>
+//             )}
+
+//             {/* COMPANY */}
+//             {step === "company" && (
+//               <div className="card">
+//                 <div className="card-hd">
+//                   <div className="card-ico">🏢</div>
+//                   <div>
+//                     <div className="card-title">Company & Role</div>
+//                     <div className="card-sub">Application target details</div>
+//                   </div>
+//                 </div>
+//                 <Fld label="Company Name" icon="🏢" req>
+//                   <input
+//                     type="text"
+//                     placeholder="Google, Stripe, Airbnb…"
+//                     value={data.company.name}
+//                     onChange={(e) => set(["company", "name"], e.target.value)}
+//                   />
+//                 </Fld>
+//                 <Fld label="Role Applying For" icon="🎯" req>
+//                   <input
+//                     type="text"
+//                     placeholder="Senior UX Designer"
+//                     value={data.company.jobTitle}
+//                     onChange={(e) =>
+//                       set(["company", "jobTitle"], e.target.value)
+//                     }
+//                   />
+//                 </Fld>
+//                 <div className="g2">
+//                   <Fld label="Hiring Manager" icon="👤">
+//                     <input
+//                       type="text"
+//                       placeholder="Sarah Johnson"
+//                       value={data.company.hiringManager}
+//                       onChange={(e) =>
+//                         set(["company", "hiringManager"], e.target.value)
+//                       }
+//                     />
+//                   </Fld>
+//                   <Fld label="Their Title" icon="🏷️">
+//                     <input
+//                       type="text"
+//                       placeholder="Head of Design"
+//                       value={data.company.hiringManagerTitle}
+//                       onChange={(e) =>
+//                         set(["company", "hiringManagerTitle"], e.target.value)
+//                       }
+//                     />
+//                   </Fld>
+//                 </div>
+//                 <div className="g2">
+//                   <Fld label="City">
+//                     <input
+//                       className="bare"
+//                       type="text"
+//                       placeholder="Mountain View"
+//                       value={data.company.city}
+//                       onChange={(e) => set(["company", "city"], e.target.value)}
+//                     />
+//                   </Fld>
+//                   <Fld label="State">
+//                     <input
+//                       className="bare"
+//                       type="text"
+//                       placeholder="CA"
+//                       value={data.company.state}
+//                       onChange={(e) =>
+//                         set(["company", "state"], e.target.value)
+//                       }
+//                     />
+//                   </Fld>
+//                 </div>
+//               </div>
+//             )}
+
+//             {/* CONTENT */}
+//             {step === "content" && (
+//               <div className="card">
+//                 <div className="card-hd">
+//                   <div className="card-ico">✍️</div>
+//                   <div>
+//                     <div className="card-title">Letter Sections</div>
+//                     <div className="card-sub">
+//                       Build your letter paragraph by paragraph
+//                     </div>
+//                   </div>
+//                 </div>
+//                 {data.sections.map((s, i) => (
+//                   <div key={s.id} className="sec-block">
+//                     <div className="sec-hd">
+//                       <div className="sec-num">{i + 1}</div>
+//                       <input
+//                         className="sec-ti"
+//                         value={s.title}
+//                         onChange={(e) =>
+//                           setSection(s.id, "title", e.target.value)
+//                         }
+//                         placeholder="Section title"
+//                       />
+//                       {data.sections.length > 1 && (
+//                         <button
+//                           className="sec-del"
+//                           onClick={() =>
+//                             setData((p) => ({
+//                               ...p,
+//                               sections: p.sections.filter((x) => x.id !== s.id),
+//                             }))
+//                           }
+//                         >
+//                           ✕
+//                         </button>
+//                       )}
+//                     </div>
+//                     <textarea
+//                       className="sec-ta"
+//                       rows={4}
+//                       value={s.content}
+//                       placeholder={s.placeholder}
+//                       onChange={(e) =>
+//                         setSection(s.id, "content", e.target.value)
+//                       }
+//                     />
+//                   </div>
+//                 ))}
+//                 <button className="add-btn" onClick={addSection}>
+//                   + Add Section
+//                 </button>
+
+//                 <div className="hdiv" />
+//                 <div className="sub-lbl">🏆 Key Achievements</div>
+//                 <div className="ach-row">
+//                   <input
+//                     className="ach-in"
+//                     placeholder="e.g. Grew revenue by 40%"
+//                     value={achIn}
+//                     onChange={(e) => setAchIn(e.target.value)}
+//                     onKeyDown={(e) => {
+//                       if (e.key === "Enter" && achIn.trim()) {
+//                         setData((p) => ({
+//                           ...p,
+//                           achievements: [...p.achievements, achIn.trim()],
+//                         }));
+//                         setAchIn("");
+//                       }
+//                     }}
+//                   />
+//                   <button
+//                     className="ach-add"
+//                     onClick={() => {
+//                       if (achIn.trim()) {
+//                         setData((p) => ({
+//                           ...p,
+//                           achievements: [...p.achievements, achIn.trim()],
+//                         }));
+//                         setAchIn("");
+//                       }
+//                     }}
+//                   >
+//                     Add
+//                   </button>
+//                 </div>
+//                 {data.achievements.length > 0 && (
+//                   <div className="ach-list">
+//                     {data.achievements.map((a, i) => (
+//                       <div key={i} className="ach-tag">
+//                         ⭐ {a}
+//                         <button
+//                           className="ach-rm"
+//                           onClick={() =>
+//                             setData((p) => ({
+//                               ...p,
+//                               achievements: p.achievements.filter(
+//                                 (_, j) => j !== i,
+//                               ),
+//                             }))
+//                           }
+//                         >
+//                           ✕
+//                         </button>
+//                       </div>
+//                     ))}
+//                   </div>
+//                 )}
+
+//                 <div className="hdiv" />
+//                 <div className="sub-lbl">📝 Additional Notes</div>
+//                 <textarea
+//                   className="sec-ta"
+//                   rows={3}
+//                   placeholder="Any extra context or postscript…"
+//                   value={data.notes}
+//                   onChange={(e) =>
+//                     setData((p) => ({ ...p, notes: e.target.value }))
+//                   }
+//                 />
+//               </div>
+//             )}
+//           </div>
+
+//           {/* BOTTOM NAV */}
+//           <div className="left-ft">
+//             <button
+//               className="btn-back"
+//           //     disabled={stepIdx === 0}
+//               onClick={() => stepIdx===0 ? router.push('/') :setStep(STEPS[stepIdx - 1].id)}
+//             >
+//               ← {stepIdx > 0 ? `Back to ${STEPS[stepIdx - 1].label}` : "Back to Home"}
+//             </button>
+//             {stepIdx < STEPS.length - 1 ? (
+//               <button
+//                 className="btn-next"
+//                 onClick={() => setStep(STEPS[stepIdx + 1].id)}
+//               >
+//                 Continue to {STEPS[stepIdx + 1].label} →
+//               </button>
+//             ) : (
+//               <button
+//                 className="btn-next"
+//                 onClick={downloadPDF}
+//                 disabled={busy}
+//               >
+//                 {busy ? "⏳ Generating…" : "⬇ Download PDF"}
+//               </button>
+//             )}
+//           </div>
+//         </div>
+
+//         {/* RIGHT PREVIEW */}
+//         <div className="right">
+//           <div className="right-hd">
+//             <div className="right-hd-l">
+//               <div className="live-dot" />
+//               <div>
+//                 <div className="right-hd-info-title">Live Preview</div>
+//                 <div className="right-hd-info-sub">Updates as you type</div>
+//               </div>
+//             </div>
+//             <div className="right-hd-r">
+//               <button
+//                 className="change-tpl"
+//                 onClick={() => setStep("template")}
+//               >
+//                 🎨 Change Template
+//               </button>
+//               <button
+//                 className="btn btn-ghost btn-sm"
+//                 onClick={() => {
+//                   rebuild();
+//                   setModal(true);
+//                 }}
+//               >
+//                 ⛶ Expand
+//               </button>
+//             </div>
+//           </div>
+//           <div className="prev-scroll">
+//             <div className="prev-wrap">
+//               {html ? (
+//                 <iframe
+//                   ref={liveRef}
+//                   className="prev-iframe"
+//                   title="live"
+//                   sandbox="allow-same-origin"
+//                 />
+//               ) : (
+//                 <div className="prev-empty">
+//                   <div className="prev-empty-icon">📄</div>
+//                   <div style={{ fontWeight: 700, fontSize: 15 }}>
+//                     Preview appears here
+//                   </div>
+//                   <div style={{ fontSize: 12 }}>Start filling your details</div>
+//                 </div>
+//               )}
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* MOBILE PREVIEW BUTTON */}
+//       <button
+//         className="mob-prev-btn"
+//         onClick={() => {
+//           rebuild();
+//           setMobilePreview(true);
+//         }}
+//       >
+//         👁 Preview Letter
+//       </button>
+
+//       {/* FULLSCREEN / MOBILE MODAL */}
+//       {(modal || mobilePreview) && (
+//         <div
+//           className="overlay"
+//           onClick={() => {
+//             setModal(false);
+//             setMobilePreview(false);
+//           }}
+//         >
+//           <div className="modal" onClick={(e) => e.stopPropagation()}>
+//             <div className="modal-hd">
+//               <div className="modal-hd-l">
+//                 <div className="modal-ico">📄</div>
+//                 <div>
+//                   <div className="modal-title">
+//                     {data.personal.fullName || "Cover Letter"}
+//                   </div>
+//                   <div className="modal-sub">
+//                     {tpl.name} · {tpl.tag}
+//                   </div>
+//                 </div>
+//               </div>
+//               <button
+//                 className="modal-close"
+//                 onClick={() => {
+//                   setModal(false);
+//                   setMobilePreview(false);
+//                 }}
+//               >
+//                 ✕
+//               </button>
+//             </div>
+//             <div className="modal-body">
+//               <div className="modal-inner">
+//                 <iframe
+//                   ref={modalRef}
+//                   className="modal-iframe"
+//                   title="full-view"
+//                   sandbox="allow-same-origin"
+//                 />
+//               </div>
+//             </div>
+//             <div className="modal-ft">
+//               <button
+//                 className="btn btn-ghost"
+//                 onClick={() => {
+//                   setModal(false);
+//                   setMobilePreview(false);
+//                 }}
+//               >
+//                 Close
+//               </button>
+//               <button
+//                 className="btn btn-primary"
+//                 onClick={downloadPDF}
+//                 disabled={busy}
+//               >
+//                 {busy ? "⏳ Generating…" : "⬇ Download PDF"}
+//               </button>
+//             </div>
+//           </div>
+//         </div>
+//       )}
+
+//       {toast && <div className="toast">{toast}</div>}
+//     </>
+//   );
+// }
+
+// function Fld({
+//   label,
+//   icon,
+//   req,
+//   children,
+// }: {
+//   label: string;
+//   icon?: string;
+//   req?: boolean;
+//   children: React.ReactNode;
+// }) {
+//   return (
+//     <div className="fld">
+//       <label className="fld-lbl">
+//         {label}
+//         {req && <span> *</span>}
+//       </label>
+//       <div className="iw">
+//         {icon && <span className="iw-ic">{icon}</span>}
+//         {children}
+//       </div>
+//     </div>
+//   );
+// }
+
+// "use client";
+// import React, {
+//   useState,
+//   useRef,
+//   useEffect,
+//   useCallback,
+//   ReactNode,
+// } from "react";
+// import axios from "axios";
+// import { motion, AnimatePresence } from "framer-motion";
+// import { FiZoomIn, FiZoomOut, FiRefreshCw } from "react-icons/fi";
+// import { useRouter } from "next/navigation";
+// import Image from "next/image";
+
+// // ═══════════════════════════════════════════════════════════════
+// // TYPES
+// // ═══════════════════════════════════════════════════════════════
+// interface PersonalInfo {
+//   fullName: string;
+//   title: string;
+//   email: string;
+//   phone: string;
+//   location: string;
+//   website: string;
+//   linkedin: string;
+//   github: string;
+//   summary: string;
+//   signature: string;
+// }
+// interface CompanyInfo {
+//   name: string;
+//   jobTitle: string;
+//   hiringManager: string;
+//   hiringManagerTitle: string;
+//   city: string;
+//   state: string;
+//   jobSource: string;
+//   referral: string;
+// }
+// interface Section {
+//   id: string;
+//   title: string;
+//   content: string;
+//   placeholder: string;
+// }
+// interface CLData {
+//   personal: PersonalInfo;
+//   company: CompanyInfo;
+//   sections: Section[];
+//   achievements: string[];
+//   skills: string[];
+//   tone: string;
+//   notes: string;
+//   signature: string;
+// }
+
+// const BLANK: CLData = {
+//   personal: {
+//     fullName: "",
+//     title: "",
+//     email: "",
+//     phone: "",
+//     location: "",
+//     website: "",
+//     linkedin: "",
+//     github: "",
+//     summary: "",
+//     signature: "",
+//   },
+//   company: {
+//     name: "",
+//     jobTitle: "",
+//     hiringManager: "",
+//     hiringManagerTitle: "",
+//     city: "",
+//     state: "",
+//     jobSource: "",
+//     referral: "",
+//   },
+//   sections: [
+//     {
+//       id: "1",
+//       title: "Opening Statement",
+//       content: "",
+//       placeholder:
+//         "Express your enthusiasm for the role. Mention where you found it and a compelling hook about why you're perfect for it…",
+//     },
+//     {
+//       id: "2",
+//       title: "Experience & Skills",
+//       content: "",
+//       placeholder:
+//         "Highlight 2–3 specific accomplishments with metrics. Show you can solve their exact problems…",
+//     },
+//     {
+//       id: "3",
+//       title: "Why This Company",
+//       content: "",
+//       placeholder:
+//         "Demonstrate genuine research — reference their mission, recent news, products, or culture…",
+//     },
+//     {
+//       id: "4",
+//       title: "Closing",
+//       content: "",
+//       placeholder:
+//         "Restate enthusiasm, include a clear call to action, mention your portfolio/work samples if applicable…",
+//     },
+//   ],
+//   achievements: [],
+//   skills: [],
+//   tone: "professional",
+//   notes: "",
+//   signature: "",
+// };
+
+// // ═══════════════════════════════════════════════════════════════
+// // CANVAS PREVIEW (from provided component, adapted)
+// // ═══════════════════════════════════════════════════════════════
+// function CanvasPreview({ children }: { children: ReactNode }) {
+//   const containerRef = useRef<HTMLDivElement>(null);
+//   const [scale, setScale] = useState(0.55);
+//   const [position, setPosition] = useState({ x: 0, y: 0 });
+//   const [isDragging, setIsDragging] = useState(false);
+//   const scaleRef = useRef(0.55);
+//   const pointerDownPos = useRef<{ x: number; y: number } | null>(null);
+//   const dragStarted = useRef(false);
+//   const startPositionRef = useRef({ x: 0, y: 0 });
+//   const zoomAnimRef = useRef<number | null>(null);
+
+//   useEffect(() => {
+//     const r = () => {
+//       const w = window.innerWidth;
+//       const s =
+//         w < 480
+//           ? 0.38
+//           : w < 640
+//             ? 0.48
+//             : w < 768
+//               ? 0.55
+//               : w < 1024
+//                 ? 0.62
+//                 : w < 1280
+//                   ? 0.68
+//                   : 0.72;
+//       setScale(s);
+//       scaleRef.current = s;
+//     };
+//     r();
+//     window.addEventListener("resize", r);
+//     return () => window.removeEventListener("resize", r);
+//   }, []);
+
+//   useEffect(() => {
+//     scaleRef.current = scale;
+//   }, [scale]);
+
+//   const smoothZoom = (target: number) => {
+//     if (zoomAnimRef.current) cancelAnimationFrame(zoomAnimRef.current);
+//     const from = scaleRef.current;
+//     const start = performance.now();
+//     const go = (now: number) => {
+//       const p = Math.min((now - start) / 160, 1);
+//       const e = 1 - Math.pow(1 - p, 3);
+//       const v = from + (target - from) * e;
+//       setScale(v);
+//       scaleRef.current = v;
+//       if (p < 1) zoomAnimRef.current = requestAnimationFrame(go);
+//     };
+//     zoomAnimRef.current = requestAnimationFrame(go);
+//   };
+
+//   const zoomIn = () => smoothZoom(Math.min(scaleRef.current + 0.1, 2.5));
+//   const zoomOut = () => smoothZoom(Math.max(scaleRef.current - 0.1, 0.2));
+//   const reset = () => {
+//     const w = window.innerWidth;
+//     smoothZoom(w < 640 ? 0.38 : 0.68);
+//     setPosition({ x: 0, y: 0 });
+//   };
+
+//   useEffect(() => {
+//     const el = containerRef.current;
+//     if (!el) return;
+//     const skip = (t: EventTarget | null) => {
+//       const tag = (t as HTMLElement)?.tagName;
+//       return (
+//         ["BUTTON", "INPUT", "A", "SELECT", "TEXTAREA"].includes(tag || "") ||
+//         !!(t as HTMLElement)?.closest?.("[data-nodrag]")
+//       );
+//     };
+//     const onDown = (e: MouseEvent) => {
+//       if (skip(e.target)) return;
+//       pointerDownPos.current = { x: e.clientX, y: e.clientY };
+//       dragStarted.current = false;
+//     };
+//     const onMove = (e: MouseEvent) => {
+//       if (!pointerDownPos.current) return;
+//       const dx = e.clientX - pointerDownPos.current.x,
+//         dy = e.clientY - pointerDownPos.current.y;
+//       if (!dragStarted.current && Math.sqrt(dx * dx + dy * dy) > 5) {
+//         dragStarted.current = true;
+//         setIsDragging(true);
+//         startPositionRef.current = {
+//           x: pointerDownPos.current.x - position.x,
+//           y: pointerDownPos.current.y - position.y,
+//         };
+//       }
+//       if (dragStarted.current) {
+//         e.preventDefault();
+//         setPosition({
+//           x: e.clientX - startPositionRef.current.x,
+//           y: e.clientY - startPositionRef.current.y,
+//         });
+//       }
+//     };
+//     const onUp = () => {
+//       pointerDownPos.current = null;
+//       dragStarted.current = false;
+//       setIsDragging(false);
+//     };
+//     const onWheel = (e: WheelEvent) => {
+//       e.preventDefault();
+//       if (e.ctrlKey || e.metaKey) {
+//         const v = Math.max(
+//           0.2,
+//           Math.min(2.5, scaleRef.current * Math.exp(-e.deltaY * 0.002)),
+//         );
+//         setScale(v);
+//         scaleRef.current = v;
+//       } else {
+//         setPosition((p) => ({
+//           x: p.x - e.deltaX * 0.4,
+//           y: p.y - e.deltaY * 0.4,
+//         }));
+//       }
+//     };
+//     el.addEventListener("mousedown", onDown);
+//     el.addEventListener("mousemove", onMove);
+//     el.addEventListener("mouseup", onUp);
+//     el.addEventListener("mouseleave", onUp);
+//     el.addEventListener("wheel", onWheel, { passive: false });
+//     return () => {
+//       el.removeEventListener("mousedown", onDown);
+//       el.removeEventListener("mousemove", onMove);
+//       el.removeEventListener("mouseup", onUp);
+//       el.removeEventListener("mouseleave", onUp);
+//       el.removeEventListener("wheel", onWheel);
+//     };
+//   }, [position]);
+
+//   return (
+//     <div
+//       style={{
+//         position: "relative",
+//         width: "100%",
+//         height: "100%",
+//         minHeight: 420,
+//       }}
+//     >
+//       <div
+//         ref={containerRef}
+//         style={{
+//           position: "absolute",
+//           inset: 0,
+//           overflow: "hidden",
+//           background: "#f0effe",
+//           borderRadius: 16,
+//           cursor: isDragging ? "grabbing" : "grab",
+//         }}
+//       >
+//         <div
+//           style={{
+//             position: "absolute",
+//             top: 0,
+//             left: 0,
+//             transformOrigin: "top left",
+//             transform: `translate(${position.x}px,${position.y}px) scale(${scale})`,
+//             userSelect: "none",
+//             WebkitUserSelect: "none",
+//           }}
+//         >
+//           {children}
+//         </div>
+//       </div>
+//       {/* Zoom badge */}
+//       <div
+//         data-nodrag
+//         style={{
+//           position: "absolute",
+//           top: 10,
+//           left: 10,
+//           background: "rgba(255,255,255,.92)",
+//           backdropFilter: "blur(8px)",
+//           borderRadius: 30,
+//           padding: "4px 12px",
+//           fontSize: 11,
+//           fontWeight: 700,
+//           color: "#5b38f0",
+//           border: "1px solid #ddd6fe",
+//           pointerEvents: "none",
+//           zIndex: 20,
+//         }}
+//       >
+//         {Math.round(scale * 100)}%
+//       </div>
+//       {/* Controls */}
+//       <div
+//         data-nodrag
+//         style={{
+//           position: "absolute",
+//           bottom: 12,
+//           right: 12,
+//           display: "flex",
+//           flexDirection: "column",
+//           gap: 6,
+//           zIndex: 20,
+//         }}
+//       >
+//         {[
+//           { fn: zoomIn, icon: <FiZoomIn />, tip: "Zoom In" },
+//           { fn: zoomOut, icon: <FiZoomOut />, tip: "Zoom Out" },
+//           { fn: reset, icon: <FiRefreshCw />, tip: "Reset" },
+//         ].map((b, i) => (
+//           <motion.button
+//             key={i}
+//             whileHover={{ scale: 1.08 }}
+//             whileTap={{ scale: 0.94 }}
+//             onClick={b.fn}
+//             title={b.tip}
+//             type="button"
+//             style={{
+//               width: 34,
+//               height: 34,
+//               borderRadius: 10,
+//               border: "none",
+//               cursor: "pointer",
+//               display: "flex",
+//               alignItems: "center",
+//               justifyContent: "center",
+//               fontSize: 15,
+//               color: "white",
+//               background:
+//                 i < 2 ? "linear-gradient(135deg,#5b38f0,#7c3aed)" : "#374151",
+//               boxShadow: "0 4px 12px rgba(91,56,240,.3)",
+//             }}
+//           >
+//             {b.icon}
+//           </motion.button>
+//         ))}
+//       </div>
+//       {/* Hint */}
+//       <div
+//         data-nodrag
+//         style={{
+//           position: "absolute",
+//           bottom: 12,
+//           left: 10,
+//           fontSize: 10,
+//           color: "#a78bfa",
+//           fontWeight: 600,
+//           pointerEvents: "none",
+//         }}
+//       >
+//         Drag · Scroll · Ctrl+Wheel
+//       </div>
+//     </div>
+//   );
+// }
+
+// // ═══════════════════════════════════════════════════════════════
+// // 16 TEMPLATE SVG THUMBNAILS
+// // ═══════════════════════════════════════════════════════════════
+// function TplThumb({ id }: { id: string }) {
+//   const W = 220,
+//     H = 155;
+//   switch (id) {
+//     /* 1 – AURORA */
+//     case "aurora":
+//       return (
+//         <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//           <rect width={W} height={H} fill="#fff" />
+//           <rect width={W} height={50} fill="#4f46e5" />
+//           <circle cx={200} cy={-5} r={50} fill="#6366f1" opacity=".5" />
+//           <rect
+//             x={13}
+//             y={12}
+//             width={85}
+//             height={8}
+//             rx={2}
+//             fill="rgba(255,255,255,.92)"
+//           />
+//           <rect
+//             x={13}
+//             y={24}
+//             width={52}
+//             height={4}
+//             rx={1.5}
+//             fill="rgba(255,255,255,.62)"
+//           />
+//           {[0, 12, 24].map((o, i) => (
+//             <rect
+//               key={i}
+//               x={13 + o * 3.5}
+//               y={36}
+//               width={28}
+//               height={5}
+//               rx={10}
+//               fill="rgba(255,255,255,.2)"
+//               stroke="rgba(255,255,255,.35)"
+//               strokeWidth=".6"
+//             />
+//           ))}
+//           <rect x={13} y={60} width={38} height={3} rx={1} fill="#9ca3af" />
+//           {[68, 74, 80].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={13}
+//               y={y}
+//               width={[130, 110, 120][i]}
+//               height={2.5}
+//               rx={1}
+//               fill="#e5e7eb"
+//             />
+//           ))}
+//           {["#6366f1", "#6366f1"].map((c, i) => (
+//             <g key={i}>
+//               <rect
+//                 x={13}
+//                 y={88 + i * 28}
+//                 width={44}
+//                 height={3}
+//                 rx={1}
+//                 fill={c}
+//               />
+//               {[95, 100, 105, 116 + i * 0, 121 + i * 0].map((y2, j) =>
+//                 i === 0 && j < 3 ? (
+//                   <rect
+//                     key={j}
+//                     x={13}
+//                     y={y2}
+//                     width={[180, 165, 175][j]}
+//                     height={2.5}
+//                     rx={1}
+//                     fill="#e5e7eb"
+//                   />
+//                 ) : null,
+//               )}
+//             </g>
+//           ))}
+//           {[95, 100, 105].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={13}
+//               y={y}
+//               width={[180, 165, 175][i]}
+//               height={2.5}
+//               rx={1}
+//               fill="#e5e7eb"
+//             />
+//           ))}
+//           <rect x={13} y={116} width={44} height={3} rx={1} fill="#6366f1" />
+//           {[123, 128].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={13}
+//               y={y}
+//               width={[175, 120][i]}
+//               height={2.5}
+//               rx={1}
+//               fill="#e5e7eb"
+//             />
+//           ))}
+//           <rect x={13} y={140} width={32} height={3} rx={1} fill="#9ca3af" />
+//           <rect x={13} y={147} width={55} height={3} rx={1} fill="#374151" />
+//         </svg>
+//       );
+
+//     /* 2 – OBSIDIAN sidebar */
+//     case "obsidian":
+//       return (
+//         <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//           <rect width={W} height={H} fill="#fff" />
+//           <rect width={62} height={H} fill="#1e1b4b" />
+//           <rect
+//             x={7}
+//             y={13}
+//             width={46}
+//             height={7}
+//             rx={1.5}
+//             fill="rgba(233,213,255,.85)"
+//           />
+//           <rect
+//             x={7}
+//             y={24}
+//             width={34}
+//             height={3}
+//             rx={1}
+//             fill="rgba(165,180,252,.5)"
+//           />
+//           <rect
+//             x={7}
+//             y={35}
+//             width={46}
+//             height={0.8}
+//             fill="rgba(165,180,252,.15)"
+//           />
+//           {[
+//             [46, 20, "Email"],
+//             [54, 20, "Phone"],
+//             [62, 20, "Loc"],
+//             [72, 20, ""],
+//             [80, 20, ""],
+//           ].map(([y, w, l], i) => (
+//             <g key={i}>
+//               <rect
+//                 x={7}
+//                 y={y as number}
+//                 width={22}
+//                 height={2}
+//                 rx={1}
+//                 fill="rgba(109,91,186,.7)"
+//               />
+//               <rect
+//                 x={7}
+//                 y={(y as number) + 6}
+//                 width={46}
+//                 height={2}
+//                 rx={1}
+//                 fill="rgba(196,181,253,.55)"
+//               />
+//             </g>
+//           ))}
+//           {[13, 20, 28, 36, 44, 55, 63, 71].map((y, i) => {
+//             if (i > 4)
+//               return (
+//                 <rect
+//                   key={i}
+//                   x={72}
+//                   y={y}
+//                   width={[38, 22, 44, 32][i - 5] ?? 38}
+//                   height={2.5}
+//                   rx={1}
+//                   fill={
+//                     ["#7c3aed", "#e5e7eb", "#e5e7eb", "#e5e7eb"][i - 5] ?? ""
+//                   }
+//                 />
+//               );
+//             return null;
+//           })}
+//           <rect x={72} y={13} width={32} height={2.5} rx={1} fill="#9ca3af" />
+//           {[20, 25].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={72}
+//               y={y}
+//               width={[130, 100][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#e5e7eb"
+//             />
+//           ))}
+//           <rect x={72} y={36} width={40} height={3} rx={1} fill="#7c3aed" />
+//           {[43, 48, 53].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={72}
+//               y={y}
+//               width={[138, 125, 130][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#e5e7eb"
+//             />
+//           ))}
+//           <rect x={72} y={64} width={40} height={3} rx={1} fill="#7c3aed" />
+//           {[71, 76, 81].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={72}
+//               y={y}
+//               width={[138, 112, 120][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#e5e7eb"
+//             />
+//           ))}
+//           <rect x={72} y={92} width={40} height={3} rx={1} fill="#7c3aed" />
+//           {[99, 104].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={72}
+//               y={y}
+//               width={[138, 90][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#e5e7eb"
+//             />
+//           ))}
+//           <rect x={72} y={120} width={28} height={2} rx={1} fill="#9ca3af" />
+//           <rect x={72} y={127} width={52} height={3} rx={1} fill="#374151" />
+//         </svg>
+//       );
+
+//     /* 3 – NORDIC */
+//     case "nordic":
+//       return (
+//         <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//           <rect width={W} height={H} fill="#fff" />
+//           <rect x={16} y={13} width={60} height={3} rx={1} fill="#c7d2fe" />
+//           <rect x={16} y={20} width={115} height={10} rx={1.5} fill="#1e1b4b" />
+//           <rect x={16} y={34} width={36} height={3} rx={1} fill="#4f46e5" />
+//           <rect x={16} y={43} width={188} height={0.8} fill="#e0e7ff" />
+//           {[50, 56, 62].map((x, i) => (
+//             <rect
+//               key={i}
+//               x={16 + i * 60}
+//               y={49}
+//               width={55}
+//               height={2}
+//               rx={1}
+//               fill="#9ca3af"
+//             />
+//           ))}
+//           <rect x={16} y={61} width={32} height={2.5} rx={1} fill="#9ca3af" />
+//           {[68, 73].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={16}
+//               y={y}
+//               width={[188, 160][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#e5e7eb"
+//             />
+//           ))}
+//           <rect x={16} y={83} width={42} height={3} rx={1} fill="#4338ca" />
+//           {[90, 95, 100].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={16}
+//               y={y}
+//               width={[188, 160, 175][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#e5e7eb"
+//             />
+//           ))}
+//           <rect x={16} y={110} width={42} height={3} rx={1} fill="#4338ca" />
+//           {[117, 122].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={16}
+//               y={y}
+//               width={[188, 110][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#e5e7eb"
+//             />
+//           ))}
+//           <rect x={16} y={137} width={28} height={2} rx={1} fill="#9ca3af" />
+//           <rect x={16} y={144} width={52} height={3} rx={1} fill="#374151" />
+//         </svg>
+//       );
+
+//     /* 4 – SLATE corporate */
+//     case "slate":
+//       return (
+//         <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//           <rect width={W} height={H} fill="#fff" />
+//           <rect x={13} y={13} width={90} height={9} rx={1.5} fill="#0f172a" />
+//           <rect x={13} y={26} width={55} height={3} rx={1} fill="#64748b" />
+//           <rect x={135} y={13} width={72} height={2.5} rx={1} fill="#475569" />
+//           {[19, 25, 31].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={135}
+//               y={y}
+//               width={[60, 70, 55][i]}
+//               height={2}
+//               rx={1}
+//               fill="#94a3b8"
+//             />
+//           ))}
+//           <rect x={13} y={38} width={192} height={1.8} fill="#0f172a" />
+//           <rect
+//             x={13}
+//             y={44}
+//             width={72}
+//             height={5}
+//             rx={2}
+//             fill="#f1f5f9"
+//             stroke="#e2e8f0"
+//             strokeWidth=".5"
+//           />
+//           <rect x={15} y={46} width={48} height={1.5} rx={0.5} fill="#64748b" />
+//           <rect x={13} y={56} width={32} height={2.5} rx={1} fill="#9ca3af" />
+//           {[63, 68].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={13}
+//               y={y}
+//               width={[188, 155][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#e5e7eb"
+//             />
+//           ))}
+//           <rect x={13} y={77} width={2.5} height={28} rx={1} fill="#334155" />
+//           {[77, 83, 88, 93].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={19}
+//               y={y}
+//               width={i === 0 ? 38 : [180, 155, 165][i - 1]}
+//               height={2.2}
+//               rx={1}
+//               fill={i === 0 ? "#334155" : "#e5e7eb"}
+//             />
+//           ))}
+//           <rect x={13} y={105} width={2.5} height={22} rx={1} fill="#334155" />
+//           {[105, 111, 116].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={19}
+//               y={y}
+//               width={i === 0 ? 38 : [180, 130][i - 1]}
+//               height={2.2}
+//               rx={1}
+//               fill={i === 0 ? "#334155" : "#e5e7eb"}
+//             />
+//           ))}
+//           <rect x={13} y={132} width={28} height={2} rx={1} fill="#9ca3af" />
+//           <rect x={13} y={139} width={52} height={3} rx={1} fill="#374151" />
+//         </svg>
+//       );
+
+//     /* 5 – CRIMSON editorial */
+//     case "crimson":
+//       return (
+//         <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//           <rect width={W} height={H} fill="#fffbf5" />
+//           <rect width={W} height={4.5} fill="#9f1239" />
+//           <text
+//             x={110}
+//             y={25}
+//             textAnchor="middle"
+//             fontSize={11}
+//             fontWeight="800"
+//             fill="#1a0a0d"
+//             fontFamily="Georgia,serif"
+//           >
+//             Alex Johnson
+//           </text>
+//           <text
+//             x={110}
+//             y={34}
+//             textAnchor="middle"
+//             fontSize={5.5}
+//             fill="#9f1239"
+//             fontFamily="Georgia,serif"
+//             fontStyle="italic"
+//           >
+//             Senior Product Manager
+//           </text>
+//           <text
+//             x={110}
+//             y={41}
+//             textAnchor="middle"
+//             fontSize={10}
+//             fill="#9f1239"
+//             letterSpacing={4}
+//           >
+//             ✦ ✦ ✦
+//           </text>
+//           {[46, 51, 56].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={[14, 80, 145][i]}
+//               y={y}
+//               width={[60, 60, 55][i]}
+//               height={2}
+//               rx={1}
+//               fill="#9ca3af"
+//             />
+//           ))}
+//           <rect x={13} y={64} width={188} height={0.7} fill="#fce7ef" />
+//           <rect x={13} y={70} width={32} height={2} rx={1} fill="#9ca3af" />
+//           {[77, 82].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={13}
+//               y={y}
+//               width={[188, 155][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#6b7280"
+//             />
+//           ))}
+//           <rect x={13} y={91} width={40} height={3} rx={1} fill="#9f1239" />
+//           {[98, 103, 108].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={13}
+//               y={y}
+//               width={[188, 170, 175][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#6b7280"
+//             />
+//           ))}
+//           <rect x={13} y={117} width={40} height={3} rx={1} fill="#9f1239" />
+//           {[124, 129].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={13}
+//               y={y}
+//               width={[188, 140][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#6b7280"
+//             />
+//           ))}
+//           <rect x={13} y={142} width={30} height={2} rx={1} fill="#9ca3af" />
+//           <rect x={13} y={149} width={52} height={3} rx={1} fill="#374151" />
+//         </svg>
+//       );
+
+//     /* 6 – VELVET dark */
+//     case "velvet":
+//       return (
+//         <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//           <defs>
+//             <linearGradient id="vg" x1="0" y1="0" x2="1" y2="1">
+//               <stop offset="0%" stopColor="#1e0f40" />
+//               <stop offset="100%" stopColor="#2d1b69" />
+//             </linearGradient>
+//           </defs>
+//           <rect width={W} height={H} fill="url(#vg)" />
+//           <circle cx={195} cy={15} r={60} fill="rgba(168,85,247,.1)" />
+//           <rect x={13} y={14} width={80} height={9} rx={1.5} fill="#f3e8ff" />
+//           <rect x={13} y={27} width={50} height={2.5} rx={1} fill="#a78bfa" />
+//           <rect
+//             x={13}
+//             y={38}
+//             width={188}
+//             height={0.6}
+//             fill="rgba(196,181,253,.12)"
+//           />
+//           {[44, 51, 58].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={13}
+//               y={y}
+//               width={[50, 45, 55][i]}
+//               height={4}
+//               rx={2}
+//               fill="rgba(196,181,253,.1)"
+//               stroke="rgba(196,181,253,.22)"
+//               strokeWidth=".6"
+//             />
+//           ))}
+//           <rect x={13} y={68} width={32} height={2} rx={1} fill="#7c6fa0" />
+//           {[75, 80].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={13}
+//               y={y}
+//               width={[188, 155][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="rgba(212,201,239,.45)"
+//             />
+//           ))}
+//           <rect x={13} y={89} width={38} height={2.5} rx={1} fill="#c084fc" />
+//           {[96, 101, 106].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={13}
+//               y={y}
+//               width={[188, 170, 155][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="rgba(212,201,239,.38)"
+//             />
+//           ))}
+//           <rect x={13} y={115} width={38} height={2.5} rx={1} fill="#c084fc" />
+//           {[122, 127].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={13}
+//               y={y}
+//               width={[188, 120][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="rgba(212,201,239,.38)"
+//             />
+//           ))}
+//           <rect x={13} y={140} width={28} height={2} rx={1} fill="#7c6fa0" />
+//           <rect x={13} y={147} width={52} height={3} rx={1} fill="#f3e8ff" />
+//         </svg>
+//       );
+
+//     /* 7 – FROST glass */
+//     case "frost":
+//       return (
+//         <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//           <defs>
+//             <linearGradient id="fg" x1="0" y1="0" x2="1" y2="1">
+//               <stop offset="0%" stopColor="#dbeafe" />
+//               <stop offset="100%" stopColor="#e0f2fe" />
+//             </linearGradient>
+//           </defs>
+//           <rect width={W} height={H} fill="url(#fg)" />
+//           <rect
+//             x={5}
+//             y={5}
+//             width={210}
+//             height={145}
+//             rx={10}
+//             fill="rgba(255,255,255,.82)"
+//           />
+//           <rect
+//             x={5}
+//             y={5}
+//             width={210}
+//             height={48}
+//             rx={10}
+//             fill="rgba(12,74,110,.9)"
+//           />
+//           <rect
+//             x={5}
+//             y={29}
+//             width={210}
+//             height={24}
+//             fill="rgba(12,74,110,.9)"
+//           />
+//           <rect x={17} y={14} width={80} height={8} rx={1.5} fill="white" />
+//           <rect
+//             x={17}
+//             y={26}
+//             width={48}
+//             height={3}
+//             rx={1}
+//             fill="rgba(255,255,255,.65)"
+//           />
+//           {[0, 32, 64].map((ox, i) => (
+//             <rect
+//               key={i}
+//               x={17 + ox}
+//               y={37}
+//               width={28}
+//               height={4}
+//               rx={10}
+//               fill="rgba(255,255,255,.16)"
+//               stroke="rgba(255,255,255,.28)"
+//               strokeWidth=".5"
+//             />
+//           ))}
+//           <rect x={17} y={60} width={35} height={2.5} rx={1} fill="#9ca3af" />
+//           {[67, 72].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={17}
+//               y={y}
+//               width={[185, 155][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#e5e7eb"
+//             />
+//           ))}
+//           <rect x={17} y={82} width={42} height={3} rx={1} fill="#0369a1" />
+//           {[89, 94, 99].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={17}
+//               y={y}
+//               width={[185, 170, 175][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#e5e7eb"
+//             />
+//           ))}
+//           <rect x={17} y={109} width={42} height={3} rx={1} fill="#0369a1" />
+//           {[116, 121].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={17}
+//               y={y}
+//               width={[185, 130][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#e5e7eb"
+//             />
+//           ))}
+//           <rect x={17} y={134} width={28} height={2} rx={1} fill="#9ca3af" />
+//           <rect x={17} y={141} width={52} height={3} rx={1} fill="#374151" />
+//         </svg>
+//       );
+
+//     /* 8 – CANVAS (white clean) */
+//     case "canvas":
+//       return (
+//         <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//           <rect width={W} height={H} fill="#fff" />
+//           <rect x={13} y={13} width={4} height={55} rx={2} fill="#6366f1" />
+//           <rect x={22} y={13} width={90} height={10} rx={2} fill="#111827" />
+//           <rect x={22} y={27} width={55} height={4} rx={1.5} fill="#6b7280" />
+//           {[35, 41, 47].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={22}
+//               y={y}
+//               width={[68, 55, 72][i]}
+//               height={3}
+//               rx={1}
+//               fill="#9ca3af"
+//             />
+//           ))}
+//           <rect x={13} y={74} width={188} height={1} fill="#f3f4f6" />
+//           <rect x={13} y={80} width={32} height={2.5} rx={1} fill="#9ca3af" />
+//           {[87, 92].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={13}
+//               y={y}
+//               width={[188, 155][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#f3f4f6"
+//             />
+//           ))}
+//           <rect x={13} y={101} width={44} height={3} rx={1} fill="#6366f1" />
+//           {[108, 113, 118].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={13}
+//               y={y}
+//               width={[188, 170, 175][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#f3f4f6"
+//             />
+//           ))}
+//           <rect x={13} y={127} width={44} height={3} rx={1} fill="#6366f1" />
+//           {[134, 139].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={13}
+//               y={y}
+//               width={[188, 120][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#f3f4f6"
+//             />
+//           ))}
+//         </svg>
+//       );
+
+//     /* 9 – DESIGNER (creative sidebar) */
+//     case "designer":
+//       return (
+//         <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//           <rect width={W} height={H} fill="#faf5ff" />
+//           <rect width={70} height={H} fill="#0d0d0d" />
+//           <rect x={0} y={0} width={70} height={H} fill="url(#dg)" />
+//           <defs>
+//             <linearGradient id="dg" x1="0" y1="0" x2="0" y2="1">
+//               <stop offset="0%" stopColor="#0d0d0d" />
+//               <stop offset="100%" stopColor="#1a0a2e" />
+//             </linearGradient>
+//           </defs>
+//           <rect x={8} y={14} width={52} height={8} rx={1.5} fill="white" />
+//           <rect
+//             x={8}
+//             y={26}
+//             width={36}
+//             height={2.5}
+//             rx={1}
+//             fill="rgba(167,139,250,.7)"
+//           />
+//           <circle
+//             cx={21}
+//             cy={45}
+//             r={12}
+//             fill="rgba(139,92,246,.2)"
+//             stroke="rgba(139,92,246,.4)"
+//             strokeWidth="1"
+//           />
+//           <text x={21} y={49} textAnchor="middle" fontSize={10} fill="#a78bfa">
+//             ✦
+//           </text>
+//           <rect
+//             x={8}
+//             y={62}
+//             width={52}
+//             height={0.8}
+//             fill="rgba(167,139,250,.2)"
+//           />
+//           {[68, 76, 84, 92, 100].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={8}
+//               y={y}
+//               width={52}
+//               height={2.5}
+//               rx={1}
+//               fill="rgba(196,181,253,.5)"
+//             />
+//           ))}
+//           {[85, 93, 101, 109, 117, 125].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={80}
+//               y={y}
+//               width={[130, 120, 115, 125, 110, 90][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#e5e7eb"
+//             />
+//           ))}
+//           <rect x={80} y={74} width={50} height={3} rx={1} fill="#7c3aed" />
+//           <rect x={80} y={13} width={75} height={9} rx={1.5} fill="#111827" />
+//           <rect x={80} y={26} width={48} height={2.5} rx={1} fill="#6b7280" />
+//         </svg>
+//       );
+
+//     /* 10 – EDITOR (video editor dark) */
+//     case "editor":
+//       return (
+//         <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//           <rect width={W} height={H} fill="#0a0a0f" />
+//           <rect width={W} height={H} fill="#0f0a1e" />
+//           <rect x={13} y={13} width={92} height={10} rx={1.5} fill="white" />
+//           <rect x={13} y={27} width={55} height={3} rx={1} fill="#f43f5e" />
+//           <rect
+//             x={13}
+//             y={35}
+//             width={188}
+//             height={1}
+//             fill="rgba(244,63,94,.2)"
+//           />
+//           {[41, 47, 53].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={13}
+//               y={y}
+//               width={[60, 55, 70][i]}
+//               height={4}
+//               rx={2}
+//               fill="rgba(244,63,94,.1)"
+//               stroke="rgba(244,63,94,.3)"
+//               strokeWidth=".6"
+//             />
+//           ))}
+//           <rect x={13} y={63} width={32} height={2} rx={1} fill="#64748b" />
+//           {[70, 75].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={13}
+//               y={y}
+//               width={[188, 150][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="rgba(148,163,184,.35)"
+//             />
+//           ))}
+//           <rect x={13} y={84} width={2} height={2.5} rx={0.5} fill="#f43f5e" />
+//           <rect x={19} y={84} width={38} height={2.5} rx={1} fill="#f43f5e" />
+//           {[91, 96, 101].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={13}
+//               y={y}
+//               width={[188, 170, 155][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="rgba(148,163,184,.3)"
+//             />
+//           ))}
+//           <rect x={13} y={110} width={2} height={2.5} rx={0.5} fill="#f43f5e" />
+//           <rect x={19} y={110} width={38} height={2.5} rx={1} fill="#f43f5e" />
+//           {[117, 122].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={13}
+//               y={y}
+//               width={[188, 120][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="rgba(148,163,184,.3)"
+//             />
+//           ))}
+//           <rect x={13} y={135} width={28} height={2} rx={1} fill="#64748b" />
+//           <rect x={13} y={142} width={52} height={3} rx={1} fill="white" />
+//         </svg>
+//       );
+
+//     /* 11 – PEARL (pure white) */
+//     case "pearl":
+//       return (
+//         <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//           <rect width={W} height={H} fill="#fff" />
+//           <rect x={13} y={13} width={95} height={10} rx={1.5} fill="#111827" />
+//           <rect x={13} y={27} width={58} height={3.5} rx={1} fill="#6366f1" />
+//           <rect x={13} y={36} width={188} height={0.6} fill="#e5e7eb" />
+//           {[42, 48].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={13}
+//               y={y}
+//               width={[60, 52][i]}
+//               height={2}
+//               rx={1}
+//               fill="#9ca3af"
+//             />
+//           ))}
+//           <rect x={90} y={42} width={55} height={2} rx={1} fill="#9ca3af" />
+//           <rect x={152} y={42} width={50} height={2} rx={1} fill="#9ca3af" />
+//           <rect x={13} y={58} width={188} height={0.6} fill="#e5e7eb" />
+//           <rect x={13} y={64} width={32} height={2} rx={1} fill="#9ca3af" />
+//           {[71, 76].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={13}
+//               y={y}
+//               width={[188, 155][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#f3f4f6"
+//             />
+//           ))}
+//           <rect x={13} y={86} width={42} height={3} rx={1} fill="#6366f1" />
+//           {[93, 98, 103].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={13}
+//               y={y}
+//               width={[188, 170, 175][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#f3f4f6"
+//             />
+//           ))}
+//           <rect x={13} y={113} width={42} height={3} rx={1} fill="#6366f1" />
+//           {[120, 125].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={13}
+//               y={y}
+//               width={[188, 120][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#f3f4f6"
+//             />
+//           ))}
+//           <rect x={13} y={138} width={28} height={2} rx={1} fill="#9ca3af" />
+//           <rect x={13} y={145} width={52} height={3} rx={1} fill="#374151" />
+//         </svg>
+//       );
+
+//     /* 12 – PRISM creative */
+//     case "prism":
+//       return (
+//         <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//           <rect width={W} height={H} fill="#fff" />
+//           <rect width={W} height={52} fill="#7c3aed" />
+//           <polygon points="120,0 220,0 220,52" fill="rgba(255,255,255,.12)" />
+//           <polygon points="155,0 220,0 220,52" fill="rgba(255,255,255,.08)" />
+//           <rect x={13} y={12} width={82} height={9} rx={1.5} fill="white" />
+//           <rect
+//             x={13}
+//             y={25}
+//             width={50}
+//             height={3.5}
+//             rx={1}
+//             fill="rgba(255,255,255,.68)"
+//           />
+//           <rect x={0} y={52} width={W} height={11} fill="#1e1b4b" />
+//           {[0, 42, 88].map((ox, i) => (
+//             <rect
+//               key={i}
+//               x={13 + ox}
+//               y={56}
+//               width={38}
+//               height={2}
+//               rx={1}
+//               fill="#a5b4fc"
+//             />
+//           ))}
+//           <rect x={13} y={74} width={32} height={2.5} rx={1} fill="#9ca3af" />
+//           {[81, 86].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={13}
+//               y={y}
+//               width={[188, 162][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#e5e7eb"
+//             />
+//           ))}
+//           <rect x={13} y={95} width={2.5} height={24} rx={1} fill="#7c3aed" />
+//           {[95, 101, 106, 111].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={19}
+//               y={y}
+//               width={i === 0 ? 38 : [182, 155, 165][i - 1]}
+//               height={2.2}
+//               rx={1}
+//               fill={i === 0 ? "#7c3aed" : "#e5e7eb"}
+//             />
+//           ))}
+//           <rect x={13} y={120} width={2.5} height={20} rx={1} fill="#7c3aed" />
+//           {[120, 126, 131].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={19}
+//               y={y}
+//               width={i === 0 ? 38 : [182, 100][i - 1]}
+//               height={2.2}
+//               rx={1}
+//               fill={i === 0 ? "#7c3aed" : "#e5e7eb"}
+//             />
+//           ))}
+//           <rect x={13} y={146} width={52} height={3} rx={1} fill="#374151" />
+//         </svg>
+//       );
+
+//     /* 13 – IVORY warm white */
+//     case "ivory":
+//       return (
+//         <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//           <rect width={W} height={H} fill="#fefce8" />
+//           <rect x={13} y={13} width={5} height={130} rx={2.5} fill="#ca8a04" />
+//           <rect x={24} y={13} width={88} height={10} rx={2} fill="#1c1917" />
+//           <rect x={24} y={27} width={54} height={3.5} rx={1.5} fill="#78350f" />
+//           <rect x={24} y={36} width={188} height={0.8} fill="#fde68a" />
+//           {[42, 48, 54].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={24}
+//               y={y}
+//               width={[60, 52, 72][i]}
+//               height={2}
+//               rx={1}
+//               fill="#92400e"
+//             />
+//           ))}
+//           <rect x={24} y={63} width={32} height={2.5} rx={1} fill="#9ca3af" />
+//           {[70, 75].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={24}
+//               y={y}
+//               width={[178, 148][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#e7e5e4"
+//             />
+//           ))}
+//           <rect x={24} y={84} width={42} height={3} rx={1} fill="#b45309" />
+//           {[91, 96, 101].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={24}
+//               y={y}
+//               width={[178, 165, 170][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#e7e5e4"
+//             />
+//           ))}
+//           <rect x={24} y={111} width={42} height={3} rx={1} fill="#b45309" />
+//           {[118, 123].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={24}
+//               y={y}
+//               width={[178, 112][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#e7e5e4"
+//             />
+//           ))}
+//           <rect x={24} y={138} width={28} height={2} rx={1} fill="#9ca3af" />
+//           <rect x={24} y={145} width={52} height={3} rx={1} fill="#1c1917" />
+//         </svg>
+//       );
+
+//     /* 14 – MOTION (video/creative bold) */
+//     case "motion":
+//       return (
+//         <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//           <defs>
+//             <linearGradient id="mg" x1="0" y1="0" x2="1" y2="0">
+//               <stop offset="0%" stopColor="#ec4899" />
+//               <stop offset="100%" stopColor="#f59e0b" />
+//             </linearGradient>
+//           </defs>
+//           <rect width={W} height={H} fill="#fff" />
+//           <rect width={W} height={6} fill="url(#mg)" />
+//           <rect x={13} y={14} width={92} height={11} rx={1.5} fill="#111827" />
+//           <rect x={13} y={29} width={60} height={3.5} rx={1} fill="#ec4899" />
+//           <rect x={13} y={38} width={188} height={0.6} fill="#fce7f3" />
+//           {[44, 50, 56].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={13}
+//               y={y}
+//               width={[55, 48, 64][i]}
+//               height={4}
+//               rx={10}
+//               fill="rgba(236,72,153,.12)"
+//               stroke="rgba(236,72,153,.3)"
+//               strokeWidth=".7"
+//             />
+//           ))}
+//           <rect x={13} y={66} width={32} height={2.5} rx={1} fill="#9ca3af" />
+//           {[73, 78].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={13}
+//               y={y}
+//               width={[188, 155][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#f3f4f6"
+//             />
+//           ))}
+//           <rect x={13} y={87} width={44} height={3} rx={1} fill="#ec4899" />
+//           {[94, 99, 104].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={13}
+//               y={y}
+//               width={[188, 170, 175][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#f3f4f6"
+//             />
+//           ))}
+//           <rect x={13} y={114} width={44} height={3} rx={1} fill="#ec4899" />
+//           {[121, 126].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={13}
+//               y={y}
+//               width={[188, 120][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#f3f4f6"
+//             />
+//           ))}
+//           <rect width={W} height={3} y={152} fill="url(#mg)" />
+//         </svg>
+//       );
+
+//     /* 15 – ARCHITECT (structured) */
+//     case "architect":
+//       return (
+//         <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//           <rect width={W} height={H} fill="#f8fafc" />
+//           <rect x={13} y={13} width={80} height={10} rx={1.5} fill="#0f172a" />
+//           <rect x={13} y={27} width={50} height={3} rx={1} fill="#334155" />
+//           <rect x={110} y={13} width={98} height={40} rx={4} fill="#0f172a" />
+//           {[18, 24, 30, 36, 40].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={116}
+//               y={y}
+//               width={[60, 50, 70, 45, 55][i]}
+//               height={2}
+//               rx={1}
+//               fill="rgba(255,255,255,.6)"
+//             />
+//           ))}
+//           <rect x={13} y={53} width={192} height={1.2} fill="#e2e8f0" />
+//           <rect x={13} y={59} width={32} height={2.5} rx={1} fill="#9ca3af" />
+//           {[66, 71].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={13}
+//               y={y}
+//               width={[188, 155][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#e2e8f0"
+//             />
+//           ))}
+//           <rect x={13} y={81} width={44} height={3} rx={1} fill="#0f172a" />
+//           {[88, 93, 98].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={13}
+//               y={y}
+//               width={[188, 170, 175][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#e2e8f0"
+//             />
+//           ))}
+//           <rect x={13} y={108} width={44} height={3} rx={1} fill="#0f172a" />
+//           {[115, 120].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={13}
+//               y={y}
+//               width={[188, 120][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#e2e8f0"
+//             />
+//           ))}
+//           <rect x={13} y={135} width={28} height={2} rx={1} fill="#9ca3af" />
+//           <rect x={13} y={142} width={52} height={3} rx={1} fill="#374151" />
+//         </svg>
+//       );
+
+//     /* 16 – SERIF (classic) */
+//     case "serif":
+//       return (
+//         <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//           <rect width={W} height={H} fill="#fff" />
+//           <rect x={13} y={13} width={192} height={0.8} fill="#1e293b" />
+//           <text
+//             x={110}
+//             y={30}
+//             textAnchor="middle"
+//             fontSize={13}
+//             fontWeight="800"
+//             fill="#1e293b"
+//             fontFamily="Georgia,serif"
+//           >
+//             Alexander Johnson
+//           </text>
+//           <text
+//             x={110}
+//             y={40}
+//             textAnchor="middle"
+//             fontSize={6}
+//             fill="#64748b"
+//             fontFamily="Georgia,serif"
+//           >
+//             Senior Product Designer · UX Strategist
+//           </text>
+//           <rect x={13} y={45} width={192} height={0.8} fill="#1e293b" />
+//           {[50, 55, 60].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={[13, 80, 148][i]}
+//               y={y}
+//               width={[60, 62, 52][i]}
+//               height={2}
+//               rx={1}
+//               fill="#6366f1"
+//             />
+//           ))}
+//           <rect x={13} y={67} width={192} height={0.5} fill="#e5e7eb" />
+//           <rect x={13} y={73} width={32} height={2.5} rx={1} fill="#9ca3af" />
+//           {[80, 85].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={13}
+//               y={y}
+//               width={[188, 155][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#e5e7eb"
+//             />
+//           ))}
+//           <rect x={13} y={95} width={42} height={3} rx={1} fill="#4338ca" />
+//           {[102, 107, 112].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={13}
+//               y={y}
+//               width={[188, 170, 175][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#e5e7eb"
+//             />
+//           ))}
+//           <rect x={13} y={122} width={42} height={3} rx={1} fill="#4338ca" />
+//           {[129, 134].map((y, i) => (
+//             <rect
+//               key={i}
+//               x={13}
+//               y={y}
+//               width={[188, 120][i]}
+//               height={2.2}
+//               rx={1}
+//               fill="#e5e7eb"
+//             />
+//           ))}
+//           <rect x={13} y={149} width={192} height={0.8} fill="#e5e7eb" />
+//         </svg>
+//       );
+
+//     default:
+//       return (
+//         <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//           <rect width={W} height={H} fill="#f3f4f6" />
+//         </svg>
+//       );
+//   }
+// }
+
+// // ═══════════════════════════════════════════════════════════════
+// // TEMPLATES LIST
+// // ═══════════════════════════════════════════════════════════════
+// const TEMPLATES = [
+//   { id: "aurora", name: "Aurora", tag: "Modern", accent: "#6366f1" },
+//   { id: "obsidian", name: "Obsidian", tag: "Executive", accent: "#7c3aed" },
+//   { id: "nordic", name: "Nordic", tag: "Minimal", accent: "#4338ca" },
+//   { id: "slate", name: "Slate", tag: "Corporate", accent: "#1e293b" },
+//   { id: "crimson", name: "Crimson", tag: "Editorial", accent: "#9f1239" },
+//   { id: "velvet", name: "Velvet", tag: "Luxury", accent: "#6d28d9" },
+//   { id: "frost", name: "Frost", tag: "Clean", accent: "#0369a1" },
+//   { id: "canvas", name: "Canvas", tag: "Minimal", accent: "#6366f1" },
+//   { id: "designer", name: "Designer", tag: "Creative", accent: "#7c3aed" },
+//   { id: "editor", name: "Director", tag: "Video", accent: "#f43f5e" },
+//   { id: "pearl", name: "Pearl", tag: "White", accent: "#6366f1" },
+//   { id: "prism", name: "Prism", tag: "Creative", accent: "#7c3aed" },
+//   { id: "ivory", name: "Ivory", tag: "Classic", accent: "#b45309" },
+//   { id: "motion", name: "Motion", tag: "Video", accent: "#ec4899" },
+//   { id: "architect", name: "Architect", tag: "Corporate", accent: "#0f172a" },
+//   { id: "serif", name: "Serif", tag: "Classic", accent: "#4338ca" },
+// ];
+
+// // ═══════════════════════════════════════════════════════════════
+// // FULL HTML BUILDER
+// // ═══════════════════════════════════════════════════════════════
+// function buildHTML(id: string, d: CLData): string {
+//   const dt = new Date().toLocaleDateString("en-US", {
+//     year: "numeric",
+//     month: "long",
+//     day: "numeric",
+//   });
+//   const nm = d.personal.fullName || "Your Name";
+//   const ttl = d.personal.title || "Professional";
+//   const mgr = d.company.hiringManager || "Hiring Manager";
+//   const loc = [d.company.city, d.company.state].filter(Boolean).join(", ");
+
+//   const links = [
+//     d.personal.email &&
+//       `<a href="mailto:${d.personal.email}"   style="color:inherit;text-decoration:none">${d.personal.email}</a>`,
+//     d.personal.phone &&
+//       `<a href="tel:${d.personal.phone}"       style="color:inherit;text-decoration:none">${d.personal.phone}</a>`,
+//     d.personal.location && `<span>${d.personal.location}</span>`,
+//     d.personal.linkedin &&
+//       `<a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" target="_blank" style="color:inherit;text-decoration:none">${d.personal.linkedin}</a>`,
+//     d.personal.github &&
+//       `<a href="https://${d.personal.github.replace(/^https?:\/\//, "")}"   target="_blank" style="color:inherit;text-decoration:none">${d.personal.github}</a>`,
+//     d.personal.website &&
+//       `<a href="https://${d.personal.website.replace(/^https?:\/\//, "")}"  target="_blank" style="color:inherit;text-decoration:none">${d.personal.website}</a>`,
+//   ].filter(Boolean) as string[];
+
+//   const addrBlock = `<div style="margin-bottom:20px;font-size:13px;line-height:2;color:#4a5568"><strong style="color:#1a202c">${mgr}${d.company.hiringManagerTitle ? `, ${d.company.hiringManagerTitle}` : ""}</strong><br>${d.company.name}${loc ? `<br>${loc}` : ""}</div>`;
+
+//   const secRows = (color: string, border = false) =>
+//     d.sections
+//       .filter((s) => s.content.trim())
+//       .map(
+//         (s) => `
+//       <div style="margin-bottom:24px${border ? `;padding-left:14px;border-left:3px solid ${color}` : ""}">
+//         <h4 style="font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:${color};margin:0 0 8px">${s.title}</h4>
+//         <p style="line-height:1.85;margin:0;font-size:13.5px">${s.content.replace(/\n/g, "<br>")}</p>
+//       </div>`,
+//       )
+//       .join("");
+
+//   const achBlock = (color: string) =>
+//     d.achievements.length
+//       ? `
+//     <div style="margin:18px 0 22px">
+//       <h4 style="font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:${color};margin:0 0 10px">Key Achievements</h4>
+//       ${d.achievements.map((a) => `<div style="display:flex;gap:9px;margin-bottom:7px;font-size:13px"><span style="color:${color};flex-shrink:0;font-size:14px;line-height:1.4">›</span>${a}</div>`).join("")}
+//     </div>`
+//       : "";
+
+//   const skillBlock = (color: string) =>
+//     d.skills.length
+//       ? `
+//     <div style="margin:16px 0 22px">
+//       <h4 style="font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:${color};margin:0 0 10px">Core Skills</h4>
+//       <div style="display:flex;flex-wrap:wrap;gap:7px">${d.skills.map((s) => `<span style="padding:4px 12px;background:rgba(0,0,0,.04);border:1px solid rgba(0,0,0,.08);border-radius:30px;font-size:12px">${s}</span>`).join("")}</div>
+//     </div>`
+//       : "";
+
+//   const notesBlock = d.notes
+//     ? `<div style="margin:14px 0;padding:12px 16px;background:rgba(0,0,0,.03);border-left:3px solid #e2e8f0;font-size:12.5px;line-height:1.7;color:#64748b">${d.notes}</div>`
+//     : "";
+
+//   const closing = (col: string, style = "") => `
+//     <div style="margin-top:36px;font-size:13.5px${style}">
+//       ${d.personal.signature || "Sincerely"},<br><br>
+//       <strong style="font-size:15px">${nm}</strong>
+//       ${d.personal.email ? `<br><a href="mailto:${d.personal.email}" style="font-size:12px;color:${col};text-decoration:none">${d.personal.email}</a>` : ""}
+//       ${d.personal.linkedin ? `<br><a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" style="font-size:11.5px;color:#64748b;text-decoration:none" target="_blank">${d.personal.linkedin}</a>` : ""}
+//       ${d.personal.website ? `<br><a href="https://${d.personal.website.replace(/^https?:\/\//, "")}"  style="font-size:11.5px;color:#64748b;text-decoration:none" target="_blank">${d.personal.website}</a>` : ""}
+//     </div>`;
+
+//   const greet = `<div style="font-size:16px;font-weight:600;margin-bottom:22px;color:#111827">Dear ${mgr},</div>`;
+
+//   const base = (css: string, body: string) =>
+//     `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>*{margin:0;padding:0;box-sizing:border-box}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}${css}</style></head><body>${body}</body></html>`;
+
+//   // ── AURORA ──
+//   if (id === "aurora")
+//     return base(
+//       `@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap');
+//     body{font-family:'DM Sans',sans-serif;color:#374151}.pg{max-width:860px;margin:0 auto}
+//     .hdr{background:linear-gradient(135deg,#4f46e5,#7c3aed 60%,#a78bfa);padding:52px 56px 44px;color:white;position:relative;overflow:hidden}
+//     .hdr::before{content:'';position:absolute;right:-80px;top:-80px;width:280px;height:280px;background:rgba(255,255,255,.07);border-radius:50%}
+//     .nm{font-size:38px;font-weight:700;letter-spacing:-1.5px;margin-bottom:5px;position:relative}
+//     .rl{font-size:14px;opacity:.85;margin-bottom:26px;position:relative}
+//     .chips{display:flex;flex-wrap:wrap;gap:7px;position:relative}
+//     .chip{padding:5px 14px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:40px;font-size:11.5px}
+//     .chip a{color:white;text-decoration:none}.body{padding:48px 56px}
+//     .dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}`,
+//       `<div class="pg"><div class="hdr"><div class="nm">${nm}</div><div class="rl">${ttl}</div>
+//     <div class="chips">${links.map((l) => `<span class="chip">${l}</span>`).join("")}</div></div>
+//     <div class="body"><div class="dt">${dt}</div>${addrBlock}${greet}${secRows("#6366f1")}${achBlock("#6366f1")}${skillBlock("#6366f1")}${notesBlock}${closing("#6366f1")}</div></div>`,
+//     );
+
+//   // ── OBSIDIAN ──
+//   if (id === "obsidian")
+//     return base(
+//       `@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;500&display=swap');
+//     body{font-family:'Inter',sans-serif;color:#374151}.pg{max-width:900px;margin:0 auto;display:flex;min-height:100vh}
+//     .side{width:260px;background:#1e1b4b;color:white;padding:44px 26px;flex-shrink:0}
+//     .snm{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;color:#e9d5ff;line-height:1.2;margin-bottom:6px}
+//     .srl{font-size:10px;color:#a5b4fc;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:30px;padding-bottom:26px;border-bottom:1px solid rgba(165,180,252,.2)}
+//     .slbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#6d5bba;margin-bottom:6px;margin-top:20px}
+//     .sval{font-size:11.5px;color:#c4b5fd;line-height:1.9;word-break:break-all}
+//     .sval a{color:#c4b5fd;text-decoration:none}.main{flex:1;padding:48px 44px}
+//     .dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}`,
+//       `<div class="pg"><div class="side"><div class="snm">${nm}</div><div class="srl">${ttl}</div>
+//     ${d.personal.email ? `<div class="slbl">Email</div><div class="sval"><a href="mailto:${d.personal.email}">${d.personal.email}</a></div>` : ""}
+//     ${d.personal.phone ? `<div class="slbl">Phone</div><div class="sval"><a href="tel:${d.personal.phone}">${d.personal.phone}</a></div>` : ""}
+//     ${d.personal.location ? `<div class="slbl">Location</div><div class="sval">${d.personal.location}</div>` : ""}
+//     ${d.personal.linkedin ? `<div class="slbl">LinkedIn</div><div class="sval"><a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.linkedin}</a></div>` : ""}
+//     ${d.personal.github ? `<div class="slbl">GitHub</div><div class="sval"><a href="https://${d.personal.github.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.github}</a></div>` : ""}
+//     ${d.personal.website ? `<div class="slbl">Portfolio</div><div class="sval"><a href="https://${d.personal.website.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.website}</a></div>` : ""}
+//     ${d.skills.length ? `<div class="slbl" style="margin-top:28px">Skills</div>${d.skills.map((s) => `<div style="margin-bottom:4px;font-size:11.5px;color:#c4b5fd">• ${s}</div>`).join("")}` : ""}
+//     </div>
+//     <div class="main"><div class="dt">${dt}</div>${addrBlock}${greet}${secRows("#7c3aed")}${achBlock("#7c3aed")}${notesBlock}${closing("#7c3aed")}</div></div>`,
+//     );
+
+//   // ── NORDIC ──
+//   if (id === "nordic")
+//     return base(
+//       `@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+//     body{font-family:'DM Sans',sans-serif;color:#374151}.pg{max-width:750px;margin:0 auto;padding:64px 72px}
+//     .eye{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:#4f46e5;margin-bottom:10px}
+//     .nm{font-family:'Libre Baskerville',serif;font-size:44px;font-weight:700;letter-spacing:-2px;color:#1e1b4b;line-height:1.05}
+//     .bar{width:52px;height:3px;background:#4f46e5;margin:16px 0 18px}
+//     .ctrow{display:flex;flex-wrap:wrap;gap:5px 18px;margin-bottom:40px}
+//     .cv{font-size:12px;color:#6b7280}.cv a{color:#4f46e5;text-decoration:none}
+//     .div{height:1px;background:#e0e7ff;margin:24px 0}
+//     .dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}`,
+//       `<div class="pg"><div class="eye">${ttl}</div><div class="nm">${nm}</div><div class="bar"></div>
+//     <div class="ctrow">
+//     ${d.personal.email ? `<span class="cv"><a href="mailto:${d.personal.email}">${d.personal.email}</a></span>` : ""}
+//     ${d.personal.phone ? `<span class="cv"><a href="tel:${d.personal.phone}">${d.personal.phone}</a></span>` : ""}
+//     ${d.personal.location ? `<span class="cv">${d.personal.location}</span>` : ""}
+//     ${d.personal.linkedin ? `<span class="cv"><a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.linkedin}</a></span>` : ""}
+//     ${d.personal.github ? `<span class="cv"><a href="https://${d.personal.github.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.github}</a></span>` : ""}
+//     ${d.personal.website ? `<span class="cv"><a href="https://${d.personal.website.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.website}</a></span>` : ""}
+//     </div><div class="div"></div>
+//     <div class="dt">${dt}</div>${addrBlock}${greet}${secRows("#4338ca")}${achBlock("#4338ca")}${skillBlock("#4338ca")}${notesBlock}${closing("#4338ca")}</div>`,
+//     );
+
+//   // ── SLATE ──
+//   if (id === "slate")
+//     return base(
+//       `@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+//     body{font-family:'IBM Plex Sans',sans-serif;color:#374151}.pg{max-width:880px;margin:0 auto}
+//     .hdr{padding:44px 52px;border-bottom:3px solid #0f172a;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px}
+//     .nm{font-size:34px;font-weight:700;color:#0f172a;letter-spacing:-1.5px}.rl{font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:#64748b;margin-top:7px}
+//     .ctcol{text-align:right}.cv{font-size:11.5px;color:#475569;font-family:'IBM Plex Mono',monospace;line-height:2.1;display:block;word-break:break-all}
+//     .cv a{color:#4f46e5;text-decoration:none}
+//     .tag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#64748b;background:#f1f5f9;border:1px solid #e2e8f0;padding:3px 10px;border-radius:4px;margin-bottom:22px}
+//     .body{padding:40px 52px}.dt{font-size:12.5px;color:#9ca3af;margin-bottom:20px}`,
+//       `<div class="pg"><div class="hdr"><div><div class="nm">${nm}</div><div class="rl">${ttl}</div></div>
+//     <div class="ctcol">
+//     ${d.personal.email ? `<a class="cv" href="mailto:${d.personal.email}">${d.personal.email}</a>` : ""}
+//     ${d.personal.phone ? `<a class="cv" href="tel:${d.personal.phone}">${d.personal.phone}</a>` : ""}
+//     ${d.personal.location ? `<span class="cv">${d.personal.location}</span>` : ""}
+//     ${d.personal.linkedin ? `<a class="cv" href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.linkedin}</a>` : ""}
+//     ${d.personal.github ? `<a class="cv" href="https://${d.personal.github.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.github}</a>` : ""}
+//     ${d.personal.website ? `<a class="cv" href="https://${d.personal.website.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.website}</a>` : ""}
+//     </div></div>
+//     <div class="body"><div class="tag">RE: ${d.company.jobTitle || "Open Position"} · ${d.company.name || "Company"}</div>
+//     <div class="dt">${dt}</div>${addrBlock}${greet}${secRows("#334155", true)}${achBlock("#334155")}${skillBlock("#334155")}${notesBlock}${closing("#334155")}</div></div>`,
+//     );
+
+//   // ── CRIMSON ──
+//   if (id === "crimson")
+//     return base(
+//       `@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=Lora:wght@400;500&display=swap');
+//     body{font-family:'Lora',serif;color:#374151;background:#fffbf5}.pg{max-width:800px;margin:0 auto;background:#fffbf5}
+//     .top{height:5px;background:#9f1239}.hdr{padding:48px 56px 16px;text-align:center}
+//     .nm{font-family:'Playfair Display',serif;font-size:44px;font-weight:900;color:#1a0a0d;letter-spacing:-2px;line-height:1}
+//     .rl{font-family:'Playfair Display',serif;font-style:italic;font-size:15px;color:#9f1239;margin:9px 0 16px}
+//     .orn{color:#9f1239;font-size:12px;letter-spacing:5px}.ctrow{display:flex;justify-content:center;flex-wrap:wrap;gap:5px 16px;padding:12px 0;font-size:12px;color:#6b7280}
+//     .ctrow a{color:#9f1239;text-decoration:none}.sep-wrap{display:flex;align-items:center;gap:10px;padding:0 56px;margin-bottom:4px}
+//     .sl{flex:1;height:1px;background:#fecdd3}.sd{width:5px;height:5px;background:#9f1239;border-radius:50%;flex-shrink:0}
+//     .body{padding:24px 56px 52px}.dt{font-size:12.5px;color:#9ca3af;margin-bottom:20px}`,
+//       `<div class="pg"><div class="top"></div><div class="hdr"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="orn">✦ ✦ ✦</div>
+//     <div class="ctrow">
+//     ${d.personal.email ? `<a href="mailto:${d.personal.email}">${d.personal.email}</a>` : ""}
+//     ${d.personal.phone ? `<a href="tel:${d.personal.phone}">${d.personal.phone}</a>` : ""}
+//     ${d.personal.location ? `<span>${d.personal.location}</span>` : ""}
+//     ${d.personal.linkedin ? `<a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.linkedin}</a>` : ""}
+//     ${d.personal.github ? `<a href="https://${d.personal.github.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.github}</a>` : ""}
+//     ${d.personal.website ? `<a href="https://${d.personal.website.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.website}</a>` : ""}
+//     </div></div>
+//     <div class="sep-wrap"><div class="sl"></div><div class="sd"></div><div class="sl"></div></div>
+//     <div class="body"><div class="dt">${dt}</div>${addrBlock}${greet}${secRows("#9f1239")}${achBlock("#9f1239")}${notesBlock}${closing("#9f1239")}</div></div>`,
+//     );
+
+//   // ── VELVET ──
+//   if (id === "velvet")
+//     return base(
+//       `@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Raleway:wght@300;400;500;600&display=swap');
+//     body{font-family:'Raleway',sans-serif;background:#0f082a;color:#d4c9ef;min-height:100vh}
+//     .pg{max-width:860px;margin:0 auto;background:linear-gradient(160deg,#1e0f40,#2d1b69);min-height:100vh}
+//     .hdr{padding:52px 52px 38px;border-bottom:1px solid rgba(196,181,253,.12);position:relative;overflow:hidden}
+//     .hdr::after{content:'';position:absolute;right:-40px;top:-40px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(168,85,247,.14),transparent 70%)}
+//     .nm{font-family:'Cinzel',serif;font-size:36px;font-weight:600;color:#f3e8ff;letter-spacing:2px}
+//     .rl{font-size:10.5px;letter-spacing:3px;text-transform:uppercase;color:#a78bfa;margin:12px 0 20px}
+//     .chips{display:flex;flex-wrap:wrap;gap:7px}.chip{padding:4px 12px;border:1px solid rgba(196,181,253,.22);color:#c4b5fd;font-size:11px;border-radius:4px}
+//     .chip a{color:#c4b5fd;text-decoration:none}.body{padding:44px 52px}
+//     .dt{font-size:12px;color:#7c6fa0;margin-bottom:22px}`,
+//       `<div class="pg"><div class="hdr"><div class="nm">${nm}</div><div class="rl">${ttl}</div>
+//     <div class="chips">
+//     ${d.personal.email ? `<span class="chip"><a href="mailto:${d.personal.email}">${d.personal.email}</a></span>` : ""}
+//     ${d.personal.phone ? `<span class="chip"><a href="tel:${d.personal.phone}">${d.personal.phone}</a></span>` : ""}
+//     ${d.personal.location ? `<span class="chip">${d.personal.location}</span>` : ""}
+//     ${d.personal.linkedin ? `<span class="chip"><a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.linkedin}</a></span>` : ""}
+//     ${d.personal.github ? `<span class="chip"><a href="https://${d.personal.github.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.github}</a></span>` : ""}
+//     ${d.personal.website ? `<span class="chip"><a href="https://${d.personal.website.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.website}</a></span>` : ""}
+//     </div></div>
+//     <div class="body"><div class="dt">${dt}</div>
+//     <div style="margin-bottom:20px;font-size:13px;line-height:2"><strong style="color:#e9d5ff">${mgr}${d.company.hiringManagerTitle ? `, ${d.company.hiringManagerTitle}` : ""}</strong><br>${d.company.name}${loc ? `<br><span style='color:#7c6fa0'>${loc}</span>` : ""}</div>
+//     <div style="font-size:16px;font-weight:600;margin-bottom:22px;color:#e9d5ff">Dear ${mgr},</div>
+//     ${secRows("#c084fc")}${achBlock("#c084fc")}${skillBlock("#c084fc")}${notesBlock}
+//     <div style="margin-top:36px;font-size:13.5px;color:#7c6fa0">Sincerely,<br><br><strong style="font-size:15px;color:#f3e8ff">${nm}</strong></div></div></div>`,
+//     );
+
+//   // ── FROST ──
+//   if (id === "frost")
+//     return base(
+//       `@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+//     body{font-family:'Outfit',sans-serif;background:linear-gradient(135deg,#dbeafe,#e0f2fe);min-height:100vh;padding:20px;color:#374151}
+//     .pg{max-width:840px;margin:0 auto;background:rgba(255,255,255,.88);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.85);border-radius:16px;overflow:hidden}
+//     .hdr{background:linear-gradient(135deg,rgba(12,74,110,.92),rgba(2,132,199,.9));padding:48px;color:white}
+//     .nm{font-size:38px;font-weight:800;letter-spacing:-2px;margin-bottom:6px}.rl{font-size:12.5px;opacity:.8;letter-spacing:1px;margin-bottom:22px}
+//     .chips{display:flex;flex-wrap:wrap;gap:7px}.chip{padding:5px 14px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.22);border-radius:40px;font-size:11.5px}
+//     .chip a{color:white;text-decoration:none}.body{padding:44px}.dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}`,
+//       `<div class="pg"><div class="hdr"><div class="nm">${nm}</div><div class="rl">${ttl}</div>
+//     <div class="chips">${links.map((l) => `<span class="chip">${l}</span>`).join("")}</div></div>
+//     <div class="body"><div class="dt">${dt}</div>${addrBlock}${greet}${secRows("#0369a1")}${achBlock("#0369a1")}${skillBlock("#0369a1")}${notesBlock}${closing("#0369a1")}</div></div>`,
+//     );
+
+//   // ── CANVAS (minimal white) ──
+//   if (id === "canvas")
+//     return base(
+//       `@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Manrope:wght@300;400;500;600&display=swap');
+//     body{font-family:'Manrope',sans-serif;color:#374151;background:#fff}.pg{max-width:820px;margin:0 auto;padding:60px 64px}
+//     .accent-bar{width:4px;background:#6366f1;border-radius:2px;height:70px;float:left;margin-right:20px;margin-top:2px}
+//     .nm{font-family:'Syne',sans-serif;font-size:38px;font-weight:800;letter-spacing:-1.5px;color:#111827}
+//     .rl{font-size:13px;color:#6366f1;font-weight:600;margin-top:5px;letter-spacing:.5px}
+//     .ctrow{display:flex;flex-wrap:wrap;gap:5px 16px;margin-top:10px}
+//     .cv{font-size:12px;color:#9ca3af}.cv a{color:#6366f1;text-decoration:none}
+//     .div{height:1px;background:#f3f4f6;margin:28px 0;clear:both}
+//     .dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}
+//     h4{font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:#6366f1;margin:0 0 8px}`,
+//       `<div class="pg"><div class="accent-bar"></div>
+//     <div class="nm">${nm}</div><div class="rl">${ttl}</div>
+//     <div class="ctrow">
+//     ${d.personal.email ? `<span class="cv"><a href="mailto:${d.personal.email}">${d.personal.email}</a></span>` : ""}
+//     ${d.personal.phone ? `<span class="cv"><a href="tel:${d.personal.phone}">${d.personal.phone}</a></span>` : ""}
+//     ${d.personal.location ? `<span class="cv">${d.personal.location}</span>` : ""}
+//     ${d.personal.linkedin ? `<span class="cv"><a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.linkedin}</a></span>` : ""}
+//     ${d.personal.github ? `<span class="cv"><a href="https://${d.personal.github.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.github}</a></span>` : ""}
+//     ${d.personal.website ? `<span class="cv"><a href="https://${d.personal.website.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.website}</a></span>` : ""}
+//     </div><div class="div"></div>
+//     <div class="dt">${dt}</div>${addrBlock}${greet}${secRows("#6366f1")}${achBlock("#6366f1")}${skillBlock("#6366f1")}${notesBlock}${closing("#6366f1")}</div>`,
+//     );
+
+//   // ── DESIGNER (creative dark sidebar for UX/UI) ──
+//   if (id === "designer")
+//     return base(
+//       `@import url('https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;700;800;900&display=swap');
+//     @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Manrope:wght@300;400;500;600&display=swap');
+//     body{font-family:'Manrope',sans-serif;color:#374151}.pg{max-width:900px;margin:0 auto;display:flex;min-height:100vh}
+//     .side{width:270px;background:#0d0d0d;background:linear-gradient(180deg,#0d0d0d 0%,#1a0a2e 100%);color:white;padding:44px 26px;flex-shrink:0;position:relative;overflow:hidden}
+//     .side::before{content:'';position:absolute;top:-60px;left:-60px;width:220px;height:220px;background:radial-gradient(circle,rgba(139,92,246,.3),transparent 70%);border-radius:50%}
+//     .side::after{content:'';position:absolute;bottom:-40px;right:-40px;width:160px;height:160px;background:radial-gradient(circle,rgba(59,130,246,.2),transparent 70%);border-radius:50%}
+//     .snm{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:white;line-height:1.15;margin-bottom:6px;position:relative}
+//     .srl{font-size:10px;color:#a78bfa;letter-spacing:2px;text-transform:uppercase;margin-bottom:28px;padding-bottom:22px;border-bottom:1px solid rgba(167,139,250,.2);position:relative}
+//     .savatar{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:22px;box-shadow:0 8px 24px rgba(99,102,241,.4)}
+//     .slbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(167,139,250,.5);margin-bottom:6px;margin-top:20px;position:relative}
+//     .sval{font-size:11px;color:#c4b5fd;line-height:1.9;word-break:break-all;position:relative}
+//     .sval a{color:#c4b5fd;text-decoration:none}
+//     .sskill{display:inline-block;padding:3px 10px;background:rgba(139,92,246,.2);border:1px solid rgba(139,92,246,.3);border-radius:4px;font-size:10.5px;color:#c4b5fd;margin:2px 2px 0 0}
+//     .main{flex:1;padding:48px 44px}.dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}
+//     .gr{font-size:16px;font-weight:600;margin-bottom:22px;color:#111827}`,
+//       `<div class="pg"><div class="side">
+//     <div class="savatar">✦</div>
+//     <div class="snm">${nm}</div><div class="srl">${ttl}</div>
+//     ${d.personal.email ? `<div class="slbl">Email</div><div class="sval"><a href="mailto:${d.personal.email}">${d.personal.email}</a></div>` : ""}
+//     ${d.personal.phone ? `<div class="slbl">Phone</div><div class="sval"><a href="tel:${d.personal.phone}">${d.personal.phone}</a></div>` : ""}
+//     ${d.personal.location ? `<div class="slbl">Location</div><div class="sval">${d.personal.location}</div>` : ""}
+//     ${d.personal.linkedin ? `<div class="slbl">LinkedIn</div><div class="sval"><a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.linkedin}</a></div>` : ""}
+//     ${d.personal.github ? `<div class="slbl">GitHub</div><div class="sval"><a href="https://${d.personal.github.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.github}</a></div>` : ""}
+//     ${d.personal.website ? `<div class="slbl">Portfolio</div><div class="sval"><a href="https://${d.personal.website.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.website}</a></div>` : ""}
+//     ${d.skills.length ? `<div class="slbl" style="margin-top:26px">Tools & Skills</div><div style="margin-top:6px">${d.skills.map((s) => `<span class="sskill">${s}</span>`).join("")}</div>` : ""}
+//     </div>
+//     <div class="main"><div class="dt">${dt}</div>${addrBlock}<div class="gr">Dear ${mgr},</div>${secRows("#7c3aed")}${achBlock("#7c3aed")}${notesBlock}${closing("#7c3aed")}</div></div>`,
+//     );
+
+//   // ── EDITOR/DIRECTOR (video editor dark) ──
+//   if (id === "editor")
+//     return base(
+//       `@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;700;900&family=Share+Tech+Mono&display=swap');
+//     body{font-family:'Exo 2',sans-serif;background:#0f0a1e;color:#94a3b8;min-height:100vh}
+//     .pg{max-width:880px;margin:0 auto;background:#0f0a1e;min-height:100vh}
+//     .hdr{padding:52px;position:relative}
+//     .hdr::before{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#f43f5e,transparent)}
+//     .nm{font-size:46px;font-weight:900;letter-spacing:-3px;color:white;line-height:.95;margin-bottom:6px}
+//     .rl{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#f43f5e;margin-bottom:22px}
+//     .chips{display:flex;flex-wrap:wrap;gap:8px}
+//     .chip{padding:4px 12px;border:1px solid rgba(244,63,94,.25);color:#94a3b8;font-size:10.5px;font-family:'Share Tech Mono',monospace;border-radius:4px}
+//     .chip a{color:#f43f5e;text-decoration:none}
+//     .body{padding:32px 52px 52px}.dt{font-size:11.5px;font-family:'Share Tech Mono',monospace;color:#4a5578;margin-bottom:22px}
+//     .gr{font-size:17px;font-weight:700;color:white;margin-bottom:22px}
+//     .sh4{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#f43f5e;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+//     .sh4::before{content:'';width:24px;height:2px;background:#f43f5e}`,
+//       `<div class="pg"><div class="hdr"><div class="nm">${nm}</div><div class="rl">${ttl}</div>
+//     <div class="chips">${links.map((l) => `<span class="chip">${l}</span>`).join("")}</div></div>
+//     <div class="body"><div class="dt">${dt}</div>
+//     <div style="margin-bottom:22px;font-size:13px;line-height:2"><strong style="color:#e2e8f0">${mgr}${d.company.hiringManagerTitle ? `, ${d.company.hiringManagerTitle}` : ""}</strong><br>${d.company.name}${loc ? `<br><span style='color:#4a5578'>${loc}</span>` : ""}</div>
+//     <div class="gr">Dear ${mgr},</div>
+//     ${d.sections
+//       .filter((s) => s.content.trim())
+//       .map(
+//         (s) =>
+//           `<div style="margin-bottom:26px"><div class="sh4">${s.title}</div><p style="line-height:1.85;font-size:13.5px;color:#94a3b8">${s.content.replace(/\n/g, "<br>")}</p></div>`,
+//       )
+//       .join("")}
+//     ${d.achievements.length ? `<div style="margin:18px 0 22px"><div class="sh4">Key Achievements</div>${d.achievements.map((a) => `<div style="display:flex;gap:9px;margin-bottom:7px;font-size:13px"><span style="color:#f43f5e;flex-shrink:0">›</span>${a}</div>`).join("")}</div>` : ""}
+//     ${d.skills.length ? `<div style="margin:16px 0 22px"><div class="sh4">Core Skills</div><div style="display:flex;flex-wrap:wrap;gap:7px">${d.skills.map((s) => `<span style="padding:4px 12px;background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.2);border-radius:4px;font-size:12px;color:#94a3b8">${s}</span>`).join("")}</div></div>` : ""}
+//     ${notesBlock}
+//     <div style="margin-top:36px;font-size:13.5px;color:#64748b">Sincerely,<br><br><strong style="font-size:15px;color:white">${nm}</strong></div></div></div>`,
+//     );
+
+//   // ── PEARL (pure white clean) ──
+//   if (id === "pearl")
+//     return base(
+//       `@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+//     body{font-family:'Plus Jakarta Sans',sans-serif;color:#374151;background:#fff}.pg{max-width:820px;margin:0 auto;padding:60px 64px}
+//     .nm{font-size:40px;font-weight:800;letter-spacing:-2px;color:#111827;margin-bottom:6px}
+//     .rl{font-size:13px;color:#6366f1;font-weight:700;letter-spacing:.5px;margin-bottom:16px}
+//     .div-top{height:1.5px;background:#f1f0ff;margin-bottom:16px}
+//     .ctrow{display:flex;flex-wrap:wrap;gap:5px 20px;margin-bottom:16px}
+//     .cv{font-size:12px;color:#9ca3af}.cv a{color:#6366f1;text-decoration:none}
+//     .div{height:1.5px;background:#f1f0ff;margin:20px 0}
+//     .dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}`,
+//       `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="div-top"></div>
+//     <div class="ctrow">
+//     ${d.personal.email ? `<span class="cv"><a href="mailto:${d.personal.email}">${d.personal.email}</a></span>` : ""}
+//     ${d.personal.phone ? `<span class="cv"><a href="tel:${d.personal.phone}">${d.personal.phone}</a></span>` : ""}
+//     ${d.personal.location ? `<span class="cv">${d.personal.location}</span>` : ""}
+//     ${d.personal.linkedin ? `<span class="cv"><a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.linkedin}</a></span>` : ""}
+//     ${d.personal.github ? `<span class="cv"><a href="https://${d.personal.github.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.github}</a></span>` : ""}
+//     ${d.personal.website ? `<span class="cv"><a href="https://${d.personal.website.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.website}</a></span>` : ""}
+//     </div><div class="div"></div>
+//     <div class="dt">${dt}</div>${addrBlock}${greet}${secRows("#6366f1")}${achBlock("#6366f1")}${skillBlock("#6366f1")}${notesBlock}${closing("#6366f1")}</div>`,
+//     );
+
+//   // ── PRISM ──
+//   if (id === "prism")
+//     return base(
+//       `@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap');
+//     body{font-family:'Outfit',sans-serif;color:#374151}.pg{max-width:860px;margin:0 auto}
+//     .hdr{background:linear-gradient(120deg,#7c3aed,#c026d3);height:158px;position:relative;overflow:hidden}
+//     .g1{position:absolute;right:0;top:0;bottom:0;width:55%;background:rgba(255,255,255,.1);clip-path:polygon(25% 0,100% 0,100% 100%,0 100%)}
+//     .g2{position:absolute;right:0;top:0;bottom:0;width:33%;background:rgba(255,255,255,.07);clip-path:polygon(40% 0,100% 0,100% 100%,0 100%)}
+//     .hi{position:absolute;left:44px;bottom:22px;color:white}
+//     .nm{font-size:38px;font-weight:800;letter-spacing:-2px;line-height:1}.rl{font-size:13px;opacity:.8;margin-top:6px}
+//     .cbar{display:flex;background:#1e1b4b;padding:9px 44px;gap:16px;flex-wrap:wrap}
+//     .cv{font-size:11px;color:#a5b4fc;padding:2px 0;word-break:break-all}
+//     .cv a{color:#c4b5fd;text-decoration:none}.body{padding:44px}.dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}`,
+//       `<div class="pg"><div class="hdr"><div class="g1"></div><div class="g2"></div>
+//     <div class="hi"><div class="nm">${nm}</div><div class="rl">${ttl}</div></div></div>
+//     <div class="cbar">
+//     ${d.personal.email ? `<span class="cv"><a href="mailto:${d.personal.email}">${d.personal.email}</a></span>` : ""}
+//     ${d.personal.phone ? `<span class="cv"><a href="tel:${d.personal.phone}">${d.personal.phone}</a></span>` : ""}
+//     ${d.personal.location ? `<span class="cv">${d.personal.location}</span>` : ""}
+//     ${d.personal.linkedin ? `<span class="cv"><a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.linkedin}</a></span>` : ""}
+//     ${d.personal.github ? `<span class="cv"><a href="https://${d.personal.github.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.github}</a></span>` : ""}
+//     ${d.personal.website ? `<span class="cv"><a href="https://${d.personal.website.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.website}</a></span>` : ""}
+//     </div>
+//     <div class="body"><div class="dt">${dt}</div>${addrBlock}${greet}${secRows("#7c3aed", true)}${achBlock("#7c3aed")}${skillBlock("#7c3aed")}${notesBlock}${closing("#7c3aed")}</div></div>`,
+//     );
+
+//   // ── IVORY (warm white classic) ──
+//   if (id === "ivory")
+//     return base(
+//       `@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@300;400;600&display=swap');
+//     body{font-family:'Source Sans 3',sans-serif;color:#374151;background:#fefce8}.pg{max-width:820px;margin:0 auto;background:#fefce8;padding:60px 64px;border-left:5px solid #ca8a04}
+//     .nm{font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:700;color:#1c1917;letter-spacing:-.5px;line-height:1.1}
+//     .rl{font-size:13px;color:#92400e;font-style:italic;margin:8px 0 16px}
+//     .div{height:1px;background:#fde68a;margin:16px 0}
+//     .ctrow{display:flex;flex-wrap:wrap;gap:5px 18px;margin-bottom:14px}
+//     .cv{font-size:12px;color:#78716c}.cv a{color:#b45309;text-decoration:none}
+//     .dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}`,
+//       `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="div"></div>
+//     <div class="ctrow">
+//     ${d.personal.email ? `<span class="cv"><a href="mailto:${d.personal.email}">${d.personal.email}</a></span>` : ""}
+//     ${d.personal.phone ? `<span class="cv"><a href="tel:${d.personal.phone}">${d.personal.phone}</a></span>` : ""}
+//     ${d.personal.location ? `<span class="cv">${d.personal.location}</span>` : ""}
+//     ${d.personal.linkedin ? `<span class="cv"><a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.linkedin}</a></span>` : ""}
+//     ${d.personal.github ? `<span class="cv"><a href="https://${d.personal.github.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.github}</a></span>` : ""}
+//     ${d.personal.website ? `<span class="cv"><a href="https://${d.personal.website.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.website}</a></span>` : ""}
+//     </div><div class="div"></div>
+//     <div class="dt">${dt}</div>${addrBlock}${greet}${secRows("#b45309")}${achBlock("#b45309")}${skillBlock("#b45309")}${notesBlock}${closing("#b45309")}</div>`,
+//     );
+
+//   // ── MOTION (video/creative) ──
+//   if (id === "motion")
+//     return base(
+//       `@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;900&family=Barlow:wght@400;500;600&display=swap');
+//     body{font-family:'Barlow',sans-serif;color:#374151;background:#fff}.pg{max-width:860px;margin:0 auto}
+//     .topbar{height:6px;background:linear-gradient(90deg,#ec4899,#f59e0b)}
+//     .hdr{padding:44px 52px;border-bottom:1px solid #fce7f3;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px}
+//     .nm{font-family:'Barlow Condensed',sans-serif;font-size:48px;font-weight:900;letter-spacing:-3px;text-transform:uppercase;line-height:.95;color:#111827}
+//     .rl{font-size:13px;color:#ec4899;letter-spacing:2px;text-transform:uppercase;margin-top:8px;font-weight:600}
+//     .ctcol{text-align:right;font-size:12px;color:#9ca3af}
+//     .cv{display:block;margin-bottom:4px;line-height:1.5}.cv a{color:#ec4899;text-decoration:none}
+//     .body{padding:44px 52px}.dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}
+//     .botbar{height:6px;background:linear-gradient(90deg,#f59e0b,#ec4899)}`,
+//       `<div class="pg"><div class="topbar"></div>
+//     <div class="hdr"><div><div class="nm">${nm}</div><div class="rl">${ttl}</div></div>
+//     <div class="ctcol">
+//     ${d.personal.email ? `<span class="cv"><a href="mailto:${d.personal.email}">${d.personal.email}</a></span>` : ""}
+//     ${d.personal.phone ? `<span class="cv"><a href="tel:${d.personal.phone}">${d.personal.phone}</a></span>` : ""}
+//     ${d.personal.location ? `<span class="cv">${d.personal.location}</span>` : ""}
+//     ${d.personal.linkedin ? `<span class="cv"><a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.linkedin}</a></span>` : ""}
+//     ${d.personal.github ? `<span class="cv"><a href="https://${d.personal.github.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.github}</a></span>` : ""}
+//     ${d.personal.website ? `<span class="cv"><a href="https://${d.personal.website.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.website}</a></span>` : ""}
+//     </div></div>
+//     <div class="body"><div class="dt">${dt}</div>${addrBlock}${greet}${secRows("#ec4899")}${achBlock("#ec4899")}${skillBlock("#ec4899")}${notesBlock}${closing("#ec4899")}</div>
+//     <div class="botbar"></div></div>`,
+//     );
+
+//   // ── ARCHITECT (structured professional) ──
+//   if (id === "architect")
+//     return base(
+//       `@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+//     body{font-family:'Plus Jakarta Sans',sans-serif;color:#374151;background:#f8fafc}.pg{max-width:880px;margin:0 auto;background:#f8fafc}
+//     .hdr{padding:44px 52px;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;gap:24px;align-items:flex-start}
+//     .hdr-left{flex:1}.nm{font-size:34px;font-weight:800;color:#0f172a;letter-spacing:-1.5px}
+//     .rl{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#64748b;margin-top:7px;margin-bottom:14px}
+//     .ctrow{display:flex;flex-wrap:wrap;gap:4px 14px}
+//     .cv{font-size:12px;color:#64748b}.cv a{color:#4f46e5;text-decoration:none}
+//     .hdr-right{width:130px;flex-shrink:0;background:#0f172a;border-radius:12px;padding:16px;text-align:center}
+//     .hdr-right-label{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:#64748b;margin-bottom:6px}
+//     .hdr-right-role{font-size:11px;font-weight:700;color:white;line-height:1.4}
+//     .hdr-right-co{font-size:10px;color:#94a3b8;margin-top:4px}
+//     .body{padding:36px 52px}.dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}`,
+//       `<div class="pg"><div class="hdr">
+//     <div class="hdr-left"><div class="nm">${nm}</div><div class="rl">${ttl}</div>
+//     <div class="ctrow">
+//     ${d.personal.email ? `<span class="cv"><a href="mailto:${d.personal.email}">${d.personal.email}</a></span>` : ""}
+//     ${d.personal.phone ? `<span class="cv"><a href="tel:${d.personal.phone}">${d.personal.phone}</a></span>` : ""}
+//     ${d.personal.location ? `<span class="cv">${d.personal.location}</span>` : ""}
+//     ${d.personal.linkedin ? `<span class="cv"><a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.linkedin}</a></span>` : ""}
+//     ${d.personal.github ? `<span class="cv"><a href="https://${d.personal.github.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.github}</a></span>` : ""}
+//     ${d.personal.website ? `<span class="cv"><a href="https://${d.personal.website.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.website}</a></span>` : ""}
+//     </div></div>
+//     ${d.company.name ? `<div class="hdr-right"><div class="hdr-right-label">Applying to</div><div class="hdr-right-role">${d.company.jobTitle || "Open Role"}</div><div class="hdr-right-co">${d.company.name}</div></div>` : ""}
+//     </div>
+//     <div class="body"><div class="dt">${dt}</div>${addrBlock}${greet}${secRows("#0f172a", true)}${achBlock("#0f172a")}${skillBlock("#0f172a")}${notesBlock}${closing("#0f172a")}</div></div>`,
+//     );
+
+//   // ── SERIF (classic newspaper style) ──
+//   if (id === "serif")
+//     return base(
+//       `@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&display=swap');
+//     body{font-family:'Source Serif 4',serif;color:#374151;background:#fff}.pg{max-width:820px;margin:0 auto;padding:52px 64px}
+//     .rule{height:2px;background:#1e293b;margin-bottom:20px}
+//     .nm{font-family:'Playfair Display',serif;font-size:42px;font-weight:900;color:#1e293b;letter-spacing:-1.5px;text-align:center;margin-bottom:6px}
+//     .rl{font-size:12px;color:#64748b;text-align:center;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
+//     .ctrow{display:flex;justify-content:center;flex-wrap:wrap;gap:5px 20px;margin-bottom:16px}
+//     .cv{font-size:12px;color:#64748b}.cv a{color:#4338ca;text-decoration:none}
+//     .rule2{height:1px;background:#e5e7eb;margin-bottom:20px}
+//     .dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}`,
+//       `<div class="pg"><div class="rule"></div>
+//     <div class="nm">${nm}</div><div class="rl">${ttl}</div>
+//     <div class="ctrow">
+//     ${d.personal.email ? `<span class="cv"><a href="mailto:${d.personal.email}">${d.personal.email}</a></span>` : ""}
+//     ${d.personal.phone ? `<span class="cv"><a href="tel:${d.personal.phone}">${d.personal.phone}</a></span>` : ""}
+//     ${d.personal.location ? `<span class="cv">${d.personal.location}</span>` : ""}
+//     ${d.personal.linkedin ? `<span class="cv"><a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.linkedin}</a></span>` : ""}
+//     ${d.personal.github ? `<span class="cv"><a href="https://${d.personal.github.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.github}</a></span>` : ""}
+//     ${d.personal.website ? `<span class="cv"><a href="https://${d.personal.website.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.website}</a></span>` : ""}
+//     </div><div class="rule2"></div>
+//     <div class="dt">${dt}</div>${addrBlock}${greet}${secRows("#4338ca")}${achBlock("#4338ca")}${skillBlock("#4338ca")}${notesBlock}${closing("#4338ca")}</div>`,
+//     );
+
+//   return buildHTML("aurora", d);
+// }
+
+// // ═══════════════════════════════════════════════════════════════
+// // STEP CONFIG
+// // ═══════════════════════════════════════════════════════════════
+// type Step = "template" | "personal" | "company" | "content" | "review";
+// const STEPS: { id: Step; label: string; icon: string }[] = [
+//   { id: "template", label: "Template", icon: "🎨" },
+//   { id: "personal", label: "Personal", icon: "👤" },
+//   { id: "company", label: "Company", icon: "🏢" },
+//   { id: "content", label: "Content", icon: "✍️" },
+//   { id: "review", label: "Review", icon: "✅" },
+// ];
+
+// // ═══════════════════════════════════════════════════════════════
+// // MAIN COMPONENT
+// // ═══════════════════════════════════════════════════════════════
+// export default function CoverLetterGenerator() {
+//   const router = useRouter();
+//   const [step, setStep] = useState<Step>("template");
+//   const [tplId, setTplId] = useState("aurora");
+//   const [data, setData] = useState<CLData>(JSON.parse(JSON.stringify(BLANK)));
+//   const [html, setHtml] = useState("");
+//   const [modal, setModal] = useState(false);
+//   const [achIn, setAchIn] = useState("");
+//   const [sklIn, setSklIn] = useState("");
+//   const [toast, setToast] = useState("");
+//   const [busy, setBusy] = useState(false);
+//   const [filter, setFilter] = useState("All");
+
+//   const iframeRef = useRef<HTMLIFrameElement>(null);
+//   const modalIframeRef = useRef<HTMLIFrameElement>(null);
+
+//   const showToast = (m: string) => {
+//     setToast(m);
+//     setTimeout(() => setToast(""), 2800);
+//   };
+
+//   const rebuild = useCallback(() => {
+//     const h = buildHTML(tplId, data);
+//     setHtml(h);
+//     return h;
+//   }, [tplId, data]);
+
+//   useEffect(() => {
+//     const t = setTimeout(rebuild, 200);
+//     return () => clearTimeout(t);
+//   }, [rebuild]);
+
+//   const writeIframe = (
+//     ref: React.RefObject<HTMLIFrameElement | null>,
+//     h: string,
+//   ) => {
+//     if (!ref.current) return;
+//     const doc = ref.current.contentDocument;
+//     if (!doc) return;
+//     doc.open();
+//     doc.write(h);
+//     doc.close();
+//   };
+
+//   useEffect(() => {
+//     if (html && iframeRef.current) writeIframe(iframeRef, html);
+//   }, [html]);
+//   useEffect(() => {
+//     if (modal && html && modalIframeRef.current)
+//       writeIframe(modalIframeRef, html);
+//   }, [modal, html]);
+
+//   const set = (path: string[], val: string) =>
+//     setData((prev) => {
+//       const n = JSON.parse(JSON.stringify(prev)) as CLData;
+//       let c: any = n;
+//       for (let i = 0; i < path.length - 1; i++) c = c[path[i]];
+//       c[path[path.length - 1]] = val;
+//       return n;
+//     });
+//   const setSection = (id: string, f: "title" | "content", v: string) =>
+//     setData((p) => ({
+//       ...p,
+//       sections: p.sections.map((s) => (s.id === id ? { ...s, [f]: v } : s)),
+//     }));
+
+//   const downloadPDF = async () => {
+//     const h = rebuild();
+//     setBusy(true);
+//     try {
+//       const r = await axios.post(
+//         `${process.env.NEXT_PUBLIC_API_URL}/api/candidates/generate-pdf`,
+//         { html: h },
+//         { responseType: "blob" },
+//       );
+//       const url = URL.createObjectURL(r.data);
+//       const a = document.createElement("a");
+//       a.href = url;
+//       a.download = `Cover_Letter_${data.personal.fullName || "Draft"}.pdf`;
+//       document.body.appendChild(a);
+//       a.click();
+//       document.body.removeChild(a);
+//       URL.revokeObjectURL(url);
+//       showToast("✓ PDF downloaded successfully");
+//     } catch {
+//       showToast("Download failed — please try again");
+//     } finally {
+//       setBusy(false);
+//     }
+//   };
+
+//   const tpl = TEMPLATES.find((t) => t.id === tplId)!;
+//   const stepIdx = STEPS.findIndex((s) => s.id === step);
+//   const cats = ["All", ...Array.from(new Set(TEMPLATES.map((t) => t.tag)))];
+//   const shownTpls =
+//     filter === "All" ? TEMPLATES : TEMPLATES.filter((t) => t.tag === filter);
+
+//   const tones = [
+//     "Professional",
+//     "Confident",
+//     "Enthusiastic",
+//     "Formal",
+//     "Creative",
+//     "Friendly",
+//   ];
+
+//   return (
+//     <>
+//       <style>{`
+//       @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
+//       *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+//       :root{
+//         --p:#5b38f0;--p2:#7c3aed;--p3:#9f67ff;
+//         --p10:#f3f0ff;--p20:#ede9fe;--p30:#ddd6fe;--p50:#c4b5fd;
+//         --ink:#0d0b1e;--sub:#64688a;--muted:#9ca3af;--ghost:#c0c4d8;
+//         --border:#e4e1f0;--border2:#ede9fe;
+//         --bg:#f5f3ff;--bg2:#eeebfc;--white:#fff;
+//         --r8:8px;--r12:12px;--r16:16px;--r20:20px;--r24:24px;
+//         --sh1:0 1px 4px rgba(91,56,240,.07);
+//         --sh2:0 4px 20px rgba(91,56,240,.11);
+//         --sh3:0 12px 40px rgba(91,56,240,.17);
+//       }
+//       html,body{height:100%;font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
+//       @media(max-width:820px){html,body{overflow:auto}}
+
+//       /* NAV */
+//       .nav{height:58px;background:var(--white);border-bottom:1.5px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:10px;z-index:200;position:relative;box-shadow:var(--sh1);flex-shrink:0}
+//       .nav-logo{display:flex;align-items:center;gap:8px;flex-shrink:0;text-decoration:none}
+//       .nav-gem{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--p),var(--p2));display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 4px 10px rgba(91,56,240,.32)}
+//       .nav-brand{font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-.3px}
+//       .nav-brand em{color:var(--p);font-style:normal}
+//       .nav-div{width:1px;height:20px;background:var(--border);margin:0 2px}
+
+//       /* wizard */
+//       .wizard{display:flex;align-items:center;flex:1;justify-content:center;overflow-x:auto;padding:0 6px;scrollbar-width:none;gap:0}
+//       .wizard::-webkit-scrollbar{display:none}
+//       .wz{display:flex;align-items:center;gap:6px;padding:4px 7px;border-radius:30px;cursor:pointer;transition:.18s;flex-shrink:0}
+//       .wz:hover:not(.wz-on){background:var(--p10)}
+//       .wz-num{width:24px;height:24px;border-radius:50%;border:2px solid var(--border);background:var(--white);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:var(--muted);transition:.2s;flex-shrink:0}
+//       .wz-done .wz-num{background:#10b981;border-color:#10b981;color:white}
+//       .wz-on .wz-num{background:linear-gradient(135deg,var(--p),var(--p2));border-color:transparent;color:white;box-shadow:0 0 0 3px rgba(91,56,240,.16)}
+//       .wz-lbl{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap;transition:.18s}
+//       .wz-done .wz-lbl,.wz-on .wz-lbl{color:var(--ink)}
+//       .wz-line{width:22px;height:2px;background:var(--border);transition:.25s;flex-shrink:0}
+//       .wz-line-done{background:#10b981}
+//       @media(max-width:600px){.wz-lbl{display:none}.wz-line{width:12px}.nav{padding:0 12px;gap:8px}}
+
+//       .nav-r{display:flex;align-items:center;gap:7px;flex-shrink:0}
+//       .btn{display:inline-flex;align-items:center;gap:6px;padding:7px 15px;border-radius:40px;font-size:12px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .16s;white-space:nowrap}
+//       .btn-g{background:transparent;color:var(--sub);border:1.5px solid var(--border)}
+//       .btn-g:hover{background:var(--p10);border-color:var(--p30);color:var(--p)}
+//       .btn-p{background:linear-gradient(135deg,var(--p),var(--p2));color:white;box-shadow:0 4px 12px rgba(91,56,240,.28)}
+//       .btn-p:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(91,56,240,.36)}
+//       .btn-p:disabled{opacity:.5;cursor:not-allowed;transform:none}
+//       .btn-sm{padding:6px 13px;font-size:11.5px}
+
+//       /* SHELL */
+//       .shell{display:grid;grid-template-columns:1fr 1fr;height:calc(100vh - 58px)}
+//       @media(max-width:1200px){.shell{grid-template-columns:380px 1fr}}
+//       @media(max-width:960px){.shell{grid-template-columns:340px 1fr}}
+//       @media(max-width:820px){.shell{grid-template-columns:1fr;height:auto;overflow:visible}}
+
+//       /* LEFT */
+//       .left{display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
+//       @media(max-width:820px){.left{overflow:visible}}
+//       .left-hd{flex-shrink:0;padding:22px 24px 0}
+//       .eye-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+//       .eye-ico{width:28px;height:28px;background:linear-gradient(135deg,var(--p),var(--p2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px}
+//       .eye-txt{font-size:11px;font-weight:800;letter-spacing:.8px;color:var(--p);text-transform:uppercase}
+//       .pg-title{font-size:clamp(18px,3vw,24px);font-weight:800;color:var(--ink);letter-spacing:-.4px;margin-bottom:3px}
+//       .pg-sub{font-size:13px;color:var(--sub);margin-bottom:14px}
+//       .pill-tip{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:linear-gradient(135deg,var(--p),var(--p2));color:white;border-radius:40px;font-size:11.5px;font-weight:700;cursor:pointer;border:none;font-family:inherit;box-shadow:0 4px 10px rgba(91,56,240,.22);transition:.16s;margin-bottom:2px}
+//       .pill-tip:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(91,56,240,.3)}
+
+//       .left-body{flex:1;overflow-y:auto;padding:14px 24px 20px;scrollbar-width:thin;scrollbar-color:var(--p30) transparent}
+//       .left-body::-webkit-scrollbar{width:4px}
+//       .left-body::-webkit-scrollbar-thumb{background:var(--p30);border-radius:4px}
+//       @media(max-width:820px){.left-body{overflow-y:visible}}
+
+//       /* filter row */
+//       .flt-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+//       .flt{padding:5px 14px;border-radius:30px;font-size:11.5px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:white;color:var(--sub);font-family:inherit;transition:.14s}
+//       .flt:hover,.flt.on{border-color:var(--p);color:var(--p);background:var(--p10)}
+
+//       /* template grid */
+//       .tpl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px}
+//       @media(max-width:480px){.tpl-grid{grid-template-columns:repeat(2,1fr);gap:10px}}
+//       .tpl-card{background:white;border:2px solid var(--border2);border-radius:var(--r16);overflow:hidden;cursor:pointer;transition:all .2s;position:relative}
+//       .tpl-card:hover{transform:translateY(-3px);box-shadow:var(--sh3);border-color:var(--p50)}
+//       .tpl-card.on{border-color:var(--p);box-shadow:0 0 0 3px rgba(91,56,240,.13),var(--sh2)}
+//       .tpl-thumb{height:105px;overflow:hidden;background:#f8f7ff}
+//       .tpl-chk{position:absolute;top:8px;right:8px;width:20px;height:20px;background:var(--p);border-radius:50%;display:flex;align-items:center;justify-content:center;opacity:0;transition:.18s;box-shadow:0 2px 7px rgba(91,56,240,.38)}
+//       .tpl-card.on .tpl-chk{opacity:1}
+//       .tpl-chk svg{width:11px;height:11px;stroke:white;stroke-width:2.5;fill:none}
+//       .tpl-info{padding:10px 12px 12px}
+//       .tpl-tag{font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--p);margin-bottom:2px}
+//       .tpl-name{font-size:13px;font-weight:800;color:var(--ink)}
+
+//       /* card */
+//       .card{background:white;border-radius:var(--r20);padding:20px 22px;margin-bottom:13px;box-shadow:var(--sh1);border:1.5px solid var(--border2)}
+//       .card-hd{display:flex;align-items:center;gap:11px;margin-bottom:16px}
+//       .card-ico{width:36px;height:36px;background:linear-gradient(135deg,var(--p),var(--p2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;box-shadow:0 4px 10px rgba(91,56,240,.22)}
+//       .card-t{font-size:14px;font-weight:800;color:var(--ink)}
+//       .card-s{font-size:11.5px;color:var(--sub);margin-top:1px}
+
+//       /* fields */
+//       .fld{margin-bottom:13px}
+//       .fld-l{font-size:10.5px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--sub);margin-bottom:5px;display:block}
+//       .fld-l span{color:#ef4444}
+//       .iw{position:relative}
+//       .iw-ic{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:13px;pointer-events:none;opacity:.48}
+//       input,textarea,select{width:100%;padding:9px 11px 9px 34px;border:1.5px solid var(--border);border-radius:var(--r12);font-size:13px;font-family:inherit;color:var(--ink);background:white;outline:none;transition:.14s}
+//       textarea{padding-left:11px;resize:vertical;min-height:76px;line-height:1.65}
+//       .bare{padding-left:11px}
+//       input:focus,textarea:focus,select:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(91,56,240,.1)}
+//       input::placeholder,textarea::placeholder{color:var(--ghost)}
+//       .g2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+//       .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+//       @media(max-width:520px){.g2,.g3{grid-template-columns:1fr}}
+
+//       /* hdiv + sublabel */
+//       .hdiv{height:1px;background:var(--border2);margin:14px 0}
+//       .slbl{font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--p);margin-bottom:9px;display:flex;align-items:center;gap:5px}
+
+//       /* section block */
+//       .sblock{background:var(--p10);border:1.5px solid var(--p20);border-radius:var(--r12);padding:12px;margin-bottom:10px;transition:.18s}
+//       .sblock:focus-within{background:white;border-color:var(--p);box-shadow:0 0 0 3px rgba(91,56,240,.08)}
+//       .shd{display:flex;align-items:center;gap:7px;margin-bottom:9px}
+//       .snum{width:21px;height:21px;border-radius:6px;background:linear-gradient(135deg,var(--p),var(--p2));color:white;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+//       .sti{flex:1;padding:5px 9px;border-radius:8px;border:1.5px solid var(--border);font-size:12.5px;font-weight:700;background:white;font-family:inherit;color:var(--ink);outline:none;transition:.14s}
+//       .sti:focus{border-color:var(--p)}
+//       .sdel{width:24px;height:24px;background:white;border:1.5px solid var(--border);border-radius:6px;cursor:pointer;color:#f87171;font-size:12px;display:flex;align-items:center;justify-content:center;transition:.14s}
+//       .sdel:hover{background:#fef2f2;border-color:#fca5a5}
+//       .sta{width:100%;padding:8px 10px;border-radius:9px;border:1.5px solid var(--border);font-size:12.5px;font-family:inherit;outline:none;resize:vertical;transition:.14s;background:white}
+//       .sta:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(91,56,240,.08)}
+//       .add-btn{width:100%;padding:8px;background:white;border:1.5px dashed var(--p30);border-radius:var(--r12);color:var(--p);font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;transition:.14s;margin-bottom:12px}
+//       .add-btn:hover{background:var(--p10);border-color:var(--p)}
+
+//       /* tag input */
+//       .tag-row{display:flex;gap:6px;margin-bottom:8px}
+//       .tag-in{flex:1;padding:8px 11px;border:1.5px solid var(--border);border-radius:var(--r12);font-size:12.5px;font-family:inherit;outline:none;transition:.14s}
+//       .tag-in:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(91,56,240,.09)}
+//       .tag-add{padding:8px 14px;background:linear-gradient(135deg,var(--p),var(--p2));color:white;border:none;border-radius:var(--r12);cursor:pointer;font-size:12px;font-weight:700;font-family:inherit;transition:.14s}
+//       .tag-add:hover{box-shadow:0 4px 10px rgba(91,56,240,.28)}
+//       .tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:3px}
+//       .tag-item{display:flex;align-items:center;gap:4px;padding:4px 10px 4px 9px;background:var(--p10);border:1.5px solid var(--p20);border-radius:30px;font-size:12px;font-weight:600;color:var(--p)}
+//       .tag-rm{background:none;border:none;cursor:pointer;color:var(--p50);font-size:13px;line-height:1;padding:0;display:flex;transition:.14s}
+//       .tag-rm:hover{color:#ef4444}
+
+//       /* tone buttons */
+//       .tone-row{display:flex;flex-wrap:wrap;gap:6px}
+//       .tone-btn{padding:5px 13px;border-radius:30px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:white;color:var(--sub);font-family:inherit;transition:.14s}
+//       .tone-btn.on{border-color:var(--p);color:var(--p);background:var(--p10)}
+
+//       /* left footer */
+//       .left-ft{flex-shrink:0;padding:12px 24px;border-top:1.5px solid var(--border);background:var(--white);display:flex;justify-content:space-between;align-items:center;gap:10px}
+//       .btn-bk{display:flex;align-items:center;gap:5px;padding:9px 18px;border-radius:40px;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:white;color:var(--sub);font-family:inherit;transition:.14s}
+//       .btn-bk:hover:not(:disabled){background:var(--p10);border-color:var(--p30);color:var(--p)}
+//       .btn-bk:disabled{opacity:.36;cursor:default}
+//       .btn-nx{display:flex;align-items:center;gap:7px;padding:11px 26px;border-radius:40px;font-size:13px;font-weight:800;cursor:pointer;border:none;background:linear-gradient(135deg,var(--p),var(--p2));color:white;font-family:inherit;box-shadow:0 4px 14px rgba(91,56,240,.3);transition:.16s}
+//       .btn-nx:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(91,56,240,.38)}
+//       .btn-nx:disabled{opacity:.52;cursor:not-allowed;transform:none}
+//       @media(max-width:480px){.left-hd{padding:18px 16px 0}.left-body{padding:12px 16px 18px}.left-ft{padding:11px 16px}.btn-nx{padding:10px 20px;font-size:12.5px}}
+
+//       /* RIGHT (canvas) */
+//       .right{background:var(--bg2);border-left:1.5px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+//       @media(max-width:820px){.right{display:none}}
+//       .right-hd{flex-shrink:0;height:52px;padding:0 18px;background:var(--white);border-bottom:1.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px}
+//       .live-dot{width:7px;height:7px;border-radius:50%;background:#10b981;animation:livePulse 2s infinite;flex-shrink:0}
+//       @keyframes livePulse{0%,100%{box-shadow:0 0 0 2px rgba(16,185,129,.18)}50%{box-shadow:0 0 0 5px rgba(16,185,129,.07)}}
+//       .right-t{font-size:13px;font-weight:700}
+//       .right-s{font-size:11px;color:var(--muted)}
+//       .right-body{flex:1;overflow:hidden;position:relative}
+//       .canvas-iframe{width:860px;border:none;display:block;background:white;height:1100px;box-shadow:0 0 60px rgba(91,56,240,.12);pointer-events:none;border-radius:8px}
+
+//       /* MOBILE PREVIEW BUTTON */
+//       .mob-fab{display:none}
+//       @media(max-width:820px){
+//         .mob-fab{display:flex;align-items:center;gap:7px;position:fixed;bottom:20px;right:16px;z-index:150;padding:11px 20px;border-radius:40px;font-size:13px;font-weight:800;background:linear-gradient(135deg,var(--p),var(--p2));color:white;border:none;cursor:pointer;font-family:inherit;box-shadow:0 8px 24px rgba(91,56,240,.38)}
+//       }
+
+//       /* MODAL */
+//       .ov{position:fixed;inset:0;background:rgba(10,6,30,.86);backdrop-filter:blur(16px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px;animation:ovIn .18s ease}
+//       @keyframes ovIn{from{opacity:0}to{opacity:1}}
+//       .modal{width:100%;max-width:960px;height:94vh;background:white;border-radius:22px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 48px 100px rgba(0,0,0,.48);animation:mdUp .22s ease}
+//       @keyframes mdUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+//       .modal-hd{flex-shrink:0;height:56px;padding:0 22px;background:white;border-bottom:1.5px solid var(--border2);display:flex;align-items:center;justify-content:space-between}
+//       .modal-ico{width:30px;height:30px;background:linear-gradient(135deg,var(--p),var(--p2));border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-size:14px;flex-shrink:0}
+//       .modal-close{width:30px;height:30px;border-radius:50%;background:var(--p10);border:1.5px solid var(--p20);cursor:pointer;font-size:16px;color:var(--sub);display:flex;align-items:center;justify-content:center;transition:.14s}
+//       .modal-close:hover{background:#fef2f2;border-color:#fca5a5;color:#ef4444}
+//       .modal-body{flex:1;overflow:hidden;background:var(--bg2);position:relative}
+//       .modal-ft{flex-shrink:0;padding:12px 22px;border-top:1.5px solid var(--border2);background:white;display:flex;justify-content:flex-end;gap:9px}
+//       @media(max-width:640px){.ov{padding:0;align-items:flex-end}.modal{border-radius:20px 20px 0 0;height:88vh}}
+
+//       /* REVIEW step */
+//       .review-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border2)}
+//       .review-row:last-child{border-bottom:none}
+//       .review-lbl{font-size:11.5px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.5px}
+//       .review-val{font-size:13px;color:var(--ink);font-weight:500;text-align:right;max-width:200px;word-break:break-all}
+//       .review-edit{font-size:11px;font-weight:700;color:var(--p);cursor:pointer;background:none;border:none;font-family:inherit}
+
+//       /* TOAST */
+//       .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:white;padding:10px 24px;border-radius:40px;font-size:13px;font-weight:700;z-index:9999;animation:toIn .22s ease;box-shadow:0 8px 26px rgba(0,0,0,.2);white-space:nowrap}
+//       @keyframes toIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+//     `}</style>
+
+//       {/* NAV */}
+//       <nav className="nav">
+//         {/* Logo - responsive sizing */}
+//         <button
+//           onClick={() => router.push("/")}
+//           className="cursor-pointer flex-shrink-0"
+//         >
+//           <div className="relative w-[100px] xs:w-[120px] sm:w-[140px] md:w-[150px] h-[33px] xs:h-[40px] sm:h-[46px] md:h-[50px]">
+//             <Image
+//               src="/logo.png"
+//               alt="ATS Pass"
+//               fill
+//               className="object-contain"
+//               priority
+//               sizes="(max-width: 480px) 100px, (max-width: 640px) 120px, (max-width: 768px) 140px, 150px"
+//             />
+//           </div>
+//         </button>
+
+//         <div className="nav-div" />
+//         <div className="wizard">
+//           {STEPS.map((s, i) => (
+//             <React.Fragment key={s.id}>
+//               {i > 0 && (
+//                 <div
+//                   className={`wz-line${i <= stepIdx ? " wz-line-done" : ""}`}
+//                 />
+//               )}
+//               <div
+//                 className={`wz${i < stepIdx ? " wz-done" : i === stepIdx ? " wz-on" : ""}`}
+//                 onClick={() => setStep(s.id)}
+//               >
+//                 <div className="wz-num">
+//                   {i < stepIdx ? (
+//                     <svg viewBox="0 0 14 14" width="11" height="11">
+//                       <polyline
+//                         points="2,8 5,12 12,3"
+//                         stroke="white"
+//                         strokeWidth="2.2"
+//                         fill="none"
+//                       />
+//                     </svg>
+//                   ) : (
+//                     i + 1
+//                   )}
+//                 </div>
+//                 <span className="wz-lbl">{s.label}</span>
+//               </div>
+//             </React.Fragment>
+//           ))}
+//         </div>
+//         <div className="nav-r">
+//           <button
+//             className="btn btn-g btn-sm"
+//             onClick={() => {
+//               rebuild();
+//               setModal(true);
+//             }}
+//           >
+//             ⛶ Preview
+//           </button>
+//           <button
+//             className="btn btn-p btn-sm"
+//             onClick={downloadPDF}
+//             disabled={busy}
+//           >
+//             {busy ? "⏳" : "⬇"} PDF
+//           </button>
+//         </div>
+//       </nav>
+
+//       <div className="shell">
+//         {/* ── LEFT ── */}
+//         <div className="left">
+//           <div className="left-hd">
+//             <div className="eye-row">
+//               <div className="eye-ico">{STEPS[stepIdx].icon}</div>
+//               <span className="eye-txt">{STEPS[stepIdx].label}</span>
+//             </div>
+//             {step === "template" && (
+//               <>
+//                 <div className="pg-title">Choose Your Template</div>
+//                 <div className="pg-sub">
+//                   16 unique designs for every profession
+//                 </div>
+//               </>
+//             )}
+//             {step === "personal" && (
+//               <>
+//                 <div className="pg-title">Personal Information</div>
+//                 <div className="pg-sub">Your details shown on the letter</div>
+//                 <button className="pill-tip">💡 Pro Tips</button>
+//               </>
+//             )}
+//             {step === "company" && (
+//               <>
+//                 <div className="pg-title">Company Details</div>
+//                 <div className="pg-sub">Where you're applying</div>
+//                 <button className="pill-tip">🎯 Tips</button>
+//               </>
+//             )}
+//             {step === "content" && (
+//               <>
+//                 <div className="pg-title">Letter Content</div>
+//                 <div className="pg-sub">Craft your compelling story</div>
+//                 <button className="pill-tip">✨ AI Assist</button>
+//               </>
+//             )}
+//             {step === "review" && (
+//               <>
+//                 <div className="pg-title">Review & Download</div>
+//                 <div className="pg-sub">Everything looks good?</div>
+//               </>
+//             )}
+//           </div>
+
+//           <div className="left-body">
+//             {/* TEMPLATE */}
+//             {step === "template" && (
+//               <>
+//                 <div className="flt-row">
+//                   {cats.map((c) => (
+//                     <button
+//                       key={c}
+//                       className={`flt${filter === c ? " on" : ""}`}
+//                       onClick={() => setFilter(c)}
+//                     >
+//                       {c}
+//                     </button>
+//                   ))}
+//                 </div>
+//                 <div className="tpl-grid">
+//                   {shownTpls.map((t) => (
+//                     <div
+//                       key={t.id}
+//                       className={`tpl-card${tplId === t.id ? " on" : ""}`}
+//                       onClick={() => setTplId(t.id)}
+//                     >
+//                       <div className="tpl-thumb">
+//                         <TplThumb id={t.id} />
+//                       </div>
+//                       <div className="tpl-chk">
+//                         <svg viewBox="0 0 14 14">
+//                           <polyline points="2,8 5,12 12,3" />
+//                         </svg>
+//                       </div>
+//                       <div className="tpl-info">
+//                         <div className="tpl-tag">{t.tag}</div>
+//                         <div className="tpl-name">{t.name}</div>
+//                       </div>
+//                     </div>
+//                   ))}
+//                 </div>
+//               </>
+//             )}
+
+//             {/* PERSONAL */}
+//             {step === "personal" && (
+//               <div className="card">
+//                 <div className="card-hd">
+//                   <div className="card-ico">👤</div>
+//                   <div>
+//                     <div className="card-t">Your Profile</div>
+//                     <div className="card-s">
+//                       All fields appear in your letter
+//                     </div>
+//                   </div>
+//                 </div>
+//                 <div className="g2">
+//                   <F l="Full Name" ic="✏️" r>
+//                     <input
+//                       type="text"
+//                       placeholder="Alexandra Chen"
+//                       value={data.personal.fullName}
+//                       onChange={(e) =>
+//                         set(["personal", "fullName"], e.target.value)
+//                       }
+//                     />
+//                   </F>
+//                   <F l="Professional Title" ic="💼">
+//                     <input
+//                       type="text"
+//                       placeholder="Senior UX Designer"
+//                       value={data.personal.title}
+//                       onChange={(e) =>
+//                         set(["personal", "title"], e.target.value)
+//                       }
+//                     />
+//                   </F>
+//                 </div>
+//                 <div className="g2">
+//                   <F l="Email" ic="✉️" r>
+//                     <input
+//                       type="email"
+//                       placeholder="alex@email.com"
+//                       value={data.personal.email}
+//                       onChange={(e) =>
+//                         set(["personal", "email"], e.target.value)
+//                       }
+//                     />
+//                   </F>
+//                   <F l="Phone" ic="📞">
+//                     <input
+//                       type="tel"
+//                       placeholder="+1 555 000 0000"
+//                       value={data.personal.phone}
+//                       onChange={(e) =>
+//                         set(["personal", "phone"], e.target.value)
+//                       }
+//                     />
+//                   </F>
+//                 </div>
+//                 <F l="Location" ic="📍">
+//                   <input
+//                     type="text"
+//                     placeholder="San Francisco, CA"
+//                     value={data.personal.location}
+//                     onChange={(e) =>
+//                       set(["personal", "location"], e.target.value)
+//                     }
+//                   />
+//                 </F>
+//                 <div className="hdiv" />
+//                 <div className="slbl">
+//                   🔗 Online Presence (shown as clickable links)
+//                 </div>
+//                 <F l="LinkedIn URL" ic="💼">
+//                   <input
+//                     type="text"
+//                     placeholder="linkedin.com/in/alexchen"
+//                     value={data.personal.linkedin}
+//                     onChange={(e) =>
+//                       set(["personal", "linkedin"], e.target.value)
+//                     }
+//                   />
+//                 </F>
+//                 <div className="g2">
+//                   <F l="GitHub URL" ic="💻">
+//                     <input
+//                       type="text"
+//                       placeholder="github.com/alexchen"
+//                       value={data.personal.github}
+//                       onChange={(e) =>
+//                         set(["personal", "github"], e.target.value)
+//                       }
+//                     />
+//                   </F>
+//                   <F l="Portfolio / Website" ic="🌐">
+//                     <input
+//                       type="text"
+//                       placeholder="alexchen.io"
+//                       value={data.personal.website}
+//                       onChange={(e) =>
+//                         set(["personal", "website"], e.target.value)
+//                       }
+//                     />
+//                   </F>
+//                 </div>
+//                 <div className="hdiv" />
+//                 <F l="Professional Summary (optional)" ic="📝">
+//                   <textarea
+//                     placeholder="2–3 sentence summary of your experience and what makes you unique…"
+//                     value={data.personal.summary}
+//                     onChange={(e) =>
+//                       set(["personal", "summary"], e.target.value)
+//                     }
+//                   />
+//                 </F>
+//                 <F l="Closing Salutation" ic="✍️">
+//                   <input
+//                     type="text"
+//                     placeholder="Sincerely (default)"
+//                     value={data.personal.signature}
+//                     onChange={(e) =>
+//                       set(["personal", "signature"], e.target.value)
+//                     }
+//                   />
+//                 </F>
+//               </div>
+//             )}
+
+//             {/* COMPANY */}
+//             {step === "company" && (
+//               <div className="card">
+//                 <div className="card-hd">
+//                   <div className="card-ico">🏢</div>
+//                   <div>
+//                     <div className="card-t">Company & Role</div>
+//                     <div className="card-s">Application target details</div>
+//                   </div>
+//                 </div>
+//                 <F l="Company Name" ic="🏢" r>
+//                   <input
+//                     type="text"
+//                     placeholder="Google, Stripe, Airbnb…"
+//                     value={data.company.name}
+//                     onChange={(e) => set(["company", "name"], e.target.value)}
+//                   />
+//                 </F>
+//                 <F l="Role Applying For" ic="🎯" r>
+//                   <input
+//                     type="text"
+//                     placeholder="Senior UX Designer"
+//                     value={data.company.jobTitle}
+//                     onChange={(e) =>
+//                       set(["company", "jobTitle"], e.target.value)
+//                     }
+//                   />
+//                 </F>
+//                 <div className="g2">
+//                   <F l="Hiring Manager" ic="👤">
+//                     <input
+//                       type="text"
+//                       placeholder="Sarah Johnson"
+//                       value={data.company.hiringManager}
+//                       onChange={(e) =>
+//                         set(["company", "hiringManager"], e.target.value)
+//                       }
+//                     />
+//                   </F>
+//                   <F l="Their Title" ic="🏷️">
+//                     <input
+//                       type="text"
+//                       placeholder="Head of Design"
+//                       value={data.company.hiringManagerTitle}
+//                       onChange={(e) =>
+//                         set(["company", "hiringManagerTitle"], e.target.value)
+//                       }
+//                     />
+//                   </F>
+//                 </div>
+//                 <div className="g2">
+//                   <F l="City">
+//                     <input
+//                       className="bare"
+//                       type="text"
+//                       placeholder="Mountain View"
+//                       value={data.company.city}
+//                       onChange={(e) => set(["company", "city"], e.target.value)}
+//                     />
+//                   </F>
+//                   <F l="State">
+//                     <input
+//                       className="bare"
+//                       type="text"
+//                       placeholder="CA"
+//                       value={data.company.state}
+//                       onChange={(e) =>
+//                         set(["company", "state"], e.target.value)
+//                       }
+//                     />
+//                   </F>
+//                 </div>
+//                 <div className="hdiv" />
+//                 <F l="Where you found this job" ic="🔍">
+//                   <input
+//                     type="text"
+//                     placeholder="LinkedIn, Referral, Company website…"
+//                     value={data.company.jobSource}
+//                     onChange={(e) =>
+//                       set(["company", "jobSource"], e.target.value)
+//                     }
+//                   />
+//                 </F>
+//                 <F l="Referral Name (if any)" ic="🤝">
+//                   <input
+//                     type="text"
+//                     placeholder="John Smith referred me"
+//                     value={data.company.referral}
+//                     onChange={(e) =>
+//                       set(["company", "referral"], e.target.value)
+//                     }
+//                   />
+//                 </F>
+//               </div>
+//             )}
+
+//             {/* CONTENT */}
+//             {step === "content" && (
+//               <div className="card">
+//                 <div className="card-hd">
+//                   <div className="card-ico">✍️</div>
+//                   <div>
+//                     <div className="card-t">Letter Sections</div>
+//                     <div className="card-s">Build paragraph by paragraph</div>
+//                   </div>
+//                 </div>
+
+//                 {data.sections.map((s, i) => (
+//                   <div key={s.id} className="sblock">
+//                     <div className="shd">
+//                       <div className="snum">{i + 1}</div>
+//                       <input
+//                         className="sti"
+//                         value={s.title}
+//                         onChange={(e) =>
+//                           setSection(s.id, "title", e.target.value)
+//                         }
+//                         placeholder="Section title"
+//                       />
+//                       {data.sections.length > 1 && (
+//                         <button
+//                           className="sdel"
+//                           onClick={() =>
+//                             setData((p) => ({
+//                               ...p,
+//                               sections: p.sections.filter((x) => x.id !== s.id),
+//                             }))
+//                           }
+//                         >
+//                           ✕
+//                         </button>
+//                       )}
+//                     </div>
+//                     <textarea
+//                       className="sta"
+//                       rows={4}
+//                       value={s.content}
+//                       placeholder={s.placeholder}
+//                       onChange={(e) =>
+//                         setSection(s.id, "content", e.target.value)
+//                       }
+//                     />
+//                   </div>
+//                 ))}
+//                 <button
+//                   className="add-btn"
+//                   onClick={() =>
+//                     setData((p) => ({
+//                       ...p,
+//                       sections: [
+//                         ...p.sections,
+//                         {
+//                           id: Date.now() + "",
+//                           title: "New Section",
+//                           content: "",
+//                           placeholder: "Write here…",
+//                         },
+//                       ],
+//                     }))
+//                   }
+//                 >
+//                   + Add Section
+//                 </button>
+
+//                 <div className="hdiv" />
+//                 <div className="slbl">🏆 Key Achievements</div>
+//                 <div className="tag-row">
+//                   <input
+//                     className="tag-in"
+//                     placeholder="e.g. Grew revenue 40% YoY"
+//                     value={achIn}
+//                     onChange={(e) => setAchIn(e.target.value)}
+//                     onKeyDown={(e) => {
+//                       if (e.key === "Enter" && achIn.trim()) {
+//                         setData((p) => ({
+//                           ...p,
+//                           achievements: [...p.achievements, achIn.trim()],
+//                         }));
+//                         setAchIn("");
+//                       }
+//                     }}
+//                   />
+//                   <button
+//                     className="tag-add"
+//                     onClick={() => {
+//                       if (achIn.trim()) {
+//                         setData((p) => ({
+//                           ...p,
+//                           achievements: [...p.achievements, achIn.trim()],
+//                         }));
+//                         setAchIn("");
+//                       }
+//                     }}
+//                   >
+//                     Add
+//                   </button>
+//                 </div>
+//                 <div className="tags">
+//                   {data.achievements.map((a, i) => (
+//                     <div key={i} className="tag-item">
+//                       ⭐ {a}
+//                       <button
+//                         className="tag-rm"
+//                         onClick={() =>
+//                           setData((p) => ({
+//                             ...p,
+//                             achievements: p.achievements.filter(
+//                               (_, j) => j !== i,
+//                             ),
+//                           }))
+//                         }
+//                       >
+//                         ✕
+//                       </button>
+//                     </div>
+//                   ))}
+//                 </div>
+
+//                 <div className="hdiv" />
+//                 <div className="slbl">🛠️ Core Skills / Tools</div>
+//                 <div className="tag-row">
+//                   <input
+//                     className="tag-in"
+//                     placeholder="e.g. Figma, React, After Effects…"
+//                     value={sklIn}
+//                     onChange={(e) => setSklIn(e.target.value)}
+//                     onKeyDown={(e) => {
+//                       if (e.key === "Enter" && sklIn.trim()) {
+//                         setData((p) => ({
+//                           ...p,
+//                           skills: [...p.skills, sklIn.trim()],
+//                         }));
+//                         setSklIn("");
+//                       }
+//                     }}
+//                   />
+//                   <button
+//                     className="tag-add"
+//                     onClick={() => {
+//                       if (sklIn.trim()) {
+//                         setData((p) => ({
+//                           ...p,
+//                           skills: [...p.skills, sklIn.trim()],
+//                         }));
+//                         setSklIn("");
+//                       }
+//                     }}
+//                   >
+//                     Add
+//                   </button>
+//                 </div>
+//                 <div className="tags">
+//                   {data.skills.map((s, i) => (
+//                     <div key={i} className="tag-item">
+//                       🔧 {s}
+//                       <button
+//                         className="tag-rm"
+//                         onClick={() =>
+//                           setData((p) => ({
+//                             ...p,
+//                             skills: p.skills.filter((_, j) => j !== i),
+//                           }))
+//                         }
+//                       >
+//                         ✕
+//                       </button>
+//                     </div>
+//                   ))}
+//                 </div>
+
+//                 <div className="hdiv" />
+//                 <div className="slbl">🎭 Tone of Voice</div>
+//                 <div className="tone-row">
+//                   {tones.map((t) => (
+//                     <button
+//                       key={t}
+//                       className={`tone-btn${data.tone === t ? " on" : ""}`}
+//                       onClick={() => setData((p) => ({ ...p, tone: t }))}
+//                     >
+//                       {t}
+//                     </button>
+//                   ))}
+//                 </div>
+
+//                 <div className="hdiv" />
+//                 <div className="slbl">📝 Additional Notes</div>
+//                 <textarea
+//                   className="sta"
+//                   rows={3}
+//                   placeholder="Post-script, special circumstances, or extra context…"
+//                   value={data.notes}
+//                   onChange={(e) =>
+//                     setData((p) => ({ ...p, notes: e.target.value }))
+//                   }
+//                 />
+//               </div>
+//             )}
+
+//             {/* REVIEW */}
+//             {step === "review" && (
+//               <div className="card">
+//                 <div className="card-hd">
+//                   <div className="card-ico">✅</div>
+//                   <div>
+//                     <div className="card-t">Review Your Letter</div>
+//                     <div className="card-s">
+//                       Check everything before downloading
+//                     </div>
+//                   </div>
+//                 </div>
+//                 {[
+//                   ["Template", tpl.name, "template"],
+//                   ["Name", data.personal.fullName, "personal"],
+//                   ["Title", data.personal.title, "personal"],
+//                   ["Email", data.personal.email, "personal"],
+//                   ["Phone", data.personal.phone, "personal"],
+//                   ["LinkedIn", data.personal.linkedin, "personal"],
+//                   ["GitHub", data.personal.github, "personal"],
+//                   ["Portfolio", data.personal.website, "personal"],
+//                   ["Company", data.company.name, "company"],
+//                   ["Role", data.company.jobTitle, "company"],
+//                   ["Hiring Manager", data.company.hiringManager, "company"],
+//                   ["Tone", data.tone, "content"],
+//                   [
+//                     "Sections",
+//                     data.sections.filter((s) => s.content).length + " written",
+//                     "content",
+//                   ],
+//                   [
+//                     "Achievements",
+//                     data.achievements.length + " added",
+//                     "content",
+//                   ],
+//                   ["Skills", data.skills.length + " added", "content"],
+//                 ].map(([l, v, s]) => (
+//                   <div key={l as string} className="review-row">
+//                     <span className="review-lbl">{l}</span>
+//                     <div
+//                       style={{ display: "flex", alignItems: "center", gap: 8 }}
+//                     >
+//                       <span
+//                         className="review-val"
+//                         style={{ color: (v as string) ? undefined : "#d1d5db" }}
+//                       >
+//                         {(v as string) || "—"}
+//                       </span>
+//                       <button
+//                         className="review-edit"
+//                         onClick={() => setStep(s as Step)}
+//                       >
+//                         Edit
+//                       </button>
+//                     </div>
+//                   </div>
+//                 ))}
+//                 <div
+//                   style={{
+//                     marginTop: 20,
+//                     padding: "16px",
+//                     background: "var(--p10)",
+//                     borderRadius: 14,
+//                     border: "1.5px solid var(--p20)",
+//                   }}
+//                 >
+//                   <div
+//                     style={{
+//                       fontSize: 13,
+//                       fontWeight: 700,
+//                       color: "var(--ink)",
+//                       marginBottom: 8,
+//                     }}
+//                   >
+//                     ✅ Ready to Download
+//                   </div>
+//                   <div style={{ fontSize: 12.5, color: "var(--sub)" }}>
+//                     Your cover letter is ready. Click "Download PDF" to save it,
+//                     or use the preview to do a final check.
+//                   </div>
+//                 </div>
+//               </div>
+//             )}
+//           </div>
+
+//           {/* FOOTER NAV */}
+//           <div className="left-ft">
+//             <button
+//               className="btn-bk"
+//               disabled={stepIdx === 0}
+//               onClick={() => setStep(STEPS[stepIdx - 1].id)}
+//             >
+//               ← {stepIdx > 0 ? `Back to ${STEPS[stepIdx - 1].label}` : "Back"}
+//             </button>
+//             {stepIdx < STEPS.length - 1 ? (
+//               <button
+//                 className="btn-nx"
+//                 onClick={() => setStep(STEPS[stepIdx + 1].id)}
+//               >
+//                 Continue to {STEPS[stepIdx + 1].label} →
+//               </button>
+//             ) : (
+//               <button className="btn-nx" onClick={downloadPDF} disabled={busy}>
+//                 {busy ? "⏳ Generating…" : "⬇ Download PDF"}
+//               </button>
+//             )}
+//           </div>
+//         </div>
+
+//         {/* ── RIGHT (canvas) ── */}
+//         <div className="right">
+//           <div className="right-hd">
+//             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+//               <div className="live-dot" />
+//               <div>
+//                 <div className="right-t">Live Preview</div>
+//                 <div className="right-s">Drag · Pinch · Scroll to navigate</div>
+//               </div>
+//             </div>
+//             <div style={{ display: "flex", gap: 7, alignItems: "center" }}>
+//               <button
+//                 className="btn btn-g btn-sm"
+//                 style={{ fontSize: 11 }}
+//                 onClick={() => setStep("template")}
+//               >
+//                 🎨 Change
+//               </button>
+//               <button
+//                 className="btn btn-g btn-sm"
+//                 onClick={() => {
+//                   rebuild();
+//                   setModal(true);
+//                 }}
+//               >
+//                 ⛶ Fullscreen
+//               </button>
+//             </div>
+//           </div>
+//           <div className="right-body">
+//             <CanvasPreview>
+//               {html ? (
+//                 <iframe
+//                   ref={iframeRef}
+//                   className="canvas-iframe"
+//                   title="preview"
+//                   sandbox="allow-same-origin"
+//                 />
+//               ) : (
+//                 <div
+//                   style={{
+//                     width: 860,
+//                     height: 1100,
+//                     background: "white",
+//                     display: "flex",
+//                     flexDirection: "column",
+//                     alignItems: "center",
+//                     justifyContent: "center",
+//                     gap: 14,
+//                     color: "#9ca3af",
+//                     borderRadius: 8,
+//                   }}
+//                 >
+//                   <div style={{ fontSize: 56, opacity: 0.18 }}>📄</div>
+//                   <div style={{ fontWeight: 700, fontSize: 16 }}>
+//                     Preview appears here
+//                   </div>
+//                   <div style={{ fontSize: 13 }}>
+//                     Fill in your details to see the letter
+//                   </div>
+//                 </div>
+//               )}
+//             </CanvasPreview>
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* MOBILE FAB */}
+//       <button
+//         className="mob-fab"
+//         onClick={() => {
+//           rebuild();
+//           setModal(true);
+//         }}
+//       >
+//         👁 Preview Letter
+//       </button>
+
+//       {/* FULLSCREEN MODAL */}
+//       {modal && (
+//         <div className="ov" onClick={() => setModal(false)}>
+//           <div className="modal" onClick={(e) => e.stopPropagation()}>
+//             <div className="modal-hd">
+//               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+//                 <div className="modal-ico">📄</div>
+//                 <div>
+//                   <div style={{ fontSize: 14.5, fontWeight: 800 }}>
+//                     {data.personal.fullName || "Cover Letter"}
+//                   </div>
+//                   <div style={{ fontSize: 11, color: "var(--sub)" }}>
+//                     {tpl.name} · {tpl.tag}
+//                   </div>
+//                 </div>
+//               </div>
+//               <button className="modal-close" onClick={() => setModal(false)}>
+//                 ✕
+//               </button>
+//             </div>
+//             <div className="modal-body">
+//               <CanvasPreview>
+//                 <iframe
+//                   ref={modalIframeRef}
+//                   className="canvas-iframe"
+//                   title="full-preview"
+//                   sandbox="allow-same-origin"
+//                 />
+//               </CanvasPreview>
+//             </div>
+//             <div className="modal-ft">
+//               <button className="btn btn-g" onClick={() => setModal(false)}>
+//                 Close
+//               </button>
+//               <button
+//                 className="btn btn-p"
+//                 onClick={downloadPDF}
+//                 disabled={busy}
+//               >
+//                 {busy ? "⏳ Generating…" : "⬇ Download PDF"}
+//               </button>
+//             </div>
+//           </div>
+//         </div>
+//       )}
+
+//       {toast && <div className="toast">{toast}</div>}
+//     </>
+//   );
+// }
+
+// // tiny field wrapper
+// function F({
+//   l,
+//   ic,
+//   r,
+//   children,
+// }: {
+//   l: string;
+//   ic?: string;
+//   r?: boolean;
+//   children: React.ReactNode;
+// }) {
+//   return (
+//     <div className="fld">
+//       <label className="fld-l">
+//         {l}
+//         {r && <span> *</span>}
+//       </label>
+//       <div className="iw">
+//         {ic && <span className="iw-ic">{ic}</span>}
+//         {children}
+//       </div>
+//     </div>
+//   );
+// }
 
 "use client";
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  ReactNode,
+} from "react";
 import axios from "axios";
-import { API_URL } from "@/app/config/api";
+import { motion, AnimatePresence } from "framer-motion";
+import { FiZoomIn, FiZoomOut, FiRefreshCw, FiEye } from "react-icons/fi";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { API_URL } from "@/app/config/api";
 
-// ═══════════════════════════════════════════
-// TYPES
-// ═══════════════════════════════════════════
+/* ─────────────────────────────────────────────────────────────────
+   TYPES
+───────────────────────────────────────────────────────────────── */
 interface PersonalInfo {
   fullName: string;
   title: string;
@@ -10659,6 +16399,8 @@ interface PersonalInfo {
   website: string;
   linkedin: string;
   github: string;
+  summary: string;
+  signature: string;
 }
 interface CompanyInfo {
   name: string;
@@ -10667,6 +16409,8 @@ interface CompanyInfo {
   hiringManagerTitle: string;
   city: string;
   state: string;
+  jobSource: string;
+  referral: string;
 }
 interface Section {
   id: string;
@@ -10679,6 +16423,8 @@ interface CLData {
   company: CompanyInfo;
   sections: Section[];
   achievements: string[];
+  skills: string[];
+  tone: string;
   notes: string;
 }
 
@@ -10692,6 +16438,8 @@ const BLANK: CLData = {
     website: "",
     linkedin: "",
     github: "",
+    summary: "",
+    signature: "",
   },
   company: {
     name: "",
@@ -10700,6 +16448,8 @@ const BLANK: CLData = {
     hiringManagerTitle: "",
     city: "",
     state: "",
+    jobSource: "",
+    referral: "",
   },
   sections: [
     {
@@ -10707,901 +16457,1425 @@ const BLANK: CLData = {
       title: "Opening Statement",
       content: "",
       placeholder:
-        "Express your enthusiasm for the role and why you are the perfect fit…",
+        "Express your enthusiasm for the role. Mention where you found it and a compelling hook about why you're perfect for it…",
     },
     {
       id: "2",
       title: "Experience & Skills",
       content: "",
       placeholder:
-        "Highlight 2-3 relevant accomplishments that prove your value…",
+        "Highlight 2–3 specific accomplishments with metrics. Show you can solve their exact problems…",
     },
     {
       id: "3",
       title: "Why This Company",
       content: "",
       placeholder:
-        "Show genuine research — what specifically excites you about this org…",
+        "Demonstrate genuine research — reference their mission, recent news, products, or culture…",
     },
     {
       id: "4",
       title: "Closing",
       content: "",
-      placeholder: "Thank them, reiterate enthusiasm, and invite next steps…",
+      placeholder:
+        "Restate enthusiasm, include a clear call to action, mention your portfolio/work samples if applicable…",
     },
   ],
   achievements: [],
+  skills: [],
+  tone: "professional",
   notes: "",
 };
 
-// ═══════════════════════════════════════════
-// REAL TEMPLATE SVG THUMBNAILS
-// ═══════════════════════════════════════════
-const TemplateThumbnail = ({ id }: { id: string }) => {
+/* ─────────────────────────────────────────────────────────────────
+   CANVAS PREVIEW COMPONENT
+───────────────────────────────────────────────────────────────── */
+function CanvasPreview({ children }: { children: ReactNode }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(0.58);
+  const [pos, setPos] = useState({ x: 0, y: 0 });
+  const [dragging, setDragging] = useState(false);
+  const scaleRef = useRef(0.58);
+  const downPos = useRef<{ x: number; y: number } | null>(null);
+  const startPosRef = useRef({ x: 0, y: 0 });
+  const dragStarted = useRef(false);
+  const animRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    const fn = () => {
+      const w = window.innerWidth;
+      const s =
+        w < 480
+          ? 0.36
+          : w < 640
+            ? 0.46
+            : w < 768
+              ? 0.54
+              : w < 1024
+                ? 0.6
+                : w < 1280
+                  ? 0.66
+                  : 0.72;
+      setScale(s);
+      scaleRef.current = s;
+    };
+    fn();
+    window.addEventListener("resize", fn);
+    return () => window.removeEventListener("resize", fn);
+  }, []);
+  useEffect(() => {
+    scaleRef.current = scale;
+  }, [scale]);
+
+  const smoothZoom = (target: number) => {
+    if (animRef.current) cancelAnimationFrame(animRef.current);
+    const from = scaleRef.current;
+    const t0 = performance.now();
+    const go = (now: number) => {
+      const p = Math.min((now - t0) / 160, 1);
+      const v = from + (target - from) * (1 - Math.pow(1 - p, 3));
+      setScale(v);
+      scaleRef.current = v;
+      if (p < 1) animRef.current = requestAnimationFrame(go);
+    };
+    animRef.current = requestAnimationFrame(go);
+  };
+  const zoomIn = () => smoothZoom(Math.min(scaleRef.current + 0.1, 2.5));
+  const zoomOut = () => smoothZoom(Math.max(scaleRef.current - 0.1, 0.2));
+  const reset = () => {
+    const w = window.innerWidth;
+    smoothZoom(w < 640 ? 0.36 : 0.68);
+    setPos({ x: 0, y: 0 });
+  };
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const skip = (t: EventTarget | null) => {
+      const tag = (t as HTMLElement)?.tagName ?? "";
+      return (
+        ["BUTTON", "INPUT", "A", "SELECT", "TEXTAREA"].includes(tag) ||
+        !!(t as HTMLElement)?.closest?.("[data-nodrag]")
+      );
+    };
+    const onDown = (e: MouseEvent) => {
+      if (skip(e.target)) return;
+      downPos.current = { x: e.clientX, y: e.clientY };
+      dragStarted.current = false;
+    };
+    const onMove = (e: MouseEvent) => {
+      if (!downPos.current) return;
+      const dx = e.clientX - downPos.current.x,
+        dy = e.clientY - downPos.current.y;
+      if (!dragStarted.current && Math.hypot(dx, dy) > 5) {
+        dragStarted.current = true;
+        setDragging(true);
+        startPosRef.current = {
+          x: downPos.current.x - pos.x,
+          y: downPos.current.y - pos.y,
+        };
+      }
+      if (dragStarted.current) {
+        e.preventDefault();
+        setPos({
+          x: e.clientX - startPosRef.current.x,
+          y: e.clientY - startPosRef.current.y,
+        });
+      }
+    };
+    const onUp = () => {
+      downPos.current = null;
+      dragStarted.current = false;
+      setDragging(false);
+    };
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      if (e.ctrlKey || e.metaKey) {
+        const v = Math.max(
+          0.2,
+          Math.min(2.5, scaleRef.current * Math.exp(-e.deltaY * 0.002)),
+        );
+        setScale(v);
+        scaleRef.current = v;
+      } else {
+        setPos((p) => ({ x: p.x - e.deltaX * 0.4, y: p.y - e.deltaY * 0.4 }));
+      }
+    };
+    el.addEventListener("mousedown", onDown);
+    el.addEventListener("mousemove", onMove);
+    el.addEventListener("mouseup", onUp);
+    el.addEventListener("mouseleave", onUp);
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => {
+      el.removeEventListener("mousedown", onDown);
+      el.removeEventListener("mousemove", onMove);
+      el.removeEventListener("mouseup", onUp);
+      el.removeEventListener("mouseleave", onUp);
+      el.removeEventListener("wheel", onWheel);
+    };
+  }, [pos]);
+
+  return (
+    <div className="relative w-full h-full min-h-[420px]">
+      {/* Canvas area */}
+      <div
+        ref={containerRef}
+        className="absolute inset-0 overflow-hidden rounded-xl bg-indigo-50/60"
+        style={{ cursor: dragging ? "grabbing" : "grab" }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            transformOrigin: "top left",
+            transform: `translate(${pos.x}px,${pos.y}px) scale(${scale})`,
+            userSelect: "none",
+            WebkitUserSelect: "none",
+          }}
+        >
+          {children}
+        </div>
+      </div>
+
+      {/* Zoom badge */}
+      <div
+        data-nodrag
+        className="absolute top-2.5 left-2.5 z-20 pointer-events-none bg-white/90 backdrop-blur-sm border border-indigo-100 text-indigo-600 text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm"
+      >
+        {Math.round(scale * 100)}%
+      </div>
+
+      {/* Controls */}
+      <div
+        data-nodrag
+        className="absolute bottom-3 right-3 z-20 flex flex-col gap-1.5"
+      >
+        {[
+          {
+            fn: zoomIn,
+            icon: <FiZoomIn className="w-4 h-4" />,
+            title: "Zoom In",
+            primary: true,
+          },
+          {
+            fn: zoomOut,
+            icon: <FiZoomOut className="w-4 h-4" />,
+            title: "Zoom Out",
+            primary: true,
+          },
+          {
+            fn: reset,
+            icon: <FiRefreshCw className="w-3.5 h-3.5" />,
+            title: "Reset",
+            primary: false,
+          },
+        ].map((b, i) => (
+          <motion.button
+            key={i}
+            type="button"
+            title={b.title}
+            onClick={b.fn}
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.94 }}
+            className={`w-8 h-8 rounded-lg flex items-center justify-center text-white shadow-md transition-shadow ${
+              b.primary
+                ? "bg-gradient-to-br from-indigo-600 to-violet-600 hover:shadow-indigo-300/50"
+                : "bg-gray-700 hover:bg-gray-800"
+            }`}
+          >
+            {b.icon}
+          </motion.button>
+        ))}
+      </div>
+
+      {/* Hint */}
+      <p
+        data-nodrag
+        className="absolute bottom-3 left-2.5 z-20 pointer-events-none text-[10px] font-semibold text-indigo-400"
+      >
+        Drag · Scroll · Ctrl+Wheel
+      </p>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   SVG TEMPLATE THUMBNAILS  (real miniature previews)
+───────────────────────────────────────────────────────────────── */
+function TplThumb({ id }: { id: string }) {
+  const W = 220,
+    H = 155;
   switch (id) {
     case "aurora":
       return (
         <svg
-          viewBox="0 0 220 155"
-          xmlns="http://www.w3.org/2000/svg"
+          viewBox={`0 0 ${W} ${H}`}
           width="100%"
           height="100%"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          <rect width="220" height="155" fill="#fff" />
-          <rect width="220" height="52" fill="#4f46e5" />
-          <circle cx="195" cy="-10" r="45" fill="#6366f1" opacity=".5" />
+          <rect width={W} height={H} fill="#fff" />
+          <rect width={W} height={52} fill="#4f46e5" />
+          <circle cx={205} cy={0} r={52} fill="#6366f1" opacity=".45" />
           <rect
-            x="14"
-            y="13"
-            width="90"
-            height="8"
-            rx="2"
-            fill="rgba(255,255,255,.9)"
+            x={13}
+            y={13}
+            width={88}
+            height={8}
+            rx={2}
+            fill="rgba(255,255,255,.92)"
           />
           <rect
-            x="14"
-            y="25"
-            width="55"
-            height="5"
-            rx="1.5"
+            x={13}
+            y={25}
+            width={54}
+            height={4}
+            rx={1.5}
             fill="rgba(255,255,255,.6)"
           />
-          <rect
-            x="14"
-            y="38"
-            width="28"
-            height="5"
-            rx="10"
-            fill="rgba(255,255,255,.25)"
-            stroke="rgba(255,255,255,.4)"
-            strokeWidth=".5"
-          />
-          <rect
-            x="46"
-            y="38"
-            width="32"
-            height="5"
-            rx="10"
-            fill="rgba(255,255,255,.25)"
-            stroke="rgba(255,255,255,.4)"
-            strokeWidth=".5"
-          />
-          <rect
-            x="82"
-            y="38"
-            width="28"
-            height="5"
-            rx="10"
-            fill="rgba(255,255,255,.25)"
-            stroke="rgba(255,255,255,.4)"
-            strokeWidth=".5"
-          />
-          <rect x="14" y="62" width="40" height="3" rx="1" fill="#9ca3af" />
-          <rect x="14" y="70" width="130" height="3" rx="1" fill="#e5e7eb" />
-          <rect x="14" y="76" width="110" height="3" rx="1" fill="#e5e7eb" />
-          <rect x="14" y="88" width="50" height="3" rx="1" fill="#6366f1" />
-          <rect x="14" y="95" width="180" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="14" y="100" width="165" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="14" y="105" width="175" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="14" y="116" width="50" height="3" rx="1" fill="#6366f1" />
-          <rect x="14" y="123" width="180" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="14" y="128" width="120" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="14" y="140" width="35" height="3" rx="1" fill="#9ca3af" />
-          <rect x="14" y="147" width="55" height="3" rx="1" fill="#374151" />
+          {[0, 36, 72].map((ox, i) => (
+            <rect
+              key={i}
+              x={13 + ox}
+              y={37}
+              width={30}
+              height={5}
+              rx={10}
+              fill="rgba(255,255,255,.2)"
+              stroke="rgba(255,255,255,.35)"
+              strokeWidth=".6"
+            />
+          ))}
+          <rect x={13} y={62} width={40} height={3} rx={1} fill="#9ca3af" />
+          {[69, 75, 81].map((y, i) => (
+            <rect
+              key={i}
+              x={13}
+              y={y}
+              width={[130, 110, 120][i]}
+              height={2.5}
+              rx={1}
+              fill="#e5e7eb"
+            />
+          ))}
+          <rect x={13} y={90} width={44} height={3} rx={1} fill="#6366f1" />
+          {[97, 102, 107].map((y, i) => (
+            <rect
+              key={i}
+              x={13}
+              y={y}
+              width={[180, 165, 175][i]}
+              height={2.5}
+              rx={1}
+              fill="#e5e7eb"
+            />
+          ))}
+          <rect x={13} y={117} width={44} height={3} rx={1} fill="#6366f1" />
+          {[124, 129].map((y, i) => (
+            <rect
+              key={i}
+              x={13}
+              y={y}
+              width={[175, 120][i]}
+              height={2.5}
+              rx={1}
+              fill="#e5e7eb"
+            />
+          ))}
+          <rect x={13} y={143} width={32} height={3} rx={1} fill="#9ca3af" />
+          <rect x={13} y={149} width={55} height={3} rx={1} fill="#374151" />
         </svg>
       );
     case "obsidian":
       return (
         <svg
-          viewBox="0 0 220 155"
-          xmlns="http://www.w3.org/2000/svg"
+          viewBox={`0 0 ${W} ${H}`}
           width="100%"
           height="100%"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          <rect width="220" height="155" fill="#fff" />
-          <rect width="65" height="155" fill="#1e1b4b" />
+          <rect width={W} height={H} fill="#fff" />
+          <rect width={63} height={H} fill="#1e1b4b" />
           <rect
-            x="8"
-            y="14"
-            width="48"
-            height="7"
-            rx="1.5"
+            x={7}
+            y={13}
+            width={47}
+            height={7}
+            rx={1.5}
             fill="rgba(233,213,255,.85)"
           />
           <rect
-            x="8"
-            y="25"
-            width="35"
-            height="3.5"
-            rx="1"
+            x={7}
+            y={24}
+            width={34}
+            height={3}
+            rx={1}
             fill="rgba(165,180,252,.5)"
           />
           <rect
-            x="8"
-            y="38"
-            width="48"
-            height="1"
-            rx=".5"
-            fill="rgba(165,180,252,.2)"
+            x={7}
+            y={36}
+            width={47}
+            height={0.8}
+            fill="rgba(165,180,252,.15)"
           />
-          <rect
-            x="8"
-            y="46"
-            width="20"
-            height="2.5"
-            rx="1"
-            fill="rgba(109,91,186,.7)"
-          />
-          <rect
-            x="8"
-            y="52"
-            width="45"
-            height="2.5"
-            rx="1"
-            fill="rgba(196,181,253,.6)"
-          />
-          <rect
-            x="8"
-            y="57"
-            width="38"
-            height="2.5"
-            rx="1"
-            fill="rgba(196,181,253,.6)"
-          />
-          <rect
-            x="8"
-            y="66"
-            width="20"
-            height="2.5"
-            rx="1"
-            fill="rgba(109,91,186,.7)"
-          />
-          <rect
-            x="8"
-            y="72"
-            width="40"
-            height="2.5"
-            rx="1"
-            fill="rgba(196,181,253,.6)"
-          />
-          <rect
-            x="8"
-            y="80"
-            width="20"
-            height="2.5"
-            rx="1"
-            fill="rgba(109,91,186,.7)"
-          />
-          <rect
-            x="8"
-            y="86"
-            width="43"
-            height="2.5"
-            rx="1"
-            fill="rgba(196,181,253,.6)"
-          />
-          <rect x="78" y="14" width="35" height="3" rx="1" fill="#9ca3af" />
-          <rect x="78" y="22" width="125" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="78" y="27" width="100" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="78" y="38" width="40" height="3" rx="1" fill="#7c3aed" />
-          <rect x="78" y="45" width="135" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="78" y="50" width="125" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="78" y="55" width="130" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="78" y="65" width="40" height="3" rx="1" fill="#7c3aed" />
-          <rect x="78" y="72" width="135" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="78" y="77" width="110" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="78" y="90" width="40" height="3" rx="1" fill="#7c3aed" />
-          <rect x="78" y="97" width="135" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="78" y="102" width="90" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="78" y="118" width="30" height="2.5" rx="1" fill="#9ca3af" />
-          <rect x="78" y="125" width="50" height="3" rx="1" fill="#374151" />
+          {[
+            ["Email", 44],
+            ["Phone", 54],
+            ["Location", 64],
+            ["LinkedIn", 74],
+            ["GitHub", 84],
+            ["Portfolio", 94],
+          ].map(([l, y], i) => (
+            <g key={i}>
+              <rect
+                x={7}
+                y={y as number}
+                width={20}
+                height={2}
+                rx={1}
+                fill="rgba(109,91,186,.7)"
+              />
+              <rect
+                x={7}
+                y={(y as number) + 6}
+                width={46}
+                height={2}
+                rx={1}
+                fill="rgba(196,181,253,.55)"
+              />
+            </g>
+          ))}
+          <rect x={72} y={13} width={32} height={2.5} rx={1} fill="#9ca3af" />
+          {[20, 25].map((y, i) => (
+            <rect
+              key={i}
+              x={72}
+              y={y}
+              width={[130, 100][i]}
+              height={2.2}
+              rx={1}
+              fill="#e5e7eb"
+            />
+          ))}
+          <rect x={72} y={36} width={40} height={3} rx={1} fill="#7c3aed" />
+          {[43, 48, 53].map((y, i) => (
+            <rect
+              key={i}
+              x={72}
+              y={y}
+              width={[138, 125, 130][i]}
+              height={2.2}
+              rx={1}
+              fill="#e5e7eb"
+            />
+          ))}
+          <rect x={72} y={64} width={40} height={3} rx={1} fill="#7c3aed" />
+          {[71, 76, 81].map((y, i) => (
+            <rect
+              key={i}
+              x={72}
+              y={y}
+              width={[138, 112, 120][i]}
+              height={2.2}
+              rx={1}
+              fill="#e5e7eb"
+            />
+          ))}
+          <rect x={72} y={122} width={28} height={2} rx={1} fill="#9ca3af" />
+          <rect x={72} y={129} width={52} height={3} rx={1} fill="#374151" />
         </svg>
       );
     case "nordic":
       return (
         <svg
-          viewBox="0 0 220 155"
-          xmlns="http://www.w3.org/2000/svg"
+          viewBox={`0 0 ${W} ${H}`}
           width="100%"
           height="100%"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          <rect width="220" height="155" fill="#fff" />
-          <rect x="18" y="14" width="65" height="3" rx="1" fill="#c7d2fe" />
-          <rect x="18" y="22" width="120" height="10" rx="1.5" fill="#1e1b4b" />
-          <rect x="18" y="36" width="36" height="3" rx="1" fill="#4f46e5" />
-          <rect x="18" y="44" width="185" height="1" rx=".5" fill="#e0e7ff" />
-          <rect x="18" y="50" width="55" height="2.5" rx="1" fill="#9ca3af" />
-          <rect x="80" y="50" width="55" height="2.5" rx="1" fill="#9ca3af" />
-          <rect x="148" y="50" width="55" height="2.5" rx="1" fill="#9ca3af" />
-          <rect x="18" y="62" width="35" height="2.5" rx="1" fill="#9ca3af" />
-          <rect x="18" y="70" width="185" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="18" y="75" width="170" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="18" y="86" width="42" height="3" rx="1" fill="#4338ca" />
-          <rect x="18" y="93" width="185" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="18" y="98" width="160" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="18" y="103" width="175" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="18" y="114" width="42" height="3" rx="1" fill="#4338ca" />
-          <rect x="18" y="121" width="185" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="18" y="126" width="110" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="18" y="140" width="28" height="2.5" rx="1" fill="#9ca3af" />
-          <rect x="18" y="147" width="50" height="3" rx="1" fill="#374151" />
+          <rect width={W} height={H} fill="#fff" />
+          <rect x={16} y={13} width={62} height={3} rx={1} fill="#c7d2fe" />
+          <rect x={16} y={20} width={118} height={10} rx={1.5} fill="#1e1b4b" />
+          <rect x={16} y={34} width={38} height={3} rx={1} fill="#4f46e5" />
+          <rect x={16} y={43} width={188} height={0.8} fill="#e0e7ff" />
+          {[0, 62, 124].map((ox, i) => (
+            <rect
+              key={i}
+              x={16 + ox}
+              y={50}
+              width={56}
+              height={2}
+              rx={1}
+              fill="#9ca3af"
+            />
+          ))}
+          <rect x={16} y={62} width={32} height={2.5} rx={1} fill="#9ca3af" />
+          {[69, 74].map((y, i) => (
+            <rect
+              key={i}
+              x={16}
+              y={y}
+              width={[188, 162][i]}
+              height={2.2}
+              rx={1}
+              fill="#e5e7eb"
+            />
+          ))}
+          <rect x={16} y={84} width={44} height={3} rx={1} fill="#4338ca" />
+          {[91, 96, 101].map((y, i) => (
+            <rect
+              key={i}
+              x={16}
+              y={y}
+              width={[188, 162, 177][i]}
+              height={2.2}
+              rx={1}
+              fill="#e5e7eb"
+            />
+          ))}
+          <rect x={16} y={111} width={44} height={3} rx={1} fill="#4338ca" />
+          {[118, 123].map((y, i) => (
+            <rect
+              key={i}
+              x={16}
+              y={y}
+              width={[188, 112][i]}
+              height={2.2}
+              rx={1}
+              fill="#e5e7eb"
+            />
+          ))}
+          <rect x={16} y={138} width={30} height={2} rx={1} fill="#9ca3af" />
+          <rect x={16} y={145} width={52} height={3} rx={1} fill="#374151" />
         </svg>
       );
     case "slate":
       return (
         <svg
-          viewBox="0 0 220 155"
-          xmlns="http://www.w3.org/2000/svg"
+          viewBox={`0 0 ${W} ${H}`}
           width="100%"
           height="100%"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          <rect width="220" height="155" fill="#fff" />
-          <rect x="14" y="14" width="95" height="9" rx="1.5" fill="#0f172a" />
-          <rect x="14" y="27" width="55" height="3" rx="1" fill="#64748b" />
-          <rect x="130" y="14" width="76" height="2.5" rx="1" fill="#475569" />
-          <rect x="130" y="20" width="60" height="2.5" rx="1" fill="#475569" />
-          <rect x="130" y="26" width="70" height="2.5" rx="1" fill="#475569" />
-          <rect x="14" y="38" width="192" height="2" rx=".5" fill="#1e293b" />
+          <rect width={W} height={H} fill="#fff" />
+          <rect x={13} y={13} width={92} height={9} rx={1.5} fill="#0f172a" />
+          <rect x={13} y={26} width={55} height={3} rx={1} fill="#64748b" />
+          <rect x={137} y={13} width={70} height={2.5} rx={1} fill="#475569" />
+          {[19, 25, 31, 37].map((y, i) => (
+            <rect
+              key={i}
+              x={137}
+              y={y}
+              width={[60, 70, 55, 65][i]}
+              height={2}
+              rx={1}
+              fill="#94a3b8"
+            />
+          ))}
+          <rect x={13} y={38} width={192} height={1.8} fill="#0f172a" />
           <rect
-            x="14"
-            y="46"
-            width="70"
-            height="4"
-            rx="2"
+            x={13}
+            y={46}
+            width={72}
+            height={5}
+            rx={2}
             fill="#f1f5f9"
             stroke="#e2e8f0"
             strokeWidth=".5"
           />
           <rect
-            x="16"
-            y="47.5"
-            width="40"
-            height="1.5"
-            rx=".5"
+            x={15}
+            y={47.5}
+            width={48}
+            height={1.5}
+            rx={0.5}
             fill="#64748b"
           />
-          <rect x="14" y="56" width="35" height="2.5" rx="1" fill="#9ca3af" />
-          <rect x="14" y="64" width="185" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="14" y="69" width="160" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="14" y="79" width="3" height="30" rx="1" fill="#334155" />
-          <rect x="21" y="79" width="38" height="2.5" rx="1" fill="#334155" />
-          <rect x="21" y="85" width="175" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="21" y="90" width="150" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="21" y="95" width="165" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="14" y="107" width="3" height="25" rx="1" fill="#334155" />
-          <rect x="21" y="107" width="38" height="2.5" rx="1" fill="#334155" />
-          <rect x="21" y="113" width="175" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="21" y="118" width="130" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="14" y="135" width="30" height="2.5" rx="1" fill="#9ca3af" />
-          <rect x="14" y="142" width="50" height="3" rx="1" fill="#374151" />
+          <rect x={13} y={57} width={32} height={2.5} rx={1} fill="#9ca3af" />
+          {[64, 69].map((y, i) => (
+            <rect
+              key={i}
+              x={13}
+              y={y}
+              width={[188, 158][i]}
+              height={2.2}
+              rx={1}
+              fill="#e5e7eb"
+            />
+          ))}
+          <rect x={13} y={78} width={2.5} height={28} rx={1} fill="#334155" />
+          {[78, 84, 89, 94].map((y, i) => (
+            <rect
+              key={i}
+              x={19}
+              y={y}
+              width={i === 0 ? 38 : [180, 158, 168][i - 1]}
+              height={2.2}
+              rx={1}
+              fill={i === 0 ? "#334155" : "#e5e7eb"}
+            />
+          ))}
+          <rect x={13} y={106} width={2.5} height={22} rx={1} fill="#334155" />
+          {[106, 112, 117].map((y, i) => (
+            <rect
+              key={i}
+              x={19}
+              y={y}
+              width={i === 0 ? 38 : [180, 130][i - 1]}
+              height={2.2}
+              rx={1}
+              fill={i === 0 ? "#334155" : "#e5e7eb"}
+            />
+          ))}
+          <rect x={13} y={133} width={30} height={2} rx={1} fill="#9ca3af" />
+          <rect x={13} y={140} width={52} height={3} rx={1} fill="#374151" />
         </svg>
       );
     case "crimson":
       return (
         <svg
-          viewBox="0 0 220 155"
-          xmlns="http://www.w3.org/2000/svg"
+          viewBox={`0 0 ${W} ${H}`}
           width="100%"
           height="100%"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          <rect width="220" height="155" fill="#fffbf5" />
-          <rect width="220" height="5" fill="#9f1239" />
-          <rect x="14" y="14" width="192" height="11" rx="1.5" fill="#1a0a0d" />
+          <rect width={W} height={H} fill="#fffbf5" />
+          <rect width={W} height={4.5} fill="#9f1239" />
           <text
-            x="110"
-            y="23"
+            x={110}
+            y={25}
             textAnchor="middle"
-            fontSize="10"
+            fontSize={11}
             fontWeight="800"
             fill="#1a0a0d"
             fontFamily="Georgia,serif"
           >
             Alex Johnson
           </text>
-          <rect
-            x="60"
-            y="29"
-            width="100"
-            height="3"
-            rx="1"
-            fill="#9f1239"
-            opacity=".7"
-          />
           <text
-            x="110"
-            y="37"
+            x={110}
+            y={34}
             textAnchor="middle"
-            fontSize="5.5"
+            fontSize={5.5}
             fill="#9f1239"
             fontFamily="Georgia,serif"
             fontStyle="italic"
           >
             Senior Product Manager
           </text>
-          <rect x="80" y="40" width="60" height=".8" fill="#fecdd3" />
-          <rect x="14" y="46" width="55" height="2" rx="1" fill="#9ca3af" />
-          <rect x="75" y="46" width="2" height="2" rx="1" fill="#9ca3af" />
-          <rect x="82" y="46" width="50" height="2" rx="1" fill="#9ca3af" />
-          <rect x="138" y="46" width="2" height="2" rx="1" fill="#9ca3af" />
-          <rect x="145" y="46" width="55" height="2" rx="1" fill="#9ca3af" />
-          <rect x="14" y="54" width="192" height=".8" fill="#fce7ef" />
-          <rect x="14" y="60" width="35" height="2.5" rx="1" fill="#9ca3af" />
-          <rect x="14" y="67" width="185" height="2.5" rx="1" fill="#6b7280" />
-          <rect x="14" y="72" width="160" height="2.5" rx="1" fill="#6b7280" />
-          <rect x="14" y="80" width="40" height="3" rx="1" fill="#9f1239" />
-          <rect x="14" y="87" width="185" height="2.5" rx="1" fill="#6b7280" />
-          <rect x="14" y="92" width="170" height="2.5" rx="1" fill="#6b7280" />
-          <rect x="14" y="97" width="175" height="2.5" rx="1" fill="#6b7280" />
-          <rect x="14" y="107" width="40" height="3" rx="1" fill="#9f1239" />
-          <rect x="14" y="114" width="185" height="2.5" rx="1" fill="#6b7280" />
-          <rect x="14" y="119" width="140" height="2.5" rx="1" fill="#6b7280" />
-          <rect x="14" y="135" width="30" height="2.5" rx="1" fill="#9ca3af" />
-          <rect x="14" y="142" width="52" height="3" rx="1" fill="#374151" />
+          <text
+            x={110}
+            y={43}
+            textAnchor="middle"
+            fontSize={9}
+            fill="#9f1239"
+            letterSpacing={4}
+          >
+            ✦ ✦ ✦
+          </text>
+          {[14, 80, 148].map((x, i) => (
+            <rect
+              key={i}
+              x={x}
+              y={48}
+              width={58}
+              height={2}
+              rx={1}
+              fill="#9ca3af"
+            />
+          ))}
+          <rect x={13} y={56} width={188} height={0.7} fill="#fce7ef" />
+          <rect x={13} y={62} width={32} height={2} rx={1} fill="#9ca3af" />
+          {[69, 74].map((y, i) => (
+            <rect
+              key={i}
+              x={13}
+              y={y}
+              width={[188, 158][i]}
+              height={2.2}
+              rx={1}
+              fill="#6b7280"
+            />
+          ))}
+          <rect x={13} y={83} width={42} height={3} rx={1} fill="#9f1239" />
+          {[90, 95, 100].map((y, i) => (
+            <rect
+              key={i}
+              x={13}
+              y={y}
+              width={[188, 172, 178][i]}
+              height={2.2}
+              rx={1}
+              fill="#6b7280"
+            />
+          ))}
+          <rect x={13} y={110} width={42} height={3} rx={1} fill="#9f1239" />
+          {[117, 122].map((y, i) => (
+            <rect
+              key={i}
+              x={13}
+              y={y}
+              width={[188, 142][i]}
+              height={2.2}
+              rx={1}
+              fill="#6b7280"
+            />
+          ))}
+          <rect x={13} y={140} width={30} height={2} rx={1} fill="#9ca3af" />
+          <rect x={13} y={147} width={52} height={3} rx={1} fill="#374151" />
         </svg>
       );
     case "velvet":
       return (
         <svg
-          viewBox="0 0 220 155"
-          xmlns="http://www.w3.org/2000/svg"
+          viewBox={`0 0 ${W} ${H}`}
           width="100%"
           height="100%"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          <rect width="220" height="155" fill="#13072e" />
-          <rect width="220" height="155" fill="url(#vlv)" opacity=".9" />
           <defs>
             <linearGradient id="vlv" x1="0" y1="0" x2="1" y2="1">
               <stop offset="0%" stopColor="#1e0f40" />
               <stop offset="100%" stopColor="#2d1b69" />
             </linearGradient>
           </defs>
-          <circle cx="190" cy="20" r="55" fill="rgba(168,85,247,.1)" />
-          <rect x="14" y="16" width="80" height="9" rx="1.5" fill="#f3e8ff" />
-          <rect x="14" y="29" width="50" height="2.5" rx="1" fill="#a78bfa" />
+          <rect width={W} height={H} fill="url(#vlv)" />
+          <circle cx={192} cy={16} r={62} fill="rgba(168,85,247,.1)" />
+          <rect x={13} y={14} width={82} height={9} rx={1.5} fill="#f3e8ff" />
+          <rect x={13} y={27} width={52} height={2.5} rx={1} fill="#a78bfa" />
           <rect
-            x="14"
-            y="40"
-            width="185"
-            height=".8"
-            fill="rgba(196,181,253,.15)"
+            x={13}
+            y={38}
+            width={188}
+            height={0.6}
+            fill="rgba(196,181,253,.12)"
           />
-          <rect
-            x="14"
-            y="47"
-            width="22"
-            height="2"
-            rx="1"
-            fill="rgba(196,181,253,.5)"
-          />
-          <rect
-            x="38"
-            y="47"
-            width="2"
-            height="2"
-            rx="1"
-            fill="rgba(196,181,253,.3)"
-          />
-          <rect
-            x="43"
-            y="47"
-            width="30"
-            height="2"
-            rx="1"
-            fill="rgba(196,181,253,.5)"
-          />
-          <rect
-            x="75"
-            y="47"
-            width="2"
-            height="2"
-            rx="1"
-            fill="rgba(196,181,253,.3)"
-          />
-          <rect
-            x="80"
-            y="47"
-            width="35"
-            height="2"
-            rx="1"
-            fill="rgba(196,181,253,.5)"
-          />
-          <rect x="14" y="56" width="35" height="2" rx="1" fill="#7c6fa0" />
-          <rect
-            x="14"
-            y="63"
-            width="185"
-            height="2.5"
-            rx="1"
-            fill="rgba(212,201,239,.5)"
-          />
-          <rect
-            x="14"
-            y="68"
-            width="160"
-            height="2.5"
-            rx="1"
-            fill="rgba(212,201,239,.5)"
-          />
-          <rect x="14" y="77" width="38" height="2.5" rx="1" fill="#c084fc" />
-          <rect
-            x="14"
-            y="84"
-            width="185"
-            height="2.5"
-            rx="1"
-            fill="rgba(212,201,239,.4)"
-          />
-          <rect
-            x="14"
-            y="89"
-            width="170"
-            height="2.5"
-            rx="1"
-            fill="rgba(212,201,239,.4)"
-          />
-          <rect
-            x="14"
-            y="94"
-            width="150"
-            height="2.5"
-            rx="1"
-            fill="rgba(212,201,239,.4)"
-          />
-          <rect x="14" y="103" width="38" height="2.5" rx="1" fill="#c084fc" />
-          <rect
-            x="14"
-            y="110"
-            width="185"
-            height="2.5"
-            rx="1"
-            fill="rgba(212,201,239,.4)"
-          />
-          <rect
-            x="14"
-            y="115"
-            width="120"
-            height="2.5"
-            rx="1"
-            fill="rgba(212,201,239,.4)"
-          />
-          <rect x="14" y="132" width="28" height="2" rx="1" fill="#7c6fa0" />
-          <rect x="14" y="139" width="52" height="3" rx="1" fill="#f3e8ff" />
+          {[44, 51, 58, 65, 72].map((y, i) => (
+            <rect
+              key={i}
+              x={13}
+              y={y}
+              width={[50, 45, 55, 60, 48][i]}
+              height={4}
+              rx={2}
+              fill="rgba(196,181,253,.1)"
+              stroke="rgba(196,181,253,.2)"
+              strokeWidth=".6"
+            />
+          ))}
+          <rect x={13} y={80} width={38} height={2.5} rx={1} fill="#c084fc" />
+          {[87, 92, 97].map((y, i) => (
+            <rect
+              key={i}
+              x={13}
+              y={y}
+              width={[188, 172, 158][i]}
+              height={2.2}
+              rx={1}
+              fill="rgba(212,201,239,.4)"
+            />
+          ))}
+          <rect x={13} y={107} width={38} height={2.5} rx={1} fill="#c084fc" />
+          {[114, 119].map((y, i) => (
+            <rect
+              key={i}
+              x={13}
+              y={y}
+              width={[188, 122][i]}
+              height={2.2}
+              rx={1}
+              fill="rgba(212,201,239,.4)"
+            />
+          ))}
+          <rect x={13} y={135} width={28} height={2} rx={1} fill="#7c6fa0" />
+          <rect x={13} y={142} width={52} height={3} rx={1} fill="#f3e8ff" />
         </svg>
       );
     case "frost":
       return (
         <svg
-          viewBox="0 0 220 155"
-          xmlns="http://www.w3.org/2000/svg"
+          viewBox={`0 0 ${W} ${H}`}
           width="100%"
           height="100%"
+          xmlns="http://www.w3.org/2000/svg"
         >
           <defs>
-            <linearGradient id="frostbg" x1="0" y1="0" x2="1" y2="1">
+            <linearGradient id="frbg" x1="0" y1="0" x2="1" y2="1">
               <stop offset="0%" stopColor="#dbeafe" />
               <stop offset="100%" stopColor="#e0f2fe" />
             </linearGradient>
           </defs>
-          <rect width="220" height="155" fill="url(#frostbg)" />
+          <rect width={W} height={H} fill="url(#frbg)" />
           <rect
-            x="6"
-            y="6"
-            width="208"
-            height="143"
-            rx="10"
+            x={5}
+            y={5}
+            width={210}
+            height={145}
+            rx={10}
             fill="rgba(255,255,255,.82)"
           />
           <rect
-            x="6"
-            y="6"
-            width="208"
-            height="48"
-            rx="10"
-            fill="rgba(12,74,110,.88)"
+            x={5}
+            y={5}
+            width={210}
+            height={50}
+            rx={10}
+            fill="rgba(12,74,110,.9)"
           />
           <rect
-            x="6"
-            y="30"
-            width="208"
-            height="24"
-            fill="rgba(12,74,110,.88)"
+            x={5}
+            y={31}
+            width={210}
+            height={24}
+            fill="rgba(12,74,110,.9)"
           />
-          <rect x="18" y="16" width="80" height="8" rx="1.5" fill="white" />
+          <rect x={17} y={14} width={82} height={8} rx={1.5} fill="white" />
           <rect
-            x="18"
-            y="28"
-            width="50"
-            height="3"
-            rx="1"
-            fill="rgba(255,255,255,.7)"
-          />
-          <rect
-            x="18"
-            y="37"
-            width="25"
-            height="4"
-            rx="10"
-            fill="rgba(255,255,255,.18)"
-            stroke="rgba(255,255,255,.3)"
-            strokeWidth=".5"
-          />
-          <rect
-            x="47"
-            y="37"
-            width="30"
-            height="4"
-            rx="10"
-            fill="rgba(255,255,255,.18)"
-            stroke="rgba(255,255,255,.3)"
-            strokeWidth=".5"
-          />
-          <rect
-            x="81"
-            y="37"
-            width="28"
-            height="4"
-            rx="10"
-            fill="rgba(255,255,255,.18)"
-            stroke="rgba(255,255,255,.3)"
-            strokeWidth=".5"
-          />
-          <rect x="18" y="60" width="38" height="2.5" rx="1" fill="#9ca3af" />
-          <rect x="18" y="67" width="185" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="18" y="72" width="155" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="18" y="82" width="42" height="3" rx="1" fill="#0369a1" />
-          <rect x="18" y="89" width="185" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="18" y="94" width="170" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="18" y="99" width="175" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="18" y="109" width="42" height="3" rx="1" fill="#0369a1" />
-          <rect x="18" y="116" width="185" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="18" y="121" width="130" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="18" y="135" width="30" height="2" rx="1" fill="#9ca3af" />
-          <rect x="18" y="141" width="52" height="3" rx="1" fill="#374151" />
-        </svg>
-      );
-    case "prism":
-      return (
-        <svg
-          viewBox="0 0 220 155"
-          xmlns="http://www.w3.org/2000/svg"
-          width="100%"
-          height="100%"
-        >
-          <rect width="220" height="155" fill="#fff" />
-          <rect width="220" height="52" fill="#7c3aed" />
-          <polygon points="100,0 220,0 220,52" fill="rgba(255,255,255,.12)" />
-          <polygon points="140,0 220,0 220,52" fill="rgba(255,255,255,.08)" />
-          <rect x="14" y="14" width="85" height="9" rx="1.5" fill="white" />
-          <rect
-            x="14"
-            y="27"
-            width="50"
-            height="3.5"
-            rx="1"
-            fill="rgba(255,255,255,.7)"
-          />
-          <rect x="0" y="52" width="220" height="12" fill="#1e1b4b" />
-          <rect x="14" y="56" width="40" height="2" rx="1" fill="#a5b4fc" />
-          <rect x="62" y="56" width="35" height="2" rx="1" fill="#a5b4fc" />
-          <rect x="105" y="56" width="45" height="2" rx="1" fill="#a5b4fc" />
-          <rect x="14" y="75" width="35" height="2.5" rx="1" fill="#9ca3af" />
-          <rect x="14" y="83" width="185" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="14" y="88" width="165" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="14" y="97" width="3" height="22" rx="1" fill="#7c3aed" />
-          <rect x="21" y="97" width="38" height="2.5" rx="1" fill="#7c3aed" />
-          <rect x="21" y="103" width="180" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="21" y="108" width="155" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="14" y="117" width="3" height="20" rx="1" fill="#7c3aed" />
-          <rect x="21" y="117" width="38" height="2.5" rx="1" fill="#7c3aed" />
-          <rect x="21" y="123" width="180" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="21" y="128" width="100" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="14" y="140" width="30" height="2.5" rx="1" fill="#9ca3af" />
-          <rect x="14" y="147" width="52" height="3" rx="1" fill="#374151" />
-        </svg>
-      );
-    case "blaze":
-      return (
-        <svg
-          viewBox="0 0 220 155"
-          xmlns="http://www.w3.org/2000/svg"
-          width="100%"
-          height="100%"
-        >
-          <rect width="220" height="155" fill="#fff" />
-          <rect width="220" height="50" fill="#ea580c" />
-          <polygon points="140,0 220,0 220,50" fill="rgba(255,255,255,.1)" />
-          <rect
-            x="14"
-            y="10"
-            width="100"
-            height="12"
-            rx="1.5"
-            fill="rgba(255,255,255,.95)"
-          />
-          <rect
-            x="14"
-            y="27"
-            width="60"
-            height="4"
-            rx="1"
-            fill="rgba(255,255,255,.7)"
-          />
-          <rect x="0" y="50" width="220" height="11" fill="#1e293b" />
-          <rect x="14" y="54" width="38" height="2" rx="1" fill="#94a3b8" />
-          <rect x="60" y="54" width="40" height="2" rx="1" fill="#94a3b8" />
-          <rect x="108" y="54" width="40" height="2" rx="1" fill="#94a3b8" />
-          <rect x="14" y="70" width="35" height="2.5" rx="1" fill="#9ca3af" />
-          <rect x="14" y="78" width="185" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="14" y="83" width="160" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="14" y="93" width="3" height="25" rx="1" fill="#ea580c" />
-          <rect x="21" y="93" width="38" height="2.5" rx="1" fill="#ea580c" />
-          <rect x="21" y="99" width="185" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="21" y="104" width="170" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="14" y="116" width="3" height="20" rx="1" fill="#ea580c" />
-          <rect x="21" y="116" width="38" height="2.5" rx="1" fill="#ea580c" />
-          <rect x="21" y="122" width="185" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="21" y="127" width="130" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="14" y="142" width="30" height="2" rx="1" fill="#9ca3af" />
-          <rect x="14" y="149" width="52" height="3" rx="1" fill="#374151" />
-        </svg>
-      );
-    case "moss":
-      return (
-        <svg
-          viewBox="0 0 220 155"
-          xmlns="http://www.w3.org/2000/svg"
-          width="100%"
-          height="100%"
-        >
-          <rect
-            width="220"
-            height="155"
-            fill="white"
-            stroke="#bbf7d0"
-            strokeWidth="1"
-          />
-          <rect width="220" height="46" fill="#166534" />
-          <text x="48" y="28" fontSize="22" fill="rgba(255,255,255,.25)">
-            🌿
-          </text>
-          <rect
-            x="58"
-            y="13"
-            width="75"
-            height="8"
-            rx="1.5"
-            fill="rgba(255,255,255,.92)"
-          />
-          <rect
-            x="58"
-            y="25"
-            width="50"
-            height="3"
-            rx="1"
+            x={17}
+            y={26}
+            width={50}
+            height={3}
+            rx={1}
             fill="rgba(255,255,255,.65)"
           />
-          <rect x="0" y="46" width="220" height="11" fill="#f0fdf4" />
-          <rect x="14" y="50" width="40" height="2" rx="1" fill="#166534" />
-          <rect x="60" y="50" width="40" height="2" rx="1" fill="#166534" />
-          <rect x="106" y="50" width="35" height="2" rx="1" fill="#166534" />
-          <rect x="14" y="65" width="35" height="2.5" rx="1" fill="#9ca3af" />
-          <rect x="14" y="73" width="185" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="14" y="78" width="155" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="14" y="88" width="42" height="3" rx="1" fill="#166534" />
-          <rect x="14" y="95" width="185" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="14" y="100" width="170" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="14" y="105" width="175" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="14" y="115" width="42" height="3" rx="1" fill="#166534" />
-          <rect x="14" y="122" width="185" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="14" y="127" width="115" height="2.5" rx="1" fill="#e5e7eb" />
-          <rect x="14" y="140" width="30" height="2" rx="1" fill="#9ca3af" />
-          <rect x="14" y="147" width="52" height="3" rx="1" fill="#374151" />
+          {[0, 32, 66].map((ox, i) => (
+            <rect
+              key={i}
+              x={17 + ox}
+              y={38}
+              width={28}
+              height={4}
+              rx={10}
+              fill="rgba(255,255,255,.16)"
+              stroke="rgba(255,255,255,.28)"
+              strokeWidth=".5"
+            />
+          ))}
+          <rect x={17} y={62} width={36} height={2.5} rx={1} fill="#9ca3af" />
+          {[69, 74].map((y, i) => (
+            <rect
+              key={i}
+              x={17}
+              y={y}
+              width={[185, 158][i]}
+              height={2.2}
+              rx={1}
+              fill="#e5e7eb"
+            />
+          ))}
+          <rect x={17} y={84} width={42} height={3} rx={1} fill="#0369a1" />
+          {[91, 96, 101].map((y, i) => (
+            <rect
+              key={i}
+              x={17}
+              y={y}
+              width={[185, 172, 178][i]}
+              height={2.2}
+              rx={1}
+              fill="#e5e7eb"
+            />
+          ))}
+          <rect x={17} y={111} width={42} height={3} rx={1} fill="#0369a1" />
+          {[118, 123].map((y, i) => (
+            <rect
+              key={i}
+              x={17}
+              y={y}
+              width={[185, 132][i]}
+              height={2.2}
+              rx={1}
+              fill="#e5e7eb"
+            />
+          ))}
+          <rect x={17} y={136} width={28} height={2} rx={1} fill="#9ca3af" />
+          <rect x={17} y={143} width={52} height={3} rx={1} fill="#374151" />
         </svg>
       );
-    case "neon":
+    case "canvas":
       return (
         <svg
-          viewBox="0 0 220 155"
-          xmlns="http://www.w3.org/2000/svg"
+          viewBox={`0 0 ${W} ${H}`}
           width="100%"
           height="100%"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          <rect width="220" height="155" fill="#0a0f1e" />
-          <rect x="14" y="14" width="95" height="10" rx="1.5" fill="white" />
-          <rect x="14" y="28" width="55" height="3" rx="1" fill="#22d3ee" />
-          <rect
-            x="14"
-            y="38"
-            width="192"
-            height=".8"
-            fill="rgba(34,211,238,.2)"
-          />
-          <rect x="14" y="38" width="60" height=".8" fill="#22d3ee" />
-          <rect x="14" y="44" width="55" height="2" rx="1" fill="#64748b" />
-          <rect x="75" y="44" width="60" height="2" rx="1" fill="#64748b" />
-          <rect x="140" y="44" width="55" height="2" rx="1" fill="#64748b" />
-          <rect x="14" y="56" width="35" height="2" rx="1" fill="#4a5578" />
-          <rect
-            x="14"
-            y="64"
-            width="185"
-            height="2.5"
-            rx="1"
-            fill="rgba(148,163,184,.4)"
-          />
-          <rect
-            x="14"
-            y="69"
-            width="150"
-            height="2.5"
-            rx="1"
-            fill="rgba(148,163,184,.4)"
-          />
-          <rect x="14" y="78" width="2" height="2.5" rx=".5" fill="#22d3ee" />
-          <rect x="20" y="78" width="35" height="2.5" rx="1" fill="#22d3ee" />
-          <rect
-            x="14"
-            y="84"
-            width="185"
-            height="2.5"
-            rx="1"
-            fill="rgba(148,163,184,.35)"
-          />
-          <rect
-            x="14"
-            y="89"
-            width="155"
-            height="2.5"
-            rx="1"
-            fill="rgba(148,163,184,.35)"
-          />
-          <rect
-            x="14"
-            y="94"
-            width="170"
-            height="2.5"
-            rx="1"
-            fill="rgba(148,163,184,.35)"
-          />
-          <rect x="14" y="103" width="2" height="2.5" rx=".5" fill="#22d3ee" />
-          <rect x="20" y="103" width="35" height="2.5" rx="1" fill="#22d3ee" />
-          <rect
-            x="14"
-            y="109"
-            width="185"
-            height="2.5"
-            rx="1"
-            fill="rgba(148,163,184,.35)"
-          />
-          <rect
-            x="14"
-            y="114"
-            width="130"
-            height="2.5"
-            rx="1"
-            fill="rgba(148,163,184,.35)"
-          />
-          <rect x="14" y="130" width="28" height="2" rx="1" fill="#4a5578" />
-          <rect x="14" y="137" width="52" height="3" rx="1" fill="white" />
+          <rect width={W} height={H} fill="#fff" />
+          <rect x={13} y={13} width={4} height={58} rx={2} fill="#6366f1" />
+          <rect x={22} y={13} width={92} height={10} rx={2} fill="#111827" />
+          <rect x={22} y={27} width={57} height={4} rx={1.5} fill="#6b7280" />
+          {[35, 41, 47].map((y, i) => (
+            <rect
+              key={i}
+              x={22}
+              y={y}
+              width={[70, 58, 74][i]}
+              height={2.5}
+              rx={1}
+              fill="#9ca3af"
+            />
+          ))}
+          <rect x={13} y={76} width={188} height={1} fill="#f3f4f6" />
+          <rect x={13} y={82} width={32} height={2.5} rx={1} fill="#9ca3af" />
+          {[89, 94].map((y, i) => (
+            <rect
+              key={i}
+              x={13}
+              y={y}
+              width={[188, 158][i]}
+              height={2.2}
+              rx={1}
+              fill="#f3f4f6"
+            />
+          ))}
+          <rect x={13} y={104} width={44} height={3} rx={1} fill="#6366f1" />
+          {[111, 116, 121].map((y, i) => (
+            <rect
+              key={i}
+              x={13}
+              y={y}
+              width={[188, 172, 178][i]}
+              height={2.2}
+              rx={1}
+              fill="#f3f4f6"
+            />
+          ))}
+          <rect x={13} y={131} width={44} height={3} rx={1} fill="#6366f1" />
+          {[138, 143].map((y, i) => (
+            <rect
+              key={i}
+              x={13}
+              y={y}
+              width={[188, 122][i]}
+              height={2.2}
+              rx={1}
+              fill="#f3f4f6"
+            />
+          ))}
         </svg>
       );
-    case "chalk":
+    case "designer":
       return (
         <svg
-          viewBox="0 0 220 155"
-          xmlns="http://www.w3.org/2000/svg"
+          viewBox={`0 0 ${W} ${H}`}
           width="100%"
           height="100%"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          <rect width="220" height="155" fill="#fdfcfa" />
-          <rect
-            x="4"
-            y="4"
-            width="212"
-            height="147"
-            rx="3"
-            fill="white"
-            stroke="#d6d3d1"
-            strokeWidth="1.5"
-            strokeDasharray="5,3"
-          />
-          <rect x="14" y="14" width="95" height="11" rx="1.5" fill="#1c1917" />
-          <rect x="14" y="29" width="55" height="4" rx="1" fill="#78716c" />
-          <rect
-            x="14"
-            y="40"
-            width="192"
-            height="1"
-            rx=".5"
-            fill="#e7e5e4"
-            strokeDasharray="4,2"
-          />
-          <rect
-            x="14"
-            y="48"
-            width="30"
-            height="5"
-            rx="2"
-            fill="white"
-            stroke="#d6d3d1"
+          <defs>
+            <linearGradient id="dsg" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#0d0d0d" />
+              <stop offset="100%" stopColor="#1a0a2e" />
+            </linearGradient>
+          </defs>
+          <rect width={W} height={H} fill="#faf5ff" />
+          <rect width={70} height={H} fill="url(#dsg)" />
+          <circle
+            cx={35}
+            cy={70}
+            r={25}
+            fill="rgba(139,92,246,.15)"
+            stroke="rgba(139,92,246,.3)"
             strokeWidth="1"
-            strokeDasharray="3,2"
+          />
+          <text
+            x={35}
+            y={74}
+            textAnchor="middle"
+            fontSize={14}
+            fill="rgba(167,139,250,.8)"
+          >
+            ✦
+          </text>
+          <rect x={8} y={13} width={52} height={8} rx={1.5} fill="white" />
+          <rect
+            x={8}
+            y={25}
+            width={36}
+            height={2.5}
+            rx={1}
+            fill="rgba(167,139,250,.7)"
           />
           <rect
-            x="50"
-            y="48"
-            width="35"
-            height="5"
-            rx="2"
-            fill="white"
-            stroke="#d6d3d1"
-            strokeWidth="1"
-            strokeDasharray="3,2"
+            x={8}
+            y={110}
+            width={52}
+            height={0.8}
+            fill="rgba(167,139,250,.2)"
           />
+          {[116, 123, 130, 137, 144].map((y, i) => (
+            <rect
+              key={i}
+              x={8}
+              y={y}
+              width={52}
+              height={2.5}
+              rx={1}
+              fill="rgba(196,181,253,.45)"
+            />
+          ))}
+          <rect x={80} y={13} width={77} height={9} rx={1.5} fill="#111827" />
+          <rect x={80} y={26} width={50} height={2.5} rx={1} fill="#6b7280" />
+          <rect x={80} y={75} width={50} height={3} rx={1} fill="#7c3aed" />
+          {[82, 87, 92, 97].map((y, i) => (
+            <rect
+              key={i}
+              x={80}
+              y={y}
+              width={[130, 120, 118, 128][i]}
+              height={2.2}
+              rx={1}
+              fill="#e5e7eb"
+            />
+          ))}
+          <rect x={80} y={107} width={50} height={3} rx={1} fill="#7c3aed" />
+          {[114, 119].map((y, i) => (
+            <rect
+              key={i}
+              x={80}
+              y={y}
+              width={[130, 90][i]}
+              height={2.2}
+              rx={1}
+              fill="#e5e7eb"
+            />
+          ))}
+        </svg>
+      );
+    case "editor":
+      return (
+        <svg
+          viewBox={`0 0 ${W} ${H}`}
+          width="100%"
+          height="100%"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect width={W} height={H} fill="#0f0a1e" />
+          <rect x={13} y={13} width={94} height={10} rx={1.5} fill="white" />
+          <rect x={13} y={27} width={57} height={3} rx={1} fill="#f43f5e" />
           <rect
-            x="91"
-            y="48"
-            width="40"
-            height="5"
-            rx="2"
-            fill="white"
-            stroke="#d6d3d1"
-            strokeWidth="1"
-            strokeDasharray="3,2"
+            x={13}
+            y={35}
+            width={188}
+            height={0.8}
+            fill="rgba(244,63,94,.2)"
           />
-          <rect x="14" y="60" width="35" height="2.5" rx="1" fill="#9ca3af" />
-          <rect x="14" y="68" width="185" height="2.5" rx="1" fill="#d6d3d1" />
-          <rect x="14" y="73" width="155" height="2.5" rx="1" fill="#d6d3d1" />
-          <rect x="14" y="82" width="38" height="2.5" rx="1.5" fill="#57534e" />
-          <rect x="14" y="89" width="185" height="2.5" rx="1" fill="#d6d3d1" />
-          <rect x="14" y="94" width="165" height="2.5" rx="1" fill="#d6d3d1" />
-          <rect x="14" y="99" width="175" height="2.5" rx="1" fill="#d6d3d1" />
-          <rect
-            x="14"
-            y="109"
-            width="38"
-            height="2.5"
-            rx="1.5"
-            fill="#57534e"
-          />
-          <rect x="14" y="116" width="185" height="2.5" rx="1" fill="#d6d3d1" />
-          <rect x="14" y="121" width="120" height="2.5" rx="1" fill="#d6d3d1" />
-          <rect x="14" y="135" width="30" height="2" rx="1" fill="#9ca3af" />
-          <rect x="14" y="141" width="52" height="3" rx="1" fill="#1c1917" />
+          {[41, 47, 53].map((y, i) => (
+            <rect
+              key={i}
+              x={13}
+              y={y}
+              width={[62, 56, 72][i]}
+              height={4}
+              rx={2}
+              fill="rgba(244,63,94,.1)"
+              stroke="rgba(244,63,94,.3)"
+              strokeWidth=".6"
+            />
+          ))}
+          <rect x={13} y={65} width={32} height={2} rx={1} fill="#64748b" />
+          {[72, 77].map((y, i) => (
+            <rect
+              key={i}
+              x={13}
+              y={y}
+              width={[188, 152][i]}
+              height={2.2}
+              rx={1}
+              fill="rgba(148,163,184,.3)"
+            />
+          ))}
+          <rect x={13} y={87} width={2} height={2.5} rx={0.5} fill="#f43f5e" />
+          <rect x={19} y={87} width={38} height={2.5} rx={1} fill="#f43f5e" />
+          {[94, 99, 104].map((y, i) => (
+            <rect
+              key={i}
+              x={13}
+              y={y}
+              width={[188, 172, 158][i]}
+              height={2.2}
+              rx={1}
+              fill="rgba(148,163,184,.28)"
+            />
+          ))}
+          <rect x={13} y={114} width={2} height={2.5} rx={0.5} fill="#f43f5e" />
+          <rect x={19} y={114} width={38} height={2.5} rx={1} fill="#f43f5e" />
+          {[121, 126].map((y, i) => (
+            <rect
+              key={i}
+              x={13}
+              y={y}
+              width={[188, 122][i]}
+              height={2.2}
+              rx={1}
+              fill="rgba(148,163,184,.28)"
+            />
+          ))}
+          <rect x={13} y={140} width={30} height={2} rx={1} fill="#64748b" />
+          <rect x={13} y={147} width={52} height={3} rx={1} fill="white" />
+        </svg>
+      );
+    case "pearl":
+      return (
+        <svg
+          viewBox={`0 0 ${W} ${H}`}
+          width="100%"
+          height="100%"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect width={W} height={H} fill="#fff" />
+          <rect x={13} y={13} width={97} height={10} rx={1.5} fill="#111827" />
+          <rect x={13} y={27} width={60} height={3.5} rx={1} fill="#6366f1" />
+          <rect x={13} y={36} width={188} height={0.6} fill="#e5e7eb" />
+          {[42, 48].map((y, i) => (
+            <rect
+              key={i}
+              x={13}
+              y={y}
+              width={[62, 54][i]}
+              height={2}
+              rx={1}
+              fill="#9ca3af"
+            />
+          ))}
+          <rect x={92} y={42} width={57} height={2} rx={1} fill="#9ca3af" />
+          <rect x={155} y={42} width={46} height={2} rx={1} fill="#9ca3af" />
+          <rect x={13} y={58} width={188} height={0.6} fill="#e5e7eb" />
+          <rect x={13} y={64} width={32} height={2} rx={1} fill="#9ca3af" />
+          {[71, 76].map((y, i) => (
+            <rect
+              key={i}
+              x={13}
+              y={y}
+              width={[188, 158][i]}
+              height={2.2}
+              rx={1}
+              fill="#f3f4f6"
+            />
+          ))}
+          <rect x={13} y={87} width={44} height={3} rx={1} fill="#6366f1" />
+          {[94, 99, 104].map((y, i) => (
+            <rect
+              key={i}
+              x={13}
+              y={y}
+              width={[188, 172, 178][i]}
+              height={2.2}
+              rx={1}
+              fill="#f3f4f6"
+            />
+          ))}
+          <rect x={13} y={115} width={44} height={3} rx={1} fill="#6366f1" />
+          {[122, 127].map((y, i) => (
+            <rect
+              key={i}
+              x={13}
+              y={y}
+              width={[188, 122][i]}
+              height={2.2}
+              rx={1}
+              fill="#f3f4f6"
+            />
+          ))}
+          <rect x={13} y={140} width={28} height={2} rx={1} fill="#9ca3af" />
+          <rect x={13} y={147} width={52} height={3} rx={1} fill="#374151" />
+        </svg>
+      );
+    case "ivory":
+      return (
+        <svg
+          viewBox={`0 0 ${W} ${H}`}
+          width="100%"
+          height="100%"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect width={W} height={H} fill="#fefce8" />
+          <rect x={13} y={13} width={5} height={130} rx={2.5} fill="#ca8a04" />
+          <rect x={23} y={13} width={90} height={10} rx={2} fill="#1c1917" />
+          <rect x={23} y={27} width={56} height={3.5} rx={1.5} fill="#78350f" />
+          <rect x={23} y={36} width={188} height={0.8} fill="#fde68a" />
+          {[42, 48, 54].map((y, i) => (
+            <rect
+              key={i}
+              x={23}
+              y={y}
+              width={[62, 54, 74][i]}
+              height={2}
+              rx={1}
+              fill="#92400e"
+            />
+          ))}
+          <rect x={23} y={64} width={32} height={2.5} rx={1} fill="#9ca3af" />
+          {[71, 76].map((y, i) => (
+            <rect
+              key={i}
+              x={23}
+              y={y}
+              width={[178, 150][i]}
+              height={2.2}
+              rx={1}
+              fill="#e7e5e4"
+            />
+          ))}
+          <rect x={23} y={86} width={44} height={3} rx={1} fill="#b45309" />
+          {[93, 98, 103].map((y, i) => (
+            <rect
+              key={i}
+              x={23}
+              y={y}
+              width={[178, 164, 172][i]}
+              height={2.2}
+              rx={1}
+              fill="#e7e5e4"
+            />
+          ))}
+          <rect x={23} y={113} width={44} height={3} rx={1} fill="#b45309" />
+          {[120, 125].map((y, i) => (
+            <rect
+              key={i}
+              x={23}
+              y={y}
+              width={[178, 114][i]}
+              height={2.2}
+              rx={1}
+              fill="#e7e5e4"
+            />
+          ))}
+          <rect x={23} y={139} width={28} height={2} rx={1} fill="#9ca3af" />
+          <rect x={23} y={146} width={52} height={3} rx={1} fill="#1c1917" />
+        </svg>
+      );
+    case "motion":
+      return (
+        <svg
+          viewBox={`0 0 ${W} ${H}`}
+          width="100%"
+          height="100%"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <defs>
+            <linearGradient id="mtg" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="#ec4899" />
+              <stop offset="100%" stopColor="#f59e0b" />
+            </linearGradient>
+          </defs>
+          <rect width={W} height={H} fill="#fff" />
+          <rect width={W} height={5.5} fill="url(#mtg)" />
+          <rect x={13} y={14} width={94} height={11} rx={1.5} fill="#111827" />
+          <rect x={13} y={29} width={62} height={3.5} rx={1} fill="#ec4899" />
+          <rect x={13} y={38} width={188} height={0.6} fill="#fce7f3" />
+          {[44, 50, 56].map((y, i) => (
+            <rect
+              key={i}
+              x={13}
+              y={y}
+              width={[57, 50, 66][i]}
+              height={4}
+              rx={10}
+              fill="rgba(236,72,153,.1)"
+              stroke="rgba(236,72,153,.3)"
+              strokeWidth=".7"
+            />
+          ))}
+          <rect x={13} y={67} width={32} height={2.5} rx={1} fill="#9ca3af" />
+          {[74, 79].map((y, i) => (
+            <rect
+              key={i}
+              x={13}
+              y={y}
+              width={[188, 158][i]}
+              height={2.2}
+              rx={1}
+              fill="#f3f4f6"
+            />
+          ))}
+          <rect x={13} y={89} width={44} height={3} rx={1} fill="#ec4899" />
+          {[96, 101, 106].map((y, i) => (
+            <rect
+              key={i}
+              x={13}
+              y={y}
+              width={[188, 172, 178][i]}
+              height={2.2}
+              rx={1}
+              fill="#f3f4f6"
+            />
+          ))}
+          <rect x={13} y={116} width={44} height={3} rx={1} fill="#ec4899" />
+          {[123, 128].map((y, i) => (
+            <rect
+              key={i}
+              x={13}
+              y={y}
+              width={[188, 122][i]}
+              height={2.2}
+              rx={1}
+              fill="#f3f4f6"
+            />
+          ))}
+          <rect width={W} height={3} y={152} fill="url(#mtg)" />
+        </svg>
+      );
+    case "architect":
+      return (
+        <svg
+          viewBox={`0 0 ${W} ${H}`}
+          width="100%"
+          height="100%"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect width={W} height={H} fill="#f8fafc" />
+          <rect x={13} y={13} width={82} height={10} rx={1.5} fill="#0f172a" />
+          <rect x={13} y={27} width={52} height={3} rx={1} fill="#334155" />
+          <rect x={113} y={13} width={94} height={40} rx={5} fill="#0f172a" />
+          {[18, 24, 30, 36].map((y, i) => (
+            <rect
+              key={i}
+              x={119}
+              y={y}
+              width={[62, 52, 72, 46][i]}
+              height={2}
+              rx={1}
+              fill="rgba(255,255,255,.58)"
+            />
+          ))}
+          <rect x={13} y={53} width={192} height={1.2} fill="#e2e8f0" />
+          <rect x={13} y={60} width={32} height={2.5} rx={1} fill="#9ca3af" />
+          {[67, 72].map((y, i) => (
+            <rect
+              key={i}
+              x={13}
+              y={y}
+              width={[188, 158][i]}
+              height={2.2}
+              rx={1}
+              fill="#e2e8f0"
+            />
+          ))}
+          <rect x={13} y={82} width={44} height={3} rx={1} fill="#0f172a" />
+          {[89, 94, 99].map((y, i) => (
+            <rect
+              key={i}
+              x={13}
+              y={y}
+              width={[188, 172, 178][i]}
+              height={2.2}
+              rx={1}
+              fill="#e2e8f0"
+            />
+          ))}
+          <rect x={13} y={109} width={44} height={3} rx={1} fill="#0f172a" />
+          {[116, 121].map((y, i) => (
+            <rect
+              key={i}
+              x={13}
+              y={y}
+              width={[188, 122][i]}
+              height={2.2}
+              rx={1}
+              fill="#e2e8f0"
+            />
+          ))}
+          <rect x={13} y={136} width={30} height={2} rx={1} fill="#9ca3af" />
+          <rect x={13} y={143} width={52} height={3} rx={1} fill="#374151" />
+        </svg>
+      );
+    case "serif":
+      return (
+        <svg
+          viewBox={`0 0 ${W} ${H}`}
+          width="100%"
+          height="100%"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect width={W} height={H} fill="#fff" />
+          <rect x={13} y={13} width={192} height={0.8} fill="#1e293b" />
+          <text
+            x={110}
+            y={30}
+            textAnchor="middle"
+            fontSize={13}
+            fontWeight="800"
+            fill="#1e293b"
+            fontFamily="Georgia,serif"
+          >
+            Alexander Johnson
+          </text>
+          <text
+            x={110}
+            y={40}
+            textAnchor="middle"
+            fontSize={5.5}
+            fill="#64748b"
+            fontFamily="Georgia,serif"
+          >
+            Senior Product Designer · UX Strategist
+          </text>
+          <rect x={13} y={45} width={192} height={0.8} fill="#1e293b" />
+          {[14, 80, 150].map((x, i) => (
+            <rect
+              key={i}
+              x={x}
+              y={51}
+              width={[60, 64, 52][i]}
+              height={2}
+              rx={1}
+              fill="#6366f1"
+            />
+          ))}
+          <rect x={13} y={59} width={192} height={0.5} fill="#e5e7eb" />
+          <rect x={13} y={65} width={32} height={2.5} rx={1} fill="#9ca3af" />
+          {[72, 77].map((y, i) => (
+            <rect
+              key={i}
+              x={13}
+              y={y}
+              width={[188, 158][i]}
+              height={2.2}
+              rx={1}
+              fill="#e5e7eb"
+            />
+          ))}
+          <rect x={13} y={87} width={42} height={3} rx={1} fill="#4338ca" />
+          {[94, 99, 104].map((y, i) => (
+            <rect
+              key={i}
+              x={13}
+              y={y}
+              width={[188, 172, 178][i]}
+              height={2.2}
+              rx={1}
+              fill="#e5e7eb"
+            />
+          ))}
+          <rect x={13} y={114} width={42} height={3} rx={1} fill="#4338ca" />
+          {[121, 126].map((y, i) => (
+            <rect
+              key={i}
+              x={13}
+              y={y}
+              width={[188, 122][i]}
+              height={2.2}
+              rx={1}
+              fill="#e5e7eb"
+            />
+          ))}
+          <rect x={13} y={149} width={192} height={0.8} fill="#e5e7eb" />
         </svg>
       );
     default:
       return (
-        <svg viewBox="0 0 220 155" width="100%" height="100%">
-          <rect width="220" height="155" fill="#f3f4f6" />
+        <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+          <rect width={W} height={H} fill="#f3f4f6" />
         </svg>
       );
   }
-};
+}
 
-// ═══════════════════════════════════════════
-// TEMPLATE DEFINITIONS
-// ═══════════════════════════════════════════
+/* ─────────────────────────────────────────────────────────────────
+   TEMPLATES CONFIG
+───────────────────────────────────────────────────────────────── */
 const TEMPLATES = [
   { id: "aurora", name: "Aurora", tag: "Modern", accent: "#6366f1" },
   { id: "obsidian", name: "Obsidian", tag: "Executive", accent: "#7c3aed" },
@@ -11610,16 +17884,19 @@ const TEMPLATES = [
   { id: "crimson", name: "Crimson", tag: "Editorial", accent: "#9f1239" },
   { id: "velvet", name: "Velvet", tag: "Luxury", accent: "#6d28d9" },
   { id: "frost", name: "Frost", tag: "Clean", accent: "#0369a1" },
-  { id: "prism", name: "Prism", tag: "Creative", accent: "#7c3aed" },
-  { id: "blaze", name: "Blaze", tag: "Bold", accent: "#c2410c" },
-  { id: "moss", name: "Moss", tag: "Natural", accent: "#166534" },
-  { id: "neon", name: "Neon Grid", tag: "Futuristic", accent: "#0f172a" },
-  { id: "chalk", name: "Chalk", tag: "Artistic", accent: "#44403c" },
+  { id: "canvas", name: "Canvas", tag: "Minimal", accent: "#6366f1" },
+  { id: "designer", name: "Designer", tag: "Creative", accent: "#7c3aed" },
+  { id: "editor", name: "Director", tag: "Video", accent: "#f43f5e" },
+  { id: "pearl", name: "Pearl", tag: "White", accent: "#6366f1" },
+  { id: "ivory", name: "Ivory", tag: "Classic", accent: "#b45309" },
+  { id: "motion", name: "Motion", tag: "Video", accent: "#ec4899" },
+  { id: "architect", name: "Architect", tag: "Corporate", accent: "#0f172a" },
+  { id: "serif", name: "Serif", tag: "Classic", accent: "#4338ca" },
 ];
 
-// ═══════════════════════════════════════════
-// HTML BUILDER — ALL LINKS INCLUDED
-// ═══════════════════════════════════════════
+/* ─────────────────────────────────────────────────────────────────
+   HTML BUILDER  — all 15 templates with clickable links
+───────────────────────────────────────────────────────────────── */
 function buildHTML(id: string, d: CLData): string {
   const dt = new Date().toLocaleDateString("en-US", {
     year: "numeric",
@@ -11631,554 +17908,514 @@ function buildHTML(id: string, d: CLData): string {
   const mgr = d.company.hiringManager || "Hiring Manager";
   const loc = [d.company.city, d.company.state].filter(Boolean).join(", ");
 
-  // Contact info rows — include ALL fields
-  const contactItems = [
-    d.personal.email && `<span>✉ ${d.personal.email}</span>`,
-    d.personal.phone && `<span>✆ ${d.personal.phone}</span>`,
-    d.personal.location && `<span>◎ ${d.personal.location}</span>`,
+  const chip = (v: string, href: string) =>
+    href
+      ? `<a href="${href}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${v}</a>`
+      : v;
+
+  const allContacts: string[] = [
+    d.personal.email
+      ? chip(d.personal.email, `mailto:${d.personal.email}`)
+      : "",
+    d.personal.phone ? chip(d.personal.phone, `tel:${d.personal.phone}`) : "",
+    d.personal.location ? d.personal.location : "",
+    d.personal.linkedin
+      ? chip(
+          d.personal.linkedin,
+          `https://${d.personal.linkedin.replace(/^https?:\/\//, "")}`,
+        )
+      : "",
+    d.personal.github
+      ? chip(
+          d.personal.github,
+          `https://${d.personal.github.replace(/^https?:\/\//, "")}`,
+        )
+      : "",
+    d.personal.website
+      ? chip(
+          d.personal.website,
+          `https://${d.personal.website.replace(/^https?:\/\//, "")}`,
+        )
+      : "",
   ].filter(Boolean);
 
-  const linkItems = [
-    d.personal.linkedin &&
-      `<a href="https://${d.personal.linkedin}" style="color:inherit;text-decoration:none">in ${d.personal.linkedin}</a>`,
-    d.personal.github &&
-      `<a href="https://${d.personal.github}"   style="color:inherit;text-decoration:none">⌥ ${d.personal.github}</a>`,
-    d.personal.website &&
-      `<a href="https://${d.personal.website}"  style="color:inherit;text-decoration:none">⊕ ${d.personal.website}</a>`,
-  ].filter(Boolean);
-
-  const allContacts = [...contactItems, ...linkItems];
-
-  const addrBlock = `
-    <div style="margin-bottom:20px;font-size:13px;line-height:1.9;color:#4a5568">
-      <strong style="color:#1a202c;font-size:13.5px">${mgr}${d.company.hiringManagerTitle ? `, ${d.company.hiringManagerTitle}` : ""}</strong><br>
-      ${d.company.name}${loc ? `<br>${loc}` : ""}
-    </div>`;
+  const addrBlock = `<div style="margin-bottom:20px;font-size:13px;line-height:1.9;color:#4a5568"><strong style="color:#1a202c">${mgr}${d.company.hiringManagerTitle ? `, ${d.company.hiringManagerTitle}` : ""}</strong><br>${d.company.name}${loc ? `<br>${loc}` : ""}</div>`;
 
   const secRows = (color: string, border = false) =>
     d.sections
       .filter((s) => s.content.trim())
       .map(
         (s) => `
-      <div style="margin-bottom:22px${border ? `;padding-left:14px;border-left:3px solid ${color}` : ""}">
-        <h4 style="font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:${color};margin-bottom:8px;margin-top:0">${s.title}</h4>
-        <p style="line-height:1.8;margin:0;font-size:13.5px;color:inherit">${s.content.replace(/\n/g, "<br>")}</p>
+      <div style="margin-bottom:24px${border ? `;padding-left:14px;border-left:3px solid ${color}` : ""}">
+        <h4 style="font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:${color};margin:0 0 8px">${s.title}</h4>
+        <p style="line-height:1.85;margin:0;font-size:13.5px">${s.content.replace(/\n/g, "<br>")}</p>
       </div>`,
       )
       .join("");
 
   const achBlock = (color: string) =>
-    d.achievements.length
-      ? `
+    !d.achievements.length
+      ? ""
+      : `
     <div style="margin:18px 0 22px">
-      <h4 style="font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:${color};margin-bottom:10px;margin-top:0">Key Achievements</h4>
-      ${d.achievements
-        .map(
-          (
-            a,
-          ) => `<div style="display:flex;gap:9px;align-items:flex-start;margin-bottom:7px;font-size:13px">
-        <span style="color:${color};font-size:14px;line-height:1.4;flex-shrink:0">›</span><span>${a}</span>
-      </div>`,
-        )
-        .join("")}
-    </div>`
-      : "";
+      <h4 style="font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:${color};margin:0 0 10px">Key Achievements</h4>
+      ${d.achievements.map((a) => `<div style="display:flex;gap:9px;margin-bottom:7px;font-size:13px"><span style="color:${color};flex-shrink:0;line-height:1.5">›</span>${a}</div>`).join("")}
+    </div>`;
+
+  const skillBlock = (color: string) =>
+    !d.skills.length
+      ? ""
+      : `
+    <div style="margin:16px 0 22px">
+      <h4 style="font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:${color};margin:0 0 10px">Core Skills</h4>
+      <div style="display:flex;flex-wrap:wrap;gap:7px">${d.skills.map((s) => `<span style="padding:4px 12px;background:rgba(0,0,0,.04);border:1px solid rgba(0,0,0,.08);border-radius:30px;font-size:12px">${s}</span>`).join("")}</div>
+    </div>`;
 
   const notesBlock = d.notes
-    ? `<div style="margin:16px 0;padding:12px 16px;background:rgba(0,0,0,.03);border-left:3px solid #e2e8f0;font-size:13px;line-height:1.7;color:#64748b">${d.notes}</div>`
+    ? `<div style="margin:14px 0;padding:12px 16px;background:rgba(0,0,0,.03);border-left:3px solid #e2e8f0;font-size:12.5px;line-height:1.7;color:#64748b">${d.notes}</div>`
     : "";
 
   const closing = (col: string) => `
     <div style="margin-top:36px;font-size:13.5px">
-      Sincerely,<br><br>
+      ${d.personal.signature || "Sincerely"},<br><br>
       <strong style="font-size:15px">${nm}</strong>
-      ${d.personal.email ? `<br><span style="font-size:12px;color:${col}">${d.personal.email}</span>` : ""}
-      ${d.personal.linkedin ? `<br><span style="font-size:11.5px;color:#64748b">in ${d.personal.linkedin}</span>` : ""}
+      ${d.personal.email ? `<br><a href="mailto:${d.personal.email}" style="font-size:12px;color:${col};text-decoration:none">${d.personal.email}</a>` : ""}
+      ${d.personal.linkedin ? `<br><a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" style="font-size:11.5px;color:#64748b;text-decoration:none" target="_blank">${d.personal.linkedin}</a>` : ""}
+      ${d.personal.website ? `<br><a href="https://${d.personal.website.replace(/^https?:\/\//, "")}" style="font-size:11.5px;color:#64748b;text-decoration:none" target="_blank">${d.personal.website}</a>` : ""}
     </div>`;
 
-  const base = (css: string, body: string) =>
-    `<!DOCTYPE html><html><head><meta charset="UTF-8">
-    <style>*{margin:0;padding:0;box-sizing:border-box}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}${css}</style>
-    </head><body>${body}</body></html>`;
+  const greet = (col = "") =>
+    `<div style="font-size:16px;font-weight:600;margin-bottom:22px;color:${col || "#111827"}">Dear ${mgr},</div>`;
 
-  /* ── AURORA ─────────────────────────── */
+  const base = (css: string, body: string) =>
+    `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>*{margin:0;padding:0;box-sizing:border-box}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}${css}</style></head><body>${body}</body></html>`;
+
   if (id === "aurora")
     return base(
       `@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap');
-     body{font-family:'DM Sans',sans-serif;color:#374151}
-     .pg{max-width:860px;margin:0 auto}
-     .hdr{background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 60%,#a78bfa 100%);padding:52px 56px 44px;color:white;position:relative;overflow:hidden}
-     .hdr::before{content:'';position:absolute;right:-80px;top:-80px;width:280px;height:280px;background:rgba(255,255,255,.07);border-radius:50%}
-     .nm{font-size:38px;font-weight:700;letter-spacing:-1.5px;margin-bottom:5px;position:relative}
-     .rl{font-size:14px;opacity:.85;margin-bottom:26px;position:relative}
-     .chips{display:flex;flex-wrap:wrap;gap:7px;position:relative}
-     .chip{padding:5px 14px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:40px;font-size:11.5px}
-     .body{padding:48px 56px}
-     .dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}
-     .gr{font-size:16px;font-weight:600;margin-bottom:22px;color:#111827}`,
-      `<div class="pg">
-      <div class="hdr">
-        <div class="nm">${nm}</div>
-        <div class="rl">${ttl}</div>
-        <div class="chips">${allContacts.map((c) => `<span class="chip">${c}</span>`).join("")}</div>
-      </div>
-      <div class="body">
-        <div class="dt">${dt}</div>${addrBlock}
-        <div class="gr">Dear ${mgr},</div>
-        ${secRows("#6366f1")}${achBlock("#6366f1")}${notesBlock}${closing("#6366f1")}
-      </div>
-    </div>`,
+    body{font-family:'DM Sans',sans-serif;color:#374151}.pg{max-width:860px;margin:0 auto}
+    .hdr{background:linear-gradient(135deg,#4f46e5,#7c3aed 60%,#a78bfa);padding:52px 56px 44px;color:white;position:relative;overflow:hidden}
+    .hdr::before{content:'';position:absolute;right:-80px;top:-80px;width:280px;height:280px;background:rgba(255,255,255,.07);border-radius:50%}
+    .nm{font-size:38px;font-weight:700;letter-spacing:-1.5px;margin-bottom:5px;position:relative}
+    .rl{font-size:14px;opacity:.85;margin-bottom:26px;position:relative}
+    .chips{display:flex;flex-wrap:wrap;gap:7px;position:relative}
+    .chip{padding:5px 14px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:40px;font-size:11.5px}
+    .chip a,.chip{color:white}
+    .body{padding:48px 56px}.dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}`,
+      `<div class="pg"><div class="hdr"><div class="nm">${nm}</div><div class="rl">${ttl}</div>
+    <div class="chips">${allContacts.map((c) => `<span class="chip">${c}</span>`).join("")}</div></div>
+    <div class="body"><div class="dt">${dt}</div>${addrBlock}${greet()}${secRows("#6366f1")}${achBlock("#6366f1")}${skillBlock("#6366f1")}${notesBlock}${closing("#6366f1")}</div></div>`,
     );
 
-  /* ── OBSIDIAN ─────────────────────── */
   if (id === "obsidian")
     return base(
       `@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;500&display=swap');
-     body{font-family:'Inter',sans-serif;color:#374151}
-     .pg{max-width:900px;margin:0 auto;display:flex;min-height:100vh}
-     .side{width:258px;background:#1e1b4b;color:white;padding:44px 26px;flex-shrink:0}
-     .snm{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;color:#e9d5ff;line-height:1.2;margin-bottom:6px}
-     .srl{font-size:10px;color:#a5b4fc;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:30px;padding-bottom:26px;border-bottom:1px solid rgba(165,180,252,.2)}
-     .slbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#6d5bba;margin-bottom:7px;margin-top:22px}
-     .sval{font-size:11.5px;color:#c4b5fd;line-height:2;word-break:break-all}
-     .orn{color:#7c3aed;opacity:.45;font-size:18px;margin-top:22px;letter-spacing:4px}
-     .main{flex:1;padding:48px 44px}
-     .dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}
-     .gr{font-size:16px;font-weight:600;margin-bottom:22px;color:#1e1b4b}`,
-      `<div class="pg">
-      <div class="side">
-        <div class="snm">${nm}</div>
-        <div class="srl">${ttl}</div>
-        ${d.personal.email ? `<div class="slbl">Email</div><div class="sval">${d.personal.email}</div>` : ""}
-        ${d.personal.phone ? `<div class="slbl">Phone</div><div class="sval">${d.personal.phone}</div>` : ""}
-        ${d.personal.location ? `<div class="slbl">Location</div><div class="sval">${d.personal.location}</div>` : ""}
-        ${d.personal.linkedin ? `<div class="slbl">LinkedIn</div><div class="sval">${d.personal.linkedin}</div>` : ""}
-        ${d.personal.github ? `<div class="slbl">GitHub</div><div class="sval">${d.personal.github}</div>` : ""}
-        ${d.personal.website ? `<div class="slbl">Portfolio</div><div class="sval">${d.personal.website}</div>` : ""}
-        <div class="orn">✦ ✦ ✦</div>
-      </div>
-      <div class="main">
-        <div class="dt">${dt}</div>${addrBlock}
-        <div class="gr">Dear ${mgr},</div>
-        ${secRows("#7c3aed")}${achBlock("#7c3aed")}${notesBlock}${closing("#7c3aed")}
-      </div>
-    </div>`,
+    body{font-family:'Inter',sans-serif;color:#374151}.pg{max-width:900px;margin:0 auto;display:flex;min-height:100vh}
+    .side{width:260px;background:#1e1b4b;color:white;padding:44px 26px;flex-shrink:0}
+    .snm{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;color:#e9d5ff;line-height:1.2;margin-bottom:6px}
+    .srl{font-size:10px;color:#a5b4fc;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:30px;padding-bottom:26px;border-bottom:1px solid rgba(165,180,252,.2)}
+    .slbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#6d5bba;margin-bottom:6px;margin-top:20px}
+    .sv{font-size:11.5px;color:#c4b5fd;line-height:1.9;word-break:break-all}.sv a{color:#c4b5fd;text-decoration:none}
+    .main{flex:1;padding:48px 44px}.dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}`,
+      `<div class="pg"><div class="side"><div class="snm">${nm}</div><div class="srl">${ttl}</div>
+    ${d.personal.email ? `<div class="slbl">Email</div><div class="sv"><a href="mailto:${d.personal.email}">${d.personal.email}</a></div>` : ""}
+    ${d.personal.phone ? `<div class="slbl">Phone</div><div class="sv"><a href="tel:${d.personal.phone}">${d.personal.phone}</a></div>` : ""}
+    ${d.personal.location ? `<div class="slbl">Location</div><div class="sv">${d.personal.location}</div>` : ""}
+    ${d.personal.linkedin ? `<div class="slbl">LinkedIn</div><div class="sv"><a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.linkedin}</a></div>` : ""}
+    ${d.personal.github ? `<div class="slbl">GitHub</div><div class="sv"><a href="https://${d.personal.github.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.github}</a></div>` : ""}
+    ${d.personal.website ? `<div class="slbl">Portfolio</div><div class="sv"><a href="https://${d.personal.website.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.website}</a></div>` : ""}
+    ${d.skills.length ? `<div class="slbl" style="margin-top:28px">Skills</div>${d.skills.map((s) => `<div style="font-size:11.5px;color:#c4b5fd;margin-bottom:4px">• ${s}</div>`).join("")}` : ""}
+    <div style="color:#7c3aed;opacity:.45;font-size:18px;margin-top:22px;letter-spacing:4px">✦ ✦ ✦</div>
+    </div>
+    <div class="main"><div class="dt">${dt}</div>${addrBlock}${greet()}${secRows("#7c3aed")}${achBlock("#7c3aed")}${notesBlock}${closing("#7c3aed")}</div></div>`,
     );
 
-  /* ── NORDIC ───────────────────────── */
   if (id === "nordic")
     return base(
       `@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
-     body{font-family:'DM Sans',sans-serif;color:#374151}
-     .pg{max-width:750px;margin:0 auto;padding:64px 72px}
-     .eyebrow{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:#4f46e5;margin-bottom:10px}
-     .nm{font-family:'Libre Baskerville',serif;font-size:44px;font-weight:700;letter-spacing:-2px;color:#1e1b4b;line-height:1.05}
-     .bar{width:52px;height:3px;background:#4f46e5;margin:16px 0 18px}
-     .ctrow{display:flex;flex-wrap:wrap;gap:6px 20px;margin-bottom:40px}
-     .cv{font-size:12px;color:#6b7280}
-     .cv a{color:#4f46e5;text-decoration:none}
-     .div{height:1px;background:#e0e7ff;margin:24px 0}
-     .dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}
-     .gr{font-size:17px;font-weight:600;margin-bottom:22px;color:#1e1b4b}`,
-      `<div class="pg">
-      <div class="eyebrow">${ttl}</div>
-      <div class="nm">${nm}</div>
-      <div class="bar"></div>
-      <div class="ctrow">
-        ${d.personal.email ? `<span class="cv">${d.personal.email}</span>` : ""}
-        ${d.personal.phone ? `<span class="cv">${d.personal.phone}</span>` : ""}
-        ${d.personal.location ? `<span class="cv">${d.personal.location}</span>` : ""}
-        ${d.personal.linkedin ? `<span class="cv"><a href="#">${d.personal.linkedin}</a></span>` : ""}
-        ${d.personal.github ? `<span class="cv"><a href="#">${d.personal.github}</a></span>` : ""}
-        ${d.personal.website ? `<span class="cv"><a href="#">${d.personal.website}</a></span>` : ""}
-      </div>
-      <div class="div"></div>
-      <div class="dt">${dt}</div>${addrBlock}
-      <div class="gr">Dear ${mgr},</div>
-      ${secRows("#4338ca")}${achBlock("#4338ca")}${notesBlock}${closing("#4338ca")}
-    </div>`,
+    body{font-family:'DM Sans',sans-serif;color:#374151}.pg{max-width:750px;margin:0 auto;padding:64px 72px}
+    .eye{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:#4f46e5;margin-bottom:10px}
+    .nm{font-family:'Libre Baskerville',serif;font-size:44px;font-weight:700;letter-spacing:-2px;color:#1e1b4b;line-height:1.05}
+    .bar{width:52px;height:3px;background:#4f46e5;margin:16px 0 18px}
+    .ctrow{display:flex;flex-wrap:wrap;gap:5px 18px;margin-bottom:40px}
+    .cv{font-size:12px;color:#6b7280}.cv a{color:#4f46e5;text-decoration:none}
+    .div{height:1px;background:#e0e7ff;margin:24px 0}.dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}`,
+      `<div class="pg"><div class="eye">${ttl}</div><div class="nm">${nm}</div><div class="bar"></div>
+    <div class="ctrow">
+    ${d.personal.email ? `<span class="cv"><a href="mailto:${d.personal.email}">${d.personal.email}</a></span>` : ""}
+    ${d.personal.phone ? `<span class="cv"><a href="tel:${d.personal.phone}">${d.personal.phone}</a></span>` : ""}
+    ${d.personal.location ? `<span class="cv">${d.personal.location}</span>` : ""}
+    ${d.personal.linkedin ? `<span class="cv"><a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.linkedin}</a></span>` : ""}
+    ${d.personal.github ? `<span class="cv"><a href="https://${d.personal.github.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.github}</a></span>` : ""}
+    ${d.personal.website ? `<span class="cv"><a href="https://${d.personal.website.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.website}</a></span>` : ""}
+    </div><div class="div"></div>
+    <div class="dt">${dt}</div>${addrBlock}${greet()}${secRows("#4338ca")}${achBlock("#4338ca")}${skillBlock("#4338ca")}${notesBlock}${closing("#4338ca")}</div>`,
     );
 
-  /* ── SLATE ────────────────────────── */
   if (id === "slate")
     return base(
       `@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
-     body{font-family:'IBM Plex Sans',sans-serif;color:#374151}
-     .pg{max-width:880px;margin:0 auto}
-     .hdr{padding:44px 52px;border-bottom:3px solid #0f172a;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px}
-     .nm{font-size:34px;font-weight:700;color:#0f172a;letter-spacing:-1.5px}
-     .rl{font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:#64748b;margin-top:7px}
-     .ctcol{text-align:right}
-     .cv{font-size:11.5px;color:#475569;font-family:'IBM Plex Mono',monospace;line-height:2.1;display:block;word-break:break-all}
-     .cv a{color:#4f46e5;text-decoration:none}
-     .tag-pill{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#64748b;background:#f1f5f9;border:1px solid #e2e8f0;padding:3px 10px;border-radius:4px;margin-bottom:22px}
-     .body{padding:40px 52px}
-     .dt{font-size:12.5px;color:#9ca3af;margin-bottom:20px}
-     .gr{font-size:16px;font-weight:600;margin-bottom:20px;color:#0f172a}`,
-      `<div class="pg">
-      <div class="hdr">
-        <div><div class="nm">${nm}</div><div class="rl">${ttl}</div></div>
-        <div class="ctcol">
-          ${d.personal.email ? `<span class="cv">${d.personal.email}</span>` : ""}
-          ${d.personal.phone ? `<span class="cv">${d.personal.phone}</span>` : ""}
-          ${d.personal.location ? `<span class="cv">${d.personal.location}</span>` : ""}
-          ${d.personal.linkedin ? `<span class="cv"><a href="#">${d.personal.linkedin}</a></span>` : ""}
-          ${d.personal.github ? `<span class="cv"><a href="#">${d.personal.github}</a></span>` : ""}
-          ${d.personal.website ? `<span class="cv"><a href="#">${d.personal.website}</a></span>` : ""}
-        </div>
-      </div>
-      <div class="body">
-        <div class="tag-pill">RE: ${d.company.jobTitle || "Open Position"} · ${d.company.name || "Company"}</div>
-        <div class="dt">${dt}</div>${addrBlock}
-        <div class="gr">Dear ${mgr},</div>
-        ${secRows("#334155", true)}${achBlock("#334155")}${notesBlock}${closing("#334155")}
-      </div>
-    </div>`,
+    body{font-family:'IBM Plex Sans',sans-serif;color:#374151}.pg{max-width:880px;margin:0 auto}
+    .hdr{padding:44px 52px;border-bottom:3px solid #0f172a;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px}
+    .nm{font-size:34px;font-weight:700;color:#0f172a;letter-spacing:-1.5px}.rl{font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:#64748b;margin-top:7px}
+    .cc{text-align:right}.cv{font-size:11.5px;color:#475569;font-family:'IBM Plex Mono',monospace;line-height:2.1;display:block;word-break:break-all}.cv a{color:#4f46e5;text-decoration:none}
+    .tag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#64748b;background:#f1f5f9;border:1px solid #e2e8f0;padding:3px 10px;border-radius:4px;margin-bottom:22px}
+    .body{padding:40px 52px}.dt{font-size:12.5px;color:#9ca3af;margin-bottom:20px}`,
+      `<div class="pg"><div class="hdr"><div><div class="nm">${nm}</div><div class="rl">${ttl}</div></div>
+    <div class="cc">
+    ${d.personal.email ? `<a class="cv" href="mailto:${d.personal.email}">${d.personal.email}</a>` : ""}
+    ${d.personal.phone ? `<a class="cv" href="tel:${d.personal.phone}">${d.personal.phone}</a>` : ""}
+    ${d.personal.location ? `<span class="cv">${d.personal.location}</span>` : ""}
+    ${d.personal.linkedin ? `<a class="cv" href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.linkedin}</a>` : ""}
+    ${d.personal.github ? `<a class="cv" href="https://${d.personal.github.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.github}</a>` : ""}
+    ${d.personal.website ? `<a class="cv" href="https://${d.personal.website.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.website}</a>` : ""}
+    </div></div>
+    <div class="body"><div class="tag">RE: ${d.company.jobTitle || "Open Position"} · ${d.company.name || "Company"}</div>
+    <div class="dt">${dt}</div>${addrBlock}${greet()}${secRows("#334155", true)}${achBlock("#334155")}${skillBlock("#334155")}${notesBlock}${closing("#334155")}</div></div>`,
     );
 
-  /* ── CRIMSON ──────────────────────── */
   if (id === "crimson")
     return base(
       `@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=Lora:wght@400;500&display=swap');
-     body{font-family:'Lora',serif;color:#374151;background:#fffbf5}
-     .pg{max-width:800px;margin:0 auto;background:#fffbf5}
-     .top{height:5px;background:#9f1239}
-     .hdr{padding:48px 56px 16px;text-align:center}
-     .nm{font-family:'Playfair Display',serif;font-size:44px;font-weight:900;color:#1a0a0d;letter-spacing:-2px;line-height:1}
-     .rl{font-family:'Playfair Display',serif;font-style:italic;font-size:15px;color:#9f1239;margin:9px 0 16px}
-     .orn{color:#9f1239;font-size:12px;letter-spacing:5px}
-     .ctrow{display:flex;justify-content:center;flex-wrap:wrap;gap:5px 16px;padding:12px 0;font-size:12px;color:#6b7280}
-     .ctrow a{color:#9f1239;text-decoration:none}
-     .sep-wrap{display:flex;align-items:center;gap:10px;padding:0 56px;margin-bottom:4px}
-     .sl{flex:1;height:1px;background:#fecdd3}
-     .sd{width:5px;height:5px;background:#9f1239;border-radius:50%;flex-shrink:0}
-     .body{padding:24px 56px 52px}
-     .dt{font-size:12.5px;color:#9ca3af;margin-bottom:20px}
-     .gr{font-size:16px;font-style:italic;font-weight:600;margin-bottom:20px;color:#1a0a0d}`,
-      `<div class="pg">
-      <div class="top"></div>
-      <div class="hdr">
-        <div class="nm">${nm}</div>
-        <div class="rl">${ttl}</div>
-        <div class="orn">✦ ✦ ✦</div>
-        <div class="ctrow">
-          ${d.personal.email ? `<span>${d.personal.email}</span>` : ""}
-          ${d.personal.phone ? `<span>· ${d.personal.phone}</span>` : ""}
-          ${d.personal.location ? `<span>· ${d.personal.location}</span>` : ""}
-          ${d.personal.linkedin ? `<span>· <a href="#">${d.personal.linkedin}</a></span>` : ""}
-          ${d.personal.github ? `<span>· <a href="#">${d.personal.github}</a></span>` : ""}
-          ${d.personal.website ? `<span>· <a href="#">${d.personal.website}</a></span>` : ""}
-        </div>
-      </div>
-      <div class="sep-wrap"><div class="sl"></div><div class="sd"></div><div class="sl"></div></div>
-      <div class="body">
-        <div class="dt">${dt}</div>${addrBlock}
-        <div class="gr">Dear ${mgr},</div>
-        ${secRows("#9f1239")}${achBlock("#9f1239")}${notesBlock}${closing("#9f1239")}
-      </div>
-    </div>`,
+    body{font-family:'Lora',serif;color:#374151;background:#fffbf5}.pg{max-width:800px;margin:0 auto;background:#fffbf5}
+    .top{height:5px;background:#9f1239}.hdr{padding:48px 56px 16px;text-align:center}
+    .nm{font-family:'Playfair Display',serif;font-size:44px;font-weight:900;color:#1a0a0d;letter-spacing:-2px;line-height:1}
+    .rl{font-family:'Playfair Display',serif;font-style:italic;font-size:15px;color:#9f1239;margin:9px 0 16px}
+    .orn{color:#9f1239;font-size:12px;letter-spacing:5px}
+    .ctrow{display:flex;justify-content:center;flex-wrap:wrap;gap:5px 16px;padding:12px 0;font-size:12px;color:#6b7280}
+    .ctrow a{color:#9f1239;text-decoration:none}
+    .sep{display:flex;align-items:center;gap:10px;padding:0 56px;margin-bottom:4px}
+    .sl{flex:1;height:1px;background:#fecdd3}.sd{width:5px;height:5px;background:#9f1239;border-radius:50%;flex-shrink:0}
+    .body{padding:24px 56px 52px}.dt{font-size:12.5px;color:#9ca3af;margin-bottom:20px}`,
+      `<div class="pg"><div class="top"></div><div class="hdr"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="orn">✦ ✦ ✦</div>
+    <div class="ctrow">
+    ${d.personal.email ? `<a href="mailto:${d.personal.email}">${d.personal.email}</a>` : ""}
+    ${d.personal.phone ? `<a href="tel:${d.personal.phone}">${d.personal.phone}</a>` : ""}
+    ${d.personal.location ? `<span>${d.personal.location}</span>` : ""}
+    ${d.personal.linkedin ? `<a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.linkedin}</a>` : ""}
+    ${d.personal.github ? `<a href="https://${d.personal.github.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.github}</a>` : ""}
+    ${d.personal.website ? `<a href="https://${d.personal.website.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.website}</a>` : ""}
+    </div></div>
+    <div class="sep"><div class="sl"></div><div class="sd"></div><div class="sl"></div></div>
+    <div class="body"><div class="dt">${dt}</div>${addrBlock}${greet()}${secRows("#9f1239")}${achBlock("#9f1239")}${notesBlock}${closing("#9f1239")}</div></div>`,
     );
 
-  /* ── VELVET ───────────────────────── */
   if (id === "velvet")
     return base(
       `@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Raleway:wght@300;400;500;600&display=swap');
-     body{font-family:'Raleway',sans-serif;background:#0f082a;color:#d4c9ef;min-height:100vh}
-     .pg{max-width:860px;margin:0 auto;background:linear-gradient(160deg,#1e0f40 0%,#2d1b69 100%);min-height:100vh}
-     .hdr{padding:56px 56px 40px;border-bottom:1px solid rgba(196,181,253,.15);position:relative;overflow:hidden}
-     .hdr::after{content:'';position:absolute;right:-40px;top:-40px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(168,85,247,.15),transparent 70%)}
-     .nm{font-family:'Cinzel',serif;font-size:36px;font-weight:600;color:#f3e8ff;letter-spacing:2px}
-     .rl{font-size:10.5px;letter-spacing:3px;text-transform:uppercase;color:#a78bfa;margin:12px 0 20px}
-     .chips{display:flex;flex-wrap:wrap;gap:7px}
-     .chip{padding:4px 12px;border:1px solid rgba(196,181,253,.25);color:#c4b5fd;font-size:11px;border-radius:4px}
-     .chip a{color:#c4b5fd;text-decoration:none}
-     .body{padding:44px 56px}
-     .dt{font-size:12px;color:#7c6fa0;margin-bottom:22px}
-     .gr{font-size:16px;font-weight:600;margin-bottom:22px;color:#e9d5ff}
-     .addr{color:#a78bfa!important;margin-bottom:22px;font-size:13px;line-height:1.9}`,
-      `<div class="pg">
-      <div class="hdr">
-        <div class="nm">${nm}</div>
-        <div class="rl">${ttl}</div>
-        <div class="chips">
-          ${d.personal.email ? `<span class="chip">${d.personal.email}</span>` : ""}
-          ${d.personal.phone ? `<span class="chip">${d.personal.phone}</span>` : ""}
-          ${d.personal.location ? `<span class="chip">${d.personal.location}</span>` : ""}
-          ${d.personal.linkedin ? `<span class="chip"><a href="#">${d.personal.linkedin}</a></span>` : ""}
-          ${d.personal.github ? `<span class="chip"><a href="#">${d.personal.github}</a></span>` : ""}
-          ${d.personal.website ? `<span class="chip"><a href="#">${d.personal.website}</a></span>` : ""}
-        </div>
-      </div>
-      <div class="body">
-        <div class="dt">${dt}</div>
-        <div class="addr"><strong style="color:#e9d5ff">${mgr}${d.company.hiringManagerTitle ? `, <span style='color:#a78bfa'>${d.company.hiringManagerTitle}</span>` : ""}</strong><br>${d.company.name}${loc ? `<br>${loc}` : ""}</div>
-        <div class="gr">Dear ${mgr},</div>
-        ${secRows("#c084fc")}${achBlock("#c084fc")}${notesBlock}
-        <div style="margin-top:36px;font-size:13.5px;color:#7c6fa0">Sincerely,<br><br><strong style="font-size:15px;color:#f3e8ff">${nm}</strong></div>
-      </div>
-    </div>`,
+    body{font-family:'Raleway',sans-serif;background:#0f082a;color:#d4c9ef;min-height:100vh}
+    .pg{max-width:860px;margin:0 auto;background:linear-gradient(160deg,#1e0f40,#2d1b69);min-height:100vh}
+    .hdr{padding:52px 52px 38px;border-bottom:1px solid rgba(196,181,253,.12);position:relative;overflow:hidden}
+    .hdr::after{content:'';position:absolute;right:-40px;top:-40px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(168,85,247,.14),transparent 70%)}
+    .nm{font-family:'Cinzel',serif;font-size:36px;font-weight:600;color:#f3e8ff;letter-spacing:2px}
+    .rl{font-size:10.5px;letter-spacing:3px;text-transform:uppercase;color:#a78bfa;margin:12px 0 20px}
+    .chips{display:flex;flex-wrap:wrap;gap:7px}.chip{padding:4px 12px;border:1px solid rgba(196,181,253,.22);color:#c4b5fd;font-size:11px;border-radius:4px}
+    .chip a{color:#c4b5fd;text-decoration:none}.body{padding:44px 52px}.dt{font-size:12px;color:#7c6fa0;margin-bottom:22px}`,
+      `<div class="pg"><div class="hdr"><div class="nm">${nm}</div><div class="rl">${ttl}</div>
+    <div class="chips">
+    ${d.personal.email ? `<span class="chip"><a href="mailto:${d.personal.email}">${d.personal.email}</a></span>` : ""}
+    ${d.personal.phone ? `<span class="chip"><a href="tel:${d.personal.phone}">${d.personal.phone}</a></span>` : ""}
+    ${d.personal.location ? `<span class="chip">${d.personal.location}</span>` : ""}
+    ${d.personal.linkedin ? `<span class="chip"><a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.linkedin}</a></span>` : ""}
+    ${d.personal.github ? `<span class="chip"><a href="https://${d.personal.github.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.github}</a></span>` : ""}
+    ${d.personal.website ? `<span class="chip"><a href="https://${d.personal.website.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.website}</a></span>` : ""}
+    </div></div>
+    <div class="body"><div class="dt">${dt}</div>
+    <div style="margin-bottom:20px;font-size:13px;line-height:2"><strong style="color:#e9d5ff">${mgr}${d.company.hiringManagerTitle ? `, ${d.company.hiringManagerTitle}` : ""}</strong><br>${d.company.name}${loc ? `<br><span style='color:#7c6fa0'>${loc}</span>` : ""}</div>
+    <div style="font-size:16px;font-weight:600;margin-bottom:22px;color:#e9d5ff">Dear ${mgr},</div>
+    ${secRows("#c084fc")}${achBlock("#c084fc")}${skillBlock("#c084fc")}${notesBlock}
+    <div style="margin-top:36px;font-size:13.5px;color:#7c6fa0">Sincerely,<br><br><strong style="font-size:15px;color:#f3e8ff">${nm}</strong></div></div></div>`,
     );
 
-  /* ── FROST ────────────────────────── */
   if (id === "frost")
     return base(
       `@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
-     body{font-family:'Outfit',sans-serif;background:linear-gradient(135deg,#dbeafe,#e0f2fe);min-height:100vh;padding:20px;color:#374151}
-     .pg{max-width:840px;margin:0 auto;background:rgba(255,255,255,.88);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.85);border-radius:16px;overflow:hidden}
-     .hdr{background:linear-gradient(135deg,rgba(12,74,110,.92),rgba(2,132,199,.9));padding:48px;color:white}
-     .nm{font-size:38px;font-weight:800;letter-spacing:-2px;margin-bottom:6px}
-     .rl{font-size:12.5px;opacity:.8;letter-spacing:1px;margin-bottom:22px}
-     .chips{display:flex;flex-wrap:wrap;gap:7px}
-     .chip{padding:5px 14px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.22);border-radius:40px;font-size:11.5px}
-     .chip a{color:white;text-decoration:none}
-     .body{padding:44px}
-     .dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}
-     .gr{font-size:16px;font-weight:700;margin-bottom:22px;color:#0c4a6e}`,
-      `<div class="pg">
-      <div class="hdr">
-        <div class="nm">${nm}</div>
-        <div class="rl">${ttl}</div>
-        <div class="chips">
-          ${d.personal.email ? `<span class="chip">${d.personal.email}</span>` : ""}
-          ${d.personal.phone ? `<span class="chip">${d.personal.phone}</span>` : ""}
-          ${d.personal.location ? `<span class="chip">${d.personal.location}</span>` : ""}
-          ${d.personal.linkedin ? `<span class="chip"><a href="#">${d.personal.linkedin}</a></span>` : ""}
-          ${d.personal.github ? `<span class="chip"><a href="#">${d.personal.github}</a></span>` : ""}
-          ${d.personal.website ? `<span class="chip"><a href="#">${d.personal.website}</a></span>` : ""}
-        </div>
-      </div>
-      <div class="body">
-        <div class="dt">${dt}</div>${addrBlock}
-        <div class="gr">Dear ${mgr},</div>
-        ${secRows("#0369a1")}${achBlock("#0369a1")}${notesBlock}${closing("#0369a1")}
-      </div>
-    </div>`,
+    body{font-family:'Outfit',sans-serif;background:linear-gradient(135deg,#dbeafe,#e0f2fe);min-height:100vh;padding:20px;color:#374151}
+    .pg{max-width:840px;margin:0 auto;background:rgba(255,255,255,.88);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.85);border-radius:16px;overflow:hidden}
+    .hdr{background:linear-gradient(135deg,rgba(12,74,110,.92),rgba(2,132,199,.9));padding:48px;color:white}
+    .nm{font-size:38px;font-weight:800;letter-spacing:-2px;margin-bottom:6px}
+    .rl{font-size:12.5px;opacity:.8;letter-spacing:1px;margin-bottom:22px}
+    .chips{display:flex;flex-wrap:wrap;gap:7px}.chip{padding:5px 14px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.22);border-radius:40px;font-size:11.5px}
+    .chip a,.chip{color:white;text-decoration:none}.body{padding:44px}.dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}`,
+      `<div class="pg"><div class="hdr"><div class="nm">${nm}</div><div class="rl">${ttl}</div>
+    <div class="chips">${allContacts.map((c) => `<span class="chip">${c}</span>`).join("")}</div></div>
+    <div class="body"><div class="dt">${dt}</div>${addrBlock}${greet()}${secRows("#0369a1")}${achBlock("#0369a1")}${skillBlock("#0369a1")}${notesBlock}${closing("#0369a1")}</div></div>`,
     );
 
-  /* ── PRISM ────────────────────────── */
-  if (id === "prism")
+  if (id === "canvas")
     return base(
-      `@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap');
-     body{font-family:'Outfit',sans-serif;color:#374151}
-     .pg{max-width:860px;margin:0 auto}
-     .hdr{background:linear-gradient(120deg,#7c3aed,#c026d3);height:160px;position:relative;overflow:hidden}
-     .g1{position:absolute;right:0;top:0;bottom:0;width:55%;background:rgba(255,255,255,.1);clip-path:polygon(25% 0,100% 0,100% 100%,0 100%)}
-     .g2{position:absolute;right:0;top:0;bottom:0;width:33%;background:rgba(255,255,255,.07);clip-path:polygon(40% 0,100% 0,100% 100%,0 100%)}
-     .hi{position:absolute;left:44px;bottom:24px;color:white}
-     .nm{font-size:38px;font-weight:800;letter-spacing:-2px;line-height:1}
-     .rl{font-size:13px;opacity:.8;margin-top:6px}
-     .cbar{display:flex;background:#1e1b4b;padding:9px 44px;gap:20px;flex-wrap:wrap}
-     .cv{font-size:11px;color:#a5b4fc;padding:3px 0;word-break:break-all}
-     .cv a{color:#c4b5fd;text-decoration:none}
-     .body{padding:44px}
-     .dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}
-     .gr{font-size:16px;font-weight:700;margin-bottom:22px;color:#1e1b4b}`,
-      `<div class="pg">
-      <div class="hdr">
-        <div class="g1"></div><div class="g2"></div>
-        <div class="hi"><div class="nm">${nm}</div><div class="rl">${ttl}</div></div>
-      </div>
-      <div class="cbar">
-        ${d.personal.email ? `<span class="cv">${d.personal.email}</span>` : ""}
-        ${d.personal.phone ? `<span class="cv">${d.personal.phone}</span>` : ""}
-        ${d.personal.location ? `<span class="cv">${d.personal.location}</span>` : ""}
-        ${d.personal.linkedin ? `<span class="cv"><a href="#">${d.personal.linkedin}</a></span>` : ""}
-        ${d.personal.github ? `<span class="cv"><a href="#">${d.personal.github}</a></span>` : ""}
-        ${d.personal.website ? `<span class="cv"><a href="#">${d.personal.website}</a></span>` : ""}
-      </div>
-      <div class="body">
-        <div class="dt">${dt}</div>${addrBlock}
-        <div class="gr">Dear ${mgr},</div>
-        ${secRows("#7c3aed", true)}${achBlock("#7c3aed")}${notesBlock}${closing("#7c3aed")}
-      </div>
-    </div>`,
+      `@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Manrope:wght@300;400;500;600&display=swap');
+    body{font-family:'Manrope',sans-serif;color:#374151;background:#fff}.pg{max-width:820px;margin:0 auto;padding:60px 64px}
+    .accent{width:4px;background:#6366f1;border-radius:2px;height:72px;float:left;margin-right:20px;margin-top:2px}
+    .nm{font-family:'Syne',sans-serif;font-size:38px;font-weight:800;letter-spacing:-1.5px;color:#111827}
+    .rl{font-size:13px;color:#6366f1;font-weight:600;margin-top:5px;letter-spacing:.5px}
+    .ctrow{display:flex;flex-wrap:wrap;gap:5px 16px;margin-top:10px}
+    .cv{font-size:12px;color:#9ca3af}.cv a{color:#6366f1;text-decoration:none}
+    .div{height:1px;background:#f3f4f6;margin:28px 0;clear:both}.dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}`,
+      `<div class="pg"><div class="accent"></div><div class="nm">${nm}</div><div class="rl">${ttl}</div>
+    <div class="ctrow">
+    ${d.personal.email ? `<span class="cv"><a href="mailto:${d.personal.email}">${d.personal.email}</a></span>` : ""}
+    ${d.personal.phone ? `<span class="cv"><a href="tel:${d.personal.phone}">${d.personal.phone}</a></span>` : ""}
+    ${d.personal.location ? `<span class="cv">${d.personal.location}</span>` : ""}
+    ${d.personal.linkedin ? `<span class="cv"><a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.linkedin}</a></span>` : ""}
+    ${d.personal.github ? `<span class="cv"><a href="https://${d.personal.github.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.github}</a></span>` : ""}
+    ${d.personal.website ? `<span class="cv"><a href="https://${d.personal.website.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.website}</a></span>` : ""}
+    </div><div class="div"></div>
+    <div class="dt">${dt}</div>${addrBlock}${greet()}${secRows("#6366f1")}${achBlock("#6366f1")}${skillBlock("#6366f1")}${notesBlock}${closing("#6366f1")}</div>`,
     );
 
-  /* ── BLAZE ────────────────────────── */
-  if (id === "blaze")
+  if (id === "designer")
+    return base(
+      `@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Manrope:wght@300;400;500;600&display=swap');
+    body{font-family:'Manrope',sans-serif;color:#374151}.pg{max-width:900px;margin:0 auto;display:flex;min-height:100vh}
+    .side{width:270px;background:linear-gradient(180deg,#0d0d0d,#1a0a2e);color:white;padding:44px 26px;flex-shrink:0;position:relative;overflow:hidden}
+    .side::before{content:'';position:absolute;top:-60px;left:-60px;width:220px;height:220px;background:radial-gradient(circle,rgba(139,92,246,.3),transparent 70%);border-radius:50%}
+    .savatar{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:22px;box-shadow:0 8px 24px rgba(99,102,241,.4)}
+    .snm{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:white;line-height:1.15;margin-bottom:6px;position:relative}
+    .srl{font-size:10px;color:#a78bfa;letter-spacing:2px;text-transform:uppercase;margin-bottom:28px;padding-bottom:22px;border-bottom:1px solid rgba(167,139,250,.2)}
+    .slbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(167,139,250,.5);margin-bottom:6px;margin-top:20px}
+    .sv{font-size:11px;color:#c4b5fd;line-height:1.9;word-break:break-all}.sv a{color:#c4b5fd;text-decoration:none}
+    .sskill{display:inline-block;padding:3px 10px;background:rgba(139,92,246,.2);border:1px solid rgba(139,92,246,.3);border-radius:4px;font-size:10.5px;color:#c4b5fd;margin:2px 2px 0 0}
+    .main{flex:1;padding:48px 44px}.dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}`,
+      `<div class="pg"><div class="side"><div class="savatar">✦</div><div class="snm">${nm}</div><div class="srl">${ttl}</div>
+    ${d.personal.email ? `<div class="slbl">Email</div><div class="sv"><a href="mailto:${d.personal.email}">${d.personal.email}</a></div>` : ""}
+    ${d.personal.phone ? `<div class="slbl">Phone</div><div class="sv"><a href="tel:${d.personal.phone}">${d.personal.phone}</a></div>` : ""}
+    ${d.personal.location ? `<div class="slbl">Location</div><div class="sv">${d.personal.location}</div>` : ""}
+    ${d.personal.linkedin ? `<div class="slbl">LinkedIn</div><div class="sv"><a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.linkedin}</a></div>` : ""}
+    ${d.personal.github ? `<div class="slbl">GitHub</div><div class="sv"><a href="https://${d.personal.github.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.github}</a></div>` : ""}
+    ${d.personal.website ? `<div class="slbl">Portfolio</div><div class="sv"><a href="https://${d.personal.website.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.website}</a></div>` : ""}
+    ${d.skills.length ? `<div class="slbl" style="margin-top:26px">Tools & Skills</div><div style="margin-top:6px">${d.skills.map((s) => `<span class="sskill">${s}</span>`).join("")}</div>` : ""}
+    </div>
+    <div class="main"><div class="dt">${dt}</div>${addrBlock}${greet()}${secRows("#7c3aed")}${achBlock("#7c3aed")}${notesBlock}${closing("#7c3aed")}</div></div>`,
+    );
+
+  if (id === "editor")
+    return base(
+      `@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;700;900&family=Share+Tech+Mono&display=swap');
+    body{font-family:'Exo 2',sans-serif;background:#0f0a1e;color:#94a3b8;min-height:100vh}
+    .pg{max-width:880px;margin:0 auto;background:#0f0a1e;min-height:100vh}
+    .hdr{padding:52px;position:relative}
+    .hdr::before{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#f43f5e,transparent)}
+    .nm{font-size:46px;font-weight:900;letter-spacing:-3px;color:white;line-height:.95;margin-bottom:6px}
+    .rl{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#f43f5e;margin-bottom:22px}
+    .chips{display:flex;flex-wrap:wrap;gap:8px}.chip{padding:4px 12px;border:1px solid rgba(244,63,94,.25);color:#94a3b8;font-size:10.5px;font-family:'Share Tech Mono',monospace;border-radius:4px}
+    .chip a{color:#f43f5e;text-decoration:none}
+    .body{padding:32px 52px 52px}.dt{font-size:11.5px;font-family:'Share Tech Mono',monospace;color:#4a5578;margin-bottom:22px}
+    .sh4{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#f43f5e;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+    .sh4::before{content:'';width:24px;height:2px;background:#f43f5e;flex-shrink:0}`,
+      `<div class="pg"><div class="hdr"><div class="nm">${nm}</div><div class="rl">${ttl}</div>
+    <div class="chips">${allContacts.map((c) => `<span class="chip">${c}</span>`).join("")}</div></div>
+    <div class="body"><div class="dt">${dt}</div>
+    <div style="margin-bottom:22px;font-size:13px;line-height:2"><strong style="color:#e2e8f0">${mgr}${d.company.hiringManagerTitle ? `, ${d.company.hiringManagerTitle}` : ""}</strong><br>${d.company.name}${loc ? `<br><span style='color:#4a5578'>${loc}</span>` : ""}</div>
+    <div style="font-size:17px;font-weight:700;color:white;margin-bottom:22px">Dear ${mgr},</div>
+    ${d.sections
+      .filter((s) => s.content.trim())
+      .map(
+        (s) =>
+          `<div style="margin-bottom:26px"><div class="sh4">${s.title}</div><p style="line-height:1.85;font-size:13.5px">${s.content.replace(/\n/g, "<br>")}</p></div>`,
+      )
+      .join("")}
+    ${achBlock("#f43f5e")}${skillBlock("#f43f5e")}${notesBlock}
+    <div style="margin-top:36px;font-size:13.5px;color:#64748b">Sincerely,<br><br><strong style="font-size:15px;color:white">${nm}</strong></div></div></div>`,
+    );
+
+  if (id === "pearl")
+    return base(
+      `@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+    body{font-family:'Plus Jakarta Sans',sans-serif;color:#374151;background:#fff}.pg{max-width:820px;margin:0 auto;padding:60px 64px}
+    .nm{font-size:40px;font-weight:800;letter-spacing:-2px;color:#111827;margin-bottom:6px}
+    .rl{font-size:13px;color:#6366f1;font-weight:700;letter-spacing:.5px;margin-bottom:16px}
+    .d1{height:1.5px;background:#f1f0ff;margin-bottom:16px}
+    .ctrow{display:flex;flex-wrap:wrap;gap:5px 20px;margin-bottom:16px}
+    .cv{font-size:12px;color:#9ca3af}.cv a{color:#6366f1;text-decoration:none}
+    .d2{height:1.5px;background:#f1f0ff;margin:20px 0}.dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}`,
+      `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="d1"></div>
+    <div class="ctrow">
+    ${d.personal.email ? `<span class="cv"><a href="mailto:${d.personal.email}">${d.personal.email}</a></span>` : ""}
+    ${d.personal.phone ? `<span class="cv"><a href="tel:${d.personal.phone}">${d.personal.phone}</a></span>` : ""}
+    ${d.personal.location ? `<span class="cv">${d.personal.location}</span>` : ""}
+    ${d.personal.linkedin ? `<span class="cv"><a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.linkedin}</a></span>` : ""}
+    ${d.personal.github ? `<span class="cv"><a href="https://${d.personal.github.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.github}</a></span>` : ""}
+    ${d.personal.website ? `<span class="cv"><a href="https://${d.personal.website.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.website}</a></span>` : ""}
+    </div><div class="d2"></div>
+    <div class="dt">${dt}</div>${addrBlock}${greet()}${secRows("#6366f1")}${achBlock("#6366f1")}${skillBlock("#6366f1")}${notesBlock}${closing("#6366f1")}</div>`,
+    );
+
+  if (id === "ivory")
+    return base(
+      `@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@300;400;600&display=swap');
+    body{font-family:'Source Sans 3',sans-serif;color:#374151;background:#fefce8}
+    .pg{max-width:820px;margin:0 auto;background:#fefce8;padding:60px 64px;border-left:5px solid #ca8a04}
+    .nm{font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:700;color:#1c1917;letter-spacing:-.5px;line-height:1.1}
+    .rl{font-size:13px;color:#92400e;font-style:italic;margin:8px 0 16px}
+    .div{height:1px;background:#fde68a;margin:16px 0}
+    .ctrow{display:flex;flex-wrap:wrap;gap:5px 18px;margin-bottom:14px}
+    .cv{font-size:12px;color:#78716c}.cv a{color:#b45309;text-decoration:none}.dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}`,
+      `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="div"></div>
+    <div class="ctrow">
+    ${d.personal.email ? `<span class="cv"><a href="mailto:${d.personal.email}">${d.personal.email}</a></span>` : ""}
+    ${d.personal.phone ? `<span class="cv"><a href="tel:${d.personal.phone}">${d.personal.phone}</a></span>` : ""}
+    ${d.personal.location ? `<span class="cv">${d.personal.location}</span>` : ""}
+    ${d.personal.linkedin ? `<span class="cv"><a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.linkedin}</a></span>` : ""}
+    ${d.personal.github ? `<span class="cv"><a href="https://${d.personal.github.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.github}</a></span>` : ""}
+    ${d.personal.website ? `<span class="cv"><a href="https://${d.personal.website.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.website}</a></span>` : ""}
+    </div><div class="div"></div>
+    <div class="dt">${dt}</div>${addrBlock}${greet()}${secRows("#b45309")}${achBlock("#b45309")}${skillBlock("#b45309")}${notesBlock}${closing("#b45309")}</div>`,
+    );
+
+  if (id === "motion")
     return base(
       `@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;900&family=Barlow:wght@400;500;600&display=swap');
-     body{font-family:'Barlow',sans-serif;color:#374151}
-     .pg{max-width:880px;margin:0 auto}
-     .hdr{background:linear-gradient(110deg,#ea580c,#f59e0b);padding:44px 52px;color:white;position:relative;overflow:hidden}
-     .hdr::after{content:'';position:absolute;right:0;top:0;bottom:0;width:100px;background:rgba(255,255,255,.08);clip-path:polygon(40% 0,100% 0,100% 100%)}
-     .nm{font-family:'Barlow Condensed',sans-serif;font-size:50px;font-weight:900;letter-spacing:-3px;text-transform:uppercase;line-height:.95;position:relative}
-     .rl{font-size:12px;letter-spacing:3px;text-transform:uppercase;opacity:.85;margin-top:9px;position:relative}
-     .ibar{background:#1e293b;padding:9px 52px;display:flex;gap:20px;flex-wrap:wrap}
-     .iv{font-size:11px;color:#94a3b8}
-     .iv a{color:#c4b5fd;text-decoration:none}
-     .body{padding:44px 52px}
-     .dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}
-     .gr{font-size:16px;font-weight:700;margin-bottom:22px;color:#1e293b}`,
-      `<div class="pg">
-      <div class="hdr"><div class="nm">${nm}</div><div class="rl">${ttl}</div></div>
-      <div class="ibar">
-        ${d.personal.email ? `<span class="iv">${d.personal.email}</span>` : ""}
-        ${d.personal.phone ? `<span class="iv">${d.personal.phone}</span>` : ""}
-        ${d.personal.location ? `<span class="iv">${d.personal.location}</span>` : ""}
-        ${d.personal.linkedin ? `<span class="iv"><a href="#">${d.personal.linkedin}</a></span>` : ""}
-        ${d.personal.github ? `<span class="iv"><a href="#">${d.personal.github}</a></span>` : ""}
-        ${d.personal.website ? `<span class="iv"><a href="#">${d.personal.website}</a></span>` : ""}
-      </div>
-      <div class="body">
-        <div class="dt">${dt}</div>${addrBlock}
-        <div class="gr">Dear ${mgr},</div>
-        ${secRows("#ea580c", true)}${achBlock("#ea580c")}${notesBlock}${closing("#ea580c")}
-      </div>
-    </div>`,
+    body{font-family:'Barlow',sans-serif;color:#374151;background:#fff}.pg{max-width:860px;margin:0 auto}
+    .tb{height:5.5px;background:linear-gradient(90deg,#ec4899,#f59e0b)}
+    .hdr{padding:44px 52px;border-bottom:1px solid #fce7f3;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px}
+    .nm{font-family:'Barlow Condensed',sans-serif;font-size:48px;font-weight:900;letter-spacing:-3px;text-transform:uppercase;line-height:.95;color:#111827}
+    .rl{font-size:13px;color:#ec4899;letter-spacing:2px;text-transform:uppercase;margin-top:8px;font-weight:600}
+    .cc{text-align:right;font-size:12px;color:#9ca3af}.cv{display:block;margin-bottom:4px;line-height:1.5}.cv a{color:#ec4899;text-decoration:none}
+    .body{padding:44px 52px}.dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}
+    .bb{height:5.5px;background:linear-gradient(90deg,#f59e0b,#ec4899)}`,
+      `<div class="pg"><div class="tb"></div>
+    <div class="hdr"><div><div class="nm">${nm}</div><div class="rl">${ttl}</div></div>
+    <div class="cc">
+    ${d.personal.email ? `<span class="cv"><a href="mailto:${d.personal.email}">${d.personal.email}</a></span>` : ""}
+    ${d.personal.phone ? `<span class="cv"><a href="tel:${d.personal.phone}">${d.personal.phone}</a></span>` : ""}
+    ${d.personal.location ? `<span class="cv">${d.personal.location}</span>` : ""}
+    ${d.personal.linkedin ? `<span class="cv"><a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.linkedin}</a></span>` : ""}
+    ${d.personal.github ? `<span class="cv"><a href="https://${d.personal.github.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.github}</a></span>` : ""}
+    ${d.personal.website ? `<span class="cv"><a href="https://${d.personal.website.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.website}</a></span>` : ""}
+    </div></div>
+    <div class="body"><div class="dt">${dt}</div>${addrBlock}${greet()}${secRows("#ec4899")}${achBlock("#ec4899")}${skillBlock("#ec4899")}${notesBlock}${closing("#ec4899")}</div>
+    <div class="bb"></div></div>`,
     );
 
-  /* ── MOSS ─────────────────────────── */
-  if (id === "moss")
+  if (id === "architect")
     return base(
-      `@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,600;0,700;1,400&family=Source+Sans+3:wght@300;400;600&display=swap');
-     body{font-family:'Source Sans 3',sans-serif;color:#374151}
-     .pg{max-width:840px;margin:0 auto;border:1px solid #bbf7d0}
-     .hdr{background:linear-gradient(135deg,#14532d,#15803d);padding:44px;color:white;display:flex;align-items:center;gap:22px}
-     .lf{font-size:48px;opacity:.3;flex-shrink:0}
-     .nm{font-family:'Lora',serif;font-size:34px;font-weight:700;letter-spacing:-.5px;margin-bottom:4px}
-     .rl{font-size:11px;opacity:.8;letter-spacing:1.5px;text-transform:uppercase}
-     .strip{background:#f0fdf4;padding:9px 44px;display:flex;flex-wrap:wrap;gap:6px 18px;border-bottom:1px solid #bbf7d0}
-     .sv{font-size:11.5px;color:#166534}
-     .sv a{color:#15803d;text-decoration:none}
-     .body{padding:44px 48px}
-     .dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}
-     .gr{font-family:'Lora',serif;font-size:16px;font-weight:700;margin-bottom:22px;color:#14532d}`,
-      `<div class="pg">
-      <div class="hdr">
-        <div class="lf">🌿</div>
-        <div><div class="nm">${nm}</div><div class="rl">${ttl}</div></div>
-      </div>
-      <div class="strip">
-        ${d.personal.email ? `<span class="sv">${d.personal.email}</span>` : ""}
-        ${d.personal.phone ? `<span class="sv">${d.personal.phone}</span>` : ""}
-        ${d.personal.location ? `<span class="sv">${d.personal.location}</span>` : ""}
-        ${d.personal.linkedin ? `<span class="sv"><a href="#">${d.personal.linkedin}</a></span>` : ""}
-        ${d.personal.github ? `<span class="sv"><a href="#">${d.personal.github}</a></span>` : ""}
-        ${d.personal.website ? `<span class="sv"><a href="#">${d.personal.website}</a></span>` : ""}
-      </div>
-      <div class="body">
-        <div class="dt">${dt}</div>${addrBlock}
-        <div class="gr">Dear ${mgr},</div>
-        ${secRows("#166534")}${achBlock("#166534")}${notesBlock}${closing("#166534")}
-      </div>
-    </div>`,
+      `@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+    body{font-family:'Plus Jakarta Sans',sans-serif;color:#374151;background:#f8fafc}.pg{max-width:880px;margin:0 auto;background:#f8fafc}
+    .hdr{padding:44px 52px;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap}
+    .hl{flex:1}.nm{font-size:34px;font-weight:800;color:#0f172a;letter-spacing:-1.5px}
+    .rl{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#64748b;margin-top:7px;margin-bottom:14px}
+    .ctrow{display:flex;flex-wrap:wrap;gap:4px 14px}.cv{font-size:12px;color:#64748b}.cv a{color:#4f46e5;text-decoration:none}
+    .hr{width:130px;flex-shrink:0;background:#0f172a;border-radius:12px;padding:16px;text-align:center}
+    .hrl{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:#64748b;margin-bottom:6px}
+    .hrr{font-size:11px;font-weight:700;color:white;line-height:1.4}.hrc{font-size:10px;color:#94a3b8;margin-top:4px}
+    .body{padding:36px 52px}.dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}`,
+      `<div class="pg"><div class="hdr">
+    <div class="hl"><div class="nm">${nm}</div><div class="rl">${ttl}</div>
+    <div class="ctrow">
+    ${d.personal.email ? `<span class="cv"><a href="mailto:${d.personal.email}">${d.personal.email}</a></span>` : ""}
+    ${d.personal.phone ? `<span class="cv"><a href="tel:${d.personal.phone}">${d.personal.phone}</a></span>` : ""}
+    ${d.personal.location ? `<span class="cv">${d.personal.location}</span>` : ""}
+    ${d.personal.linkedin ? `<span class="cv"><a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.linkedin}</a></span>` : ""}
+    ${d.personal.github ? `<span class="cv"><a href="https://${d.personal.github.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.github}</a></span>` : ""}
+    ${d.personal.website ? `<span class="cv"><a href="https://${d.personal.website.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.website}</a></span>` : ""}
+    </div></div>
+    ${d.company.name ? `<div class="hr"><div class="hrl">Applying to</div><div class="hrr">${d.company.jobTitle || "Open Role"}</div><div class="hrc">${d.company.name}</div></div>` : ""}
+    </div>
+    <div class="body"><div class="dt">${dt}</div>${addrBlock}${greet()}${secRows("#0f172a", true)}${achBlock("#0f172a")}${skillBlock("#0f172a")}${notesBlock}${closing("#0f172a")}</div></div>`,
     );
 
-  /* ── NEON ─────────────────────────── */
-  if (id === "neon")
+  if (id === "serif")
     return base(
-      `@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;700;900&display=swap');
-     body{font-family:'Exo 2',sans-serif;background:#0a0f1e;color:#94a3b8;min-height:100vh}
-     .pg{max-width:880px;margin:0 auto;background:#0d1224;min-height:100vh}
-     .hdr{padding:52px;border-bottom:1px solid rgba(34,211,238,.15);position:relative}
-     .hdr::after{content:'';position:absolute;bottom:-1px;left:0;width:220px;height:2px;background:linear-gradient(90deg,#22d3ee,transparent)}
-     .nm{font-size:44px;font-weight:900;letter-spacing:-3px;color:white;line-height:1}
-     .rl{font-size:10.5px;letter-spacing:3px;text-transform:uppercase;color:#22d3ee;margin-top:10px;margin-bottom:20px}
-     .chips{display:flex;flex-wrap:wrap;gap:8px}
-     .chip{padding:3px 11px;border:1px solid rgba(34,211,238,.25);color:#64748b;font-size:10.5px;font-family:'Share Tech Mono',monospace;border-radius:4px}
-     .chip a{color:#22d3ee;text-decoration:none}
-     .body{padding:46px 52px}
-     .dt{font-size:11.5px;font-family:'Share Tech Mono',monospace;color:#4a5578;margin-bottom:22px}
-     .gr{font-size:16px;font-weight:700;color:white;margin-bottom:22px}
-     .sh4{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#22d3ee;margin-bottom:7px;border-left:2px solid #22d3ee;padding-left:10px}`,
-      `<div class="pg">
-      <div class="hdr">
-        <div class="nm">${nm}</div>
-        <div class="rl">${ttl}</div>
-        <div class="chips">
-          ${d.personal.email ? `<span class="chip">${d.personal.email}</span>` : ""}
-          ${d.personal.phone ? `<span class="chip">${d.personal.phone}</span>` : ""}
-          ${d.personal.location ? `<span class="chip">${d.personal.location}</span>` : ""}
-          ${d.personal.linkedin ? `<span class="chip"><a href="#">${d.personal.linkedin}</a></span>` : ""}
-          ${d.personal.github ? `<span class="chip"><a href="#">${d.personal.github}</a></span>` : ""}
-          ${d.personal.website ? `<span class="chip"><a href="#">${d.personal.website}</a></span>` : ""}
-        </div>
-      </div>
-      <div class="body">
-        <div class="dt">${dt}</div>
-        <div style="margin-bottom:22px;font-size:13px;line-height:2"><strong style="color:#e2e8f0">${mgr}${d.company.hiringManagerTitle ? `, ${d.company.hiringManagerTitle}` : ""}</strong><br>${d.company.name}${loc ? `<br><span style='color:#4a5578'>${loc}</span>` : ""}</div>
-        <div class="gr">Dear ${mgr},</div>
-        ${d.sections
-          .filter((s) => s.content.trim())
-          .map(
-            (s) =>
-              `<div style="margin-bottom:24px"><div class="sh4">${s.title}</div><p style="line-height:1.8;font-size:13.5px">${s.content.replace(/\n/g, "<br>")}</p></div>`,
-          )
-          .join("")}
-        ${achBlock("#22d3ee")}${notesBlock}
-        <div style="margin-top:36px;color:#64748b">Sincerely,<br><br><strong style="color:white;font-size:15px">${nm}</strong></div>
-      </div>
-    </div>`,
-    );
-
-  /* ── CHALK ────────────────────────── */
-  if (id === "chalk")
-    return base(
-      `@import url('https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Nunito:wght@300;400;600;700&display=swap');
-     body{font-family:'Nunito',sans-serif;background:#fdfcfa;color:#374151}
-     .pg{max-width:820px;margin:0 auto;background:white;border:2px dashed #d6d3d1;padding:56px 60px}
-     .nm{font-family:'Kalam',cursive;font-size:44px;color:#1c1917;line-height:1.1;margin-bottom:6px}
-     .rl{font-family:'Kalam',cursive;font-size:16px;color:#78716c;margin-bottom:16px}
-     .ctrow{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px;padding-bottom:28px;border-bottom:2px dashed #e7e5e4}
-     .ct{font-size:11.5px;color:#57534e;border:1.5px dashed #d6d3d1;padding:4px 12px;border-radius:8px}
-     .ct a{color:#57534e;text-decoration:none}
-     .dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}
-     .gr{font-family:'Kalam',cursive;font-size:18px;margin-bottom:22px;color:#1c1917}`,
-      `<div class="pg">
-      <div class="nm">${nm}</div>
-      <div class="rl">${ttl}</div>
-      <div class="ctrow">
-        ${d.personal.email ? `<span class="ct">${d.personal.email}</span>` : ""}
-        ${d.personal.phone ? `<span class="ct">${d.personal.phone}</span>` : ""}
-        ${d.personal.location ? `<span class="ct">${d.personal.location}</span>` : ""}
-        ${d.personal.linkedin ? `<span class="ct"><a href="#">${d.personal.linkedin}</a></span>` : ""}
-        ${d.personal.github ? `<span class="ct"><a href="#">${d.personal.github}</a></span>` : ""}
-        ${d.personal.website ? `<span class="ct"><a href="#">${d.personal.website}</a></span>` : ""}
-      </div>
-      <div class="dt">${dt}</div>${addrBlock}
-      <div class="gr">Dear ${mgr},</div>
-      ${secRows("#57534e")}${achBlock("#57534e")}${notesBlock}${closing("#57534e")}
-    </div>`,
+      `@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&display=swap');
+    body{font-family:'Source Serif 4',serif;color:#374151;background:#fff}.pg{max-width:820px;margin:0 auto;padding:52px 64px}
+    .r1{height:2px;background:#1e293b;margin-bottom:20px}
+    .nm{font-family:'Playfair Display',serif;font-size:42px;font-weight:900;color:#1e293b;letter-spacing:-1.5px;text-align:center;margin-bottom:6px}
+    .rl{font-size:12px;color:#64748b;text-align:center;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
+    .ctrow{display:flex;justify-content:center;flex-wrap:wrap;gap:5px 20px;margin-bottom:16px}
+    .cv{font-size:12px;color:#64748b}.cv a{color:#4338ca;text-decoration:none}
+    .r2{height:1px;background:#e5e7eb;margin-bottom:20px}.dt{font-size:12.5px;color:#9ca3af;margin-bottom:22px}`,
+      `<div class="pg"><div class="r1"></div><div class="nm">${nm}</div><div class="rl">${ttl}</div>
+    <div class="ctrow">
+    ${d.personal.email ? `<span class="cv"><a href="mailto:${d.personal.email}">${d.personal.email}</a></span>` : ""}
+    ${d.personal.phone ? `<span class="cv"><a href="tel:${d.personal.phone}">${d.personal.phone}</a></span>` : ""}
+    ${d.personal.location ? `<span class="cv">${d.personal.location}</span>` : ""}
+    ${d.personal.linkedin ? `<span class="cv"><a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.linkedin}</a></span>` : ""}
+    ${d.personal.github ? `<span class="cv"><a href="https://${d.personal.github.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.github}</a></span>` : ""}
+    ${d.personal.website ? `<span class="cv"><a href="https://${d.personal.website.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.website}</a></span>` : ""}
+    </div><div class="r2"></div>
+    <div class="dt">${dt}</div>${addrBlock}${greet()}${secRows("#4338ca")}${achBlock("#4338ca")}${skillBlock("#4338ca")}${notesBlock}${closing("#4338ca")}</div>`,
     );
 
   return buildHTML("aurora", d);
 }
 
-// ═══════════════════════════════════════════
-// STEP TYPES
-// ═══════════════════════════════════════════
-type Step = "template" | "personal" | "company" | "content";
+/* ─────────────────────────────────────────────────────────────────
+   STEPS
+───────────────────────────────────────────────────────────────── */
+type Step = "template" | "personal" | "company" | "content" | "review";
 const STEPS: { id: Step; label: string; icon: string }[] = [
   { id: "template", label: "Template", icon: "🎨" },
   { id: "personal", label: "Personal", icon: "👤" },
   { id: "company", label: "Company", icon: "🏢" },
   { id: "content", label: "Content", icon: "✍️" },
+  { id: "review", label: "Review", icon: "✅" },
 ];
 
-// ═══════════════════════════════════════════
-// MAIN COMPONENT
-// ═══════════════════════════════════════════
+/* ─────────────────────────────────────────────────────────────────
+   FIELD WRAPPER
+───────────────────────────────────────────────────────────────── */
+function F({
+  label,
+  icon,
+  required,
+  children,
+}: {
+  label: string;
+  icon?: string;
+  required?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="mb-3.5">
+      <label className="block text-[10.5px] font-bold tracking-wide uppercase text-slate-500 mb-1.5">
+        {label}
+        {required && <span className="text-red-500"> *</span>}
+      </label>
+      <div className="relative">
+        {icon && (
+          <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[13px] opacity-50 pointer-events-none">
+            {icon}
+          </span>
+        )}
+        <div
+          className={
+            icon ? "[&>input]:pl-8 [&>textarea]:pl-3 [&>select]:pl-8" : ""
+          }
+        >
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* shared input classes */
+const inp =
+  "w-full px-3 py-2.5 text-[13px] font-[500] border-[1.5px] border-slate-200 rounded-xl outline-none transition-all duration-150 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 placeholder:text-slate-400 bg-white text-slate-800";
+const ta = `${inp} resize-y min-h-[80px] leading-relaxed px-3`;
+
+/* ─────────────────────────────────────────────────────────────────
+   MAIN COMPONENT
+───────────────────────────────────────────────────────────────── */
 export default function CoverLetterGenerator() {
-       const router = useRouter();
-     
+  const router = useRouter();
   const [step, setStep] = useState<Step>("template");
   const [tplId, setTplId] = useState("aurora");
   const [data, setData] = useState<CLData>(JSON.parse(JSON.stringify(BLANK)));
   const [html, setHtml] = useState("");
   const [modal, setModal] = useState(false);
   const [achIn, setAchIn] = useState("");
+  const [sklIn, setSklIn] = useState("");
   const [toast, setToast] = useState("");
   const [busy, setBusy] = useState(false);
-  const [filter, setFilter] = useState("All");
-  const [mobilePreview, setMobilePreview] = useState(false);
 
   const liveRef = useRef<HTMLIFrameElement>(null);
   const modalRef = useRef<HTMLIFrameElement>(null);
 
   const showToast = (m: string) => {
     setToast(m);
-    setTimeout(() => setToast(""), 2600);
+    setTimeout(() => setToast(""), 2800);
   };
 
   const rebuild = useCallback(() => {
@@ -12188,11 +18425,14 @@ export default function CoverLetterGenerator() {
   }, [tplId, data]);
 
   useEffect(() => {
-    const t = setTimeout(rebuild, 220);
+    const t = setTimeout(rebuild, 200);
     return () => clearTimeout(t);
   }, [rebuild]);
 
-  const writeIframe = (ref: React.RefObject<HTMLIFrameElement | null>, h: string) => {
+  const writeIframe = (
+    ref: React.RefObject<HTMLIFrameElement | null>,
+    h: string,
+  ) => {
     if (!ref.current) return;
     const doc = ref.current.contentDocument;
     if (!doc) return;
@@ -12202,39 +18442,24 @@ export default function CoverLetterGenerator() {
   };
 
   useEffect(() => {
-    if (html) writeIframe(liveRef, html);
+    if (html && liveRef.current) writeIframe(liveRef, html);
   }, [html]);
   useEffect(() => {
-    if ((modal || mobilePreview) && html) writeIframe(modalRef, html);
-  }, [modal, mobilePreview, html]);
+    if (modal && html && modalRef.current) writeIframe(modalRef, html);
+  }, [modal, html]);
 
   const set = (path: string[], val: string) =>
     setData((prev) => {
       const n = JSON.parse(JSON.stringify(prev)) as CLData;
-      let cur: any = n;
-      for (let i = 0; i < path.length - 1; i++) cur = cur[path[i]];
-      cur[path[path.length - 1]] = val;
+      let c: any = n;
+      for (let i = 0; i < path.length - 1; i++) c = c[path[i]];
+      c[path[path.length - 1]] = val;
       return n;
     });
-
-  const setSection = (id: string, f: "title" | "content", v: string) =>
+  const setSec = (id: string, f: "title" | "content", v: string) =>
     setData((p) => ({
       ...p,
       sections: p.sections.map((s) => (s.id === id ? { ...s, [f]: v } : s)),
-    }));
-
-  const addSection = () =>
-    setData((p) => ({
-      ...p,
-      sections: [
-        ...p.sections,
-        {
-          id: Date.now() + "",
-          title: "New Section",
-          content: "",
-          placeholder: "Write here…",
-        },
-      ],
     }));
 
   const downloadPDF = async () => {
@@ -12254,9 +18479,9 @@ export default function CoverLetterGenerator() {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      showToast("✓ PDF Downloaded successfully");
+      showToast("✓ PDF downloaded");
     } catch {
-      showToast("Download failed — please try again");
+      showToast("Download failed — try again");
     } finally {
       setBusy(false);
     }
@@ -12264,400 +18489,203 @@ export default function CoverLetterGenerator() {
 
   const tpl = TEMPLATES.find((t) => t.id === tplId)!;
   const stepIdx = STEPS.findIndex((s) => s.id === step);
-  const shownTpls =
-    filter === "All" ? TEMPLATES : TEMPLATES.filter((t) => t.tag === filter);
+
+  const tones = [
+    "Professional",
+    "Confident",
+    "Enthusiastic",
+    "Formal",
+    "Creative",
+    "Friendly",
+  ];
 
   return (
     <>
+      {/* Only CSS we truly need: iframe dimensions + canvas transforms + body overflow lock */}
       <style>{`
-      @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
-      :root {
-        --p: #5b38f0; --p2: #7c3aed; --p3: #9f67ff;
-        --p10: #f3f0ff; --p20: #ede9fe; --p30: #ddd6fe; --p50: #c4b5fd;
-        --ink: #0d0b1e; --ink2: #1e1b4b; --ink3: #3730a3;
-        --sub: #64688a; --muted: #9ca3af; --ghost: #b8bbd4;
-        --border: #e4e1f0; --border2: #ede9fe;
-        --bg: #f5f3ff; --bg2: #eeeafb; --white: #ffffff;
-        --r8: 8px; --r12: 12px; --r16: 16px; --r20: 20px; --r24: 24px;
-        --sh1: 0 1px 4px rgba(91,56,240,.08);
-        --sh2: 0 4px 20px rgba(91,56,240,.12);
-        --sh3: 0 12px 40px rgba(91,56,240,.18);
-        --shw: 0 20px 60px rgba(91,56,240,.22);
-      }
-     //  html, body { height: 100%; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; overflow: hidden; }
-     //  @media (max-width: 820px) { html, body { overflow: auto; } }
+        html,body{overflow:hidden}
+        @media(max-width:820px){html,body{overflow:auto}}
+        .canvas-iframe{width:860px;height:1120px;border:none;display:block;border-radius:10px;pointer-events:none}
+        .modal-iframe{width:860px;height:1120px;border:none;display:block}
+        @keyframes livePulse{0%,100%{box-shadow:0 0 0 2px rgba(16,185,129,.2)}50%{box-shadow:0 0 0 5px rgba(16,185,129,.07)}}
+        .live-dot{animation:livePulse 2s infinite}
+        @keyframes toastSlide{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+        .toast-anim{animation:toastSlide .22s ease}
+        @keyframes modalUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+        .modal-anim{animation:modalUp .22s ease}
+        @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+        .ov-anim{animation:fadeIn .18s ease}
+      `}</style>
 
-      /* ── NAV ─────────────────────── */
-      .nav {
-        height: 60px; background: var(--white); border-bottom: 1.5px solid var(--border);
-        display: flex; align-items: center; padding: 0 24px; gap: 12px; position: relative; z-index: 200;
-        box-shadow: var(--sh1);
-      }
-      .nav-logo { display: flex; align-items: center; gap: 9px; flex-shrink: 0; }
-      .nav-logo-gem {
-        width: 32px; height: 32px; border-radius: 9px;
-        background: linear-gradient(135deg, var(--p), var(--p2));
-        display: flex; align-items: center; justify-content: center; font-size: 15px;
-        box-shadow: 0 4px 12px rgba(91,56,240,.35);
-      }
-      .nav-brand { font-size: 16px; font-weight: 800; color: var(--ink); letter-spacing: -.3px; }
-      .nav-brand span { color: var(--p); }
-      .nav-divider { width: 1px; height: 22px; background: var(--border); margin: 0 4px; }
+      {/* ── NAV ─────────────────────────────────────────────── */}
+      <nav className="h-[58px] bg-white border-b border-slate-200 flex items-center px-4 md:px-5 gap-3 z-50 relative shadow-[0_1px_4px_rgba(91,56,240,.06)] flex-shrink-0">
+        {/* Logo - responsive sizing */}
+        <button
+          onClick={() => router.push("/")}
+          className="cursor-pointer flex-shrink-0"
+        >
+          <div className="relative w-[100px] xs:w-[120px] sm:w-[140px] md:w-[150px] h-[33px] xs:h-[40px] sm:h-[46px] md:h-[50px]">
+            <Image
+              src="/logo.png"
+              alt="ATS Pass"
+              fill
+              className="object-contain"
+              priority
+              sizes="(max-width: 480px) 100px, (max-width: 640px) 120px, (max-width: 768px) 140px, 150px"
+            />
+          </div>
+        </button>
 
-      /* wizard */
-      .wizard { display: flex; align-items: center; gap: 0; flex: 1; justify-content: center; overflow-x: auto; padding: 0 8px; scrollbar-width: none; }
-      .wizard::-webkit-scrollbar { display: none; }
-      .wz { display: flex; align-items: center; gap: 7px; padding: 5px 8px; border-radius: 30px; cursor: pointer; transition: all .2s; flex-shrink: 0; }
-      .wz:hover:not(.wz-active) { background: var(--p10); }
-      .wz-dot {
-        width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--border);
-        background: var(--white); display: flex; align-items: center; justify-content: center;
-        font-size: 11px; font-weight: 800; color: var(--muted); transition: all .2s; flex-shrink: 0;
-      }
-      .wz-done .wz-dot { background: #10b981; border-color: #10b981; color: white; }
-      .wz-active .wz-dot { background: linear-gradient(135deg,var(--p),var(--p2)); border-color: transparent; color: white; box-shadow: 0 0 0 3px rgba(91,56,240,.18); }
-      .wz-label { font-size: 12.5px; font-weight: 700; color: var(--muted); transition: .2s; white-space: nowrap; }
-      .wz-done .wz-label, .wz-active .wz-label { color: var(--ink); }
-      .wz-line { width: 24px; height: 2px; background: var(--border); transition: .3s; flex-shrink: 0; }
-      .wz-line-done { background: #10b981; }
-      @media (max-width: 600px) { .wz-label { display: none; } .wz-line { width: 14px; } .nav { padding: 0 14px; gap: 8px; } }
-
-      .nav-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-      .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 40px; font-size: 12.5px; font-weight: 700; cursor: pointer; border: none; font-family: inherit; transition: all .18s; white-space: nowrap; letter-spacing: .1px; }
-      .btn-ghost { background: transparent; color: var(--sub); border: 1.5px solid var(--border); }
-      .btn-ghost:hover { background: var(--p10); border-color: var(--p30); color: var(--p); }
-      .btn-primary { background: linear-gradient(135deg,var(--p),var(--p2)); color: white; box-shadow: 0 4px 14px rgba(91,56,240,.3); }
-      .btn-primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 22px rgba(91,56,240,.38); }
-      .btn-primary:disabled { opacity: .55; cursor: not-allowed; transform: none; }
-      .btn-sm { padding: 7px 14px; font-size: 11.5px; }
-      .btn-icon { padding: 8px; border-radius: 10px; }
-
-      /* ── SHELL ───────────────────── */
-      .shell { display: grid; grid-template-columns: 1fr 1fr; height: calc(100vh - 60px); }
-      @media (max-width: 1100px) { .shell { grid-template-columns: 1fr 420px; } }
-      @media (max-width: 820px) { .shell { grid-template-columns: 1fr; height: auto; } }
-
-      /* ── LEFT ───────────────────── */
-      .left { display: flex; flex-direction: column; background: var(--bg); overflow: hidden; }
-      .left-hd { flex-shrink: 0; padding: 28px 32px 0; }
-      .page-eyebrow { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-      .eyebrow-icon { width: 30px; height: 30px; background: linear-gradient(135deg,var(--p),var(--p2)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
-      .eyebrow-label { font-size: 12px; font-weight: 700; letter-spacing: .5px; color: var(--p); text-transform: uppercase; }
-      .page-title { font-size: clamp(20px, 3vw, 26px); font-weight: 800; color: var(--ink); letter-spacing: -.5px; margin-bottom: 4px; }
-      .page-sub { font-size: 13.5px; color: var(--sub); margin-bottom: 18px; }
-      .tip-pill { display: inline-flex; align-items: center; gap: 7px; padding: 7px 16px; background: linear-gradient(135deg,var(--p),var(--p2)); color: white; border-radius: 40px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; font-family: inherit; margin-bottom: 4px; box-shadow: 0 4px 12px rgba(91,56,240,.25); transition: .18s; }
-      .tip-pill:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(91,56,240,.32); }
-
-      .left-body { flex: 1; overflow-y: auto; padding: 16px 32px 24px; scrollbar-width: thin; scrollbar-color: var(--p30) transparent; }
-      .left-body::-webkit-scrollbar { width: 4px; }
-      .left-body::-webkit-scrollbar-thumb { background: var(--p30); border-radius: 4px; }
-      @media (max-width: 820px) { .left-body { overflow-y: visible; } .left { overflow: visible; } }
-
-      /* ── TEMPLATE GRID ─────────── */
-      .filter-row { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 16px; }
-      .f-btn { padding: 5px 15px; border-radius: 30px; font-size: 11.5px; font-weight: 700; cursor: pointer; border: 1.5px solid var(--border); background: white; color: var(--sub); font-family: inherit; transition: .15s; }
-      .f-btn:hover, .f-btn.on { border-color: var(--p); color: var(--p); background: var(--p10); }
-
-      .tpl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px; margin-bottom: 8px; }
-      @media (max-width: 480px) { .tpl-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
-
-      .tpl-card { background: white; border: 2px solid var(--border2); border-radius: var(--r16); overflow: hidden; cursor: pointer; transition: all .22s; position: relative; }
-      .tpl-card:hover { transform: translateY(-4px); box-shadow: var(--sh3); border-color: var(--p50); }
-      .tpl-card.on { border-color: var(--p); box-shadow: 0 0 0 4px rgba(91,56,240,.14), var(--sh2); }
-      .tpl-thumb { height: 110px; overflow: hidden; background: #f8f7ff; }
-      .tpl-thumb svg { display: block; }
-      .tpl-chk { position: absolute; top: 8px; right: 8px; width: 22px; height: 22px; background: var(--p); border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 0; transition: .2s; box-shadow: 0 2px 8px rgba(91,56,240,.4); }
-      .tpl-card.on .tpl-chk { opacity: 1; }
-      .tpl-chk svg { width: 12px; height: 12px; stroke: white; stroke-width: 2.5; fill: none; }
-      .tpl-info { padding: 11px 13px 13px; }
-      .tpl-tag { font-size: 9.5px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--p); margin-bottom: 3px; }
-      .tpl-name { font-size: 13.5px; font-weight: 800; color: var(--ink); }
-      .tpl-name-sub { font-size: 11px; color: var(--sub); margin-top: 1px; }
-
-      /* ── FORM CARD ─────────────── */
-      .card { background: white; border-radius: var(--r20); padding: 22px; margin-bottom: 14px; box-shadow: var(--sh1); border: 1.5px solid var(--border2); }
-      .card-hd { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
-      .card-ico { width: 38px; height: 38px; background: linear-gradient(135deg,var(--p),var(--p2)); border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; box-shadow: 0 4px 12px rgba(91,56,240,.25); }
-      .card-title { font-size: 14.5px; font-weight: 800; color: var(--ink); }
-      .card-sub { font-size: 12px; color: var(--sub); margin-top: 1px; }
-
-      /* fields */
-      .fld { margin-bottom: 14px; }
-      .fld-lbl { font-size: 11px; font-weight: 800; letter-spacing: .8px; text-transform: uppercase; color: var(--sub); margin-bottom: 6px; display: block; }
-      .fld-lbl span { color: #ef4444; }
-      .iw { position: relative; }
-      .iw-ic { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 13px; pointer-events: none; opacity: .5; }
-      input, textarea, select {
-        width: 100%; padding: 10px 12px 10px 36px; border: 1.5px solid var(--border); border-radius: var(--r12);
-        font-size: 13px; font-family: inherit; color: var(--ink); background: white; outline: none; transition: .15s;
-      }
-      textarea { padding-left: 12px; resize: vertical; min-height: 80px; line-height: 1.65; }
-      .bare { padding-left: 12px; }
-      input:focus, textarea:focus, select:focus { border-color: var(--p); box-shadow: 0 0 0 3px rgba(91,56,240,.1); }
-      input::placeholder, textarea::placeholder { color: var(--ghost); }
-      .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-      .g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-      @media (max-width: 520px) { .g2, .g3 { grid-template-columns: 1fr; } }
-
-      /* section blocks */
-      .sec-block { background: var(--p10); border: 1.5px solid var(--p20); border-radius: var(--r12); padding: 13px; margin-bottom: 11px; transition: .2s; }
-      .sec-block:focus-within { background: white; border-color: var(--p); box-shadow: 0 0 0 3px rgba(91,56,240,.07); }
-      .sec-hd { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
-      .sec-num { width: 22px; height: 22px; border-radius: 7px; background: linear-gradient(135deg,var(--p),var(--p2)); color: white; font-size: 10px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-      .sec-ti { flex: 1; padding: 6px 10px; border-radius: 8px; border: 1.5px solid var(--border); font-size: 12.5px; font-weight: 700; background: white; font-family: inherit; color: var(--ink); outline: none; transition: .15s; }
-      .sec-ti:focus { border-color: var(--p); }
-      .sec-del { width: 26px; height: 26px; background: white; border: 1.5px solid var(--border); border-radius: 7px; cursor: pointer; color: #f87171; font-size: 13px; display: flex; align-items: center; justify-content: center; transition: .15s; }
-      .sec-del:hover { background: #fef2f2; border-color: #fca5a5; }
-      .sec-ta { width: 100%; padding: 9px 11px; border-radius: 9px; border: 1.5px solid var(--border); font-size: 12.5px; font-family: inherit; outline: none; resize: vertical; transition: .15s; background: white; }
-      .sec-ta:focus { border-color: var(--p); box-shadow: 0 0 0 3px rgba(91,56,240,.08); }
-
-      .add-btn { width: 100%; padding: 9px; background: white; border: 1.5px dashed var(--p30); border-radius: var(--r12); color: var(--p); font-size: 12.5px; font-weight: 700; cursor: pointer; font-family: inherit; transition: .15s; margin-bottom: 14px; }
-      .add-btn:hover { background: var(--p10); border-color: var(--p); }
-
-      .hdiv { height: 1px; background: var(--border2); margin: 16px 0; }
-      .sub-lbl { font-size: 10.5px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--p); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
-
-      /* achievements */
-      .ach-row { display: flex; gap: 7px; margin-bottom: 9px; }
-      .ach-in { flex: 1; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: var(--r12); font-size: 12.5px; font-family: inherit; outline: none; transition: .15s; }
-      .ach-in:focus { border-color: var(--p); box-shadow: 0 0 0 3px rgba(91,56,240,.08); }
-      .ach-add { padding: 9px 16px; background: linear-gradient(135deg,var(--p),var(--p2)); color: white; border: none; border-radius: var(--r12); cursor: pointer; font-size: 12px; font-weight: 700; font-family: inherit; transition: .15s; }
-      .ach-add:hover { box-shadow: 0 4px 12px rgba(91,56,240,.3); }
-      .ach-list { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 4px; }
-      .ach-tag { display: flex; align-items: center; gap: 5px; padding: 4px 10px 4px 9px; background: var(--p10); border: 1.5px solid var(--p20); border-radius: 30px; font-size: 12px; font-weight: 600; color: var(--p); }
-      .ach-rm { background: none; border: none; cursor: pointer; color: var(--p50); font-size: 14px; line-height: 1; padding: 0; display: flex; transition: .15s; }
-      .ach-rm:hover { color: #ef4444; }
-
-      /* ── FOOTER ──────────────────── */
-      .left-ft { flex-shrink: 0; padding: 14px 32px; border-top: 1.5px solid var(--border); background: var(--white); display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-      .btn-back { display: flex; align-items: center; gap: 6px; padding: 10px 20px; border-radius: 40px; font-size: 13px; font-weight: 700; cursor: pointer; border: 1.5px solid var(--border); background: white; color: var(--sub); font-family: inherit; transition: .15s; }
-      .btn-back:hover:not(:disabled) { background: var(--p10); border-color: var(--p30); color: var(--p); }
-      .btn-back:disabled { opacity: .38; cursor: default; }
-      .btn-next { display: flex; align-items: center; gap: 8px; padding: 12px 28px; border-radius: 40px; font-size: 13.5px; font-weight: 800; cursor: pointer; border: none; background: linear-gradient(135deg,var(--p),var(--p2)); color: white; font-family: inherit; box-shadow: 0 4px 16px rgba(91,56,240,.32); transition: .18s; }
-      .btn-next:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(91,56,240,.4); }
-      .btn-next:disabled { opacity: .55; cursor: not-allowed; transform: none; }
-      @media (max-width: 480px) { .left-hd { padding: 20px 18px 0; } .left-body { padding: 14px 18px 20px; } .left-ft { padding: 12px 18px; } .btn-next { padding: 11px 22px; font-size: 13px; } }
-
-      /* ── RIGHT PREVIEW ───────────── */
-      .right { background: var(--bg2); border-left: 1.5px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
-      @media (max-width: 820px) { .right { display: none; } }
-      .right-hd { flex-shrink: 0; height: 54px; padding: 0 18px; background: var(--white); border-bottom: 1.5px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-      .right-hd-l { display: flex; align-items: center; gap: 9px; }
-      .live-dot { width: 7px; height: 7px; border-radius: 50%; background: #10b981; flex-shrink: 0; animation: livePulse 2s infinite; }
-      @keyframes livePulse { 0%,100% { box-shadow: 0 0 0 2px rgba(16,185,129,.2); } 50% { box-shadow: 0 0 0 5px rgba(16,185,129,.07); } }
-      .right-hd-info-title { font-size: 13px; font-weight: 700; }
-      .right-hd-info-sub { font-size: 11px; color: var(--muted); }
-      .right-hd-r { display: flex; align-items: center; gap: 7px; }
-      .change-tpl { display: flex; align-items: center; gap: 6px; padding: 6px 13px; border-radius: 30px; background: var(--p10); border: 1.5px solid var(--p20); font-size: 11.5px; font-weight: 700; color: var(--p); cursor: pointer; font-family: inherit; transition: .15s; }
-      .change-tpl:hover { background: var(--p20); border-color: var(--p30); }
-
-      .prev-scroll { flex: 1; overflow-y: auto; padding: 16px; scrollbar-width: thin; scrollbar-color: var(--p30) transparent; }
-      .prev-scroll::-webkit-scrollbar { width: 4px; }
-      .prev-scroll::-webkit-scrollbar-thumb { background: var(--p30); border-radius: 4px; }
-      .prev-wrap { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 32px rgba(91,56,240,.1); width: 100%; }
-      .prev-iframe { width: 100%; height: 1080px; border: none; display: block; pointer-events: none; }
-      .prev-empty { height: 380px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: var(--muted); text-align: center; padding: 24px; }
-      .prev-empty-icon { font-size: 52px; opacity: .18; }
-
-      /* ── MOBILE PREVIEW BTN ──────── */
-      .mob-prev-btn { display: none; }
-      @media (max-width: 820px) {
-        .mob-prev-btn {
-          display: flex; align-items: center; justify-content: center; gap: 8px;
-          position: fixed; bottom: 80px; right: 18px; z-index: 150;
-          padding: 12px 20px; border-radius: 40px; font-size: 13px; font-weight: 800;
-          background: linear-gradient(135deg,var(--p),var(--p2)); color: white;
-          border: none; cursor: pointer; font-family: inherit;
-          box-shadow: 0 8px 28px rgba(91,56,240,.4);
-        }
-      }
-
-      /* ── MODAL ───────────────────── */
-      .overlay { position: fixed; inset: 0; background: rgba(10,6,30,.84); backdrop-filter: blur(14px); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; animation: fadeIn .2s ease; }
-      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-      .modal { width: 100%; max-width: 960px; height: 92vh; background: white; border-radius: 24px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 48px 100px rgba(0,0,0,.45); animation: slideUp .25s ease; }
-      @keyframes slideUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
-      .modal-hd { flex-shrink: 0; height: 58px; padding: 0 24px; background: white; border-bottom: 1.5px solid var(--border2); display: flex; align-items: center; justify-content: space-between; }
-      .modal-hd-l { display: flex; align-items: center; gap: 10px; }
-      .modal-ico { width: 32px; height: 32px; background: linear-gradient(135deg,var(--p),var(--p2)); border-radius: 9px; display: flex; align-items: center; justify-content: center; color: white; font-size: 15px; }
-      .modal-title { font-size: 15px; font-weight: 800; }
-      .modal-sub { font-size: 11.5px; color: var(--sub); }
-      .modal-close { width: 32px; height: 32px; border-radius: 50%; background: var(--p10); border: 1.5px solid var(--p20); cursor: pointer; font-size: 17px; color: var(--sub); display: flex; align-items: center; justify-content: center; transition: .15s; font-family: sans-serif; }
-      .modal-close:hover { background: #fef2f2; border-color: #fca5a5; color: #ef4444; }
-      .modal-body { flex: 1; overflow-y: auto; background: var(--bg2); padding: 20px; display: flex; justify-content: center; }
-      .modal-inner { width: 100%; max-width: 900px; background: white; border-radius: 12px; overflow: hidden; box-shadow: var(--sh3); }
-      .modal-iframe { width: 100%; height: 1080px; border: none; display: block; }
-      .modal-ft { flex-shrink: 0; padding: 13px 24px; border-top: 1.5px solid var(--border2); background: white; display: flex; justify-content: flex-end; gap: 10px; }
-
-      @media (max-width: 640px) {
-        .overlay { padding: 0; align-items: flex-end; }
-        .modal { border-radius: 20px 20px 0 0; height: 90vh; }
-        .modal-iframe { height: 900px; }
-      }
-
-      /* ── TOAST ───────────────────── */
-      .toast { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%); background: var(--ink); color: white; padding: 11px 26px; border-radius: 40px; font-size: 13px; font-weight: 700; z-index: 9999; animation: toastIn .25s ease; box-shadow: 0 8px 28px rgba(0,0,0,.22); white-space: nowrap; }
-      @keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(10px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
-    `}</style>
-
-      {/* ── NAV ── */}
-      <nav className="nav">
-      
-         {/* Logo - responsive sizing */}
-                <button onClick={() => router.push("/")} className="cursor-pointer flex-shrink-0">
-                  <div className="relative w-25 xs:w-[120px] sm:w-35 md:w-[150px] h-[33px] xs:h-[40px] sm:h-[46px] md:h-[48px]">
-                    <Image
-                      src="/logo.png"
-                      alt="ATS Pass"
-                      fill
-                      className="object-contain"
-                      priority
-                      sizes="(max-width: 480px) 100px, (max-width: 640px) 120px, (max-width: 768px) 140px, 150px"
-                    />
-                  </div>
-                </button>
-
-        {/* WIZARD */}
-        <div className="wizard">
+        {/* Wizard */}
+        <div className="flex items-center flex-1 justify-center overflow-x-auto scrollbar-none gap-0 py-1">
           {STEPS.map((s, i) => (
             <React.Fragment key={s.id}>
               {i > 0 && (
                 <div
-                  className={`wz-line${i <= stepIdx ? " wz-line-done" : ""}`}
+                  className={`w-5 h-0.5 flex-shrink-0 transition-colors duration-300 ${i <= stepIdx ? "bg-emerald-500" : "bg-slate-200"}`}
                 />
               )}
-              <div
-                className={`wz ${i < stepIdx ? "wz-done" : i === stepIdx ? "wz-active" : ""}`}
+              <button
                 onClick={() => setStep(s.id)}
+                className={`flex items-center gap-1.5 px-2 py-1 rounded-full text-[12px] font-semibold transition-all duration-150 flex-shrink-0 cursor-pointer
+                  ${i < stepIdx ? "text-slate-800" : i === stepIdx ? "text-indigo-600 bg-indigo-50" : "text-slate-400 hover:bg-slate-50"}`}
               >
-                <div className="wz-dot">
+                <span
+                  className={`w-[22px] h-[22px] rounded-full flex items-center justify-center text-[10px] transition-all
+                  ${i < stepIdx ? "bg-emerald-500 text-white" : i === stepIdx ? "bg-gradient-to-br from-indigo-600 to-violet-600 text-white shadow-[0_0_0_3px_rgba(91,56,240,.16)]" : "bg-slate-100 text-slate-400"}`}
+                >
                   {i < stepIdx ? (
-                    <svg viewBox="0 0 16 16" width="12" height="12" fill="none">
+                    <svg viewBox="0 0 14 14" width="11" height="11" fill="none">
                       <polyline
-                        points="2,9 6,13 14,4"
+                        points="2,8 5,12 12,3"
                         stroke="white"
-                        strokeWidth="2.5"
+                        strokeWidth="2.2"
                       />
                     </svg>
                   ) : (
                     i + 1
                   )}
-                </div>
-                <span className="wz-label">{s.label}</span>
-              </div>
+                </span>
+                <span className="hidden sm:inline">{s.label}</span>
+              </button>
             </React.Fragment>
           ))}
         </div>
-
-     
       </nav>
 
-      {/* ── SHELL ── */}
-      <div className="shell">
-        {/* LEFT FORM */}
-        <div className="left">
-          <div className="left-hd">
-            
-            {step === "template" && (
-              <>
-                <div className="page-title">Choose Your Template</div>
-                <div className="page-sub">
-                  Pick a design that best represents your professional style
-                </div>
-              </>
-            )}
-            {step === "personal" && (
-              <>
-                <div className="page-title">Personal Information</div>
-                <div className="page-sub">
-                  Let recruiters find you with accurate contact details
-                </div>
-              </>
-            )}
-            {step === "company" && (
-              <>
-                <div className="page-title">Company Details</div>
-                <div className="page-sub">
-                  Tell us about where you're applying
-                </div>
-                <button className="tip-pill">🎯 Application Tips</button>
-              </>
-            )}
-            {step === "content" && (
-              <>
-                <div className="page-title">Letter Content</div>
-                <div className="page-sub">
-                  Craft compelling sections that showcase your value
-                </div>
-                <button className="tip-pill">✨ Generate With AI</button>
-              </>
-            )}
+      {/* ── SHELL ─────────────────────────────────────────────── */}
+      <div className="grid lg:grid-cols-[420px_1fr] xl:grid-cols-[1fr_1fr] h-[calc(100vh-58px)]">
+        {/* ── LEFT ─────────────────────────────────── */}
+        <div className="flex flex-col overflow-hidden bg-slate-50 border-r border-slate-200">
+          {/* Left header */}
+          <div className="flex-shrink-0 px-5 pt-5 pb-0">
+            <h2 className=" font-semibold text-slate-900 tracking-tight mb-0.5">
+              {step === "template"
+                ? "Choose Template"
+                : step === "personal"
+                  ? "Personal Information"
+                  : step === "company"
+                    ? "Company Details"
+                    : step === "content"
+                      ? "Letter Content"
+                      : "Review & Download"}
+            </h2>
+            <p className="text-[13px] text-slate-500 mb-3">
+              {step === "template"
+                ? "15 unique designs for every profession"
+                : step === "personal"
+                  ? "Your details shown on the letter"
+                  : step === "company"
+                    ? "Where you're applying"
+                    : step === "content"
+                      ? "Craft your compelling story"
+                      : "Check everything before downloading"}
+            </p>
           </div>
 
-          <div className="left-body">
-            {/* TEMPLATE PICKER */}
+          {/* Scrollable body */}
+          <div className="flex-1 overflow-y-auto px-5 pt-5 pb-12 scrollbar-thin scrollbar-thumb-indigo-200 scrollbar-track-transparent">
+            {/* ── TEMPLATE STEP ── */}
             {step === "template" && (
-             
-                <div className="tpl-grid">
-                  {TEMPLATES.map((t) => (
-                    <div
-                      key={t.id}
-                      className={`tpl-card${tplId === t.id ? " on" : ""}`}
-                      onClick={() => setTplId(t.id)}
-                    >
-                      <div className="tpl-thumb">
-                        <TemplateThumbnail id={t.id} />
-                      </div>
-                      <div className="tpl-chk">
-                        <svg viewBox="0 0 16 16">
-                          <polyline points="2,9 6,13 14,4" />
+              <div className="grid sm:grid-cols-2 sm:grid-cols-3 gap-3">
+                {TEMPLATES.map((t) => (
+                  <div
+                    key={t.id}
+                    onClick={() => setTplId(t.id)}
+                    className={`relative bg-white rounded-2xl border-2 overflow-hidden cursor-pointer transition-all duration-200
+                        ${tplId === t.id ? "border-indigo-500 shadow-[0_0_0_3px_rgba(99,102,241,.13),0_8px_24px_rgba(99,102,241,.14)]" : "border-slate-100 shadow-md shadow-gray-300 hover:-translate-y-1 hover:shadow-lg hover:border-indigo-200"}`}
+                  >
+                    <div className="h-[100px] overflow-hidden bg-slate-50">
+                      <TplThumb id={t.id} />
+                    </div>
+                    {tplId === t.id && (
+                      <div className="absolute top-2 right-2 w-5 h-5 bg-indigo-600 rounded-full flex items-center justify-center shadow-md">
+                        <svg
+                          viewBox="0 0 14 14"
+                          width="10"
+                          height="10"
+                          fill="none"
+                        >
+                          <polyline
+                            points="2,8 5,12 12,3"
+                            stroke="white"
+                            strokeWidth="2.4"
+                          />
                         </svg>
                       </div>
-                      <div className="tpl-info">
-                        <div className="tpl-tag">{t.tag}</div>
-                        <div className="tpl-name">{t.name}</div>
+                    )}
+                    <div className="px-3 py-2.5">
+                      <div className="text-[9px] font-extrabold tracking-[1.5px] uppercase text-slate-900 mb-0.5">
+                        {t.tag}
                       </div>
-                    </div>
-                  ))}
-                </div>
-            )}
-
-            {/* PERSONAL */}
-            {step === "personal" && (
-              <div className="card">
-                <div className="card-hd">
-                  <div>
-                    <div className="card-title">Your Profile</div>
-                    <div className="card-sub">
-                      Details displayed on your cover letter
+                      {/* <div className="text-[13px] font-extrabold text-slate-900">
+                          {t.name}
+                        </div> */}
                     </div>
                   </div>
+                ))}
+              </div>
+            )}
+
+            {/* ── PERSONAL STEP ── */}
+            {step === "personal" && (
+              <div className="bg-white rounded-2xl p-5 shadow-sm border border-indigo-100/60">
+                <div className="flex items-center gap-3 mb-4">
+                  <div>
+                    <p className="text-[14px] font-extrabold text-slate-900">
+                      Your Profile
+                    </p>
+                    <p className="text-[11.5px] text-slate-500">
+                      All fields appear in your letter
+                    </p>
+                  </div>
                 </div>
-                <div className="g2">
-                  <Fld label="Full Name" icon="✏️" req>
+                <div className="grid sm:sm:grid-cols-2 ">
+                  <F label="Full Name" required>
                     <input
-                      type="text"
+                      className={inp}
                       placeholder="Alexandra Chen"
                       value={data.personal.fullName}
                       onChange={(e) =>
                         set(["personal", "fullName"], e.target.value)
                       }
                     />
-                  </Fld>
-                  <Fld label="Professional Title" icon="💼">
+                  </F>
+                  <F label="Professional Title">
                     <input
-                      type="text"
-                      placeholder="Senior Designer"
+                      className={inp}
+                      placeholder="Senior UX Designer"
                       value={data.personal.title}
                       onChange={(e) =>
                         set(["personal", "title"], e.target.value)
                       }
                     />
-                  </Fld>
+                  </F>
                 </div>
-                <div className="g2">
-                  <Fld label="Email Address" icon="✉️" req>
+                <div className="grid sm:grid-cols-2 ">
+                  <F label="Email Address" required>
                     <input
+                      className={inp}
                       type="email"
                       placeholder="alex@email.com"
                       value={data.personal.email}
@@ -12665,199 +18693,273 @@ export default function CoverLetterGenerator() {
                         set(["personal", "email"], e.target.value)
                       }
                     />
-                  </Fld>
-                  <Fld label="Phone Number" icon="📞">
+                  </F>
+                  <F label="Phone Number">
                     <input
+                      className={inp}
                       type="tel"
-                      placeholder="+1 555 000 1234"
+                      placeholder="+1 555 000 0000"
                       value={data.personal.phone}
                       onChange={(e) =>
                         set(["personal", "phone"], e.target.value)
                       }
                     />
-                  </Fld>
+                  </F>
                 </div>
-                <Fld label="Location" icon="📍">
+                <F label="Location">
                   <input
-                    type="text"
+                    className={inp}
                     placeholder="San Francisco, CA"
                     value={data.personal.location}
                     onChange={(e) =>
                       set(["personal", "location"], e.target.value)
                     }
                   />
-                </Fld>
-                <div className="hdiv" />
-                <div className="sub-lbl">🔗 Online Presence</div>
-                <Fld label="LinkedIn URL" icon="💼">
+                </F>
+                <div className="h-px bg-indigo-50 my-3" />
+                <p className="text-[10px] font-extrabold tracking-widest uppercase text-indigo-500 mb-2">
+                  🔗 Online Presence — shown as clickable links
+                </p>
+                <F label="LinkedIn URL">
                   <input
-                    type="text"
+                    className={inp}
                     placeholder="linkedin.com/in/alexchen"
                     value={data.personal.linkedin}
                     onChange={(e) =>
                       set(["personal", "linkedin"], e.target.value)
                     }
                   />
-                </Fld>
-                <div className="g2">
-                  <Fld label="GitHub URL" icon="💻">
+                </F>
+                <div className="grid sm:grid-cols-2 ">
+                  <F label="GitHub URL">
                     <input
-                      type="text"
+                      className={inp}
                       placeholder="github.com/alexchen"
                       value={data.personal.github}
                       onChange={(e) =>
                         set(["personal", "github"], e.target.value)
                       }
                     />
-                  </Fld>
-                  <Fld label="Portfolio / Website" icon="🌐">
+                  </F>
+                  <F label="Portfolio / Website">
                     <input
-                      type="text"
+                      className={inp}
                       placeholder="alexchen.io"
                       value={data.personal.website}
                       onChange={(e) =>
                         set(["personal", "website"], e.target.value)
                       }
                     />
-                  </Fld>
+                  </F>
                 </div>
+                <div className="h-px bg-indigo-50 my-3" />
+                <F label="Professional Summary (optional)">
+                  <textarea
+                    className={ta}
+                    placeholder="2–3 sentence summary of your experience…"
+                    value={data.personal.summary}
+                    onChange={(e) =>
+                      set(["personal", "summary"], e.target.value)
+                    }
+                  />
+                </F>
+                <F label="Closing Salutation">
+                  <input
+                    className={inp}
+                    placeholder="Sincerely (default)"
+                    value={data.personal.signature}
+                    onChange={(e) =>
+                      set(["personal", "signature"], e.target.value)
+                    }
+                  />
+                </F>
               </div>
             )}
 
-            {/* COMPANY */}
+            {/* ── COMPANY STEP ── */}
             {step === "company" && (
-              <div className="card">
-                <div className="card-hd">
-                  <div className="card-ico">🏢</div>
+              <div className="bg-white rounded-2xl p-5 shadow-sm border border-indigo-100/60">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-9 h-9 rounded-[11px] bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-lg shadow-[0_4px_10px_rgba(91,56,240,.22)]">
+                    🏢
+                  </div>
                   <div>
-                    <div className="card-title">Company & Role</div>
-                    <div className="card-sub">Application target details</div>
+                    <p className="text-[14px] font-extrabold text-slate-900">
+                      Company & Role
+                    </p>
+                    <p className="text-[11.5px] text-slate-500">
+                      Application target details
+                    </p>
                   </div>
                 </div>
-                <Fld label="Company Name" icon="🏢" req>
+                <F label="Company Name" icon="🏢" required>
                   <input
-                    type="text"
+                    className={inp}
                     placeholder="Google, Stripe, Airbnb…"
                     value={data.company.name}
                     onChange={(e) => set(["company", "name"], e.target.value)}
                   />
-                </Fld>
-                <Fld label="Role Applying For" icon="🎯" req>
+                </F>
+                <F label="Role Applying For" icon="🎯" required>
                   <input
-                    type="text"
+                    className={inp}
                     placeholder="Senior UX Designer"
                     value={data.company.jobTitle}
                     onChange={(e) =>
                       set(["company", "jobTitle"], e.target.value)
                     }
                   />
-                </Fld>
-                <div className="g2">
-                  <Fld label="Hiring Manager" icon="👤">
+                </F>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <F label="Hiring Manager" icon="👤">
                     <input
-                      type="text"
+                      className={inp}
                       placeholder="Sarah Johnson"
                       value={data.company.hiringManager}
                       onChange={(e) =>
                         set(["company", "hiringManager"], e.target.value)
                       }
                     />
-                  </Fld>
-                  <Fld label="Their Title" icon="🏷️">
+                  </F>
+                  <F label="Their Title" icon="🏷️">
                     <input
-                      type="text"
+                      className={inp}
                       placeholder="Head of Design"
                       value={data.company.hiringManagerTitle}
                       onChange={(e) =>
                         set(["company", "hiringManagerTitle"], e.target.value)
                       }
                     />
-                  </Fld>
+                  </F>
                 </div>
-                <div className="g2">
-                  <Fld label="City">
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <F label="City">
                     <input
-                      className="bare"
-                      type="text"
+                      className={`${inp} pl-3`}
                       placeholder="Mountain View"
                       value={data.company.city}
                       onChange={(e) => set(["company", "city"], e.target.value)}
                     />
-                  </Fld>
-                  <Fld label="State">
+                  </F>
+                  <F label="State">
                     <input
-                      className="bare"
-                      type="text"
+                      className={`${inp} pl-3`}
                       placeholder="CA"
                       value={data.company.state}
                       onChange={(e) =>
                         set(["company", "state"], e.target.value)
                       }
                     />
-                  </Fld>
+                  </F>
                 </div>
+                <div className="h-px bg-indigo-50 my-3" />
+                <F label="Where you found this job" icon="🔍">
+                  <input
+                    className={inp}
+                    placeholder="LinkedIn, Referral, Company website…"
+                    value={data.company.jobSource}
+                    onChange={(e) =>
+                      set(["company", "jobSource"], e.target.value)
+                    }
+                  />
+                </F>
+                <F label="Referral Name (if any)" icon="🤝">
+                  <input
+                    className={inp}
+                    placeholder="John Smith referred me"
+                    value={data.company.referral}
+                    onChange={(e) =>
+                      set(["company", "referral"], e.target.value)
+                    }
+                  />
+                </F>
               </div>
             )}
 
-            {/* CONTENT */}
+            {/* ── CONTENT STEP ── */}
             {step === "content" && (
-              <div className="card">
-                <div className="card-hd">
-                  <div className="card-ico">✍️</div>
+              <div className="bg-white rounded-2xl p-5 shadow-sm border border-indigo-100/60">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-9 h-9 rounded-[11px] bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-lg shadow-[0_4px_10px_rgba(91,56,240,.22)]">
+                    ✍️
+                  </div>
                   <div>
-                    <div className="card-title">Letter Sections</div>
-                    <div className="card-sub">
-                      Build your letter paragraph by paragraph
-                    </div>
+                    <p className="text-[14px] font-extrabold text-slate-900">
+                      Letter Sections
+                    </p>
+                    <p className="text-[11.5px] text-slate-500">
+                      Build paragraph by paragraph
+                    </p>
                   </div>
                 </div>
+
                 {data.sections.map((s, i) => (
-                  <div key={s.id} className="sec-block">
-                    <div className="sec-hd">
-                      <div className="sec-num">{i + 1}</div>
+                  <div
+                    key={s.id}
+                    className="bg-indigo-50/60 border-[1.5px] border-indigo-100 rounded-xl p-3 mb-2.5 transition-all focus-within:bg-white focus-within:border-indigo-400 focus-within:shadow-[0_0_0_3px_rgba(99,102,241,.08)]"
+                  >
+                    <div className="flex items-center gap-2 mb-2.5">
+                      <span className="w-[22px] h-[22px] rounded-[7px] bg-gradient-to-br from-indigo-600 to-violet-600 text-white text-[10px] font-extrabold flex items-center justify-center flex-shrink-0">
+                        {i + 1}
+                      </span>
                       <input
-                        className="sec-ti"
                         value={s.title}
-                        onChange={(e) =>
-                          setSection(s.id, "title", e.target.value)
-                        }
+                        onChange={(e) => setSec(s.id, "title", e.target.value)}
                         placeholder="Section title"
+                        className="flex-1 px-2.5 py-1.5 rounded-lg border-[1.5px] border-slate-200 text-[12.5px] font-bold bg-white text-slate-900 outline-none focus:border-indigo-500 transition-all"
                       />
                       {data.sections.length > 1 && (
                         <button
-                          className="sec-del"
                           onClick={() =>
                             setData((p) => ({
                               ...p,
                               sections: p.sections.filter((x) => x.id !== s.id),
                             }))
                           }
+                          className="w-6 h-6 bg-white border-[1.5px] border-slate-200 rounded-[6px] text-red-400 text-[12px] flex items-center justify-center hover:bg-red-50 hover:border-red-300 transition-all"
                         >
                           ✕
                         </button>
                       )}
                     </div>
                     <textarea
-                      className="sec-ta"
-                      rows={4}
                       value={s.content}
+                      onChange={(e) => setSec(s.id, "content", e.target.value)}
                       placeholder={s.placeholder}
-                      onChange={(e) =>
-                        setSection(s.id, "content", e.target.value)
-                      }
+                      rows={4}
+                      className="w-full px-2.5 py-2 rounded-lg border-[1.5px] border-slate-200 bg-white text-[12.5px] text-slate-800 leading-relaxed outline-none focus:border-indigo-500 focus:shadow-[0_0_0_3px_rgba(99,102,241,.08)] transition-all resize-y"
                     />
                   </div>
                 ))}
-                <button className="add-btn" onClick={addSection}>
+
+                <button
+                  onClick={() =>
+                    setData((p) => ({
+                      ...p,
+                      sections: [
+                        ...p.sections,
+                        {
+                          id: Date.now() + "",
+                          title: "New Section",
+                          content: "",
+                          placeholder: "Write here…",
+                        },
+                      ],
+                    }))
+                  }
+                  className="w-full py-2 mb-3.5 bg-white border-[1.5px] border-dashed border-indigo-200 rounded-xl text-[12.5px] font-bold text-indigo-600 hover:bg-indigo-50 hover:border-indigo-400 transition-all"
+                >
                   + Add Section
                 </button>
 
-                <div className="hdiv" />
-                <div className="sub-lbl">🏆 Key Achievements</div>
-                <div className="ach-row">
+                <div className="h-px bg-indigo-50 my-3" />
+                <p className="text-[10px] font-extrabold tracking-widest uppercase text-indigo-500 mb-2">
+                  🏆 Key Achievements
+                </p>
+                <div className="flex gap-2 mb-2">
                   <input
-                    className="ach-in"
-                    placeholder="e.g. Grew revenue by 40%"
+                    className={`flex-1 px-3 py-2 text-[12.5px] border-[1.5px] border-slate-200 rounded-xl outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all`}
+                    placeholder="e.g. Grew revenue 40% YoY"
                     value={achIn}
                     onChange={(e) => setAchIn(e.target.value)}
                     onKeyDown={(e) => {
@@ -12871,7 +18973,6 @@ export default function CoverLetterGenerator() {
                     }}
                   />
                   <button
-                    className="ach-add"
                     onClick={() => {
                       if (achIn.trim()) {
                         setData((p) => ({
@@ -12881,39 +18982,116 @@ export default function CoverLetterGenerator() {
                         setAchIn("");
                       }
                     }}
+                    className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-[12px] font-bold rounded-xl hover:shadow-[0_4px_10px_rgba(91,56,240,.28)] transition-all"
                   >
                     Add
                   </button>
                 </div>
-                {data.achievements.length > 0 && (
-                  <div className="ach-list">
-                    {data.achievements.map((a, i) => (
-                      <div key={i} className="ach-tag">
-                        ⭐ {a}
-                        <button
-                          className="ach-rm"
-                          onClick={() =>
-                            setData((p) => ({
-                              ...p,
-                              achievements: p.achievements.filter(
-                                (_, j) => j !== i,
-                              ),
-                            }))
-                          }
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                <div className="flex flex-wrap gap-1.5 mb-1">
+                  {data.achievements.map((a, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center gap-1.5 px-2.5 py-1 bg-indigo-50 border border-indigo-100 rounded-full text-[12px] font-semibold text-indigo-700"
+                    >
+                      ⭐ {a}
+                      <button
+                        onClick={() =>
+                          setData((p) => ({
+                            ...p,
+                            achievements: p.achievements.filter(
+                              (_, j) => j !== i,
+                            ),
+                          }))
+                        }
+                        className="text-indigo-300 hover:text-red-400 text-[13px] leading-none transition-colors"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
 
-                <div className="hdiv" />
-                <div className="sub-lbl">📝 Additional Notes</div>
+                <div className="h-px bg-indigo-50 my-3" />
+                <p className="text-[10px] font-extrabold tracking-widest uppercase text-indigo-500 mb-2">
+                  🛠️ Core Skills / Tools
+                </p>
+                <div className="flex gap-2 mb-2">
+                  <input
+                    className="flex-1 px-3 py-2 text-[12.5px] border-[1.5px] border-slate-200 rounded-xl outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
+                    placeholder="e.g. Figma, React, Premiere Pro…"
+                    value={sklIn}
+                    onChange={(e) => setSklIn(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && sklIn.trim()) {
+                        setData((p) => ({
+                          ...p,
+                          skills: [...p.skills, sklIn.trim()],
+                        }));
+                        setSklIn("");
+                      }
+                    }}
+                  />
+                  <button
+                    onClick={() => {
+                      if (sklIn.trim()) {
+                        setData((p) => ({
+                          ...p,
+                          skills: [...p.skills, sklIn.trim()],
+                        }));
+                        setSklIn("");
+                      }
+                    }}
+                    className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-[12px] font-bold rounded-xl hover:shadow-[0_4px_10px_rgba(91,56,240,.28)] transition-all"
+                  >
+                    Add
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-1.5 mb-1">
+                  {data.skills.map((s, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center gap-1.5 px-2.5 py-1 bg-violet-50 border border-violet-100 rounded-full text-[12px] font-semibold text-violet-700"
+                    >
+                      🔧 {s}
+                      <button
+                        onClick={() =>
+                          setData((p) => ({
+                            ...p,
+                            skills: p.skills.filter((_, j) => j !== i),
+                          }))
+                        }
+                        className="text-violet-300 hover:text-red-400 text-[13px] leading-none transition-colors"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="h-px bg-indigo-50 my-3" />
+                <p className="text-[10px] font-extrabold tracking-widest uppercase text-indigo-500 mb-2">
+                  🎭 Tone of Voice
+                </p>
+                <div className="flex flex-wrap gap-1.5 mb-3">
+                  {tones.map((t) => (
+                    <button
+                      key={t}
+                      onClick={() => setData((p) => ({ ...p, tone: t }))}
+                      className={`px-3 py-1 rounded-full text-[12px] font-semibold border-[1.5px] transition-all ${data.tone === t ? "border-indigo-500 text-indigo-600 bg-indigo-50" : "border-slate-200 text-slate-500 bg-white hover:border-indigo-200"}`}
+                    >
+                      {t}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="h-px bg-indigo-50 my-3" />
+                <p className="text-[10px] font-extrabold tracking-widest uppercase text-indigo-500 mb-2">
+                  📝 Additional Notes
+                </p>
                 <textarea
-                  className="sec-ta"
+                  className={ta}
                   rows={3}
-                  placeholder="Any extra context or postscript…"
+                  placeholder="Post-script, special circumstances, or extra context…"
                   value={data.notes}
                   onChange={(e) =>
                     setData((p) => ({ ...p, notes: e.target.value }))
@@ -12921,29 +19099,123 @@ export default function CoverLetterGenerator() {
                 />
               </div>
             )}
+
+            {/* ── REVIEW STEP ── */}
+            {step === "review" && (
+              <div className="bg-white rounded-2xl p-5 shadow-sm border border-indigo-100/60">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-9 h-9 rounded-[11px] bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-lg shadow-[0_4px_10px_rgba(16,185,129,.22)]">
+                    ✅
+                  </div>
+                  <div>
+                    <p className="text-[14px] font-extrabold text-slate-900">
+                      Review Summary
+                    </p>
+                    <p className="text-[11.5px] text-slate-500">
+                      Check before downloading
+                    </p>
+                  </div>
+                </div>
+                {[
+                  ["Template", tpl.name, "template"],
+                  ["Full Name", data.personal.fullName, "personal"],
+                  ["Title", data.personal.title, "personal"],
+                  ["Email", data.personal.email, "personal"],
+                  ["Phone", data.personal.phone, "personal"],
+                  ["LinkedIn", data.personal.linkedin, "personal"],
+                  ["GitHub", data.personal.github, "personal"],
+                  ["Portfolio", data.personal.website, "personal"],
+                  ["Company", data.company.name, "company"],
+                  ["Role", data.company.jobTitle, "company"],
+                  ["Manager", data.company.hiringManager, "company"],
+                  ["Tone", data.tone, "content"],
+                  [
+                    "Sections",
+                    `${data.sections.filter((s) => s.content).length} written`,
+                    "content",
+                  ],
+                  [
+                    "Achievements",
+                    `${data.achievements.length} added`,
+                    "content",
+                  ],
+                  ["Skills", `${data.skills.length} added`, "content"],
+                ].map(([l, v, s]) => (
+                  <div
+                    key={l}
+                    className="flex items-center justify-between py-2.5 border-b border-slate-50 last:border-0"
+                  >
+                    <span className="text-[11px] font-extrabold uppercase tracking-[.5px] text-slate-400">
+                      {l}
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`text-[13px] font-medium text-right max-w-[180px] truncate ${v ? "text-slate-800" : "text-slate-300"}`}
+                      >
+                        {v || "—"}
+                      </span>
+                      <button
+                        onClick={() => setStep(s as Step)}
+                        className="text-[11px] font-bold text-indigo-500 hover:text-indigo-700 transition-colors"
+                      >
+                        Edit
+                      </button>
+                    </div>
+                  </div>
+                ))}
+                <div className="mt-4 p-4 bg-indigo-50 rounded-xl border border-indigo-100">
+                  <p className="text-[13px] font-bold text-slate-900 mb-1">
+                    ✅ Ready to Download
+                  </p>
+                  <p className="text-[12px] text-slate-500">
+                    Your cover letter is ready. Click "Download PDF" or use the
+                    bottom button.
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* BOTTOM NAV */}
-          <div className="left-ft">
+          {/* ── FOOTER NAV ── */}
+          <div className="flex-shrink-0 px-5 py-3 border-t border-slate-200 bg-white flex justify-between items-center gap-3">
             <button
-              className="btn-back"
-          //     disabled={stepIdx === 0}
-              onClick={() => stepIdx===0 ? router.push('/') :setStep(STEPS[stepIdx - 1].id)}
+              onClick={() =>
+                stepIdx === 0
+                  ? router.push("/")
+                  : setStep(STEPS[stepIdx - 1].id)
+              }
+              className="max-sm:hidden flex items-center gap-1.5 px-4 py-2.5 rounded-full text-[13px] font-bold border-[1.5px] border-slate-200 bg-white text-slate-500 hover:bg-indigo-50 hover:border-indigo-200 hover:text-indigo-600 disabled:opacity-35 disabled:cursor-default disabled:hover:bg-white disabled:hover:border-slate-200 disabled:hover:text-slate-500 transition-all cursor-pointer"
             >
-              ← {stepIdx > 0 ? `Back to ${STEPS[stepIdx - 1].label}` : "Back to Home"}
+              ←{" "}
+              {stepIdx > 0
+                ? `Back to ${STEPS[stepIdx - 1].label}`
+                : "Back to Home"}
+            </button>
+              <button
+              onClick={() =>
+                stepIdx === 0
+                  ? router.push("/")
+                  : setStep(STEPS[stepIdx - 1].id)
+              }
+              className=" flex sm:hidden items-center gap-1.5 px-4 py-2.5 rounded-full text-[13px] font-bold border-[1.5px] border-slate-200 bg-white text-slate-500 hover:bg-indigo-50 hover:border-indigo-200 hover:text-indigo-600 disabled:opacity-35 disabled:cursor-default disabled:hover:bg-white disabled:hover:border-slate-200 disabled:hover:text-slate-500 transition-all cursor-pointer"
+            >
+              ←{" "}
+              {stepIdx > 0
+                ? `Back `
+                : "Back "}
             </button>
             {stepIdx < STEPS.length - 1 ? (
               <button
-                className="btn-next"
                 onClick={() => setStep(STEPS[stepIdx + 1].id)}
+                className="flex items-center gap-2 px-6 py-2.5 rounded-full text-[13.5px] font-semibold md:font-bold bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-[0_4px_14px_rgba(91,56,240,.3)] hover:shadow-[0_6px_22px_rgba(91,56,240,.38)] hover:-translate-y-px transition-all cursor-pointer"
               >
-                Continue to {STEPS[stepIdx + 1].label} →
+                Continue to {STEPS[stepIdx + 1].label}
               </button>
             ) : (
               <button
-                className="btn-next"
                 onClick={downloadPDF}
                 disabled={busy}
+                className="flex items-center gap-2 px-6 py-2.5 rounded-full text-[13.5px] font-extrabold bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-[0_4px_14px_rgba(91,56,240,.3)] hover:shadow-[0_6px_22px_rgba(91,56,240,.38)] hover:-translate-y-px disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none transition-all"
               >
                 {busy ? "⏳ Generating…" : "⬇ Download PDF"}
               </button>
@@ -12951,158 +19223,156 @@ export default function CoverLetterGenerator() {
           </div>
         </div>
 
-        {/* RIGHT PREVIEW */}
-        <div className="right">
-          <div className="right-hd">
-            <div className="right-hd-l">
-              <div className="live-dot" />
+        {/* ── RIGHT — CANVAS PREVIEW ─────────────────────── */}
+        <div className="hidden lg:flex flex-col bg-indigo-50/40 overflow-hidden">
+          {/* Preview header */}
+          <div className="flex-shrink-0 h-[52px] bg-white border-b border-slate-200 px-4 flex items-center justify-between gap-3 shadow-[0_1px_3px_rgba(0,0,0,.04)]">
+            <div className="flex items-center gap-2.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 live-dot" />
               <div>
-                <div className="right-hd-info-title">Live Preview</div>
-                <div className="right-hd-info-sub">Updates as you type</div>
+                <p className="text-[13px] font-bold text-slate-900 leading-tight">
+                  Live Preview
+                </p>
+                <p className="text-[10.5px] text-slate-400">
+                  Drag · Scroll · Ctrl+Wheel to zoom
+                </p>
               </div>
             </div>
-            <div className="right-hd-r">
+            <div className="flex items-center gap-2">
               <button
-                className="change-tpl"
                 onClick={() => setStep("template")}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11.5px] font-bold bg-indigo-50 border border-indigo-100 text-indigo-600 hover:bg-indigo-100 hover:border-indigo-200 transition-all"
               >
-                🎨 Change Template
+                🎨 Change
               </button>
               <button
-                className="btn btn-ghost btn-sm"
                 onClick={() => {
                   rebuild();
                   setModal(true);
                 }}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11.5px] font-bold border-[1.5px] border-slate-200 text-slate-500 hover:bg-indigo-50 hover:border-indigo-200 hover:text-indigo-600 transition-all"
               >
-                ⛶ Expand
+                ⛶ Fullscreen
               </button>
             </div>
           </div>
-          <div className="prev-scroll">
-            <div className="prev-wrap">
+
+          {/* Canvas */}
+          <div className="flex-1 overflow-hidden">
+            <CanvasPreview>
               {html ? (
                 <iframe
                   ref={liveRef}
-                  className="prev-iframe"
-                  title="live"
+                  className="canvas-iframe"
+                  title="preview"
                   sandbox="allow-same-origin"
                 />
               ) : (
-                <div className="prev-empty">
-                  <div className="prev-empty-icon">📄</div>
-                  <div style={{ fontWeight: 700, fontSize: 15 }}>
-                    Preview appears here
-                  </div>
-                  <div style={{ fontSize: 12 }}>Start filling your details</div>
+                <div className="w-[860px] h-[1120px] bg-white rounded-xl flex flex-col items-center justify-center gap-3 text-slate-400">
+                  <span className="text-[52px] opacity-20">📄</span>
+                  <p className="text-[16px] font-bold">Preview appears here</p>
+                  <p className="text-[13px]">
+                    Fill in your details to see the letter
+                  </p>
                 </div>
               )}
-            </div>
+            </CanvasPreview>
           </div>
         </div>
       </div>
 
-      {/* MOBILE PREVIEW BUTTON */}
+      {/* ── MOBILE PREVIEW FAB ── */}
       <button
-        className="mob-prev-btn"
         onClick={() => {
           rebuild();
-          setMobilePreview(true);
+          setModal(true);
         }}
+        className="lg:hidden fixed top-16 right-4 z-50 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white p-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
       >
-        👁 Preview Letter
+                <FiEye className="w-3 h-3" />
       </button>
 
-      {/* FULLSCREEN / MOBILE MODAL */}
-      {(modal || mobilePreview) && (
-        <div
-          className="overlay"
-          onClick={() => {
-            setModal(false);
-            setMobilePreview(false);
-          }}
-        >
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-hd">
-              <div className="modal-hd-l">
-                <div className="modal-ico">📄</div>
-                <div>
-                  <div className="modal-title">
-                    {data.personal.fullName || "Cover Letter"}
+      
+
+      {/* ── FULLSCREEN MODAL ── */}
+      <AnimatePresence>
+        {modal && (
+          <div
+            className="ov-anim fixed inset-0 bg-[rgba(10,6,30,.86)] backdrop-blur-[14px] z-[1000] flex items-center justify-center p-4 sm:p-5"
+            onClick={() => setModal(false)}
+          >
+            <div
+              className="modal-anim w-full max-w-[960px] h-[92vh] bg-white rounded-2xl overflow-hidden flex flex-col shadow-[0_48px_100px_rgba(0,0,0,.48)]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Modal header */}
+              <div className="flex-shrink-0 h-[56px] px-5 bg-white border-b border-slate-100 flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-[9px] bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-sm text-white shadow-[0_3px_8px_rgba(91,56,240,.28)]">
+                    📄
                   </div>
-                  <div className="modal-sub">
-                    {tpl.name} · {tpl.tag}
+                  <div>
+                    <p className="text-[14.5px] font-extrabold text-slate-900 leading-tight">
+                      {data.personal.fullName || "Cover Letter"}
+                    </p>
+                    <p className="text-[11px] text-slate-400">
+                      {tpl.name} · {tpl.tag}
+                    </p>
                   </div>
                 </div>
+                <button
+                  onClick={() => setModal(false)}
+                  className="w-8 h-8 rounded-full bg-indigo-50 border border-indigo-100 text-slate-400 hover:bg-red-50 hover:border-red-200 hover:text-red-500 flex items-center justify-center text-[16px] transition-all"
+                >
+                  ✕
+                </button>
               </div>
-              <button
-                className="modal-close"
-                onClick={() => {
-                  setModal(false);
-                  setMobilePreview(false);
-                }}
-              >
-                ✕
-              </button>
-            </div>
-            <div className="modal-body">
-              <div className="modal-inner">
-                <iframe
-                  ref={modalRef}
-                  className="modal-iframe"
-                  title="full-view"
-                  sandbox="allow-same-origin"
-                />
+
+              {/* Modal canvas */}
+              <div className="flex-1 overflow-hidden bg-indigo-50/40">
+                <CanvasPreview>
+                  {html ? (
+                    <iframe
+                      ref={modalRef}
+                      className="modal-iframe"
+                      title="full-preview"
+                      sandbox="allow-same-origin"
+                    />
+                  ) : (
+                    <div className="w-[860px] h-[1120px] bg-white flex items-center justify-center text-slate-400">
+                      <span className="text-5xl opacity-20">📄</span>
+                    </div>
+                  )}
+                </CanvasPreview>
               </div>
-            </div>
-            <div className="modal-ft">
-              <button
-                className="btn btn-ghost"
-                onClick={() => {
-                  setModal(false);
-                  setMobilePreview(false);
-                }}
-              >
-                Close
-              </button>
-              <button
-                className="btn btn-primary"
-                onClick={downloadPDF}
-                disabled={busy}
-              >
-                {busy ? "⏳ Generating…" : "⬇ Download PDF"}
-              </button>
+
+              {/* Modal footer */}
+              <div className="flex-shrink-0 px-5 py-3 border-t border-slate-100 bg-white flex justify-end gap-2.5">
+                <button
+                  onClick={() => setModal(false)}
+                  className="px-4 py-2 rounded-full text-[12.5px] font-bold border-[1.5px] border-slate-200 text-slate-500 hover:bg-slate-50 transition-all"
+                >
+                  Close
+                </button>
+                <button
+                  onClick={downloadPDF}
+                  disabled={busy}
+                  className="flex items-center gap-1.5 px-5 py-2 rounded-full text-[12.5px] font-bold bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-[0_4px_12px_rgba(91,56,240,.28)] hover:shadow-[0_6px_20px_rgba(91,56,240,.36)] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                  {busy ? "⏳ Generating…" : "⬇ Download PDF"}
+                </button>
+              </div>
             </div>
           </div>
+        )}
+      </AnimatePresence>
+
+      {/* ── TOAST ── */}
+      {toast && (
+        <div className="toast-anim fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] bg-slate-900 text-white px-6 py-2.5 rounded-full text-[13px] font-bold shadow-[0_8px_26px_rgba(0,0,0,.2)] whitespace-nowrap">
+          {toast}
         </div>
       )}
-
-      {toast && <div className="toast">{toast}</div>}
     </>
-  );
-}
-
-function Fld({
-  label,
-  icon,
-  req,
-  children,
-}: {
-  label: string;
-  icon?: string;
-  req?: boolean;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="fld">
-      <label className="fld-lbl">
-        {label}
-        {req && <span> *</span>}
-      </label>
-      <div className="iw">
-        {icon && <span className="iw-ic">{icon}</span>}
-        {children}
-      </div>
-    </div>
   );
 }

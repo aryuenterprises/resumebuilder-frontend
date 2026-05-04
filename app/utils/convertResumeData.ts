@@ -389,7 +389,6 @@ export const convertParsedResumeToFrontendFormat = (
     text: formatSkillsToHTML(parsedData.skills || [])
   };
 
-  console.log("skills",skills)
 
   const summary = parsedData.summary?.summary
     ? `<p>${parsedData.summary.summary}</p>`

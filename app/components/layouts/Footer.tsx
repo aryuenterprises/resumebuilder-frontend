@@ -601,6 +601,7 @@ import {
   FiCheckCircle,
   FiCreditCard,
 } from "react-icons/fi";
+import { useEffect, useState } from "react";
 
 const Footer = () => {
   const router = useRouter();
@@ -659,6 +660,18 @@ const Footer = () => {
     { icon: FiTrendingUp, value: "85%", label: "Success Rate", color: "emerald" },
     { icon: FiStar, value: "4.9", label: "Rating", color: "amber" },
   ];
+
+
+
+      const [showButton, setShowButton] = useState(false);
+
+useEffect(() => {
+  const handleScroll = () => {
+    setShowButton(window.scrollY > 300);
+  };
+  window.addEventListener('scroll', handleScroll);
+  return () => window.removeEventListener('scroll', handleScroll);
+}, []);
 
   return (
     <footer className="relative bg-gray-50 border-t border-gray-200 overflow-hidden">
@@ -906,16 +919,32 @@ const Footer = () => {
         </motion.div>
       </div>
 
-      {/* Back to Top Button */}
-      {/* <motion.button
-        initial={{ opacity: 0, scale: 0 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.6 }}
-        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        className="fixed bottom-8 right-8 p-3 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full text-white shadow-lg hover:shadow-indigo-500/25 transition-all duration-300 hover:scale-110 group z-10"
-      >
-        <FiArrowUpRight className="w-5 h-5 rotate-[-45deg] group-hover:rotate-0 transition-transform duration-300" />
-      </motion.button> */}
+
+
+
+  
+
+{showButton && (
+<motion.button
+  initial={{ opacity: 0, scale: 0 }}
+  animate={{ opacity: 1, scale: 1 }}
+  transition={{ delay: 0.6 }}
+  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+  className="group cursor-pointer fixed bottom-4 sm:bottom-6 md:bottom-8 right-4 sm:right-6 md:right-8 p-2.5 sm:p-3 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full text-white shadow-lg hover:shadow-indigo-500/25 transition-all duration-300 hover:scale-110 active:scale-95 z-10"
+  aria-label="Back to top"
+>
+  {/* Tooltip */}
+  <span className="absolute right-full mr-3 top-1/2 -translate-y-1/2 px-2 py-1 bg-gray-900 text-white text-xs sm:text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none shadow-lg">
+    Go to top
+    {/* Tooltip arrow */}
+    <span className="absolute left-full top-1/2 -translate-y-1/2 border-4 border-transparent border-l-gray-900"></span>
+  </span>
+  
+  <FiArrowUpRight className="w-4 h-4 sm:w-5 sm:h-5 md:group-hover:rotate-[-45deg] md:rotate-0 transition-transform duration-300" />
+</motion.button>
+)}
+
+     
     </footer>
   );
 };

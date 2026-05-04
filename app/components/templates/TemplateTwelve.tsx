@@ -4087,6 +4087,8 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
     overflow: visible;
   }
 
+  
+
   /* Rich text content styles */
   .t12-resume .entry-content ul,
   .t12-resume .entry-content ol,
@@ -4760,7 +4762,7 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
 
       <div
         className={`t12-resume ${alldata ? 'is-preview' : ''}`}
-        style={{ margin: "0 auto", boxShadow: !alldata ? "0 0 10px rgba(0,0,0,0.1)" : "" }}
+        style={{ boxShadow: !alldata ? "0 0 10px rgba(0,0,0,0.1)" : "" }}
       >
         <style>{styles}</style>
 

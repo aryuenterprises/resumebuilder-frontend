@@ -4182,62 +4182,7 @@ const TemplateEleven: React.FC<ResumeProps> = ({ alldata }) => {
       }
     }
 
-    /* Responsive */
-    @media (max-width: 600px) {
-      body {
-        padding: 20px 10px;
-      }
-
-      .t11-resume {
-        width: 100%;
-        margin: 15px auto;
-      }
-
-      .t11-resume .resume-header {
-        padding: 30px 0 20px 0 !important;
-        margin: 0 25px !important;
-      }
-
-      .t11-resume .resume-main {
-        padding: 15px 0 35px 0 !important;
-        margin: 0 25px !important;
-      }
-
-      .t11-resume .name {
-        font-size: 32px;
-      }
-
-      .t11-resume .job-title {
-        font-size: 13px;
-      }
-
-      .t11-resume .contact-row {
-        flex-direction: column;
-        gap: 6px;
-      }
-
-      .t11-resume .experience-title-row {
-        flex-direction: column;
-        gap: 4px;
-      }
-
-      .t11-resume .experience-date {
-        text-align: left;
-      }
-
-      .t11-resume .education-title-row {
-        flex-direction: column;
-        gap: 4px;
-      }
-
-      .t11-resume .education-date {
-        text-align: left;
-      }
-
-      .t11-resume .project-links {
-        margin-top: 6px;
-      }
-    }
+  
   `;
 
   const renderDescription = (text: string) => {
@@ -4473,7 +4418,7 @@ const TemplateEleven: React.FC<ResumeProps> = ({ alldata }) => {
       )}
 
       {/* Resume Preview */}
-      <div className={`t11-resume ${alldata ? 'is-preview' : ''}`} style={{ margin: "0 auto", boxShadow: !alldata ? "0 0 10px rgba(0,0,0,0.1)" : "" }}>
+      <div className={`t11-resume ${alldata ? 'is-preview' : ''}`} style={{  boxShadow: !alldata ? "0 0 10px rgba(0,0,0,0.1)" : "" }}>
         <style>{styles}</style>
 
         {/* HEADER */}

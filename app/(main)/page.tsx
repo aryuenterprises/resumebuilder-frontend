@@ -1909,7 +1909,6 @@
 
 
 import dynamic from "next/dynamic";
-import { Suspense } from "react";
 
 // Simple dynamic imports - remove ssr: false option
 const Testimonial = dynamic(

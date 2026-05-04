@@ -5834,7 +5834,6 @@ const TemplateThree: React.FC<ResumeProps> = ({ alldata }) => {
     }
   };
 
-  console.log("context", context);
 
   /* ======================================================
      JSX PREVIEW
