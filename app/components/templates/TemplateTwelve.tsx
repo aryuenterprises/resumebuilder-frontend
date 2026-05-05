@@ -4449,42 +4449,7 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
     }
   }
 
-  @media (max-width: 768px) {
-    .t12-resume {
-      width: 100%;
-      padding: 10mm;
-    }
-
-    .t12-resume .header-name {
-      font-size: 32px;
-    }
-
-    .t12-resume .entry-block,
-    .t12-resume .skills-wrapper,
-    .t12-resume .custom-wrapper {
-      grid-template-columns: 1fr;
-    }
-
-    .t12-resume .entry-right,
-    .t12-resume .skills-right,
-    .t12-resume .custom-right {
-      border-left: none;
-      padding-left: 0;
-      border-top: 1px solid #e5e5e5;
-      padding-top: 8px;
-    }
-
-    .t12-resume .entry-left,
-    .t12-resume .skills-left,
-    .t12-resume .custom-left {
-      margin-bottom: 4px;
-    }
-
-    .t12-resume .project-header {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-  }
+ 
 `;
 
   /* ======================================================

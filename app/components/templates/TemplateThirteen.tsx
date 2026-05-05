@@ -4649,7 +4649,7 @@ const TemplateThirteen: React.FC<ResumeProps> = ({ alldata }) => {
 
   return (
     <div style={{ textAlign: "left", marginTop: 0 }}>
-      {/* {lastSegment === "download-resume" && ( */}
+      {lastSegment === "download-resume" && (
         <div className="text-center my-5">
           <motion.button
             onClick={handleDownload}
@@ -4660,7 +4660,7 @@ const TemplateThirteen: React.FC<ResumeProps> = ({ alldata }) => {
             Download Resume
           </motion.button>
         </div>
-      {/* )} */}
+      )} 
 
       {/* Resume Preview */}
       <div className={`t13-resume ${alldata ? 'is-preview' : ''}`}

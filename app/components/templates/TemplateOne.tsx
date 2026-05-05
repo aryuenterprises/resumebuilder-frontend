@@ -3059,7 +3059,6 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
 
   .t1-resume  {
     width: 210mm;
-    // min-height: 297mm;
     padding: 15mm;
     box-sizing: border-box;
     background-color: white;
@@ -3557,7 +3556,7 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
     background: white;
   }
 
-  .t7-resume {
+  .t1-resume {
     margin: 0;
     padding: 0;
     width: 100%;
@@ -3568,7 +3567,7 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
   }
 
   /* First page - no top margin/padding */
-  .t7-resume .resume-header {
+  .t1-resume .resume-header {
     margin-top: 0;
     padding-top: 20px;
     padding-left: 50px;
@@ -3576,43 +3575,43 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
   }
 
   /* Regular margins for main content on all pages */
-  .t7-resume .resume-main {
+  .t1-resume .resume-main {
     padding: 30px 50px 45px 50px;
   }
 
   /* Add top margin for elements that flow to second page */
-  .t7-resume .resume-main {
+  .t1-resume .resume-main {
     page-break-before: auto;
   }
 
   /* Ensure proper page breaks */
-  .t7-resume .section {
+  .t1-resume .section {
     page-break-inside: avoid;
     page-break-after: auto;
   }
 
-  .t7-resume .experience-item {
+  .t1-resume .experience-item {
     page-break-inside: avoid;
   }
 
   /* Add space at the bottom of each page */
-  .t7-resume {
+  .t1-resume {
     margin-bottom: 15mm;
   }
 
-  .t7-resume .project-link,
-  .t7-resume .link-item {
+  .t1-resume .project-link,
+  .t1-resume .link-item {
     color: #000000 !important;
     text-decoration: underline !important;
   }
   
   /* Ensure all text uses Nunito in print */
-  .t7-resume * {
+  .t1-resume * {
     font-family: 'Nunito', sans-serif !important;
   }
   
   /* Add margin to the top of the second page by targeting the first element after a page break */
-  .t7-resume .resume-main > :first-child {
+  .t1-resume .resume-main > :first-child {
     margin-top: 15mm;
   }
 }

@@ -928,3 +928,918 @@
 // };
 
 // export default TemplateEighteen;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"use client";
+import React, { useContext, useState, useEffect } from "react";
+import axios from "axios";
+import { CreateContext } from "@/app/context/CreateContext";
+import { IoPersonOutline, IoMailOutline, IoCallOutline, IoLocationOutline, IoGlobeOutline } from "react-icons/io5";
+import { API_URL } from "@/app/config/api";
+import { MonthYearDisplay, formatMonthYear, cleanQuillHTML, formatDateOfBirth, formatGradeToCgpdAndPercentage } from "@/app/utils";
+import { usePathname } from "next/navigation";
+import { ResumeProps } from "@/app/types";
+import { motion } from "framer-motion";
+
+interface CustomSection {
+  _id?: string;
+  id?: string;
+  name?: string;
+  description?: string;
+}
+
+interface FinalizeData {
+  customSection?: CustomSection[];
+}
+
+const TemplateEighteen: React.FC<ResumeProps> = ({ alldata }) => {
+  const context = useContext(CreateContext);
+  const pathname = usePathname();
+  const lastSegment = pathname.split("/").pop();
+
+  const contact = alldata?.contact || context?.contact || {};
+  const educations = alldata?.educations || context?.education || [];
+  const experiences = alldata?.experiences || context?.experiences || [];
+  const skills = alldata?.skills?.text || context?.skills?.text || "";
+  const projects = alldata?.projects || context?.projects || [];
+  const finalize = alldata?.finalize || context?.finalize || {};
+  const summary = alldata?.summary || context?.summary || "";
+
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const linkedinUrl = contact?.linkedIn;
+  const portfolioUrl = contact?.portfolio;
+  const githubUrl = contact?.github;
+  const dateOfBirth = contact?.dob;
+  const formattedDob = formatDateOfBirth(dateOfBirth ? dateOfBirth : "");
+
+  const getJobTitle = (jobTitle: any): string => {
+    if (!jobTitle) return "";
+    if (typeof jobTitle === "string") return jobTitle;
+    if (typeof jobTitle === "object" && jobTitle !== null)
+      return (jobTitle as any)?.name || (jobTitle as any)?.label || "";
+    return "";
+  };
+
+  useEffect(() => {
+    let url: string | null = null;
+    let objectUrl: string | null = null;
+
+    if (contact?.photo) {
+      if (typeof contact.photo === "string" && contact.photo.startsWith("blob:")) {
+        url = contact.photo;
+      } else if (typeof contact.photo === "string") {
+        url = `${API_URL}/api/uploads/photos/${contact.photo}`;
+      } else if ((contact.photo as any) instanceof Blob || (contact.photo as any) instanceof File) {
+        objectUrl = URL.createObjectURL(contact.photo as Blob);
+        url = objectUrl;
+      }
+      setPreviewUrl(url);
+    } else if (contact?.photo) {
+      setPreviewUrl(`${API_URL}/api/uploads/photos/${contact.photo}`);
+    } else {
+      setPreviewUrl(null);
+    }
+
+    return () => { 
+      if (objectUrl) URL.revokeObjectURL(objectUrl); 
+    };
+  }, [contact?.photo]);
+
+  const isFinalizeData = (data: any): data is FinalizeData =>
+    data && typeof data === "object" && !Array.isArray(data);
+
+  const customSections = isFinalizeData(finalize) && Array.isArray(finalize.customSection) ? finalize.customSection : [];
+
+  // Helper function to render skills (using cleanQuillHTML)
+  const renderSkills = () => {
+    if (!skills || (typeof skills === "string" && !skills.trim())) return null;
+
+    const cleanedSkills = cleanQuillHTML(skills);
+
+    if (!cleanedSkills || cleanedSkills === "<p><br></p>" || cleanedSkills === "") return null;
+
+    return (
+      <div className="t12-skills-content">
+        <div dangerouslySetInnerHTML={{ __html: cleanedSkills }} />
+      </div>
+    );
+  };
+
+  // Helper function to render projects
+  const renderProjects = () => {
+    if (!projects || projects.length === 0) return null;
+
+    return (
+      <div style={{ marginTop: "25px" }}>
+        <h2 className="t12-section-title-right">Projects</h2>
+        {projects.map((project: any, index: number) => (
+          <div key={project.id || index} className="t12-entry">
+            <div className="t12-entry-header">
+              <span className="t12-entry-title">{project.title}</span>
+              {(project.liveUrl || project.githubUrl) && (
+                <div className="t12-project-links">
+                  {project.liveUrl && (
+                    <a
+                      href={project.liveUrl.startsWith("http") ? project.liveUrl : `https://${project.liveUrl}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="t12-project-link"
+                    >
+                      Live Demo
+                    </a>
+                  )}
+                  {project.githubUrl && (
+                    <a
+                      href={project.githubUrl.startsWith("http") ? project.githubUrl : `https://${project.githubUrl}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="t12-project-link"
+                    >
+                      GitHub
+                    </a>
+                  )}
+                </div>
+              )}
+            </div>
+            {project.techStack && project.techStack.length > 0 && (
+              <div className="t12-project-tech-stack">
+                <strong>Tech:</strong> {project.techStack.join(" • ")}
+              </div>
+            )}
+            {project.description && (
+              <div
+                className="t12-entry-content"
+                dangerouslySetInnerHTML={{ __html: cleanQuillHTML(project.description) }}
+              />
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  /* ======================================================
+     CSS — MODERN COLORFUL DOUBLE COLUMN
+  ====================================================== */
+  const styles = `
+  .resume-t18 * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  .resume-t18 {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 24px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .resume-t18.is-preview {
+    transform: scale(0.36);
+    transform-origin: top left;
+    width: 1100px;
+    height: auto;
+    max-height: none;
+    min-height: auto;
+    max-width: none;
+    min-width: auto;
+    overflow: visible;
+  }
+
+  /* Fix p tag spacing */
+  .resume-t18 p {
+    margin: 0 0 6px 0 !important;
+    padding: 0 !important;
+    line-height: 1.6 !important;
+  }
+
+  .resume-t18 p:last-child {
+    margin-bottom: 0 !important;
+  }
+
+  /* Rich text content styles */
+  .resume-t18 .t12-entry-content ul,
+  .resume-t18 .t12-entry-content ol,
+  .resume-t18 .t12-skills-content ul,
+  .resume-t18 .t12-skills-content ol,
+  .resume-t18 .t12-custom-section-content ul,
+  .resume-t18 .t12-custom-section-content ol {
+    margin: 6px 0 6px 20px !important;
+    padding-left: 20px !important;
+  }
+
+  .resume-t18 .t12-entry-content li,
+  .resume-t18 .t12-skills-content li,
+  .resume-t18 .t12-custom-section-content li {
+    margin-bottom: 4px !important;
+    line-height: 1.6 !important;
+  }
+
+  .resume-t18 .t12-entry-content ul,
+  .resume-t18 .t12-skills-content ul,
+  .resume-t18 .t12-custom-section-content ul {
+    list-style-type: disc !important;
+  }
+
+  .resume-t18 .t12-entry-content ol,
+  .resume-t18 .t12-skills-content ol,
+  .resume-t18 .t12-custom-section-content ol {
+    list-style-type: decimal !important;
+  }
+
+  .resume-t18 .t12-entry-content strong,
+  .resume-t18 .t12-skills-content strong,
+  .resume-t18 .t12-custom-section-content strong {
+    font-weight: 700 !important;
+  }
+
+  .resume-t18 .t12-entry-content em,
+  .resume-t18 .t12-skills-content em,
+  .resume-t18 .t12-custom-section-content em {
+    font-style: italic !important;
+  }
+
+  .resume-t18 .t12-entry-content u,
+  .resume-t18 .t12-skills-content u,
+  .resume-t18 .t12-custom-section-content u {
+    text-decoration: underline !important;
+  }
+
+  /* Preserve spaces in content */
+  .resume-t18 .t12-entry-content p,
+  .resume-t18 .t12-skills-content p,
+  .resume-t18 .t12-custom-section-content p {
+    white-space: pre-wrap !important;
+  }
+
+  /* LEFT COLUMN - COLORFUL SIDEBAR */
+  .t18-left {
+    width: 33%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 40px 30px;
+  }
+
+  /* RIGHT COLUMN */
+  .t18-right {
+    width: 67%;
+    background: white;
+    padding: 40px 35px;
+  }
+
+  /* PHOTO */
+  .t18-photo-wrapper {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .t18-photo {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  }
+
+  .t18-photo-placeholder {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+  }
+
+  /* LEFT COLUMN TYPOGRAPHY */
+  .t18-name {
+    font-size: 28px;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+  }
+
+  .t18-jobtitle {
+    font-size: 14px;
+    text-align: center;
+    opacity: 0.9;
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .t18-section-title-left {
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 15px;
+    margin-top: 25px;
+    color: white;
+  }
+
+  .t18-contact-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    font-size: 12px;
+    opacity: 0.9;
+    word-break: break-word;
+  }
+
+  .t18-contact-icon {
+    font-size: 16px;
+    min-width: 24px;
+  }
+
+  .t18-link {
+    color: white;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+
+  .t18-link:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+  }
+
+  /* SKILLS IN LEFT COLUMN */
+  .t18-skills-content {
+    margin-top: 10px;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  .t18-skills-content ul {
+    list-style-type: disc !important;
+    padding-left: 20px !important;
+  }
+
+  .t18-skills-content li {
+    margin-bottom: 4px;
+  }
+
+  /* RIGHT COLUMN STYLES */
+  .t18-section-title-right {
+    font-size: 18px;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+    border-bottom: 3px solid #667eea;
+    display: inline-block;
+  }
+
+  .t18-summary {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #4a5568;
+    margin-bottom: 25px;
+  }
+
+  /* Experience Items */
+  .t18-entry {
+    margin-bottom: 25px;
+  }
+
+  .t18-entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 5px;
+  }
+
+  .t18-entry-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #2d3748;
+  }
+
+  .t18-entry-date {
+    font-size: 12px;
+    color: #667eea;
+    font-weight: 500;
+  }
+
+  .t18-entry-subtitle {
+    font-size: 13px;
+    color: #718096;
+    margin-bottom: 8px;
+  }
+
+  .t18-entry-content {
+    font-size: 13px;
+    line-height: 1.6;
+    color: #4a5568;
+  }
+
+  /* Projects */
+  .t18-project-links {
+    display: flex;
+    gap: 15px;
+  }
+
+  .t18-project-link {
+    font-size: 11px;
+    color: #667eea;
+    text-decoration: underline;
+  }
+
+  .t18-project-tech-stack {
+    font-size: 12px;
+    color: #718096;
+    margin: 6px 0;
+  }
+
+  /* Education */
+  .t18-education-item {
+    margin-bottom: 20px;
+  }
+
+  .t18-education-school {
+    font-size: 15px;
+    font-weight: 700;
+    color: #2d3748;
+  }
+
+  .t18-education-degree {
+    font-size: 13px;
+    color: #718096;
+    margin-top: 2px;
+  }
+
+  .t18-education-date {
+    font-size: 11px;
+    color: #667eea;
+    margin-top: 3px;
+  }
+
+  .t18-education-grade {
+    font-size: 11px;
+    color: #718096;
+    margin-top: 3px;
+    font-weight: 500;
+  }
+
+  /* Education Description */
+  .t18-education-description {
+    font-size: 13px;
+    line-height: 1.6;
+    color: #4a5568;
+    margin-top: 6px;
+  }
+
+  /* Custom Sections */
+  .t18-custom-section {
+    margin-bottom: 20px;
+  }
+
+  .t18-custom-section-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 8px;
+  }
+
+  .t18-custom-section-content {
+    font-size: 13px;
+    color: #4a5568;
+    line-height: 1.6;
+  }
+
+  /* Print Styles */
+  @media print {
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    body {
+      background: white;
+      padding: 0;
+      margin: 0;
+    }
+
+    .resume-t18 {
+      max-width: 100%;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .t18-left {
+      background: #667eea;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .resume-t18 {
+      flex-direction: column;
+    }
+
+    .t18-left,
+    .t18-right {
+      width: 100%;
+    }
+
+    .t18-left {
+      padding: 30px 25px;
+    }
+
+    .t18-right {
+      padding: 30px 25px;
+    }
+  }
+`;
+
+  /* ======================================================
+     HTML GENERATION
+  ====================================================== */
+  const generateHTML = () => {
+    const addressStr = [contact?.address, contact?.city, contact?.postCode, contact?.country].filter(Boolean).join(", ");
+    const photoHtml = previewUrl
+      ? `<img src="${previewUrl}" alt="Profile" class="t18-photo" />`
+      : `<div class="t18-photo-placeholder"><span style="color:white;font-size:12px;">No Photo</span></div>`;
+
+    // Generate skills HTML for PDF
+    const generateSkillsHTML = () => {
+      if (!skills || (typeof skills === "string" && !skills.trim())) return "";
+      
+      const cleanedSkills = cleanQuillHTML(skills);
+      if (!cleanedSkills || cleanedSkills === "<p><br></p>" || cleanedSkills === "") return "";
+      
+      return cleanedSkills;
+    };
+
+    // Generate projects HTML for PDF
+    const generateProjectsHTML = () => {
+      if (!projects || projects.length === 0) return "";
+      
+      return `
+        <div style="margin-top: 25px;">
+          <h2 class="t18-section-title-right">Projects</h2>
+          ${projects.map((project: any) => `
+            <div class="t18-entry">
+              <div class="t18-entry-header">
+                <span class="t18-entry-title">${project.title || ""}</span>
+                <div class="t18-project-links">
+                  ${project.liveUrl ? `<a href="${project.liveUrl.startsWith("http") ? project.liveUrl : `https://${project.liveUrl}`}" class="t18-project-link">Live Demo</a>` : ""}
+                  ${project.githubUrl ? `<a href="${project.githubUrl.startsWith("http") ? project.githubUrl : `https://${project.githubUrl}`}" class="t18-project-link">GitHub</a>` : ""}
+                </div>
+              </div>
+              ${project.techStack && project.techStack.length > 0 ? `
+                <div class="t18-project-tech-stack"><strong>Tech:</strong> ${project.techStack.join(" • ")}</div>
+              ` : ""}
+              ${project.description ? `
+                <div class="t18-entry-content">${cleanQuillHTML(project.description)}</div>
+              ` : ""}
+            </div>
+          `).join("")}
+        </div>
+      `;
+    };
+
+    // Generate custom sections HTML for PDF
+    const generateCustomSectionsHTML = () => {
+      if (!customSections.length) return "";
+      
+      return customSections
+        .filter((s: CustomSection) => s?.name?.trim() || s?.description?.trim())
+        .map((s: CustomSection) => `
+          <div style="margin-top: 25px;">
+            ${s.name ? `<h2 class="t18-section-title-right">${s.name}</h2>` : ""}
+            ${s.description ? `<div class="t18-custom-section-content">${cleanQuillHTML(s.description)}</div>` : ""}
+          </div>
+        `).join("");
+    };
+
+    return `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8"/>
+  <title>Resume - ${contact?.firstName || ""} ${contact?.lastName || ""}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>${styles}</style>
+</head>
+<body>
+<div class="resume-t18">
+
+  <!-- LEFT COLUMN -->
+  <div class="t18-left">
+    <div class="t18-photo-wrapper">
+      ${photoHtml}
+    </div>
+    <h1 class="t18-name">${contact?.firstName || ""} ${contact?.lastName || ""}</h1>
+    <div class="t18-jobtitle">${getJobTitle(contact?.jobTitle)}</div>
+
+    <!-- CONTACT INFO -->
+    <div class="t18-section-title-left">Contact</div>
+    ${addressStr ? `
+    <div class="t18-contact-item">
+      <div class="t18-contact-icon">📍</div>
+      <div>${addressStr}</div>
+    </div>` : ""}
+    ${contact?.phone ? `
+    <div class="t18-contact-item">
+      <div class="t18-contact-icon">📱</div>
+      <div>${contact.phone}</div>
+    </div>` : ""}
+    ${contact?.email ? `
+    <div class="t18-contact-item">
+      <div class="t18-contact-icon">✉️</div>
+      <div>${contact.email}</div>
+    </div>` : ""}
+    ${formattedDob ? `
+    <div class="t18-contact-item">
+      <div class="t18-contact-icon">🎂</div>
+      <div>${formattedDob}</div>
+    </div>` : ""}
+    ${linkedinUrl ? `
+    <div class="t18-contact-item">
+      <div class="t18-contact-icon">🔗</div>
+      <div><a href="${linkedinUrl.startsWith("http") ? linkedinUrl : `https://${linkedinUrl}`}" class="t18-link" target="_blank">LinkedIn</a></div>
+    </div>` : ""}
+    ${githubUrl ? `
+    <div class="t18-contact-item">
+      <div class="t18-contact-icon">🐙</div>
+      <div><a href="${githubUrl.startsWith("http") ? githubUrl : `https://${githubUrl}`}" class="t18-link" target="_blank">GitHub</a></div>
+    </div>` : ""}
+    ${portfolioUrl ? `
+    <div class="t18-contact-item">
+      <div class="t18-contact-icon">🌐</div>
+      <div><a href="${portfolioUrl.startsWith("http") ? portfolioUrl : `https://${portfolioUrl}`}" class="t18-link" target="_blank">Portfolio</a></div>
+    </div>` : ""}
+
+    <!-- SKILLS -->
+    ${skills ? `
+    <div class="t18-section-title-left">Skills</div>
+    <div class="t18-skills-content">${generateSkillsHTML()}</div>` : ""}
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div class="t18-right">
+    <!-- SUMMARY -->
+    ${summary ? `
+    <div>
+      <h2 class="t18-section-title-right">About Me</h2>
+      <div class="t18-summary">${cleanQuillHTML(summary)}</div>
+    </div>` : ""}
+
+    <!-- EXPERIENCE -->
+    ${experiences?.length > 0 ? `
+    <div style="margin-top: 25px;">
+      <h2 class="t18-section-title-right">Work Experience</h2>
+      ${experiences.map((exp: any) => `
+      <div class="t18-entry">
+        <div class="t18-entry-header">
+          <span class="t18-entry-title">${exp.jobTitle || ""}</span>
+          <span class="t18-entry-date">${formatMonthYear(exp.startDate, false)} — ${exp.endDate ? formatMonthYear(exp.endDate, false) : "Present"}</span>
+        </div>
+        <div class="t18-entry-subtitle">${exp.employer || ""}${exp.location ? ` • ${exp.location}` : ""}</div>
+        ${exp.text ? `<div class="t18-entry-content">${cleanQuillHTML(exp.text)}</div>` : ""}
+      </div>`).join("")}
+    </div>` : ""}
+
+    <!-- PROJECTS -->
+    ${generateProjectsHTML()}
+
+    <!-- EDUCATION -->
+    ${educations?.length > 0 ? `
+    <div style="margin-top: 25px;">
+      <h2 class="t18-section-title-right">Education</h2>
+      ${educations.map((edu: any) => {
+        const formattedGrade = formatGradeToCgpdAndPercentage(edu.grade || "");
+        const eduTextHtml = edu.text ? cleanQuillHTML(edu.text) : "";
+        return `
+        <div class="t18-education-item">
+          <div class="t18-education-school">${edu.schoolname || ""}</div>
+          ${edu.degree ? `<div class="t18-education-degree">${edu.degree}</div>` : ""}
+          ${edu.location ? `<div class="t18-education-degree">${edu.location}</div>` : ""}
+          ${(edu.startDate || edu.endDate) ? `<div class="t18-education-date">${edu.startDate || ""}${edu.startDate && edu.endDate ? " — " : ""}${edu.endDate || ""}</div>` : ""}
+          ${formattedGrade ? `<div class="t18-education-grade">${formattedGrade}</div>` : ""}
+          ${eduTextHtml ? `<div class="t18-education-description">${eduTextHtml}</div>` : ""}
+        </div>`;
+      }).join("")}
+    </div>` : ""}
+
+    <!-- CUSTOM SECTIONS -->
+    ${generateCustomSectionsHTML()}
+  </div>
+
+</div>
+</body>
+</html>`;
+  };
+
+  /* ======================================================
+     PDF DOWNLOAD
+  ====================================================== */
+  const handleDownload = async () => {
+    try {
+      const html = generateHTML();
+      const res = await axios.post(`${API_URL}/api/candidates/generate-pdf`, { html }, { responseType: "blob" });
+      const url = window.URL.createObjectURL(res.data);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      alert("Failed to generate PDF. Please try again.");
+    }
+  };
+
+  /* ======================================================
+     JSX PREVIEW
+  ====================================================== */
+  return (
+    <>
+      {lastSegment === "download-resume" && (
+        <div className="text-center my-5">
+          <motion.button
+            onClick={handleDownload}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 cursor-pointer shadow-md hover:shadow-lg"
+          >
+            📄 Download Resume
+          </motion.button>
+        </div>
+      )}
+
+      <div className={`resume-t18 ${alldata ? 'is-preview' : ''}`} style={{ margin: "0 auto" }}>
+        <style>{styles}</style>
+
+        {/* LEFT COLUMN */}
+        <div className="t18-left">
+          <div className="t18-photo-wrapper">
+            {previewUrl
+              ? <img src={previewUrl} alt="Profile" className="t18-photo" />
+              : <div className="t18-photo-placeholder"><IoPersonOutline style={{ width: 60, height: 60, color: "white" }} /></div>
+            }
+          </div>
+          <h1 className="t18-name">{contact?.firstName || ""} {contact?.lastName || ""}</h1>
+          <div className="t18-jobtitle">{getJobTitle(contact?.jobTitle)}</div>
+
+          {/* CONTACT INFO */}
+          <div className="t18-section-title-left">Contact</div>
+          {[contact?.address, contact?.city, contact?.postCode, contact?.country].filter(Boolean).length > 0 && (
+            <div className="t18-contact-item">
+              <div className="t18-contact-icon"><IoLocationOutline /></div>
+              <div>{[contact?.address, contact?.city, contact?.postCode, contact?.country].filter(Boolean).join(", ")}</div>
+            </div>
+          )}
+          {contact?.phone && (
+            <div className="t18-contact-item">
+              <div className="t18-contact-icon"><IoCallOutline /></div>
+              <div>{contact.phone}</div>
+            </div>
+          )}
+          {contact?.email && (
+            <div className="t18-contact-item">
+              <div className="t18-contact-icon"><IoMailOutline /></div>
+              <div>{contact.email}</div>
+            </div>
+          )}
+          {formattedDob && (
+            <div className="t18-contact-item">
+              <div className="t18-contact-icon">🎂</div>
+              <div>{formattedDob}</div>
+            </div>
+          )}
+          {linkedinUrl && (
+            <div className="t18-contact-item">
+              <div className="t18-contact-icon"><IoGlobeOutline /></div>
+              <div><a href={linkedinUrl.startsWith("http") ? linkedinUrl : `https://${linkedinUrl}`} target="_blank" rel="noreferrer" className="t18-link">LinkedIn</a></div>
+            </div>
+          )}
+          {githubUrl && (
+            <div className="t18-contact-item">
+              <div className="t18-contact-icon">🐙</div>
+              <div><a href={githubUrl.startsWith("http") ? githubUrl : `https://${githubUrl}`} target="_blank" rel="noreferrer" className="t18-link">GitHub</a></div>
+            </div>
+          )}
+          {portfolioUrl && (
+            <div className="t18-contact-item">
+              <div className="t18-contact-icon"><IoGlobeOutline /></div>
+              <div><a href={portfolioUrl.startsWith("http") ? portfolioUrl : `https://${portfolioUrl}`} target="_blank" rel="noreferrer" className="t18-link">Portfolio</a></div>
+            </div>
+          )}
+
+          {/* SKILLS */}
+          {skills && renderSkills() && (
+            <>
+              <div className="t18-section-title-left">Skills</div>
+              {renderSkills()}
+            </>
+          )}
+        </div>
+
+        {/* RIGHT COLUMN */}
+        <div className="t18-right">
+          {/* SUMMARY */}
+          {summary && (
+            <div>
+              <h2 className="t18-section-title-right">About Me</h2>
+              <div className="t18-summary" dangerouslySetInnerHTML={{ __html: cleanQuillHTML(summary) }} />
+            </div>
+          )}
+
+          {/* EXPERIENCE */}
+          {experiences?.length > 0 && (
+            <div style={{ marginTop: "25px" }}>
+              <h2 className="t18-section-title-right">Work Experience</h2>
+              {experiences.map((exp: any, idx: number) => {
+                const start = formatMonthYear(exp.startDate, false);
+                const end = exp.endDate ? formatMonthYear(exp.endDate, false) : "Present";
+                return (
+                  <div key={exp.id || idx} className="t18-entry">
+                    <div className="t18-entry-header">
+                      <span className="t18-entry-title">{exp.jobTitle || ""}</span>
+                      <span className="t18-entry-date">{start} — {end}</span>
+                    </div>
+                    <div className="t18-entry-subtitle">
+                      {exp.employer || ""}
+                      {exp.location && ` • ${exp.location}`}
+                    </div>
+                    {exp.text && <div className="t18-entry-content" dangerouslySetInnerHTML={{ __html: cleanQuillHTML(exp.text) }} />}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* PROJECTS */}
+          {renderProjects()}
+
+          {/* EDUCATION */}
+          {educations?.length > 0 && (
+            <div style={{ marginTop: "25px" }}>
+              <h2 className="t18-section-title-right">Education</h2>
+              {educations.map((edu: any, idx: number) => {
+                const formattedGrade = formatGradeToCgpdAndPercentage(edu.grade || "");
+                const eduTextHtml = edu.text ? cleanQuillHTML(edu.text) : "";
+                return (
+                  <div key={edu.id || idx} className="t18-education-item">
+                    <div className="t18-education-school">{edu.schoolname || ""}</div>
+                    {edu.degree && <div className="t18-education-degree">{edu.degree}</div>}
+                    {edu.location && <div className="t18-education-degree">{edu.location}</div>}
+                    {(edu.startDate || edu.endDate) && (
+                      <div className="t18-education-date">
+                        {edu.startDate || ""}
+                        {edu.startDate && edu.endDate && " — "}
+                        {edu.endDate || ""}
+                      </div>
+                    )}
+                    {formattedGrade && <div className="t18-education-grade">{formattedGrade}</div>}
+                    {eduTextHtml && <div className="t18-education-description" dangerouslySetInnerHTML={{ __html: eduTextHtml }} />}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* CUSTOM SECTIONS */}
+          {customSections.filter((s: CustomSection) => s?.name?.trim() || s?.description?.trim()).map((section: CustomSection, idx: number) => (
+            <div key={section.id || idx} style={{ marginTop: "25px" }}>
+              {section.name && <h2 className="t18-section-title-right">{section.name}</h2>}
+              {section.description && <div className="t18-custom-section-content" dangerouslySetInnerHTML={{ __html: cleanQuillHTML(section.description) }} />}
+            </div>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default TemplateEighteen;

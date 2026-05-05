@@ -1,4 +1,3 @@
-
 // // @ts-ignore
 // import "./globals.css";
 // import type { Metadata } from "next";
@@ -37,7 +36,7 @@
 //       <head>
 //         <Script
 //           src="https://checkout.razorpay.com/v1/checkout.js"
-//           strategy="lazyOnload" 
+//           strategy="lazyOnload"
 //         />
 //       </head>
 //       <body
@@ -51,33 +50,28 @@
 //   );
 // }
 
-
-
-
-
-
-
-
 // @ts-ignore
 import "./globals.css";
 import type { Metadata } from "next";
-import {  Poppins } from "next/font/google";
+import { Poppins } from "next/font/google";
 import Script from "next/script";
 import { CreateProvider } from "./context/CreateContext";
-
 
 const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700", "800"],
-})
+});
 
 export const metadata: Metadata = {
-    metadataBase: new URL('https://passats.aryuacademy.com'), 
+  metadataBase: new URL("https://passats.aryuacademy.com"),
 
-  title: "PassATS - AI-Powered Resume Builder That Beats Applicant Tracking Systems",
-  description: "Create ATS-optimized resumes that get past automated screening systems. Professional templates, AI suggestions, and keyword optimization to land your dream job.",
-  keywords: "resume builder, ATS resume, applicant tracking system, resume optimizer, job application, CV builder, professional resume, AI resume, resume templates, job search, career tools",
+  title:
+    "PassATS - AI-Powered Resume Builder That Beats Applicant Tracking Systems",
+  description:
+    "Create ATS-optimized resumes that get past automated screening systems. Professional templates, AI suggestions, and keyword optimization to land your dream job.",
+  keywords:
+    "resume builder, ATS resume, applicant tracking system, resume optimizer, job application, CV builder, professional resume, AI resume, resume templates, job search, career tools",
   authors: [{ name: "PassATS" }],
   creator: "PassATS",
   publisher: "PassATS",
@@ -97,8 +91,10 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://passats.aryuacademy.com",
     siteName: "PassATS",
-    title: "PassATS - AI-Powered Resume Builder That Beats Applicant Tracking Systems",
-    description: "Create ATS-optimized resumes that get past automated screening systems. Professional templates, AI suggestions, and keyword optimization.",
+    title:
+      "PassATS - AI-Powered Resume Builder That Beats Applicant Tracking Systems",
+    description:
+      "Create ATS-optimized resumes that get past automated screening systems. Professional templates, AI suggestions, and keyword optimization.",
     images: [
       {
         url: "https://passats.aryuacademy.com/og-image.jpg",
@@ -111,7 +107,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "PassATS - AI Resume Builder",
-    description: "Create ATS-optimized resumes that beat automated screening systems",
+    description:
+      "Create ATS-optimized resumes that beat automated screening systems",
     images: ["https://passats.aryuacademy.com/og-image.jpg"],
     creator: "@passats",
     site: "@passats",
@@ -122,7 +119,7 @@ export const metadata: Metadata = {
     maximumScale: 5,
   },
   category: "technology",
- 
+
   alternates: {
     canonical: "https://passats.aryuacademy.com/",
   },
@@ -141,7 +138,11 @@ export default function RootLayout({
           strategy="lazyOnload"
         />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
         <meta name="theme-color" content="#ffffff" />
         <meta name="application-name" content="PassATS" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -151,38 +152,26 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="msapplication-TileColor" content="#ffffff" />
         <meta name="msapplication-tap-highlight" content="no" />
-        
-        {/* Structured Data for better SEO */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "SoftwareApplication",
-              "name": "PassATS Resume Builder",
-              "applicationCategory": "BusinessApplication",
-              "operatingSystem": "Web",
-              "description": "AI-powered resume builder that optimizes for Applicant Tracking Systems",
-              "offers": {
-                "@type": "Offer",
-                "price": "0",
-                "priceCurrency": "USD"
-              },
-              "aggregateRating": {
-                "@type": "AggregateRating",
-                "ratingValue": "4.8",
-                "ratingCount": "1234"
-              }
-            })
-          }}
+
+        {/* Google Analytics Script */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-PDQMQYS7BM"
+          strategy="afterInteractive"
         />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-PDQMQYS7BM');
+          `}
+        </Script>
       </head>
       <body
         className={` ${poppins.variable} antialiased font-poppins overflow-x-hidden`}
       >
-        <CreateProvider>
-          {children}
-        </CreateProvider>
+        <CreateProvider>{children}</CreateProvider>
       </body>
     </html>
   );

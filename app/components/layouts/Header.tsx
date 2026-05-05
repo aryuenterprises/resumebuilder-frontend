@@ -480,6 +480,9 @@ import { SiReaddotcv } from "react-icons/si";
 import { RedGradientButton } from "../ui";
 import { IoIosInformationCircleOutline } from "react-icons/io";
 
+import { SlEnvolopeLetter } from "react-icons/sl";
+
+
 const Header: React.FC = () => {
   const router = useRouter();
   const pathname = usePathname();
@@ -574,6 +577,16 @@ const Header: React.FC = () => {
             onClick={() => router.push("/choose-template")}
           >
             Build Resume
+          </button>
+          <button
+            className={`px-3 xl:px-4 2xl:px-5 py-1.5 xl:py-2 rounded-lg font-nunito font-semibold transition-all duration-200 text-[13px] xl:text-sm cursor-pointer whitespace-nowrap ${
+              isActive("/cover-letter")
+                ? "bg-indigo-50 text-indigo-600"
+                : "text-gray-700 hover:text-indigo-600 hover:bg-indigo-50"
+            }`}
+            onClick={() => router.push("/cover-letter")}
+          >
+            Cover Letter
           </button>
 
           <button
@@ -735,6 +748,7 @@ const Header: React.FC = () => {
                     <span className="text-left flex-1 text-sm xs:text-base">Home</span>
                   </button>
 
+
                   <button
                     onClick={() => {
                       router.push("/choose-template");
@@ -752,6 +766,56 @@ const Header: React.FC = () => {
                       <SiReaddotcv className={`text-base xs:text-xl ${isActive("/choose-template") ? "text-indigo-600" : "text-gray-600"} font-extrabold`} />
                     </div>
                     <span className="text-left flex-1 text-sm xs:text-base">Build Resume</span>
+                  </button>
+
+                   <button
+                    onClick={() => {
+                      router.push("/cover-letter");
+                      setMenuOpen(false);
+                    }}
+                    className={`w-full flex items-center gap-2 xs:gap-3 p-2.5 xs:p-3 sm:p-3.5 md:p-4 rounded-xl font-nunito font-semibold transition-all duration-200 group ${
+                      isActive("/cover-letter")
+                        ? "bg-indigo-50 text-indigo-600"
+                        : "text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
+                    }`}
+                  >
+                    <div className={`p-1.5 xs:p-2 rounded-lg transition-transform group-hover:scale-110 flex-shrink-0 ${
+                      isActive("/cover-letter") ? "bg-indigo-100" : "bg-gray-100"
+                    }`}>
+                        <SlEnvolopeLetter/>
+                    </div>
+                    <span className="text-left flex-1 text-sm xs:text-base">Cover Letter</span>
+                  </button>
+
+                   <button
+                    onClick={() => {
+                      router.push("/ats-checker");
+                      setMenuOpen(false);
+                    }}
+                    className={`w-full flex items-center gap-2 xs:gap-3 p-2.5 xs:p-3 sm:p-3.5 md:p-4 rounded-xl font-nunito font-semibold transition-all duration-200 group ${
+                      isActive("/ats-checker")
+                        ? "bg-indigo-50 text-indigo-600"
+                        : "text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
+                    }`}
+                  >
+                    <div className={`p-1.5 xs:p-2 rounded-lg transition-transform group-hover:scale-110 flex-shrink-0 ${
+                      isActive("/ats-checker") ? "bg-indigo-100" : "bg-gray-100"
+                    }`}>
+                      <svg
+                        className={`w-4 h-4 xs:w-5 xs:h-5 ${isActive("/ats-checker") ? "text-indigo-600" : "text-gray-600"}`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+                        />
+                      </svg>
+                    </div>
+                    <span className="text-left flex-1 text-sm xs:text-base">ATS Checker</span>
                   </button>
 
                   <button
@@ -785,36 +849,7 @@ const Header: React.FC = () => {
                     <span className="text-left flex-1 text-sm xs:text-base">Pricing</span>
                   </button>
 
-                  <button
-                    onClick={() => {
-                      router.push("/ats-checker");
-                      setMenuOpen(false);
-                    }}
-                    className={`w-full flex items-center gap-2 xs:gap-3 p-2.5 xs:p-3 sm:p-3.5 md:p-4 rounded-xl font-nunito font-semibold transition-all duration-200 group ${
-                      isActive("/ats-checker")
-                        ? "bg-indigo-50 text-indigo-600"
-                        : "text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
-                    }`}
-                  >
-                    <div className={`p-1.5 xs:p-2 rounded-lg transition-transform group-hover:scale-110 flex-shrink-0 ${
-                      isActive("/ats-checker") ? "bg-indigo-100" : "bg-gray-100"
-                    }`}>
-                      <svg
-                        className={`w-4 h-4 xs:w-5 xs:h-5 ${isActive("/ats-checker") ? "text-indigo-600" : "text-gray-600"}`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
-                        />
-                      </svg>
-                    </div>
-                    <span className="text-left flex-1 text-sm xs:text-base">ATS Checker</span>
-                  </button>
+                 
 
                   {/* Contact Us Button */}
                   <button

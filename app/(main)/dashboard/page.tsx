@@ -2599,7 +2599,7 @@ interface usersCurrentPlan {
   amount: number;
   plan: string;
   description: string;
-  access_date:string;
+  access_date: string;
   expiry_date: string;
 }
 
@@ -2830,6 +2830,9 @@ const DashboardPage = () => {
 
 
 
+  console.log("filteredOldResumeData",filteredOldResumeData)
+
+
   return (
     <ProtectedRoute>
       <Toaster position="top-right" />
@@ -2902,7 +2905,7 @@ const DashboardPage = () => {
               },
               {
                 label: "Current Plan",
-                value: usersCurrentPlan?.plan || "Free",
+                value: usersCurrentPlan?.plan || "No Plan",
                 icon: FiStar,
                 color: "amber",
                 delay: 0.2,
@@ -3031,202 +3034,221 @@ const DashboardPage = () => {
 
             {/* Plan Card */}
             {usersCurrentPlan ? (
-           
-
               <motion.div
-  initial={{ opacity: 0, x: 20 }}
-  animate={{ opacity: 1, x: 0 }}
-  transition={{ duration: 0.5 }}
-  className="lg:col-span-2 order-1 lg:order-2"
->
-  <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-indigo-100 overflow-hidden hover:shadow-md transition-all duration-300">
-    <div className="bg-gradient-to-r from-indigo-600 to-purple-500 p-4 sm:p-6">
-      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-        <div>
-          <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
-            <motion.span
-              className="px-1.5 sm:px-2 py-0.5 bg-white/20 text-white text-[10px] sm:text-xs font-semibold rounded-full"
-              animate={{ scale: [1, 1.05, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
-              ACTIVE
-            </motion.span>
-            <HiOutlineBadgeCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-200" />
-          </div>
-          <h3 className="text-lg sm:text-xl font-bold text-white mb-0.5 sm:mb-1">
-            {usersCurrentPlan?.plan} Plan
-          </h3>
-          <p className="text-indigo-100 text-xs sm:text-sm">
-            Your current subscription
-          </p>
-        </div>
-        <div className="text-left sm:text-right">
-          <p className="text-2xl sm:text-3xl font-bold text-white">
-            ₹{usersCurrentPlan?.amount || "0"}
-          </p>
-          <p className="text-indigo-100 text-[10px] sm:text-xs mt-0.5 sm:mt-1">
-            per{" "}
-            {usersCurrentPlan?.plan === "Premium"
-              ? "Lifetime"
-              : usersCurrentPlan?.plan === "Pro Plus" ? '3 months': "month"}
-          </p>
-        </div>
-      </div>
-    </div>
-    <div className="p-4 sm:p-6">
-      <h4 className="text-xs sm:text-sm font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center gap-1.5 sm:gap-2">
-        <FiAward className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-600" />{" "}
-        Plan Features
-      </h4>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mb-4 sm:mb-6">
-        {usersCurrentPlan?.description &&
-          (() => {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(
-              usersCurrentPlan.description,
-              "text/html",
-            );
-            const features = Array.from(
-              doc.querySelectorAll("li"),
-            ).map((li) => li.textContent?.trim() || "");
-            return features.map((feature, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, x: -10 }}
+                initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: idx * 0.05 }}
-                className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-gray-700"
+                transition={{ duration: 0.5 }}
+                className="lg:col-span-2 order-1 lg:order-2"
               >
-                <FiCheckCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-emerald-500 mt-0.5 shrink-0" />
-                <span className="line-clamp-2">{feature}</span>
-              </motion.div>
-            ));
-          })()}
-      </div>
+                <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-indigo-100 overflow-hidden hover:shadow-md transition-all duration-300">
+                  <div className="bg-gradient-to-r from-indigo-600 to-purple-500 p-4 sm:p-6">
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                      <div>
+                        <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
+                          <motion.span
+                            className="px-1.5 sm:px-2 py-0.5 bg-white/20 text-white text-[10px] sm:text-xs font-semibold rounded-full"
+                            animate={{ scale: [1, 1.05, 1] }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                          >
+                            ACTIVE
+                          </motion.span>
+                          <HiOutlineBadgeCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-200" />
+                        </div>
+                        <h3 className="text-lg sm:text-xl font-bold text-white mb-0.5 sm:mb-1">
+                          {usersCurrentPlan?.plan} Plan
+                        </h3>
+                        <p className="text-indigo-100 text-xs sm:text-sm">
+                          Your current subscription
+                        </p>
+                      </div>
+                      <div className="text-left sm:text-right">
+                        <p className="text-2xl sm:text-3xl font-bold text-white">
+                          ₹{usersCurrentPlan?.amount || "0"}
+                        </p>
+                        <p className="text-indigo-100 text-[10px] sm:text-xs mt-0.5 sm:mt-1">
+                          per{" "}
+                          {usersCurrentPlan?.plan === "Premium"
+                            ? "Lifetime"
+                            : usersCurrentPlan?.plan === "Pro Plus"
+                              ? "3 months"
+                              : "month"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-4 sm:p-6">
+                    <h4 className="text-xs sm:text-sm font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center gap-1.5 sm:gap-2">
+                      <FiAward className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-600" />{" "}
+                      Plan Features
+                    </h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mb-4 sm:mb-6">
+                      {usersCurrentPlan?.description &&
+                        (() => {
+                          const parser = new DOMParser();
+                          const doc = parser.parseFromString(
+                            usersCurrentPlan.description,
+                            "text/html",
+                          );
+                          const features = Array.from(
+                            doc.querySelectorAll("li"),
+                          ).map((li) => li.textContent?.trim() || "");
+                          return features.map((feature, idx) => (
+                            <motion.div
+                              key={idx}
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: idx * 0.05 }}
+                              className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-gray-700"
+                            >
+                              <FiCheckCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-emerald-500 mt-0.5 shrink-0" />
+                              <span className="line-clamp-2">{feature}</span>
+                            </motion.div>
+                          ));
+                        })()}
+                    </div>
 
-      {/* Subscription Dates Section - Add this new section */}
-    {/* Subscription Dates Section - Updated for Lifetime plans */}
-{(usersCurrentPlan?.access_date || usersCurrentPlan?.expiry_date || usersCurrentPlan?.plan === "Premium") && (
-  <motion.div
-    initial={{ opacity: 0, y: 10 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: 0.2 }}
-    className="mb-4 sm:mb-6 p-3 sm:p-4 bg-gradient-to-r from-gray-50 to-indigo-50/30 rounded-lg sm:rounded-xl border border-gray-100"
-  >
-    <h4 className="text-xs sm:text-sm font-semibold text-gray-900 mb-2 sm:mb-3 flex items-center gap-1.5 sm:gap-2">
-      <FiCalendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-600" />
-      Subscription Info
-    </h4>
-    <div className="space-y-2 sm:space-y-2.5">
-      {/* Purchase Date - Always show if available */}
-      {usersCurrentPlan?.access_date && (
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 text-xs sm:text-sm">
-          <span className="text-gray-600 flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
-            Purchase Date:
-          </span>
-          <span className="font-medium text-gray-800">
-            {new Date(usersCurrentPlan.access_date).toLocaleDateString('en-IN', {
-              day: 'numeric',
-              month: 'long',
-              year: 'numeric'
-            })}
-          </span>
-        </div>
-      )}
-      
-      {/* Expiry/Validity Info - Conditional based on plan type */}
-      {usersCurrentPlan?.plan === "Premium" ? (
-        // Lifetime plan - Show lifetime badge instead of expiry
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 text-xs sm:text-sm">
-          <span className="text-gray-600 flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 bg-purple-500 rounded-full"></span>
-            Validity:
-          </span>
-          <span className="font-medium bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent flex items-center gap-1.5">
-            <FiAward className="w-3.5 h-3.5 text-purple-500" />
-            Lifetime Access
-          </span>
-        </div>
-      ) : (
-        // Non-premium plans - Show expiry date
-        usersCurrentPlan?.expiry_date && (
-          <>
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 text-xs sm:text-sm">
-              <span className="text-gray-600 flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 bg-amber-500 rounded-full"></span>
-                Expiry Date:
-              </span>
-              <span className={`font-medium ${new Date(usersCurrentPlan.expiry_date) < new Date() ? 'text-red-600' : 'text-gray-800'}`}>
-                {new Date(usersCurrentPlan.expiry_date).toLocaleDateString('en-IN', {
-                  day: 'numeric',
-                  month: 'long',
-                  year: 'numeric'
-                })}
-                {new Date(usersCurrentPlan.expiry_date) < new Date() && (
-                  <span className="ml-2 text-red-500 text-[10px] sm:text-xs font-semibold">
-                    (Expired)
-                  </span>
-                )}
-              </span>
-            </div>
-            
-            {/* Days remaining - Only for non-expired non-premium plans */}
-            {new Date(usersCurrentPlan.expiry_date) > new Date() && (
-              <div className="mt-2 pt-2 border-t border-gray-100">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-600">Days remaining:</span>
-                  <span className="font-semibold text-indigo-600">
-                    {Math.ceil((new Date(usersCurrentPlan.expiry_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))} days
-                  </span>
+                    {/* Subscription Dates Section - Add this new section */}
+                    {/* Subscription Dates Section - Updated for Lifetime plans */}
+                    {(usersCurrentPlan?.access_date ||
+                      usersCurrentPlan?.expiry_date ||
+                      usersCurrentPlan?.plan === "Premium") && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                        className="mb-4 sm:mb-6 p-3 sm:p-4 bg-gradient-to-r from-gray-50 to-indigo-50/30 rounded-lg sm:rounded-xl border border-gray-100"
+                      >
+                        <h4 className="text-xs sm:text-sm font-semibold text-gray-900 mb-2 sm:mb-3 flex items-center gap-1.5 sm:gap-2">
+                          <FiCalendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-600" />
+                          Subscription Info
+                        </h4>
+                        <div className="space-y-2 sm:space-y-2.5">
+                          {/* Purchase Date - Always show if available */}
+                          {usersCurrentPlan?.access_date && (
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 text-xs sm:text-sm">
+                              <span className="text-gray-600 flex items-center gap-1.5">
+                                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
+                                Purchase Date:
+                              </span>
+                              <span className="font-medium text-gray-800">
+                                {new Date(
+                                  usersCurrentPlan.access_date,
+                                ).toLocaleDateString("en-IN", {
+                                  day: "numeric",
+                                  month: "long",
+                                  year: "numeric",
+                                })}
+                              </span>
+                            </div>
+                          )}
+
+                          {/* Expiry/Validity Info - Conditional based on plan type */}
+                          {usersCurrentPlan?.plan === "Premium" ? (
+                            // Lifetime plan - Show lifetime badge instead of expiry
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 text-xs sm:text-sm">
+                              <span className="text-gray-600 flex items-center gap-1.5">
+                                <span className="w-1.5 h-1.5 bg-purple-500 rounded-full"></span>
+                                Validity:
+                              </span>
+                              <span className="font-medium bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent flex items-center gap-1.5">
+                                <FiAward className="w-3.5 h-3.5 text-purple-500" />
+                                Lifetime Access
+                              </span>
+                            </div>
+                          ) : (
+                            // Non-premium plans - Show expiry date
+                            usersCurrentPlan?.expiry_date && (
+                              <>
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 text-xs sm:text-sm">
+                                  <span className="text-gray-600 flex items-center gap-1.5">
+                                    <span className="w-1.5 h-1.5 bg-amber-500 rounded-full"></span>
+                                    Expiry Date:
+                                  </span>
+                                  <span
+                                    className={`font-medium ${new Date(usersCurrentPlan.expiry_date) < new Date() ? "text-red-600" : "text-gray-800"}`}
+                                  >
+                                    {new Date(
+                                      usersCurrentPlan.expiry_date,
+                                    ).toLocaleDateString("en-IN", {
+                                      day: "numeric",
+                                      month: "long",
+                                      year: "numeric",
+                                    })}
+                                    {new Date(usersCurrentPlan.expiry_date) <
+                                      new Date() && (
+                                      <span className="ml-2 text-red-500 text-[10px] sm:text-xs font-semibold">
+                                        (Expiring Today)
+                                      </span>
+                                    )}
+                                  </span>
+                                </div>
+
+                                {/* Days remaining - Only for non-expired non-premium plans */}
+                                {new Date(usersCurrentPlan.expiry_date) >
+                                  new Date() && (
+                                  <div className="mt-2 pt-2 border-t border-gray-100">
+                                    <div className="flex items-center justify-between text-xs">
+                                      <span className="text-gray-600">
+                                        Days remaining:
+                                      </span>
+                                      <span className="font-semibold text-indigo-600">
+                                        {Math.ceil(
+                                          (new Date(
+                                            usersCurrentPlan.expiry_date,
+                                          ).getTime() -
+                                            new Date().getTime()) /
+                                            (1000 * 60 * 60 * 24),
+                                        )}{" "}
+                                        days
+                                      </span>
+                                    </div>
+                                  </div>
+                                )}
+                              </>
+                            )
+                          )}
+
+                          {/* For Premium plans, show additional message */}
+                          {usersCurrentPlan?.plan === "Premium" && (
+                            <div className="mt-2 pt-2 border-t border-gray-100">
+                              <div className="flex items-center gap-2 text-xs text-gray-600">
+                                <HiOutlineBadgeCheck className="w-3.5 h-3.5 text-emerald-500" />
+                                <span>Enjoy all premium features forever!</span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+
+                    <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => router.push("/choose-plan")}
+                        className="flex-1 px-3 sm:px-4 py-2 sm:py-2.5 bg-indigo-600 text-white font-medium rounded-lg sm:rounded-xl hover:bg-indigo-700 transition-all duration-300 flex items-center justify-center gap-2 group cursor-pointer text-xs sm:text-sm"
+                      >
+                        <motion.div
+                          whileHover={{ rotate: 90 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <MdOutlinePublishedWithChanges className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                        </motion.div>
+                        Change Plan
+                      </motion.button>
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => setShowBillingHistory(true)}
+                        className="flex-1 px-3 sm:px-4 py-2 sm:py-2.5 bg-indigo-50 text-indigo-600 font-medium rounded-lg sm:rounded-xl hover:bg-indigo-100 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer text-xs sm:text-sm"
+                      >
+                        <FiCreditCard className="w-3.5 h-3.5 sm:w-4 sm:h-4" />{" "}
+                        Billing History
+                      </motion.button>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            )}
-          </>
-        )
-      )}
-      
-      {/* For Premium plans, show additional message */}
-      {usersCurrentPlan?.plan === "Premium" && (
-        <div className="mt-2 pt-2 border-t border-gray-100">
-          <div className="flex items-center gap-2 text-xs text-gray-600">
-            <HiOutlineBadgeCheck className="w-3.5 h-3.5 text-emerald-500" />
-            <span>Enjoy all premium features forever!</span>
-          </div>
-        </div>
-      )}
-    </div>
-  </motion.div>
-)}
-
-      <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={() => router.push("/choose-plan")}
-          className="flex-1 px-3 sm:px-4 py-2 sm:py-2.5 bg-indigo-600 text-white font-medium rounded-lg sm:rounded-xl hover:bg-indigo-700 transition-all duration-300 flex items-center justify-center gap-2 group cursor-pointer text-xs sm:text-sm"
-        >
-          <motion.div
-            whileHover={{ rotate: 90 }}
-            transition={{ duration: 0.3 }}
-          >
-            <MdOutlinePublishedWithChanges className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-          </motion.div>
-          Change Plan
-        </motion.button>
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={() => setShowBillingHistory(true)}
-          className="flex-1 px-3 sm:px-4 py-2 sm:py-2.5 bg-indigo-50 text-indigo-600 font-medium rounded-lg sm:rounded-xl hover:bg-indigo-100 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer text-xs sm:text-sm"
-        >
-          <FiCreditCard className="w-3.5 h-3.5 sm:w-4 sm:h-4" />{" "}
-          Billing History
-        </motion.button>
-      </div>
-    </div>
-  </div>
-</motion.div>
+              </motion.div>
             ) : (
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
@@ -3250,15 +3272,26 @@ const DashboardPage = () => {
                       Choose a plan to unlock premium features and templates
                     </p>
                   </div>
-                  <div className="p-4 sm:p-6 text-center">
+                  <div className="p-4 sm:p-6 text-center flex item-center justify-center gap-3 sm:gap-4">
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => router.push("/choose-plan")}
-                      className="px-5 sm:px-6 py-2.5 sm:py-3 bg-indigo-600 text-white font-medium rounded-lg sm:rounded-xl hover:bg-indigo-700 transition-all duration-300 cursor-pointer text-xs sm:text-sm"
+                      className=" px-5 sm:px-6 py-2.5 sm:py-3 bg-indigo-600 text-white font-medium rounded-lg sm:rounded-xl hover:bg-indigo-700 transition-all duration-300 cursor-pointer text-xs sm:text-sm"
                     >
                       Choose a Plan
                     </motion.button>
+                    {paymentRecords && paymentRecords?.length > 0 && (
+                     <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => setShowBillingHistory(true)}
+                        className=" px-3 sm:px-4 py-2 sm:py-2.5 bg-indigo-50 text-indigo-600 font-medium rounded-lg sm:rounded-xl hover:bg-indigo-100 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer text-xs sm:text-sm"
+                      >
+                        <FiCreditCard className="w-3.5 h-3.5 sm:w-4 sm:h-4" />{" "}
+                        Billing History
+                      </motion.button>
+                    )} 
                   </div>
                 </div>
               </motion.div>

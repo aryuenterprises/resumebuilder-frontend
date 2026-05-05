@@ -7007,8 +7007,7 @@ const TemplateNine: React.FC<ResumeProps> = ({ alldata }) => {
     }
   };
 
-  const stripHtml = (html: string) =>
-    html?.replace(/<\/?[^>]+(>|$)/g, "") || "";
+
 
   const formattedDob = formatDateOfBirth(dateOfBirth ? dateOfBirth : "");
 

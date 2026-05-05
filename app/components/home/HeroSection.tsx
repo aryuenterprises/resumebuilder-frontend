@@ -17,6 +17,8 @@ export const HeroSection = () => {
     <section className="relative h-auto md:min-h-screen flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8 py-12  sm:py-16 md:py-20">
       <div className="relative z-10 text-center w-full max-w-7xl mx-auto">
         {/* Top Badge - Hidden on mobile, smaller on tablet */}
+      
+      
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
