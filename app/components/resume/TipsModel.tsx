@@ -54,7 +54,7 @@ export const TipsModal: React.FC<AITipsModalProps> = ({
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            // transition={{ type: "spring", damping: 25, stiffness: 300 }}
             className="relative w-full max-w-[95%] sm:max-w-md mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden"
           >
             {/* Header */}

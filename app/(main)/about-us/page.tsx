@@ -762,6 +762,7 @@ import {
   FaQuoteLeft,
 } from "react-icons/fa";
 import Testimonial from "@/app/components/sections/Testimonial";
+import { BsWhatsapp } from "react-icons/bs";
 
 export default function AboutPage() {
   const heroRef = useRef(null);
@@ -1345,7 +1346,7 @@ export default function AboutPage() {
           bg: "bg-gradient-to-br from-blue-500 to-indigo-500",
           cardBg: "from-blue-50 to-indigo-50",
           border: "border-blue-100",
-          link: "mailto:support@aryuacademy.com",
+          link: "mailto:passats@aryuacademy.com",
         },
         {
           icon: <FiGlobe className="w-5 h-5 sm:w-6 sm:h-6" />,
@@ -1379,7 +1380,7 @@ export default function AboutPage() {
           className={`relative group bg-gradient-to-br ${item.cardBg} rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8 border ${item.border} shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer`}
         >
           {/* Animated Background Effect */}
-          <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/0 to-transparent group-hover:via-white/50 transition-all duration-700" />
+          {/* <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/0 to-transparent group-hover:via-white/50 transition-all duration-700" /> */}
           
           {/* Icon - Responsive sizes */}
           <div className={`w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-xl sm:rounded-2xl ${item.bg} flex items-center justify-center mb-3 sm:mb-4 md:mb-5 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
@@ -1430,11 +1431,11 @@ export default function AboutPage() {
         <p className="text-xs sm:text-sm text-gray-500 mb-2 sm:mb-3">Follow us on social media</p>
         <div className="flex items-center justify-center gap-2 sm:gap-3 md:gap-4">
           {[
-            { icon: FiLinkedin, url: "https://linkedin.com", label: "LinkedIn", color: "hover:text-[#0077b5]" },
-            { icon: FiTwitter, url: "https://twitter.com", label: "Twitter", color: "hover:text-[#1DA1F2]" },
-            { icon: FiFacebook, url: "https://facebook.com", label: "Facebook", color: "hover:text-[#1877f2]" },
-            { icon: FiInstagram, url: "https://instagram.com", label: "Instagram", color: "hover:text-[#e4405f]" },
-            { icon: FiYoutube, url: "https://youtube.com", label: "YouTube", color: "hover:text-[#ff0000]" },
+            { icon: FiLinkedin, url: "https://www.linkedin.com/company/aryuacademyofficial/", label: "LinkedIn", color: "hover:text-[#0077b5]" },
+            { icon: BsWhatsapp, url: "https://www.whatsapp.com/channel/0029Vb4Rg7oGzzKU2OJYyQ0C", label: "WhatsApp", color: "hover:text-[#25D366]" },
+            { icon: FiFacebook, url: "https://www.facebook.com/aryuacademyofficial", label: "Facebook", color: "hover:text-[#1877f2]" },
+            { icon: FiInstagram, url: "https://www.instagram.com/aryuacademyofficial/", label: "Instagram", color: "hover:text-[#e4405f]" },
+            { icon: FiYoutube, url: "https://www.youtube.com/@aryuacademyofficial", label: "YouTube", color: "hover:text-[#ff0000]" },
           ].map((social, idx) => (
             <motion.a
               key={idx}
@@ -1452,30 +1453,14 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Bottom Stats */}
-      <div className="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-8 text-center mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-gray-100">
-        <div>
-          <p className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">24/7</p>
-          <p className="text-[10px] sm:text-xs text-gray-500">Support Available</p>
-        </div>
-        <div className="w-px h-6 sm:h-8 bg-gray-200 my-auto hidden sm:block" />
-        <div>
-          <p className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">&lt;24h</p>
-          <p className="text-[10px] sm:text-xs text-gray-500">Response Time</p>
-        </div>
-        <div className="w-px h-6 sm:h-8 bg-gray-200 my-auto hidden sm:block" />
-        <div>
-          <p className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">100%</p>
-          <p className="text-[10px] sm:text-xs text-gray-500">Satisfaction Rate</p>
-        </div>
-      </div>
+     
 
       {/* Contact Note */}
       <div className="text-center mt-6 sm:mt-8">
         <p className="text-[10px] sm:text-xs text-gray-400">
           Or reach out directly at{" "}
-          <a href="mailto:passats@gmail.com" className="text-indigo-600 hover:underline font-medium">
-            passats@gmail.com
+          <a href="mailto:passats@aryuacademy.com" className="text-indigo-600 hover:underline font-medium">
+passats@aryuacademy.com
           </a>
         </p>
       </div>
@@ -1514,8 +1499,9 @@ export default function AboutPage() {
           </Link>
           <p className="text-white/60 text-[10px] sm:text-xs mt-4">
             Have questions?{" "}
-            <a href="mailto:support@aryuacademy.com" className="text-white font-semibold hover:underline">
-              Contact us at support@aryuacademy.com
+            <a href="mailto:passats@aryuacademy.com" className="text-white font-semibold hover:underline">
+              Contact us at passats@aryuacademy.com
+
             </a>
           </p>
         </div>

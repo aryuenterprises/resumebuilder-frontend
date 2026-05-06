@@ -387,17 +387,17 @@ const Login = () => {
         setLocalStorage("user_details", user);
         setLocalStorage("user_token", token);
 
-        await Swal.fire({
-          icon: "success",
-          title: "Welcome Back!",
-          text: "You have successfully logged in.",
-          confirmButtonText: "Continue",
-          confirmButtonColor: "#4f46e5",
-          background: "#ffffff",
-          color: "#1f2937",
-          timer: 2000,
-          showConfirmButton: false,
-        });
+       await Swal.fire({
+  icon: "success",
+  title: "Welcome Back!",
+  text: "You have successfully logged in to your account.",
+  confirmButtonText: "Continue",
+  confirmButtonColor: "#4f46e5",
+  background: "#ffffff",
+  color: "#1f2937",
+  timer: 2000,
+  showConfirmButton: false,
+});
         
         setEmail("");
         setPassword("");

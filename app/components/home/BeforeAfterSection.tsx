@@ -228,12 +228,7 @@ export const BeforeAfterSection = () => {
                 <FiArrowRight className="transition-transform group-hover:translate-x-1 text-[10px] sm:text-base" />
               </button>
 
-              <button
-                onClick={() => router.push("/choose-template")}
-                className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 bg-white border border-gray-200 text-gray-700 font-semibold rounded-lg sm:rounded-xl hover:border-indigo-300 hover:text-indigo-600 transition-all duration-300 cursor-pointer text-xs sm:text-base"
-              >
-                View Examples
-              </button>
+            
             </div>
 
             {/* Stats */}

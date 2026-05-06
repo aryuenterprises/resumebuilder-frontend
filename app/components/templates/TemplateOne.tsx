@@ -3558,7 +3558,6 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
 
   .t1-resume {
     margin: 0;
-    padding: 0;
     width: 100%;
     border: none;
     box-shadow: none;

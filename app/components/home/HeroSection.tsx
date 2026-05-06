@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { FiArrowRight, FiUsers, FiTrendingUp, FiStar } from "react-icons/fi";
 
 const stats = [
-  { value: 120, suffix: "K+", label: "Trusted Users", icon: FiUsers },
-  { value: 98, suffix: "%", label: "ATS Success", icon: FiTrendingUp },
-  { value: 4.9, suffix: "★", label: "User Rating", icon: FiStar },
+  {   label: "106K Followers", icon: FiUsers },
+  {  label: "98% ATS Success", icon: FiTrendingUp },
+  {   label: "Backed by Aryu Academy", icon: FiStar },
 ];
 
 export const HeroSection = () => {
@@ -108,11 +108,8 @@ export const HeroSection = () => {
                 <stat.icon className="w-3 h-3 sm:w-4 sm:h-4 text-indigo-500" />
               </div>
               <div className="flex items-baseline gap-0.5 sm:gap-1">
-                <span className="font-bold text-gray-900 text-xs sm:text-sm md:text-lg">
-                  {stat.value}
-                  {stat.suffix}
-                </span>
-                <span className="text-[9px] xs:text-[10px] sm:text-xs text-gray-500">
+                
+                <span className="text-[9px] xs:text-[10px] sm:text-xs text-gray-600">
                   {stat.label}
                 </span>
               </div>

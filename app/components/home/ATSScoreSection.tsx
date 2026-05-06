@@ -348,7 +348,7 @@ const ScoreCard = ({ router }: { router: any }) => (
       whileHover={{ scale: 1.01 }}
       whileTap={{ scale: 0.98 }}
       onClick={() => router.push("/ats-checker")}
-      className="mt-4 sm:mt-5 md:mt-6 w-full py-2 sm:py-2.5 md:py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg sm:rounded-xl font-semibold flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm md:text-base"
+      className="cursor-pointer mt-4 sm:mt-5 md:mt-6 w-full py-2 sm:py-2.5 md:py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg sm:rounded-xl font-semibold flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm md:text-base"
     >
       <FiBarChart2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
       Run Full ATS Check

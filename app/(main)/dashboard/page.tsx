@@ -2830,7 +2830,6 @@ const DashboardPage = () => {
 
 
 
-  console.log("filteredOldResumeData",filteredOldResumeData)
 
 
   return (
@@ -2886,66 +2885,7 @@ const DashboardPage = () => {
             </div>
           </motion.div>
 
-          {/* Stats Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
-            {[
-              {
-                label: "Total Resumes",
-                value: totalResumes,
-                icon: FiFileText,
-                color: "purple",
-                delay: 0,
-              },
-              {
-                label: "Available Templates",
-                value: templateData.length,
-                icon: FiLayout,
-                color: "pink",
-                delay: 0.1,
-              },
-              {
-                label: "Current Plan",
-                value: usersCurrentPlan?.plan || "No Plan",
-                icon: FiStar,
-                color: "amber",
-                delay: 0.2,
-              },
-            ].map((stat, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: stat.delay, duration: 0.4 }}
-                onMouseEnter={() => setHoveredStat(idx)}
-                onMouseLeave={() => setHoveredStat(null)}
-                className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 shadow-sm border border-gray-100 hover:shadow-lg hover:border-transparent transition-all duration-300 group cursor-pointer"
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-[10px] sm:text-xs text-gray-500">
-                      {stat.label}
-                    </p>
-                    <motion.p
-                      className={`text-base sm:text-lg lg:text-2xl font-bold text-${stat.color}-600`}
-                      animate={{ scale: hoveredStat === idx ? 1.05 : 1 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      {stat.value}
-                    </motion.p>
-                  </div>
-                  <motion.div
-                    className={`w-8 h-8 sm:w-10 sm:h-10 bg-${stat.color}-50 rounded-lg sm:rounded-xl flex items-center justify-center group-hover:bg-${stat.color}-100 transition-all`}
-                    animate={{ rotate: hoveredStat === idx ? 5 : 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <stat.icon
-                      className={`w-4 h-4 sm:w-5 sm:h-5 text-${stat.color}-600`}
-                    />
-                  </motion.div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+          
 
           {/* Profile and Plan Section */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
@@ -3234,7 +3174,7 @@ const DashboardPage = () => {
                         >
                           <MdOutlinePublishedWithChanges className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                         </motion.div>
-                        Change Plan
+                        Upgrade Plan
                       </motion.button>
                       <motion.button
                         whileHover={{ scale: 1.02 }}

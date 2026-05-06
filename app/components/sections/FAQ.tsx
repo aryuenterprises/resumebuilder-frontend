@@ -185,6 +185,7 @@ import { useState } from "react";
 import { FiChevronDown, FiHelpCircle } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { usePathname } from "next/navigation";
 
 // Define TypeScript interfaces
 interface FAQItem {
@@ -238,6 +239,8 @@ const faqs: FAQItem[] = [
 export default function Faq() {
   const router = useRouter();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+    const pathname = usePathname();
+    const lastSegment = pathname.split("/").pop();
 
   const toggle = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
@@ -346,6 +349,8 @@ export default function Faq() {
         </div>
 
         {/* Bottom CTA */}
+                {lastSegment != "contact-us" && (
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -357,13 +362,14 @@ export default function Faq() {
             Still have questions? We're here to help
           </p>
           <button
-            onClick={() => router.push("/contact")}
+            onClick={() => router.push("/contact-us")}
             className="inline-flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2 sm:py-2.5 bg-indigo-600 text-white text-xs sm:text-sm font-semibold rounded-lg sm:rounded-xl hover:bg-indigo-700 transition-all duration-300 hover:shadow-lg cursor-pointer"
           >
             Contact Support
             <FiChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 rotate-[-90deg]" />
           </button>
         </motion.div>
+                )}
       </div>
     </section>
   );

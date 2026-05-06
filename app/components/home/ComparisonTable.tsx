@@ -246,18 +246,7 @@ export const ComparisonTable = () => {
           </p>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          className="mt-6 sm:mt-8 md:mt-10 text-center"
-        >
-          <button
-            onClick={() => document.getElementById("pricing-section")?.scrollIntoView({ behavior: "smooth" })}
-            className="w-full sm:w-auto px-4 sm:px-6 md:px-8 py-2.5 sm:py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg sm:rounded-xl font-semibold hover:shadow-lg transition-all text-sm sm:text-base"
-          >
-            Start Your Free Trial Today
-          </button>
-        </motion.div>
+        
       </div>
     </section>
   );

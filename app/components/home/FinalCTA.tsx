@@ -151,37 +151,13 @@ export const FinalCTA = () => {
             <FiArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform group-hover:translate-x-1" />
           </button>
           <button
-            onClick={() =>
-              document
-                .getElementById("pricing-section")
-                ?.scrollIntoView({ behavior: "smooth" })
-            }
+            onClick={() => router.push("/choose-plan")}
             className="w-full sm:w-auto px-5 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-3.5 bg-white/10 backdrop-blur-sm border border-white/30 text-white font-semibold rounded-xl sm:rounded-2xl hover:bg-white/20 hover:scale-105 transition-all duration-300 cursor-pointer text-xs sm:text-sm md:text-base"
           >
             View All Plans
           </button>
         </motion.div>
 
-        {/* Trust Badges - Mobile Friendly */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="mt-6 sm:mt-7 md:mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-6"
-        >
-          <div className="flex items-center gap-1.5">
-            <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full" />
-            <span className="text-[8px] sm:text-[9px] md:text-[10px] text-indigo-100">No credit card required</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full" />
-            <span className="text-[8px] sm:text-[9px] md:text-[10px] text-indigo-100">Free to start</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full" />
-            <span className="text-[8px] sm:text-[9px] md:text-[10px] text-indigo-100">30-day guarantee</span>
-          </div>
-        </motion.div>
       </div>
     </section>
   );

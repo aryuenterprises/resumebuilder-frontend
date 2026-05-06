@@ -336,6 +336,7 @@ import { FiSend, FiCheckCircle, FiArrowRight } from 'react-icons/fi';
 import { API_URL } from '@/app/config/api';
 import { sanitizeText } from '@/app/utils';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 // Define TypeScript interfaces
 interface FormErrors {
@@ -436,7 +437,7 @@ const ContactPage = () => {
     {
       icon: FaEnvelope,
       title: "Email",
-      value: "support@passats.com",
+      value: "passats@aryuacademy.com",
       description: "Send us an email",
     },
     {
@@ -509,6 +510,18 @@ const ContactPage = () => {
                   <div className="p-1.5 sm:p-2 bg-indigo-100 rounded-lg">
                     <info.icon className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 text-indigo-600" />
                   </div>
+                  {info.title === "Email" ? (
+                    <div>
+                      <p className="text-[10px] sm:text-xs text-gray-500">{info.title}</p>
+                      <a
+                        href={`mailto:${info.value}`}
+                        className="text-[11px] sm:text-xs md:text-sm font-semibold text-gray-900 break-words hover:underline"
+                      >
+                        {info.value}
+                      </a>
+                      <p className="text-[9px] sm:text-[10px] text-gray-400 mt-0.5">{info.description}</p>
+                    </div>
+                  ) : ( 
                   <div>
                     <p className="text-[10px] sm:text-xs text-gray-500">{info.title}</p>
                     <p className="text-[11px] sm:text-xs md:text-sm font-semibold text-gray-900 break-words">
@@ -516,6 +529,7 @@ const ContactPage = () => {
                     </p>
                     <p className="text-[9px] sm:text-[10px] text-gray-400 mt-0.5">{info.description}</p>
                   </div>
+                  )}
                 </motion.div>
               ))}
             </div>
@@ -629,9 +643,9 @@ const ContactPage = () => {
                 {/* Privacy Note */}
                 <p className="text-[9px] sm:text-xs text-gray-400 text-center">
                   By submitting this form, you agree to our{' '}
-                  <a href="/privacy-policy" className="text-indigo-600 hover:underline cursor-pointer">
+                  <Link href="/privacy-policy" className="text-indigo-600 hover:underline cursor-pointer">
                     Privacy Policy
-                  </a>
+                  </Link>
                 </p>
               </form>
             </div>
