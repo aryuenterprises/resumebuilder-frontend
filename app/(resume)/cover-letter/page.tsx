@@ -12981,7 +12981,7 @@ export default function CoverLetterGenerator() {
         {showPremiumPopup && !showLoginPopup && (
           <PremiumPopup
             onClose={() => setShowPremiumPopup(false)}
-            onUpgrade={() => router.push("/pricing")}
+            onUpgrade={() => router.push("/choose-plan")}
           />
         )}
       </AnimatePresence>

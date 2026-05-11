@@ -534,7 +534,7 @@
 // export default Footer;
 
 "use client";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import {
@@ -558,6 +558,7 @@ import {
 } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import { BsWhatsapp } from "react-icons/bs";
+import Link from "next/link";
 
 const Footer = () => {
   const router = useRouter();
@@ -632,7 +633,11 @@ const Footer = () => {
     },
   ];
 
- 
+
+    const pathname = usePathname();
+    const lastSegment = pathname.split("/").pop();
+
+    console.log(lastSegment)
   const [showButton, setShowButton] = useState(false);
 
   useEffect(() => {
@@ -662,18 +667,7 @@ const Footer = () => {
             transition={{ duration: 0.5 }}
             className="space-y-4"
           >
-            {/* <div className="relative">
-              <Image
-                src="/logo.png"
-                alt="ATS Pass"
-                width={160}
-                height={50}
-                className="cursor-pointer"
-                onClick={() => router.push("/")}
-              />
-
-              
-            </div> */}
+          
 
             <div className="relative w-[100px] xs:w-[120px] sm:w-[140px] md:w-[150px] h-[33px] xs:h-[40px] sm:h-[46px] md:h-[50px]">
               <Image
@@ -795,11 +789,11 @@ const Footer = () => {
             </ul>
 
             {/* Support Text */}
-            <div className="mt-6 p-3 bg-indigo-50 rounded-xl border border-indigo-100">
-              <p className="text-xs text-indigo-700 text-center">
+            {lastSegment !== 'contact-us' &&
+            <button onClick={()=>router.push('/contact-us')} className="mt-8 p-3 bg-indigo-50 rounded-xl border border-indigo-100 text-xs text-indigo-700 hover: text-center cursor-pointer hover:bg-indigo-200/50  transition-all duration-500  hover:-translate-y-1">
                 Need help? Contact our support team
-              </p>
-            </div>
+            </button> 
+}
           </motion.div>
 
           {/* Our Network */}

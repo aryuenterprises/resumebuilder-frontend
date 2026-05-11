@@ -1256,36 +1256,32 @@ const comparisonFeatures = [
     name: "Resume Templates",
     free: "1 Template",
     pro: "3 Templates",
-    proPlus: "6 Templates",
     premium: "All Templates",
   },
   {
     name: "ATS Optimization",
     free: "Basic",
     pro: "Basic",
-    proPlus: "Basic",
     premium: "Advanced",
   },
-  {
-    name: "PDF Download",
-    free: "✓",
-    pro: "✓",
-    proPlus: "✓",
-    premium: "✓",
-  },
+  
   {
     name: "Photo Upload",
     free: "✗",
     pro: "✓",
-    proPlus: "✓",
     premium: "✓",
   },
   {
     name: "AI Suggestions",
     free: "✗",
     pro: "Content",
-    proPlus: "Advanced",
     premium: "Advanced",
+  },
+   {
+    name: "Cover Letter",
+    free: "✗",
+    pro: "✗",
+    premium: "✓",
   },
 ];
 
@@ -1576,7 +1572,7 @@ export default function ChoosePlanPage() {
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5 md:gap-6 items-stretch">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5 md:gap-6 items-stretch">
             {planDetails.map((plan, index) => {
               const isHovered = hoveredPlan === plan.id;
               const isSamePlan =
@@ -1799,13 +1795,7 @@ export default function ChoosePlanPage() {
                           {feature.pro}
                         </span>
                        </td>
-                      <td className="p-3 sm:p-4 md:p-5 text-center text-[10px] sm:text-xs md:text-sm text-gray-600 font-medium">
-                        <span
-                          className={`${feature.proPlus === "✓" ? "text-emerald-600 font-semibold" : feature.proPlus === "✗" ? "text-red-500" : ""}`}
-                        >
-                          {feature.proPlus}
-                        </span>
-                       </td>
+                      
                       <td className="p-3 sm:p-4 md:p-5 text-center text-[10px] sm:text-xs md:text-sm text-gray-600 font-medium">
                         <span
                           className={`${feature.premium === "✓" ? "text-emerald-600 font-semibold" : feature.premium === "✗" ? "text-red-500" : ""}`}
