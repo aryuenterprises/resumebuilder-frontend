@@ -70,7 +70,7 @@ function Email_verify() {
                 className="text-[11px] sm:text-xs md:text-sm text-gray-500 leading-relaxed mb-5 sm:mb-6 px-2"
               >
                 Your account has been successfully verified. 
-                You can now login to access all premium features and start building 
+                You can now login to start building 
                 your professional resume.
               </motion.p>
 

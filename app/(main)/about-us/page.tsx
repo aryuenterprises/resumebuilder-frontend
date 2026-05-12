@@ -1102,8 +1102,8 @@ export default function AboutPage() {
                 </span>
               </div>
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">
-                The Gap No One
-                <span className="block bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mt-1">
+                The Gap No One{" "}
+                <span className=" bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mt-1">
                   Was Filling
                 </span>
               </h2>
@@ -1151,7 +1151,7 @@ export default function AboutPage() {
                 </div>
               </div>
             </div>
-            <div className="bg-gray-900 rounded-xl sm:rounded-2xl p-5 sm:p-6">
+            <div className="bg-gray-900 rounded-xl sm:rounded-2xl p-5 sm:p-6 h-fit">
               <div className="flex items-center gap-2 mb-4 sm:mb-5">
                 <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center">
                   <svg
@@ -1178,11 +1178,11 @@ export default function AboutPage() {
                 </div>
               </div>
               <div className="space-y-2 sm:space-y-3">
-                {[
+                {/* {[
                   {
                     feature: "Pricing",
-                    other: "₹1000-₹2000/month",
-                    pass: "₹49/month",
+                    other: "₹1000-₹2000/Month",
+                    pass: "₹49/Month",
                   },
                   {
                     feature: "Templates",
@@ -1191,20 +1191,64 @@ export default function AboutPage() {
                   },
                   {
                     feature: "Currency",
-                    other: "USD only",
+                    other: "USD Only",
                     pass: "Indian Rupees",
                   },
                   {
                     feature: "ATS Optimization",
                     other: "Limited",
-                    pass: "Advanced AI (global ATS)",
+                    pass: "Advanced AI (Global ATS)",
                   },
                   {
                     feature: "Billing",
-                    other: "Hidden fees",
-                    pass: "100% transparent",
+                    other: "Hidden Fees",
+                    pass: "100% Transparent",
                   },
-                ].map((item, idx) => (
+                  {
+                    feature: "Templates",
+                    other: "10-15",
+                    pass: "20+",
+                  },
+                ] */}
+                {[
+  {
+    feature: "Monthly Price",
+    other: "₹1000-₹2000",
+    pass: "₹49",
+  },
+  {
+    feature: "Lifetime Plan",
+    other: "₹5000-₹10000",
+    pass: "₹249",
+  },
+
+  {
+    feature: "Templates",
+    other: "5-10 Generic",
+    pass: "20+ Role-Specific",
+  },
+  {
+    feature: "AI Features",
+    other: "Limited",
+    pass: "Unlimited (Paid Plans)",
+  },
+  {
+    feature: "ATS Optimization",
+    other: "Basic Check",
+    pass: "Advanced Scoring",
+  },
+  {
+    feature: "Cover Letter Builder",
+    other: "Not Included",
+    pass: "Included ",
+  },
+    {
+    feature: "Payment Options",
+    other: "Card Only",
+    pass: "UPI, Cards, Net Banking",
+  },
+ 
+].map((item, idx) => (
                   <div
                     key={idx}
                     className="flex items-center justify-between py-1.5 sm:py-2 border-b border-gray-800 gap-2"

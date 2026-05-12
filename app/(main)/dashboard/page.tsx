@@ -2885,6 +2885,42 @@ const DashboardPage = () => {
             </div>
           </motion.div>
 
+
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+            {[
+              { label: " Resumes Created", value: totalResumes, icon: FiFileText, color: "purple", delay: 0 },
+              { label: "Available Templates", value: templateData.length, icon: FiLayout, color: "green", delay: 0.1 },
+              { label: "Current Plan", value: usersCurrentPlan?.plan || "Free", icon: FiStar, color: "amber", delay: 0.2 },
+            ].map((stat, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: stat.delay, duration: 0.4 }}
+                className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 "
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs text-gray-500">{stat.label}</p>
+                    <p 
+                      className={`md:text-lg lg:text-2xl font-bold text-${stat.color}-600`}
+                    >
+                      {stat.value}
+                    </p>
+                  </div>
+                  <motion.div 
+                    className={`w-10 h-10 bg-${stat.color}-50 rounded-xl flex items-center justify-center group-hover:bg-${stat.color}-100 transition-all`}
+                  >
+                    <stat.icon className={`w-5 h-5 text-${stat.color}-600`} />
+                  </motion.div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+         
+
+
           
 
           {/* Profile and Plan Section */}
