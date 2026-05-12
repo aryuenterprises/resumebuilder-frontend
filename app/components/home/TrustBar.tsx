@@ -2,11 +2,19 @@
 
 import { motion } from "framer-motion";
 
+// const stats = [
+//   { value: "50K+", label: "Resumes Built", sublabel: "By Professionals" },
+//   { value: "✓", label: "Backed by Academy", sublabel: "Aryu Certified" },
+//   { value: "100%", label: "ATS-Compatible", sublabel: "Guaranteed Format" },
+//   { value: "$0", label: "Free to Start", sublabel: "Payment Not Required", special: true },
+// ];
+
 const stats = [
-  { value: "50K+", label: "Resumes Built", sublabel: "By Professionals" },
-  { value: "✓", label: "Backed by Academy", sublabel: "Aryu Certified" },
-  { value: "100%", label: "ATS-Compatible", sublabel: "Guaranteed Format" },
-  { value: "$0", label: "Free to Start", sublabel: "Payment Not Required", special: true },
+  { value: "15+", label: "Templates", sublabel: "Professional Designs" },
+  { value: "AI", label: "Powered", sublabel: "Smart Suggestions", special: true },
+  { value: "100%", label: "ATS-Friendly", sublabel: "Global Standards" },
+    { value: "₹0", label: "Start Free", sublabel: "Free Plan Available" ,special: true },
+
 ];
 
 export const TrustBar = () => {
