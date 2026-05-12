@@ -3234,6 +3234,7 @@ const SkillsForm = () => {
   const experienceTitlesList =
     UseContext?.experiences?.map((item: any) => item.jobTitle) || [];
 
+
   const [showMobileWarning, setShowMobileWarning] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [Airesponse, setAiresponse] = useState<string[] | null>(null);
@@ -3399,27 +3400,28 @@ const SkillsForm = () => {
 
                   {/* Desktop Tooltip */}
                   {experienceTitlesList.length === 0 && !isMobile && (
-                    <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg shadow-lg whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-50">
-                      <div className="flex items-center gap-2">
-                        <svg
-                          className="w-3 h-3"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
-                        </svg>
-                        <span>
-                          Add work experience first for personalized suggestions
-                        </span>
-                      </div>
-                      <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900"></div>
-                    </div>
+                    // <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg shadow-lg whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-50 w-full wrap-break-word  ">
+                    //   <div className="flex items-center gap-2">
+                        
+                    //       <span className="inline-block mr-1">
+                    //                     ⚠️
+                    //                   </span>
+                    //     <span className="wrap-break-word">
+                    //       Add work experience first for personalized suggestions
+                    //     </span>
+                    //   </div>
+                    //   <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900"></div>
+                    // </div>
+
+                    <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-full bg-gray-900 text-white text-xs rounded-lg py-2 px-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-100 shadow-lg whitespace-normal">
+                                    <div className="relative text-center">
+                                      <span className="inline-block mr-1">
+                                        ⚠️
+                                      </span>
+                           Add work experience first for personalized suggestions
+                                      <div className="absolute left-1/2 -translate-x-1/2 -bottom-1.5 w-2 h-2 bg-gray-900 rotate-45"></div>
+                                    </div>
+                                  </div>
                   )}
                 </div>
               </div>

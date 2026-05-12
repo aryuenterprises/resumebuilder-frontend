@@ -1607,7 +1607,7 @@ const Education_form = () => {
                               {(!exp.degree || exp.degree.trim() === "") &&
                                 !loading &&
                                 !isMobile && (
-                                  <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 bg-gray-900 text-white text-xs rounded-lg py-2 px-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-100 shadow-lg whitespace-normal">
+                                  <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-full bg-gray-900 text-white text-xs rounded-lg py-2 px-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-100 shadow-lg whitespace-normal">
                                     <div className="relative text-center">
                                       <span className="inline-block mr-1">
                                         ⚠️

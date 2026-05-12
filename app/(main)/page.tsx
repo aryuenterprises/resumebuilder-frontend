@@ -1938,7 +1938,6 @@ const AIContentSuggestionsDemo = dynamic(
 import { HeroSection } from "../components/home/HeroSection";
 import { BeforeAfterSection } from "../components/home/BeforeAfterSection";
 import { TrustBar } from "../components/home/TrustBar";
-import { DummyResumeSection } from "../components/home/DummyResumeSection";
 import { ATSScoreSection } from "../components/home/ATSScoreSection";
 import { ComparisonTable } from "../components/home/ComparisonTable";
 import { FinalCTA } from "../components/home/FinalCTA";
@@ -1952,7 +1951,6 @@ export default function Home() {
       <BeforeAfterSection />
       <AIContentSuggestionsDemo />
       <TrustBar />
-      {/* <DummyResumeSection /> */}
       <ATSScoreSection />
       <ComparisonTable />
       <FinalCTA />

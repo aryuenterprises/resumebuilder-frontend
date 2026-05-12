@@ -1553,14 +1553,12 @@ const ExperienceForm = () => {
                                   exp.jobTitle.trim() === "") &&
                                   !loading &&
                                   !isMobile && (
-                                    <div className="absolute left-1/2 -translate-x-1/2 -top-2 -translate-y-full mt-1 w-48 bg-gray-900 text-white text-xs rounded-lg py-2 px-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-50 shadow-lg">
-                                      <div className="relative text-center">
+                                    <div className="absolute left-1/2 -translate-x-1/2 -top-2 -translate-y-full mt-1 w-full bg-gray-900 text-white text-xs rounded-lg py-2 px-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-50 shadow-lg wrap-break-word overflow-auto-">
+                                      <div className="relative text-center wrap-break-word">
                                         <span className="inline-block mr-1">
                                           ⚠️
                                         </span>
-                                        Enter job title to use AI Assist
-                                        <div className="absolute left-1/2 -translate-x-1/2 -bottom-1.5 w-2 h-2 bg-gray-900 rotate-45"></div>
-                                      </div>
+                                        Enter job title to use AI Assist                                      </div>
                                     </div>
                                   )}
                               </div>
