@@ -7546,22 +7546,6 @@
 //   );
 // }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
 // import React, {
 //   useState,
@@ -11537,46 +11521,1789 @@
 //   );
 // }
 
+// "use client";
+// import React, {
+//   useState,
+//   useRef,
+//   useEffect,
+//   useCallback,
+//   ReactNode,
+// } from "react";
+// import axios from "axios";
+// import { motion, AnimatePresence } from "framer-motion";
+// import {
+//   FiZoomIn,
+//   FiZoomOut,
+//   FiRefreshCw,
+//   FiEye,
+//   FiLock,
+//   FiX,
+// } from "react-icons/fi";
+// import Image from "next/image";
+// import { useRouter } from "next/navigation";
+// import { API_URL } from "@/app/config/api";
+// import { getLocalStorage } from "@/app/utils/localStorage";
 
+// /* ─────────────────────────────────────────────────────────────
+//    TYPES
+// ───────────────────────────────────────────────────────────────*/
+// interface User {
+//   id: string;
+// }
+// interface CLData {
+//   personal: {
+//     fullName: string;
+//     title: string;
+//     email: string;
+//     phone: string;
+//     location: string;
+//     website: string;
+//     linkedin: string;
+//     github: string;
+//     summary: string;
+//     signature: string;
+//   };
+//   company: {
+//     name: string;
+//     jobTitle: string;
+//     hiringManager: string;
+//     hiringManagerTitle: string;
+//     city: string;
+//     state: string;
+//     jobSource: string;
+//     referral: string;
+//   };
+//   sections: {
+//     id: string;
+//     title: string;
+//     content: string;
+//     placeholder: string;
+//   }[];
+//   achievements: string[];
+//   skills: string[];
+//   tone: string;
+//   notes: string;
+//   letterDate: string;
+//   accentColor: string;
+//   fontFamily: string;
+// }
 
+// const BLANK: CLData = {
+//   personal: {
+//     fullName: "",
+//     title: "",
+//     email: "",
+//     phone: "",
+//     location: "",
+//     website: "",
+//     linkedin: "",
+//     github: "",
+//     summary: "",
+//     signature: "",
+//   },
+//   company: {
+//     name: "",
+//     jobTitle: "",
+//     hiringManager: "",
+//     hiringManagerTitle: "",
+//     city: "",
+//     state: "",
+//     jobSource: "",
+//     referral: "",
+//   },
+//   sections: [
+//     {
+//       id: "1",
+//       title: "Opening Statement",
+//       content: "",
+//       placeholder:
+//         "Express your enthusiasm for the role. Mention where you found it and a compelling hook about why you're perfect…",
+//     },
+//     {
+//       id: "2",
+//       title: "Experience & Skills",
+//       content: "",
+//       placeholder:
+//         "Highlight 2–3 specific accomplishments with metrics. Show you solve their exact problems…",
+//     },
+//     {
+//       id: "3",
+//       title: "Why This Company",
+//       content: "",
+//       placeholder:
+//         "Reference their mission, recent news, products, or culture. Show genuine research…",
+//     },
+//     {
+//       id: "4",
+//       title: "Closing",
+//       content: "",
+//       placeholder:
+//         "Restate enthusiasm, include a clear CTA, mention portfolio/work samples if applicable…",
+//     },
+//   ],
+//   achievements: [],
+//   skills: [],
+//   tone: "professional",
+//   notes: "",
+//   letterDate: new Date().toISOString().split("T")[0],
+//   accentColor: "#6366f1",
+//   fontFamily: "DM Sans",
+// };
 
+// /* ─────────────────────────────────────────────────────────────
+//    FONT FAMILIES
+// ───────────────────────────────────────────────────────────────*/
+// const FONT_FAMILIES = [
+//   {
+//     id: "DM Sans",
+//     label: "DM Sans",
+//     url: "https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap",
+//     style: "sans-serif",
+//   },
+//   {
+//     id: "Inter",
+//     label: "Inter",
+//     url: "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap",
+//     style: "sans-serif",
+//   },
+//   {
+//     id: "Plus Jakarta",
+//     label: "Plus Jakarta",
+//     url: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap",
+//     style: "sans-serif",
+//   },
+//   {
+//     id: "Outfit",
+//     label: "Outfit",
+//     url: "https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap",
+//     style: "sans-serif",
+//   },
+//   {
+//     id: "Nunito",
+//     label: "Nunito",
+//     url: "https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap",
+//     style: "sans-serif",
+//   },
+//   {
+//     id: "Manrope",
+//     label: "Manrope",
+//     url: "https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap",
+//     style: "sans-serif",
+//   },
+//   {
+//     id: "Syne",
+//     label: "Syne",
+//     url: "https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&display=swap",
+//     style: "sans-serif",
+//   },
+//   {
+//     id: "Playfair",
+//     label: "Playfair",
+//     url: "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&display=swap",
+//     style: "serif",
+//   },
+//   {
+//     id: "Lora",
+//     label: "Lora",
+//     url: "https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&display=swap",
+//     style: "serif",
+//   },
+//   {
+//     id: "Cormorant",
+//     label: "Cormorant",
+//     url: "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&display=swap",
+//     style: "serif",
+//   },
+//   {
+//     id: "IBM Plex",
+//     label: "IBM Plex Mono",
+//     url: "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap",
+//     style: "monospace",
+//   },
+//   {
+//     id: "Space Grotesk",
+//     label: "Space Grotesk",
+//     url: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap",
+//     style: "sans-serif",
+//   },
+// ];
 
+// /* ─────────────────────────────────────────────────────────────
+//    50 TEMPLATE DEFINITIONS — all white/light modern professional
+// ───────────────────────────────────────────────────────────────*/
+// const TEMPLATES = [
+//   // Modern
+//   { id: "aurora", name: "Aurora", tag: "Modern" },
+//   { id: "prism", name: "Prism", tag: "Modern" },
+//   { id: "frost", name: "Frost", tag: "Modern" },
+//   { id: "canvas", name: "Canvas", tag: "Modern" },
+//   { id: "gradient", name: "Gradient", tag: "Modern" },
+//   { id: "vivid", name: "Vivid", tag: "Modern" },
+//   { id: "nova", name: "Nova", tag: "Modern" },
+//   { id: "tidal", name: "Tidal", tag: "Modern" },
+//   { id: "horizon", name: "Horizon", tag: "Modern" },
+//   { id: "lumina", name: "Lumina", tag: "Modern" },
+//   // Executive / Corporate
+//   { id: "obsidian_lite", name: "Obsidian", tag: "Executive" },
+//   { id: "slate", name: "Slate", tag: "Corporate" },
+//   { id: "architect", name: "Architect", tag: "Corporate" },
+//   { id: "corporate", name: "Corporate", tag: "Corporate" },
+//   { id: "executive", name: "Executive", tag: "Executive" },
+//   { id: "titan", name: "Titan", tag: "Corporate" },
+//   { id: "oxford", name: "Oxford", tag: "Executive" },
+//   { id: "summit", name: "Summit", tag: "Corporate" },
+//   { id: "presidio", name: "Presidio", tag: "Executive" },
+//   { id: "accord", name: "Accord", tag: "Corporate" },
+//   // Minimal / Clean
+//   { id: "nordic", name: "Nordic", tag: "Minimal" },
+//   { id: "pearl", name: "Pearl", tag: "Minimal" },
+//   { id: "minimal", name: "Minimal", tag: "Minimal" },
+//   { id: "zen", name: "Zen", tag: "Minimal" },
+//   { id: "ivory", name: "Ivory", tag: "Classic" },
+//   { id: "paper", name: "Paper", tag: "Classic" },
+//   { id: "serif", name: "Serif", tag: "Classic" },
+//   { id: "editorial", name: "Editorial", tag: "Editorial" },
+//   { id: "linen", name: "Linen", tag: "Minimal" },
+//   { id: "parchment", name: "Parchment", tag: "Classic" },
+//   // Creative / Designer
+//   { id: "designer", name: "Designer", tag: "Creative" },
+//   { id: "motion", name: "Motion", tag: "Creative" },
+//   { id: "brushstroke", name: "Brushstroke", tag: "Creative" },
+//   { id: "studio", name: "Studio", tag: "Creative" },
+//   { id: "folio", name: "Folio", tag: "Designer" },
+//   { id: "artboard", name: "Artboard", tag: "Designer" },
+//   { id: "vortex", name: "Vortex", tag: "Designer" },
+//   { id: "palette", name: "Palette", tag: "Creative" },
+//   { id: "frame", name: "Frame", tag: "Designer" },
+//   { id: "mosaic", name: "Mosaic", tag: "Creative" },
+//   // Professional Premium
+//   { id: "blaze", name: "Blaze", tag: "Premium" },
+//   { id: "radiant", name: "Radiant", tag: "Premium" },
+//   { id: "solstice", name: "Solstice", tag: "Premium" },
+//   { id: "meridian", name: "Meridian", tag: "Premium" },
+//   { id: "pinnacle", name: "Pinnacle", tag: "Premium" },
+//   // Tech / Modern Pro
+//   { id: "circuit", name: "Circuit", tag: "Tech" },
+//   { id: "blueprint", name: "Blueprint", tag: "Tech" },
+//   { id: "axiom", name: "Axiom", tag: "Tech" },
+//   { id: "signal", name: "Signal", tag: "Tech" },
+//   { id: "quantum", name: "Quantum", tag: "Tech" },
+// ];
 
+// /* ─────────────────────────────────────────────────────────────
+//    CANVAS PREVIEW
+// ───────────────────────────────────────────────────────────────*/
+// function CanvasPreview({ children }: { children: ReactNode }) {
+//   const wrapRef = useRef<HTMLDivElement>(null);
+//   const posRef = useRef({ x: 20, y: 20 });
+//   const scaleRef = useRef(0.58);
+//   const downRef = useRef<{ x: number; y: number } | null>(null);
+//   const startRef = useRef({ x: 0, y: 0 });
+//   const isDrag = useRef(false);
+//   const animRef = useRef<number | null>(null);
+//   const lastDist = useRef(0);
 
+//   const [pos, setPos] = useState({ x: 20, y: 20 });
+//   const [scale, setScale] = useState(0.58);
+//   const [drag, setDrag] = useState(false);
 
+//   const initS = useCallback(() => {
+//     const w = window.innerWidth;
+//     return w < 480 ? 0.33 : w < 640 ? 0.4 : w < 820 ? 0.5 : w < 1024 ? 0.57 : w < 1280 ? 0.63 : 0.68;
+//   }, []);
 
+//   useEffect(() => {
+//     const s = initS();
+//     scaleRef.current = s;
+//     setScale(s);
+//     const fn = () => { const s2 = initS(); scaleRef.current = s2; setScale(s2); };
+//     window.addEventListener("resize", fn);
+//     return () => window.removeEventListener("resize", fn);
+//   }, [initS]);
 
+//   const smoothZoom = (target: number) => {
+//     if (animRef.current) cancelAnimationFrame(animRef.current);
+//     const from = scaleRef.current, t0 = performance.now();
+//     const tick = (now: number) => {
+//       const p = Math.min((now - t0) / 160, 1);
+//       const v = from + (target - from) * (1 - Math.pow(1 - p, 3));
+//       scaleRef.current = v; setScale(v);
+//       if (p < 1) animRef.current = requestAnimationFrame(tick);
+//     };
+//     animRef.current = requestAnimationFrame(tick);
+//   };
+//   const zoomIn = () => smoothZoom(Math.min(scaleRef.current + 0.12, 3));
+//   const zoomOut = () => smoothZoom(Math.max(scaleRef.current - 0.12, 0.2));
+//   const reset = () => { const p = { x: 20, y: 20 }; posRef.current = p; setPos(p); smoothZoom(initS()); };
 
+//   useEffect(() => {
+//     const el = wrapRef.current;
+//     if (!el) return;
+//     const onDown = (e: MouseEvent) => { e.preventDefault(); downRef.current = { x: e.clientX, y: e.clientY }; isDrag.current = false; };
+//     const onMove = (e: MouseEvent) => {
+//       if (!downRef.current) return;
+//       const dx = e.clientX - downRef.current.x, dy = e.clientY - downRef.current.y;
+//       if (!isDrag.current && Math.hypot(dx, dy) > 3) { isDrag.current = true; setDrag(true); startRef.current = { x: downRef.current.x - posRef.current.x, y: downRef.current.y - posRef.current.y }; }
+//       if (isDrag.current) { const np = { x: e.clientX - startRef.current.x, y: e.clientY - startRef.current.y }; posRef.current = np; setPos({ ...np }); }
+//     };
+//     const onUp = () => { downRef.current = null; isDrag.current = false; setDrag(false); };
+//     const onTouchStart = (e: TouchEvent) => {
+//       if (e.touches.length === 1) { const t = e.touches[0]; downRef.current = { x: t.clientX, y: t.clientY }; isDrag.current = false; }
+//       else if (e.touches.length === 2) { const dx = e.touches[1].clientX - e.touches[0].clientX; const dy = e.touches[1].clientY - e.touches[0].clientY; lastDist.current = Math.hypot(dx, dy); }
+//     };
+//     const onTouchMove = (e: TouchEvent) => {
+//       e.preventDefault();
+//       if (e.touches.length === 2) { const dx = e.touches[1].clientX - e.touches[0].clientX; const dy = e.touches[1].clientY - e.touches[0].clientY; const d = Math.hypot(dx, dy); if (lastDist.current > 0) { const v = Math.max(0.2, Math.min(3, scaleRef.current * (d / lastDist.current))); scaleRef.current = v; setScale(v); } lastDist.current = d; return; }
+//       if (!downRef.current || e.touches.length !== 1) return;
+//       const t = e.touches[0]; const dx = t.clientX - downRef.current.x, dy = t.clientY - downRef.current.y;
+//       if (!isDrag.current && Math.hypot(dx, dy) > 3) { isDrag.current = true; setDrag(true); startRef.current = { x: downRef.current.x - posRef.current.x, y: downRef.current.y - posRef.current.y }; }
+//       if (isDrag.current) { const np = { x: t.clientX - startRef.current.x, y: t.clientY - startRef.current.y }; posRef.current = np; setPos({ ...np }); }
+//     };
+//     const onTouchEnd = () => { downRef.current = null; isDrag.current = false; setDrag(false); };
+//     const onWheel = (e: WheelEvent) => {
+//       e.preventDefault();
+//       if (e.ctrlKey || e.metaKey) { const v = Math.max(0.2, Math.min(3, scaleRef.current * Math.exp(-e.deltaY * 0.002))); scaleRef.current = v; setScale(v); }
+//       else { const np = { x: posRef.current.x - e.deltaX * 0.5, y: posRef.current.y - e.deltaY * 0.5 }; posRef.current = np; setPos({ ...np }); }
+//     };
+//     el.addEventListener("mousedown", onDown, { passive: false });
+//     el.addEventListener("mousemove", onMove, { passive: false });
+//     el.addEventListener("mouseup", onUp);
+//     el.addEventListener("mouseleave", onUp);
+//     el.addEventListener("touchstart", onTouchStart, { passive: true });
+//     el.addEventListener("touchmove", onTouchMove, { passive: false });
+//     el.addEventListener("touchend", onTouchEnd);
+//     el.addEventListener("wheel", onWheel, { passive: false });
+//     return () => {
+//       el.removeEventListener("mousedown", onDown); el.removeEventListener("mousemove", onMove);
+//       el.removeEventListener("mouseup", onUp); el.removeEventListener("mouseleave", onUp);
+//       el.removeEventListener("touchstart", onTouchStart); el.removeEventListener("touchmove", onTouchMove);
+//       el.removeEventListener("touchend", onTouchEnd); el.removeEventListener("wheel", onWheel);
+//     };
+//   }, []);
 
+//   return (
+//     <div className="relative w-full h-full" style={{ minHeight: 360 }}>
+//       <div ref={wrapRef} className="absolute inset-0 overflow-hidden select-none" style={{ cursor: drag ? "grabbing" : "grab", borderRadius: 12, background: "#e8e6f2", pointerEvents: "auto" }}>
+//         <div style={{ position: "absolute", inset: 0, zIndex: 10, background: "transparent", pointerEvents: drag ? "auto" : "none" }} />
+//         <div style={{ position: "absolute", top: 0, left: 0, transformOrigin: "top left", transform: `translate(${pos.x}px,${pos.y}px) scale(${scale})`, willChange: "transform", zIndex: 1 }}>
+//           {children}
+//         </div>
+//       </div>
+//       <div data-nodrag className="absolute top-2.5 left-2.5 z-30 pointer-events-none bg-white/90 backdrop-blur-sm border border-indigo-100 text-indigo-600 text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm">
+//         {Math.round(scale * 100)}%
+//       </div>
+//       <div data-nodrag className="absolute bottom-3 right-3 z-30 flex flex-col gap-1.5">
+//         {[
+//           { fn: zoomIn, icon: <FiZoomIn className="w-3.5 h-3.5" />, p: true },
+//           { fn: zoomOut, icon: <FiZoomOut className="w-3.5 h-3.5" />, p: true },
+//           { fn: reset, icon: <FiRefreshCw className="w-3 h-3" />, p: false },
+//         ].map((b, i) => (
+//           <motion.button key={i} type="button" onClick={b.fn} whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }}
+//             className={`w-7 h-7 rounded-lg flex items-center justify-center text-white shadow-md ${b.p ? "bg-gradient-to-br from-indigo-600 to-violet-600" : "bg-gray-700 hover:bg-gray-800"}`}>
+//             {b.icon}
+//           </motion.button>
+//         ))}
+//       </div>
+//       <p data-nodrag className="absolute bottom-3 left-2 z-30 pointer-events-none text-[9px] font-semibold text-slate-400">Drag · Pinch · Scroll</p>
+//     </div>
+//   );
+// }
 
+// /* ─────────────────────────────────────────────────────────────
+//    50 SVG THUMBNAILS — all white/light, modern professional
+// ───────────────────────────────────────────────────────────────*/
+// function TplThumb({ id, color = "#6366f1" }: { id: string; color?: string }) {
+//   const W = 220, H = 155;
+//   const bg = "#ffffff";
+//   const li = "#e5e7eb";
+//   const ml = "#9ca3af";
+//   const sl = "#6b7280";
+//   const c = color;
+//   const ca = `${c}22`;
+//   const cb = `${c}55`;
 
+//   const R = (x: number, y: number, w: number, h: number, fill: string, rx = 1.5) => (
+//     <rect x={x} y={y} width={w} height={h} rx={rx} fill={fill} />
+//   );
+//   const lines = (x: number, y: number, widths: number[], fill = li) =>
+//     widths.map((w, i) => R(x, y + i * 7, w, 2.5, fill));
 
+//   switch (id) {
+//     case "aurora": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,bg,0)}
+//         <defs><linearGradient id="aur" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor={c}/><stop offset="100%" stopColor={`${c}bb`}/></linearGradient></defs>
+//         {R(0,0,W,52,"url(#aur)",0)}
+//         <circle cx={200} cy={0} r={55} fill="rgba(255,255,255,.12)"/>
+//         {R(13,12,88,9,"rgba(255,255,255,.92)",2)}{R(13,25,55,4,"rgba(255,255,255,.55)",1.5)}
+//         {[0,38,78].map(ox=><rect key={ox} x={13+ox} y={36} width={32} height={5} rx={10} fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.3)" strokeWidth=".6"/>)}
+//         {R(13,62,38,2.5,ml)}{...lines(13,69,[130,110,122])}{R(13,92,44,3,c)}{...lines(13,99,[180,162,175])}{R(13,120,44,3,c)}{...lines(13,127,[155,118])}{R(13,144,32,2,ml)}{R(13,150,55,3,sl)}
+//       </svg>
+//     );
+//     case "prism": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,bg,0)}{R(0,0,W,52,c,0)}
+//         <polygon points="110,0 220,0 220,52" fill="rgba(255,255,255,.14)"/>
+//         {R(13,12,82,9,"rgba(255,255,255,.92)",1.5)}{R(13,25,50,3.5,"rgba(255,255,255,.65)")}
+//         {R(0,52,W,11,"#1e1b4b",0)}{[13,57,104].map(x=><rect key={x} x={x} y={56} width={38} height={2} rx={1} fill="#a5b4fc"/>)}
+//         {R(13,74,32,2.5,ml)}{...lines(13,81,[188,162])}{R(13,95,2.5,25,c,1)}
+//         {[95,101,106,111].map((y,i)=><rect key={y} x={19} y={y} width={i===0?38:[182,155,165][i-1]} height={2.2} rx={1} fill={i===0?c:li}/>)}
+//         {R(13,148,52,3,sl)}
+//       </svg>
+//     );
+//     case "frost": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         <defs><linearGradient id="frg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="#dbeafe"/><stop offset="100%" stopColor="#e0f2fe"/></linearGradient></defs>
+//         {R(0,0,W,H,"url(#frg)",0)}{R(5,5,210,145,"rgba(255,255,255,.82)",10)}{R(5,5,210,50,`${c}e6`,10)}{R(5,31,210,24,`${c}e6`,0)}
+//         {R(17,14,82,8,"white",1.5)}{R(17,26,50,3,"rgba(255,255,255,.65)")}
+//         {[0,33,68].map(ox=><rect key={ox} x={17+ox} y={37} width={27} height={4} rx={10} fill="rgba(255,255,255,.16)" stroke="rgba(255,255,255,.28)" strokeWidth=".5"/>)}
+//         {R(17,63,36,2.5,ml)}{...lines(17,70,[182,157])}{R(17,83,42,3,c)}{...lines(17,90,[182,170,176])}{R(17,110,42,3,c)}{...lines(17,117,[182,130])}{R(17,137,28,2,ml)}{R(17,143,52,3,sl)}
+//       </svg>
+//     );
+//     case "canvas": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,bg,0)}{R(13,13,4,58,c,2)}{R(22,13,92,10,"#111827",2)}{R(22,27,57,4,"#6b7280",1.5)}
+//         {[35,41,47].map((y,i)=><rect key={y} x={22} y={y} width={[70,58,74][i]} height={2.5} rx={1} fill={ml}/>)}
+//         {R(13,75,188,1,li,0)}{R(13,82,32,2.5,ml)}{...lines(13,89,[188,158])}{R(13,104,44,3,c)}{...lines(13,111,[188,170,178])}{R(13,131,44,3,c)}{...lines(13,138,[188,122])}
+//       </svg>
+//     );
+//     case "gradient": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         <defs><linearGradient id="grd" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor={c} stopOpacity=".18"/><stop offset="100%" stopColor={c} stopOpacity="0"/></linearGradient></defs>
+//         {R(0,0,W,H,bg,0)}{R(0,0,7,H,c,0)}{R(7,0,W-7,H,"url(#grd)",0)}
+//         {R(18,14,88,9,"#111827",2)}{R(18,27,54,4,"#374151",1.5)}{R(18,37,192,0.6,li,0)}
+//         {[43,49,55,61].map((y,i)=><rect key={y} x={18} y={y} width={[58,48,68,42][i]} height={2.5} rx={1} fill={ml}/>)}
+//         {R(18,73,192,0.6,li,0)}{R(18,82,44,3,c)}{...lines(18,89,[185,168,176])}{R(18,110,44,3,c)}{...lines(18,117,[185,120])}
+//       </svg>
+//     );
+//     case "vivid": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         <defs><linearGradient id="vvd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor={c}/><stop offset="100%" stopColor="#ec4899"/></linearGradient></defs>
+//         {R(0,0,W,H,bg,0)}{R(0,0,W,50,"url(#vvd)",0)}<circle cx={30} cy={50} r={55} fill={`${c}18`}/>
+//         {R(14,10,82,10,"rgba(255,255,255,.92)",2)}{R(14,24,50,4,"rgba(255,255,255,.62)",1.5)}
+//         {[0,36,74].map(ox=><rect key={ox} x={14+ox} y={36} width={30} height={4} rx={8} fill="rgba(255,255,255,.22)"/>)}
+//         {R(14,62,38,2.5,ml)}{...lines(14,69,[175,148])}{R(14,83,44,3,c)}{...lines(14,90,[183,165,172])}{R(14,112,44,3,c)}{...lines(14,119,[183,118])}
+//       </svg>
+//     );
+//     case "nova": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,bg,0)}{R(0,0,W,48,c,0)}
+//         <path d={`M0,48 Q55,38 110,48 Q165,58 220,48 L220,0 L0,0Z`} fill="rgba(255,255,255,.12)"/>
+//         {R(14,11,80,8,"rgba(255,255,255,.9)",2)}{R(14,23,50,4,"rgba(255,255,255,.58)",1.5)}
+//         {[14,58,104].map(x=><rect key={x} x={x} y={35} width={38} height={3.5} rx={8} fill="rgba(255,255,255,.2)"/>)}
+//         {R(14,58,38,2.5,ml)}{...lines(14,65,[175,145])}{R(14,80,44,3,c)}{...lines(14,87,[183,165,173])}{R(14,108,44,3,c)}{...lines(14,115,[183,118])}{R(14,142,55,3,sl)}
+//       </svg>
+//     );
+//     case "tidal": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,bg,0)}{R(0,0,W,4,c,0)}{R(0,4,W,38,`${c}12`,0)}
+//         {R(14,10,85,8,"#111827",2)}{R(14,23,52,4,c,1.5)}{R(14,35,192,0.5,li,0)}
+//         {[40,46,52].map((y,i)=><rect key={y} x={14} y={y} width={[62,52,72][i]} height={2.5} rx={1} fill={ml}/>)}
+//         {R(155,37,60,22,"#f8fafc",4)}{[40,46,52].map((y,i)=><rect key={y} x={158} y={y} width={[45,35,50][i]} height={1.8} rx={1} fill="#94a3b8"/>)}
+//         {R(14,63,192,1.5,"#e2e8f0",0)}{R(14,73,44,3,c)}{...lines(14,80,[185,165,175])}{R(14,101,44,3,c)}{...lines(14,108,[185,118])}{R(0,151,W,4,c,0)}
+//       </svg>
+//     );
+//     case "horizon": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,"#f8fafc",0)}
+//         <defs><linearGradient id="hor" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor={c}/><stop offset="100%" stopColor={`${c}44`}/></linearGradient></defs>
+//         {R(0,0,W,3,"url(#hor)",0)}{R(14,16,90,10,"#0f172a",2)}{R(14,30,56,3.5,c,1.5)}
+//         {R(155,14,52,36,`${c}10`,6)}<rect x={155} y={14} width={52} height={36} rx={6} fill="none" stroke={`${c}30`} strokeWidth="1"/>
+//         {[20,26,32,38].map((y,i)=><rect key={y} x={159} y={y} width={[38,28,42,22][i]} height={1.8} rx={1} fill={`${c}60`}/>)}
+//         {[40,46,52].map((y,i)=><rect key={y} x={14} y={y} width={[62,50,70][i]} height={2.5} rx={1} fill={ml}/>)}
+//         {R(14,64,192,1,li,0)}{R(14,74,44,3,c)}{...lines(14,81,[185,165,175])}{R(14,102,44,3,c)}{...lines(14,109,[185,118])}{R(0,150,W,2,`${c}55`,0)}
+//       </svg>
+//     );
+//     case "lumina": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,bg,0)}
+//         <defs><radialGradient id="lum" cx="50%" cy="0%" r="60%"><stop offset="0%" stopColor={`${c}18`}/><stop offset="100%" stopColor="transparent"/></radialGradient></defs>
+//         {R(0,0,W,H,"url(#lum)",0)}{R(0,0,W,55,`${c}08`,0)}
+//         {R(13,14,92,10,"#111827",2)}{R(13,28,58,3.5,c,1.5)}
+//         <circle cx={195} cy={28} r={22} fill={`${c}10`} stroke={`${c}20`} strokeWidth="1"/>
+//         {[40,46,52].map((y,i)=><rect key={y} x={13} y={y} width={[62,50,72][i]} height={2.5} rx={1} fill={ml}/>)}
+//         {R(13,64,195,1,li,0)}{R(13,74,44,3,c)}{...lines(13,81,[185,165,175])}{R(13,102,44,3,c)}{...lines(13,109,[185,118])}{R(13,144,55,3,sl)}
+//       </svg>
+//     );
+//     // Executive / Corporate
+//     case "obsidian_lite": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,"#f8f7ff",0)}{R(0,0,60,H,`${c}10`,0)}{R(0,0,3,H,c,0)}
+//         {R(8,13,47,7,c,1.5)}{R(8,24,34,3,`${c}88`)}
+//         {[44,56,68,80,92].map(y=><g key={y}>{R(8,y,20,2,`${c}66`)}{R(8,y+6,46,2,`${c}33`)}</g>)}
+//         {R(72,13,32,2.5,ml)}{...lines(72,20,[130,100],li)}{R(72,36,40,3,c)}{...lines(72,43,[138,125,130],li)}{R(72,64,40,3,c)}{...lines(72,71,[138,112,120],li)}{R(72,122,28,2,ml)}{R(72,129,52,3,sl)}
+//       </svg>
+//     );
+//     case "slate": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,bg,0)}{R(13,13,92,9,"#0f172a",1.5)}{R(13,26,55,3,"#64748b")}
+//         {R(137,13,70,2.5,"#475569")}{[19,25,31,37].map((y,i)=><rect key={y} x={137} y={y} width={[60,70,55,65][i]} height={2} rx={1} fill="#94a3b8"/>)}
+//         {R(13,38,192,1.8,"#0f172a",0)}{R(13,46,72,5,"#f1f5f9",2)}{R(15,47.5,48,1.5,"#64748b",0.5)}
+//         {R(13,57,32,2.5,ml)}{...lines(13,64,[188,158])}{R(13,78,2.5,28,c,1)}
+//         {[78,84,89,94].map((y,i)=><rect key={y} x={19} y={y} width={i===0?38:[180,158,168][i-1]} height={2.2} rx={1} fill={i===0?c:li}/>)}
+//         {R(13,133,30,2,ml)}{R(13,140,52,3,sl)}
+//       </svg>
+//     );
+//     case "architect": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,"#f8fafc",0)}{R(13,13,82,10,"#0f172a",1.5)}{R(13,27,52,3,"#334155")}
+//         {R(113,13,94,40,"#0f172a",5)}{[18,24,30,36].map((y,i)=><rect key={y} x={119} y={y} width={[62,52,72,46][i]} height={2} rx={1} fill="rgba(255,255,255,.58)"/>)}
+//         {R(13,53,192,1.2,"#e2e8f0",0)}{R(13,60,32,2.5,ml)}{...lines(13,67,[188,158],"#e2e8f0")}
+//         {R(13,82,44,3,"#0f172a")}{...lines(13,89,[188,170,175],"#e2e8f0")}{R(13,109,44,3,"#0f172a")}{...lines(13,116,[188,122],"#e2e8f0")}{R(13,136,30,2,ml)}{R(13,143,52,3,sl)}
+//       </svg>
+//     );
+//     case "corporate": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,bg,0)}{R(0,0,W,8,c,0)}{R(0,8,W,44,"#1e3a5f",0)}
+//         {R(14,14,85,8,"rgba(255,255,255,.92)",2)}{R(14,26,52,4,"rgba(255,255,255,.6)",1.5)}
+//         {R(155,12,60,8,"rgba(255,255,255,.7)",2)}{[18,24,30].map((y,i)=><rect key={y} x={155} y={y} width={[55,40,50][i]} height={2} rx={1} fill="rgba(255,255,255,.5)"/>)}
+//         {R(14,58,35,2.5,ml)}{...lines(14,65,[185,155])}{R(14,80,44,3,c)}{...lines(14,87,[185,168,175])}{R(14,108,44,3,c)}{...lines(14,115,[185,118])}{R(0,147,W,8,c,0)}
+//       </svg>
+//     );
+//     case "executive": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,"#f0f4f8",0)}{R(0,0,W,55,c,0)}<circle cx={195} cy={0} r={70} fill="rgba(255,255,255,.07)"/>
+//         {R(14,12,85,9,"rgba(255,255,255,.92)",2)}{R(14,25,52,4,"rgba(255,255,255,.6)",1.5)}
+//         {[0,38,80].map(ox=><rect key={ox} x={14+ox} y={36} width={32} height={5} rx={10} fill="rgba(255,255,255,.2)" stroke="rgba(255,255,255,.3)" strokeWidth=".5"/>)}
+//         {R(14,65,38,2.5,ml)}{...lines(14,72,[175,148])}{R(14,85,44,3,c)}{...lines(14,92,[185,165,175])}{R(14,113,44,3,c)}{...lines(14,120,[185,118])}{R(14,143,32,2,ml)}{R(14,149,55,3,sl)}
+//       </svg>
+//     );
+//     case "titan": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,bg,0)}{R(0,0,8,H,c,0)}{R(18,14,88,10,"#1f2937",2)}{R(18,28,55,4,"#374151",1.5)}
+//         {R(18,38,188,1.5,"#e5e7eb",0)}{[44,50,56].map((y,i)=><rect key={y} x={18} y={y} width={[58,48,68][i]} height={2.5} rx={1} fill={ml}/>)}
+//         {R(18,66,188,1.5,"#e5e7eb",0)}{R(18,76,44,3,c)}{...lines(18,83,[183,165,174])}{R(18,104,44,3,c)}{...lines(18,111,[183,120])}{R(18,132,32,2,ml)}{R(18,138,55,3,sl)}
+//       </svg>
+//     );
+//     case "oxford": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,"#faf9f7",0)}{R(14,10,192,1.5,c,0)}{R(14,14,192,0.5,c,0)}
+//         <text x={110} y={30} textAnchor="middle" fontSize={12} fontWeight="700" fill="#1a1209" fontFamily="Georgia,serif">Jonathan M. Williams</text>
+//         <text x={110} y={40} textAnchor="middle" fontSize={5.5} fill={sl} fontFamily="Georgia,serif">Senior Architect & Project Director</text>
+//         {R(14,44,192,0.5,c,0)}{R(14,47,192,1.5,c,0)}
+//         {[53,58,63].map((y,i)=><rect key={y} x={[14,80,148][i]} y={y} width={60} height={2} rx={1} fill={ml}/>)}
+//         {R(14,73,192,0.6,"#c9bc9a",0)}{R(14,82,38,2.5,c)}{...lines(14,89,[185,162,172],"#d5cbb0")}{R(14,108,38,2.5,c)}{...lines(14,115,[185,118],"#d5cbb0")}{R(14,138,192,1.5,c,0)}
+//       </svg>
+//     );
+//     case "summit": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,bg,0)}{R(0,0,W,3,c,0)}{R(14,12,88,10,"#111827",2)}{R(14,26,54,4,c,1.5)}
+//         {R(155,10,52,28,c,4)}<text x={181} y={28} textAnchor="middle" fontSize={7} fontWeight="700" fill="white">APPLYING</text>
+//         <text x={181} y={37} textAnchor="middle" fontSize={7} fill="rgba(255,255,255,.75)">TO</text>
+//         {R(14,40,188,0.7,li,0)}{[46,52,58].map((y,i)=><rect key={y} x={14} y={y} width={[62,52,72][i]} height={2.5} rx={1} fill={ml}/>)}
+//         {R(14,68,188,0.7,li,0)}{R(14,78,44,3,c)}{...lines(14,85,[185,165,175])}{R(14,106,44,3,c)}{...lines(14,113,[185,118])}{R(0,152,W,3,c,0)}
+//       </svg>
+//     );
+//     case "presidio": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,"#fafafa",0)}{R(0,0,W,2,c,0)}
+//         {R(14,12,95,11,"#111827",2)}{R(14,27,60,3.5,c,1.5)}
+//         <rect x={13} y={40} width={192} height={18} rx={4} fill={`${c}08`} stroke={`${c}18`} strokeWidth="1"/>
+//         {[44,50].map((y,i)=><rect key={y} x={17} y={y} width={[65,55][i]} height={2} rx={1} fill={ml}/>)}
+//         {R(110,44,90,2,ml)}{R(110,50,75,2,ml)}
+//         {R(14,66,192,1,li,0)}{R(14,76,44,3,c)}{...lines(14,83,[185,165,174])}{R(14,104,44,3,c)}{...lines(14,111,[185,118])}{R(14,140,192,1,li,0)}{R(14,148,55,3,sl)}
+//       </svg>
+//     );
+//     case "accord": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,bg,0)}
+//         <defs><linearGradient id="acc" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={`${c}15`}/><stop offset="100%" stopColor="white"/></linearGradient></defs>
+//         {R(0,0,W,65,"url(#acc)",0)}{R(0,0,4,65,c,0)}
+//         {R(14,14,90,10,"#111827",2)}{R(14,28,56,3.5,c,1.5)}
+//         {[40,46].map((y,i)=><rect key={y} x={14} y={y} width={[60,48][i]} height={2.5} rx={1} fill={ml}/>)}
+//         {R(140,14,66,44,`${c}08`,6)}<rect x={140} y={14} width={66} height={44} rx={6} fill="none" stroke={`${c}25`} strokeWidth="1"/>
+//         {[20,26,32,38,44].map((y,i)=><rect key={y} x={144} y={y} width={[50,38,55,28,42][i]} height={1.8} rx={1} fill={`${c}50`}/>)}
+//         {R(14,68,192,1,li,0)}{R(14,78,44,3,c)}{...lines(14,85,[185,165,175])}{R(14,106,44,3,c)}{...lines(14,113,[185,118])}{R(14,144,55,3,sl)}
+//       </svg>
+//     );
+//     // Minimal
+//     case "nordic": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,bg,0)}{R(16,13,62,3,`${c}88`)}{R(16,20,118,10,"#1e1b4b",1.5)}{R(16,34,38,3,c)}
+//         {R(16,43,188,0.8,`${c}44`,0)}{[0,62,124].map(ox=><rect key={ox} x={16+ox} y={50} width={56} height={2} rx={1} fill={ml}/>)}
+//         {R(16,62,32,2.5,ml)}{...lines(16,69,[188,162])}{R(16,84,44,3,c)}{...lines(16,91,[188,162,177])}{R(16,111,44,3,c)}{...lines(16,118,[188,112])}{R(16,138,30,2,ml)}{R(16,145,52,3,sl)}
+//       </svg>
+//     );
+//     case "pearl": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,bg,0)}{R(13,13,97,10,"#111827",1.5)}{R(13,27,60,3.5,c)}{R(13,36,188,0.6,li,0)}
+//         {[42,48].map((y,i)=><rect key={y} x={13} y={y} width={[62,54][i]} height={2} rx={1} fill={ml}/>)}
+//         {R(92,42,57,2,ml)}{R(155,42,46,2,ml)}{R(13,58,188,0.6,li,0)}{R(13,64,32,2,ml)}
+//         {...lines(13,71,[188,158])}{R(13,87,44,3,c)}{...lines(13,94,[188,170,176])}{R(13,115,44,3,c)}{...lines(13,122,[188,122])}{R(13,140,28,2,ml)}{R(13,147,52,3,sl)}
+//       </svg>
+//     );
+//     case "minimal": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,"#fafafa",0)}{R(16,16,110,11,"#111",1)}{R(16,31,70,3,"#666",1)}
+//         {R(16,40,188,0.5,"#ddd",0)}{[46,51,56,61].map((y,i)=><rect key={y} x={16} y={y} width={[80,65,90,55][i]} height={2} rx={1} fill="#aaa"/>)}
+//         {R(16,73,188,0.5,"#ddd",0)}{R(16,82,35,2,"#999",1)}{...lines(16,89,[188,160],"#ddd")}{R(16,104,40,2.5,c,1)}{...lines(16,111,[188,165,175],"#ddd")}{R(16,131,40,2.5,c,1)}{...lines(16,138,[188,120],"#ddd")}{R(16,152,188,0.5,"#ddd",0)}
+//       </svg>
+//     );
+//     case "zen": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,"#fafaf9",0)}{R(14,18,95,10,"#1c1917",2)}{R(14,32,58,3.5,"#57534e",1.5)}
+//         {R(14,42,192,0.5,"#d6d3d1",0)}{[48,54,60,66].map((y,i)=><rect key={y} x={14} y={y} width={[62,52,72,46][i]} height={2} rx={1} fill="#a8a29e"/>)}
+//         {R(14,74,192,0.5,"#d6d3d1",0)}{R(14,82,38,2.5,c)}{...lines(14,89,[183,162,172],"#d6d3d1")}{R(14,110,38,2.5,c)}{...lines(14,117,[183,118],"#d6d3d1")}{R(14,142,192,0.5,"#d6d3d1",0)}
+//       </svg>
+//     );
+//     case "ivory": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,"#fefce8",0)}{R(13,13,5,130,c,2.5)}{R(23,13,90,10,"#1c1917",2)}{R(23,27,56,3.5,"#78350f",1.5)}
+//         {R(23,36,188,0.8,"#fde68a",0)}{[42,48,54].map((y,i)=><rect key={y} x={23} y={y} width={[62,54,74][i]} height={2} rx={1} fill="#92400e"/>)}
+//         {R(23,64,32,2.5,ml)}{...lines(23,71,[178,148],"#e7e5e4")}{R(23,86,44,3,c)}{...lines(23,93,[178,162,170],"#e7e5e4")}{R(23,113,44,3,c)}{...lines(23,120,[178,114],"#e7e5e4")}{R(23,139,28,2,ml)}{R(23,146,52,3,"#1c1917")}
+//       </svg>
+//     );
+//     case "paper": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,"#fffef0",0)}{R(14,14,4,127,"#e5e0c8",2)}{R(38,0,1,H,"#e5dcc8",0)}
+//         {R(46,14,88,9,"#1a1209",2)}{R(46,27,54,3.5,"#4a4a4a",1.5)}{R(14,42,192,0.5,"#d0ccb0",0)}
+//         {[48,54,60].map((y,i)=><rect key={y} x={46} y={y} width={[62,52,72][i]} height={2} rx={1} fill="#8a8070"/>)}
+//         {R(46,76,42,3,c)}{...lines(46,83,[168,148,156],"#d0ccb0")}{R(46,104,42,3,c)}{...lines(46,111,[168,108],"#d0ccb0")}{R(46,140,32,2,"#9a9080",1)}
+//       </svg>
+//     );
+//     case "serif": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,bg,0)}{R(13,13,192,0.8,"#1e293b",0)}
+//         <text x={110} y={30} textAnchor="middle" fontSize={13} fontWeight="800" fill="#1e293b" fontFamily="Georgia,serif">Alexander Johnson</text>
+//         <text x={110} y={40} textAnchor="middle" fontSize={5.5} fill={sl} fontFamily="Georgia,serif">Senior Product Designer</text>
+//         {R(13,45,192,0.8,"#1e293b",0)}{[14,80,150].map((x,i)=><rect key={x} x={x} y={51} width={[60,64,52][i]} height={2} rx={1} fill={c}/>)}
+//         {R(13,59,192,0.5,li,0)}{R(13,65,32,2.5,ml)}{...lines(13,72,[188,158])}{R(13,87,42,3,c)}{...lines(13,94,[188,170,176])}{R(13,114,42,3,c)}{...lines(13,121,[188,122])}{R(13,149,192,0.8,li,0)}
+//       </svg>
+//     );
+//     case "editorial": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,bg,0)}{R(0,0,W,4,c,0)}{R(14,11,110,11,"#1e293b",2)}{R(14,26,62,3.5,c,1.5)}
+//         {R(14,35,188,1.5,"#334155",0)}{[40,46,52].map((y,i)=><rect key={y} x={14} y={y} width={[62,52,72][i]} height={2.5} rx={1} fill={ml}/>)}
+//         {R(155,38,52,22,`${c}1a`,2)}{[42,48,54,60].map((y,i)=><rect key={y} x={158} y={y} width={[38,28,44,22][i]} height={1.5} rx={0.5} fill="#94a3b8"/>)}
+//         {R(14,62,188,1.5,"#e2e8f0",0)}{R(14,72,44,3,c)}{...lines(14,79,[185,165,175])}{R(14,100,44,3,c)}{...lines(14,107,[185,118])}{R(0,150,W,4,c,0)}
+//       </svg>
+//     );
+//     case "linen": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,"#faf8f5",0)}
+//         {R(0,0,W,H,"none",0)}
+//         {R(14,16,3,120,`${c}40`,2)}
+//         {R(21,16,92,11,"#1c1917",2)}{R(21,31,58,3.5,c,1.5)}
+//         {[40,46,52].map((y,i)=><rect key={y} x={21} y={y} width={[62,52,72][i]} height={2.2} rx={1} fill="#a8a29e"/>)}
+//         {R(21,62,185,0.6,"#d6d3d1",0)}{R(21,72,40,2.5,c)}{...lines(21,79,[183,162,172],"#e7e5e4")}{R(21,100,40,2.5,c)}{...lines(21,107,[183,118],"#e7e5e4")}{R(21,140,50,3,"#57534e")}
+//       </svg>
+//     );
+//     case "parchment": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,"#fdf8ed",0)}
+//         {R(14,10,192,2,`${c}66`,0)}{R(14,14,192,0.5,`${c}33`,0)}
+//         <text x={110} y={34} textAnchor="middle" fontSize={14} fontWeight="700" fill="#2c1a0e" fontFamily="Georgia,serif">Eleanor R. Ashworth</text>
+//         <text x={110} y={45} textAnchor="middle" fontSize={5.5} fill="#8a7060" fontFamily="Georgia,serif">Senior Creative Director</text>
+//         {R(14,50,192,0.5,`${c}33`,0)}{R(14,54,192,2,`${c}66`,0)}
+//         {[60,65,70].map((y,i)=><rect key={y} x={[14,80,150][i%3]} y={y} width={60} height={1.8} rx={1} fill="#8a7060"/>)}
+//         {R(14,78,192,0.5,"#d4c9a8",0)}{R(14,88,40,2.5,c)}{...lines(14,95,[185,162,172],"#d4c9a8")}{R(14,116,40,2.5,c)}{...lines(14,123,[185,118],"#d4c9a8")}{R(14,148,192,2,`${c}44`,0)}
+//       </svg>
+//     );
+//     // Creative
+//     case "designer": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,"#faf5ff",0)}{R(0,0,70,H,`${c}12`,0)}{R(0,0,2,H,c,0)}
+//         <circle cx={35} cy={70} r={25} fill={ca} stroke={cb} strokeWidth="1"/>
+//         <text x={35} y={74} textAnchor="middle" fontSize={14} fill={`${c}cc`}>✦</text>
+//         {R(8,13,52,8,c,1.5)}{R(8,25,36,2.5,`${c}b0`)}{R(80,13,77,9,"#111827",1.5)}{R(80,26,50,2.5,"#6b7280")}
+//         {R(80,75,50,3,c)}{...lines(80,82,[130,118,124])}{R(80,107,50,3,c)}{...lines(80,114,[130,90])}
+//       </svg>
+//     );
+//     case "motion": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         <defs><linearGradient id="mt" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor={c}/><stop offset="100%" stopColor="#f59e0b"/></linearGradient></defs>
+//         {R(0,0,W,H,bg,0)}{R(0,0,W,5.5,"url(#mt)",0)}{R(13,14,94,11,"#111827",1.5)}{R(13,29,62,3.5,c)}
+//         {R(13,38,188,0.6,"#fce7f3",0)}{[44,50,56].map((y,i)=><rect key={y} x={13} y={y} width={[57,50,66][i]} height={4} rx={10} fill={ca} stroke={cb} strokeWidth=".7"/>)}
+//         {R(13,67,32,2.5,ml)}{...lines(13,74,[185,155])}{R(13,89,44,3,c)}{...lines(13,96,[185,168,175])}{R(13,116,44,3,c)}{...lines(13,123,[185,118])}{R(0,151,W,4,"url(#mt)",0)}
+//       </svg>
+//     );
+//     case "brushstroke": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,"#fefefe",0)}
+//         <path d="M0,44 Q55,34 110,44 Q165,54 220,44 L220,0 L0,0Z" fill={c}/>
+//         <path d="M0,50 Q55,40 110,50 Q165,60 220,50 L220,44 Q165,54 110,44 Q55,34 0,44Z" fill={c} opacity=".3"/>
+//         {R(14,11,85,9,"rgba(255,255,255,.92)",2)}{R(14,24,52,4,"rgba(255,255,255,.65)",1.5)}
+//         {R(14,62,38,2.5,ml)}{...lines(14,69,[185,160])}{R(14,84,44,3,c)}{...lines(14,91,[185,168,175])}{R(14,112,44,3,c)}{...lines(14,119,[185,118])}{R(14,143,32,2,ml)}
+//       </svg>
+//     );
+//     case "studio": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,"#f8f5ff",0)}{R(0,0,W,58,`${c}10`,0)}
+//         <defs><linearGradient id="std" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor={c}/><stop offset="100%" stopColor={`${c}44`}/></linearGradient></defs>
+//         {R(0,0,W,3,"url(#std)",0)}{R(14,12,88,10,"#1e1b4b",2)}{R(14,26,54,4,c,1.5)}
+//         {[34,40,46].map((y,i)=><rect key={y} x={14} y={y} width={[50,44,60][i]} height={4} rx={8} fill={ca} stroke={cb} strokeWidth=".7"/>)}
+//         {R(14,60,188,0.6,li,0)}{R(14,70,42,2.5,c)}{...lines(14,77,[185,165,175])}{R(14,100,42,2.5,c)}{...lines(14,107,[185,118])}{R(14,148,55,3,"#1e1b4b")}
+//       </svg>
+//     );
+//     case "folio": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,bg,0)}{R(0,0,W,H,`${c}08`,0)}{R(14,14,55,55,`${c}22`,8)}
+//         <text x={41} y={47} textAnchor="middle" fontSize={20} fill={c}>✦</text>
+//         {R(76,14,130,10,"#111827",2)}{R(76,28,80,4,"#374151",1.5)}{R(76,36,110,2.5,ml)}
+//         {[41,47].map((y,i)=><rect key={y} x={76} y={y} width={[90,70][i]} height={2} rx={1} fill={ml}/>)}
+//         {R(14,76,192,1.2,li,0)}{R(14,84,38,2.5,c)}{...lines(14,91,[185,165,175])}{R(14,112,38,2.5,c)}{...lines(14,119,[185,118])}{R(14,143,32,2,ml)}{R(14,149,55,3,sl)}
+//       </svg>
+//     );
+//     case "artboard": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,"#f4f3f8",0)}{R(12,12,196,131,bg,6)}
+//         <rect x={12} y={12} width={196} height={131} rx={6} fill="none" stroke={`${c}40`} strokeWidth={1.5} strokeDasharray="4,3"/>
+//         {R(12,12,196,3,c,0)}{R(14,20,88,8,"#111827",1.5)}{R(14,32,54,3.5,c,1.5)}
+//         {[39,45,51].map((y,i)=><rect key={y} x={14} y={y} width={[55,44,62][i]} height={2.5} rx={1} fill={ml}/>)}
+//         {R(14,62,192,0.7,li,0)}{R(14,72,38,2.5,c)}{...lines(14,79,[182,162,170])}{R(14,100,38,2.5,c)}{...lines(14,107,[182,115])}{R(14,132,30,2,ml)}{R(14,138,52,3,sl)}
+//       </svg>
+//     );
+//     case "vortex": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,bg,0)}<polygon points="0,0 220,0 220,55 0,75" fill={c}/>
+//         <polygon points="0,0 110,0 0,55" fill="rgba(255,255,255,.12)"/>
+//         {R(14,11,82,8,"rgba(255,255,255,.9)",2)}{R(14,23,50,4,"rgba(255,255,255,.62)",1.5)}
+//         {[14,56,104].map(x=><rect key={x} x={x} y={35} width={36} height={3.5} rx={8} fill="rgba(255,255,255,.2)"/>)}
+//         {R(14,84,38,2.5,ml)}{...lines(14,91,[182,162])}{R(14,106,44,3,c)}{...lines(14,113,[183,165,173])}{R(14,134,44,3,c)}{...lines(14,141,[183,118])}
+//       </svg>
+//     );
+//     case "palette": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,"#fff7f5",0)}
+//         {[0,1,2,3].map(i=><rect key={i} x={0} y={i*40} width={5} height={38} rx={2} fill={[c,`${c}cc`,`${c}88`,`${c}44`][i]}/>)}
+//         {R(14,14,90,10,"#1c0a06",2)}{R(14,28,56,3.5,c,1.5)}
+//         {[38,44,50].map((y,i)=><rect key={y} x={14} y={y} width={[62,52,72][i]} height={2.5} rx={1} fill="#a8a29e"/>)}
+//         {R(14,62,192,1,li,0)}{R(14,72,44,3,c)}{...lines(14,79,[185,165,175])}{R(14,100,44,3,c)}{...lines(14,107,[185,118])}{R(14,140,55,3,"#1c0a06")}
+//       </svg>
+//     );
+//     case "frame": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,"#fafafa",0)}
+//         <rect x={6} y={6} width={208} height={143} rx={8} fill="none" stroke={c} strokeWidth="2"/>
+//         <rect x={10} y={10} width={200} height={135} rx={6} fill="none" stroke={`${c}30`} strokeWidth="1"/>
+//         {R(14,18,90,10,"#111827",2)}{R(14,32,56,3.5,c,1.5)}
+//         {[42,48,54].map((y,i)=><rect key={y} x={14} y={y} width={[62,52,72][i]} height={2.5} rx={1} fill={ml}/>)}
+//         {R(14,66,192,0.8,li,0)}{R(14,76,44,3,c)}{...lines(14,83,[185,165,175])}{R(14,104,44,3,c)}{...lines(14,111,[185,118])}{R(14,140,55,3,sl)}
+//       </svg>
+//     );
+//     case "mosaic": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,bg,0)}
+//         {[[0,0],[36,0],[72,0],[0,36],[36,36],[72,36],[0,72],[36,72],[72,72]].map(([x,y],i)=>(
+//           <rect key={i} x={x} y={y} width={34} height={34} rx={2} fill={i%3===0?`${c}15`:i%3===1?`${c}08`:"white"} stroke={`${c}12`} strokeWidth=".5"/>
+//         ))}
+//         {R(14,18,58,8,"white",2)}{R(14,18,58,8,`${c}18`,2)}<text x={43} y={26} textAnchor="middle" fontSize={8} fontWeight="700" fill={c}>Mosaic</text>
+//         {R(110,14,100,10,"#111827",1.5)}{R(110,28,65,3,c,1.5)}
+//         {[38,44,50].map((y,i)=><rect key={y} x={110} y={y} width={[62,50,72][i]} height={2.5} rx={1} fill={ml}/>)}
+//         {R(110,62,100,0.8,li,0)}{R(110,72,40,2.5,c)}{...lines(110,79,[100,85,92])}{R(110,102,40,2.5,c)}{...lines(110,109,[100,68])}
+//       </svg>
+//     );
+//     // Premium
+//     case "blaze": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         <defs><linearGradient id="blz" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor={c}/><stop offset="100%" stopColor="#ea580c"/></linearGradient></defs>
+//         {R(0,0,W,H,bg,0)}{R(0,0,W,52,"url(#blz)",0)}<polygon points="140,0 220,0 220,52" fill="rgba(255,255,255,.14)"/>
+//         {R(13,11,90,9,"rgba(255,255,255,.92)",2)}{R(13,24,55,4,"rgba(255,255,255,.6)",1.5)}
+//         {[0,42,84].map(ox=><rect key={ox} x={13+ox} y={35} width={36} height={4} rx={8} fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.28)" strokeWidth=".6"/>)}
+//         {R(13,62,38,2.5,ml)}{...lines(13,69,[175,148])}{R(13,82,44,3,c)}{...lines(13,89,[182,162,173])}{R(13,110,44,3,c)}{...lines(13,117,[182,118])}{R(13,141,32,2,ml)}{R(13,147,55,3,sl)}
+//       </svg>
+//     );
+//     case "radiant": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,bg,0)}
+//         <defs><radialGradient id="rad" cx="100%" cy="0%" r="80%"><stop offset="0%" stopColor={`${c}20`}/><stop offset="100%" stopColor="transparent"/></radialGradient></defs>
+//         {R(0,0,W,H,"url(#rad)",0)}{R(0,0,5,H,c,0)}{R(5,0,W-5,H,`${c}06`,0)}
+//         {R(18,14,88,10,"#1e1b4b",2)}{R(18,28,54,4,c,1.5)}
+//         {[38,44,50].map((y,i)=><rect key={y} x={18} y={y} width={[60,50,70][i]} height={2.5} rx={1} fill={ml}/>)}
+//         <circle cx={200} cy={20} r={35} fill={`${c}10`} stroke={`${c}18`} strokeWidth="1"/>
+//         {R(18,64,192,1,li,0)}{R(18,74,44,3,c)}{...lines(18,81,[183,165,174])}{R(18,104,44,3,c)}{...lines(18,111,[183,120])}{R(18,142,55,3,sl)}
+//       </svg>
+//     );
+//     case "solstice": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         <defs><linearGradient id="sol" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={`${c}18`}/><stop offset="100%" stopColor="white"/></linearGradient></defs>
+//         {R(0,0,W,H,bg,0)}{R(0,0,W,68,"url(#sol)",0)}{R(0,0,W,3,c,0)}
+//         {R(14,12,92,10,"#0f172a",2)}{R(14,26,58,3.5,c,1.5)}
+//         {[36,42,48].map((y,i)=><rect key={y} x={14} y={y} width={[62,52,72][i]} height={2.5} rx={1} fill={ml}/>)}
+//         {R(155,10,52,50,bg,6)}<rect x={155} y={10} width={52} height={50} rx={6} fill="none" stroke={`${c}30`} strokeWidth="1.5"/>
+//         {[16,22,28,34,40,46].map((y,i)=><rect key={y} x={159} y={y} width={[40,30,44,24,38,20][i]} height={1.8} rx={1} fill={`${c}50`}/>)}
+//         {R(14,68,192,1.5,li,0)}{R(14,78,44,3,c)}{...lines(14,85,[185,165,174])}{R(14,106,44,3,c)}{...lines(14,113,[185,118])}{R(14,144,55,3,sl)}{R(0,152,W,3,c,0)}
+//       </svg>
+//     );
+//     case "meridian": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,"#f8fafc",0)}
+//         {R(0,0,W,60,bg,0)}{R(0,0,W,2,c,0)}{R(0,60,W,2,c,0)}
+//         {R(14,10,90,10,"#0f172a",2)}{R(14,24,56,3.5,c,1.5)}
+//         {[34,40,46].map((y,i)=><rect key={y} x={14} y={y} width={[62,52,72][i]} height={2.5} rx={1} fill={ml}/>)}
+//         {R(155,8,60,50,`${c}10`,6)}<rect x={155} y={8} width={60} height={50} rx={6} fill="none" stroke={`${c}20`} strokeWidth="1"/>
+//         {[14,20,26,32,38,44].map((y,i)=><rect key={y} x={159} y={y} width={[44,32,48,26,40,20][i]} height={1.8} rx={1} fill={`${c}55`}/>)}
+//         {R(14,72,44,3,c)}{...lines(14,79,[185,165,174])}{R(14,104,44,3,c)}{...lines(14,111,[185,118])}{R(14,140,55,3,sl)}
+//       </svg>
+//     );
+//     case "pinnacle": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,bg,0)}
+//         <defs><linearGradient id="pin" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor={c}/><stop offset="50%" stopColor={`${c}dd`}/><stop offset="100%" stopColor={`${c}88`}/></linearGradient></defs>
+//         {R(0,0,W,58,"url(#pin)",0)}<polygon points="0,58 220,40 220,58" fill="rgba(255,255,255,.12)"/>
+//         <circle cx={190} cy={10} r={45} fill="rgba(255,255,255,.08)"/>
+//         {R(14,11,88,9,"rgba(255,255,255,.92)",2)}{R(14,24,54,4,"rgba(255,255,255,.65)",1.5)}
+//         {[0,40,82].map(ox=><rect key={ox} x={14+ox} y={36} width={34} height={4} rx={8} fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.28)" strokeWidth=".6"/>)}
+//         {R(14,68,38,2.5,ml)}{...lines(14,75,[175,148])}{R(14,88,44,3,c)}{...lines(14,95,[183,165,173])}{R(14,116,44,3,c)}{...lines(14,123,[183,118])}{R(14,148,55,3,sl)}
+//       </svg>
+//     );
+//     // Tech
+//     case "circuit": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,"#f8faff",0)}
+//         {[0,1,2,3,4,5,6].map(i=><line key={i} x1={0} y1={i*26} x2={W} y2={i*26} stroke={`${c}08`} strokeWidth="1"/>)}
+//         {[0,1,2,3,4,5,6,7].map(i=><line key={i} x1={i*30} y1={0} x2={i*30} y2={H} stroke={`${c}08`} strokeWidth="1"/>)}
+//         {R(0,0,4,H,c,0)}{R(14,14,90,10,"#0f172a",2)}{R(14,28,56,3.5,c,1.5)}
+//         {[38,44,50].map((y,i)=><rect key={y} x={14} y={y} width={[60,50,70][i]} height={3} rx={1} fill={ca} stroke={cb} strokeWidth=".6"/>)}
+//         {R(14,62,192,0.8,`${c}30`,0)}{R(14,72,44,2.5,c)}{...lines(14,79,[183,162,172])}{R(14,102,44,2.5,c)}{...lines(14,109,[183,118])}{R(14,148,55,3,"#0f172a")}
+//       </svg>
+//     );
+//     case "blueprint": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,"#eff6ff",0)}
+//         {[0,1,2,3,4,5].map(i=><line key={i} x1={0} y1={i*30} x2={W} y2={i*30} stroke="#bfdbfe" strokeWidth=".8"/>)}
+//         {[0,1,2,3,4,5,6,7].map(i=><line key={i} x1={i*30} y1={0} x2={i*30} y2={H} stroke="#bfdbfe" strokeWidth=".8"/>)}
+//         {R(14,14,92,10,"#1e3a8a",2)}{R(14,28,58,3.5,c,1.5)}
+//         {[38,44,50].map((y,i)=><rect key={y} x={14} y={y} width={[62,50,72][i]} height={2.5} rx={1} fill="#3b82f6"/>)}
+//         {R(14,62,192,1,"#93c5fd",0)}{R(14,72,44,2.5,c)}{...lines(14,79,[183,162,172],"#93c5fd")}{R(14,102,44,2.5,c)}{...lines(14,109,[183,118],"#93c5fd")}{R(14,148,55,3,"#1e3a8a")}
+//       </svg>
+//     );
+//     case "axiom": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,bg,0)}{R(0,0,W,4,c,0)}
+//         <defs><linearGradient id="axm" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor={`${c}15`}/><stop offset="100%" stopColor="white"/></linearGradient></defs>
+//         {R(0,4,W,52,"url(#axm)",0)}{R(14,12,90,10,"#0f172a",2)}{R(14,26,56,3.5,c,1.5)}
+//         {[36,42,48].map((y,i)=><rect key={y} x={14} y={y} width={[62,50,72][i]} height={2.5} rx={1} fill={ml}/>)}
+//         {R(14,60,192,2,`${c}20`,0)}{R(14,68,44,3,c)}{...lines(14,75,[185,165,175])}{R(14,96,44,3,c)}{...lines(14,103,[185,118])}{R(14,138,192,2,`${c}20`,0)}{R(14,148,55,3,sl)}
+//       </svg>
+//     );
+//     case "signal": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,bg,0)}
+//         {[20,30,40,50].map((r,i)=><circle key={i} cx={210} cy={0} r={r} fill="none" stroke={`${c}${["18","12","0c","06"][i]}`} strokeWidth="1.5"/>)}
+//         {R(14,14,88,10,"#0f172a",2)}{R(14,28,54,4,c,1.5)}
+//         {[38,44,50].map((y,i)=><rect key={y} x={14} y={y} width={[60,50,70][i]} height={2.5} rx={1} fill={ml}/>)}
+//         {R(14,62,192,1,li,0)}{R(14,72,44,3,c)}{...lines(14,79,[185,165,175])}{R(14,100,44,3,c)}{...lines(14,107,[185,118])}{R(14,148,55,3,sl)}
+//       </svg>
+//     );
+//     case "quantum": return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,"#f8fafc",0)}
+//         <defs><linearGradient id="qnt" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor={`${c}20`}/><stop offset="100%" stopColor={`${c}05`}/></linearGradient></defs>
+//         {R(0,0,W,62,"url(#qnt)",0)}{R(0,0,3,62,c,0)}{R(3,0,W-3,3,c,0)}
+//         {R(14,12,90,10,"#0f172a",2)}{R(14,26,56,3.5,c,1.5)}
+//         {[36,42,48].map((y,i)=><rect key={y} x={14} y={y} width={[62,50,72][i]} height={2.5} rx={1} fill={ml}/>)}
+//         {R(14,64,192,1.5,li,0)}{R(14,74,44,3,c)}{...lines(14,81,[185,165,175])}{R(14,102,44,3,c)}{...lines(14,109,[185,118])}{R(14,144,55,3,sl)}{R(0,152,W,3,`${c}40`,0)}
+//       </svg>
+//     );
+//     default: return (
+//       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+//         {R(0,0,W,H,"#f3f4f6",0)}{R(14,14,88,9,"#374151",1.5)}{R(14,27,55,3,c)}
+//         {R(14,80,44,3,c)}{...lines(14,87,[185,165,175])}{R(14,108,44,3,c)}{...lines(14,115,[185,118])}
+//       </svg>
+//     );
+//   }
+// }
 
+// /* ─────────────────────────────────────────────────────────────
+//    HTML BUILDER (unchanged core, added new templates)
+// ───────────────────────────────────────────────────────────────*/
+// function buildHTML(id: string, d: CLData): string {
+//   const fontDef = FONT_FAMILIES.find((f) => f.id === d.fontFamily) || FONT_FAMILIES[0];
+//   const fontStack = `'${d.fontFamily}',${fontDef.style}`;
+//   const c = d.accentColor || "#6366f1";
+//   const sig = d.personal.signature || "Sincerely";
+//   const nm = d.personal.fullName || "Your Name";
+//   const ttl = d.personal.title || "Professional";
+//   const mgr = d.company.hiringManager || "Hiring Manager";
+//   const loc = [d.company.city, d.company.state].filter(Boolean).join(", ");
+//   const dt = d.letterDate
+//     ? new Date(d.letterDate + "T12:00:00").toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
+//     : new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 
+//   const links: string[] = [
+//     d.personal.email ? `<a href="mailto:${d.personal.email}" style="color:inherit;text-decoration:none">${d.personal.email}</a>` : "",
+//     d.personal.phone ? `<a href="tel:${d.personal.phone}" style="color:inherit;text-decoration:none">${d.personal.phone}</a>` : "",
+//     d.personal.location ? `<span>${d.personal.location}</span>` : "",
+//     d.personal.linkedin ? `<a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" target="_blank" style="color:inherit;text-decoration:none">${d.personal.linkedin}</a>` : "",
+//     d.personal.github ? `<a href="https://${d.personal.github.replace(/^https?:\/\//, "")}" target="_blank" style="color:inherit;text-decoration:none">${d.personal.github}</a>` : "",
+//     d.personal.website ? `<a href="https://${d.personal.website.replace(/^https?:\/\//, "")}" target="_blank" style="color:inherit;text-decoration:none">${d.personal.website}</a>` : "",
+//   ].filter(Boolean);
 
+//   const secRows = (border = false) =>
+//     d.sections.filter((s) => s.content.trim()).map((s) => `
+//       <div style="margin-bottom:24px${border ? `;padding-left:14px;border-left:3px solid ${c}` : ""}">
+//         <h4 style="font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:${c};margin:0 0 8px">${s.title}</h4>
+//         <p style="line-height:1.85;margin:0;font-size:13.5px">${s.content.replace(/\n/g, "<br>")}</p>
+//       </div>`).join("");
 
+//   const achBlock = () => !d.achievements.length ? "" : `
+//     <div style="margin:18px 0 22px">
+//       <h4 style="font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:${c};margin:0 0 10px">Key Achievements</h4>
+//       ${d.achievements.map((a) => `<div style="display:flex;gap:9px;margin-bottom:7px;font-size:13px"><span style="color:${c};flex-shrink:0;line-height:1.5">›</span>${a}</div>`).join("")}
+//     </div>`;
 
+//   const skillBlock = () => !d.skills.length ? "" : `
+//     <div style="margin:16px 0 22px">
+//       <h4 style="font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:${c};margin:0 0 10px">Core Skills</h4>
+//       <div style="display:flex;flex-wrap:wrap;gap:7px">${d.skills.map((s) => `<span style="padding:4px 12px;background:rgba(0,0,0,.04);border:1px solid rgba(0,0,0,.08);border-radius:30px;font-size:12px">${s}</span>`).join("")}</div>
+//     </div>`;
 
+//   const notesBlock = d.notes ? `<div style="margin:14px 0;padding:12px 16px;background:rgba(0,0,0,.03);border-left:3px solid #e2e8f0;font-size:12.5px;line-height:1.7;color:#64748b">${d.notes}</div>` : "";
+//   const summaryBlock = d.personal.summary ? `<div style="margin-bottom:20px;padding:14px 16px;background:rgba(0,0,0,.03);border-radius:8px;font-size:13px;line-height:1.75;color:#4a5568;font-style:italic">"${d.personal.summary}"</div>` : "";
+//   const referralNote = d.company.referral ? `<div style="margin-bottom:14px;font-size:13px;color:#6b7280">Referred by: <strong style="color:#374151">${d.company.referral}</strong></div>` : "";
 
+//   const addrBlock = `<div style="margin-bottom:20px;font-size:13px;line-height:1.9;color:#4a5568"><strong style="color:#1a202c">${mgr}${d.company.hiringManagerTitle ? `, ${d.company.hiringManagerTitle}` : ""}</strong><br>${d.company.name}${loc ? `<br>${loc}` : ""}</div>`;
+//   const greet = () => `<div style="font-size:16px;font-weight:600;margin-bottom:22px;color:#111827">Dear ${mgr},</div>`;
 
+//   const closingDiv = (col = c) => `
+//     <div style="margin-top:36px;font-size:13.5px">
+//       ${sig},<br><br>
+//       <strong style="font-size:15px">${nm}</strong>
+//       ${d.personal.email ? `<br><a href="mailto:${d.personal.email}" style="font-size:12px;color:${col};text-decoration:none">${d.personal.email}</a>` : ""}
+//       ${d.personal.phone ? `<br><span style="font-size:12px;color:#64748b">${d.personal.phone}</span>` : ""}
+//       ${d.personal.linkedin ? `<br><a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" style="font-size:11.5px;color:${col};text-decoration:none" target="_blank">${d.personal.linkedin}</a>` : ""}
+//     </div>`;
 
+//   const baseCSS = (extra = "") =>
+//     `@import url('${fontDef.url}');*{margin:0;padding:0;box-sizing:border-box}html,body{background:#ffffff}body{font-family:${fontStack};color:#374151;background:#ffffff;-webkit-print-color-adjust:exact;print-color-adjust:exact}${extra}`;
+//   const baseHTML = (css: string, body: string) =>
+//     `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>${css}</style></head><body>${body}</body></html>`;
 
+//   const chipsHTML = `<div style="display:flex;flex-wrap:wrap;gap:7px">${links.map((l) => `<span style="padding:5px 14px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.32);border-radius:40px;font-size:11.5px;color:white">${l}</span>`).join("")}</div>`;
 
+//   const standardBody = (accent: string, border = false) =>
+//     `<div style="font-size:12.5px;color:#9ca3af;margin-bottom:22px">${dt}</div>${addrBlock}${referralNote}${greet()}${summaryBlock}${secRows(border)}${achBlock()}${skillBlock()}${notesBlock}${closingDiv(accent)}`;
 
+//   const headerChipStyle = `.pg{max-width:860px;margin:0 auto;background:#fff}.hdr{padding:52px 56px 44px;color:white;position:relative;overflow:hidden}.nm{font-size:38px;font-weight:700;letter-spacing:-1.5px;margin-bottom:5px;position:relative}.rl{font-size:14px;opacity:.85;margin-bottom:26px;position:relative}.chips{display:flex;flex-wrap:wrap;gap:7px;position:relative}.chip{padding:5px 14px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.32);border-radius:40px;font-size:11.5px;color:white}.chip a{color:white;text-decoration:none}.body{padding:48px 56px;background:#fff}`;
 
+//   // Shared header templates
+//   if (["aurora","vivid","nova","frost","brushstroke","vortex","blaze","pinnacle"].includes(id)) {
+//     const bgMap: Record<string, string> = {
+//       aurora: `background:linear-gradient(135deg,${c},${c}bb)`,
+//       vivid: `background:linear-gradient(135deg,${c},#ec4899)`,
+//       nova: `background:${c}`,
+//       frost: `background:linear-gradient(135deg,rgba(12,74,110,.92),rgba(2,132,199,.9))`,
+//       brushstroke: `background:${c}`,
+//       vortex: `background:${c}`,
+//       blaze: `background:linear-gradient(110deg,${c},#ea580c)`,
+//       pinnacle: `background:linear-gradient(135deg,${c},${c}dd,${c}88)`,
+//     };
+//     return baseHTML(baseCSS(headerChipStyle),
+//       `<div class="pg"><div class="hdr" style="${bgMap[id]||`background:${c}`}">
+//       <div class="nm">${nm}</div><div class="rl">${ttl}</div>${chipsHTML}</div>
+//       <div class="body">${standardBody(c)}</div></div>`);
+//   }
 
+//   if (id === "canvas") return baseHTML(baseCSS(`.pg{max-width:820px;margin:0 auto;padding:60px 64px;background:#fff}.accent{width:4px;background:${c};border-radius:2px;height:72px;float:left;margin-right:20px;margin-top:2px}.nm{font-size:38px;font-weight:800;letter-spacing:-1.5px;color:#111827}.rl{font-size:13px;color:${c};font-weight:600;margin-top:5px;letter-spacing:.5px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 16px;margin-top:10px}.cv{font-size:12px;color:#9ca3af}.cv a{color:${c};text-decoration:none}.div{height:1px;background:#f3f4f6;margin:28px 0;clear:both}`),
+//     `<div class="pg"><div class="accent"></div><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`);
 
+//   if (id === "gradient") return baseHTML(baseCSS(`.pg{max-width:820px;margin:0 auto;padding:60px 64px;background:#fff;border-left:6px solid ${c}}.nm{font-size:38px;font-weight:800;letter-spacing:-1.5px;color:#111827}.rl{font-size:13px;color:${c};font-weight:600;margin-top:5px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 16px;margin-top:10px;margin-bottom:28px}.cv{font-size:12px;color:#9ca3af}.cv a{color:${c};text-decoration:none}.div{height:1px;background:#f3f4f6;margin:20px 0}`),
+//     `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`);
 
+//   if (id === "tidal") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#fff}.top{height:4px;background:${c}}.tb{background:${c}12;padding:2px 0}.hdr{padding:32px 52px;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px}.nm{font-size:36px;font-weight:800;color:#0f172a;letter-spacing:-1.5px}.rl{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:${c};margin-top:6px}.cc{text-align:right;font-size:12px;color:#9ca3af}.cv{display:block;margin-bottom:3px}.cv a{color:${c};text-decoration:none}.body{padding:40px 52px}`),
+//     `<div class="pg"><div class="top"></div><div class="hdr"><div><div class="nm">${nm}</div><div class="rl">${ttl}</div></div><div class="cc">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div></div><div class="body">${standardBody(c)}</div></div>`);
 
+//   if (id === "horizon") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#f8fafc}.top{height:3px;background:linear-gradient(90deg,${c},${c}44)}.hdr{padding:40px 52px;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:20px}.nm{font-size:36px;font-weight:800;color:#0f172a;letter-spacing:-1.5px}.rl{font-size:13px;color:${c};font-weight:600;margin-top:6px;margin-bottom:14px}.ctrow{display:flex;flex-wrap:wrap;gap:4px 14px}.cv{font-size:12px;color:#64748b}.cv a{color:${c};text-decoration:none}.card{background:${c}08;border:1px solid ${c}20;border-radius:10px;padding:14px 18px;min-width:140px}.card-l{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:${c};margin-bottom:5px}.card-v{font-size:12px;font-weight:700;color:#0f172a;line-height:1.4}.body{padding:36px 52px}`),
+//     `<div class="pg"><div class="top"></div><div class="hdr"><div><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div></div>${d.company.name?`<div class="card"><div class="card-l">Applying To</div><div class="card-v">${d.company.jobTitle||"Open Role"}<br><span style="font-size:11px;font-weight:400;color:#64748b">${d.company.name}</span></div></div>`:""}</div><div class="body">${standardBody(c)}</div></div>`);
 
+//   if (id === "lumina") return baseHTML(baseCSS(`.pg{max-width:860px;margin:0 auto;padding:64px 68px;background:#fff}.eyebrow{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:${c};margin-bottom:10px}.nm{font-size:44px;font-weight:800;letter-spacing:-2px;color:#111827;line-height:1}.glow{width:48px;height:3px;background:${c};margin:16px 0 18px;border-radius:2px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 18px;margin-bottom:36px}.cv{font-size:12px;color:#9ca3af}.cv a{color:${c};text-decoration:none}.div{height:1px;background:${c}22;margin:24px 0}`),
+//     `<div class="pg"><div class="eyebrow">${ttl}</div><div class="nm">${nm}</div><div class="glow"></div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`);
 
+//   if (id === "obsidian_lite") return baseHTML(baseCSS(`.pg{max-width:900px;margin:0 auto;display:flex;min-height:100vh;background:#f8f7ff}.side{width:240px;background:${c}12;border-right:2px solid ${c}20;padding:44px 24px;flex-shrink:0}.snm{font-size:22px;font-weight:800;color:#1e1b4b;line-height:1.2;margin-bottom:6px}.srl{font-size:10px;color:${c};letter-spacing:1.5px;text-transform:uppercase;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid ${c}20}.slbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:${c}aa;margin-bottom:5px;margin-top:16px}.sv{font-size:11.5px;color:#374151;line-height:1.9;word-break:break-all}.sv a{color:${c};text-decoration:none}.main{flex:1;padding:48px 44px;background:#fff}`),
+//     `<div class="pg"><div class="side"><div class="snm">${nm}</div><div class="srl">${ttl}</div>
+//     ${d.personal.email?`<div class="slbl">Email</div><div class="sv"><a href="mailto:${d.personal.email}">${d.personal.email}</a></div>`:""}
+//     ${d.personal.phone?`<div class="slbl">Phone</div><div class="sv">${d.personal.phone}</div>`:""}
+//     ${d.personal.location?`<div class="slbl">Location</div><div class="sv">${d.personal.location}</div>`:""}
+//     ${d.personal.linkedin?`<div class="slbl">LinkedIn</div><div class="sv"><a href="https://${d.personal.linkedin.replace(/^https?:\/\//,"")}" target="_blank">${d.personal.linkedin}</a></div>`:""}
+//     ${d.skills.length?`<div class="slbl" style="margin-top:20px">Skills</div><div style="margin-top:6px">${d.skills.map(s=>`<div style="font-size:11px;color:${c};margin-bottom:3px">• ${s}</div>`).join("")}</div>`:""}
+//     </div><div class="main">${standardBody(c)}</div></div>`);
 
+//   if (id === "slate") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#fff}.hdr{padding:44px 52px;border-bottom:3px solid #0f172a;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px}.nm{font-size:34px;font-weight:700;color:#0f172a;letter-spacing:-1.5px}.rl{font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:#64748b;margin-top:7px}.cc{text-align:right}.cv{font-size:11.5px;color:#475569;line-height:2.1;display:block}.cv a{color:${c};text-decoration:none}.tag{display:inline-block;font-size:10.5px;color:#64748b;background:#f1f5f9;border:1px solid #e2e8f0;padding:3px 10px;border-radius:4px;margin-bottom:22px}.body{padding:40px 52px}`),
+//     `<div class="pg"><div class="hdr"><div><div class="nm">${nm}</div><div class="rl">${ttl}</div></div><div class="cc">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div></div><div class="body"><div class="tag">RE: ${d.company.jobTitle||"Open Position"} · ${d.company.name||"Company"}</div>${standardBody(c,true)}</div></div>`);
 
+//   if (id === "architect") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#f8fafc}.hdr{padding:44px 52px;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap}.hl{flex:1}.nm{font-size:34px;font-weight:800;color:#0f172a;letter-spacing:-1.5px}.rl{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#64748b;margin-top:7px;margin-bottom:14px}.ctrow{display:flex;flex-wrap:wrap;gap:4px 14px}.cv{font-size:12px;color:#64748b}.cv a{color:${c};text-decoration:none}.hr{width:130px;flex-shrink:0;background:#0f172a;border-radius:12px;padding:16px;text-align:center}.hrl{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:#94a3b8;margin-bottom:6px}.hrr{font-size:11px;font-weight:700;color:white;line-height:1.4}.body{padding:36px 52px;background:#f8fafc}`),
+//     `<div class="pg"><div class="hdr"><div class="hl"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div></div>${d.company.name?`<div class="hr"><div class="hrl">Applying to</div><div class="hrr">${d.company.jobTitle||"Open Role"}<br><span style="font-size:10px;font-weight:400;opacity:.7">${d.company.name}</span></div></div>`:""}</div><div class="body">${standardBody(c,true)}</div></div>`);
 
+//   if (id === "nordic") return baseHTML(baseCSS(`.pg{max-width:750px;margin:0 auto;padding:64px 72px;background:#fff}.eye{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:${c};margin-bottom:10px}.nm{font-size:44px;font-weight:700;letter-spacing:-2px;color:#1e1b4b;line-height:1.05}.bar{width:52px;height:3px;background:${c};margin:16px 0 18px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 18px;margin-bottom:40px}.cv{font-size:12px;color:#6b7280}.cv a{color:${c};text-decoration:none}.div{height:1px;background:${c}44;margin:24px 0}`),
+//     `<div class="pg"><div class="eye">${ttl}</div><div class="nm">${nm}</div><div class="bar"></div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`);
 
+//   if (id === "pearl") return baseHTML(baseCSS(`.pg{max-width:820px;margin:0 auto;padding:60px 64px;background:#fff}.nm{font-size:40px;font-weight:800;letter-spacing:-2px;color:#111827;margin-bottom:6px}.rl{font-size:13px;color:${c};font-weight:700;letter-spacing:.5px;margin-bottom:16px}.d1{height:1.5px;background:${c}33;margin-bottom:16px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 20px;margin-bottom:16px}.cv{font-size:12px;color:#9ca3af}.cv a{color:${c};text-decoration:none}.d2{height:1.5px;background:${c}33;margin:20px 0}`),
+//     `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="d1"></div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="d2"></div>${standardBody(c)}</div>`);
 
+//   if (id === "minimal") return baseHTML(baseCSS(`.pg{max-width:760px;margin:0 auto;padding:70px 80px;background:#fff;border:1px solid #f1f5f9}.nm{font-size:36px;font-weight:700;color:#111;letter-spacing:-1px;margin-bottom:6px}.rl{font-size:12.5px;color:#555;margin-bottom:20px}.div{height:1px;background:#ececec;margin:18px 0}.ctrow{display:flex;flex-wrap:wrap;gap:4px 20px;margin-bottom:12px}.cv{font-size:12px;color:#888}.cv a{color:${c};text-decoration:none;border-bottom:1px solid ${c}33}`),
+//     `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="div"></div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`);
 
+//   if (id === "zen") return baseHTML(baseCSS(`.pg{max-width:760px;margin:0 auto;padding:68px 76px;background:#fafaf9}.nm{font-size:36px;font-weight:700;color:#1c1917;letter-spacing:-.5px;margin-bottom:6px}.rl{font-size:13px;color:#78716c;margin-bottom:20px}.div{height:.5px;background:#d6d3d1;margin:18px 0}.ctrow{display:flex;flex-wrap:wrap;gap:4px 18px;margin-bottom:12px}.cv{font-size:12px;color:#78716c}.cv a{color:${c};text-decoration:none}`),
+//     `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="div"></div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`);
 
+//   if (id === "ivory") return baseHTML(baseCSS(`.pg{max-width:820px;margin:0 auto;background:#fefce8;padding:60px 64px;border-left:5px solid ${c}}.nm{font-size:44px;font-weight:700;color:#1c1917;letter-spacing:-.5px;line-height:1.1}.rl{font-size:13px;color:#92400e;font-style:italic;margin:8px 0 16px}.div{height:1px;background:${c}66;margin:16px 0}.ctrow{display:flex;flex-wrap:wrap;gap:5px 18px;margin-bottom:14px}.cv{font-size:12px;color:#78716c}.cv a{color:${c};text-decoration:none}`),
+//     `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="div"></div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`);
+
+//   if (id === "paper") return baseHTML(baseCSS(`.pg{max-width:820px;margin:0 auto;background:#fffef0;padding:60px 64px 60px 80px;border-left:3px solid #ca8a04}.nm{font-size:42px;font-weight:700;color:#1a1209;letter-spacing:-.5px;line-height:1.1}.rl{font-size:13px;color:${c};font-style:italic;margin:8px 0 16px}.div{height:.8px;background:#d0ccb0;margin:16px 0}.ctrow{display:flex;flex-wrap:wrap;gap:5px 18px;margin-bottom:14px}.cv{font-size:12px;color:#6b6050}.cv a{color:${c};text-decoration:none}`),
+//     `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="div"></div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`);
+
+//   if (id === "serif") return baseHTML(baseCSS(`.pg{max-width:820px;margin:0 auto;padding:52px 64px;background:#fff}.r1{height:2px;background:#1e293b;margin-bottom:20px}.nm{font-size:42px;font-weight:900;color:#1e293b;letter-spacing:-1.5px;text-align:center;margin-bottom:6px}.rl{font-size:12px;color:#64748b;text-align:center;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}.ctrow{display:flex;justify-content:center;flex-wrap:wrap;gap:5px 20px;margin-bottom:16px}.cv{font-size:12px;color:#64748b}.cv a{color:${c};text-decoration:none}.r2{height:1px;background:#e5e7eb;margin-bottom:20px}`),
+//     `<div class="pg"><div class="r1"></div><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="r2"></div>${standardBody(c)}</div>`);
+
+//   if (id === "editorial") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#fff}.top{height:4px;background:${c}}.hdr{padding:44px 52px 0}.nm{font-size:36px;font-weight:800;color:#1e293b;letter-spacing:-1.5px}.rl{font-size:13px;color:${c};font-weight:600;margin:6px 0 14px}.rule{height:1.5px;background:#334155;margin-bottom:14px}.ctrow{display:flex;flex-wrap:wrap;gap:4px 16px;padding-bottom:16px;border-bottom:1px solid #e2e8f0}.cv{font-size:12px;color:#64748b}.cv a{color:${c};text-decoration:none}.body{padding:36px 52px}`),
+//     `<div class="pg"><div class="top"></div><div class="hdr"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="rule"></div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div></div><div class="body">${standardBody(c)}</div></div>`);
+
+//   if (id === "linen") return baseHTML(baseCSS(`.pg{max-width:800px;margin:0 auto;padding:62px 68px;background:#faf8f5}.accent{width:3px;height:80px;background:${c}66;float:left;margin-right:18px;border-radius:2px;margin-top:2px}.nm{font-size:40px;font-weight:700;color:#1c1917;letter-spacing:-1px;line-height:1.1}.rl{font-size:13px;color:${c};font-weight:600;margin-top:6px;margin-bottom:18px;clear:both}.div{height:1px;background:#e7e5e0;margin:18px 0}.ctrow{display:flex;flex-wrap:wrap;gap:4px 18px;margin-bottom:14px}.cv{font-size:12px;color:#78716c}.cv a{color:${c};text-decoration:none}`),
+//     `<div class="pg"><div class="accent"></div><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="div"></div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`);
+
+//   if (id === "parchment") return baseHTML(baseCSS(`.pg{max-width:800px;margin:0 auto;padding:56px 68px;background:#fdf8ed}.r1{height:2px;background:${c}66;margin-bottom:3px}.r2{height:.5px;background:${c}33;margin-bottom:18px}.nm{font-size:40px;font-weight:800;color:#2c1a0e;text-align:center;letter-spacing:-1.5px;margin-bottom:4px}.rl{font-size:11px;color:#8a7060;text-align:center;letter-spacing:3px;text-transform:uppercase;margin-bottom:10px}.ctrow{display:flex;justify-content:center;flex-wrap:wrap;gap:4px 18px;margin-bottom:6px}.cv{font-size:12px;color:#78716c}.cv a{color:${c};text-decoration:none}.r3{height:.5px;background:${c}33;margin-top:12px;margin-bottom:20px}.r4{height:2px;background:${c}66}`),
+//     `<div class="pg"><div class="r1"></div><div class="r2"></div><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="r3"></div>${standardBody(c)}<div class="r4"></div></div>`);
+
+//   if (id === "designer") return baseHTML(baseCSS(`.pg{max-width:900px;margin:0 auto;display:flex;min-height:100vh;background:#faf5ff}.side{width:260px;background:${c}10;border-right:2px solid ${c}20;padding:44px 26px;flex-shrink:0}.savatar{width:52px;height:52px;border-radius:50%;background:${c}22;border:2px solid ${c}44;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:20px;color:${c}}.snm{font-size:22px;font-weight:800;color:#1a1a2e;line-height:1.15;margin-bottom:6px}.srl{font-size:10px;color:${c};letter-spacing:2px;text-transform:uppercase;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid ${c}22}.slbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:${c}88;margin-bottom:5px;margin-top:18px}.sv{font-size:11px;color:#374151;line-height:1.9}.sv a{color:${c};text-decoration:none}.main{flex:1;padding:48px 44px;background:#fff}`),
+//     `<div class="pg"><div class="side"><div class="savatar">✦</div><div class="snm">${nm}</div><div class="srl">${ttl}</div>${d.personal.email?`<div class="slbl">Email</div><div class="sv"><a href="mailto:${d.personal.email}">${d.personal.email}</a></div>`:""} ${d.personal.phone?`<div class="slbl">Phone</div><div class="sv">${d.personal.phone}</div>`:""} ${d.personal.location?`<div class="slbl">Location</div><div class="sv">${d.personal.location}</div>`:""} ${d.personal.linkedin?`<div class="slbl">LinkedIn</div><div class="sv"><a href="https://${d.personal.linkedin.replace(/^https?:\/\//,"")}" target="_blank">${d.personal.linkedin}</a></div>`:""} ${d.skills.length?`<div class="slbl" style="margin-top:22px">Skills</div><div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px">${d.skills.map(s=>`<span style="padding:2px 8px;background:${c}15;border:1px solid ${c}30;border-radius:4px;font-size:10px;color:${c}">${s}</span>`).join("")}</div>`:""}</div><div class="main">${standardBody(c)}</div></div>`);
+
+//   if (id === "motion") return baseHTML(baseCSS(`.pg{max-width:860px;margin:0 auto;background:#fff}.tb{height:5.5px;background:linear-gradient(90deg,${c},#f59e0b)}.hdr{padding:44px 52px;border-bottom:1px solid #f3e4e4;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px}.nm{font-size:48px;font-weight:900;letter-spacing:-3px;text-transform:uppercase;line-height:.95;color:#111827}.rl{font-size:13px;color:${c};letter-spacing:2px;text-transform:uppercase;margin-top:8px;font-weight:600}.cc{text-align:right;font-size:12px;color:#9ca3af}.cv{display:block;margin-bottom:4px}.cv a{color:${c};text-decoration:none}.body{padding:44px 52px}.bb{height:5.5px;background:linear-gradient(90deg,#f59e0b,${c})}`),
+//     `<div class="pg"><div class="tb"></div><div class="hdr"><div><div class="nm">${nm}</div><div class="rl">${ttl}</div></div><div class="cc">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div></div><div class="body">${standardBody(c)}</div><div class="bb"></div></div>`);
+
+//   if (id === "studio") return baseHTML(baseCSS(`.pg{max-width:860px;margin:0 auto;background:#f8f5ff}.top{height:3px;background:linear-gradient(90deg,${c},${c}44)}.hdr{padding:48px 52px 36px;border-bottom:1px solid ${c}18}.nm{font-size:40px;font-weight:800;color:#1e1b4b;letter-spacing:-1.5px;margin-bottom:6px}.rl{font-size:13px;color:${c};font-weight:600;margin-bottom:18px}.chips{display:flex;flex-wrap:wrap;gap:7px}.chip{padding:4px 12px;background:${c}10;border:1px solid ${c}25;border-radius:20px;font-size:11.5px;color:${c}}.body{padding:44px 52px;background:#fff}`),
+//     `<div class="pg"><div class="top"></div><div class="hdr"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="chips">${links.map(l=>`<span class="chip">${l}</span>`).join("")}</div></div><div class="body">${standardBody(c)}</div></div>`);
+
+//   if (id === "folio") return baseHTML(baseCSS(`.pg{max-width:820px;margin:0 auto;padding:52px 64px;background:#fff}.hrow{display:flex;align-items:flex-start;gap:28px;margin-bottom:30px;padding-bottom:24px;border-bottom:2px solid ${c}22}.avatar{width:64px;height:64px;border-radius:12px;background:${c}22;border:2px solid ${c}44;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;color:${c}}.hinfo .nm{font-size:34px;font-weight:800;color:#111827;letter-spacing:-1.5px}.hinfo .rl{font-size:13px;color:${c};font-weight:600;margin-top:4px}.ctrow{display:flex;flex-wrap:wrap;gap:4px 16px;margin-top:8px}.cv{font-size:12px;color:#9ca3af}.cv a{color:${c};text-decoration:none}`),
+//     `<div class="pg"><div class="hrow"><div class="avatar">✦</div><div class="hinfo"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div></div></div>${standardBody(c)}</div>`);
+
+//   if (id === "artboard") return baseHTML(baseCSS(`.pg{max-width:820px;margin:0 auto;background:#f4f3f8;padding:8px}.card{background:#fff;border-radius:8px;overflow:hidden;border:1.5px dashed ${c}44}.top{height:3px;background:${c}}.hdr{padding:40px 52px 28px}.nm{font-size:36px;font-weight:800;color:#111827;letter-spacing:-1.5px}.rl{font-size:13px;color:${c};font-weight:600;margin-top:5px}.ctrow{display:flex;flex-wrap:wrap;gap:4px 16px;margin-top:10px;margin-bottom:4px}.cv{font-size:12px;color:#9ca3af}.cv a{color:${c};text-decoration:none}.body{padding:28px 52px 52px}`),
+//     `<div class="pg"><div class="card"><div class="top"></div><div class="hdr"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div></div><div class="body">${standardBody(c)}</div></div></div>`);
+
+//   if (id === "palette") return baseHTML(baseCSS(`.pg{max-width:820px;margin:0 auto;padding:60px 64px;background:#fff7f5;border-left:4px solid ${c}}.nm{font-size:40px;font-weight:800;color:#1c0a06;letter-spacing:-1.5px;margin-bottom:6px}.rl{font-size:13px;color:${c};font-weight:600;margin-bottom:18px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 18px;margin-bottom:14px}.cv{font-size:12px;color:#78716c}.cv a{color:${c};text-decoration:none}.div{height:1px;background:#fce7e0;margin:18px 0}`),
+//     `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`);
+
+//   if (id === "frame") return baseHTML(baseCSS(`.pg{max-width:820px;margin:0 auto;padding:16px;background:#fafafa}.inner{background:#fff;border:2px solid ${c};border-radius:10px;padding:44px 52px;overflow:hidden}.nm{font-size:38px;font-weight:800;color:#111827;letter-spacing:-1.5px;margin-bottom:6px}.rl{font-size:13px;color:${c};font-weight:600;margin-bottom:14px}.ctrow{display:flex;flex-wrap:wrap;gap:4px 16px;margin-bottom:14px}.cv{font-size:12px;color:#9ca3af}.cv a{color:${c};text-decoration:none}.div{height:1px;background:${c}20;margin:18px 0}`),
+//     `<div class="pg"><div class="inner"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div></div>`);
+
+//   if (id === "mosaic") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#fff}.hdr{padding:44px 52px;display:flex;gap:24px;align-items:center;border-bottom:1px solid #f0f0f0}.mosaic{display:grid;grid-template-columns:repeat(3,34px);grid-template-rows:repeat(3,34px);gap:2px;flex-shrink:0}.cell{border-radius:4px}.nm{font-size:34px;font-weight:800;color:#111827;letter-spacing:-1.5px}.rl{font-size:13px;color:${c};font-weight:600;margin:6px 0 12px}.ctrow{display:flex;flex-wrap:wrap;gap:4px 14px}.cv{font-size:12px;color:#9ca3af}.cv a{color:${c};text-decoration:none}.body{padding:36px 52px}`),
+//     `<div class="pg"><div class="hdr"><div class="mosaic">${[...Array(9)].map((_,i)=>`<div class="cell" style="background:${i%3===0?c:i%3===1?`${c}66`:`${c}22`}"></div>`).join("")}</div><div><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div></div></div><div class="body">${standardBody(c)}</div></div>`);
+
+//   if (id === "presidio") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#fafafa}.top{height:2px;background:${c}}.hdr{padding:44px 52px;background:#fff;border-bottom:1px solid #e5e7eb}.nm{font-size:36px;font-weight:800;color:#111827;letter-spacing:-1.5px;margin-bottom:6px}.rl{font-size:13px;color:${c};font-weight:600;margin-bottom:16px}.inforow{display:flex;gap:0;background:${c}08;border:1px solid ${c}15;border-radius:8px;padding:10px 14px;margin-bottom:4px;flex-wrap:wrap;gap:16px}.cv{font-size:12px;color:#374151}.cv a{color:${c};text-decoration:none}.body{padding:36px 52px}`),
+//     `<div class="pg"><div class="top"></div><div class="hdr"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="inforow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div></div><div class="body">${standardBody(c)}</div></div>`);
+
+//   if (id === "accord") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#fff}.top{height:4px;background:linear-gradient(90deg,${c},${c}44)}.hdr{padding:40px 52px;border-bottom:2px solid #f1f5f9}.nm{font-size:36px;font-weight:800;color:#0f172a;letter-spacing:-1.5px;margin-bottom:6px}.rl{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:${c};margin-bottom:14px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 18px}.cv{font-size:12px;color:#64748b}.cv a{color:${c};text-decoration:none}.body{padding:36px 52px}`),
+//     `<div class="pg"><div class="top"></div><div class="hdr"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div></div><div class="body">${standardBody(c)}</div></div>`);
+
+//   if (id === "radiant") return baseHTML(baseCSS(`.pg{max-width:860px;margin:0 auto;padding:62px 68px;background:#fff;border-left:5px solid ${c};position:relative}.nm{font-size:44px;font-weight:800;letter-spacing:-2px;color:#1e1b4b;line-height:1;margin-bottom:6px}.rl{font-size:13px;color:${c};font-weight:600;margin-bottom:20px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 18px;margin-bottom:36px}.cv{font-size:12px;color:#9ca3af}.cv a{color:${c};text-decoration:none}.div{height:1px;background:${c}20;margin:22px 0}`),
+//     `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`);
+
+//   if (id === "solstice") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#fff}.topbar{height:3px;background:${c}}.hdr{padding:44px 52px;background:${c}08;border-bottom:2px solid ${c}18;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px}.nm{font-size:36px;font-weight:800;color:#0f172a;letter-spacing:-1.5px}.rl{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:${c};margin-top:6px;margin-bottom:14px}.ctrow{display:flex;flex-wrap:wrap;gap:4px 14px}.cv{font-size:12px;color:#64748b}.cv a{color:${c};text-decoration:none}.card{background:#fff;border:1px solid ${c}20;border-radius:10px;padding:14px 18px}.card-l{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:${c};margin-bottom:4px}.card-v{font-size:12px;font-weight:700;color:#0f172a;line-height:1.4}.body{padding:36px 52px}.bot{height:3px;background:${c}}`),
+//     `<div class="pg"><div class="topbar"></div><div class="hdr"><div><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div></div>${d.company.name?`<div class="card"><div class="card-l">Position</div><div class="card-v">${d.company.jobTitle||"Open Role"}<br><span style="font-size:11px;font-weight:400;color:#64748b">${d.company.name}</span></div></div>`:""}</div><div class="body">${standardBody(c)}</div><div class="bot"></div></div>`);
+
+//   if (id === "meridian") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#f8fafc}.top{height:2px;background:${c}}.tb2{height:2px;background:${c};margin-top:62px}.hdr{padding:28px 52px 28px;background:#fff;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}.nm{font-size:34px;font-weight:800;color:#0f172a;letter-spacing:-1.5px}.rl{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:${c};margin-top:5px}.ctrow{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px}.cv{font-size:12px;color:#64748b}.cv a{color:${c};text-decoration:none}.badge{background:${c};border-radius:8px;padding:12px 18px;text-align:center}.badge-t{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.75);margin-bottom:3px}.badge-v{font-size:11px;font-weight:700;color:#fff;line-height:1.4}.body{padding:32px 52px}`),
+//     `<div class="pg"><div class="top"></div><div class="hdr"><div><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div></div>${d.company.name?`<div class="badge"><div class="badge-t">Applying To</div><div class="badge-v">${d.company.jobTitle||"Role"}<br><span style="font-size:10px;opacity:.8">${d.company.name}</span></div></div>`:""}</div><div class="tb2"></div><div class="body">${standardBody(c)}</div></div>`);
+
+//   // Tech templates
+//   if (id === "circuit") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#f8faff;padding:60px 64px}.nm{font-size:38px;font-weight:800;color:#0f172a;letter-spacing:-1.5px;margin-bottom:6px}.rl{font-size:13px;color:${c};font-weight:600;margin-bottom:18px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 16px;margin-bottom:14px}.cv{font-size:12px;color:#64748b;padding:3px 10px;background:${c}08;border:1px solid ${c}18;border-radius:6px}.cv a{color:${c};text-decoration:none}.div{height:1px;background:${c}18;margin:20px 0}`),
+//     `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`);
+
+//   if (id === "blueprint") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#eff6ff;padding:60px 64px}.nm{font-size:38px;font-weight:800;color:#1e3a8a;letter-spacing:-1.5px;margin-bottom:6px}.rl{font-size:13px;color:${c};font-weight:600;margin-bottom:18px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 16px;margin-bottom:14px}.cv{font-size:12px;color:#3b82f6}.cv a{color:${c};text-decoration:none}.div{height:1px;background:#93c5fd;margin:20px 0}`),
+//     `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`);
+
+//   if (id === "axiom") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#fff}.top{height:4px;background:${c}}.stripe{background:${c}08;padding:2px 0}.hdr{padding:38px 52px;border-bottom:2px solid ${c}15}.nm{font-size:36px;font-weight:800;color:#0f172a;letter-spacing:-1.5px;margin-bottom:6px}.rl{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:${c};margin-bottom:14px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 16px}.cv{font-size:12px;color:#64748b}.cv a{color:${c};text-decoration:none}.body{padding:36px 52px}.bot{height:2px;background:${c}15}`),
+//     `<div class="pg"><div class="top"></div><div class="hdr"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div></div><div class="body">${standardBody(c)}</div><div class="bot"></div></div>`);
+
+//   if (id === "signal") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;padding:60px 64px;background:#fff}.top{position:relative}.nm{font-size:42px;font-weight:800;color:#0f172a;letter-spacing:-2px;margin-bottom:6px}.rl{font-size:13px;color:${c};font-weight:600;margin-bottom:20px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 18px;margin-bottom:14px}.cv{font-size:12px;color:#64748b}.cv a{color:${c};text-decoration:none}.div{height:1px;background:#e2e8f0;margin:20px 0}`),
+//     `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`);
+
+//   if (id === "quantum") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#f8fafc}.accent-corner{position:absolute;top:0;left:0;width:0;height:0;border-style:solid;border-width:60px 60px 0 0;border-color:${c} transparent transparent transparent}.hdr{padding:48px 52px;background:#fff;border-bottom:1px solid #e2e8f0;position:relative;overflow:hidden}.nm{font-size:38px;font-weight:800;color:#0f172a;letter-spacing:-1.5px;margin-bottom:6px;position:relative}.rl{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:${c};margin-bottom:16px;position:relative}.ctrow{display:flex;flex-wrap:wrap;gap:5px 16px;position:relative}.cv{font-size:12px;color:#64748b}.cv a{color:${c};text-decoration:none}.body{padding:36px 52px}.bot{height:3px;background:${c}44}`),
+//     `<div class="pg"><div class="hdr"><div class="accent-corner"></div><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div></div><div class="body">${standardBody(c)}</div><div class="bot"></div></div>`);
+
+//   // Remaining originals
+//   if (id === "corporate") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#fff}.hdr{padding:0 52px;background:#1e3a5f;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;min-height:70px}.hdr-l{padding:18px 0}.nm{font-size:28px;font-weight:800;color:white;letter-spacing:-1px}.rl{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:${c};margin-top:4px}.cv{font-size:11px;color:rgba(255,255,255,.7);line-height:2;display:block}.cv a{color:${c};text-decoration:none}.stripe{height:5px;background:${c}}.body{padding:36px 52px}`),
+//     `<div class="pg"><div class="hdr"><div class="hdr-l"><div class="nm">${nm}</div><div class="rl">${ttl}</div></div><div>${links.slice(0,4).map(l=>`<span class="cv">${l}</span>`).join("")}</div></div><div class="stripe"></div><div class="body">${standardBody(c)}</div></div>`);
+
+//   if (id === "executive") return baseHTML(baseCSS(headerChipStyle+`.hdr{background:linear-gradient(135deg,${c},${c}cc)!important}`),
+//     `<div class="pg"><div class="hdr" style="background:linear-gradient(135deg,${c},${c}cc)"><div class="nm">${nm}</div><div class="rl">${ttl}</div>${chipsHTML}</div><div class="body">${standardBody(c)}</div></div>`);
+
+//   if (id === "titan") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#fff;border-left:8px solid ${c}}.hdr{padding:44px 48px;border-bottom:2px solid #e5e7eb}.nm{font-size:36px;font-weight:800;color:#1f2937;letter-spacing:-1.5px}.rl{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:${c};margin-top:7px;margin-bottom:14px}.ctrow{display:flex;flex-wrap:wrap;gap:4px 18px}.cv{font-size:12px;color:#6b7280}.cv a{color:${c};text-decoration:none}.body{padding:36px 48px}`),
+//     `<div class="pg"><div class="hdr"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div></div><div class="body">${standardBody(c)}</div></div>`);
+
+//   if (id === "oxford") return baseHTML(baseCSS(`.pg{max-width:800px;margin:0 auto;padding:56px 68px;background:#faf9f7}.rule{height:2px;background:${c};margin-bottom:3px}.rule2{height:.5px;background:${c}66;margin-bottom:18px}.nm{font-size:40px;font-weight:800;color:#1a1209;text-align:center;letter-spacing:-1.5px;margin-bottom:4px}.rl{font-size:11px;color:${c};text-align:center;letter-spacing:3px;text-transform:uppercase;margin-bottom:10px}.ctrow{display:flex;justify-content:center;flex-wrap:wrap;gap:4px 18px;margin-bottom:6px}.cv{font-size:12px;color:#78716c}.cv a{color:${c};text-decoration:none}.rule3{height:.5px;background:${c}66;margin-top:12px;margin-bottom:20px}`),
+//     `<div class="pg"><div class="rule"></div><div class="rule2"></div><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="rule3"></div>${standardBody(c)}</div>`);
+
+//   if (id === "summit") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#fff}.top{height:3px;background:${c}}.hdr{padding:40px 52px;background:#1e293b;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}.nm{font-size:34px;font-weight:800;color:white;letter-spacing:-1.5px}.rl{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:${c};margin-top:6px}.badge{background:${c};border-radius:8px;padding:12px 18px;text-align:center}.badge-t{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.75);margin-bottom:4px}.badge-r{font-size:12px;font-weight:700;color:white;line-height:1.4}.ctbar{display:flex;flex-wrap:wrap;background:#0f172a}.cv{font-size:11px;color:#94a3b8;padding:8px 20px;border-right:1px solid rgba(255,255,255,.06)}.cv a{color:${c};text-decoration:none}.body{padding:36px 52px}.bot{height:3px;background:${c}}`),
+//     `<div class="pg"><div class="top"></div><div class="hdr"><div><div class="nm">${nm}</div><div class="rl">${ttl}</div></div>${d.company.name?`<div class="badge"><div class="badge-t">Applying To</div><div class="badge-r">${d.company.jobTitle||"Role"}<br><span style="font-size:10px;font-weight:400;opacity:.8">${d.company.name}</span></div></div>`:""}</div><div class="ctbar">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="body">${standardBody(c)}</div><div class="bot"></div></div>`);
+
+//   if (id === "prism") return baseHTML(baseCSS(headerChipStyle),
+//     `<div class="pg"><div class="hdr" style="background:${c}"><div style="position:absolute;right:0;top:0;bottom:0;width:55%;background:rgba(255,255,255,.1);clip-path:polygon(25% 0,100% 0,100% 100%,0 100%)"></div><div class="nm">${nm}</div><div class="rl">${ttl}</div>${chipsHTML}</div><div class="body">${standardBody(c)}</div></div>`);
+
+//   // Fallback
+//   return baseHTML(baseCSS(headerChipStyle),
+//     `<div class="pg"><div class="hdr" style="background:linear-gradient(135deg,${c},${c}bb)"><div class="nm">${nm}</div><div class="rl">${ttl}</div>${chipsHTML}</div><div class="body">${standardBody(c)}</div></div>`);
+// }
+
+// /* ─────────────────────────────────────────────────────────────
+//    COLOR PALETTE OPTIONS
+// ───────────────────────────────────────────────────────────────*/
+// const COLOR_PALETTES = [
+//   { label: "Indigo", value: "#6366f1" },
+//   { label: "Violet", value: "#7c3aed" },
+//   { label: "Purple", value: "#9333ea" },
+//   { label: "Sky", value: "#0369a1" },
+//   { label: "Teal", value: "#0d9488" },
+//   { label: "Emerald", value: "#059669" },
+//   { label: "Amber", value: "#d97706" },
+//   { label: "Rose", value: "#e11d48" },
+//   { label: "Orange", value: "#ea580c" },
+//   { label: "Slate", value: "#334155" },
+//   { label: "Navy", value: "#1e3a5f" },
+//   { label: "Maroon", value: "#9f1239" },
+// ];
+
+// /* ─────────────────────────────────────────────────────────────
+//    STEPS
+// ───────────────────────────────────────────────────────────────*/
+// type Step = "template" | "personal" | "company" | "content" | "review";
+// const STEPS: { id: Step; label: string; icon: string }[] = [
+//   { id: "template", label: "Template", icon: "🎨" },
+//   { id: "personal", label: "Personal", icon: "👤" },
+//   { id: "company", label: "Company", icon: "🏢" },
+//   { id: "content", label: "Content", icon: "✍️" },
+//   { id: "review", label: "Review", icon: "✅" },
+// ];
+
+// /* ─────────────────────────────────────────────────────────────
+//    FIELD HELPER
+// ───────────────────────────────────────────────────────────────*/
+// function F({ label, icon, required, children }: { label: string; icon?: string; required?: boolean; children: React.ReactNode }) {
+//   return (
+//     <div className="mb-3.5">
+//       <label className="block text-[10.5px] font-bold tracking-wide uppercase text-slate-500 mb-1.5">
+//         {label}{required && <span className="text-red-500"> *</span>}
+//       </label>
+//       <div className="relative">
+//         {icon && <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[13px] opacity-50 pointer-events-none">{icon}</span>}
+//         <div className={icon ? "[&>input]:pl-8 [&>textarea]:pl-3 [&>select]:pl-8" : ""}>{children}</div>
+//       </div>
+//     </div>
+//   );
+// }
+
+// const inp = "w-full px-3 py-2.5 text-[13px] font-[500] border-[1.5px] border-slate-200 rounded-xl outline-none transition-all duration-150 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 placeholder:text-slate-400 bg-white text-slate-800";
+// const ta = `${inp} resize-y min-h-[80px] leading-relaxed px-3`;
+
+// /* ─────────────────────────────────────────────────────────────
+//    LOGIN POPUP
+// ───────────────────────────────────────────────────────────────*/
+// function LoginPopup({ onClose, onLogin }: { onClose: () => void; onLogin: () => void }) {
+//   return (
+//     <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-[2000] flex items-center justify-center p-4">
+//       <motion.div initial={{ opacity: 0, scale: 0.92, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
+//         className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full relative overflow-hidden">
+//         <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/60 via-white to-violet-50/40 pointer-events-none"/>
+//         <div className="relative">
+//           <div className="w-16 h-16 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-5 shadow-lg shadow-indigo-200">✦</div>
+//           <h2 className="text-[22px] font-extrabold text-slate-900 text-center mb-2">Sign in to Continue</h2>
+//           <p className="text-[13.5px] text-slate-500 text-center mb-6 leading-relaxed">
+//             You need to be logged in to build and download your professional cover letter.
+//           </p>
+//           <div className="space-y-3">
+//             <button onClick={onLogin} className="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-bold text-[14px] rounded-2xl shadow-lg shadow-indigo-200 hover:shadow-xl hover:-translate-y-0.5 transition-all">
+//               Sign In to Your Account
+//             </button>
+//             <button onClick={onClose} className="w-full py-2.5 text-[13px] text-slate-400 font-semibold hover:text-slate-600 transition-colors">
+//               Browse templates first →
+//             </button>
+//           </div>
+//           <p className="text-center text-[12px] text-slate-400 mt-4">Don't have an account? <span className="text-indigo-600 font-semibold cursor-pointer" onClick={onLogin}>Sign up free</span></p>
+//         </div>
+//       </motion.div>
+//     </div>
+//   );
+// }
+
+// /* ─────────────────────────────────────────────────────────────
+//    PREMIUM UPGRADE POPUP
+// ───────────────────────────────────────────────────────────────*/
+// function PremiumPopup({ onClose, onUpgrade }: { onClose: () => void; onUpgrade: () => void }) {
+//   return (
+//     <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-[2000] flex items-center justify-center p-4">
+//       <motion.div initial={{ opacity: 0, scale: 0.92, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
+//         className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full relative overflow-hidden">
+//         <div className="absolute inset-0 bg-gradient-to-br from-amber-50/60 via-white to-indigo-50/40 pointer-events-none"/>
+//         <div className="relative">
+//           <button onClick={onClose} className="absolute -top-1 -right-1 w-8 h-8 bg-slate-100 hover:bg-red-50 rounded-full flex items-center justify-center text-slate-400 hover:text-red-400 transition-all">
+//             <FiX className="w-4 h-4"/>
+//           </button>
+//           <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-3 shadow-lg shadow-amber-200">⭐</div>
+//           <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-full text-amber-700 text-[11.5px] font-bold mb-4 mx-auto flex">
+//             <FiLock className="w-3 h-3"/> Premium Feature
+//           </div>
+//           <h2 className="text-[22px] font-extrabold text-slate-900 text-center mb-2">Upgrade to Premium</h2>
+//           <p className="text-[13.5px] text-slate-500 text-center mb-6 leading-relaxed">
+//             Building and downloading your cover letter requires a Premium plan. Unlock all 50 templates and powerful AI features.
+//           </p>
+//           <div className="grid grid-cols-2 gap-2.5 mb-6">
+//             {["50 Unique Templates","AI Content Assist","Custom Fonts & Colors","PDF Download","Unlimited Letters","Priority Support"].map((f) => (
+//               <div key={f} className="flex items-center gap-2 text-[12px] font-semibold text-slate-700 bg-gradient-to-r from-indigo-50 to-violet-50 rounded-xl p-2.5">
+//                 <span className="w-4 h-4 bg-indigo-600 rounded-full flex items-center justify-center flex-shrink-0">
+//                   <svg viewBox="0 0 10 10" width="8" height="8" fill="none"><polyline points="1,5 4,8 9,2" stroke="white" strokeWidth="1.8"/></svg>
+//                 </span>
+//                 {f}
+//               </div>
+//             ))}
+//           </div>
+//           <button onClick={onUpgrade} className="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-bold text-[14px] rounded-2xl shadow-lg shadow-indigo-200 hover:shadow-xl hover:-translate-y-0.5 transition-all">
+//             Upgrade to Premium →
+//           </button>
+//           <button onClick={onClose} className="mt-2.5 w-full py-2 text-[12.5px] text-slate-400 font-semibold hover:text-slate-600 transition-colors">
+//             Maybe later
+//           </button>
+//         </div>
+//       </motion.div>
+//     </div>
+//   );
+// }
+
+// /* ─────────────────────────────────────────────────────────────
+//    MAIN COMPONENT
+// ───────────────────────────────────────────────────────────────*/
+// export default function CoverLetterGenerator() {
+//   const router = useRouter();
+//   const [isPremium, setIsPremium] = useState<boolean | null>(null);
+//   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+//   const [step, setStep] = useState<Step>("template");
+//   const [tplId, setTplId] = useState("aurora");
+//   const [data, setData] = useState<CLData>(JSON.parse(JSON.stringify(BLANK)));
+//   const [html, setHtml] = useState("");
+//   const [modal, setModal] = useState(false);
+//   const [achIn, setAchIn] = useState("");
+//   const [sklIn, setSklIn] = useState("");
+//   const [toast, setToast] = useState("");
+//   const [busy, setBusy] = useState(false);
+//   const [filter, setFilter] = useState("All");
+//   const [showColors, setShowColors] = useState(false);
+//   const [showFonts, setShowFonts] = useState(false);
+//   const [showLoginPopup, setShowLoginPopup] = useState(false);
+//   const [showPremiumPopup, setShowPremiumPopup] = useState(false);
+
+//   const liveRef = useRef<HTMLIFrameElement>(null);
+//   const modalRef = useRef<HTMLIFrameElement>(null);
+
+//   /* ── Auth + Premium check ── */
+//   useEffect(() => {
+//     const userDetails = getLocalStorage<User>("user_details");
+//     const userId = userDetails?.id;
+//     if (!userId) {
+//       setIsLoggedIn(false);
+//       setIsPremium(false);
+//       // Show login popup after short delay
+//       setTimeout(() => setShowLoginPopup(true), 600);
+//       return;
+//     }
+//     setIsLoggedIn(true);
+//     axios.get(`${API_URL}/api/users/dashboard`, { params: { userId } })
+//       .then((res) => {
+//         const payment = res?.data?.payments?.[0];
+//         const premium = payment?.plan === "Premium";
+//         setIsPremium(premium);
+//         if (!premium) setTimeout(() => setShowPremiumPopup(true), 600);
+//       })
+//       .catch(() => setIsPremium(false));
+//   }, []);
+
+//   const showToast = (m: string) => { setToast(m); setTimeout(() => setToast(""), 2800); };
+
+//   const rebuild = useCallback(() => {
+//     const h = buildHTML(tplId, data);
+//     setHtml(h);
+//     return h;
+//   }, [tplId, data]);
+
+//   useEffect(() => {
+//     const t = setTimeout(rebuild, 200);
+//     return () => clearTimeout(t);
+//   }, [rebuild]);
+
+//   const writeIframe = (ref: React.RefObject<HTMLIFrameElement | null>, h: string) => {
+//     if (!ref.current) return;
+//     const doc = ref.current.contentDocument;
+//     if (!doc) return;
+//     doc.open(); doc.write(h); doc.close();
+//   };
+
+//   useEffect(() => { if (html && liveRef.current) writeIframe(liveRef, html); }, [html]);
+//   useEffect(() => { if (modal && html && modalRef.current) writeIframe(modalRef, html); }, [modal, html]);
+
+//   const set = (path: string[], val: string) =>
+//     setData((prev) => {
+//       const n = JSON.parse(JSON.stringify(prev)) as CLData;
+//       let c: any = n;
+//       for (let i = 0; i < path.length - 1; i++) c = c[path[i]];
+//       c[path[path.length - 1]] = val;
+//       return n;
+//     });
+
+//   const setSec = (id: string, f: "title" | "content", v: string) =>
+//     setData((p) => ({ ...p, sections: p.sections.map((s) => (s.id === id ? { ...s, [f]: v } : s)) }));
+
+//   // Guard: when trying to go past template step, check auth/premium
+//   const handleStepChange = (targetStep: Step) => {
+//     if (targetStep === "template") { setStep(targetStep); return; }
+//     if (!isLoggedIn) { setShowLoginPopup(true); return; }
+//     if (!isPremium) { setShowPremiumPopup(true); return; }
+//     setStep(targetStep);
+//   };
+
+//   const handleContinue = () => {
+//     const stepIdx = STEPS.findIndex((s) => s.id === step);
+//     if (step === "template") {
+//       if (!isLoggedIn) { setShowLoginPopup(true); return; }
+//       if (!isPremium) { setShowPremiumPopup(true); return; }
+//     }
+//     if (stepIdx < STEPS.length - 1) setStep(STEPS[stepIdx + 1].id);
+//   };
+
+//   const downloadPDF = async () => {
+//     if (!isLoggedIn) { setShowLoginPopup(true); return; }
+//     if (!isPremium) { setShowPremiumPopup(true); return; }
+//     const h = rebuild();
+//     setBusy(true);
+//     try {
+//       const r = await axios.post(`${API_URL}/api/candidates/generate-pdf`, { html: h }, { responseType: "blob" });
+//       const url = URL.createObjectURL(r.data);
+//       const a = document.createElement("a");
+//       a.href = url;
+//       a.download = `Cover_Letter_${data.personal.fullName || "Draft"}.pdf`;
+//       document.body.appendChild(a); a.click();
+//       document.body.removeChild(a);
+//       URL.revokeObjectURL(url);
+//       showToast("✓ PDF downloaded");
+//     } catch { showToast("Download failed — try again"); }
+//     finally { setBusy(false); }
+//   };
+
+//   const tpl = TEMPLATES.find((t) => t.id === tplId)!;
+//   const stepIdx = STEPS.findIndex((s) => s.id === step);
+//   const cats = ["All", ...Array.from(new Set(TEMPLATES.map((t) => t.tag)))];
+//   const shown = filter === "All" ? TEMPLATES : TEMPLATES.filter((t) => t.tag === filter);
+//   const tones = ["Professional", "Confident", "Enthusiastic", "Formal", "Creative", "Friendly"];
+
+//   /* Loading state */
+//   if (isLoggedIn === null) {
+//     return (
+//       <div className="min-h-screen bg-indigo-50 flex items-center justify-center">
+//         <div className="text-indigo-600 font-bold text-[14px] animate-pulse">Loading Cover Letter Studio…</div>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <>
+//       <style>{`
+//         html,body{overflow:hidden}
+//         @media(max-width:820px){html,body{overflow:auto}}
+//         .canvas-iframe{width:860px;height:1120px;border:none;display:block;background:#fff;pointer-events:none}
+//         .modal-iframe{width:860px;height:1120px;border:none;display:block;background:#fff}
+//         @keyframes livePulse{0%,100%{box-shadow:0 0 0 2px rgba(16,185,129,.2)}50%{box-shadow:0 0 0 5px rgba(16,185,129,.07)}}
+//         .live-dot{animation:livePulse 2s infinite}
+//         @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+//         .toast-anim{animation:toastIn .22s ease}
+//         @keyframes modalIn{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+//         .modal-anim{animation:modalIn .22s ease}
+//         @keyframes ovIn{from{opacity:0}to{opacity:1}}
+//         .ov-anim{animation:ovIn .18s ease}
+//         .scrollbar-none{scrollbar-width:none}
+//         .scrollbar-none::-webkit-scrollbar{display:none}
+//       `}</style>
+
+//       {/* LOGIN POPUP */}
+//       <AnimatePresence>
+//         {showLoginPopup && (
+//           <LoginPopup
+//             onClose={() => setShowLoginPopup(false)}
+//             onLogin={() => router.push("/login")}
+//           />
+//         )}
+//       </AnimatePresence>
+
+//       {/* PREMIUM POPUP */}
+//       <AnimatePresence>
+//         {showPremiumPopup && !showLoginPopup && (
+//           <PremiumPopup
+//             onClose={() => setShowPremiumPopup(false)}
+//             onUpgrade={() => router.push("/choose-plan")}
+//           />
+//         )}
+//       </AnimatePresence>
+
+//       {/* NAV */}
+//       <nav className="h-[58px] bg-white border-b border-slate-200 flex items-center px-4 md:px-5 gap-3 z-50 relative shadow-sm flex-shrink-0">
+//         <button onClick={() => router.push("/")} className="cursor-pointer flex-shrink-0">
+//           <div className="relative w-[100px] sm:w-[140px] h-[34px] sm:h-[46px]">
+//             <Image src="/logo.png" alt="Logo" fill className="object-contain" priority sizes="(max-width:640px) 100px,140px"/>
+//           </div>
+//         </button>
+
+//         {/* Wizard steps */}
+//         <div className="flex items-center flex-1 justify-center overflow-x-auto scrollbar-none gap-0 py-1">
+//           {STEPS.map((s, i) => (
+//             <React.Fragment key={s.id}>
+//               {i > 0 && <div className={`w-5 h-0.5 flex-shrink-0 transition-colors ${i <= stepIdx ? "bg-emerald-500" : "bg-slate-200"}`}/>}
+//               <button onClick={() => handleStepChange(s.id)}
+//                 className={`flex items-center gap-1.5 px-2 py-1 rounded-full text-[12px] font-semibold transition-all flex-shrink-0 cursor-pointer
+//                   ${i < stepIdx ? "text-slate-800" : i === stepIdx ? "text-indigo-600 bg-indigo-50" : "text-slate-400 hover:bg-slate-50"}`}>
+//                 <span className={`w-[22px] h-[22px] rounded-full flex items-center justify-center text-[10px] transition-all flex-shrink-0
+//                   ${i < stepIdx ? "bg-emerald-500 text-white" : i === stepIdx ? "bg-gradient-to-br from-indigo-600 to-violet-600 text-white shadow-[0_0_0_3px_rgba(91,56,240,.16)]" : "bg-slate-100 text-slate-400"}`}>
+//                   {i < stepIdx ? <svg viewBox="0 0 14 14" width="11" height="11" fill="none"><polyline points="2,8 5,12 12,3" stroke="white" strokeWidth="2.2"/></svg> : i + 1}
+//                 </span>
+//                 <span className="hidden sm:inline">{s.label}</span>
+//               </button>
+//             </React.Fragment>
+//           ))}
+//         </div>
+
+//         {/* Download */}
+//         <button onClick={downloadPDF} disabled={busy}
+//           className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[12px] font-bold bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md hover:shadow-lg hover:-translate-y-px disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none transition-all flex-shrink-0">
+//           {busy ? "⏳" : "⬇"} PDF
+//         </button>
+//       </nav>
+
+//       {/* SHELL */}
+//       <div className="grid lg:grid-cols-[400px_1fr] xl:grid-cols-[420px_1fr] h-[calc(100vh-58px)]">
+//         {/* LEFT PANEL */}
+//         <div className="flex flex-col overflow-hidden bg-slate-50 border-r border-slate-200">
+//           <div className="flex-shrink-0 px-5 pt-4 pb-0">
+//             <h2 className="font-semibold text-slate-900 tracking-tight mb-0.5 text-[15px]">
+//               {step === "template" ? "Choose Template" : step === "personal" ? "Personal Information" : step === "company" ? "Company Details" : step === "content" ? "Letter Content" : "Review & Download"}
+//             </h2>
+//             <p className="text-[12.5px] text-slate-500 mb-2">
+//               {step === "template" ? "50 unique white & modern designs" : step === "personal" ? "Your details appear as clickable links" : step === "company" ? "Where you're applying" : step === "content" ? "Build your letter paragraph by paragraph" : "Check everything before downloading"}
+//             </p>
+//           </div>
+
+//           <div className="flex-1 overflow-y-auto px-4 pt-3 pb-20 scrollbar-thin scrollbar-thumb-indigo-200 scrollbar-track-transparent">
+
+//             {/* ── TEMPLATE STEP ── */}
+//             {step === "template" && (
+//               <>
+//                 {/* Non-premium banner */}
+//                 {isLoggedIn && !isPremium && (
+//                   <div className="mb-3 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-3 flex items-center gap-3">
+//                     <div className="w-8 h-8 bg-amber-400 rounded-lg flex items-center justify-center text-white text-sm flex-shrink-0">⭐</div>
+//                     <div className="flex-1 min-w-0">
+//                       <p className="text-[12px] font-bold text-amber-800">Browse freely, upgrade to use</p>
+//                       <p className="text-[11px] text-amber-600">Select any template then upgrade to Premium to build your letter</p>
+//                     </div>
+//                     <button onClick={() => setShowPremiumPopup(true)} className="text-[11px] font-bold text-amber-700 bg-amber-100 border border-amber-200 px-2.5 py-1.5 rounded-lg hover:bg-amber-200 transition-all flex-shrink-0">Upgrade</button>
+//                   </div>
+//                 )}
+//                 {!isLoggedIn && (
+//                   <div className="mb-3 bg-gradient-to-r from-indigo-50 to-violet-50 border border-indigo-200 rounded-2xl p-3 flex items-center gap-3">
+//                     <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white text-sm flex-shrink-0">✦</div>
+//                     <div className="flex-1 min-w-0">
+//                       <p className="text-[12px] font-bold text-indigo-800">Browse templates freely</p>
+//                       <p className="text-[11px] text-indigo-600">Sign in to build and download your cover letter</p>
+//                     </div>
+//                     <button onClick={() => setShowLoginPopup(true)} className="text-[11px] font-bold text-indigo-700 bg-indigo-100 border border-indigo-200 px-2.5 py-1.5 rounded-lg hover:bg-indigo-200 transition-all flex-shrink-0">Sign In</button>
+//                   </div>
+//                 )}
+
+//                 {/* Filter pills */}
+//                 <div className="flex flex-wrap gap-1.5 mb-3">
+//                   {cats.map((c) => (
+//                     <button key={c} onClick={() => setFilter(c)}
+//                       className={`px-3 py-1 rounded-full text-[11px] font-bold border-[1.5px] transition-all ${filter === c ? "border-indigo-500 text-indigo-600 bg-indigo-50" : "border-slate-200 text-slate-500 bg-white hover:border-indigo-200"}`}>
+//                       {c}
+//                     </button>
+//                   ))}
+//                 </div>
+
+//                 {/* Color picker */}
+//                 <div className="mb-3 bg-white rounded-2xl border border-indigo-100 p-3">
+//                   <button onClick={() => setShowColors((v) => !v)} className="w-full flex items-center justify-between text-[12px] font-bold text-slate-700">
+//                     <span className="flex items-center gap-2">
+//                       <span className="w-4 h-4 rounded-full border border-white shadow-sm" style={{ background: data.accentColor || "#6366f1" }}/>
+//                       Accent Color
+//                     </span>
+//                     <span className="text-slate-400 text-[10px]">{showColors ? "▲" : "▼"}</span>
+//                   </button>
+//                   {showColors && (
+//                     <div className="flex flex-wrap gap-2 mt-2.5">
+//                       {COLOR_PALETTES.map((p) => (
+//                         <button key={p.value} title={p.label} onClick={() => setData((d) => ({ ...d, accentColor: p.value }))}
+//                           className={`w-7 h-7 rounded-full border-2 transition-all ${data.accentColor === p.value ? "border-white scale-110 shadow-lg" : "border-transparent hover:scale-105"}`}
+//                           style={{ background: p.value, boxShadow: data.accentColor === p.value ? `0 0 0 2px ${p.value}` : "" }}/>
+//                       ))}
+//                       <label className="w-7 h-7 rounded-full border-2 border-slate-200 overflow-hidden cursor-pointer hover:scale-105 transition-all" title="Custom color">
+//                         <input type="color" value={data.accentColor || "#6366f1"} onChange={(e) => setData((d) => ({ ...d, accentColor: e.target.value }))} className="w-8 h-8 -ml-0.5 -mt-0.5 cursor-pointer"/>
+//                       </label>
+//                     </div>
+//                   )}
+//                 </div>
+
+//                 {/* Font picker */}
+//                 <div className="mb-3 bg-white rounded-2xl border border-indigo-100 p-3">
+//                   <button onClick={() => setShowFonts((v) => !v)} className="w-full flex items-center justify-between text-[12px] font-bold text-slate-700">
+//                     <span className="flex items-center gap-2"><span className="text-indigo-500">Aa</span>Font: {data.fontFamily}</span>
+//                     <span className="text-slate-400 text-[10px]">{showFonts ? "▲" : "▼"}</span>
+//                   </button>
+//                   {showFonts && (
+//                     <div className="mt-2.5 space-y-1.5 max-h-40 overflow-y-auto">
+//                       {FONT_FAMILIES.map((f) => (
+//                         <button key={f.id} onClick={() => setData((d) => ({ ...d, fontFamily: f.id }))}
+//                           className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-[12.5px] transition-all ${data.fontFamily === f.id ? "bg-indigo-50 border border-indigo-200 text-indigo-700 font-bold" : "hover:bg-slate-50 text-slate-700 border border-transparent"}`}>
+//                           <span style={{ fontFamily: `'${f.id}',${f.style}` }}>{f.label}</span>
+//                           <span className="text-[10px] text-slate-400 font-normal">{f.style}</span>
+//                         </button>
+//                       ))}
+//                     </div>
+//                   )}
+//                 </div>
+
+//                 {/* Template grid — always browsable */}
+//                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+//                   {shown.map((t) => (
+//                     <div key={t.id} onClick={() => setTplId(t.id)}
+//                       className={`relative bg-white rounded-2xl border-2 overflow-hidden cursor-pointer transition-all duration-200
+//                         ${tplId === t.id ? "border-indigo-500 shadow-[0_0_0_3px_rgba(99,102,241,.12),0_8px_24px_rgba(99,102,241,.1)]" : "border-slate-100 shadow-sm hover:-translate-y-1 hover:shadow-md hover:border-indigo-200"}`}>
+//                       <div className="h-[95px] overflow-hidden">
+//                         <TplThumb id={t.id} color={data.accentColor || "#6366f1"}/>
+//                       </div>
+//                       {tplId === t.id && (
+//                         <div className="absolute top-2 right-2 w-5 h-5 bg-indigo-600 rounded-full flex items-center justify-center shadow">
+//                           <svg viewBox="0 0 14 14" width="10" height="10" fill="none"><polyline points="2,8 5,12 12,3" stroke="white" strokeWidth="2.4"/></svg>
+//                         </div>
+//                       )}
+//                       {(!isLoggedIn || !isPremium) && (
+//                         <div className="absolute top-2 left-2 w-5 h-5 bg-amber-400 rounded-full flex items-center justify-center shadow" title="Premium">
+//                           <FiLock className="w-2.5 h-2.5 text-white"/>
+//                         </div>
+//                       )}
+//                       <div className="px-2.5 py-2">
+//                         <div className="text-[9px] font-extrabold tracking-[1.2px] uppercase text-slate-400 mb-0.5">{t.tag}</div>
+//                         <div className="text-[12px] font-bold text-slate-900">{t.name}</div>
+//                       </div>
+//                     </div>
+//                   ))}
+//                 </div>
+//               </>
+//             )}
+
+//             {/* ── PERSONAL ── */}
+//             {step === "personal" && (
+//               <div className="bg-white rounded-2xl p-5 shadow-sm border border-indigo-100/60">
+//                 <div className="flex items-center gap-3 mb-4">
+//                   <div><p className="text-[14px] font-extrabold text-slate-900">Your Profile</p><p className="text-[11.5px] text-slate-500">All fields appear as clickable links in your letter</p></div>
+//                 </div>
+//                 <div className="grid sm:grid-cols-2 gap-0">
+//                   <F label="Full Name" required><input className={inp} placeholder="Alexandra Chen" value={data.personal.fullName} onChange={(e) => set(["personal", "fullName"], e.target.value)}/></F>
+//                   <F label="Professional Title"><input className={inp} placeholder="Senior UX Designer" value={data.personal.title} onChange={(e) => set(["personal", "title"], e.target.value)}/></F>
+//                 </div>
+//                 <div className="grid sm:grid-cols-2 gap-0">
+//                   <F label="Email Address" required><input className={inp} type="email" placeholder="alex@email.com" value={data.personal.email} onChange={(e) => set(["personal", "email"], e.target.value)}/></F>
+//                   <F label="Phone Number"><input className={inp} type="tel" placeholder="+1 555 000 0000" value={data.personal.phone} onChange={(e) => set(["personal", "phone"], e.target.value)}/></F>
+//                 </div>
+//                 <F label="Location"><input className={inp} placeholder="San Francisco, CA" value={data.personal.location} onChange={(e) => set(["personal", "location"], e.target.value)}/></F>
+//                 <div className="h-px bg-indigo-50 my-3"/>
+//                 <p className="text-[10px] font-extrabold tracking-widest uppercase text-indigo-500 mb-2">🔗 Online Presence</p>
+//                 <F label="LinkedIn URL"><input className={inp} placeholder="linkedin.com/in/alexchen" value={data.personal.linkedin} onChange={(e) => set(["personal", "linkedin"], e.target.value)}/></F>
+//                 <div className="grid sm:grid-cols-2 gap-0">
+//                   <F label="GitHub URL"><input className={inp} placeholder="github.com/alexchen" value={data.personal.github} onChange={(e) => set(["personal", "github"], e.target.value)}/></F>
+//                   <F label="Portfolio / Website"><input className={inp} placeholder="alexchen.io" value={data.personal.website} onChange={(e) => set(["personal", "website"], e.target.value)}/></F>
+//                 </div>
+//                 <div className="h-px bg-indigo-50 my-3"/>
+//                 <F label="Professional Summary (optional)"><textarea className={ta} placeholder="2–3 sentence summary…" value={data.personal.summary} onChange={(e) => set(["personal", "summary"], e.target.value)}/></F>
+//                 <F label="Closing Salutation"><input className={inp} placeholder="Sincerely (default)" value={data.personal.signature} onChange={(e) => set(["personal", "signature"], e.target.value)}/></F>
+//               </div>
+//             )}
+
+//             {/* ── COMPANY ── */}
+//             {step === "company" && (
+//               <div className="bg-white rounded-2xl p-5 shadow-sm border border-indigo-100/60">
+//                 <F label="Company Name" icon="🏢" required><input className={inp} placeholder="Google, Stripe, Airbnb…" value={data.company.name} onChange={(e) => set(["company", "name"], e.target.value)}/></F>
+//                 <F label="Role Applying For" icon="🎯" required><input className={inp} placeholder="Senior UX Designer" value={data.company.jobTitle} onChange={(e) => set(["company", "jobTitle"], e.target.value)}/></F>
+//                 <div className="grid sm:grid-cols-2 gap-3">
+//                   <F label="Hiring Manager" icon="👤"><input className={inp} placeholder="Sarah Johnson" value={data.company.hiringManager} onChange={(e) => set(["company", "hiringManager"], e.target.value)}/></F>
+//                   <F label="Their Title" icon="🏷️"><input className={inp} placeholder="Head of Design" value={data.company.hiringManagerTitle} onChange={(e) => set(["company", "hiringManagerTitle"], e.target.value)}/></F>
+//                 </div>
+//                 <div className="grid sm:grid-cols-2 gap-3">
+//                   <F label="City"><input className={`${inp} pl-3`} placeholder="Mountain View" value={data.company.city} onChange={(e) => set(["company", "city"], e.target.value)}/></F>
+//                   <F label="State"><input className={`${inp} pl-3`} placeholder="CA" value={data.company.state} onChange={(e) => set(["company", "state"], e.target.value)}/></F>
+//                 </div>
+//                 <div className="h-px bg-indigo-50 my-3"/>
+//                 <F label="Where you found this job" icon="🔍"><input className={inp} placeholder="LinkedIn, Referral, Company website…" value={data.company.jobSource} onChange={(e) => set(["company", "jobSource"], e.target.value)}/></F>
+//                 <F label="Referral Name (if any)" icon="🤝"><input className={inp} placeholder="John Smith referred me" value={data.company.referral} onChange={(e) => set(["company", "referral"], e.target.value)}/></F>
+//               </div>
+//             )}
+
+//             {/* ── CONTENT ── */}
+//             {step === "content" && (
+//               <div className="bg-white rounded-2xl p-5 shadow-sm border border-indigo-100/60">
+//                 <F label="Letter Date" icon="📅"><input className={inp} type="date" value={data.letterDate} onChange={(e) => set(["letterDate"], e.target.value)}/></F>
+//                 <div className="h-px bg-indigo-50 my-3"/>
+//                 <p className="text-[10px] font-extrabold tracking-widest uppercase text-indigo-500 mb-2">✍️ Letter Sections</p>
+//                 {data.sections.map((s, i) => (
+//                   <div key={s.id} className="bg-indigo-50/60 border-[1.5px] border-indigo-100 rounded-xl p-3 mb-2.5 transition-all focus-within:bg-white focus-within:border-indigo-400">
+//                     <div className="flex items-center gap-2 mb-2.5">
+//                       <span className="w-[22px] h-[22px] rounded-[7px] bg-gradient-to-br from-indigo-600 to-violet-600 text-white text-[10px] font-extrabold flex items-center justify-center flex-shrink-0">{i + 1}</span>
+//                       <input value={s.title} onChange={(e) => setSec(s.id, "title", e.target.value)} placeholder="Section title" className="flex-1 px-2.5 py-1.5 rounded-lg border-[1.5px] border-slate-200 text-[12.5px] font-bold bg-white text-slate-900 outline-none focus:border-indigo-500 transition-all"/>
+//                       {data.sections.length > 1 && <button onClick={() => setData((p) => ({ ...p, sections: p.sections.filter((x) => x.id !== s.id) }))} className="w-6 h-6 bg-white border-[1.5px] border-slate-200 rounded-[6px] text-red-400 text-[12px] flex items-center justify-center hover:bg-red-50 transition-all">✕</button>}
+//                     </div>
+//                     <textarea value={s.content} onChange={(e) => setSec(s.id, "content", e.target.value)} placeholder={s.placeholder} rows={4} className="w-full px-2.5 py-2 rounded-lg border-[1.5px] border-slate-200 bg-white text-[12.5px] text-slate-800 leading-relaxed outline-none focus:border-indigo-500 transition-all resize-y"/>
+//                   </div>
+//                 ))}
+//                 <button onClick={() => setData((p) => ({ ...p, sections: [...p.sections, { id: Date.now()+"", title: "New Section", content: "", placeholder: "Write here…" }] }))} className="w-full py-2 mb-3 bg-white border-[1.5px] border-dashed border-indigo-200 rounded-xl text-[12.5px] font-bold text-indigo-600 hover:bg-indigo-50 transition-all">+ Add Section</button>
+//                 <div className="h-px bg-indigo-50 my-3"/>
+//                 <p className="text-[10px] font-extrabold tracking-widest uppercase text-indigo-500 mb-2">🏆 Key Achievements</p>
+//                 <div className="flex gap-2 mb-2">
+//                   <input className="flex-1 px-3 py-2 text-[12.5px] border-[1.5px] border-slate-200 rounded-xl outline-none focus:border-indigo-500 transition-all" placeholder="e.g. Grew revenue 40% YoY" value={achIn} onChange={(e) => setAchIn(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && achIn.trim()) { setData((p) => ({ ...p, achievements: [...p.achievements, achIn.trim()] })); setAchIn(""); }}}/>
+//                   <button onClick={() => { if (achIn.trim()) { setData((p) => ({ ...p, achievements: [...p.achievements, achIn.trim()] })); setAchIn(""); }}} className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-[12px] font-bold rounded-xl">Add</button>
+//                 </div>
+//                 <div className="flex flex-wrap gap-1.5 mb-2">
+//                   {data.achievements.map((a, i) => (
+//                     <div key={i} className="flex items-center gap-1.5 px-2.5 py-1 bg-indigo-50 border border-indigo-100 rounded-full text-[12px] font-semibold text-indigo-700">
+//                       ⭐ {a}
+//                       <button onClick={() => setData((p) => ({ ...p, achievements: p.achievements.filter((_, j) => j !== i) }))} className="text-indigo-300 hover:text-red-400 text-[13px] leading-none ml-0.5">✕</button>
+//                     </div>
+//                   ))}
+//                 </div>
+//                 <div className="h-px bg-indigo-50 my-3"/>
+//                 <p className="text-[10px] font-extrabold tracking-widest uppercase text-indigo-500 mb-2">🛠️ Core Skills / Tools</p>
+//                 <div className="flex gap-2 mb-2">
+//                   <input className="flex-1 px-3 py-2 text-[12.5px] border-[1.5px] border-slate-200 rounded-xl outline-none focus:border-indigo-500 transition-all" placeholder="e.g. Figma, React…" value={sklIn} onChange={(e) => setSklIn(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && sklIn.trim()) { setData((p) => ({ ...p, skills: [...p.skills, sklIn.trim()] })); setSklIn(""); }}}/>
+//                   <button onClick={() => { if (sklIn.trim()) { setData((p) => ({ ...p, skills: [...p.skills, sklIn.trim()] })); setSklIn(""); }}} className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-[12px] font-bold rounded-xl">Add</button>
+//                 </div>
+//                 <div className="flex flex-wrap gap-1.5 mb-2">
+//                   {data.skills.map((s, i) => (
+//                     <div key={i} className="flex items-center gap-1.5 px-2.5 py-1 bg-violet-50 border border-violet-100 rounded-full text-[12px] font-semibold text-violet-700">
+//                       🔧 {s}
+//                       <button onClick={() => setData((p) => ({ ...p, skills: p.skills.filter((_, j) => j !== i) }))} className="text-violet-300 hover:text-red-400 text-[13px] leading-none ml-0.5">✕</button>
+//                     </div>
+//                   ))}
+//                 </div>
+//                 <div className="h-px bg-indigo-50 my-3"/>
+//                 <p className="text-[10px] font-extrabold tracking-widest uppercase text-indigo-500 mb-2">🎭 Tone of Voice</p>
+//                 <div className="flex flex-wrap gap-1.5 mb-3">
+//                   {tones.map((t) => (
+//                     <button key={t} onClick={() => setData((p) => ({ ...p, tone: t }))} className={`px-3 py-1 rounded-full text-[12px] font-semibold border-[1.5px] transition-all ${data.tone === t ? "border-indigo-500 text-indigo-600 bg-indigo-50" : "border-slate-200 text-slate-500 bg-white"}`}>{t}</button>
+//                   ))}
+//                 </div>
+//                 <div className="h-px bg-indigo-50 my-3"/>
+//                 <p className="text-[10px] font-extrabold tracking-widest uppercase text-indigo-500 mb-2">📝 Additional Notes</p>
+//                 <textarea className={ta} rows={3} placeholder="Post-script or extra context…" value={data.notes} onChange={(e) => setData((p) => ({ ...p, notes: e.target.value }))}/>
+//               </div>
+//             )}
+
+//             {/* ── REVIEW ── */}
+//             {step === "review" && (
+//               <div className="bg-white rounded-2xl p-5 shadow-sm border border-indigo-100/60">
+//                 {([ ["Template", tpl?.name, "template"], ["Accent Color", data.accentColor, "template"], ["Font", data.fontFamily, "template"], ["Full Name", data.personal.fullName, "personal"], ["Title", data.personal.title, "personal"], ["Email", data.personal.email, "personal"], ["Company", data.company.name, "company"], ["Role", data.company.jobTitle, "company"], ["Sections", `${data.sections.filter((s) => s.content).length} written`, "content"], ["Achievements", `${data.achievements.length} added`, "content"], ["Skills", `${data.skills.length} added`, "content"] ] as [string, string, Step][])
+//                   .map(([l, v, s]) => (
+//                     <div key={l} className="flex items-center justify-between py-2.5 border-b border-slate-50 last:border-0">
+//                       <span className="text-[11px] font-extrabold uppercase tracking-[.5px] text-slate-400">{l}</span>
+//                       <div className="flex items-center gap-2">
+//                         {l === "Accent Color" && v ? <span className="w-4 h-4 rounded-full border border-white shadow-sm" style={{ background: v }}/> : null}
+//                         <span className={`text-[12.5px] font-medium text-right max-w-[180px] truncate ${v ? "text-slate-800" : "text-slate-300"}`}>{v || "—"}</span>
+//                         <button onClick={() => setStep(s)} className="text-[11px] font-bold text-indigo-500 hover:text-indigo-700 transition-colors">Edit</button>
+//                       </div>
+//                     </div>
+//                   ))}
+//                 <div className="mt-4 p-4 bg-indigo-50 rounded-xl border border-indigo-100">
+//                   <p className="text-[13px] font-bold text-slate-900 mb-1">✅ Ready to Download</p>
+//                   <p className="text-[12px] text-slate-500">Your cover letter is ready. Download as PDF below.</p>
+//                 </div>
+//               </div>
+//             )}
+//           </div>
+
+//           {/* FOOTER */}
+//           <div className="flex-shrink-0 px-5 py-3 border-t border-slate-200 bg-white flex justify-between items-center gap-3">
+//             <button onClick={() => stepIdx === 0 ? router.push("/") : setStep(STEPS[stepIdx - 1].id)}
+//               className="flex items-center gap-1.5 px-4 py-2.5 rounded-full text-[13px] font-bold border-[1.5px] border-slate-200 bg-white text-slate-500 hover:bg-indigo-50 hover:border-indigo-200 hover:text-indigo-600 transition-all cursor-pointer">
+//               ← {stepIdx > 0 ? "Back" : "Home"}
+//             </button>
+//             {stepIdx < STEPS.length - 1 ? (
+//               <button onClick={handleContinue}
+//                 className="flex items-center gap-2 px-6 py-2.5 rounded-full text-[13.5px] font-semibold bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md hover:shadow-lg hover:-translate-y-px transition-all cursor-pointer">
+//                 Continue to {STEPS[stepIdx + 1].label} {(!isLoggedIn || !isPremium) && step === "template" ? "🔒" : ""}
+//               </button>
+//             ) : (
+//               <button onClick={downloadPDF} disabled={busy}
+//                 className="flex items-center gap-2 px-6 py-2.5 rounded-full text-[13.5px] font-extrabold bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md hover:shadow-lg hover:-translate-y-px disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+//                 {busy ? "⏳ Generating…" : "⬇ Download PDF"}
+//               </button>
+//             )}
+//           </div>
+//         </div>
+
+//         {/* RIGHT — CANVAS PREVIEW */}
+//         <div className="hidden lg:flex flex-col bg-slate-100 overflow-hidden">
+//           <div className="flex-shrink-0 h-[52px] bg-white border-b border-slate-200 px-4 flex items-center justify-between gap-3 shadow-[0_1px_3px_rgba(0,0,0,.04)]">
+//             <div className="flex items-center gap-2.5">
+//               <span className="w-2 h-2 rounded-full bg-emerald-500 live-dot"/>
+//               <div>
+//                 <p className="text-[13px] font-bold text-slate-900 leading-tight">Live Preview</p>
+//                 <p className="text-[10.5px] text-slate-400">Drag anywhere · Pinch · Scroll</p>
+//               </div>
+//             </div>
+//             <div className="flex items-center gap-2">
+//               <button onClick={() => setStep("template")} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold bg-indigo-50 border border-indigo-100 text-indigo-600 hover:bg-indigo-100 transition-all">🎨 Change</button>
+//               <button onClick={() => { rebuild(); setModal(true); }} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold border-[1.5px] border-slate-200 text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 transition-all">⛶ Fullscreen</button>
+//             </div>
+//           </div>
+//           <div className="flex-1 overflow-hidden">
+//             <CanvasPreview>
+//               {html ? (
+//                 <iframe ref={liveRef} className="canvas-iframe" title="preview" sandbox="allow-same-origin"/>
+//               ) : (
+//                 <div className="w-[860px] h-[1120px] bg-white flex flex-col items-center justify-center gap-3 text-slate-400 rounded-xl">
+//                   <span className="text-[52px] opacity-20">📄</span>
+//                   <p className="text-[16px] font-bold">Preview appears here</p>
+//                   <p className="text-[13px]">Fill in your details to see the letter</p>
+//                 </div>
+//               )}
+//             </CanvasPreview>
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* MOBILE PREVIEW FAB */}
+//       <button onClick={() => { rebuild(); setModal(true); }} className="lg:hidden fixed top-[70px] right-3 z-50 bg-gradient-to-r from-indigo-600 to-violet-600 text-white p-2.5 rounded-full shadow-xl">
+//         <FiEye className="w-4 h-4"/>
+//       </button>
+
+//       {/* FULLSCREEN MODAL */}
+//       <AnimatePresence>
+//         {modal && (
+//           <div className="ov-anim fixed inset-0 bg-[rgba(10,6,30,.86)] backdrop-blur-[14px] z-[1000] flex items-center justify-center p-3 sm:p-5" onClick={() => setModal(false)}>
+//             <div className="modal-anim w-full max-w-[980px] h-[92vh] bg-white rounded-2xl overflow-hidden flex flex-col shadow-[0_48px_100px_rgba(0,0,0,.48)]" onClick={(e) => e.stopPropagation()}>
+//               <div className="flex-shrink-0 h-[56px] px-5 bg-white border-b border-slate-100 flex items-center justify-between">
+//                 <div className="flex items-center gap-2.5">
+//                   <div className="w-8 h-8 rounded-[9px] bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-sm text-white">📄</div>
+//                   <div>
+//                     <p className="text-[14px] font-extrabold text-slate-900 leading-tight">{data.personal.fullName || "Cover Letter"}</p>
+//                     <p className="text-[11px] text-slate-400">{tpl?.name} · {tpl?.tag}</p>
+//                   </div>
+//                 </div>
+//                 <button onClick={() => setModal(false)} className="w-8 h-8 rounded-full bg-indigo-50 border border-indigo-100 text-slate-400 hover:bg-red-50 hover:border-red-200 hover:text-red-500 flex items-center justify-center text-[16px] transition-all">✕</button>
+//               </div>
+//               <div className="flex-1 overflow-hidden bg-slate-100">
+//                 <CanvasPreview>
+//                   {html ? <iframe ref={modalRef} className="modal-iframe" title="full-preview" sandbox="allow-same-origin"/> : <div className="w-[860px] h-[1120px] bg-white flex items-center justify-center text-slate-400"><span className="text-5xl opacity-20">📄</span></div>}
+//                 </CanvasPreview>
+//               </div>
+//               <div className="flex-shrink-0 px-5 py-3 border-t border-slate-100 bg-white flex justify-end gap-2.5">
+//                 <button onClick={() => setModal(false)} className="px-4 py-2 rounded-full text-[12.5px] font-bold border-[1.5px] border-slate-200 text-slate-500 hover:bg-slate-50 transition-all">Close</button>
+//                 <button onClick={downloadPDF} disabled={busy} className="flex items-center gap-1.5 px-5 py-2 rounded-full text-[12.5px] font-bold bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md hover:shadow-lg disabled:opacity-50 transition-all">
+//                   {busy ? "⏳ Generating…" : "⬇ Download PDF"}
+//                 </button>
+//               </div>
+//             </div>
+//           </div>
+//         )}
+//       </AnimatePresence>
+
+//       {/* TOAST */}
+//       {toast && (
+//         <div className="toast-anim fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] bg-slate-900 text-white px-6 py-2.5 rounded-full text-[13px] font-bold shadow-xl whitespace-nowrap">{toast}</div>
+//       )}
+//     </>
+//   );
+// }
 
 "use client";
 import React, {
@@ -11600,6 +13327,14 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { API_URL } from "@/app/config/api";
 import { getLocalStorage } from "@/app/utils/localStorage";
+
+// ─── Template data (screenshot images) ───────────────────────────────────────
+// Adjust the import path to wherever you put coverLetterTemplates.ts
+import {
+  coverLetterTemplateData as TEMPLATES,
+  getCLTemplateTags,
+  filterCLTemplates,
+} from "@/app/data/coverLetterTemplates";
 
 /* ─────────────────────────────────────────────────────────────
    TYPES
@@ -11785,70 +13520,23 @@ const FONT_FAMILIES = [
   },
 ];
 
-/* ─────────────────────────────────────────────────────────────
-   50 TEMPLATE DEFINITIONS — all white/light modern professional
-───────────────────────────────────────────────────────────────*/
-const TEMPLATES = [
-  // Modern
-  { id: "aurora", name: "Aurora", tag: "Modern" },
-  { id: "prism", name: "Prism", tag: "Modern" },
-  { id: "frost", name: "Frost", tag: "Modern" },
-  { id: "canvas", name: "Canvas", tag: "Modern" },
-  { id: "gradient", name: "Gradient", tag: "Modern" },
-  { id: "vivid", name: "Vivid", tag: "Modern" },
-  { id: "nova", name: "Nova", tag: "Modern" },
-  { id: "tidal", name: "Tidal", tag: "Modern" },
-  { id: "horizon", name: "Horizon", tag: "Modern" },
-  { id: "lumina", name: "Lumina", tag: "Modern" },
-  // Executive / Corporate
-  { id: "obsidian_lite", name: "Obsidian", tag: "Executive" },
-  { id: "slate", name: "Slate", tag: "Corporate" },
-  { id: "architect", name: "Architect", tag: "Corporate" },
-  { id: "corporate", name: "Corporate", tag: "Corporate" },
-  { id: "executive", name: "Executive", tag: "Executive" },
-  { id: "titan", name: "Titan", tag: "Corporate" },
-  { id: "oxford", name: "Oxford", tag: "Executive" },
-  { id: "summit", name: "Summit", tag: "Corporate" },
-  { id: "presidio", name: "Presidio", tag: "Executive" },
-  { id: "accord", name: "Accord", tag: "Corporate" },
-  // Minimal / Clean
-  { id: "nordic", name: "Nordic", tag: "Minimal" },
-  { id: "pearl", name: "Pearl", tag: "Minimal" },
-  { id: "minimal", name: "Minimal", tag: "Minimal" },
-  { id: "zen", name: "Zen", tag: "Minimal" },
-  { id: "ivory", name: "Ivory", tag: "Classic" },
-  { id: "paper", name: "Paper", tag: "Classic" },
-  { id: "serif", name: "Serif", tag: "Classic" },
-  { id: "editorial", name: "Editorial", tag: "Editorial" },
-  { id: "linen", name: "Linen", tag: "Minimal" },
-  { id: "parchment", name: "Parchment", tag: "Classic" },
-  // Creative / Designer
-  { id: "designer", name: "Designer", tag: "Creative" },
-  { id: "motion", name: "Motion", tag: "Creative" },
-  { id: "brushstroke", name: "Brushstroke", tag: "Creative" },
-  { id: "studio", name: "Studio", tag: "Creative" },
-  { id: "folio", name: "Folio", tag: "Designer" },
-  { id: "artboard", name: "Artboard", tag: "Designer" },
-  { id: "vortex", name: "Vortex", tag: "Designer" },
-  { id: "palette", name: "Palette", tag: "Creative" },
-  { id: "frame", name: "Frame", tag: "Designer" },
-  { id: "mosaic", name: "Mosaic", tag: "Creative" },
-  // Professional Premium
-  { id: "blaze", name: "Blaze", tag: "Premium" },
-  { id: "radiant", name: "Radiant", tag: "Premium" },
-  { id: "solstice", name: "Solstice", tag: "Premium" },
-  { id: "meridian", name: "Meridian", tag: "Premium" },
-  { id: "pinnacle", name: "Pinnacle", tag: "Premium" },
-  // Tech / Modern Pro
-  { id: "circuit", name: "Circuit", tag: "Tech" },
-  { id: "blueprint", name: "Blueprint", tag: "Tech" },
-  { id: "axiom", name: "Axiom", tag: "Tech" },
-  { id: "signal", name: "Signal", tag: "Tech" },
-  { id: "quantum", name: "Quantum", tag: "Tech" },
+const COLOR_PALETTES = [
+  { label: "Indigo", value: "#6366f1" },
+  { label: "Violet", value: "#7c3aed" },
+  { label: "Purple", value: "#9333ea" },
+  { label: "Sky", value: "#0369a1" },
+  { label: "Teal", value: "#0d9488" },
+  { label: "Emerald", value: "#059669" },
+  { label: "Amber", value: "#d97706" },
+  { label: "Rose", value: "#e11d48" },
+  { label: "Orange", value: "#ea580c" },
+  { label: "Slate", value: "#334155" },
+  { label: "Navy", value: "#1e3a5f" },
+  { label: "Maroon", value: "#9f1239" },
 ];
 
 /* ─────────────────────────────────────────────────────────────
-   CANVAS PREVIEW
+   CANVAS PREVIEW — fixed drag (all listeners on window)
 ───────────────────────────────────────────────────────────────*/
 function CanvasPreview({ children }: { children: ReactNode }) {
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -11866,607 +13554,373 @@ function CanvasPreview({ children }: { children: ReactNode }) {
 
   const initS = useCallback(() => {
     const w = window.innerWidth;
-    return w < 480 ? 0.33 : w < 640 ? 0.4 : w < 820 ? 0.5 : w < 1024 ? 0.57 : w < 1280 ? 0.63 : 0.68;
+    return w < 480
+      ? 0.33
+      : w < 640
+        ? 0.4
+        : w < 820
+          ? 0.5
+          : w < 1024
+            ? 0.57
+            : w < 1280
+              ? 0.63
+              : 0.68;
   }, []);
 
   useEffect(() => {
     const s = initS();
     scaleRef.current = s;
     setScale(s);
-    const fn = () => { const s2 = initS(); scaleRef.current = s2; setScale(s2); };
+    const fn = () => {
+      const s2 = initS();
+      scaleRef.current = s2;
+      setScale(s2);
+    };
     window.addEventListener("resize", fn);
     return () => window.removeEventListener("resize", fn);
   }, [initS]);
 
   const smoothZoom = (target: number) => {
     if (animRef.current) cancelAnimationFrame(animRef.current);
-    const from = scaleRef.current, t0 = performance.now();
+    const from = scaleRef.current,
+      t0 = performance.now();
     const tick = (now: number) => {
       const p = Math.min((now - t0) / 160, 1);
       const v = from + (target - from) * (1 - Math.pow(1 - p, 3));
-      scaleRef.current = v; setScale(v);
+      scaleRef.current = v;
+      setScale(v);
       if (p < 1) animRef.current = requestAnimationFrame(tick);
     };
     animRef.current = requestAnimationFrame(tick);
   };
   const zoomIn = () => smoothZoom(Math.min(scaleRef.current + 0.12, 3));
   const zoomOut = () => smoothZoom(Math.max(scaleRef.current - 0.12, 0.2));
-  const reset = () => { const p = { x: 20, y: 20 }; posRef.current = p; setPos(p); smoothZoom(initS()); };
+  const reset = () => {
+    const p = { x: 20, y: 20 };
+    posRef.current = p;
+    setPos(p);
+    smoothZoom(initS());
+  };
 
   useEffect(() => {
     const el = wrapRef.current;
     if (!el) return;
-    const onDown = (e: MouseEvent) => { e.preventDefault(); downRef.current = { x: e.clientX, y: e.clientY }; isDrag.current = false; };
+    const inEl = (e: MouseEvent) => {
+      const r = el.getBoundingClientRect();
+      return (
+        e.clientX >= r.left &&
+        e.clientX <= r.right &&
+        e.clientY >= r.top &&
+        e.clientY <= r.bottom
+      );
+    };
+
+    const onDown = (e: MouseEvent) => {
+      if (!inEl(e)) return;
+      if ((e.target as HTMLElement)?.closest?.("[data-nodrag]")) return;
+      e.preventDefault();
+      downRef.current = { x: e.clientX, y: e.clientY };
+      isDrag.current = false;
+    };
     const onMove = (e: MouseEvent) => {
       if (!downRef.current) return;
-      const dx = e.clientX - downRef.current.x, dy = e.clientY - downRef.current.y;
-      if (!isDrag.current && Math.hypot(dx, dy) > 3) { isDrag.current = true; setDrag(true); startRef.current = { x: downRef.current.x - posRef.current.x, y: downRef.current.y - posRef.current.y }; }
-      if (isDrag.current) { const np = { x: e.clientX - startRef.current.x, y: e.clientY - startRef.current.y }; posRef.current = np; setPos({ ...np }); }
+      const dx = e.clientX - downRef.current.x,
+        dy = e.clientY - downRef.current.y;
+      if (!isDrag.current && Math.hypot(dx, dy) > 3) {
+        isDrag.current = true;
+        setDrag(true);
+        startRef.current = {
+          x: downRef.current.x - posRef.current.x,
+          y: downRef.current.y - posRef.current.y,
+        };
+      }
+      if (isDrag.current) {
+        const np = {
+          x: e.clientX - startRef.current.x,
+          y: e.clientY - startRef.current.y,
+        };
+        posRef.current = np;
+        setPos({ ...np });
+      }
     };
-    const onUp = () => { downRef.current = null; isDrag.current = false; setDrag(false); };
+    const onUp = () => {
+      downRef.current = null;
+      isDrag.current = false;
+      setDrag(false);
+    };
+
     const onTouchStart = (e: TouchEvent) => {
-      if (e.touches.length === 1) { const t = e.touches[0]; downRef.current = { x: t.clientX, y: t.clientY }; isDrag.current = false; }
-      else if (e.touches.length === 2) { const dx = e.touches[1].clientX - e.touches[0].clientX; const dy = e.touches[1].clientY - e.touches[0].clientY; lastDist.current = Math.hypot(dx, dy); }
+      const r = el.getBoundingClientRect();
+      const t = e.touches[0];
+      if (
+        t.clientX < r.left ||
+        t.clientX > r.right ||
+        t.clientY < r.top ||
+        t.clientY > r.bottom
+      )
+        return;
+      if (e.touches.length === 1) {
+        downRef.current = { x: t.clientX, y: t.clientY };
+        isDrag.current = false;
+      } else if (e.touches.length === 2) {
+        const dx = e.touches[1].clientX - e.touches[0].clientX;
+        const dy = e.touches[1].clientY - e.touches[0].clientY;
+        lastDist.current = Math.hypot(dx, dy);
+      }
     };
     const onTouchMove = (e: TouchEvent) => {
       e.preventDefault();
-      if (e.touches.length === 2) { const dx = e.touches[1].clientX - e.touches[0].clientX; const dy = e.touches[1].clientY - e.touches[0].clientY; const d = Math.hypot(dx, dy); if (lastDist.current > 0) { const v = Math.max(0.2, Math.min(3, scaleRef.current * (d / lastDist.current))); scaleRef.current = v; setScale(v); } lastDist.current = d; return; }
+      if (e.touches.length === 2) {
+        const dx = e.touches[1].clientX - e.touches[0].clientX;
+        const dy = e.touches[1].clientY - e.touches[0].clientY;
+        const d = Math.hypot(dx, dy);
+        if (lastDist.current > 0) {
+          const v = Math.max(
+            0.2,
+            Math.min(3, scaleRef.current * (d / lastDist.current)),
+          );
+          scaleRef.current = v;
+          setScale(v);
+        }
+        lastDist.current = d;
+        return;
+      }
       if (!downRef.current || e.touches.length !== 1) return;
-      const t = e.touches[0]; const dx = t.clientX - downRef.current.x, dy = t.clientY - downRef.current.y;
-      if (!isDrag.current && Math.hypot(dx, dy) > 3) { isDrag.current = true; setDrag(true); startRef.current = { x: downRef.current.x - posRef.current.x, y: downRef.current.y - posRef.current.y }; }
-      if (isDrag.current) { const np = { x: t.clientX - startRef.current.x, y: t.clientY - startRef.current.y }; posRef.current = np; setPos({ ...np }); }
+      const t = e.touches[0];
+      const dx = t.clientX - downRef.current.x,
+        dy = t.clientY - downRef.current.y;
+      if (!isDrag.current && Math.hypot(dx, dy) > 3) {
+        isDrag.current = true;
+        setDrag(true);
+        startRef.current = {
+          x: downRef.current.x - posRef.current.x,
+          y: downRef.current.y - posRef.current.y,
+        };
+      }
+      if (isDrag.current) {
+        const np = {
+          x: t.clientX - startRef.current.x,
+          y: t.clientY - startRef.current.y,
+        };
+        posRef.current = np;
+        setPos({ ...np });
+      }
     };
-    const onTouchEnd = () => { downRef.current = null; isDrag.current = false; setDrag(false); };
+    const onTouchEnd = () => {
+      downRef.current = null;
+      isDrag.current = false;
+      setDrag(false);
+    };
     const onWheel = (e: WheelEvent) => {
+      if (!inEl(e)) return;
       e.preventDefault();
-      if (e.ctrlKey || e.metaKey) { const v = Math.max(0.2, Math.min(3, scaleRef.current * Math.exp(-e.deltaY * 0.002))); scaleRef.current = v; setScale(v); }
-      else { const np = { x: posRef.current.x - e.deltaX * 0.5, y: posRef.current.y - e.deltaY * 0.5 }; posRef.current = np; setPos({ ...np }); }
+      if (e.ctrlKey || e.metaKey) {
+        const v = Math.max(
+          0.2,
+          Math.min(3, scaleRef.current * Math.exp(-e.deltaY * 0.002)),
+        );
+        scaleRef.current = v;
+        setScale(v);
+      } else {
+        const np = {
+          x: posRef.current.x - e.deltaX * 0.5,
+          y: posRef.current.y - e.deltaY * 0.5,
+        };
+        posRef.current = np;
+        setPos({ ...np });
+      }
     };
-    el.addEventListener("mousedown", onDown, { passive: false });
-    el.addEventListener("mousemove", onMove, { passive: false });
-    el.addEventListener("mouseup", onUp);
-    el.addEventListener("mouseleave", onUp);
-    el.addEventListener("touchstart", onTouchStart, { passive: true });
-    el.addEventListener("touchmove", onTouchMove, { passive: false });
-    el.addEventListener("touchend", onTouchEnd);
-    el.addEventListener("wheel", onWheel, { passive: false });
+
+    // All on window — iframes can NEVER steal these
+    window.addEventListener("mousedown", onDown, {
+      capture: true,
+      passive: false,
+    });
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: false });
+    window.addEventListener("touchend", onTouchEnd);
+    window.addEventListener("wheel", onWheel, {
+      capture: true,
+      passive: false,
+    });
     return () => {
-      el.removeEventListener("mousedown", onDown); el.removeEventListener("mousemove", onMove);
-      el.removeEventListener("mouseup", onUp); el.removeEventListener("mouseleave", onUp);
-      el.removeEventListener("touchstart", onTouchStart); el.removeEventListener("touchmove", onTouchMove);
-      el.removeEventListener("touchend", onTouchEnd); el.removeEventListener("wheel", onWheel);
+      window.removeEventListener("mousedown", onDown, { capture: true });
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("touchend", onTouchEnd);
+      window.removeEventListener("wheel", onWheel, { capture: true });
     };
   }, []);
 
   return (
     <div className="relative w-full h-full" style={{ minHeight: 360 }}>
-      <div ref={wrapRef} className="absolute inset-0 overflow-hidden select-none" style={{ cursor: drag ? "grabbing" : "grab", borderRadius: 12, background: "#e8e6f2", pointerEvents: "auto" }}>
-        <div style={{ position: "absolute", inset: 0, zIndex: 10, background: "transparent", pointerEvents: drag ? "auto" : "none" }} />
-        <div style={{ position: "absolute", top: 0, left: 0, transformOrigin: "top left", transform: `translate(${pos.x}px,${pos.y}px) scale(${scale})`, willChange: "transform", zIndex: 1 }}>
+      {/* pointer-events:none on iframes so they never steal events */}
+      <style>{`.cvs-root iframe{pointer-events:none!important}`}</style>
+      <div
+        ref={wrapRef}
+        className="cvs-root absolute inset-0 overflow-hidden select-none"
+        style={{
+          cursor: drag ? "grabbing" : "grab",
+          borderRadius: 12,
+          background: "#e8e6f2",
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            transformOrigin: "top left",
+            transform: `translate(${pos.x}px,${pos.y}px) scale(${scale})`,
+            willChange: "transform",
+            zIndex: 1,
+          }}
+        >
           {children}
         </div>
       </div>
-      <div data-nodrag className="absolute top-2.5 left-2.5 z-30 pointer-events-none bg-white/90 backdrop-blur-sm border border-indigo-100 text-indigo-600 text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm">
+      <div
+        data-nodrag
+        className="absolute top-2.5 left-2.5 z-30 pointer-events-none bg-white/90 backdrop-blur-sm border border-indigo-100 text-indigo-600 text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm"
+      >
         {Math.round(scale * 100)}%
       </div>
-      <div data-nodrag className="absolute bottom-3 right-3 z-30 flex flex-col gap-1.5">
+      <div
+        data-nodrag
+        className="absolute bottom-3 right-3 z-30 flex flex-col gap-1.5"
+      >
         {[
           { fn: zoomIn, icon: <FiZoomIn className="w-3.5 h-3.5" />, p: true },
           { fn: zoomOut, icon: <FiZoomOut className="w-3.5 h-3.5" />, p: true },
           { fn: reset, icon: <FiRefreshCw className="w-3 h-3" />, p: false },
         ].map((b, i) => (
-          <motion.button key={i} type="button" onClick={b.fn} whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }}
-            className={`w-7 h-7 rounded-lg flex items-center justify-center text-white shadow-md ${b.p ? "bg-gradient-to-br from-indigo-600 to-violet-600" : "bg-gray-700 hover:bg-gray-800"}`}>
+          <motion.button
+            key={i}
+            type="button"
+            onClick={b.fn}
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.92 }}
+            className={`w-7 h-7 rounded-lg flex items-center justify-center text-white shadow-md ${b.p ? "bg-gradient-to-br from-indigo-600 to-violet-600" : "bg-gray-700 hover:bg-gray-800"}`}
+          >
             {b.icon}
           </motion.button>
         ))}
       </div>
-      <p data-nodrag className="absolute bottom-3 left-2 z-30 pointer-events-none text-[9px] font-semibold text-slate-400">Drag · Pinch · Scroll</p>
+      <p
+        data-nodrag
+        className="absolute bottom-3 left-2 z-30 pointer-events-none text-[9px] font-semibold text-slate-400"
+      >
+        Drag · Pinch · Scroll
+      </p>
     </div>
   );
 }
 
 /* ─────────────────────────────────────────────────────────────
-   50 SVG THUMBNAILS — all white/light, modern professional
+   TEMPLATE IMAGE CARD — replaces TplThumb SVG
+   Shows the screenshot, name, tag, tier badge, and selected state
 ───────────────────────────────────────────────────────────────*/
-function TplThumb({ id, color = "#6366f1" }: { id: string; color?: string }) {
-  const W = 220, H = 155;
-  const bg = "#ffffff";
-  const li = "#e5e7eb";
-  const ml = "#9ca3af";
-  const sl = "#6b7280";
-  const c = color;
-  const ca = `${c}22`;
-  const cb = `${c}55`;
+function TemplateCard({
+  template,
+  selected,
+  onClick,
+  showLock,
+}: {
+  template: {
+    id: string;
+    name: string;
+    tag: string;
+    tier: string;
+    image: string;
+    description: string;
+  };
+  selected: boolean;
+  onClick: () => void;
+  showLock: boolean;
+}) {
+  return (
+    <div
+      onClick={onClick}
+      className={`relative bg-white rounded-2xl border-2 overflow-hidden cursor-pointer transition-all duration-200 group
+        ${
+          selected
+            ? "border-indigo-500 shadow-[0_0_0_3px_rgba(99,102,241,.14),0_8px_24px_rgba(99,102,241,.12)]"
+            : "border-slate-100 shadow-sm hover:-translate-y-1 hover:shadow-lg hover:border-indigo-200"
+        }`}
+    >
+      {/* Screenshot image */}
+      <div
+        className="relative w-full"
+        style={{ paddingBottom: "130%", background: "#f8fafc" }}
+      >
+        <Image
+          src={template.image}
+          alt={template.name}
+          fill
+          className="object-cover object-top transition-transform duration-300 group-hover:scale-[1.03]"
+          sizes="(max-width:640px) 45vw, (max-width:1024px) 30vw, 20vw"
+          // Fallback: while screenshot not available, show a placeholder bg
+          onError={(e) => {
+            (e.currentTarget as HTMLImageElement).style.display = "none";
+          }}
+        />
+        {/* Gradient overlay at bottom of image */}
+        <div className="absolute bottom-0 inset-x-0 h-8 bg-gradient-to-t from-white/80 to-transparent pointer-events-none" />
+      </div>
 
-  const R = (x: number, y: number, w: number, h: number, fill: string, rx = 1.5) => (
-    <rect x={x} y={y} width={w} height={h} rx={rx} fill={fill} />
+      {/* Selected checkmark */}
+      {selected && (
+        <div className="absolute top-2 right-2 w-6 h-6 bg-indigo-600 rounded-full flex items-center justify-center shadow-md z-10">
+          <svg viewBox="0 0 14 14" width="11" height="11" fill="none">
+            <polyline points="2,8 5,12 12,3" stroke="white" strokeWidth="2.4" />
+          </svg>
+        </div>
+      )}
+
+      {/* Lock badge — shown when user can't use it */}
+      {showLock && (
+        <div
+          className="absolute top-2 left-2 w-5 h-5 bg-amber-400 rounded-full flex items-center justify-center shadow z-10"
+          title="Premium"
+        >
+          <FiLock className="w-2.5 h-2.5 text-white" />
+        </div>
+      )}
+
+      {/* Info strip */}
+      <div className="px-2.5 py-2.5">
+        <div className="flex items-center justify-between mb-0.5">
+          <span className="text-[8.5px] font-extrabold tracking-[1.2px] uppercase text-slate-400">
+            {template.tag}
+          </span>
+          {template.tier === "premium" && (
+            <span className="text-[8px] font-bold text-amber-600 bg-amber-50 border border-amber-100 px-1.5 py-0.5 rounded-full">
+              PRO
+            </span>
+          )}
+        </div>
+        <div className="text-[12.5px] font-bold text-slate-900 leading-tight">
+          {template.name}
+        </div>
+        {/* Description on hover */}
+        <div className="text-[10.5px] text-slate-400 leading-tight mt-0.5 line-clamp-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          {template.description}
+        </div>
+      </div>
+    </div>
   );
-  const lines = (x: number, y: number, widths: number[], fill = li) =>
-    widths.map((w, i) => R(x, y + i * 7, w, 2.5, fill));
-
-  switch (id) {
-    case "aurora": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,bg,0)}
-        <defs><linearGradient id="aur" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor={c}/><stop offset="100%" stopColor={`${c}bb`}/></linearGradient></defs>
-        {R(0,0,W,52,"url(#aur)",0)}
-        <circle cx={200} cy={0} r={55} fill="rgba(255,255,255,.12)"/>
-        {R(13,12,88,9,"rgba(255,255,255,.92)",2)}{R(13,25,55,4,"rgba(255,255,255,.55)",1.5)}
-        {[0,38,78].map(ox=><rect key={ox} x={13+ox} y={36} width={32} height={5} rx={10} fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.3)" strokeWidth=".6"/>)}
-        {R(13,62,38,2.5,ml)}{...lines(13,69,[130,110,122])}{R(13,92,44,3,c)}{...lines(13,99,[180,162,175])}{R(13,120,44,3,c)}{...lines(13,127,[155,118])}{R(13,144,32,2,ml)}{R(13,150,55,3,sl)}
-      </svg>
-    );
-    case "prism": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,bg,0)}{R(0,0,W,52,c,0)}
-        <polygon points="110,0 220,0 220,52" fill="rgba(255,255,255,.14)"/>
-        {R(13,12,82,9,"rgba(255,255,255,.92)",1.5)}{R(13,25,50,3.5,"rgba(255,255,255,.65)")}
-        {R(0,52,W,11,"#1e1b4b",0)}{[13,57,104].map(x=><rect key={x} x={x} y={56} width={38} height={2} rx={1} fill="#a5b4fc"/>)}
-        {R(13,74,32,2.5,ml)}{...lines(13,81,[188,162])}{R(13,95,2.5,25,c,1)}
-        {[95,101,106,111].map((y,i)=><rect key={y} x={19} y={y} width={i===0?38:[182,155,165][i-1]} height={2.2} rx={1} fill={i===0?c:li}/>)}
-        {R(13,148,52,3,sl)}
-      </svg>
-    );
-    case "frost": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        <defs><linearGradient id="frg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="#dbeafe"/><stop offset="100%" stopColor="#e0f2fe"/></linearGradient></defs>
-        {R(0,0,W,H,"url(#frg)",0)}{R(5,5,210,145,"rgba(255,255,255,.82)",10)}{R(5,5,210,50,`${c}e6`,10)}{R(5,31,210,24,`${c}e6`,0)}
-        {R(17,14,82,8,"white",1.5)}{R(17,26,50,3,"rgba(255,255,255,.65)")}
-        {[0,33,68].map(ox=><rect key={ox} x={17+ox} y={37} width={27} height={4} rx={10} fill="rgba(255,255,255,.16)" stroke="rgba(255,255,255,.28)" strokeWidth=".5"/>)}
-        {R(17,63,36,2.5,ml)}{...lines(17,70,[182,157])}{R(17,83,42,3,c)}{...lines(17,90,[182,170,176])}{R(17,110,42,3,c)}{...lines(17,117,[182,130])}{R(17,137,28,2,ml)}{R(17,143,52,3,sl)}
-      </svg>
-    );
-    case "canvas": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,bg,0)}{R(13,13,4,58,c,2)}{R(22,13,92,10,"#111827",2)}{R(22,27,57,4,"#6b7280",1.5)}
-        {[35,41,47].map((y,i)=><rect key={y} x={22} y={y} width={[70,58,74][i]} height={2.5} rx={1} fill={ml}/>)}
-        {R(13,75,188,1,li,0)}{R(13,82,32,2.5,ml)}{...lines(13,89,[188,158])}{R(13,104,44,3,c)}{...lines(13,111,[188,170,178])}{R(13,131,44,3,c)}{...lines(13,138,[188,122])}
-      </svg>
-    );
-    case "gradient": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        <defs><linearGradient id="grd" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor={c} stopOpacity=".18"/><stop offset="100%" stopColor={c} stopOpacity="0"/></linearGradient></defs>
-        {R(0,0,W,H,bg,0)}{R(0,0,7,H,c,0)}{R(7,0,W-7,H,"url(#grd)",0)}
-        {R(18,14,88,9,"#111827",2)}{R(18,27,54,4,"#374151",1.5)}{R(18,37,192,0.6,li,0)}
-        {[43,49,55,61].map((y,i)=><rect key={y} x={18} y={y} width={[58,48,68,42][i]} height={2.5} rx={1} fill={ml}/>)}
-        {R(18,73,192,0.6,li,0)}{R(18,82,44,3,c)}{...lines(18,89,[185,168,176])}{R(18,110,44,3,c)}{...lines(18,117,[185,120])}
-      </svg>
-    );
-    case "vivid": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        <defs><linearGradient id="vvd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor={c}/><stop offset="100%" stopColor="#ec4899"/></linearGradient></defs>
-        {R(0,0,W,H,bg,0)}{R(0,0,W,50,"url(#vvd)",0)}<circle cx={30} cy={50} r={55} fill={`${c}18`}/>
-        {R(14,10,82,10,"rgba(255,255,255,.92)",2)}{R(14,24,50,4,"rgba(255,255,255,.62)",1.5)}
-        {[0,36,74].map(ox=><rect key={ox} x={14+ox} y={36} width={30} height={4} rx={8} fill="rgba(255,255,255,.22)"/>)}
-        {R(14,62,38,2.5,ml)}{...lines(14,69,[175,148])}{R(14,83,44,3,c)}{...lines(14,90,[183,165,172])}{R(14,112,44,3,c)}{...lines(14,119,[183,118])}
-      </svg>
-    );
-    case "nova": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,bg,0)}{R(0,0,W,48,c,0)}
-        <path d={`M0,48 Q55,38 110,48 Q165,58 220,48 L220,0 L0,0Z`} fill="rgba(255,255,255,.12)"/>
-        {R(14,11,80,8,"rgba(255,255,255,.9)",2)}{R(14,23,50,4,"rgba(255,255,255,.58)",1.5)}
-        {[14,58,104].map(x=><rect key={x} x={x} y={35} width={38} height={3.5} rx={8} fill="rgba(255,255,255,.2)"/>)}
-        {R(14,58,38,2.5,ml)}{...lines(14,65,[175,145])}{R(14,80,44,3,c)}{...lines(14,87,[183,165,173])}{R(14,108,44,3,c)}{...lines(14,115,[183,118])}{R(14,142,55,3,sl)}
-      </svg>
-    );
-    case "tidal": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,bg,0)}{R(0,0,W,4,c,0)}{R(0,4,W,38,`${c}12`,0)}
-        {R(14,10,85,8,"#111827",2)}{R(14,23,52,4,c,1.5)}{R(14,35,192,0.5,li,0)}
-        {[40,46,52].map((y,i)=><rect key={y} x={14} y={y} width={[62,52,72][i]} height={2.5} rx={1} fill={ml}/>)}
-        {R(155,37,60,22,"#f8fafc",4)}{[40,46,52].map((y,i)=><rect key={y} x={158} y={y} width={[45,35,50][i]} height={1.8} rx={1} fill="#94a3b8"/>)}
-        {R(14,63,192,1.5,"#e2e8f0",0)}{R(14,73,44,3,c)}{...lines(14,80,[185,165,175])}{R(14,101,44,3,c)}{...lines(14,108,[185,118])}{R(0,151,W,4,c,0)}
-      </svg>
-    );
-    case "horizon": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,"#f8fafc",0)}
-        <defs><linearGradient id="hor" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor={c}/><stop offset="100%" stopColor={`${c}44`}/></linearGradient></defs>
-        {R(0,0,W,3,"url(#hor)",0)}{R(14,16,90,10,"#0f172a",2)}{R(14,30,56,3.5,c,1.5)}
-        {R(155,14,52,36,`${c}10`,6)}<rect x={155} y={14} width={52} height={36} rx={6} fill="none" stroke={`${c}30`} strokeWidth="1"/>
-        {[20,26,32,38].map((y,i)=><rect key={y} x={159} y={y} width={[38,28,42,22][i]} height={1.8} rx={1} fill={`${c}60`}/>)}
-        {[40,46,52].map((y,i)=><rect key={y} x={14} y={y} width={[62,50,70][i]} height={2.5} rx={1} fill={ml}/>)}
-        {R(14,64,192,1,li,0)}{R(14,74,44,3,c)}{...lines(14,81,[185,165,175])}{R(14,102,44,3,c)}{...lines(14,109,[185,118])}{R(0,150,W,2,`${c}55`,0)}
-      </svg>
-    );
-    case "lumina": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,bg,0)}
-        <defs><radialGradient id="lum" cx="50%" cy="0%" r="60%"><stop offset="0%" stopColor={`${c}18`}/><stop offset="100%" stopColor="transparent"/></radialGradient></defs>
-        {R(0,0,W,H,"url(#lum)",0)}{R(0,0,W,55,`${c}08`,0)}
-        {R(13,14,92,10,"#111827",2)}{R(13,28,58,3.5,c,1.5)}
-        <circle cx={195} cy={28} r={22} fill={`${c}10`} stroke={`${c}20`} strokeWidth="1"/>
-        {[40,46,52].map((y,i)=><rect key={y} x={13} y={y} width={[62,50,72][i]} height={2.5} rx={1} fill={ml}/>)}
-        {R(13,64,195,1,li,0)}{R(13,74,44,3,c)}{...lines(13,81,[185,165,175])}{R(13,102,44,3,c)}{...lines(13,109,[185,118])}{R(13,144,55,3,sl)}
-      </svg>
-    );
-    // Executive / Corporate
-    case "obsidian_lite": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,"#f8f7ff",0)}{R(0,0,60,H,`${c}10`,0)}{R(0,0,3,H,c,0)}
-        {R(8,13,47,7,c,1.5)}{R(8,24,34,3,`${c}88`)}
-        {[44,56,68,80,92].map(y=><g key={y}>{R(8,y,20,2,`${c}66`)}{R(8,y+6,46,2,`${c}33`)}</g>)}
-        {R(72,13,32,2.5,ml)}{...lines(72,20,[130,100],li)}{R(72,36,40,3,c)}{...lines(72,43,[138,125,130],li)}{R(72,64,40,3,c)}{...lines(72,71,[138,112,120],li)}{R(72,122,28,2,ml)}{R(72,129,52,3,sl)}
-      </svg>
-    );
-    case "slate": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,bg,0)}{R(13,13,92,9,"#0f172a",1.5)}{R(13,26,55,3,"#64748b")}
-        {R(137,13,70,2.5,"#475569")}{[19,25,31,37].map((y,i)=><rect key={y} x={137} y={y} width={[60,70,55,65][i]} height={2} rx={1} fill="#94a3b8"/>)}
-        {R(13,38,192,1.8,"#0f172a",0)}{R(13,46,72,5,"#f1f5f9",2)}{R(15,47.5,48,1.5,"#64748b",0.5)}
-        {R(13,57,32,2.5,ml)}{...lines(13,64,[188,158])}{R(13,78,2.5,28,c,1)}
-        {[78,84,89,94].map((y,i)=><rect key={y} x={19} y={y} width={i===0?38:[180,158,168][i-1]} height={2.2} rx={1} fill={i===0?c:li}/>)}
-        {R(13,133,30,2,ml)}{R(13,140,52,3,sl)}
-      </svg>
-    );
-    case "architect": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,"#f8fafc",0)}{R(13,13,82,10,"#0f172a",1.5)}{R(13,27,52,3,"#334155")}
-        {R(113,13,94,40,"#0f172a",5)}{[18,24,30,36].map((y,i)=><rect key={y} x={119} y={y} width={[62,52,72,46][i]} height={2} rx={1} fill="rgba(255,255,255,.58)"/>)}
-        {R(13,53,192,1.2,"#e2e8f0",0)}{R(13,60,32,2.5,ml)}{...lines(13,67,[188,158],"#e2e8f0")}
-        {R(13,82,44,3,"#0f172a")}{...lines(13,89,[188,170,175],"#e2e8f0")}{R(13,109,44,3,"#0f172a")}{...lines(13,116,[188,122],"#e2e8f0")}{R(13,136,30,2,ml)}{R(13,143,52,3,sl)}
-      </svg>
-    );
-    case "corporate": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,bg,0)}{R(0,0,W,8,c,0)}{R(0,8,W,44,"#1e3a5f",0)}
-        {R(14,14,85,8,"rgba(255,255,255,.92)",2)}{R(14,26,52,4,"rgba(255,255,255,.6)",1.5)}
-        {R(155,12,60,8,"rgba(255,255,255,.7)",2)}{[18,24,30].map((y,i)=><rect key={y} x={155} y={y} width={[55,40,50][i]} height={2} rx={1} fill="rgba(255,255,255,.5)"/>)}
-        {R(14,58,35,2.5,ml)}{...lines(14,65,[185,155])}{R(14,80,44,3,c)}{...lines(14,87,[185,168,175])}{R(14,108,44,3,c)}{...lines(14,115,[185,118])}{R(0,147,W,8,c,0)}
-      </svg>
-    );
-    case "executive": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,"#f0f4f8",0)}{R(0,0,W,55,c,0)}<circle cx={195} cy={0} r={70} fill="rgba(255,255,255,.07)"/>
-        {R(14,12,85,9,"rgba(255,255,255,.92)",2)}{R(14,25,52,4,"rgba(255,255,255,.6)",1.5)}
-        {[0,38,80].map(ox=><rect key={ox} x={14+ox} y={36} width={32} height={5} rx={10} fill="rgba(255,255,255,.2)" stroke="rgba(255,255,255,.3)" strokeWidth=".5"/>)}
-        {R(14,65,38,2.5,ml)}{...lines(14,72,[175,148])}{R(14,85,44,3,c)}{...lines(14,92,[185,165,175])}{R(14,113,44,3,c)}{...lines(14,120,[185,118])}{R(14,143,32,2,ml)}{R(14,149,55,3,sl)}
-      </svg>
-    );
-    case "titan": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,bg,0)}{R(0,0,8,H,c,0)}{R(18,14,88,10,"#1f2937",2)}{R(18,28,55,4,"#374151",1.5)}
-        {R(18,38,188,1.5,"#e5e7eb",0)}{[44,50,56].map((y,i)=><rect key={y} x={18} y={y} width={[58,48,68][i]} height={2.5} rx={1} fill={ml}/>)}
-        {R(18,66,188,1.5,"#e5e7eb",0)}{R(18,76,44,3,c)}{...lines(18,83,[183,165,174])}{R(18,104,44,3,c)}{...lines(18,111,[183,120])}{R(18,132,32,2,ml)}{R(18,138,55,3,sl)}
-      </svg>
-    );
-    case "oxford": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,"#faf9f7",0)}{R(14,10,192,1.5,c,0)}{R(14,14,192,0.5,c,0)}
-        <text x={110} y={30} textAnchor="middle" fontSize={12} fontWeight="700" fill="#1a1209" fontFamily="Georgia,serif">Jonathan M. Williams</text>
-        <text x={110} y={40} textAnchor="middle" fontSize={5.5} fill={sl} fontFamily="Georgia,serif">Senior Architect & Project Director</text>
-        {R(14,44,192,0.5,c,0)}{R(14,47,192,1.5,c,0)}
-        {[53,58,63].map((y,i)=><rect key={y} x={[14,80,148][i]} y={y} width={60} height={2} rx={1} fill={ml}/>)}
-        {R(14,73,192,0.6,"#c9bc9a",0)}{R(14,82,38,2.5,c)}{...lines(14,89,[185,162,172],"#d5cbb0")}{R(14,108,38,2.5,c)}{...lines(14,115,[185,118],"#d5cbb0")}{R(14,138,192,1.5,c,0)}
-      </svg>
-    );
-    case "summit": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,bg,0)}{R(0,0,W,3,c,0)}{R(14,12,88,10,"#111827",2)}{R(14,26,54,4,c,1.5)}
-        {R(155,10,52,28,c,4)}<text x={181} y={28} textAnchor="middle" fontSize={7} fontWeight="700" fill="white">APPLYING</text>
-        <text x={181} y={37} textAnchor="middle" fontSize={7} fill="rgba(255,255,255,.75)">TO</text>
-        {R(14,40,188,0.7,li,0)}{[46,52,58].map((y,i)=><rect key={y} x={14} y={y} width={[62,52,72][i]} height={2.5} rx={1} fill={ml}/>)}
-        {R(14,68,188,0.7,li,0)}{R(14,78,44,3,c)}{...lines(14,85,[185,165,175])}{R(14,106,44,3,c)}{...lines(14,113,[185,118])}{R(0,152,W,3,c,0)}
-      </svg>
-    );
-    case "presidio": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,"#fafafa",0)}{R(0,0,W,2,c,0)}
-        {R(14,12,95,11,"#111827",2)}{R(14,27,60,3.5,c,1.5)}
-        <rect x={13} y={40} width={192} height={18} rx={4} fill={`${c}08`} stroke={`${c}18`} strokeWidth="1"/>
-        {[44,50].map((y,i)=><rect key={y} x={17} y={y} width={[65,55][i]} height={2} rx={1} fill={ml}/>)}
-        {R(110,44,90,2,ml)}{R(110,50,75,2,ml)}
-        {R(14,66,192,1,li,0)}{R(14,76,44,3,c)}{...lines(14,83,[185,165,174])}{R(14,104,44,3,c)}{...lines(14,111,[185,118])}{R(14,140,192,1,li,0)}{R(14,148,55,3,sl)}
-      </svg>
-    );
-    case "accord": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,bg,0)}
-        <defs><linearGradient id="acc" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={`${c}15`}/><stop offset="100%" stopColor="white"/></linearGradient></defs>
-        {R(0,0,W,65,"url(#acc)",0)}{R(0,0,4,65,c,0)}
-        {R(14,14,90,10,"#111827",2)}{R(14,28,56,3.5,c,1.5)}
-        {[40,46].map((y,i)=><rect key={y} x={14} y={y} width={[60,48][i]} height={2.5} rx={1} fill={ml}/>)}
-        {R(140,14,66,44,`${c}08`,6)}<rect x={140} y={14} width={66} height={44} rx={6} fill="none" stroke={`${c}25`} strokeWidth="1"/>
-        {[20,26,32,38,44].map((y,i)=><rect key={y} x={144} y={y} width={[50,38,55,28,42][i]} height={1.8} rx={1} fill={`${c}50`}/>)}
-        {R(14,68,192,1,li,0)}{R(14,78,44,3,c)}{...lines(14,85,[185,165,175])}{R(14,106,44,3,c)}{...lines(14,113,[185,118])}{R(14,144,55,3,sl)}
-      </svg>
-    );
-    // Minimal
-    case "nordic": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,bg,0)}{R(16,13,62,3,`${c}88`)}{R(16,20,118,10,"#1e1b4b",1.5)}{R(16,34,38,3,c)}
-        {R(16,43,188,0.8,`${c}44`,0)}{[0,62,124].map(ox=><rect key={ox} x={16+ox} y={50} width={56} height={2} rx={1} fill={ml}/>)}
-        {R(16,62,32,2.5,ml)}{...lines(16,69,[188,162])}{R(16,84,44,3,c)}{...lines(16,91,[188,162,177])}{R(16,111,44,3,c)}{...lines(16,118,[188,112])}{R(16,138,30,2,ml)}{R(16,145,52,3,sl)}
-      </svg>
-    );
-    case "pearl": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,bg,0)}{R(13,13,97,10,"#111827",1.5)}{R(13,27,60,3.5,c)}{R(13,36,188,0.6,li,0)}
-        {[42,48].map((y,i)=><rect key={y} x={13} y={y} width={[62,54][i]} height={2} rx={1} fill={ml}/>)}
-        {R(92,42,57,2,ml)}{R(155,42,46,2,ml)}{R(13,58,188,0.6,li,0)}{R(13,64,32,2,ml)}
-        {...lines(13,71,[188,158])}{R(13,87,44,3,c)}{...lines(13,94,[188,170,176])}{R(13,115,44,3,c)}{...lines(13,122,[188,122])}{R(13,140,28,2,ml)}{R(13,147,52,3,sl)}
-      </svg>
-    );
-    case "minimal": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,"#fafafa",0)}{R(16,16,110,11,"#111",1)}{R(16,31,70,3,"#666",1)}
-        {R(16,40,188,0.5,"#ddd",0)}{[46,51,56,61].map((y,i)=><rect key={y} x={16} y={y} width={[80,65,90,55][i]} height={2} rx={1} fill="#aaa"/>)}
-        {R(16,73,188,0.5,"#ddd",0)}{R(16,82,35,2,"#999",1)}{...lines(16,89,[188,160],"#ddd")}{R(16,104,40,2.5,c,1)}{...lines(16,111,[188,165,175],"#ddd")}{R(16,131,40,2.5,c,1)}{...lines(16,138,[188,120],"#ddd")}{R(16,152,188,0.5,"#ddd",0)}
-      </svg>
-    );
-    case "zen": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,"#fafaf9",0)}{R(14,18,95,10,"#1c1917",2)}{R(14,32,58,3.5,"#57534e",1.5)}
-        {R(14,42,192,0.5,"#d6d3d1",0)}{[48,54,60,66].map((y,i)=><rect key={y} x={14} y={y} width={[62,52,72,46][i]} height={2} rx={1} fill="#a8a29e"/>)}
-        {R(14,74,192,0.5,"#d6d3d1",0)}{R(14,82,38,2.5,c)}{...lines(14,89,[183,162,172],"#d6d3d1")}{R(14,110,38,2.5,c)}{...lines(14,117,[183,118],"#d6d3d1")}{R(14,142,192,0.5,"#d6d3d1",0)}
-      </svg>
-    );
-    case "ivory": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,"#fefce8",0)}{R(13,13,5,130,c,2.5)}{R(23,13,90,10,"#1c1917",2)}{R(23,27,56,3.5,"#78350f",1.5)}
-        {R(23,36,188,0.8,"#fde68a",0)}{[42,48,54].map((y,i)=><rect key={y} x={23} y={y} width={[62,54,74][i]} height={2} rx={1} fill="#92400e"/>)}
-        {R(23,64,32,2.5,ml)}{...lines(23,71,[178,148],"#e7e5e4")}{R(23,86,44,3,c)}{...lines(23,93,[178,162,170],"#e7e5e4")}{R(23,113,44,3,c)}{...lines(23,120,[178,114],"#e7e5e4")}{R(23,139,28,2,ml)}{R(23,146,52,3,"#1c1917")}
-      </svg>
-    );
-    case "paper": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,"#fffef0",0)}{R(14,14,4,127,"#e5e0c8",2)}{R(38,0,1,H,"#e5dcc8",0)}
-        {R(46,14,88,9,"#1a1209",2)}{R(46,27,54,3.5,"#4a4a4a",1.5)}{R(14,42,192,0.5,"#d0ccb0",0)}
-        {[48,54,60].map((y,i)=><rect key={y} x={46} y={y} width={[62,52,72][i]} height={2} rx={1} fill="#8a8070"/>)}
-        {R(46,76,42,3,c)}{...lines(46,83,[168,148,156],"#d0ccb0")}{R(46,104,42,3,c)}{...lines(46,111,[168,108],"#d0ccb0")}{R(46,140,32,2,"#9a9080",1)}
-      </svg>
-    );
-    case "serif": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,bg,0)}{R(13,13,192,0.8,"#1e293b",0)}
-        <text x={110} y={30} textAnchor="middle" fontSize={13} fontWeight="800" fill="#1e293b" fontFamily="Georgia,serif">Alexander Johnson</text>
-        <text x={110} y={40} textAnchor="middle" fontSize={5.5} fill={sl} fontFamily="Georgia,serif">Senior Product Designer</text>
-        {R(13,45,192,0.8,"#1e293b",0)}{[14,80,150].map((x,i)=><rect key={x} x={x} y={51} width={[60,64,52][i]} height={2} rx={1} fill={c}/>)}
-        {R(13,59,192,0.5,li,0)}{R(13,65,32,2.5,ml)}{...lines(13,72,[188,158])}{R(13,87,42,3,c)}{...lines(13,94,[188,170,176])}{R(13,114,42,3,c)}{...lines(13,121,[188,122])}{R(13,149,192,0.8,li,0)}
-      </svg>
-    );
-    case "editorial": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,bg,0)}{R(0,0,W,4,c,0)}{R(14,11,110,11,"#1e293b",2)}{R(14,26,62,3.5,c,1.5)}
-        {R(14,35,188,1.5,"#334155",0)}{[40,46,52].map((y,i)=><rect key={y} x={14} y={y} width={[62,52,72][i]} height={2.5} rx={1} fill={ml}/>)}
-        {R(155,38,52,22,`${c}1a`,2)}{[42,48,54,60].map((y,i)=><rect key={y} x={158} y={y} width={[38,28,44,22][i]} height={1.5} rx={0.5} fill="#94a3b8"/>)}
-        {R(14,62,188,1.5,"#e2e8f0",0)}{R(14,72,44,3,c)}{...lines(14,79,[185,165,175])}{R(14,100,44,3,c)}{...lines(14,107,[185,118])}{R(0,150,W,4,c,0)}
-      </svg>
-    );
-    case "linen": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,"#faf8f5",0)}
-        {R(0,0,W,H,"none",0)}
-        {R(14,16,3,120,`${c}40`,2)}
-        {R(21,16,92,11,"#1c1917",2)}{R(21,31,58,3.5,c,1.5)}
-        {[40,46,52].map((y,i)=><rect key={y} x={21} y={y} width={[62,52,72][i]} height={2.2} rx={1} fill="#a8a29e"/>)}
-        {R(21,62,185,0.6,"#d6d3d1",0)}{R(21,72,40,2.5,c)}{...lines(21,79,[183,162,172],"#e7e5e4")}{R(21,100,40,2.5,c)}{...lines(21,107,[183,118],"#e7e5e4")}{R(21,140,50,3,"#57534e")}
-      </svg>
-    );
-    case "parchment": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,"#fdf8ed",0)}
-        {R(14,10,192,2,`${c}66`,0)}{R(14,14,192,0.5,`${c}33`,0)}
-        <text x={110} y={34} textAnchor="middle" fontSize={14} fontWeight="700" fill="#2c1a0e" fontFamily="Georgia,serif">Eleanor R. Ashworth</text>
-        <text x={110} y={45} textAnchor="middle" fontSize={5.5} fill="#8a7060" fontFamily="Georgia,serif">Senior Creative Director</text>
-        {R(14,50,192,0.5,`${c}33`,0)}{R(14,54,192,2,`${c}66`,0)}
-        {[60,65,70].map((y,i)=><rect key={y} x={[14,80,150][i%3]} y={y} width={60} height={1.8} rx={1} fill="#8a7060"/>)}
-        {R(14,78,192,0.5,"#d4c9a8",0)}{R(14,88,40,2.5,c)}{...lines(14,95,[185,162,172],"#d4c9a8")}{R(14,116,40,2.5,c)}{...lines(14,123,[185,118],"#d4c9a8")}{R(14,148,192,2,`${c}44`,0)}
-      </svg>
-    );
-    // Creative
-    case "designer": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,"#faf5ff",0)}{R(0,0,70,H,`${c}12`,0)}{R(0,0,2,H,c,0)}
-        <circle cx={35} cy={70} r={25} fill={ca} stroke={cb} strokeWidth="1"/>
-        <text x={35} y={74} textAnchor="middle" fontSize={14} fill={`${c}cc`}>✦</text>
-        {R(8,13,52,8,c,1.5)}{R(8,25,36,2.5,`${c}b0`)}{R(80,13,77,9,"#111827",1.5)}{R(80,26,50,2.5,"#6b7280")}
-        {R(80,75,50,3,c)}{...lines(80,82,[130,118,124])}{R(80,107,50,3,c)}{...lines(80,114,[130,90])}
-      </svg>
-    );
-    case "motion": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        <defs><linearGradient id="mt" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor={c}/><stop offset="100%" stopColor="#f59e0b"/></linearGradient></defs>
-        {R(0,0,W,H,bg,0)}{R(0,0,W,5.5,"url(#mt)",0)}{R(13,14,94,11,"#111827",1.5)}{R(13,29,62,3.5,c)}
-        {R(13,38,188,0.6,"#fce7f3",0)}{[44,50,56].map((y,i)=><rect key={y} x={13} y={y} width={[57,50,66][i]} height={4} rx={10} fill={ca} stroke={cb} strokeWidth=".7"/>)}
-        {R(13,67,32,2.5,ml)}{...lines(13,74,[185,155])}{R(13,89,44,3,c)}{...lines(13,96,[185,168,175])}{R(13,116,44,3,c)}{...lines(13,123,[185,118])}{R(0,151,W,4,"url(#mt)",0)}
-      </svg>
-    );
-    case "brushstroke": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,"#fefefe",0)}
-        <path d="M0,44 Q55,34 110,44 Q165,54 220,44 L220,0 L0,0Z" fill={c}/>
-        <path d="M0,50 Q55,40 110,50 Q165,60 220,50 L220,44 Q165,54 110,44 Q55,34 0,44Z" fill={c} opacity=".3"/>
-        {R(14,11,85,9,"rgba(255,255,255,.92)",2)}{R(14,24,52,4,"rgba(255,255,255,.65)",1.5)}
-        {R(14,62,38,2.5,ml)}{...lines(14,69,[185,160])}{R(14,84,44,3,c)}{...lines(14,91,[185,168,175])}{R(14,112,44,3,c)}{...lines(14,119,[185,118])}{R(14,143,32,2,ml)}
-      </svg>
-    );
-    case "studio": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,"#f8f5ff",0)}{R(0,0,W,58,`${c}10`,0)}
-        <defs><linearGradient id="std" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor={c}/><stop offset="100%" stopColor={`${c}44`}/></linearGradient></defs>
-        {R(0,0,W,3,"url(#std)",0)}{R(14,12,88,10,"#1e1b4b",2)}{R(14,26,54,4,c,1.5)}
-        {[34,40,46].map((y,i)=><rect key={y} x={14} y={y} width={[50,44,60][i]} height={4} rx={8} fill={ca} stroke={cb} strokeWidth=".7"/>)}
-        {R(14,60,188,0.6,li,0)}{R(14,70,42,2.5,c)}{...lines(14,77,[185,165,175])}{R(14,100,42,2.5,c)}{...lines(14,107,[185,118])}{R(14,148,55,3,"#1e1b4b")}
-      </svg>
-    );
-    case "folio": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,bg,0)}{R(0,0,W,H,`${c}08`,0)}{R(14,14,55,55,`${c}22`,8)}
-        <text x={41} y={47} textAnchor="middle" fontSize={20} fill={c}>✦</text>
-        {R(76,14,130,10,"#111827",2)}{R(76,28,80,4,"#374151",1.5)}{R(76,36,110,2.5,ml)}
-        {[41,47].map((y,i)=><rect key={y} x={76} y={y} width={[90,70][i]} height={2} rx={1} fill={ml}/>)}
-        {R(14,76,192,1.2,li,0)}{R(14,84,38,2.5,c)}{...lines(14,91,[185,165,175])}{R(14,112,38,2.5,c)}{...lines(14,119,[185,118])}{R(14,143,32,2,ml)}{R(14,149,55,3,sl)}
-      </svg>
-    );
-    case "artboard": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,"#f4f3f8",0)}{R(12,12,196,131,bg,6)}
-        <rect x={12} y={12} width={196} height={131} rx={6} fill="none" stroke={`${c}40`} strokeWidth={1.5} strokeDasharray="4,3"/>
-        {R(12,12,196,3,c,0)}{R(14,20,88,8,"#111827",1.5)}{R(14,32,54,3.5,c,1.5)}
-        {[39,45,51].map((y,i)=><rect key={y} x={14} y={y} width={[55,44,62][i]} height={2.5} rx={1} fill={ml}/>)}
-        {R(14,62,192,0.7,li,0)}{R(14,72,38,2.5,c)}{...lines(14,79,[182,162,170])}{R(14,100,38,2.5,c)}{...lines(14,107,[182,115])}{R(14,132,30,2,ml)}{R(14,138,52,3,sl)}
-      </svg>
-    );
-    case "vortex": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,bg,0)}<polygon points="0,0 220,0 220,55 0,75" fill={c}/>
-        <polygon points="0,0 110,0 0,55" fill="rgba(255,255,255,.12)"/>
-        {R(14,11,82,8,"rgba(255,255,255,.9)",2)}{R(14,23,50,4,"rgba(255,255,255,.62)",1.5)}
-        {[14,56,104].map(x=><rect key={x} x={x} y={35} width={36} height={3.5} rx={8} fill="rgba(255,255,255,.2)"/>)}
-        {R(14,84,38,2.5,ml)}{...lines(14,91,[182,162])}{R(14,106,44,3,c)}{...lines(14,113,[183,165,173])}{R(14,134,44,3,c)}{...lines(14,141,[183,118])}
-      </svg>
-    );
-    case "palette": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,"#fff7f5",0)}
-        {[0,1,2,3].map(i=><rect key={i} x={0} y={i*40} width={5} height={38} rx={2} fill={[c,`${c}cc`,`${c}88`,`${c}44`][i]}/>)}
-        {R(14,14,90,10,"#1c0a06",2)}{R(14,28,56,3.5,c,1.5)}
-        {[38,44,50].map((y,i)=><rect key={y} x={14} y={y} width={[62,52,72][i]} height={2.5} rx={1} fill="#a8a29e"/>)}
-        {R(14,62,192,1,li,0)}{R(14,72,44,3,c)}{...lines(14,79,[185,165,175])}{R(14,100,44,3,c)}{...lines(14,107,[185,118])}{R(14,140,55,3,"#1c0a06")}
-      </svg>
-    );
-    case "frame": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,"#fafafa",0)}
-        <rect x={6} y={6} width={208} height={143} rx={8} fill="none" stroke={c} strokeWidth="2"/>
-        <rect x={10} y={10} width={200} height={135} rx={6} fill="none" stroke={`${c}30`} strokeWidth="1"/>
-        {R(14,18,90,10,"#111827",2)}{R(14,32,56,3.5,c,1.5)}
-        {[42,48,54].map((y,i)=><rect key={y} x={14} y={y} width={[62,52,72][i]} height={2.5} rx={1} fill={ml}/>)}
-        {R(14,66,192,0.8,li,0)}{R(14,76,44,3,c)}{...lines(14,83,[185,165,175])}{R(14,104,44,3,c)}{...lines(14,111,[185,118])}{R(14,140,55,3,sl)}
-      </svg>
-    );
-    case "mosaic": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,bg,0)}
-        {[[0,0],[36,0],[72,0],[0,36],[36,36],[72,36],[0,72],[36,72],[72,72]].map(([x,y],i)=>(
-          <rect key={i} x={x} y={y} width={34} height={34} rx={2} fill={i%3===0?`${c}15`:i%3===1?`${c}08`:"white"} stroke={`${c}12`} strokeWidth=".5"/>
-        ))}
-        {R(14,18,58,8,"white",2)}{R(14,18,58,8,`${c}18`,2)}<text x={43} y={26} textAnchor="middle" fontSize={8} fontWeight="700" fill={c}>Mosaic</text>
-        {R(110,14,100,10,"#111827",1.5)}{R(110,28,65,3,c,1.5)}
-        {[38,44,50].map((y,i)=><rect key={y} x={110} y={y} width={[62,50,72][i]} height={2.5} rx={1} fill={ml}/>)}
-        {R(110,62,100,0.8,li,0)}{R(110,72,40,2.5,c)}{...lines(110,79,[100,85,92])}{R(110,102,40,2.5,c)}{...lines(110,109,[100,68])}
-      </svg>
-    );
-    // Premium
-    case "blaze": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        <defs><linearGradient id="blz" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor={c}/><stop offset="100%" stopColor="#ea580c"/></linearGradient></defs>
-        {R(0,0,W,H,bg,0)}{R(0,0,W,52,"url(#blz)",0)}<polygon points="140,0 220,0 220,52" fill="rgba(255,255,255,.14)"/>
-        {R(13,11,90,9,"rgba(255,255,255,.92)",2)}{R(13,24,55,4,"rgba(255,255,255,.6)",1.5)}
-        {[0,42,84].map(ox=><rect key={ox} x={13+ox} y={35} width={36} height={4} rx={8} fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.28)" strokeWidth=".6"/>)}
-        {R(13,62,38,2.5,ml)}{...lines(13,69,[175,148])}{R(13,82,44,3,c)}{...lines(13,89,[182,162,173])}{R(13,110,44,3,c)}{...lines(13,117,[182,118])}{R(13,141,32,2,ml)}{R(13,147,55,3,sl)}
-      </svg>
-    );
-    case "radiant": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,bg,0)}
-        <defs><radialGradient id="rad" cx="100%" cy="0%" r="80%"><stop offset="0%" stopColor={`${c}20`}/><stop offset="100%" stopColor="transparent"/></radialGradient></defs>
-        {R(0,0,W,H,"url(#rad)",0)}{R(0,0,5,H,c,0)}{R(5,0,W-5,H,`${c}06`,0)}
-        {R(18,14,88,10,"#1e1b4b",2)}{R(18,28,54,4,c,1.5)}
-        {[38,44,50].map((y,i)=><rect key={y} x={18} y={y} width={[60,50,70][i]} height={2.5} rx={1} fill={ml}/>)}
-        <circle cx={200} cy={20} r={35} fill={`${c}10`} stroke={`${c}18`} strokeWidth="1"/>
-        {R(18,64,192,1,li,0)}{R(18,74,44,3,c)}{...lines(18,81,[183,165,174])}{R(18,104,44,3,c)}{...lines(18,111,[183,120])}{R(18,142,55,3,sl)}
-      </svg>
-    );
-    case "solstice": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        <defs><linearGradient id="sol" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={`${c}18`}/><stop offset="100%" stopColor="white"/></linearGradient></defs>
-        {R(0,0,W,H,bg,0)}{R(0,0,W,68,"url(#sol)",0)}{R(0,0,W,3,c,0)}
-        {R(14,12,92,10,"#0f172a",2)}{R(14,26,58,3.5,c,1.5)}
-        {[36,42,48].map((y,i)=><rect key={y} x={14} y={y} width={[62,52,72][i]} height={2.5} rx={1} fill={ml}/>)}
-        {R(155,10,52,50,bg,6)}<rect x={155} y={10} width={52} height={50} rx={6} fill="none" stroke={`${c}30`} strokeWidth="1.5"/>
-        {[16,22,28,34,40,46].map((y,i)=><rect key={y} x={159} y={y} width={[40,30,44,24,38,20][i]} height={1.8} rx={1} fill={`${c}50`}/>)}
-        {R(14,68,192,1.5,li,0)}{R(14,78,44,3,c)}{...lines(14,85,[185,165,174])}{R(14,106,44,3,c)}{...lines(14,113,[185,118])}{R(14,144,55,3,sl)}{R(0,152,W,3,c,0)}
-      </svg>
-    );
-    case "meridian": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,"#f8fafc",0)}
-        {R(0,0,W,60,bg,0)}{R(0,0,W,2,c,0)}{R(0,60,W,2,c,0)}
-        {R(14,10,90,10,"#0f172a",2)}{R(14,24,56,3.5,c,1.5)}
-        {[34,40,46].map((y,i)=><rect key={y} x={14} y={y} width={[62,52,72][i]} height={2.5} rx={1} fill={ml}/>)}
-        {R(155,8,60,50,`${c}10`,6)}<rect x={155} y={8} width={60} height={50} rx={6} fill="none" stroke={`${c}20`} strokeWidth="1"/>
-        {[14,20,26,32,38,44].map((y,i)=><rect key={y} x={159} y={y} width={[44,32,48,26,40,20][i]} height={1.8} rx={1} fill={`${c}55`}/>)}
-        {R(14,72,44,3,c)}{...lines(14,79,[185,165,174])}{R(14,104,44,3,c)}{...lines(14,111,[185,118])}{R(14,140,55,3,sl)}
-      </svg>
-    );
-    case "pinnacle": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,bg,0)}
-        <defs><linearGradient id="pin" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor={c}/><stop offset="50%" stopColor={`${c}dd`}/><stop offset="100%" stopColor={`${c}88`}/></linearGradient></defs>
-        {R(0,0,W,58,"url(#pin)",0)}<polygon points="0,58 220,40 220,58" fill="rgba(255,255,255,.12)"/>
-        <circle cx={190} cy={10} r={45} fill="rgba(255,255,255,.08)"/>
-        {R(14,11,88,9,"rgba(255,255,255,.92)",2)}{R(14,24,54,4,"rgba(255,255,255,.65)",1.5)}
-        {[0,40,82].map(ox=><rect key={ox} x={14+ox} y={36} width={34} height={4} rx={8} fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.28)" strokeWidth=".6"/>)}
-        {R(14,68,38,2.5,ml)}{...lines(14,75,[175,148])}{R(14,88,44,3,c)}{...lines(14,95,[183,165,173])}{R(14,116,44,3,c)}{...lines(14,123,[183,118])}{R(14,148,55,3,sl)}
-      </svg>
-    );
-    // Tech
-    case "circuit": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,"#f8faff",0)}
-        {[0,1,2,3,4,5,6].map(i=><line key={i} x1={0} y1={i*26} x2={W} y2={i*26} stroke={`${c}08`} strokeWidth="1"/>)}
-        {[0,1,2,3,4,5,6,7].map(i=><line key={i} x1={i*30} y1={0} x2={i*30} y2={H} stroke={`${c}08`} strokeWidth="1"/>)}
-        {R(0,0,4,H,c,0)}{R(14,14,90,10,"#0f172a",2)}{R(14,28,56,3.5,c,1.5)}
-        {[38,44,50].map((y,i)=><rect key={y} x={14} y={y} width={[60,50,70][i]} height={3} rx={1} fill={ca} stroke={cb} strokeWidth=".6"/>)}
-        {R(14,62,192,0.8,`${c}30`,0)}{R(14,72,44,2.5,c)}{...lines(14,79,[183,162,172])}{R(14,102,44,2.5,c)}{...lines(14,109,[183,118])}{R(14,148,55,3,"#0f172a")}
-      </svg>
-    );
-    case "blueprint": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,"#eff6ff",0)}
-        {[0,1,2,3,4,5].map(i=><line key={i} x1={0} y1={i*30} x2={W} y2={i*30} stroke="#bfdbfe" strokeWidth=".8"/>)}
-        {[0,1,2,3,4,5,6,7].map(i=><line key={i} x1={i*30} y1={0} x2={i*30} y2={H} stroke="#bfdbfe" strokeWidth=".8"/>)}
-        {R(14,14,92,10,"#1e3a8a",2)}{R(14,28,58,3.5,c,1.5)}
-        {[38,44,50].map((y,i)=><rect key={y} x={14} y={y} width={[62,50,72][i]} height={2.5} rx={1} fill="#3b82f6"/>)}
-        {R(14,62,192,1,"#93c5fd",0)}{R(14,72,44,2.5,c)}{...lines(14,79,[183,162,172],"#93c5fd")}{R(14,102,44,2.5,c)}{...lines(14,109,[183,118],"#93c5fd")}{R(14,148,55,3,"#1e3a8a")}
-      </svg>
-    );
-    case "axiom": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,bg,0)}{R(0,0,W,4,c,0)}
-        <defs><linearGradient id="axm" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor={`${c}15`}/><stop offset="100%" stopColor="white"/></linearGradient></defs>
-        {R(0,4,W,52,"url(#axm)",0)}{R(14,12,90,10,"#0f172a",2)}{R(14,26,56,3.5,c,1.5)}
-        {[36,42,48].map((y,i)=><rect key={y} x={14} y={y} width={[62,50,72][i]} height={2.5} rx={1} fill={ml}/>)}
-        {R(14,60,192,2,`${c}20`,0)}{R(14,68,44,3,c)}{...lines(14,75,[185,165,175])}{R(14,96,44,3,c)}{...lines(14,103,[185,118])}{R(14,138,192,2,`${c}20`,0)}{R(14,148,55,3,sl)}
-      </svg>
-    );
-    case "signal": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,bg,0)}
-        {[20,30,40,50].map((r,i)=><circle key={i} cx={210} cy={0} r={r} fill="none" stroke={`${c}${["18","12","0c","06"][i]}`} strokeWidth="1.5"/>)}
-        {R(14,14,88,10,"#0f172a",2)}{R(14,28,54,4,c,1.5)}
-        {[38,44,50].map((y,i)=><rect key={y} x={14} y={y} width={[60,50,70][i]} height={2.5} rx={1} fill={ml}/>)}
-        {R(14,62,192,1,li,0)}{R(14,72,44,3,c)}{...lines(14,79,[185,165,175])}{R(14,100,44,3,c)}{...lines(14,107,[185,118])}{R(14,148,55,3,sl)}
-      </svg>
-    );
-    case "quantum": return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,"#f8fafc",0)}
-        <defs><linearGradient id="qnt" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor={`${c}20`}/><stop offset="100%" stopColor={`${c}05`}/></linearGradient></defs>
-        {R(0,0,W,62,"url(#qnt)",0)}{R(0,0,3,62,c,0)}{R(3,0,W-3,3,c,0)}
-        {R(14,12,90,10,"#0f172a",2)}{R(14,26,56,3.5,c,1.5)}
-        {[36,42,48].map((y,i)=><rect key={y} x={14} y={y} width={[62,50,72][i]} height={2.5} rx={1} fill={ml}/>)}
-        {R(14,64,192,1.5,li,0)}{R(14,74,44,3,c)}{...lines(14,81,[185,165,175])}{R(14,102,44,3,c)}{...lines(14,109,[185,118])}{R(14,144,55,3,sl)}{R(0,152,W,3,`${c}40`,0)}
-      </svg>
-    );
-    default: return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        {R(0,0,W,H,"#f3f4f6",0)}{R(14,14,88,9,"#374151",1.5)}{R(14,27,55,3,c)}
-        {R(14,80,44,3,c)}{...lines(14,87,[185,165,175])}{R(14,108,44,3,c)}{...lines(14,115,[185,118])}
-      </svg>
-    );
-  }
-} 
+}
 
 /* ─────────────────────────────────────────────────────────────
-   HTML BUILDER (unchanged core, added new templates)
+   HTML BUILDER (same as before — not changed)
 ───────────────────────────────────────────────────────────────*/
 function buildHTML(id: string, d: CLData): string {
-  const fontDef = FONT_FAMILIES.find((f) => f.id === d.fontFamily) || FONT_FAMILIES[0];
+  const fontDef =
+    FONT_FAMILIES.find((f) => f.id === d.fontFamily) || FONT_FAMILIES[0];
   const fontStack = `'${d.fontFamily}',${fontDef.style}`;
   const c = d.accentColor || "#6366f1";
   const sig = d.personal.signature || "Sincerely";
@@ -12475,67 +13929,92 @@ function buildHTML(id: string, d: CLData): string {
   const mgr = d.company.hiringManager || "Hiring Manager";
   const loc = [d.company.city, d.company.state].filter(Boolean).join(", ");
   const dt = d.letterDate
-    ? new Date(d.letterDate + "T12:00:00").toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
-    : new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+    ? new Date(d.letterDate + "T12:00:00").toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : new Date().toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
 
   const links: string[] = [
-    d.personal.email ? `<a href="mailto:${d.personal.email}" style="color:inherit;text-decoration:none">${d.personal.email}</a>` : "",
-    d.personal.phone ? `<a href="tel:${d.personal.phone}" style="color:inherit;text-decoration:none">${d.personal.phone}</a>` : "",
+    d.personal.email
+      ? `<a href="mailto:${d.personal.email}"    style="color:inherit;text-decoration:none">${d.personal.email}</a>`
+      : "",
+    d.personal.phone
+      ? `<a href="tel:${d.personal.phone}"        style="color:inherit;text-decoration:none">${d.personal.phone}</a>`
+      : "",
     d.personal.location ? `<span>${d.personal.location}</span>` : "",
-    d.personal.linkedin ? `<a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" target="_blank" style="color:inherit;text-decoration:none">${d.personal.linkedin}</a>` : "",
-    d.personal.github ? `<a href="https://${d.personal.github.replace(/^https?:\/\//, "")}" target="_blank" style="color:inherit;text-decoration:none">${d.personal.github}</a>` : "",
-    d.personal.website ? `<a href="https://${d.personal.website.replace(/^https?:\/\//, "")}" target="_blank" style="color:inherit;text-decoration:none">${d.personal.website}</a>` : "",
+    d.personal.linkedin
+      ? `<a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" target="_blank" style="color:inherit;text-decoration:none">${d.personal.linkedin}</a>`
+      : "",
+    d.personal.github
+      ? `<a href="https://${d.personal.github.replace(/^https?:\/\//, "")}"   target="_blank" style="color:inherit;text-decoration:none">${d.personal.github}</a>`
+      : "",
+    d.personal.website
+      ? `<a href="https://${d.personal.website.replace(/^https?:\/\//, "")}"  target="_blank" style="color:inherit;text-decoration:none">${d.personal.website}</a>`
+      : "",
   ].filter(Boolean);
 
   const secRows = (border = false) =>
-    d.sections.filter((s) => s.content.trim()).map((s) => `
-      <div style="margin-bottom:24px${border ? `;padding-left:14px;border-left:3px solid ${c}` : ""}">
-        <h4 style="font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:${c};margin:0 0 8px">${s.title}</h4>
-        <p style="line-height:1.85;margin:0;font-size:13.5px">${s.content.replace(/\n/g, "<br>")}</p>
-      </div>`).join("");
+    d.sections
+      .filter((s) => s.content.trim())
+      .map(
+        (s) => `
+    <div style="margin-bottom:24px${border ? `;padding-left:14px;border-left:3px solid ${c}` : ""}">
+      <h4 style="font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:${c};margin:0 0 8px">${s.title}</h4>
+      <p style="line-height:1.85;margin:0;font-size:13.5px">${s.content.replace(/\n/g, "<br>")}</p>
+    </div>`,
+      )
+      .join("");
 
-  const achBlock = () => !d.achievements.length ? "" : `
-    <div style="margin:18px 0 22px">
-      <h4 style="font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:${c};margin:0 0 10px">Key Achievements</h4>
-      ${d.achievements.map((a) => `<div style="display:flex;gap:9px;margin-bottom:7px;font-size:13px"><span style="color:${c};flex-shrink:0;line-height:1.5">›</span>${a}</div>`).join("")}
-    </div>`;
-
-  const skillBlock = () => !d.skills.length ? "" : `
-    <div style="margin:16px 0 22px">
-      <h4 style="font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:${c};margin:0 0 10px">Core Skills</h4>
-      <div style="display:flex;flex-wrap:wrap;gap:7px">${d.skills.map((s) => `<span style="padding:4px 12px;background:rgba(0,0,0,.04);border:1px solid rgba(0,0,0,.08);border-radius:30px;font-size:12px">${s}</span>`).join("")}</div>
-    </div>`;
-
-  const notesBlock = d.notes ? `<div style="margin:14px 0;padding:12px 16px;background:rgba(0,0,0,.03);border-left:3px solid #e2e8f0;font-size:12.5px;line-height:1.7;color:#64748b">${d.notes}</div>` : "";
-  const summaryBlock = d.personal.summary ? `<div style="margin-bottom:20px;padding:14px 16px;background:rgba(0,0,0,.03);border-radius:8px;font-size:13px;line-height:1.75;color:#4a5568;font-style:italic">"${d.personal.summary}"</div>` : "";
-  const referralNote = d.company.referral ? `<div style="margin-bottom:14px;font-size:13px;color:#6b7280">Referred by: <strong style="color:#374151">${d.company.referral}</strong></div>` : "";
-
+  const achBlock = () =>
+    !d.achievements.length
+      ? ""
+      : `<div style="margin:18px 0 22px"><h4 style="font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:${c};margin:0 0 10px">Key Achievements</h4>${d.achievements.map((a) => `<div style="display:flex;gap:9px;margin-bottom:7px;font-size:13px"><span style="color:${c};flex-shrink:0;line-height:1.5">›</span>${a}</div>`).join("")}</div>`;
+  const skillBlock = () =>
+    !d.skills.length
+      ? ""
+      : `<div style="margin:16px 0 22px"><h4 style="font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:${c};margin:0 0 10px">Core Skills</h4><div style="display:flex;flex-wrap:wrap;gap:7px">${d.skills.map((s) => `<span style="padding:4px 12px;background:rgba(0,0,0,.04);border:1px solid rgba(0,0,0,.08);border-radius:30px;font-size:12px">${s}</span>`).join("")}</div></div>`;
+  const notesBlock = d.notes
+    ? `<div style="margin:14px 0;padding:12px 16px;background:rgba(0,0,0,.03);border-left:3px solid #e2e8f0;font-size:12.5px;line-height:1.7;color:#64748b">${d.notes}</div>`
+    : "";
+  const summaryBlock = d.personal.summary
+    ? `<div style="margin-bottom:20px;padding:14px 16px;background:rgba(0,0,0,.03);border-radius:8px;font-size:13px;line-height:1.75;color:#4a5568;font-style:italic">"${d.personal.summary}"</div>`
+    : "";
+  const referralNote = d.company.referral
+    ? `<div style="margin-bottom:14px;font-size:13px;color:#6b7280">Referred by: <strong style="color:#374151">${d.company.referral}</strong></div>`
+    : "";
   const addrBlock = `<div style="margin-bottom:20px;font-size:13px;line-height:1.9;color:#4a5568"><strong style="color:#1a202c">${mgr}${d.company.hiringManagerTitle ? `, ${d.company.hiringManagerTitle}` : ""}</strong><br>${d.company.name}${loc ? `<br>${loc}` : ""}</div>`;
-  const greet = () => `<div style="font-size:16px;font-weight:600;margin-bottom:22px;color:#111827">Dear ${mgr},</div>`;
-
-  const closingDiv = (col = c) => `
-    <div style="margin-top:36px;font-size:13.5px">
-      ${sig},<br><br>
-      <strong style="font-size:15px">${nm}</strong>
-      ${d.personal.email ? `<br><a href="mailto:${d.personal.email}" style="font-size:12px;color:${col};text-decoration:none">${d.personal.email}</a>` : ""}
-      ${d.personal.phone ? `<br><span style="font-size:12px;color:#64748b">${d.personal.phone}</span>` : ""}
-      ${d.personal.linkedin ? `<br><a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" style="font-size:11.5px;color:${col};text-decoration:none" target="_blank">${d.personal.linkedin}</a>` : ""}
-    </div>`;
-
+  const greet = () =>
+    `<div style="font-size:16px;font-weight:600;margin-bottom:22px;color:#111827">Dear ${mgr},</div>`;
+  const closingDiv = (col = c) =>
+    `<div style="margin-top:36px;font-size:13.5px">${sig},<br><br><strong style="font-size:15px">${nm}</strong>${d.personal.email ? `<br><a href="mailto:${d.personal.email}" style="font-size:12px;color:${col};text-decoration:none">${d.personal.email}</a>` : ""}${d.personal.phone ? `<br><span style="font-size:12px;color:#64748b">${d.personal.phone}</span>` : ""}${d.personal.linkedin ? `<br><a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" style="font-size:11.5px;color:${col};text-decoration:none" target="_blank">${d.personal.linkedin}</a>` : ""}</div>`;
   const baseCSS = (extra = "") =>
     `@import url('${fontDef.url}');*{margin:0;padding:0;box-sizing:border-box}html,body{background:#ffffff}body{font-family:${fontStack};color:#374151;background:#ffffff;-webkit-print-color-adjust:exact;print-color-adjust:exact}${extra}`;
   const baseHTML = (css: string, body: string) =>
     `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>${css}</style></head><body>${body}</body></html>`;
-
   const chipsHTML = `<div style="display:flex;flex-wrap:wrap;gap:7px">${links.map((l) => `<span style="padding:5px 14px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.32);border-radius:40px;font-size:11.5px;color:white">${l}</span>`).join("")}</div>`;
-
   const standardBody = (accent: string, border = false) =>
     `<div style="font-size:12.5px;color:#9ca3af;margin-bottom:22px">${dt}</div>${addrBlock}${referralNote}${greet()}${summaryBlock}${secRows(border)}${achBlock()}${skillBlock()}${notesBlock}${closingDiv(accent)}`;
-
   const headerChipStyle = `.pg{max-width:860px;margin:0 auto;background:#fff}.hdr{padding:52px 56px 44px;color:white;position:relative;overflow:hidden}.nm{font-size:38px;font-weight:700;letter-spacing:-1.5px;margin-bottom:5px;position:relative}.rl{font-size:14px;opacity:.85;margin-bottom:26px;position:relative}.chips{display:flex;flex-wrap:wrap;gap:7px;position:relative}.chip{padding:5px 14px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.32);border-radius:40px;font-size:11.5px;color:white}.chip a{color:white;text-decoration:none}.body{padding:48px 56px;background:#fff}`;
 
-  // Shared header templates
-  if (["aurora","vivid","nova","frost","brushstroke","vortex","blaze","pinnacle"].includes(id)) {
+  // ── gradient header templates ──
+  if (
+    [
+      "aurora",
+      "vivid",
+      "nova",
+      "frost",
+      "brushstroke",
+      "vortex",
+      "blaze",
+      "pinnacle",
+    ].includes(id)
+  ) {
     const bgMap: Record<string, string> = {
       aurora: `background:linear-gradient(135deg,${c},${c}bb)`,
       vivid: `background:linear-gradient(135deg,${c},#ec4899)`,
@@ -12546,168 +14025,315 @@ function buildHTML(id: string, d: CLData): string {
       blaze: `background:linear-gradient(110deg,${c},#ea580c)`,
       pinnacle: `background:linear-gradient(135deg,${c},${c}dd,${c}88)`,
     };
-    return baseHTML(baseCSS(headerChipStyle),
-      `<div class="pg"><div class="hdr" style="${bgMap[id]||`background:${c}`}">
-      <div class="nm">${nm}</div><div class="rl">${ttl}</div>${chipsHTML}</div>
-      <div class="body">${standardBody(c)}</div></div>`);
+    return baseHTML(
+      baseCSS(headerChipStyle),
+      `<div class="pg"><div class="hdr" style="${bgMap[id] || `background:${c}`}"><div class="nm">${nm}</div><div class="rl">${ttl}</div>${chipsHTML}</div><div class="body">${standardBody(c)}</div></div>`,
+    );
   }
-
-  if (id === "canvas") return baseHTML(baseCSS(`.pg{max-width:820px;margin:0 auto;padding:60px 64px;background:#fff}.accent{width:4px;background:${c};border-radius:2px;height:72px;float:left;margin-right:20px;margin-top:2px}.nm{font-size:38px;font-weight:800;letter-spacing:-1.5px;color:#111827}.rl{font-size:13px;color:${c};font-weight:600;margin-top:5px;letter-spacing:.5px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 16px;margin-top:10px}.cv{font-size:12px;color:#9ca3af}.cv a{color:${c};text-decoration:none}.div{height:1px;background:#f3f4f6;margin:28px 0;clear:both}`),
-    `<div class="pg"><div class="accent"></div><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`);
-
-  if (id === "gradient") return baseHTML(baseCSS(`.pg{max-width:820px;margin:0 auto;padding:60px 64px;background:#fff;border-left:6px solid ${c}}.nm{font-size:38px;font-weight:800;letter-spacing:-1.5px;color:#111827}.rl{font-size:13px;color:${c};font-weight:600;margin-top:5px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 16px;margin-top:10px;margin-bottom:28px}.cv{font-size:12px;color:#9ca3af}.cv a{color:${c};text-decoration:none}.div{height:1px;background:#f3f4f6;margin:20px 0}`),
-    `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`);
-
-  if (id === "tidal") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#fff}.top{height:4px;background:${c}}.tb{background:${c}12;padding:2px 0}.hdr{padding:32px 52px;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px}.nm{font-size:36px;font-weight:800;color:#0f172a;letter-spacing:-1.5px}.rl{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:${c};margin-top:6px}.cc{text-align:right;font-size:12px;color:#9ca3af}.cv{display:block;margin-bottom:3px}.cv a{color:${c};text-decoration:none}.body{padding:40px 52px}`),
-    `<div class="pg"><div class="top"></div><div class="hdr"><div><div class="nm">${nm}</div><div class="rl">${ttl}</div></div><div class="cc">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div></div><div class="body">${standardBody(c)}</div></div>`);
-
-  if (id === "horizon") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#f8fafc}.top{height:3px;background:linear-gradient(90deg,${c},${c}44)}.hdr{padding:40px 52px;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:20px}.nm{font-size:36px;font-weight:800;color:#0f172a;letter-spacing:-1.5px}.rl{font-size:13px;color:${c};font-weight:600;margin-top:6px;margin-bottom:14px}.ctrow{display:flex;flex-wrap:wrap;gap:4px 14px}.cv{font-size:12px;color:#64748b}.cv a{color:${c};text-decoration:none}.card{background:${c}08;border:1px solid ${c}20;border-radius:10px;padding:14px 18px;min-width:140px}.card-l{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:${c};margin-bottom:5px}.card-v{font-size:12px;font-weight:700;color:#0f172a;line-height:1.4}.body{padding:36px 52px}`),
-    `<div class="pg"><div class="top"></div><div class="hdr"><div><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div></div>${d.company.name?`<div class="card"><div class="card-l">Applying To</div><div class="card-v">${d.company.jobTitle||"Open Role"}<br><span style="font-size:11px;font-weight:400;color:#64748b">${d.company.name}</span></div></div>`:""}</div><div class="body">${standardBody(c)}</div></div>`);
-
-  if (id === "lumina") return baseHTML(baseCSS(`.pg{max-width:860px;margin:0 auto;padding:64px 68px;background:#fff}.eyebrow{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:${c};margin-bottom:10px}.nm{font-size:44px;font-weight:800;letter-spacing:-2px;color:#111827;line-height:1}.glow{width:48px;height:3px;background:${c};margin:16px 0 18px;border-radius:2px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 18px;margin-bottom:36px}.cv{font-size:12px;color:#9ca3af}.cv a{color:${c};text-decoration:none}.div{height:1px;background:${c}22;margin:24px 0}`),
-    `<div class="pg"><div class="eyebrow">${ttl}</div><div class="nm">${nm}</div><div class="glow"></div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`);
-
-  if (id === "obsidian_lite") return baseHTML(baseCSS(`.pg{max-width:900px;margin:0 auto;display:flex;min-height:100vh;background:#f8f7ff}.side{width:240px;background:${c}12;border-right:2px solid ${c}20;padding:44px 24px;flex-shrink:0}.snm{font-size:22px;font-weight:800;color:#1e1b4b;line-height:1.2;margin-bottom:6px}.srl{font-size:10px;color:${c};letter-spacing:1.5px;text-transform:uppercase;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid ${c}20}.slbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:${c}aa;margin-bottom:5px;margin-top:16px}.sv{font-size:11.5px;color:#374151;line-height:1.9;word-break:break-all}.sv a{color:${c};text-decoration:none}.main{flex:1;padding:48px 44px;background:#fff}`),
-    `<div class="pg"><div class="side"><div class="snm">${nm}</div><div class="srl">${ttl}</div>
-    ${d.personal.email?`<div class="slbl">Email</div><div class="sv"><a href="mailto:${d.personal.email}">${d.personal.email}</a></div>`:""}
-    ${d.personal.phone?`<div class="slbl">Phone</div><div class="sv">${d.personal.phone}</div>`:""}
-    ${d.personal.location?`<div class="slbl">Location</div><div class="sv">${d.personal.location}</div>`:""}
-    ${d.personal.linkedin?`<div class="slbl">LinkedIn</div><div class="sv"><a href="https://${d.personal.linkedin.replace(/^https?:\/\//,"")}" target="_blank">${d.personal.linkedin}</a></div>`:""}
-    ${d.skills.length?`<div class="slbl" style="margin-top:20px">Skills</div><div style="margin-top:6px">${d.skills.map(s=>`<div style="font-size:11px;color:${c};margin-bottom:3px">• ${s}</div>`).join("")}</div>`:""}
-    </div><div class="main">${standardBody(c)}</div></div>`);
-
-  if (id === "slate") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#fff}.hdr{padding:44px 52px;border-bottom:3px solid #0f172a;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px}.nm{font-size:34px;font-weight:700;color:#0f172a;letter-spacing:-1.5px}.rl{font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:#64748b;margin-top:7px}.cc{text-align:right}.cv{font-size:11.5px;color:#475569;line-height:2.1;display:block}.cv a{color:${c};text-decoration:none}.tag{display:inline-block;font-size:10.5px;color:#64748b;background:#f1f5f9;border:1px solid #e2e8f0;padding:3px 10px;border-radius:4px;margin-bottom:22px}.body{padding:40px 52px}`),
-    `<div class="pg"><div class="hdr"><div><div class="nm">${nm}</div><div class="rl">${ttl}</div></div><div class="cc">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div></div><div class="body"><div class="tag">RE: ${d.company.jobTitle||"Open Position"} · ${d.company.name||"Company"}</div>${standardBody(c,true)}</div></div>`);
-
-  if (id === "architect") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#f8fafc}.hdr{padding:44px 52px;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap}.hl{flex:1}.nm{font-size:34px;font-weight:800;color:#0f172a;letter-spacing:-1.5px}.rl{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#64748b;margin-top:7px;margin-bottom:14px}.ctrow{display:flex;flex-wrap:wrap;gap:4px 14px}.cv{font-size:12px;color:#64748b}.cv a{color:${c};text-decoration:none}.hr{width:130px;flex-shrink:0;background:#0f172a;border-radius:12px;padding:16px;text-align:center}.hrl{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:#94a3b8;margin-bottom:6px}.hrr{font-size:11px;font-weight:700;color:white;line-height:1.4}.body{padding:36px 52px;background:#f8fafc}`),
-    `<div class="pg"><div class="hdr"><div class="hl"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div></div>${d.company.name?`<div class="hr"><div class="hrl">Applying to</div><div class="hrr">${d.company.jobTitle||"Open Role"}<br><span style="font-size:10px;font-weight:400;opacity:.7">${d.company.name}</span></div></div>`:""}</div><div class="body">${standardBody(c,true)}</div></div>`);
-
-  if (id === "nordic") return baseHTML(baseCSS(`.pg{max-width:750px;margin:0 auto;padding:64px 72px;background:#fff}.eye{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:${c};margin-bottom:10px}.nm{font-size:44px;font-weight:700;letter-spacing:-2px;color:#1e1b4b;line-height:1.05}.bar{width:52px;height:3px;background:${c};margin:16px 0 18px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 18px;margin-bottom:40px}.cv{font-size:12px;color:#6b7280}.cv a{color:${c};text-decoration:none}.div{height:1px;background:${c}44;margin:24px 0}`),
-    `<div class="pg"><div class="eye">${ttl}</div><div class="nm">${nm}</div><div class="bar"></div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`);
-
-  if (id === "pearl") return baseHTML(baseCSS(`.pg{max-width:820px;margin:0 auto;padding:60px 64px;background:#fff}.nm{font-size:40px;font-weight:800;letter-spacing:-2px;color:#111827;margin-bottom:6px}.rl{font-size:13px;color:${c};font-weight:700;letter-spacing:.5px;margin-bottom:16px}.d1{height:1.5px;background:${c}33;margin-bottom:16px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 20px;margin-bottom:16px}.cv{font-size:12px;color:#9ca3af}.cv a{color:${c};text-decoration:none}.d2{height:1.5px;background:${c}33;margin:20px 0}`),
-    `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="d1"></div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="d2"></div>${standardBody(c)}</div>`);
-
-  if (id === "minimal") return baseHTML(baseCSS(`.pg{max-width:760px;margin:0 auto;padding:70px 80px;background:#fff;border:1px solid #f1f5f9}.nm{font-size:36px;font-weight:700;color:#111;letter-spacing:-1px;margin-bottom:6px}.rl{font-size:12.5px;color:#555;margin-bottom:20px}.div{height:1px;background:#ececec;margin:18px 0}.ctrow{display:flex;flex-wrap:wrap;gap:4px 20px;margin-bottom:12px}.cv{font-size:12px;color:#888}.cv a{color:${c};text-decoration:none;border-bottom:1px solid ${c}33}`),
-    `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="div"></div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`);
-
-  if (id === "zen") return baseHTML(baseCSS(`.pg{max-width:760px;margin:0 auto;padding:68px 76px;background:#fafaf9}.nm{font-size:36px;font-weight:700;color:#1c1917;letter-spacing:-.5px;margin-bottom:6px}.rl{font-size:13px;color:#78716c;margin-bottom:20px}.div{height:.5px;background:#d6d3d1;margin:18px 0}.ctrow{display:flex;flex-wrap:wrap;gap:4px 18px;margin-bottom:12px}.cv{font-size:12px;color:#78716c}.cv a{color:${c};text-decoration:none}`),
-    `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="div"></div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`);
-
-  if (id === "ivory") return baseHTML(baseCSS(`.pg{max-width:820px;margin:0 auto;background:#fefce8;padding:60px 64px;border-left:5px solid ${c}}.nm{font-size:44px;font-weight:700;color:#1c1917;letter-spacing:-.5px;line-height:1.1}.rl{font-size:13px;color:#92400e;font-style:italic;margin:8px 0 16px}.div{height:1px;background:${c}66;margin:16px 0}.ctrow{display:flex;flex-wrap:wrap;gap:5px 18px;margin-bottom:14px}.cv{font-size:12px;color:#78716c}.cv a{color:${c};text-decoration:none}`),
-    `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="div"></div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`);
-
-  if (id === "paper") return baseHTML(baseCSS(`.pg{max-width:820px;margin:0 auto;background:#fffef0;padding:60px 64px 60px 80px;border-left:3px solid #ca8a04}.nm{font-size:42px;font-weight:700;color:#1a1209;letter-spacing:-.5px;line-height:1.1}.rl{font-size:13px;color:${c};font-style:italic;margin:8px 0 16px}.div{height:.8px;background:#d0ccb0;margin:16px 0}.ctrow{display:flex;flex-wrap:wrap;gap:5px 18px;margin-bottom:14px}.cv{font-size:12px;color:#6b6050}.cv a{color:${c};text-decoration:none}`),
-    `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="div"></div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`);
-
-  if (id === "serif") return baseHTML(baseCSS(`.pg{max-width:820px;margin:0 auto;padding:52px 64px;background:#fff}.r1{height:2px;background:#1e293b;margin-bottom:20px}.nm{font-size:42px;font-weight:900;color:#1e293b;letter-spacing:-1.5px;text-align:center;margin-bottom:6px}.rl{font-size:12px;color:#64748b;text-align:center;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}.ctrow{display:flex;justify-content:center;flex-wrap:wrap;gap:5px 20px;margin-bottom:16px}.cv{font-size:12px;color:#64748b}.cv a{color:${c};text-decoration:none}.r2{height:1px;background:#e5e7eb;margin-bottom:20px}`),
-    `<div class="pg"><div class="r1"></div><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="r2"></div>${standardBody(c)}</div>`);
-
-  if (id === "editorial") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#fff}.top{height:4px;background:${c}}.hdr{padding:44px 52px 0}.nm{font-size:36px;font-weight:800;color:#1e293b;letter-spacing:-1.5px}.rl{font-size:13px;color:${c};font-weight:600;margin:6px 0 14px}.rule{height:1.5px;background:#334155;margin-bottom:14px}.ctrow{display:flex;flex-wrap:wrap;gap:4px 16px;padding-bottom:16px;border-bottom:1px solid #e2e8f0}.cv{font-size:12px;color:#64748b}.cv a{color:${c};text-decoration:none}.body{padding:36px 52px}`),
-    `<div class="pg"><div class="top"></div><div class="hdr"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="rule"></div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div></div><div class="body">${standardBody(c)}</div></div>`);
-
-  if (id === "linen") return baseHTML(baseCSS(`.pg{max-width:800px;margin:0 auto;padding:62px 68px;background:#faf8f5}.accent{width:3px;height:80px;background:${c}66;float:left;margin-right:18px;border-radius:2px;margin-top:2px}.nm{font-size:40px;font-weight:700;color:#1c1917;letter-spacing:-1px;line-height:1.1}.rl{font-size:13px;color:${c};font-weight:600;margin-top:6px;margin-bottom:18px;clear:both}.div{height:1px;background:#e7e5e0;margin:18px 0}.ctrow{display:flex;flex-wrap:wrap;gap:4px 18px;margin-bottom:14px}.cv{font-size:12px;color:#78716c}.cv a{color:${c};text-decoration:none}`),
-    `<div class="pg"><div class="accent"></div><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="div"></div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`);
-
-  if (id === "parchment") return baseHTML(baseCSS(`.pg{max-width:800px;margin:0 auto;padding:56px 68px;background:#fdf8ed}.r1{height:2px;background:${c}66;margin-bottom:3px}.r2{height:.5px;background:${c}33;margin-bottom:18px}.nm{font-size:40px;font-weight:800;color:#2c1a0e;text-align:center;letter-spacing:-1.5px;margin-bottom:4px}.rl{font-size:11px;color:#8a7060;text-align:center;letter-spacing:3px;text-transform:uppercase;margin-bottom:10px}.ctrow{display:flex;justify-content:center;flex-wrap:wrap;gap:4px 18px;margin-bottom:6px}.cv{font-size:12px;color:#78716c}.cv a{color:${c};text-decoration:none}.r3{height:.5px;background:${c}33;margin-top:12px;margin-bottom:20px}.r4{height:2px;background:${c}66}`),
-    `<div class="pg"><div class="r1"></div><div class="r2"></div><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="r3"></div>${standardBody(c)}<div class="r4"></div></div>`);
-
-  if (id === "designer") return baseHTML(baseCSS(`.pg{max-width:900px;margin:0 auto;display:flex;min-height:100vh;background:#faf5ff}.side{width:260px;background:${c}10;border-right:2px solid ${c}20;padding:44px 26px;flex-shrink:0}.savatar{width:52px;height:52px;border-radius:50%;background:${c}22;border:2px solid ${c}44;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:20px;color:${c}}.snm{font-size:22px;font-weight:800;color:#1a1a2e;line-height:1.15;margin-bottom:6px}.srl{font-size:10px;color:${c};letter-spacing:2px;text-transform:uppercase;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid ${c}22}.slbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:${c}88;margin-bottom:5px;margin-top:18px}.sv{font-size:11px;color:#374151;line-height:1.9}.sv a{color:${c};text-decoration:none}.main{flex:1;padding:48px 44px;background:#fff}`),
-    `<div class="pg"><div class="side"><div class="savatar">✦</div><div class="snm">${nm}</div><div class="srl">${ttl}</div>${d.personal.email?`<div class="slbl">Email</div><div class="sv"><a href="mailto:${d.personal.email}">${d.personal.email}</a></div>`:""} ${d.personal.phone?`<div class="slbl">Phone</div><div class="sv">${d.personal.phone}</div>`:""} ${d.personal.location?`<div class="slbl">Location</div><div class="sv">${d.personal.location}</div>`:""} ${d.personal.linkedin?`<div class="slbl">LinkedIn</div><div class="sv"><a href="https://${d.personal.linkedin.replace(/^https?:\/\//,"")}" target="_blank">${d.personal.linkedin}</a></div>`:""} ${d.skills.length?`<div class="slbl" style="margin-top:22px">Skills</div><div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px">${d.skills.map(s=>`<span style="padding:2px 8px;background:${c}15;border:1px solid ${c}30;border-radius:4px;font-size:10px;color:${c}">${s}</span>`).join("")}</div>`:""}</div><div class="main">${standardBody(c)}</div></div>`);
-
-  if (id === "motion") return baseHTML(baseCSS(`.pg{max-width:860px;margin:0 auto;background:#fff}.tb{height:5.5px;background:linear-gradient(90deg,${c},#f59e0b)}.hdr{padding:44px 52px;border-bottom:1px solid #f3e4e4;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px}.nm{font-size:48px;font-weight:900;letter-spacing:-3px;text-transform:uppercase;line-height:.95;color:#111827}.rl{font-size:13px;color:${c};letter-spacing:2px;text-transform:uppercase;margin-top:8px;font-weight:600}.cc{text-align:right;font-size:12px;color:#9ca3af}.cv{display:block;margin-bottom:4px}.cv a{color:${c};text-decoration:none}.body{padding:44px 52px}.bb{height:5.5px;background:linear-gradient(90deg,#f59e0b,${c})}`),
-    `<div class="pg"><div class="tb"></div><div class="hdr"><div><div class="nm">${nm}</div><div class="rl">${ttl}</div></div><div class="cc">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div></div><div class="body">${standardBody(c)}</div><div class="bb"></div></div>`);
-
-  if (id === "studio") return baseHTML(baseCSS(`.pg{max-width:860px;margin:0 auto;background:#f8f5ff}.top{height:3px;background:linear-gradient(90deg,${c},${c}44)}.hdr{padding:48px 52px 36px;border-bottom:1px solid ${c}18}.nm{font-size:40px;font-weight:800;color:#1e1b4b;letter-spacing:-1.5px;margin-bottom:6px}.rl{font-size:13px;color:${c};font-weight:600;margin-bottom:18px}.chips{display:flex;flex-wrap:wrap;gap:7px}.chip{padding:4px 12px;background:${c}10;border:1px solid ${c}25;border-radius:20px;font-size:11.5px;color:${c}}.body{padding:44px 52px;background:#fff}`),
-    `<div class="pg"><div class="top"></div><div class="hdr"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="chips">${links.map(l=>`<span class="chip">${l}</span>`).join("")}</div></div><div class="body">${standardBody(c)}</div></div>`);
-
-  if (id === "folio") return baseHTML(baseCSS(`.pg{max-width:820px;margin:0 auto;padding:52px 64px;background:#fff}.hrow{display:flex;align-items:flex-start;gap:28px;margin-bottom:30px;padding-bottom:24px;border-bottom:2px solid ${c}22}.avatar{width:64px;height:64px;border-radius:12px;background:${c}22;border:2px solid ${c}44;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;color:${c}}.hinfo .nm{font-size:34px;font-weight:800;color:#111827;letter-spacing:-1.5px}.hinfo .rl{font-size:13px;color:${c};font-weight:600;margin-top:4px}.ctrow{display:flex;flex-wrap:wrap;gap:4px 16px;margin-top:8px}.cv{font-size:12px;color:#9ca3af}.cv a{color:${c};text-decoration:none}`),
-    `<div class="pg"><div class="hrow"><div class="avatar">✦</div><div class="hinfo"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div></div></div>${standardBody(c)}</div>`);
-
-  if (id === "artboard") return baseHTML(baseCSS(`.pg{max-width:820px;margin:0 auto;background:#f4f3f8;padding:8px}.card{background:#fff;border-radius:8px;overflow:hidden;border:1.5px dashed ${c}44}.top{height:3px;background:${c}}.hdr{padding:40px 52px 28px}.nm{font-size:36px;font-weight:800;color:#111827;letter-spacing:-1.5px}.rl{font-size:13px;color:${c};font-weight:600;margin-top:5px}.ctrow{display:flex;flex-wrap:wrap;gap:4px 16px;margin-top:10px;margin-bottom:4px}.cv{font-size:12px;color:#9ca3af}.cv a{color:${c};text-decoration:none}.body{padding:28px 52px 52px}`),
-    `<div class="pg"><div class="card"><div class="top"></div><div class="hdr"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div></div><div class="body">${standardBody(c)}</div></div></div>`);
-
-  if (id === "palette") return baseHTML(baseCSS(`.pg{max-width:820px;margin:0 auto;padding:60px 64px;background:#fff7f5;border-left:4px solid ${c}}.nm{font-size:40px;font-weight:800;color:#1c0a06;letter-spacing:-1.5px;margin-bottom:6px}.rl{font-size:13px;color:${c};font-weight:600;margin-bottom:18px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 18px;margin-bottom:14px}.cv{font-size:12px;color:#78716c}.cv a{color:${c};text-decoration:none}.div{height:1px;background:#fce7e0;margin:18px 0}`),
-    `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`);
-
-  if (id === "frame") return baseHTML(baseCSS(`.pg{max-width:820px;margin:0 auto;padding:16px;background:#fafafa}.inner{background:#fff;border:2px solid ${c};border-radius:10px;padding:44px 52px;overflow:hidden}.nm{font-size:38px;font-weight:800;color:#111827;letter-spacing:-1.5px;margin-bottom:6px}.rl{font-size:13px;color:${c};font-weight:600;margin-bottom:14px}.ctrow{display:flex;flex-wrap:wrap;gap:4px 16px;margin-bottom:14px}.cv{font-size:12px;color:#9ca3af}.cv a{color:${c};text-decoration:none}.div{height:1px;background:${c}20;margin:18px 0}`),
-    `<div class="pg"><div class="inner"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div></div>`);
-
-  if (id === "mosaic") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#fff}.hdr{padding:44px 52px;display:flex;gap:24px;align-items:center;border-bottom:1px solid #f0f0f0}.mosaic{display:grid;grid-template-columns:repeat(3,34px);grid-template-rows:repeat(3,34px);gap:2px;flex-shrink:0}.cell{border-radius:4px}.nm{font-size:34px;font-weight:800;color:#111827;letter-spacing:-1.5px}.rl{font-size:13px;color:${c};font-weight:600;margin:6px 0 12px}.ctrow{display:flex;flex-wrap:wrap;gap:4px 14px}.cv{font-size:12px;color:#9ca3af}.cv a{color:${c};text-decoration:none}.body{padding:36px 52px}`),
-    `<div class="pg"><div class="hdr"><div class="mosaic">${[...Array(9)].map((_,i)=>`<div class="cell" style="background:${i%3===0?c:i%3===1?`${c}66`:`${c}22`}"></div>`).join("")}</div><div><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div></div></div><div class="body">${standardBody(c)}</div></div>`);
-
-  if (id === "presidio") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#fafafa}.top{height:2px;background:${c}}.hdr{padding:44px 52px;background:#fff;border-bottom:1px solid #e5e7eb}.nm{font-size:36px;font-weight:800;color:#111827;letter-spacing:-1.5px;margin-bottom:6px}.rl{font-size:13px;color:${c};font-weight:600;margin-bottom:16px}.inforow{display:flex;gap:0;background:${c}08;border:1px solid ${c}15;border-radius:8px;padding:10px 14px;margin-bottom:4px;flex-wrap:wrap;gap:16px}.cv{font-size:12px;color:#374151}.cv a{color:${c};text-decoration:none}.body{padding:36px 52px}`),
-    `<div class="pg"><div class="top"></div><div class="hdr"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="inforow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div></div><div class="body">${standardBody(c)}</div></div>`);
-
-  if (id === "accord") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#fff}.top{height:4px;background:linear-gradient(90deg,${c},${c}44)}.hdr{padding:40px 52px;border-bottom:2px solid #f1f5f9}.nm{font-size:36px;font-weight:800;color:#0f172a;letter-spacing:-1.5px;margin-bottom:6px}.rl{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:${c};margin-bottom:14px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 18px}.cv{font-size:12px;color:#64748b}.cv a{color:${c};text-decoration:none}.body{padding:36px 52px}`),
-    `<div class="pg"><div class="top"></div><div class="hdr"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div></div><div class="body">${standardBody(c)}</div></div>`);
-
-  if (id === "radiant") return baseHTML(baseCSS(`.pg{max-width:860px;margin:0 auto;padding:62px 68px;background:#fff;border-left:5px solid ${c};position:relative}.nm{font-size:44px;font-weight:800;letter-spacing:-2px;color:#1e1b4b;line-height:1;margin-bottom:6px}.rl{font-size:13px;color:${c};font-weight:600;margin-bottom:20px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 18px;margin-bottom:36px}.cv{font-size:12px;color:#9ca3af}.cv a{color:${c};text-decoration:none}.div{height:1px;background:${c}20;margin:22px 0}`),
-    `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`);
-
-  if (id === "solstice") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#fff}.topbar{height:3px;background:${c}}.hdr{padding:44px 52px;background:${c}08;border-bottom:2px solid ${c}18;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px}.nm{font-size:36px;font-weight:800;color:#0f172a;letter-spacing:-1.5px}.rl{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:${c};margin-top:6px;margin-bottom:14px}.ctrow{display:flex;flex-wrap:wrap;gap:4px 14px}.cv{font-size:12px;color:#64748b}.cv a{color:${c};text-decoration:none}.card{background:#fff;border:1px solid ${c}20;border-radius:10px;padding:14px 18px}.card-l{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:${c};margin-bottom:4px}.card-v{font-size:12px;font-weight:700;color:#0f172a;line-height:1.4}.body{padding:36px 52px}.bot{height:3px;background:${c}}`),
-    `<div class="pg"><div class="topbar"></div><div class="hdr"><div><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div></div>${d.company.name?`<div class="card"><div class="card-l">Position</div><div class="card-v">${d.company.jobTitle||"Open Role"}<br><span style="font-size:11px;font-weight:400;color:#64748b">${d.company.name}</span></div></div>`:""}</div><div class="body">${standardBody(c)}</div><div class="bot"></div></div>`);
-
-  if (id === "meridian") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#f8fafc}.top{height:2px;background:${c}}.tb2{height:2px;background:${c};margin-top:62px}.hdr{padding:28px 52px 28px;background:#fff;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}.nm{font-size:34px;font-weight:800;color:#0f172a;letter-spacing:-1.5px}.rl{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:${c};margin-top:5px}.ctrow{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px}.cv{font-size:12px;color:#64748b}.cv a{color:${c};text-decoration:none}.badge{background:${c};border-radius:8px;padding:12px 18px;text-align:center}.badge-t{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.75);margin-bottom:3px}.badge-v{font-size:11px;font-weight:700;color:#fff;line-height:1.4}.body{padding:32px 52px}`),
-    `<div class="pg"><div class="top"></div><div class="hdr"><div><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div></div>${d.company.name?`<div class="badge"><div class="badge-t">Applying To</div><div class="badge-v">${d.company.jobTitle||"Role"}<br><span style="font-size:10px;opacity:.8">${d.company.name}</span></div></div>`:""}</div><div class="tb2"></div><div class="body">${standardBody(c)}</div></div>`);
-
-  // Tech templates
-  if (id === "circuit") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#f8faff;padding:60px 64px}.nm{font-size:38px;font-weight:800;color:#0f172a;letter-spacing:-1.5px;margin-bottom:6px}.rl{font-size:13px;color:${c};font-weight:600;margin-bottom:18px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 16px;margin-bottom:14px}.cv{font-size:12px;color:#64748b;padding:3px 10px;background:${c}08;border:1px solid ${c}18;border-radius:6px}.cv a{color:${c};text-decoration:none}.div{height:1px;background:${c}18;margin:20px 0}`),
-    `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`);
-
-  if (id === "blueprint") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#eff6ff;padding:60px 64px}.nm{font-size:38px;font-weight:800;color:#1e3a8a;letter-spacing:-1.5px;margin-bottom:6px}.rl{font-size:13px;color:${c};font-weight:600;margin-bottom:18px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 16px;margin-bottom:14px}.cv{font-size:12px;color:#3b82f6}.cv a{color:${c};text-decoration:none}.div{height:1px;background:#93c5fd;margin:20px 0}`),
-    `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`);
-
-  if (id === "axiom") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#fff}.top{height:4px;background:${c}}.stripe{background:${c}08;padding:2px 0}.hdr{padding:38px 52px;border-bottom:2px solid ${c}15}.nm{font-size:36px;font-weight:800;color:#0f172a;letter-spacing:-1.5px;margin-bottom:6px}.rl{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:${c};margin-bottom:14px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 16px}.cv{font-size:12px;color:#64748b}.cv a{color:${c};text-decoration:none}.body{padding:36px 52px}.bot{height:2px;background:${c}15}`),
-    `<div class="pg"><div class="top"></div><div class="hdr"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div></div><div class="body">${standardBody(c)}</div><div class="bot"></div></div>`);
-
-  if (id === "signal") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;padding:60px 64px;background:#fff}.top{position:relative}.nm{font-size:42px;font-weight:800;color:#0f172a;letter-spacing:-2px;margin-bottom:6px}.rl{font-size:13px;color:${c};font-weight:600;margin-bottom:20px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 18px;margin-bottom:14px}.cv{font-size:12px;color:#64748b}.cv a{color:${c};text-decoration:none}.div{height:1px;background:#e2e8f0;margin:20px 0}`),
-    `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`);
-
-  if (id === "quantum") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#f8fafc}.accent-corner{position:absolute;top:0;left:0;width:0;height:0;border-style:solid;border-width:60px 60px 0 0;border-color:${c} transparent transparent transparent}.hdr{padding:48px 52px;background:#fff;border-bottom:1px solid #e2e8f0;position:relative;overflow:hidden}.nm{font-size:38px;font-weight:800;color:#0f172a;letter-spacing:-1.5px;margin-bottom:6px;position:relative}.rl{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:${c};margin-bottom:16px;position:relative}.ctrow{display:flex;flex-wrap:wrap;gap:5px 16px;position:relative}.cv{font-size:12px;color:#64748b}.cv a{color:${c};text-decoration:none}.body{padding:36px 52px}.bot{height:3px;background:${c}44}`),
-    `<div class="pg"><div class="hdr"><div class="accent-corner"></div><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div></div><div class="body">${standardBody(c)}</div><div class="bot"></div></div>`);
-
-  // Remaining originals
-  if (id === "corporate") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#fff}.hdr{padding:0 52px;background:#1e3a5f;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;min-height:70px}.hdr-l{padding:18px 0}.nm{font-size:28px;font-weight:800;color:white;letter-spacing:-1px}.rl{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:${c};margin-top:4px}.cv{font-size:11px;color:rgba(255,255,255,.7);line-height:2;display:block}.cv a{color:${c};text-decoration:none}.stripe{height:5px;background:${c}}.body{padding:36px 52px}`),
-    `<div class="pg"><div class="hdr"><div class="hdr-l"><div class="nm">${nm}</div><div class="rl">${ttl}</div></div><div>${links.slice(0,4).map(l=>`<span class="cv">${l}</span>`).join("")}</div></div><div class="stripe"></div><div class="body">${standardBody(c)}</div></div>`);
-
-  if (id === "executive") return baseHTML(baseCSS(headerChipStyle+`.hdr{background:linear-gradient(135deg,${c},${c}cc)!important}`),
-    `<div class="pg"><div class="hdr" style="background:linear-gradient(135deg,${c},${c}cc)"><div class="nm">${nm}</div><div class="rl">${ttl}</div>${chipsHTML}</div><div class="body">${standardBody(c)}</div></div>`);
-
-  if (id === "titan") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#fff;border-left:8px solid ${c}}.hdr{padding:44px 48px;border-bottom:2px solid #e5e7eb}.nm{font-size:36px;font-weight:800;color:#1f2937;letter-spacing:-1.5px}.rl{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:${c};margin-top:7px;margin-bottom:14px}.ctrow{display:flex;flex-wrap:wrap;gap:4px 18px}.cv{font-size:12px;color:#6b7280}.cv a{color:${c};text-decoration:none}.body{padding:36px 48px}`),
-    `<div class="pg"><div class="hdr"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div></div><div class="body">${standardBody(c)}</div></div>`);
-
-  if (id === "oxford") return baseHTML(baseCSS(`.pg{max-width:800px;margin:0 auto;padding:56px 68px;background:#faf9f7}.rule{height:2px;background:${c};margin-bottom:3px}.rule2{height:.5px;background:${c}66;margin-bottom:18px}.nm{font-size:40px;font-weight:800;color:#1a1209;text-align:center;letter-spacing:-1.5px;margin-bottom:4px}.rl{font-size:11px;color:${c};text-align:center;letter-spacing:3px;text-transform:uppercase;margin-bottom:10px}.ctrow{display:flex;justify-content:center;flex-wrap:wrap;gap:4px 18px;margin-bottom:6px}.cv{font-size:12px;color:#78716c}.cv a{color:${c};text-decoration:none}.rule3{height:.5px;background:${c}66;margin-top:12px;margin-bottom:20px}`),
-    `<div class="pg"><div class="rule"></div><div class="rule2"></div><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="rule3"></div>${standardBody(c)}</div>`);
-
-  if (id === "summit") return baseHTML(baseCSS(`.pg{max-width:880px;margin:0 auto;background:#fff}.top{height:3px;background:${c}}.hdr{padding:40px 52px;background:#1e293b;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}.nm{font-size:34px;font-weight:800;color:white;letter-spacing:-1.5px}.rl{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:${c};margin-top:6px}.badge{background:${c};border-radius:8px;padding:12px 18px;text-align:center}.badge-t{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.75);margin-bottom:4px}.badge-r{font-size:12px;font-weight:700;color:white;line-height:1.4}.ctbar{display:flex;flex-wrap:wrap;background:#0f172a}.cv{font-size:11px;color:#94a3b8;padding:8px 20px;border-right:1px solid rgba(255,255,255,.06)}.cv a{color:${c};text-decoration:none}.body{padding:36px 52px}.bot{height:3px;background:${c}}`),
-    `<div class="pg"><div class="top"></div><div class="hdr"><div><div class="nm">${nm}</div><div class="rl">${ttl}</div></div>${d.company.name?`<div class="badge"><div class="badge-t">Applying To</div><div class="badge-r">${d.company.jobTitle||"Role"}<br><span style="font-size:10px;font-weight:400;opacity:.8">${d.company.name}</span></div></div>`:""}</div><div class="ctbar">${links.map(l=>`<span class="cv">${l}</span>`).join("")}</div><div class="body">${standardBody(c)}</div><div class="bot"></div></div>`);
-
-  if (id === "prism") return baseHTML(baseCSS(headerChipStyle),
-    `<div class="pg"><div class="hdr" style="background:${c}"><div style="position:absolute;right:0;top:0;bottom:0;width:55%;background:rgba(255,255,255,.1);clip-path:polygon(25% 0,100% 0,100% 100%,0 100%)"></div><div class="nm">${nm}</div><div class="rl">${ttl}</div>${chipsHTML}</div><div class="body">${standardBody(c)}</div></div>`);
-
-  // Fallback
-  return baseHTML(baseCSS(headerChipStyle),
-    `<div class="pg"><div class="hdr" style="background:linear-gradient(135deg,${c},${c}bb)"><div class="nm">${nm}</div><div class="rl">${ttl}</div>${chipsHTML}</div><div class="body">${standardBody(c)}</div></div>`);
+  if (id === "canvas")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:820px;margin:0 auto;padding:60px 64px;background:#fff}.accent{width:4px;background:${c};border-radius:2px;height:72px;float:left;margin-right:20px;margin-top:2px}.nm{font-size:38px;font-weight:800;letter-spacing:-1.5px;color:#111827}.rl{font-size:13px;color:${c};font-weight:600;margin-top:5px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 16px;margin-top:10px}.cv{font-size:12px;color:#9ca3af}.cv a{color:${c};text-decoration:none}.div{height:1px;background:#f3f4f6;margin:28px 0;clear:both}`,
+      ),
+      `<div class="pg"><div class="accent"></div><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`,
+    );
+  if (id === "gradient")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:820px;margin:0 auto;padding:60px 64px;background:#fff;border-left:6px solid ${c}}.nm{font-size:38px;font-weight:800;letter-spacing:-1.5px;color:#111827}.rl{font-size:13px;color:${c};font-weight:600;margin-top:5px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 16px;margin-top:10px;margin-bottom:28px}.cv{font-size:12px;color:#9ca3af}.cv a{color:${c};text-decoration:none}.div{height:1px;background:#f3f4f6;margin:20px 0}`,
+      ),
+      `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`,
+    );
+  if (id === "tidal")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:880px;margin:0 auto;background:#fff}.top{height:4px;background:${c}}.hdr{padding:32px 52px;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px}.nm{font-size:36px;font-weight:800;color:#0f172a;letter-spacing:-1.5px}.rl{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:${c};margin-top:6px}.cc{text-align:right;font-size:12px;color:#9ca3af}.cv{display:block;margin-bottom:3px}.cv a{color:${c};text-decoration:none}.body{padding:40px 52px}`,
+      ),
+      `<div class="pg"><div class="top"></div><div class="hdr"><div><div class="nm">${nm}</div><div class="rl">${ttl}</div></div><div class="cc">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div></div><div class="body">${standardBody(c)}</div></div>`,
+    );
+  if (id === "horizon")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:880px;margin:0 auto;background:#f8fafc}.top{height:3px;background:linear-gradient(90deg,${c},${c}44)}.hdr{padding:40px 52px;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:20px}.nm{font-size:36px;font-weight:800;color:#0f172a;letter-spacing:-1.5px}.rl{font-size:13px;color:${c};font-weight:600;margin-top:6px;margin-bottom:14px}.ctrow{display:flex;flex-wrap:wrap;gap:4px 14px}.cv{font-size:12px;color:#64748b}.cv a{color:${c};text-decoration:none}.card{background:${c}08;border:1px solid ${c}20;border-radius:10px;padding:14px 18px;min-width:140px}.card-l{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:${c};margin-bottom:5px}.card-v{font-size:12px;font-weight:700;color:#0f172a;line-height:1.4}.body{padding:36px 52px}`,
+      ),
+      `<div class="pg"><div class="top"></div><div class="hdr"><div><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div></div>${d.company.name ? `<div class="card"><div class="card-l">Applying To</div><div class="card-v">${d.company.jobTitle || "Open Role"}<br><span style="font-size:11px;font-weight:400;color:#64748b">${d.company.name}</span></div></div>` : ""}</div><div class="body">${standardBody(c)}</div></div>`,
+    );
+  if (id === "lumina")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:860px;margin:0 auto;padding:64px 68px;background:#fff}.eyebrow{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:${c};margin-bottom:10px}.nm{font-size:44px;font-weight:800;letter-spacing:-2px;color:#111827;line-height:1}.glow{width:48px;height:3px;background:${c};margin:16px 0 18px;border-radius:2px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 18px;margin-bottom:36px}.cv{font-size:12px;color:#9ca3af}.cv a{color:${c};text-decoration:none}.div{height:1px;background:${c}22;margin:24px 0}`,
+      ),
+      `<div class="pg"><div class="eyebrow">${ttl}</div><div class="nm">${nm}</div><div class="glow"></div><div class="ctrow">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`,
+    );
+  if (id === "obsidian_lite")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:900px;margin:0 auto;display:flex;min-height:100vh;background:#f8f7ff}.side{width:240px;background:${c}12;border-right:2px solid ${c}20;padding:44px 24px;flex-shrink:0}.snm{font-size:22px;font-weight:800;color:#1e1b4b;line-height:1.2;margin-bottom:6px}.srl{font-size:10px;color:${c};letter-spacing:1.5px;text-transform:uppercase;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid ${c}20}.slbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:${c}aa;margin-bottom:5px;margin-top:16px}.sv{font-size:11.5px;color:#374151;line-height:1.9;word-break:break-all}.sv a{color:${c};text-decoration:none}.main{flex:1;padding:48px 44px;background:#fff}`,
+      ),
+      `<div class="pg"><div class="side"><div class="snm">${nm}</div><div class="srl">${ttl}</div>${d.personal.email ? `<div class="slbl">Email</div><div class="sv"><a href="mailto:${d.personal.email}">${d.personal.email}</a></div>` : ""}${d.personal.phone ? `<div class="slbl">Phone</div><div class="sv">${d.personal.phone}</div>` : ""}${d.personal.location ? `<div class="slbl">Location</div><div class="sv">${d.personal.location}</div>` : ""}${d.personal.linkedin ? `<div class="slbl">LinkedIn</div><div class="sv"><a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.linkedin}</a></div>` : ""}${d.skills.length ? `<div class="slbl" style="margin-top:20px">Skills</div><div style="margin-top:6px">${d.skills.map((s) => `<div style="font-size:11px;color:${c};margin-bottom:3px">• ${s}</div>`).join("")}</div>` : ""}</div><div class="main">${standardBody(c)}</div></div>`,
+    );
+  if (id === "slate")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:880px;margin:0 auto;background:#fff}.hdr{padding:44px 52px;border-bottom:3px solid #0f172a;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px}.nm{font-size:34px;font-weight:700;color:#0f172a;letter-spacing:-1.5px}.rl{font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:#64748b;margin-top:7px}.cc{text-align:right}.cv{font-size:11.5px;color:#475569;line-height:2.1;display:block}.cv a{color:${c};text-decoration:none}.tag{display:inline-block;font-size:10.5px;color:#64748b;background:#f1f5f9;border:1px solid #e2e8f0;padding:3px 10px;border-radius:4px;margin-bottom:22px}.body{padding:40px 52px}`,
+      ),
+      `<div class="pg"><div class="hdr"><div><div class="nm">${nm}</div><div class="rl">${ttl}</div></div><div class="cc">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div></div><div class="body"><div class="tag">RE: ${d.company.jobTitle || "Open Position"} · ${d.company.name || "Company"}</div>${standardBody(c, true)}</div></div>`,
+    );
+  if (id === "architect")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:880px;margin:0 auto;background:#f8fafc}.hdr{padding:44px 52px;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap}.hl{flex:1}.nm{font-size:34px;font-weight:800;color:#0f172a;letter-spacing:-1.5px}.rl{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#64748b;margin-top:7px;margin-bottom:14px}.ctrow{display:flex;flex-wrap:wrap;gap:4px 14px}.cv{font-size:12px;color:#64748b}.cv a{color:${c};text-decoration:none}.hr{width:130px;flex-shrink:0;background:#0f172a;border-radius:12px;padding:16px;text-align:center}.hrl{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:#94a3b8;margin-bottom:6px}.hrr{font-size:11px;font-weight:700;color:white;line-height:1.4}.body{padding:36px 52px;background:#f8fafc}`,
+      ),
+      `<div class="pg"><div class="hdr"><div class="hl"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div></div>${d.company.name ? `<div class="hr"><div class="hrl">Applying to</div><div class="hrr">${d.company.jobTitle || "Open Role"}<br><span style="font-size:10px;font-weight:400;opacity:.7">${d.company.name}</span></div></div>` : ""}</div><div class="body">${standardBody(c, true)}</div></div>`,
+    );
+  if (id === "nordic")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:750px;margin:0 auto;padding:64px 72px;background:#fff}.eye{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:${c};margin-bottom:10px}.nm{font-size:44px;font-weight:700;letter-spacing:-2px;color:#1e1b4b;line-height:1.05}.bar{width:52px;height:3px;background:${c};margin:16px 0 18px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 18px;margin-bottom:40px}.cv{font-size:12px;color:#6b7280}.cv a{color:${c};text-decoration:none}.div{height:1px;background:${c}44;margin:24px 0}`,
+      ),
+      `<div class="pg"><div class="eye">${ttl}</div><div class="nm">${nm}</div><div class="bar"></div><div class="ctrow">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`,
+    );
+  if (id === "pearl")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:820px;margin:0 auto;padding:60px 64px;background:#fff}.nm{font-size:40px;font-weight:800;letter-spacing:-2px;color:#111827;margin-bottom:6px}.rl{font-size:13px;color:${c};font-weight:700;letter-spacing:.5px;margin-bottom:16px}.d1{height:1.5px;background:${c}33;margin-bottom:16px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 20px;margin-bottom:16px}.cv{font-size:12px;color:#9ca3af}.cv a{color:${c};text-decoration:none}.d2{height:1.5px;background:${c}33;margin:20px 0}`,
+      ),
+      `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="d1"></div><div class="ctrow">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div><div class="d2"></div>${standardBody(c)}</div>`,
+    );
+  if (id === "minimal")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:760px;margin:0 auto;padding:70px 80px;background:#fff;border:1px solid #f1f5f9}.nm{font-size:36px;font-weight:700;color:#111;letter-spacing:-1px;margin-bottom:6px}.rl{font-size:12.5px;color:#555;margin-bottom:20px}.div{height:1px;background:#ececec;margin:18px 0}.ctrow{display:flex;flex-wrap:wrap;gap:4px 20px;margin-bottom:12px}.cv{font-size:12px;color:#888}.cv a{color:${c};text-decoration:none;border-bottom:1px solid ${c}33}`,
+      ),
+      `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="div"></div><div class="ctrow">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`,
+    );
+  if (id === "zen")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:760px;margin:0 auto;padding:68px 76px;background:#fafaf9}.nm{font-size:36px;font-weight:700;color:#1c1917;letter-spacing:-.5px;margin-bottom:6px}.rl{font-size:13px;color:#78716c;margin-bottom:20px}.div{height:.5px;background:#d6d3d1;margin:18px 0}.ctrow{display:flex;flex-wrap:wrap;gap:4px 18px;margin-bottom:12px}.cv{font-size:12px;color:#78716c}.cv a{color:${c};text-decoration:none}`,
+      ),
+      `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="div"></div><div class="ctrow">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`,
+    );
+  if (id === "ivory")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:820px;margin:0 auto;background:#fefce8;padding:60px 64px;border-left:5px solid ${c}}.nm{font-size:44px;font-weight:700;color:#1c1917;letter-spacing:-.5px;line-height:1.1}.rl{font-size:13px;color:#92400e;font-style:italic;margin:8px 0 16px}.div{height:1px;background:${c}66;margin:16px 0}.ctrow{display:flex;flex-wrap:wrap;gap:5px 18px;margin-bottom:14px}.cv{font-size:12px;color:#78716c}.cv a{color:${c};text-decoration:none}`,
+      ),
+      `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="div"></div><div class="ctrow">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`,
+    );
+  if (id === "paper")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:820px;margin:0 auto;background:#fffef0;padding:60px 64px 60px 80px;border-left:3px solid #ca8a04}.nm{font-size:42px;font-weight:700;color:#1a1209;letter-spacing:-.5px;line-height:1.1}.rl{font-size:13px;color:${c};font-style:italic;margin:8px 0 16px}.div{height:.8px;background:#d0ccb0;margin:16px 0}.ctrow{display:flex;flex-wrap:wrap;gap:5px 18px;margin-bottom:14px}.cv{font-size:12px;color:#6b6050}.cv a{color:${c};text-decoration:none}`,
+      ),
+      `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="div"></div><div class="ctrow">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`,
+    );
+  if (id === "serif")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:820px;margin:0 auto;padding:52px 64px;background:#fff}.r1{height:2px;background:#1e293b;margin-bottom:20px}.nm{font-size:42px;font-weight:900;color:#1e293b;letter-spacing:-1.5px;text-align:center;margin-bottom:6px}.rl{font-size:12px;color:#64748b;text-align:center;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}.ctrow{display:flex;justify-content:center;flex-wrap:wrap;gap:5px 20px;margin-bottom:16px}.cv{font-size:12px;color:#64748b}.cv a{color:${c};text-decoration:none}.r2{height:1px;background:#e5e7eb;margin-bottom:20px}`,
+      ),
+      `<div class="pg"><div class="r1"></div><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div><div class="r2"></div>${standardBody(c)}</div>`,
+    );
+  if (id === "editorial")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:880px;margin:0 auto;background:#fff}.top{height:4px;background:${c}}.hdr{padding:44px 52px 0}.nm{font-size:36px;font-weight:800;color:#1e293b;letter-spacing:-1.5px}.rl{font-size:13px;color:${c};font-weight:600;margin:6px 0 14px}.rule{height:1.5px;background:#334155;margin-bottom:14px}.ctrow{display:flex;flex-wrap:wrap;gap:4px 16px;padding-bottom:16px;border-bottom:1px solid #e2e8f0}.cv{font-size:12px;color:#64748b}.cv a{color:${c};text-decoration:none}.body{padding:36px 52px}`,
+      ),
+      `<div class="pg"><div class="top"></div><div class="hdr"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="rule"></div><div class="ctrow">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div></div><div class="body">${standardBody(c)}</div></div>`,
+    );
+  if (id === "linen")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:800px;margin:0 auto;padding:62px 68px;background:#faf8f5}.accent{width:3px;height:80px;background:${c}66;float:left;margin-right:18px;border-radius:2px;margin-top:2px}.nm{font-size:40px;font-weight:700;color:#1c1917;letter-spacing:-1px;line-height:1.1}.rl{font-size:13px;color:${c};font-weight:600;margin-top:6px;margin-bottom:18px;clear:both}.div{height:1px;background:#e7e5e0;margin:18px 0}.ctrow{display:flex;flex-wrap:wrap;gap:4px 18px;margin-bottom:14px}.cv{font-size:12px;color:#78716c}.cv a{color:${c};text-decoration:none}`,
+      ),
+      `<div class="pg"><div class="accent"></div><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="div"></div><div class="ctrow">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`,
+    );
+  if (id === "parchment")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:800px;margin:0 auto;padding:56px 68px;background:#fdf8ed}.r1{height:2px;background:${c}66;margin-bottom:3px}.r2{height:.5px;background:${c}33;margin-bottom:18px}.nm{font-size:40px;font-weight:800;color:#2c1a0e;text-align:center;letter-spacing:-1.5px;margin-bottom:4px}.rl{font-size:11px;color:#8a7060;text-align:center;letter-spacing:3px;text-transform:uppercase;margin-bottom:10px}.ctrow{display:flex;justify-content:center;flex-wrap:wrap;gap:4px 18px;margin-bottom:6px}.cv{font-size:12px;color:#78716c}.cv a{color:${c};text-decoration:none}.r3{height:.5px;background:${c}33;margin-top:12px;margin-bottom:20px}`,
+      ),
+      `<div class="pg"><div class="r1"></div><div class="r2"></div><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div><div class="r3"></div>${standardBody(c)}</div>`,
+    );
+  if (id === "designer")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:900px;margin:0 auto;display:flex;min-height:100vh;background:#faf5ff}.side{width:260px;background:${c}10;border-right:2px solid ${c}20;padding:44px 26px;flex-shrink:0}.savatar{width:52px;height:52px;border-radius:50%;background:${c}22;border:2px solid ${c}44;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:20px;color:${c}}.snm{font-size:22px;font-weight:800;color:#1a1a2e;line-height:1.15;margin-bottom:6px}.srl{font-size:10px;color:${c};letter-spacing:2px;text-transform:uppercase;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid ${c}22}.slbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:${c}88;margin-bottom:5px;margin-top:18px}.sv{font-size:11px;color:#374151;line-height:1.9}.sv a{color:${c};text-decoration:none}.main{flex:1;padding:48px 44px;background:#fff}`,
+      ),
+      `<div class="pg"><div class="side"><div class="savatar">✦</div><div class="snm">${nm}</div><div class="srl">${ttl}</div>${d.personal.email ? `<div class="slbl">Email</div><div class="sv"><a href="mailto:${d.personal.email}">${d.personal.email}</a></div>` : ""}${d.personal.phone ? `<div class="slbl">Phone</div><div class="sv">${d.personal.phone}</div>` : ""}${d.personal.location ? `<div class="slbl">Location</div><div class="sv">${d.personal.location}</div>` : ""}${d.personal.linkedin ? `<div class="slbl">LinkedIn</div><div class="sv"><a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.linkedin}</a></div>` : ""}${d.skills.length ? `<div class="slbl" style="margin-top:22px">Skills</div><div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px">${d.skills.map((s) => `<span style="padding:2px 8px;background:${c}15;border:1px solid ${c}30;border-radius:4px;font-size:10px;color:${c}">${s}</span>`).join("")}</div>` : ""}</div><div class="main">${standardBody(c)}</div></div>`,
+    );
+  if (id === "motion")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:860px;margin:0 auto;background:#fff}.tb{height:5.5px;background:linear-gradient(90deg,${c},#f59e0b)}.hdr{padding:44px 52px;border-bottom:1px solid #f3e4e4;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px}.nm{font-size:48px;font-weight:900;letter-spacing:-3px;text-transform:uppercase;line-height:.95;color:#111827}.rl{font-size:13px;color:${c};letter-spacing:2px;text-transform:uppercase;margin-top:8px;font-weight:600}.cc{text-align:right;font-size:12px;color:#9ca3af}.cv{display:block;margin-bottom:4px}.cv a{color:${c};text-decoration:none}.body{padding:44px 52px}.bb{height:5.5px;background:linear-gradient(90deg,#f59e0b,${c})}`,
+      ),
+      `<div class="pg"><div class="tb"></div><div class="hdr"><div><div class="nm">${nm}</div><div class="rl">${ttl}</div></div><div class="cc">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div></div><div class="body">${standardBody(c)}</div><div class="bb"></div></div>`,
+    );
+  if (id === "studio")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:860px;margin:0 auto;background:#f8f5ff}.top{height:3px;background:linear-gradient(90deg,${c},${c}44)}.hdr{padding:48px 52px 36px;border-bottom:1px solid ${c}18}.nm{font-size:40px;font-weight:800;color:#1e1b4b;letter-spacing:-1.5px;margin-bottom:6px}.rl{font-size:13px;color:${c};font-weight:600;margin-bottom:18px}.chips{display:flex;flex-wrap:wrap;gap:7px}.chip{padding:4px 12px;background:${c}10;border:1px solid ${c}25;border-radius:20px;font-size:11.5px;color:${c}}.body{padding:44px 52px;background:#fff}`,
+      ),
+      `<div class="pg"><div class="top"></div><div class="hdr"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="chips">${links.map((l) => `<span class="chip">${l}</span>`).join("")}</div></div><div class="body">${standardBody(c)}</div></div>`,
+    );
+  if (id === "folio")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:820px;margin:0 auto;padding:52px 64px;background:#fff}.hrow{display:flex;align-items:flex-start;gap:28px;margin-bottom:30px;padding-bottom:24px;border-bottom:2px solid ${c}22}.avatar{width:64px;height:64px;border-radius:12px;background:${c}22;border:2px solid ${c}44;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;color:${c}}.hinfo .nm{font-size:34px;font-weight:800;color:#111827;letter-spacing:-1.5px}.hinfo .rl{font-size:13px;color:${c};font-weight:600;margin-top:4px}.ctrow{display:flex;flex-wrap:wrap;gap:4px 16px;margin-top:8px}.cv{font-size:12px;color:#9ca3af}.cv a{color:${c};text-decoration:none}`,
+      ),
+      `<div class="pg"><div class="hrow"><div class="avatar">✦</div><div class="hinfo"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div></div></div>${standardBody(c)}</div>`,
+    );
+  if (id === "artboard")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:820px;margin:0 auto;background:#f4f3f8;padding:8px}.card{background:#fff;border-radius:8px;overflow:hidden;border:1.5px dashed ${c}44}.top{height:3px;background:${c}}.hdr{padding:40px 52px 28px}.nm{font-size:36px;font-weight:800;color:#111827;letter-spacing:-1.5px}.rl{font-size:13px;color:${c};font-weight:600;margin-top:5px}.ctrow{display:flex;flex-wrap:wrap;gap:4px 16px;margin-top:10px;margin-bottom:4px}.cv{font-size:12px;color:#9ca3af}.cv a{color:${c};text-decoration:none}.body{padding:28px 52px 52px}`,
+      ),
+      `<div class="pg"><div class="card"><div class="top"></div><div class="hdr"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div></div><div class="body">${standardBody(c)}</div></div></div>`,
+    );
+  if (id === "palette")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:820px;margin:0 auto;padding:60px 64px;background:#fff7f5;border-left:4px solid ${c}}.nm{font-size:40px;font-weight:800;color:#1c0a06;letter-spacing:-1.5px;margin-bottom:6px}.rl{font-size:13px;color:${c};font-weight:600;margin-bottom:18px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 18px;margin-bottom:14px}.cv{font-size:12px;color:#78716c}.cv a{color:${c};text-decoration:none}.div{height:1px;background:#fce7e0;margin:18px 0}`,
+      ),
+      `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`,
+    );
+  if (id === "frame")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:820px;margin:0 auto;padding:16px;background:#fafafa}.inner{background:#fff;border:2px solid ${c};border-radius:10px;padding:44px 52px;overflow:hidden}.nm{font-size:38px;font-weight:800;color:#111827;letter-spacing:-1.5px;margin-bottom:6px}.rl{font-size:13px;color:${c};font-weight:600;margin-bottom:14px}.ctrow{display:flex;flex-wrap:wrap;gap:4px 16px;margin-bottom:14px}.cv{font-size:12px;color:#9ca3af}.cv a{color:${c};text-decoration:none}.div{height:1px;background:${c}20;margin:18px 0}`,
+      ),
+      `<div class="pg"><div class="inner"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div></div>`,
+    );
+  if (id === "mosaic")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:880px;margin:0 auto;background:#fff}.hdr{padding:44px 52px;display:flex;gap:24px;align-items:center;border-bottom:1px solid #f0f0f0}.mosaic{display:grid;grid-template-columns:repeat(3,34px);grid-template-rows:repeat(3,34px);gap:2px;flex-shrink:0}.cell{border-radius:4px}.nm{font-size:34px;font-weight:800;color:#111827;letter-spacing:-1.5px}.rl{font-size:13px;color:${c};font-weight:600;margin:6px 0 12px}.ctrow{display:flex;flex-wrap:wrap;gap:4px 14px}.cv{font-size:12px;color:#9ca3af}.cv a{color:${c};text-decoration:none}.body{padding:36px 52px}`,
+      ),
+      `<div class="pg"><div class="hdr"><div class="mosaic">${[...Array(9)].map((_, i) => `<div class="cell" style="background:${i % 3 === 0 ? c : i % 3 === 1 ? `${c}66` : `${c}22`}"></div>`).join("")}</div><div><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div></div></div><div class="body">${standardBody(c)}</div></div>`,
+    );
+  if (id === "radiant")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:860px;margin:0 auto;padding:62px 68px;background:#fff;border-left:5px solid ${c}}.nm{font-size:44px;font-weight:800;letter-spacing:-2px;color:#1e1b4b;line-height:1;margin-bottom:6px}.rl{font-size:13px;color:${c};font-weight:600;margin-bottom:20px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 18px;margin-bottom:36px}.cv{font-size:12px;color:#9ca3af}.cv a{color:${c};text-decoration:none}.div{height:1px;background:${c}20;margin:22px 0}`,
+      ),
+      `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`,
+    );
+  if (id === "solstice")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:880px;margin:0 auto;background:#fff}.topbar{height:3px;background:${c}}.hdr{padding:44px 52px;background:${c}08;border-bottom:2px solid ${c}18;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px}.nm{font-size:36px;font-weight:800;color:#0f172a;letter-spacing:-1.5px}.rl{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:${c};margin-top:6px;margin-bottom:14px}.ctrow{display:flex;flex-wrap:wrap;gap:4px 14px}.cv{font-size:12px;color:#64748b}.cv a{color:${c};text-decoration:none}.card{background:#fff;border:1px solid ${c}20;border-radius:10px;padding:14px 18px}.card-l{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:${c};margin-bottom:4px}.card-v{font-size:12px;font-weight:700;color:#0f172a;line-height:1.4}.body{padding:36px 52px}.bot{height:3px;background:${c}}`,
+      ),
+      `<div class="pg"><div class="topbar"></div><div class="hdr"><div><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div></div>${d.company.name ? `<div class="card"><div class="card-l">Position</div><div class="card-v">${d.company.jobTitle || "Open Role"}<br><span style="font-size:11px;font-weight:400;color:#64748b">${d.company.name}</span></div></div>` : ""}</div><div class="body">${standardBody(c)}</div><div class="bot"></div></div>`,
+    );
+  if (id === "meridian")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:880px;margin:0 auto;background:#f8fafc}.top{height:2px;background:${c}}.hdr{padding:28px 52px;background:#fff;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}.nm{font-size:34px;font-weight:800;color:#0f172a;letter-spacing:-1.5px}.rl{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:${c};margin-top:5px}.ctrow{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px}.cv{font-size:12px;color:#64748b}.cv a{color:${c};text-decoration:none}.badge{background:${c};border-radius:8px;padding:12px 18px;text-align:center}.badge-t{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.75);margin-bottom:3px}.badge-v{font-size:11px;font-weight:700;color:#fff;line-height:1.4}.tb2{height:2px;background:${c}}.body{padding:32px 52px}`,
+      ),
+      `<div class="pg"><div class="top"></div><div class="hdr"><div><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div></div>${d.company.name ? `<div class="badge"><div class="badge-t">Applying To</div><div class="badge-v">${d.company.jobTitle || "Role"}<br><span style="font-size:10px;opacity:.8">${d.company.name}</span></div></div>` : ""}</div><div class="tb2"></div><div class="body">${standardBody(c)}</div></div>`,
+    );
+  if (id === "presidio")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:880px;margin:0 auto;background:#fafafa}.top{height:2px;background:${c}}.hdr{padding:44px 52px;background:#fff;border-bottom:1px solid #e5e7eb}.nm{font-size:36px;font-weight:800;color:#111827;letter-spacing:-1.5px;margin-bottom:6px}.rl{font-size:13px;color:${c};font-weight:600;margin-bottom:16px}.inforow{display:flex;background:${c}08;border:1px solid ${c}15;border-radius:8px;padding:10px 14px;flex-wrap:wrap;gap:16px}.cv{font-size:12px;color:#374151}.cv a{color:${c};text-decoration:none}.body{padding:36px 52px}`,
+      ),
+      `<div class="pg"><div class="top"></div><div class="hdr"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="inforow">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div></div><div class="body">${standardBody(c)}</div></div>`,
+    );
+  if (id === "accord")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:880px;margin:0 auto;background:#fff}.top{height:4px;background:linear-gradient(90deg,${c},${c}44)}.hdr{padding:40px 52px;border-bottom:2px solid #f1f5f9}.nm{font-size:36px;font-weight:800;color:#0f172a;letter-spacing:-1.5px;margin-bottom:6px}.rl{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:${c};margin-bottom:14px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 18px}.cv{font-size:12px;color:#64748b}.cv a{color:${c};text-decoration:none}.body{padding:36px 52px}`,
+      ),
+      `<div class="pg"><div class="top"></div><div class="hdr"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div></div><div class="body">${standardBody(c)}</div></div>`,
+    );
+  if (id === "circuit")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:880px;margin:0 auto;background:#f8faff;padding:60px 64px}.nm{font-size:38px;font-weight:800;color:#0f172a;letter-spacing:-1.5px;margin-bottom:6px}.rl{font-size:13px;color:${c};font-weight:600;margin-bottom:18px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 16px;margin-bottom:14px}.cv{font-size:12px;color:#64748b;padding:3px 10px;background:${c}08;border:1px solid ${c}18;border-radius:6px}.cv a{color:${c};text-decoration:none}.div{height:1px;background:${c}18;margin:20px 0}`,
+      ),
+      `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`,
+    );
+  if (id === "blueprint")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:880px;margin:0 auto;background:#eff6ff;padding:60px 64px}.nm{font-size:38px;font-weight:800;color:#1e3a8a;letter-spacing:-1.5px;margin-bottom:6px}.rl{font-size:13px;color:${c};font-weight:600;margin-bottom:18px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 16px;margin-bottom:14px}.cv{font-size:12px;color:#3b82f6}.cv a{color:${c};text-decoration:none}.div{height:1px;background:#93c5fd;margin:20px 0}`,
+      ),
+      `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`,
+    );
+  if (id === "axiom")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:880px;margin:0 auto;background:#fff}.top{height:4px;background:${c}}.hdr{padding:38px 52px;border-bottom:2px solid ${c}15}.nm{font-size:36px;font-weight:800;color:#0f172a;letter-spacing:-1.5px;margin-bottom:6px}.rl{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:${c};margin-bottom:14px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 16px}.cv{font-size:12px;color:#64748b}.cv a{color:${c};text-decoration:none}.body{padding:36px 52px}.bot{height:2px;background:${c}15}`,
+      ),
+      `<div class="pg"><div class="top"></div><div class="hdr"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div></div><div class="body">${standardBody(c)}</div><div class="bot"></div></div>`,
+    );
+  if (id === "signal")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:880px;margin:0 auto;padding:60px 64px;background:#fff}.nm{font-size:42px;font-weight:800;color:#0f172a;letter-spacing:-2px;margin-bottom:6px}.rl{font-size:13px;color:${c};font-weight:600;margin-bottom:20px}.ctrow{display:flex;flex-wrap:wrap;gap:5px 18px;margin-bottom:14px}.cv{font-size:12px;color:#64748b}.cv a{color:${c};text-decoration:none}.div{height:1px;background:#e2e8f0;margin:20px 0}`,
+      ),
+      `<div class="pg"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div><div class="div"></div>${standardBody(c)}</div>`,
+    );
+  if (id === "quantum")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:880px;margin:0 auto;background:#f8fafc}.hdr{padding:48px 52px;background:#fff;border-bottom:1px solid #e2e8f0;position:relative;overflow:hidden}.accent-corner{position:absolute;top:0;left:0;width:0;height:0;border-style:solid;border-width:60px 60px 0 0;border-color:${c} transparent transparent transparent}.nm{font-size:38px;font-weight:800;color:#0f172a;letter-spacing:-1.5px;margin-bottom:6px;position:relative}.rl{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:${c};margin-bottom:16px;position:relative}.ctrow{display:flex;flex-wrap:wrap;gap:5px 16px;position:relative}.cv{font-size:12px;color:#64748b}.cv a{color:${c};text-decoration:none}.body{padding:36px 52px}.bot{height:3px;background:${c}44}`,
+      ),
+      `<div class="pg"><div class="hdr"><div class="accent-corner"></div><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div></div><div class="body">${standardBody(c)}</div><div class="bot"></div></div>`,
+    );
+  if (id === "corporate")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:880px;margin:0 auto;background:#fff}.hdr{padding:0 52px;background:#1e3a5f;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;min-height:70px}.hdr-l{padding:18px 0}.nm{font-size:28px;font-weight:800;color:white;letter-spacing:-1px}.rl{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:${c};margin-top:4px}.cv{font-size:11px;color:rgba(255,255,255,.7);line-height:2;display:block}.cv a{color:${c};text-decoration:none}.stripe{height:5px;background:${c}}.body{padding:36px 52px}`,
+      ),
+      `<div class="pg"><div class="hdr"><div class="hdr-l"><div class="nm">${nm}</div><div class="rl">${ttl}</div></div><div>${links
+        .slice(0, 4)
+        .map((l) => `<span class="cv">${l}</span>`)
+        .join(
+          "",
+        )}</div></div><div class="stripe"></div><div class="body">${standardBody(c)}</div></div>`,
+    );
+  if (id === "executive")
+    return baseHTML(
+      baseCSS(
+        headerChipStyle +
+          `.hdr{background:linear-gradient(135deg,${c},${c}cc)!important}`,
+      ),
+      `<div class="pg"><div class="hdr" style="background:linear-gradient(135deg,${c},${c}cc)"><div class="nm">${nm}</div><div class="rl">${ttl}</div>${chipsHTML}</div><div class="body">${standardBody(c)}</div></div>`,
+    );
+  if (id === "titan")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:880px;margin:0 auto;background:#fff;border-left:8px solid ${c}}.hdr{padding:44px 48px;border-bottom:2px solid #e5e7eb}.nm{font-size:36px;font-weight:800;color:#1f2937;letter-spacing:-1.5px}.rl{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:${c};margin-top:7px;margin-bottom:14px}.ctrow{display:flex;flex-wrap:wrap;gap:4px 18px}.cv{font-size:12px;color:#6b7280}.cv a{color:${c};text-decoration:none}.body{padding:36px 48px}`,
+      ),
+      `<div class="pg"><div class="hdr"><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div></div><div class="body">${standardBody(c)}</div></div>`,
+    );
+  if (id === "oxford")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:800px;margin:0 auto;padding:56px 68px;background:#faf9f7}.rule{height:2px;background:${c};margin-bottom:3px}.rule2{height:.5px;background:${c}66;margin-bottom:18px}.nm{font-size:40px;font-weight:800;color:#1a1209;text-align:center;letter-spacing:-1.5px;margin-bottom:4px}.rl{font-size:11px;color:${c};text-align:center;letter-spacing:3px;text-transform:uppercase;margin-bottom:10px}.ctrow{display:flex;justify-content:center;flex-wrap:wrap;gap:4px 18px;margin-bottom:6px}.cv{font-size:12px;color:#78716c}.cv a{color:${c};text-decoration:none}.rule3{height:.5px;background:${c}66;margin-top:12px;margin-bottom:20px}`,
+      ),
+      `<div class="pg"><div class="rule"></div><div class="rule2"></div><div class="nm">${nm}</div><div class="rl">${ttl}</div><div class="ctrow">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div><div class="rule3"></div>${standardBody(c)}</div>`,
+    );
+  if (id === "summit")
+    return baseHTML(
+      baseCSS(
+        `.pg{max-width:880px;margin:0 auto;background:#fff}.top{height:3px;background:${c}}.hdr{padding:40px 52px;background:#1e293b;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}.nm{font-size:34px;font-weight:800;color:white;letter-spacing:-1.5px}.rl{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:${c};margin-top:6px}.badge{background:${c};border-radius:8px;padding:12px 18px;text-align:center}.badge-t{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.75);margin-bottom:4px}.badge-r{font-size:12px;font-weight:700;color:white;line-height:1.4}.ctbar{display:flex;flex-wrap:wrap;background:#0f172a}.cv{font-size:11px;color:#94a3b8;padding:8px 20px;border-right:1px solid rgba(255,255,255,.06)}.cv a{color:${c};text-decoration:none}.body{padding:36px 52px}.bot{height:3px;background:${c}}`,
+      ),
+      `<div class="pg"><div class="top"></div><div class="hdr"><div><div class="nm">${nm}</div><div class="rl">${ttl}</div></div>${d.company.name ? `<div class="badge"><div class="badge-t">Applying To</div><div class="badge-r">${d.company.jobTitle || "Role"}<br><span style="font-size:10px;font-weight:400;opacity:.8">${d.company.name}</span></div></div>` : ""}</div><div class="ctbar">${links.map((l) => `<span class="cv">${l}</span>`).join("")}</div><div class="body">${standardBody(c)}</div><div class="bot"></div></div>`,
+    );
+  if (id === "prism")
+    return baseHTML(
+      baseCSS(headerChipStyle),
+      `<div class="pg"><div class="hdr" style="background:${c}"><div style="position:absolute;right:0;top:0;bottom:0;width:55%;background:rgba(255,255,255,.1);clip-path:polygon(25% 0,100% 0,100% 100%,0 100%)"></div><div class="nm">${nm}</div><div class="rl">${ttl}</div>${chipsHTML}</div><div class="body">${standardBody(c)}</div></div>`,
+    );
+  // fallback
+  return baseHTML(
+    baseCSS(headerChipStyle),
+    `<div class="pg"><div class="hdr" style="background:linear-gradient(135deg,${c},${c}bb)"><div class="nm">${nm}</div><div class="rl">${ttl}</div>${chipsHTML}</div><div class="body">${standardBody(c)}</div></div>`,
+  );
 }
-
-/* ─────────────────────────────────────────────────────────────
-   COLOR PALETTE OPTIONS
-───────────────────────────────────────────────────────────────*/
-const COLOR_PALETTES = [
-  { label: "Indigo", value: "#6366f1" },
-  { label: "Violet", value: "#7c3aed" },
-  { label: "Purple", value: "#9333ea" },
-  { label: "Sky", value: "#0369a1" },
-  { label: "Teal", value: "#0d9488" },
-  { label: "Emerald", value: "#059669" },
-  { label: "Amber", value: "#d97706" },
-  { label: "Rose", value: "#e11d48" },
-  { label: "Orange", value: "#ea580c" },
-  { label: "Slate", value: "#334155" },
-  { label: "Navy", value: "#1e3a5f" },
-  { label: "Maroon", value: "#9f1239" },
-];
 
 /* ─────────────────────────────────────────────────────────────
    STEPS
@@ -12721,91 +14347,173 @@ const STEPS: { id: Step; label: string; icon: string }[] = [
   { id: "review", label: "Review", icon: "✅" },
 ];
 
-/* ─────────────────────────────────────────────────────────────
-   FIELD HELPER
-───────────────────────────────────────────────────────────────*/
-function F({ label, icon, required, children }: { label: string; icon?: string; required?: boolean; children: React.ReactNode }) {
+function F({
+  label,
+  icon,
+  required,
+  children,
+}: {
+  label: string;
+  icon?: string;
+  required?: boolean;
+  children: React.ReactNode;
+}) {
   return (
     <div className="mb-3.5">
       <label className="block text-[10.5px] font-bold tracking-wide uppercase text-slate-500 mb-1.5">
-        {label}{required && <span className="text-red-500"> *</span>}
+        {label}
+        {required && <span className="text-red-500"> *</span>}
       </label>
       <div className="relative">
-        {icon && <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[13px] opacity-50 pointer-events-none">{icon}</span>}
-        <div className={icon ? "[&>input]:pl-8 [&>textarea]:pl-3 [&>select]:pl-8" : ""}>{children}</div>
+        {icon && (
+          <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[13px] opacity-50 pointer-events-none">
+            {icon}
+          </span>
+        )}
+        <div
+          className={
+            icon ? "[&>input]:pl-8 [&>textarea]:pl-3 [&>select]:pl-8" : ""
+          }
+        >
+          {children}
+        </div>
       </div>
     </div>
   );
 }
-
-const inp = "w-full px-3 py-2.5 text-[13px] font-[500] border-[1.5px] border-slate-200 rounded-xl outline-none transition-all duration-150 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 placeholder:text-slate-400 bg-white text-slate-800";
+const inp =
+  "w-full px-3 py-2.5 text-[13px] font-[500] border-[1.5px] border-slate-200 rounded-xl outline-none transition-all duration-150 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 placeholder:text-slate-400 bg-white text-slate-800";
 const ta = `${inp} resize-y min-h-[80px] leading-relaxed px-3`;
 
 /* ─────────────────────────────────────────────────────────────
-   LOGIN POPUP
+   POPUPS
 ───────────────────────────────────────────────────────────────*/
-function LoginPopup({ onClose, onLogin }: { onClose: () => void; onLogin: () => void }) {
+function LoginPopup({
+  onClose,
+  onLogin,
+}: {
+  onClose: () => void;
+  onLogin: () => void;
+}) {
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-[2000] flex items-center justify-center p-4">
-      <motion.div initial={{ opacity: 0, scale: 0.92, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
-        className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/60 via-white to-violet-50/40 pointer-events-none"/>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.92, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full relative overflow-hidden"
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/60 via-white to-violet-50/40 pointer-events-none" />
         <div className="relative">
-          <div className="w-16 h-16 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-5 shadow-lg shadow-indigo-200">✦</div>
-          <h2 className="text-[22px] font-extrabold text-slate-900 text-center mb-2">Sign in to Continue</h2>
-          <p className="text-[13.5px] text-slate-500 text-center mb-6 leading-relaxed">
-            You need to be logged in to build and download your professional cover letter.
-          </p>
-          <div className="space-y-3">
-            <button onClick={onLogin} className="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-bold text-[14px] rounded-2xl shadow-lg shadow-indigo-200 hover:shadow-xl hover:-translate-y-0.5 transition-all">
-              Sign In to Your Account
-            </button>
-            <button onClick={onClose} className="w-full py-2.5 text-[13px] text-slate-400 font-semibold hover:text-slate-600 transition-colors">
-              Browse templates first →
-            </button>
+          <div className="w-16 h-16 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-5 shadow-lg shadow-indigo-200">
+            ✦
           </div>
-          <p className="text-center text-[12px] text-slate-400 mt-4">Don't have an account? <span className="text-indigo-600 font-semibold cursor-pointer" onClick={onLogin}>Sign up free</span></p>
+          <h2 className="text-[22px] font-extrabold text-slate-900 text-center mb-2">
+            Sign in to Continue
+          </h2>
+          <p className="text-[13.5px] text-slate-500 text-center mb-6 leading-relaxed">
+            You need to be logged in to build and download your professional
+            cover letter.
+          </p>
+          <button
+            onClick={onLogin}
+            className="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-bold text-[14px] rounded-2xl shadow-lg shadow-indigo-200 hover:shadow-xl hover:-translate-y-0.5 transition-all mb-3"
+          >
+            Sign In to Your Account
+          </button>
+          <button
+            onClick={onClose}
+            className="w-full py-2.5 text-[13px] text-slate-400 font-semibold hover:text-slate-600 transition-colors"
+          >
+            Browse templates first →
+          </button>
+          <p className="text-center text-[12px] text-slate-400 mt-3">
+            Don't have an account?{" "}
+            <span
+              className="text-indigo-600 font-semibold cursor-pointer"
+              onClick={onLogin}
+            >
+              Sign up free
+            </span>
+          </p>
         </div>
       </motion.div>
     </div>
   );
 }
 
-/* ─────────────────────────────────────────────────────────────
-   PREMIUM UPGRADE POPUP
-───────────────────────────────────────────────────────────────*/
-function PremiumPopup({ onClose, onUpgrade }: { onClose: () => void; onUpgrade: () => void }) {
+function PremiumPopup({
+  onClose,
+  onUpgrade,
+}: {
+  onClose: () => void;
+  onUpgrade: () => void;
+}) {
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-[2000] flex items-center justify-center p-4">
-      <motion.div initial={{ opacity: 0, scale: 0.92, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
-        className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-amber-50/60 via-white to-indigo-50/40 pointer-events-none"/>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.92, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full relative overflow-hidden"
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-amber-50/60 via-white to-indigo-50/40 pointer-events-none" />
         <div className="relative">
-          <button onClick={onClose} className="absolute -top-1 -right-1 w-8 h-8 bg-slate-100 hover:bg-red-50 rounded-full flex items-center justify-center text-slate-400 hover:text-red-400 transition-all">
-            <FiX className="w-4 h-4"/>
+          <button
+            onClick={onClose}
+            className="absolute -top-1 -right-1 w-8 h-8 bg-slate-100 hover:bg-red-50 rounded-full flex items-center justify-center text-slate-400 hover:text-red-400 transition-all"
+          >
+            <FiX className="w-4 h-4" />
           </button>
-          <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-3 shadow-lg shadow-amber-200">⭐</div>
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-full text-amber-700 text-[11.5px] font-bold mb-4 mx-auto flex">
-            <FiLock className="w-3 h-3"/> Premium Feature
+          <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-3 shadow-lg shadow-amber-200">
+            ⭐
           </div>
-          <h2 className="text-[22px] font-extrabold text-slate-900 text-center mb-2">Upgrade to Premium</h2>
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-full text-amber-700 text-[11.5px] font-bold mb-4 mx-auto flex justify-center">
+            <FiLock className="w-3 h-3" /> Premium Feature
+          </div>
+          <h2 className="text-[22px] font-extrabold text-slate-900 text-center mb-2">
+            Upgrade to Premium
+          </h2>
           <p className="text-[13.5px] text-slate-500 text-center mb-6 leading-relaxed">
-            Building and downloading your cover letter requires a Premium plan. Unlock all 50 templates and powerful AI features.
+            Building and downloading your cover letter requires a Premium plan.
+            Unlock all 50 templates and powerful AI features.
           </p>
           <div className="grid grid-cols-2 gap-2.5 mb-6">
-            {["50 Unique Templates","AI Content Assist","Custom Fonts & Colors","PDF Download","Unlimited Letters","Priority Support"].map((f) => (
-              <div key={f} className="flex items-center gap-2 text-[12px] font-semibold text-slate-700 bg-gradient-to-r from-indigo-50 to-violet-50 rounded-xl p-2.5">
+            {[
+              "50 Unique Templates",
+              "AI Content Assist",
+              "Custom Fonts & Colors",
+              "PDF Download",
+              "Unlimited Letters",
+              "Priority Support",
+            ].map((f) => (
+              <div
+                key={f}
+                className="flex items-center gap-2 text-[12px] font-semibold text-slate-700 bg-gradient-to-r from-indigo-50 to-violet-50 rounded-xl p-2.5"
+              >
                 <span className="w-4 h-4 bg-indigo-600 rounded-full flex items-center justify-center flex-shrink-0">
-                  <svg viewBox="0 0 10 10" width="8" height="8" fill="none"><polyline points="1,5 4,8 9,2" stroke="white" strokeWidth="1.8"/></svg>
+                  <svg viewBox="0 0 10 10" width="8" height="8" fill="none">
+                    <polyline
+                      points="1,5 4,8 9,2"
+                      stroke="white"
+                      strokeWidth="1.8"
+                    />
+                  </svg>
                 </span>
                 {f}
               </div>
             ))}
           </div>
-          <button onClick={onUpgrade} className="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-bold text-[14px] rounded-2xl shadow-lg shadow-indigo-200 hover:shadow-xl hover:-translate-y-0.5 transition-all">
+          <button
+            onClick={onUpgrade}
+            className="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-bold text-[14px] rounded-2xl shadow-lg shadow-indigo-200 hover:shadow-xl hover:-translate-y-0.5 transition-all"
+          >
             Upgrade to Premium →
           </button>
-          <button onClick={onClose} className="mt-2.5 w-full py-2 text-[12.5px] text-slate-400 font-semibold hover:text-slate-600 transition-colors">
+          <button
+            onClick={onClose}
+            className="mt-2.5 w-full py-2 text-[12.5px] text-slate-400 font-semibold hover:text-slate-600 transition-colors"
+          >
             Maybe later
           </button>
         </div>
@@ -12839,19 +14547,19 @@ export default function CoverLetterGenerator() {
   const liveRef = useRef<HTMLIFrameElement>(null);
   const modalRef = useRef<HTMLIFrameElement>(null);
 
-  /* ── Auth + Premium check ── */
+  // ── Auth + premium check ──
   useEffect(() => {
     const userDetails = getLocalStorage<User>("user_details");
     const userId = userDetails?.id;
     if (!userId) {
       setIsLoggedIn(false);
       setIsPremium(false);
-      // Show login popup after short delay
       setTimeout(() => setShowLoginPopup(true), 600);
       return;
     }
     setIsLoggedIn(true);
-    axios.get(`${API_URL}/api/users/dashboard`, { params: { userId } })
+    axios
+      .get(`${API_URL}/api/users/dashboard`, { params: { userId } })
       .then((res) => {
         const payment = res?.data?.payments?.[0];
         const premium = payment?.plan === "Premium";
@@ -12861,28 +14569,38 @@ export default function CoverLetterGenerator() {
       .catch(() => setIsPremium(false));
   }, []);
 
-  const showToast = (m: string) => { setToast(m); setTimeout(() => setToast(""), 2800); };
+  const showToast = (m: string) => {
+    setToast(m);
+    setTimeout(() => setToast(""), 2800);
+  };
 
   const rebuild = useCallback(() => {
     const h = buildHTML(tplId, data);
     setHtml(h);
     return h;
   }, [tplId, data]);
-
   useEffect(() => {
     const t = setTimeout(rebuild, 200);
     return () => clearTimeout(t);
   }, [rebuild]);
 
-  const writeIframe = (ref: React.RefObject<HTMLIFrameElement | null>, h: string) => {
+  const writeIframe = (
+    ref: React.RefObject<HTMLIFrameElement | null>,
+    h: string,
+  ) => {
     if (!ref.current) return;
     const doc = ref.current.contentDocument;
     if (!doc) return;
-    doc.open(); doc.write(h); doc.close();
+    doc.open();
+    doc.write(h);
+    doc.close();
   };
-
-  useEffect(() => { if (html && liveRef.current) writeIframe(liveRef, html); }, [html]);
-  useEffect(() => { if (modal && html && modalRef.current) writeIframe(modalRef, html); }, [modal, html]);
+  useEffect(() => {
+    if (html && liveRef.current) writeIframe(liveRef, html);
+  }, [html]);
+  useEffect(() => {
+    if (modal && html && modalRef.current) writeIframe(modalRef, html);
+  }, [modal, html]);
 
   const set = (path: string[], val: string) =>
     setData((prev) => {
@@ -12892,60 +14610,95 @@ export default function CoverLetterGenerator() {
       c[path[path.length - 1]] = val;
       return n;
     });
-
   const setSec = (id: string, f: "title" | "content", v: string) =>
-    setData((p) => ({ ...p, sections: p.sections.map((s) => (s.id === id ? { ...s, [f]: v } : s)) }));
+    setData((p) => ({
+      ...p,
+      sections: p.sections.map((s) => (s.id === id ? { ...s, [f]: v } : s)),
+    }));
 
-  // Guard: when trying to go past template step, check auth/premium
   const handleStepChange = (targetStep: Step) => {
-    if (targetStep === "template") { setStep(targetStep); return; }
-    if (!isLoggedIn) { setShowLoginPopup(true); return; }
-    if (!isPremium) { setShowPremiumPopup(true); return; }
+    if (targetStep === "template") {
+      setStep(targetStep);
+      return;
+    }
+    if (!isLoggedIn) {
+      setShowLoginPopup(true);
+      return;
+    }
+    if (!isPremium) {
+      setShowPremiumPopup(true);
+      return;
+    }
     setStep(targetStep);
   };
-
   const handleContinue = () => {
-    const stepIdx = STEPS.findIndex((s) => s.id === step);
+    const idx = STEPS.findIndex((s) => s.id === step);
     if (step === "template") {
-      if (!isLoggedIn) { setShowLoginPopup(true); return; }
-      if (!isPremium) { setShowPremiumPopup(true); return; }
+      if (!isLoggedIn) {
+        setShowLoginPopup(true);
+        return;
+      }
+      if (!isPremium) {
+        setShowPremiumPopup(true);
+        return;
+      }
     }
-    if (stepIdx < STEPS.length - 1) setStep(STEPS[stepIdx + 1].id);
+    if (idx < STEPS.length - 1) setStep(STEPS[idx + 1].id);
   };
-
   const downloadPDF = async () => {
-    if (!isLoggedIn) { setShowLoginPopup(true); return; }
-    if (!isPremium) { setShowPremiumPopup(true); return; }
+    if (!isLoggedIn) {
+      setShowLoginPopup(true);
+      return;
+    }
+    if (!isPremium) {
+      setShowPremiumPopup(true);
+      return;
+    }
     const h = rebuild();
     setBusy(true);
     try {
-      const r = await axios.post(`${API_URL}/api/candidates/generate-pdf`, { html: h }, { responseType: "blob" });
+      const r = await axios.post(
+        `${API_URL}/api/candidates/generate-pdf`,
+        { html: h },
+        { responseType: "blob" },
+      );
       const url = URL.createObjectURL(r.data);
       const a = document.createElement("a");
       a.href = url;
       a.download = `Cover_Letter_${data.personal.fullName || "Draft"}.pdf`;
-      document.body.appendChild(a); a.click();
+      document.body.appendChild(a);
+      a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
       showToast("✓ PDF downloaded");
-    } catch { showToast("Download failed — try again"); }
-    finally { setBusy(false); }
+    } catch {
+      showToast("Download failed — try again");
+    } finally {
+      setBusy(false);
+    }
   };
 
   const tpl = TEMPLATES.find((t) => t.id === tplId)!;
   const stepIdx = STEPS.findIndex((s) => s.id === step);
-  const cats = ["All", ...Array.from(new Set(TEMPLATES.map((t) => t.tag)))];
-  const shown = filter === "All" ? TEMPLATES : TEMPLATES.filter((t) => t.tag === filter);
-  const tones = ["Professional", "Confident", "Enthusiastic", "Formal", "Creative", "Friendly"];
+  const cats = getCLTemplateTags();
+  const shown = filterCLTemplates(filter);
+  const tones = [
+    "Professional",
+    "Confident",
+    "Enthusiastic",
+    "Formal",
+    "Creative",
+    "Friendly",
+  ];
 
-  /* Loading state */
-  if (isLoggedIn === null) {
+  if (isLoggedIn === null)
     return (
       <div className="min-h-screen bg-indigo-50 flex items-center justify-center">
-        <div className="text-indigo-600 font-bold text-[14px] animate-pulse">Loading Cover Letter Studio…</div>
+        <div className="text-indigo-600 font-bold text-[14px] animate-pulse">
+          Loading Cover Letter Studio…
+        </div>
       </div>
     );
-  }
 
   return (
     <>
@@ -12966,7 +14719,6 @@ export default function CoverLetterGenerator() {
         .scrollbar-none::-webkit-scrollbar{display:none}
       `}</style>
 
-      {/* LOGIN POPUP */}
       <AnimatePresence>
         {showLoginPopup && (
           <LoginPopup
@@ -12975,8 +14727,6 @@ export default function CoverLetterGenerator() {
           />
         )}
       </AnimatePresence>
-
-      {/* PREMIUM POPUP */}
       <AnimatePresence>
         {showPremiumPopup && !showLoginPopup && (
           <PremiumPopup
@@ -12988,105 +14738,203 @@ export default function CoverLetterGenerator() {
 
       {/* NAV */}
       <nav className="h-[58px] bg-white border-b border-slate-200 flex items-center px-4 md:px-5 gap-3 z-50 relative shadow-sm flex-shrink-0">
-        <button onClick={() => router.push("/")} className="cursor-pointer flex-shrink-0">
+        <button
+          onClick={() => router.push("/")}
+          className="cursor-pointer flex-shrink-0"
+        >
           <div className="relative w-[100px] sm:w-[140px] h-[34px] sm:h-[46px]">
-            <Image src="/logo.png" alt="Logo" fill className="object-contain" priority sizes="(max-width:640px) 100px,140px"/>
+            <Image
+              src="/logo.png"
+              alt="Logo"
+              fill
+              className="object-contain"
+              priority
+              sizes="(max-width:640px) 100px,140px"
+            />
           </div>
         </button>
-
-        {/* Wizard steps */}
         <div className="flex items-center flex-1 justify-center overflow-x-auto scrollbar-none gap-0 py-1">
           {STEPS.map((s, i) => (
             <React.Fragment key={s.id}>
-              {i > 0 && <div className={`w-5 h-0.5 flex-shrink-0 transition-colors ${i <= stepIdx ? "bg-emerald-500" : "bg-slate-200"}`}/>}
-              <button onClick={() => handleStepChange(s.id)}
-                className={`flex items-center gap-1.5 px-2 py-1 rounded-full text-[12px] font-semibold transition-all flex-shrink-0 cursor-pointer
-                  ${i < stepIdx ? "text-slate-800" : i === stepIdx ? "text-indigo-600 bg-indigo-50" : "text-slate-400 hover:bg-slate-50"}`}>
-                <span className={`w-[22px] h-[22px] rounded-full flex items-center justify-center text-[10px] transition-all flex-shrink-0
-                  ${i < stepIdx ? "bg-emerald-500 text-white" : i === stepIdx ? "bg-gradient-to-br from-indigo-600 to-violet-600 text-white shadow-[0_0_0_3px_rgba(91,56,240,.16)]" : "bg-slate-100 text-slate-400"}`}>
-                  {i < stepIdx ? <svg viewBox="0 0 14 14" width="11" height="11" fill="none"><polyline points="2,8 5,12 12,3" stroke="white" strokeWidth="2.2"/></svg> : i + 1}
+              {i > 0 && (
+                <div
+                  className={`w-5 h-0.5 flex-shrink-0 transition-colors ${i <= stepIdx ? "bg-emerald-500" : "bg-slate-200"}`}
+                />
+              )}
+              <button
+                onClick={() => handleStepChange(s.id)}
+                className={`flex items-center gap-1.5 px-2 py-1 rounded-full text-[12px] font-semibold transition-all flex-shrink-0 cursor-pointer ${i < stepIdx ? "text-slate-800" : i === stepIdx ? "text-indigo-600 bg-indigo-50" : "text-slate-400 hover:bg-slate-50"}`}
+              >
+                <span
+                  className={`w-[22px] h-[22px] rounded-full flex items-center justify-center text-[10px] flex-shrink-0 ${i < stepIdx ? "bg-emerald-500 text-white" : i === stepIdx ? "bg-gradient-to-br from-indigo-600 to-violet-600 text-white shadow-[0_0_0_3px_rgba(91,56,240,.16)]" : "bg-slate-100 text-slate-400"}`}
+                >
+                  {i < stepIdx ? (
+                    <svg viewBox="0 0 14 14" width="11" height="11" fill="none">
+                      <polyline
+                        points="2,8 5,12 12,3"
+                        stroke="white"
+                        strokeWidth="2.2"
+                      />
+                    </svg>
+                  ) : (
+                    i + 1
+                  )}
                 </span>
                 <span className="hidden sm:inline">{s.label}</span>
               </button>
             </React.Fragment>
           ))}
         </div>
-
-        {/* Download */}
-        <button onClick={downloadPDF} disabled={busy}
-          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[12px] font-bold bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md hover:shadow-lg hover:-translate-y-px disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none transition-all flex-shrink-0">
+        <button
+          onClick={downloadPDF}
+          disabled={busy}
+          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[12px] font-bold bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md hover:shadow-lg hover:-translate-y-px disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none transition-all flex-shrink-0"
+        >
           {busy ? "⏳" : "⬇"} PDF
         </button>
       </nav>
 
       {/* SHELL */}
       <div className="grid lg:grid-cols-[400px_1fr] xl:grid-cols-[420px_1fr] h-[calc(100vh-58px)]">
-        {/* LEFT PANEL */}
+        {/* LEFT */}
         <div className="flex flex-col overflow-hidden bg-slate-50 border-r border-slate-200">
           <div className="flex-shrink-0 px-5 pt-4 pb-0">
             <h2 className="font-semibold text-slate-900 tracking-tight mb-0.5 text-[15px]">
-              {step === "template" ? "Choose Template" : step === "personal" ? "Personal Information" : step === "company" ? "Company Details" : step === "content" ? "Letter Content" : "Review & Download"}
+              {step === "template"
+                ? "Choose Template"
+                : step === "personal"
+                  ? "Personal Information"
+                  : step === "company"
+                    ? "Company Details"
+                    : step === "content"
+                      ? "Letter Content"
+                      : "Review & Download"}
             </h2>
             <p className="text-[12.5px] text-slate-500 mb-2">
-              {step === "template" ? "50 unique white & modern designs" : step === "personal" ? "Your details appear as clickable links" : step === "company" ? "Where you're applying" : step === "content" ? "Build your letter paragraph by paragraph" : "Check everything before downloading"}
+              {step === "template"
+                ? "50 unique modern professional designs"
+                : step === "personal"
+                  ? "Your details appear as clickable links"
+                  : step === "company"
+                    ? "Where you're applying"
+                    : step === "content"
+                      ? "Build your letter paragraph by paragraph"
+                      : "Check everything before downloading"}
             </p>
           </div>
 
           <div className="flex-1 overflow-y-auto px-4 pt-3 pb-20 scrollbar-thin scrollbar-thumb-indigo-200 scrollbar-track-transparent">
-
-            {/* ── TEMPLATE STEP ── */}
+            {/* TEMPLATE STEP */}
             {step === "template" && (
               <>
-                {/* Non-premium banner */}
+                {/* Info banners */}
                 {isLoggedIn && !isPremium && (
                   <div className="mb-3 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-3 flex items-center gap-3">
-                    <div className="w-8 h-8 bg-amber-400 rounded-lg flex items-center justify-center text-white text-sm flex-shrink-0">⭐</div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[12px] font-bold text-amber-800">Browse freely, upgrade to use</p>
-                      <p className="text-[11px] text-amber-600">Select any template then upgrade to Premium to build your letter</p>
+                    <div className="w-8 h-8 bg-amber-400 rounded-lg flex items-center justify-center text-white flex-shrink-0">
+                      ⭐
                     </div>
-                    <button onClick={() => setShowPremiumPopup(true)} className="text-[11px] font-bold text-amber-700 bg-amber-100 border border-amber-200 px-2.5 py-1.5 rounded-lg hover:bg-amber-200 transition-all flex-shrink-0">Upgrade</button>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[12px] font-bold text-amber-800">
+                        Browse freely, upgrade to use
+                      </p>
+                      <p className="text-[11px] text-amber-600">
+                        Select any template then upgrade to Premium
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => setShowPremiumPopup(true)}
+                      className="text-[11px] font-bold text-amber-700 bg-amber-100 border border-amber-200 px-2.5 py-1.5 rounded-lg flex-shrink-0"
+                    >
+                      Upgrade
+                    </button>
                   </div>
                 )}
                 {!isLoggedIn && (
                   <div className="mb-3 bg-gradient-to-r from-indigo-50 to-violet-50 border border-indigo-200 rounded-2xl p-3 flex items-center gap-3">
-                    <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white text-sm flex-shrink-0">✦</div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[12px] font-bold text-indigo-800">Browse templates freely</p>
-                      <p className="text-[11px] text-indigo-600">Sign in to build and download your cover letter</p>
+                    <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white flex-shrink-0">
+                      ✦
                     </div>
-                    <button onClick={() => setShowLoginPopup(true)} className="text-[11px] font-bold text-indigo-700 bg-indigo-100 border border-indigo-200 px-2.5 py-1.5 rounded-lg hover:bg-indigo-200 transition-all flex-shrink-0">Sign In</button>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[12px] font-bold text-indigo-800">
+                        Browse templates freely
+                      </p>
+                      <p className="text-[11px] text-indigo-600">
+                        Sign in to build and download
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => setShowLoginPopup(true)}
+                      className="text-[11px] font-bold text-indigo-700 bg-indigo-100 border border-indigo-200 px-2.5 py-1.5 rounded-lg flex-shrink-0"
+                    >
+                      Sign In
+                    </button>
                   </div>
                 )}
 
                 {/* Filter pills */}
                 <div className="flex flex-wrap gap-1.5 mb-3">
-                  {cats.map((c) => (
-                    <button key={c} onClick={() => setFilter(c)}
-                      className={`px-3 py-1 rounded-full text-[11px] font-bold border-[1.5px] transition-all ${filter === c ? "border-indigo-500 text-indigo-600 bg-indigo-50" : "border-slate-200 text-slate-500 bg-white hover:border-indigo-200"}`}>
-                      {c}
+                  {cats.map((cat) => (
+                    <button
+                      key={cat}
+                      onClick={() => setFilter(cat)}
+                      className={`px-3 py-1 rounded-full text-[11px] font-bold border-[1.5px] transition-all ${filter === cat ? "border-indigo-500 text-indigo-600 bg-indigo-50" : "border-slate-200 text-slate-500 bg-white hover:border-indigo-200"}`}
+                    >
+                      {cat}
                     </button>
                   ))}
                 </div>
 
                 {/* Color picker */}
                 <div className="mb-3 bg-white rounded-2xl border border-indigo-100 p-3">
-                  <button onClick={() => setShowColors((v) => !v)} className="w-full flex items-center justify-between text-[12px] font-bold text-slate-700">
+                  <button
+                    onClick={() => setShowColors((v) => !v)}
+                    className="w-full flex items-center justify-between text-[12px] font-bold text-slate-700"
+                  >
                     <span className="flex items-center gap-2">
-                      <span className="w-4 h-4 rounded-full border border-white shadow-sm" style={{ background: data.accentColor || "#6366f1" }}/>
+                      <span
+                        className="w-4 h-4 rounded-full border border-white shadow-sm"
+                        style={{ background: data.accentColor || "#6366f1" }}
+                      />
                       Accent Color
                     </span>
-                    <span className="text-slate-400 text-[10px]">{showColors ? "▲" : "▼"}</span>
+                    <span className="text-slate-400 text-[10px]">
+                      {showColors ? "▲" : "▼"}
+                    </span>
                   </button>
                   {showColors && (
                     <div className="flex flex-wrap gap-2 mt-2.5">
                       {COLOR_PALETTES.map((p) => (
-                        <button key={p.value} title={p.label} onClick={() => setData((d) => ({ ...d, accentColor: p.value }))}
+                        <button
+                          key={p.value}
+                          title={p.label}
+                          onClick={() =>
+                            setData((d) => ({ ...d, accentColor: p.value }))
+                          }
                           className={`w-7 h-7 rounded-full border-2 transition-all ${data.accentColor === p.value ? "border-white scale-110 shadow-lg" : "border-transparent hover:scale-105"}`}
-                          style={{ background: p.value, boxShadow: data.accentColor === p.value ? `0 0 0 2px ${p.value}` : "" }}/>
+                          style={{
+                            background: p.value,
+                            boxShadow:
+                              data.accentColor === p.value
+                                ? `0 0 0 2px ${p.value}`
+                                : "",
+                          }}
+                        />
                       ))}
-                      <label className="w-7 h-7 rounded-full border-2 border-slate-200 overflow-hidden cursor-pointer hover:scale-105 transition-all" title="Custom color">
-                        <input type="color" value={data.accentColor || "#6366f1"} onChange={(e) => setData((d) => ({ ...d, accentColor: e.target.value }))} className="w-8 h-8 -ml-0.5 -mt-0.5 cursor-pointer"/>
+                      <label
+                        className="w-7 h-7 rounded-full border-2 border-slate-200 overflow-hidden cursor-pointer hover:scale-105 transition-all"
+                        title="Custom color"
+                      >
+                        <input
+                          type="color"
+                          value={data.accentColor || "#6366f1"}
+                          onChange={(e) =>
+                            setData((d) => ({
+                              ...d,
+                              accentColor: e.target.value,
+                            }))
+                          }
+                          className="w-8 h-8 -ml-0.5 -mt-0.5 cursor-pointer"
+                        />
                       </label>
                     </div>
                   )}
@@ -13094,174 +14942,567 @@ export default function CoverLetterGenerator() {
 
                 {/* Font picker */}
                 <div className="mb-3 bg-white rounded-2xl border border-indigo-100 p-3">
-                  <button onClick={() => setShowFonts((v) => !v)} className="w-full flex items-center justify-between text-[12px] font-bold text-slate-700">
-                    <span className="flex items-center gap-2"><span className="text-indigo-500">Aa</span>Font: {data.fontFamily}</span>
-                    <span className="text-slate-400 text-[10px]">{showFonts ? "▲" : "▼"}</span>
+                  <button
+                    onClick={() => setShowFonts((v) => !v)}
+                    className="w-full flex items-center justify-between text-[12px] font-bold text-slate-700"
+                  >
+                    <span className="flex items-center gap-2">
+                      <span className="text-indigo-500">Aa</span>Font:{" "}
+                      {data.fontFamily}
+                    </span>
+                    <span className="text-slate-400 text-[10px]">
+                      {showFonts ? "▲" : "▼"}
+                    </span>
                   </button>
                   {showFonts && (
                     <div className="mt-2.5 space-y-1.5 max-h-40 overflow-y-auto">
                       {FONT_FAMILIES.map((f) => (
-                        <button key={f.id} onClick={() => setData((d) => ({ ...d, fontFamily: f.id }))}
-                          className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-[12.5px] transition-all ${data.fontFamily === f.id ? "bg-indigo-50 border border-indigo-200 text-indigo-700 font-bold" : "hover:bg-slate-50 text-slate-700 border border-transparent"}`}>
-                          <span style={{ fontFamily: `'${f.id}',${f.style}` }}>{f.label}</span>
-                          <span className="text-[10px] text-slate-400 font-normal">{f.style}</span>
+                        <button
+                          key={f.id}
+                          onClick={() =>
+                            setData((d) => ({ ...d, fontFamily: f.id }))
+                          }
+                          className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-[12.5px] transition-all ${data.fontFamily === f.id ? "bg-indigo-50 border border-indigo-200 text-indigo-700 font-bold" : "hover:bg-slate-50 text-slate-700 border border-transparent"}`}
+                        >
+                          <span style={{ fontFamily: `'${f.id}',${f.style}` }}>
+                            {f.label}
+                          </span>
+                          <span className="text-[10px] text-slate-400 font-normal">
+                            {f.style}
+                          </span>
                         </button>
                       ))}
                     </div>
                   )}
                 </div>
 
-                {/* Template grid — always browsable */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                {/*
+                  ── TEMPLATE GRID — screenshot images ──────────────────
+                  Uses TemplateCard with Next.js Image component.
+                  Screenshots stored in /public/images/cover-letters/
+                  Named: cl-{template.id}.jpg  (e.g. cl-aurora.jpg)
+                */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   {shown.map((t) => (
-                    <div key={t.id} onClick={() => setTplId(t.id)}
-                      className={`relative bg-white rounded-2xl border-2 overflow-hidden cursor-pointer transition-all duration-200
-                        ${tplId === t.id ? "border-indigo-500 shadow-[0_0_0_3px_rgba(99,102,241,.12),0_8px_24px_rgba(99,102,241,.1)]" : "border-slate-100 shadow-sm hover:-translate-y-1 hover:shadow-md hover:border-indigo-200"}`}>
-                      <div className="h-[95px] overflow-hidden">
-                        <TplThumb id={t.id} color={data.accentColor || "#6366f1"}/>
-                      </div>
-                      {tplId === t.id && (
-                        <div className="absolute top-2 right-2 w-5 h-5 bg-indigo-600 rounded-full flex items-center justify-center shadow">
-                          <svg viewBox="0 0 14 14" width="10" height="10" fill="none"><polyline points="2,8 5,12 12,3" stroke="white" strokeWidth="2.4"/></svg>
-                        </div>
-                      )}
-                      {(!isLoggedIn || !isPremium) && (
-                        <div className="absolute top-2 left-2 w-5 h-5 bg-amber-400 rounded-full flex items-center justify-center shadow" title="Premium">
-                          <FiLock className="w-2.5 h-2.5 text-white"/>
-                        </div>
-                      )}
-                      <div className="px-2.5 py-2">
-                        <div className="text-[9px] font-extrabold tracking-[1.2px] uppercase text-slate-400 mb-0.5">{t.tag}</div>
-                        <div className="text-[12px] font-bold text-slate-900">{t.name}</div>
-                      </div>
-                    </div>
+                    <TemplateCard
+                      key={t.id}
+                      template={t}
+                      selected={tplId === t.id}
+                      onClick={() => setTplId(t.id)}
+                      showLock={!isLoggedIn || !isPremium}
+                    />
                   ))}
                 </div>
               </>
             )}
 
-            {/* ── PERSONAL ── */}
+            {/* PERSONAL */}
             {step === "personal" && (
               <div className="bg-white rounded-2xl p-5 shadow-sm border border-indigo-100/60">
                 <div className="flex items-center gap-3 mb-4">
-                  <div><p className="text-[14px] font-extrabold text-slate-900">Your Profile</p><p className="text-[11.5px] text-slate-500">All fields appear as clickable links in your letter</p></div>
+                  <div>
+                    <p className="text-[14px] font-extrabold text-slate-900">
+                      Your Profile
+                    </p>
+                    <p className="text-[11.5px] text-slate-500">
+                      All fields appear as clickable links in your letter
+                    </p>
+                  </div>
                 </div>
                 <div className="grid sm:grid-cols-2 gap-0">
-                  <F label="Full Name" required><input className={inp} placeholder="Alexandra Chen" value={data.personal.fullName} onChange={(e) => set(["personal", "fullName"], e.target.value)}/></F>
-                  <F label="Professional Title"><input className={inp} placeholder="Senior UX Designer" value={data.personal.title} onChange={(e) => set(["personal", "title"], e.target.value)}/></F>
+                  <F label="Full Name" required>
+                    <input
+                      className={inp}
+                      placeholder="Alexandra Chen"
+                      value={data.personal.fullName}
+                      onChange={(e) =>
+                        set(["personal", "fullName"], e.target.value)
+                      }
+                    />
+                  </F>
+                  <F label="Professional Title">
+                    <input
+                      className={inp}
+                      placeholder="Senior UX Designer"
+                      value={data.personal.title}
+                      onChange={(e) =>
+                        set(["personal", "title"], e.target.value)
+                      }
+                    />
+                  </F>
                 </div>
                 <div className="grid sm:grid-cols-2 gap-0">
-                  <F label="Email Address" required><input className={inp} type="email" placeholder="alex@email.com" value={data.personal.email} onChange={(e) => set(["personal", "email"], e.target.value)}/></F>
-                  <F label="Phone Number"><input className={inp} type="tel" placeholder="+1 555 000 0000" value={data.personal.phone} onChange={(e) => set(["personal", "phone"], e.target.value)}/></F>
+                  <F label="Email Address" required>
+                    <input
+                      className={inp}
+                      type="email"
+                      placeholder="alex@email.com"
+                      value={data.personal.email}
+                      onChange={(e) =>
+                        set(["personal", "email"], e.target.value)
+                      }
+                    />
+                  </F>
+                  <F label="Phone Number">
+                    <input
+                      className={inp}
+                      type="tel"
+                      placeholder="+1 555 000 0000"
+                      value={data.personal.phone}
+                      onChange={(e) =>
+                        set(["personal", "phone"], e.target.value)
+                      }
+                    />
+                  </F>
                 </div>
-                <F label="Location"><input className={inp} placeholder="San Francisco, CA" value={data.personal.location} onChange={(e) => set(["personal", "location"], e.target.value)}/></F>
-                <div className="h-px bg-indigo-50 my-3"/>
-                <p className="text-[10px] font-extrabold tracking-widest uppercase text-indigo-500 mb-2">🔗 Online Presence</p>
-                <F label="LinkedIn URL"><input className={inp} placeholder="linkedin.com/in/alexchen" value={data.personal.linkedin} onChange={(e) => set(["personal", "linkedin"], e.target.value)}/></F>
+                <F label="Location">
+                  <input
+                    className={inp}
+                    placeholder="San Francisco, CA"
+                    value={data.personal.location}
+                    onChange={(e) =>
+                      set(["personal", "location"], e.target.value)
+                    }
+                  />
+                </F>
+                <div className="h-px bg-indigo-50 my-3" />
+                <p className="text-[10px] font-extrabold tracking-widest uppercase text-indigo-500 mb-2">
+                  🔗 Online Presence
+                </p>
+                <F label="LinkedIn URL">
+                  <input
+                    className={inp}
+                    placeholder="linkedin.com/in/alexchen"
+                    value={data.personal.linkedin}
+                    onChange={(e) =>
+                      set(["personal", "linkedin"], e.target.value)
+                    }
+                  />
+                </F>
                 <div className="grid sm:grid-cols-2 gap-0">
-                  <F label="GitHub URL"><input className={inp} placeholder="github.com/alexchen" value={data.personal.github} onChange={(e) => set(["personal", "github"], e.target.value)}/></F>
-                  <F label="Portfolio / Website"><input className={inp} placeholder="alexchen.io" value={data.personal.website} onChange={(e) => set(["personal", "website"], e.target.value)}/></F>
+                  <F label="GitHub URL">
+                    <input
+                      className={inp}
+                      placeholder="github.com/alexchen"
+                      value={data.personal.github}
+                      onChange={(e) =>
+                        set(["personal", "github"], e.target.value)
+                      }
+                    />
+                  </F>
+                  <F label="Portfolio / Website">
+                    <input
+                      className={inp}
+                      placeholder="alexchen.io"
+                      value={data.personal.website}
+                      onChange={(e) =>
+                        set(["personal", "website"], e.target.value)
+                      }
+                    />
+                  </F>
                 </div>
-                <div className="h-px bg-indigo-50 my-3"/>
-                <F label="Professional Summary (optional)"><textarea className={ta} placeholder="2–3 sentence summary…" value={data.personal.summary} onChange={(e) => set(["personal", "summary"], e.target.value)}/></F>
-                <F label="Closing Salutation"><input className={inp} placeholder="Sincerely (default)" value={data.personal.signature} onChange={(e) => set(["personal", "signature"], e.target.value)}/></F>
+                <div className="h-px bg-indigo-50 my-3" />
+                <F label="Professional Summary (optional)">
+                  <textarea
+                    className={ta}
+                    placeholder="2–3 sentence summary…"
+                    value={data.personal.summary}
+                    onChange={(e) =>
+                      set(["personal", "summary"], e.target.value)
+                    }
+                  />
+                </F>
+                <F label="Closing Salutation">
+                  <input
+                    className={inp}
+                    placeholder="Sincerely (default)"
+                    value={data.personal.signature}
+                    onChange={(e) =>
+                      set(["personal", "signature"], e.target.value)
+                    }
+                  />
+                </F>
               </div>
             )}
 
-            {/* ── COMPANY ── */}
+            {/* COMPANY */}
             {step === "company" && (
               <div className="bg-white rounded-2xl p-5 shadow-sm border border-indigo-100/60">
-                <F label="Company Name" icon="🏢" required><input className={inp} placeholder="Google, Stripe, Airbnb…" value={data.company.name} onChange={(e) => set(["company", "name"], e.target.value)}/></F>
-                <F label="Role Applying For" icon="🎯" required><input className={inp} placeholder="Senior UX Designer" value={data.company.jobTitle} onChange={(e) => set(["company", "jobTitle"], e.target.value)}/></F>
+                <F label="Company Name" icon="🏢" required>
+                  <input
+                    className={inp}
+                    placeholder="Google, Stripe, Airbnb…"
+                    value={data.company.name}
+                    onChange={(e) => set(["company", "name"], e.target.value)}
+                  />
+                </F>
+                <F label="Role Applying For" icon="🎯" required>
+                  <input
+                    className={inp}
+                    placeholder="Senior UX Designer"
+                    value={data.company.jobTitle}
+                    onChange={(e) =>
+                      set(["company", "jobTitle"], e.target.value)
+                    }
+                  />
+                </F>
                 <div className="grid sm:grid-cols-2 gap-3">
-                  <F label="Hiring Manager" icon="👤"><input className={inp} placeholder="Sarah Johnson" value={data.company.hiringManager} onChange={(e) => set(["company", "hiringManager"], e.target.value)}/></F>
-                  <F label="Their Title" icon="🏷️"><input className={inp} placeholder="Head of Design" value={data.company.hiringManagerTitle} onChange={(e) => set(["company", "hiringManagerTitle"], e.target.value)}/></F>
+                  <F label="Hiring Manager" icon="👤">
+                    <input
+                      className={inp}
+                      placeholder="Sarah Johnson"
+                      value={data.company.hiringManager}
+                      onChange={(e) =>
+                        set(["company", "hiringManager"], e.target.value)
+                      }
+                    />
+                  </F>
+                  <F label="Their Title" icon="🏷️">
+                    <input
+                      className={inp}
+                      placeholder="Head of Design"
+                      value={data.company.hiringManagerTitle}
+                      onChange={(e) =>
+                        set(["company", "hiringManagerTitle"], e.target.value)
+                      }
+                    />
+                  </F>
                 </div>
                 <div className="grid sm:grid-cols-2 gap-3">
-                  <F label="City"><input className={`${inp} pl-3`} placeholder="Mountain View" value={data.company.city} onChange={(e) => set(["company", "city"], e.target.value)}/></F>
-                  <F label="State"><input className={`${inp} pl-3`} placeholder="CA" value={data.company.state} onChange={(e) => set(["company", "state"], e.target.value)}/></F>
+                  <F label="City">
+                    <input
+                      className={`${inp} pl-3`}
+                      placeholder="Mountain View"
+                      value={data.company.city}
+                      onChange={(e) => set(["company", "city"], e.target.value)}
+                    />
+                  </F>
+                  <F label="State">
+                    <input
+                      className={`${inp} pl-3`}
+                      placeholder="CA"
+                      value={data.company.state}
+                      onChange={(e) =>
+                        set(["company", "state"], e.target.value)
+                      }
+                    />
+                  </F>
                 </div>
-                <div className="h-px bg-indigo-50 my-3"/>
-                <F label="Where you found this job" icon="🔍"><input className={inp} placeholder="LinkedIn, Referral, Company website…" value={data.company.jobSource} onChange={(e) => set(["company", "jobSource"], e.target.value)}/></F>
-                <F label="Referral Name (if any)" icon="🤝"><input className={inp} placeholder="John Smith referred me" value={data.company.referral} onChange={(e) => set(["company", "referral"], e.target.value)}/></F>
+                <div className="h-px bg-indigo-50 my-3" />
+                <F label="Where you found this job" icon="🔍">
+                  <input
+                    className={inp}
+                    placeholder="LinkedIn, Referral, Company website…"
+                    value={data.company.jobSource}
+                    onChange={(e) =>
+                      set(["company", "jobSource"], e.target.value)
+                    }
+                  />
+                </F>
+                <F label="Referral Name (if any)" icon="🤝">
+                  <input
+                    className={inp}
+                    placeholder="John Smith referred me"
+                    value={data.company.referral}
+                    onChange={(e) =>
+                      set(["company", "referral"], e.target.value)
+                    }
+                  />
+                </F>
               </div>
             )}
 
-            {/* ── CONTENT ── */}
+            {/* CONTENT */}
             {step === "content" && (
               <div className="bg-white rounded-2xl p-5 shadow-sm border border-indigo-100/60">
-                <F label="Letter Date" icon="📅"><input className={inp} type="date" value={data.letterDate} onChange={(e) => set(["letterDate"], e.target.value)}/></F>
-                <div className="h-px bg-indigo-50 my-3"/>
-                <p className="text-[10px] font-extrabold tracking-widest uppercase text-indigo-500 mb-2">✍️ Letter Sections</p>
+                <F label="Letter Date" icon="📅">
+                  <input
+                    className={inp}
+                    type="date"
+                    value={data.letterDate}
+                    onChange={(e) => set(["letterDate"], e.target.value)}
+                  />
+                </F>
+                <div className="h-px bg-indigo-50 my-3" />
+                <p className="text-[10px] font-extrabold tracking-widest uppercase text-indigo-500 mb-2">
+                  ✍️ Letter Sections
+                </p>
                 {data.sections.map((s, i) => (
-                  <div key={s.id} className="bg-indigo-50/60 border-[1.5px] border-indigo-100 rounded-xl p-3 mb-2.5 transition-all focus-within:bg-white focus-within:border-indigo-400">
+                  <div
+                    key={s.id}
+                    className="bg-indigo-50/60 border-[1.5px] border-indigo-100 rounded-xl p-3 mb-2.5 focus-within:bg-white focus-within:border-indigo-400 transition-all"
+                  >
                     <div className="flex items-center gap-2 mb-2.5">
-                      <span className="w-[22px] h-[22px] rounded-[7px] bg-gradient-to-br from-indigo-600 to-violet-600 text-white text-[10px] font-extrabold flex items-center justify-center flex-shrink-0">{i + 1}</span>
-                      <input value={s.title} onChange={(e) => setSec(s.id, "title", e.target.value)} placeholder="Section title" className="flex-1 px-2.5 py-1.5 rounded-lg border-[1.5px] border-slate-200 text-[12.5px] font-bold bg-white text-slate-900 outline-none focus:border-indigo-500 transition-all"/>
-                      {data.sections.length > 1 && <button onClick={() => setData((p) => ({ ...p, sections: p.sections.filter((x) => x.id !== s.id) }))} className="w-6 h-6 bg-white border-[1.5px] border-slate-200 rounded-[6px] text-red-400 text-[12px] flex items-center justify-center hover:bg-red-50 transition-all">✕</button>}
+                      <span className="w-[22px] h-[22px] rounded-[7px] bg-gradient-to-br from-indigo-600 to-violet-600 text-white text-[10px] font-extrabold flex items-center justify-center flex-shrink-0">
+                        {i + 1}
+                      </span>
+                      <input
+                        value={s.title}
+                        onChange={(e) => setSec(s.id, "title", e.target.value)}
+                        className="flex-1 px-2.5 py-1.5 rounded-lg border-[1.5px] border-slate-200 text-[12.5px] font-bold bg-white text-slate-900 outline-none focus:border-indigo-500 transition-all"
+                      />
+                      {data.sections.length > 1 && (
+                        <button
+                          onClick={() =>
+                            setData((p) => ({
+                              ...p,
+                              sections: p.sections.filter((x) => x.id !== s.id),
+                            }))
+                          }
+                          className="w-6 h-6 bg-white border-[1.5px] border-slate-200 rounded-[6px] text-red-400 text-[12px] flex items-center justify-center hover:bg-red-50 transition-all"
+                        >
+                          ✕
+                        </button>
+                      )}
                     </div>
-                    <textarea value={s.content} onChange={(e) => setSec(s.id, "content", e.target.value)} placeholder={s.placeholder} rows={4} className="w-full px-2.5 py-2 rounded-lg border-[1.5px] border-slate-200 bg-white text-[12.5px] text-slate-800 leading-relaxed outline-none focus:border-indigo-500 transition-all resize-y"/>
+                    <textarea
+                      value={s.content}
+                      onChange={(e) => setSec(s.id, "content", e.target.value)}
+                      placeholder={s.placeholder}
+                      rows={4}
+                      className="w-full px-2.5 py-2 rounded-lg border-[1.5px] border-slate-200 bg-white text-[12.5px] text-slate-800 leading-relaxed outline-none focus:border-indigo-500 transition-all resize-y"
+                    />
                   </div>
                 ))}
-                <button onClick={() => setData((p) => ({ ...p, sections: [...p.sections, { id: Date.now()+"", title: "New Section", content: "", placeholder: "Write here…" }] }))} className="w-full py-2 mb-3 bg-white border-[1.5px] border-dashed border-indigo-200 rounded-xl text-[12.5px] font-bold text-indigo-600 hover:bg-indigo-50 transition-all">+ Add Section</button>
-                <div className="h-px bg-indigo-50 my-3"/>
-                <p className="text-[10px] font-extrabold tracking-widest uppercase text-indigo-500 mb-2">🏆 Key Achievements</p>
+                <button
+                  onClick={() =>
+                    setData((p) => ({
+                      ...p,
+                      sections: [
+                        ...p.sections,
+                        {
+                          id: Date.now() + "",
+                          title: "New Section",
+                          content: "",
+                          placeholder: "Write here…",
+                        },
+                      ],
+                    }))
+                  }
+                  className="w-full py-2 mb-3 bg-white border-[1.5px] border-dashed border-indigo-200 rounded-xl text-[12.5px] font-bold text-indigo-600 hover:bg-indigo-50 transition-all"
+                >
+                  + Add Section
+                </button>
+                <div className="h-px bg-indigo-50 my-3" />
+                <p className="text-[10px] font-extrabold tracking-widest uppercase text-indigo-500 mb-2">
+                  🏆 Key Achievements
+                </p>
                 <div className="flex gap-2 mb-2">
-                  <input className="flex-1 px-3 py-2 text-[12.5px] border-[1.5px] border-slate-200 rounded-xl outline-none focus:border-indigo-500 transition-all" placeholder="e.g. Grew revenue 40% YoY" value={achIn} onChange={(e) => setAchIn(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && achIn.trim()) { setData((p) => ({ ...p, achievements: [...p.achievements, achIn.trim()] })); setAchIn(""); }}}/>
-                  <button onClick={() => { if (achIn.trim()) { setData((p) => ({ ...p, achievements: [...p.achievements, achIn.trim()] })); setAchIn(""); }}} className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-[12px] font-bold rounded-xl">Add</button>
+                  <input
+                    className="flex-1 px-3 py-2 text-[12.5px] border-[1.5px] border-slate-200 rounded-xl outline-none focus:border-indigo-500 transition-all"
+                    placeholder="e.g. Grew revenue 40% YoY"
+                    value={achIn}
+                    onChange={(e) => setAchIn(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && achIn.trim()) {
+                        setData((p) => ({
+                          ...p,
+                          achievements: [...p.achievements, achIn.trim()],
+                        }));
+                        setAchIn("");
+                      }
+                    }}
+                  />
+                  <button
+                    onClick={() => {
+                      if (achIn.trim()) {
+                        setData((p) => ({
+                          ...p,
+                          achievements: [...p.achievements, achIn.trim()],
+                        }));
+                        setAchIn("");
+                      }
+                    }}
+                    className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-[12px] font-bold rounded-xl"
+                  >
+                    Add
+                  </button>
                 </div>
                 <div className="flex flex-wrap gap-1.5 mb-2">
                   {data.achievements.map((a, i) => (
-                    <div key={i} className="flex items-center gap-1.5 px-2.5 py-1 bg-indigo-50 border border-indigo-100 rounded-full text-[12px] font-semibold text-indigo-700">
+                    <div
+                      key={i}
+                      className="flex items-center gap-1.5 px-2.5 py-1 bg-indigo-50 border border-indigo-100 rounded-full text-[12px] font-semibold text-indigo-700"
+                    >
                       ⭐ {a}
-                      <button onClick={() => setData((p) => ({ ...p, achievements: p.achievements.filter((_, j) => j !== i) }))} className="text-indigo-300 hover:text-red-400 text-[13px] leading-none ml-0.5">✕</button>
+                      <button
+                        onClick={() =>
+                          setData((p) => ({
+                            ...p,
+                            achievements: p.achievements.filter(
+                              (_, j) => j !== i,
+                            ),
+                          }))
+                        }
+                        className="text-indigo-300 hover:text-red-400 text-[13px] leading-none ml-0.5"
+                      >
+                        ✕
+                      </button>
                     </div>
                   ))}
                 </div>
-                <div className="h-px bg-indigo-50 my-3"/>
-                <p className="text-[10px] font-extrabold tracking-widest uppercase text-indigo-500 mb-2">🛠️ Core Skills / Tools</p>
+                <div className="h-px bg-indigo-50 my-3" />
+                <p className="text-[10px] font-extrabold tracking-widest uppercase text-indigo-500 mb-2">
+                  🛠️ Core Skills / Tools
+                </p>
                 <div className="flex gap-2 mb-2">
-                  <input className="flex-1 px-3 py-2 text-[12.5px] border-[1.5px] border-slate-200 rounded-xl outline-none focus:border-indigo-500 transition-all" placeholder="e.g. Figma, React…" value={sklIn} onChange={(e) => setSklIn(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && sklIn.trim()) { setData((p) => ({ ...p, skills: [...p.skills, sklIn.trim()] })); setSklIn(""); }}}/>
-                  <button onClick={() => { if (sklIn.trim()) { setData((p) => ({ ...p, skills: [...p.skills, sklIn.trim()] })); setSklIn(""); }}} className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-[12px] font-bold rounded-xl">Add</button>
+                  <input
+                    className="flex-1 px-3 py-2 text-[12.5px] border-[1.5px] border-slate-200 rounded-xl outline-none focus:border-indigo-500 transition-all"
+                    placeholder="e.g. Figma, React…"
+                    value={sklIn}
+                    onChange={(e) => setSklIn(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && sklIn.trim()) {
+                        setData((p) => ({
+                          ...p,
+                          skills: [...p.skills, sklIn.trim()],
+                        }));
+                        setSklIn("");
+                      }
+                    }}
+                  />
+                  <button
+                    onClick={() => {
+                      if (sklIn.trim()) {
+                        setData((p) => ({
+                          ...p,
+                          skills: [...p.skills, sklIn.trim()],
+                        }));
+                        setSklIn("");
+                      }
+                    }}
+                    className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-[12px] font-bold rounded-xl"
+                  >
+                    Add
+                  </button>
                 </div>
                 <div className="flex flex-wrap gap-1.5 mb-2">
                   {data.skills.map((s, i) => (
-                    <div key={i} className="flex items-center gap-1.5 px-2.5 py-1 bg-violet-50 border border-violet-100 rounded-full text-[12px] font-semibold text-violet-700">
+                    <div
+                      key={i}
+                      className="flex items-center gap-1.5 px-2.5 py-1 bg-violet-50 border border-violet-100 rounded-full text-[12px] font-semibold text-violet-700"
+                    >
                       🔧 {s}
-                      <button onClick={() => setData((p) => ({ ...p, skills: p.skills.filter((_, j) => j !== i) }))} className="text-violet-300 hover:text-red-400 text-[13px] leading-none ml-0.5">✕</button>
+                      <button
+                        onClick={() =>
+                          setData((p) => ({
+                            ...p,
+                            skills: p.skills.filter((_, j) => j !== i),
+                          }))
+                        }
+                        className="text-violet-300 hover:text-red-400 text-[13px] leading-none ml-0.5"
+                      >
+                        ✕
+                      </button>
                     </div>
                   ))}
                 </div>
-                <div className="h-px bg-indigo-50 my-3"/>
-                <p className="text-[10px] font-extrabold tracking-widest uppercase text-indigo-500 mb-2">🎭 Tone of Voice</p>
+                <div className="h-px bg-indigo-50 my-3" />
+                <p className="text-[10px] font-extrabold tracking-widest uppercase text-indigo-500 mb-2">
+                  🎭 Tone of Voice
+                </p>
                 <div className="flex flex-wrap gap-1.5 mb-3">
                   {tones.map((t) => (
-                    <button key={t} onClick={() => setData((p) => ({ ...p, tone: t }))} className={`px-3 py-1 rounded-full text-[12px] font-semibold border-[1.5px] transition-all ${data.tone === t ? "border-indigo-500 text-indigo-600 bg-indigo-50" : "border-slate-200 text-slate-500 bg-white"}`}>{t}</button>
+                    <button
+                      key={t}
+                      onClick={() => setData((p) => ({ ...p, tone: t }))}
+                      className={`px-3 py-1 rounded-full text-[12px] font-semibold border-[1.5px] transition-all ${data.tone === t ? "border-indigo-500 text-indigo-600 bg-indigo-50" : "border-slate-200 text-slate-500 bg-white"}`}
+                    >
+                      {t}
+                    </button>
                   ))}
                 </div>
-                <div className="h-px bg-indigo-50 my-3"/>
-                <p className="text-[10px] font-extrabold tracking-widest uppercase text-indigo-500 mb-2">📝 Additional Notes</p>
-                <textarea className={ta} rows={3} placeholder="Post-script or extra context…" value={data.notes} onChange={(e) => setData((p) => ({ ...p, notes: e.target.value }))}/>
+                <div className="h-px bg-indigo-50 my-3" />
+                <p className="text-[10px] font-extrabold tracking-widest uppercase text-indigo-500 mb-2">
+                  📝 Additional Notes
+                </p>
+                <textarea
+                  className={ta}
+                  rows={3}
+                  placeholder="Post-script or extra context…"
+                  value={data.notes}
+                  onChange={(e) =>
+                    setData((p) => ({ ...p, notes: e.target.value }))
+                  }
+                />
               </div>
             )}
 
-            {/* ── REVIEW ── */}
+            {/* REVIEW */}
             {step === "review" && (
               <div className="bg-white rounded-2xl p-5 shadow-sm border border-indigo-100/60">
-                {([ ["Template", tpl?.name, "template"], ["Accent Color", data.accentColor, "template"], ["Font", data.fontFamily, "template"], ["Full Name", data.personal.fullName, "personal"], ["Title", data.personal.title, "personal"], ["Email", data.personal.email, "personal"], ["Company", data.company.name, "company"], ["Role", data.company.jobTitle, "company"], ["Sections", `${data.sections.filter((s) => s.content).length} written`, "content"], ["Achievements", `${data.achievements.length} added`, "content"], ["Skills", `${data.skills.length} added`, "content"] ] as [string, string, Step][])
-                  .map(([l, v, s]) => (
-                    <div key={l} className="flex items-center justify-between py-2.5 border-b border-slate-50 last:border-0">
-                      <span className="text-[11px] font-extrabold uppercase tracking-[.5px] text-slate-400">{l}</span>
-                      <div className="flex items-center gap-2">
-                        {l === "Accent Color" && v ? <span className="w-4 h-4 rounded-full border border-white shadow-sm" style={{ background: v }}/> : null}
-                        <span className={`text-[12.5px] font-medium text-right max-w-[180px] truncate ${v ? "text-slate-800" : "text-slate-300"}`}>{v || "—"}</span>
-                        <button onClick={() => setStep(s)} className="text-[11px] font-bold text-indigo-500 hover:text-indigo-700 transition-colors">Edit</button>
-                      </div>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-9 h-9 rounded-[11px] bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-lg">
+                    ✅
+                  </div>
+                  <div>
+                    <p className="text-[14px] font-extrabold text-slate-900">
+                      Review Summary
+                    </p>
+                    <p className="text-[11.5px] text-slate-500">
+                      Check before downloading
+                    </p>
+                  </div>
+                </div>
+                {(
+                  [
+                    ["Template", tpl?.name, "template"],
+                    ["Accent", data.accentColor, "template"],
+                    ["Font", data.fontFamily, "template"],
+                    ["Full Name", data.personal.fullName, "personal"],
+                    ["Title", data.personal.title, "personal"],
+                    ["Email", data.personal.email, "personal"],
+                    ["Company", data.company.name, "company"],
+                    ["Role", data.company.jobTitle, "company"],
+                    ["Letter Date", data.letterDate, "content"],
+                    [
+                      "Sections",
+                      `${data.sections.filter((s) => s.content).length} written`,
+                      "content",
+                    ],
+                    [
+                      "Achievements",
+                      `${data.achievements.length} added`,
+                      "content",
+                    ],
+                    ["Skills", `${data.skills.length} added`, "content"],
+                  ] as [string, string, Step][]
+                ).map(([l, v, s]) => (
+                  <div
+                    key={l}
+                    className="flex items-center justify-between py-2.5 border-b border-slate-50 last:border-0"
+                  >
+                    <span className="text-[11px] font-extrabold uppercase tracking-[.5px] text-slate-400">
+                      {l}
+                    </span>
+                    <div className="flex items-center gap-2">
+                      {l === "Accent" && v ? (
+                        <span
+                          className="w-4 h-4 rounded-full border border-white shadow-sm"
+                          style={{ background: v }}
+                        />
+                      ) : null}
+                      <span
+                        className={`text-[12.5px] font-medium text-right max-w-[180px] truncate ${v ? "text-slate-800" : "text-slate-300"}`}
+                      >
+                        {v || "—"}
+                      </span>
+                      <button
+                        onClick={() => setStep(s)}
+                        className="text-[11px] font-bold text-indigo-500 hover:text-indigo-700"
+                      >
+                        Edit
+                      </button>
                     </div>
-                  ))}
+                  </div>
+                ))}
                 <div className="mt-4 p-4 bg-indigo-50 rounded-xl border border-indigo-100">
-                  <p className="text-[13px] font-bold text-slate-900 mb-1">✅ Ready to Download</p>
-                  <p className="text-[12px] text-slate-500">Your cover letter is ready. Download as PDF below.</p>
+                  <p className="text-[13px] font-bold text-slate-900 mb-1">
+                    ✅ Ready to Download
+                  </p>
+                  <p className="text-[12px] text-slate-500">
+                    Download your cover letter as PDF below.
+                  </p>
                 </div>
               </div>
             )}
@@ -13269,48 +15510,84 @@ export default function CoverLetterGenerator() {
 
           {/* FOOTER */}
           <div className="flex-shrink-0 px-5 py-3 border-t border-slate-200 bg-white flex justify-between items-center gap-3">
-            <button onClick={() => stepIdx === 0 ? router.push("/") : setStep(STEPS[stepIdx - 1].id)}
-              className="flex items-center gap-1.5 px-4 py-2.5 rounded-full text-[13px] font-bold border-[1.5px] border-slate-200 bg-white text-slate-500 hover:bg-indigo-50 hover:border-indigo-200 hover:text-indigo-600 transition-all cursor-pointer">
+            <button
+              onClick={() =>
+                stepIdx === 0
+                  ? router.push("/")
+                  : setStep(STEPS[stepIdx - 1].id)
+              }
+              className="flex items-center gap-1.5 px-4 py-2.5 rounded-full text-[13px] font-bold border-[1.5px] border-slate-200 bg-white text-slate-500 hover:bg-indigo-50 hover:border-indigo-200 hover:text-indigo-600 transition-all cursor-pointer"
+            >
               ← {stepIdx > 0 ? "Back" : "Home"}
             </button>
             {stepIdx < STEPS.length - 1 ? (
-              <button onClick={handleContinue}
-                className="flex items-center gap-2 px-6 py-2.5 rounded-full text-[13.5px] font-semibold bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md hover:shadow-lg hover:-translate-y-px transition-all cursor-pointer">
-                Continue to {STEPS[stepIdx + 1].label} {(!isLoggedIn || !isPremium) && step === "template" ? "🔒" : ""}
+              <button
+                onClick={handleContinue}
+                className="flex items-center gap-2 px-6 py-2.5 rounded-full text-[13.5px] font-semibold bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md hover:shadow-lg hover:-translate-y-px transition-all cursor-pointer"
+              >
+                Continue to {STEPS[stepIdx + 1].label}{" "}
+                {(!isLoggedIn || !isPremium) && step === "template" ? "🔒" : ""}
               </button>
             ) : (
-              <button onClick={downloadPDF} disabled={busy}
-                className="flex items-center gap-2 px-6 py-2.5 rounded-full text-[13.5px] font-extrabold bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md hover:shadow-lg hover:-translate-y-px disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+              <button
+                onClick={downloadPDF}
+                disabled={busy}
+                className="flex items-center gap-2 px-6 py-2.5 rounded-full text-[13.5px] font-extrabold bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md hover:shadow-lg hover:-translate-y-px disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none transition-all"
+              >
                 {busy ? "⏳ Generating…" : "⬇ Download PDF"}
               </button>
             )}
           </div>
         </div>
 
-        {/* RIGHT — CANVAS PREVIEW */}
+        {/* RIGHT — CANVAS */}
         <div className="hidden lg:flex flex-col bg-slate-100 overflow-hidden">
-          <div className="flex-shrink-0 h-[52px] bg-white border-b border-slate-200 px-4 flex items-center justify-between gap-3 shadow-[0_1px_3px_rgba(0,0,0,.04)]">
+          <div className="flex-shrink-0 h-[52px] bg-white border-b border-slate-200 px-4 flex items-center justify-between gap-3">
             <div className="flex items-center gap-2.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 live-dot"/>
+              <span className="w-2 h-2 rounded-full bg-emerald-500 live-dot" />
               <div>
-                <p className="text-[13px] font-bold text-slate-900 leading-tight">Live Preview</p>
-                <p className="text-[10.5px] text-slate-400">Drag anywhere · Pinch · Scroll</p>
+                <p className="text-[13px] font-bold text-slate-900 leading-tight">
+                  Live Preview
+                </p>
+                <p className="text-[10.5px] text-slate-400">
+                  Drag anywhere · Pinch · Scroll
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <button onClick={() => setStep("template")} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold bg-indigo-50 border border-indigo-100 text-indigo-600 hover:bg-indigo-100 transition-all">🎨 Change</button>
-              <button onClick={() => { rebuild(); setModal(true); }} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold border-[1.5px] border-slate-200 text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 transition-all">⛶ Fullscreen</button>
+              <button
+                onClick={() => setStep("template")}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold bg-indigo-50 border border-indigo-100 text-indigo-600 hover:bg-indigo-100 transition-all"
+              >
+                🎨 Change
+              </button>
+              <button
+                onClick={() => {
+                  rebuild();
+                  setModal(true);
+                }}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold border-[1.5px] border-slate-200 text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 transition-all"
+              >
+                ⛶ Fullscreen
+              </button>
             </div>
           </div>
           <div className="flex-1 overflow-hidden">
             <CanvasPreview>
               {html ? (
-                <iframe ref={liveRef} className="canvas-iframe" title="preview" sandbox="allow-same-origin"/>
+                <iframe
+                  ref={liveRef}
+                  className="canvas-iframe"
+                  title="preview"
+                  sandbox="allow-same-origin"
+                />
               ) : (
                 <div className="w-[860px] h-[1120px] bg-white flex flex-col items-center justify-center gap-3 text-slate-400 rounded-xl">
                   <span className="text-[52px] opacity-20">📄</span>
                   <p className="text-[16px] font-bold">Preview appears here</p>
-                  <p className="text-[13px]">Fill in your details to see the letter</p>
+                  <p className="text-[13px]">
+                    Fill in your details to see the letter
+                  </p>
                 </div>
               )}
             </CanvasPreview>
@@ -13318,34 +15595,77 @@ export default function CoverLetterGenerator() {
         </div>
       </div>
 
-      {/* MOBILE PREVIEW FAB */}
-      <button onClick={() => { rebuild(); setModal(true); }} className="lg:hidden fixed top-[70px] right-3 z-50 bg-gradient-to-r from-indigo-600 to-violet-600 text-white p-2.5 rounded-full shadow-xl">
-        <FiEye className="w-4 h-4"/>
+      {/* MOBILE FAB */}
+      <button
+        onClick={() => {
+          rebuild();
+          setModal(true);
+        }}
+        className="lg:hidden fixed top-[70px] right-3 z-50 bg-gradient-to-r from-indigo-600 to-violet-600 text-white p-2.5 rounded-full shadow-xl"
+      >
+        <FiEye className="w-4 h-4" />
       </button>
 
       {/* FULLSCREEN MODAL */}
       <AnimatePresence>
         {modal && (
-          <div className="ov-anim fixed inset-0 bg-[rgba(10,6,30,.86)] backdrop-blur-[14px] z-[1000] flex items-center justify-center p-3 sm:p-5" onClick={() => setModal(false)}>
-            <div className="modal-anim w-full max-w-[980px] h-[92vh] bg-white rounded-2xl overflow-hidden flex flex-col shadow-[0_48px_100px_rgba(0,0,0,.48)]" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="ov-anim fixed inset-0 bg-[rgba(10,6,30,.86)] backdrop-blur-[14px] z-[1000] flex items-center justify-center p-3 sm:p-5"
+            onClick={() => setModal(false)}
+          >
+            <div
+              className="modal-anim w-full max-w-[980px] h-[92vh] bg-white rounded-2xl overflow-hidden flex flex-col shadow-[0_48px_100px_rgba(0,0,0,.48)]"
+              onClick={(e) => e.stopPropagation()}
+            >
               <div className="flex-shrink-0 h-[56px] px-5 bg-white border-b border-slate-100 flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-[9px] bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-sm text-white">📄</div>
+                  <div className="w-8 h-8 rounded-[9px] bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-sm text-white">
+                    📄
+                  </div>
                   <div>
-                    <p className="text-[14px] font-extrabold text-slate-900 leading-tight">{data.personal.fullName || "Cover Letter"}</p>
-                    <p className="text-[11px] text-slate-400">{tpl?.name} · {tpl?.tag}</p>
+                    <p className="text-[14px] font-extrabold text-slate-900 leading-tight">
+                      {data.personal.fullName || "Cover Letter"}
+                    </p>
+                    <p className="text-[11px] text-slate-400">
+                      {tpl?.name} · {tpl?.tag}
+                    </p>
                   </div>
                 </div>
-                <button onClick={() => setModal(false)} className="w-8 h-8 rounded-full bg-indigo-50 border border-indigo-100 text-slate-400 hover:bg-red-50 hover:border-red-200 hover:text-red-500 flex items-center justify-center text-[16px] transition-all">✕</button>
+                <button
+                  onClick={() => setModal(false)}
+                  className="w-8 h-8 rounded-full bg-indigo-50 border border-indigo-100 text-slate-400 hover:bg-red-50 hover:text-red-500 flex items-center justify-center text-[16px] transition-all"
+                >
+                  ✕
+                </button>
               </div>
               <div className="flex-1 overflow-hidden bg-slate-100">
                 <CanvasPreview>
-                  {html ? <iframe ref={modalRef} className="modal-iframe" title="full-preview" sandbox="allow-same-origin"/> : <div className="w-[860px] h-[1120px] bg-white flex items-center justify-center text-slate-400"><span className="text-5xl opacity-20">📄</span></div>}
+                  {html ? (
+                    <iframe
+                      ref={modalRef}
+                      className="modal-iframe"
+                      title="full-preview"
+                      sandbox="allow-same-origin"
+                    />
+                  ) : (
+                    <div className="w-[860px] h-[1120px] bg-white flex items-center justify-center text-slate-400">
+                      <span className="text-5xl opacity-20">📄</span>
+                    </div>
+                  )}
                 </CanvasPreview>
               </div>
               <div className="flex-shrink-0 px-5 py-3 border-t border-slate-100 bg-white flex justify-end gap-2.5">
-                <button onClick={() => setModal(false)} className="px-4 py-2 rounded-full text-[12.5px] font-bold border-[1.5px] border-slate-200 text-slate-500 hover:bg-slate-50 transition-all">Close</button>
-                <button onClick={downloadPDF} disabled={busy} className="flex items-center gap-1.5 px-5 py-2 rounded-full text-[12.5px] font-bold bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md hover:shadow-lg disabled:opacity-50 transition-all">
+                <button
+                  onClick={() => setModal(false)}
+                  className="px-4 py-2 rounded-full text-[12.5px] font-bold border-[1.5px] border-slate-200 text-slate-500 hover:bg-slate-50 transition-all"
+                >
+                  Close
+                </button>
+                <button
+                  onClick={downloadPDF}
+                  disabled={busy}
+                  className="flex items-center gap-1.5 px-5 py-2 rounded-full text-[12.5px] font-bold bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md hover:shadow-lg disabled:opacity-50 transition-all"
+                >
                   {busy ? "⏳ Generating…" : "⬇ Download PDF"}
                 </button>
               </div>
@@ -13354,9 +15674,10 @@ export default function CoverLetterGenerator() {
         )}
       </AnimatePresence>
 
-      {/* TOAST */}
       {toast && (
-        <div className="toast-anim fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] bg-slate-900 text-white px-6 py-2.5 rounded-full text-[13px] font-bold shadow-xl whitespace-nowrap">{toast}</div>
+        <div className="toast-anim fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] bg-slate-900 text-white px-6 py-2.5 rounded-full text-[13px] font-bold shadow-xl whitespace-nowrap">
+          {toast}
+        </div>
       )}
     </>
   );

@@ -917,124 +917,104 @@ const Login = () => {
       </div>
 
       {/* ========== SUCCESS MODAL - INDIGO PURPLE THEME ========== */}
-      <AnimatePresence>
-        {showSuccessModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+   <AnimatePresence>
+  {showSuccessModal && (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+      onClick={() => setShowSuccessModal(false)}
+    >
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0, y: 20 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.9, opacity: 0, y: 20 }}
+        transition={{ type: "spring", damping: 25, stiffness: 300 }}
+        className="relative w-full max-w-md"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden border border-indigo-100">
+          
+          {/* Close Button */}
+          <button
             onClick={() => setShowSuccessModal(false)}
+            className="absolute top-4 right-4 z-10 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
           >
+            <FiX className="w-5 h-5" />
+          </button>
+
+          {/* Gradient Header */}
+          <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 pt-8 pb-6 text-center">
             <motion.div
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="relative w-full max-w-md"
-              onClick={(e) => e.stopPropagation()}
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
+              className="w-20 h-20 mx-auto bg-white rounded-full flex items-center justify-center shadow-lg mb-4"
             >
-              <div className="bg-white rounded-2xl shadow-2xl overflow-hidden border border-indigo-100">
-                
-                {/* Close Button */}
-                <button
-                  onClick={() => setShowSuccessModal(false)}
-                  className="absolute top-4 right-4 z-10 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
-                >
-                  <FiX className="w-5 h-5" />
-                </button>
+              <FiThumbsUp className="w-10 h-10 text-indigo-600" />
+            </motion.div>
+            <h3 className="text-2xl font-bold text-white">
+              Login Successful!
+            </h3>
+          </div>
 
-                {/* Gradient Header */}
-                <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 pt-8 pb-6 text-center">
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
-                    className="w-20 h-20 mx-auto bg-white rounded-full flex items-center justify-center shadow-lg mb-4"
-                  >
-                    <FiThumbsUp className="w-10 h-10 text-indigo-600" />
-                  </motion.div>
-                  <h3 className="text-2xl font-bold text-white">
-                    Welcome Back!
-                  </h3>
+          {/* Content */}
+          <div className="p-6">
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-gray-800 text-center font-medium mb-4"
+            >
+              Welcome back to <span className="text-indigo-600">Pass ATS</span>!
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3 }}
+              className="bg-indigo-50 rounded-xl p-4 mb-6 border-l-4 border-indigo-500"
+            >
+              <div className="flex gap-3">
+                <div className="flex-shrink-0">
+                  <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
+                    <FiMail className="w-4 h-4 text-indigo-600" />
+                  </div>
                 </div>
-
-                {/* Content */}
-                <div className="p-6">
-                  <motion.p
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="text-gray-800 text-center font-medium mb-4"
-                  >
-                    You have successfully logged in to your account.
-                  </motion.p>
-
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.3 }}
-                    className="bg-indigo-50 rounded-xl p-4 mb-6 border-l-4 border-indigo-500"
-                  >
-                    <div className="flex gap-3">
-                      <div className="flex-shrink-0">
-                        <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
-                          <FiMail className="w-4 h-4 text-indigo-600" />
-                        </div>
-                      </div>
-                      <div>
-                        <p className="text-indigo-900 font-semibold text-sm mb-1">
-                          Welcome {email.split('@')[0]}!
-                        </p>
-                        <p className="text-indigo-700 text-sm">
-                          You are now logged into your account.
-                        </p>
-                        <p className="text-indigo-600 text-xs mt-2">
-                          Redirecting you to your dashboard...
-                        </p>
-                      </div>
-                    </div>
-                  </motion.div>
-
-                  {/* Loading Bar */}
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.4 }}
-                    className="mb-6"
-                  >
-                    <div className="h-1 bg-gray-200 rounded-full overflow-hidden">
-                      <motion.div
-                        initial={{ width: "0%" }}
-                        animate={{ width: "100%" }}
-                        transition={{ duration: 2, ease: "linear" }}
-                        className="h-full bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full"
-                      />
-                    </div>
-                  </motion.div>
-
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5 }}
-                    className="flex gap-3"
-                  >
-                    <button
-                      onClick={() => {
-                        setShowSuccessModal(false);
-                        router.push("/dashboard");
-                      }}
-                      className="flex-1 px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-medium hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-[1.02] shadow-md cursor-pointer text-sm"
-                    >
-                      Go to Dashboard →
-                    </button>
-                  </motion.div>
+                <div>
+                  <p className="text-indigo-900 font-semibold text-sm mb-1">
+                    Welcome User
+                  </p>
+                  <p className="text-indigo-700 text-sm">
+                    You have successfully logged into your Pass ATS account.
+                  </p>
                 </div>
               </div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="flex gap-3"
+            >
+              <button
+                onClick={() => {
+                  setShowSuccessModal(false);
+                  router.push("/dashboard");
+                }}
+                className="flex-1 px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-medium hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-[1.02] shadow-md cursor-pointer text-sm"
+              >
+                Go to Dashboard →
+              </button>
+            </motion.div>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  )}
+</AnimatePresence>
 
       {/* ========== ERROR MODAL - RED THEME ========== */}
       <AnimatePresence>

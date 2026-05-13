@@ -4121,7 +4121,7 @@ function Choose_template() {
                   {templateData.length}
                 </div>
                 <div className="text-[10px] sm:text-xs text-white/80">
-                  Templates
+                 Total Templates
                 </div>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-lg sm:rounded-xl p-2 sm:p-4">
