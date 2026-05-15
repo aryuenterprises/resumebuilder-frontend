@@ -1108,6 +1108,938 @@
 
 
 
+// "use client";
+// import React, { useContext, useState, useEffect, useRef, useCallback } from "react";
+// import axios, { AxiosResponse } from "axios";
+// import { CreateContext } from "@/app/context/CreateContext";
+// import { API_URL } from "@/app/config/api";
+// import {
+//   cleanQuillHTML,
+//   formatDateOfBirth,
+//   formatGradeToCgpdAndPercentage,
+//   formatMonthYear,
+// } from "@/app/utils";
+// import { usePathname } from "next/navigation";
+// import { ResumeProps } from "@/app/types";
+// import { motion } from "framer-motion";
+
+// const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
+//   const context = useContext(CreateContext);
+//   const pathname = usePathname();
+//   const lastSegment = pathname.split("/").pop();
+//   const iframeRef = useRef<HTMLIFrameElement>(null);
+//   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+//   const blobUrlRef = useRef<string | null>(null);
+  
+//   const [iframeHeight, setIframeHeight] = useState<number>(1122);
+//   const [htmlContent, setHtmlContent] = useState<string>("");
+
+//   useEffect(() => {
+//     const handler = (e: MessageEvent) => {
+//       if (e.data?.type === "RESUME_HEIGHT") {
+//         setIframeHeight(e.data.height);
+//       }
+//     };
+//     window.addEventListener("message", handler);
+//     return () => window.removeEventListener("message", handler);
+//   }, []);
+
+//   const contact = alldata?.contact || context.contact || {};
+//   const educations = alldata?.educations || context?.education || [];
+//   const experiences = alldata?.experiences || context?.experiences || [];
+//   const skills = alldata?.skills?.text || context?.skills.text || "";
+//   const projects = alldata?.projects || context?.projects || [];
+//   const finalize = alldata?.finalize || context?.finalize || {};
+//   const summary = alldata?.summary || context?.summary || "";
+
+//   const addressParts = [
+//     contact?.address,
+//     contact?.city,
+//     contact?.postCode,
+//     contact?.country,
+//   ].filter(Boolean);
+
+//   const linkedinUrl = contact?.linkedIn;
+//   const portfolioUrl = contact?.portfolio;
+//   const githubUrl = contact?.github;
+//   const dateOfBirth = contact?.dob;
+
+//   /* ======================================================
+//      CSS — SINGLE SOURCE with ONE @media print block
+//   ====================================================== */
+//   const styles = `
+   
+
+   
+//     /* PDF page margins - ONLY ONCE */
+//     @page {
+//       size: A4;
+//       margin: 10mm;
+//     }
+
+//     .t7-resume {
+//       max-width: 190mm;
+//       margin: 0 auto;
+//       background: white;
+//       font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+//       font-size: 14px;
+//       line-height: 1.5;
+//       color: #111827;
+//       text-align: left;
+//     }
+
+//     /* Global <p> reset */
+//     .t7-resume p {
+//       margin: 0 0 6px 0 !important;
+//       padding: 0 !important;
+//       line-height: 1.5 !important;
+//     }
+
+//     /* Header Section */
+//     .t7-resume .resume-header {
+//       text-align: center;
+//       margin-bottom: 20px;
+//       padding-bottom: 15px;
+//       border-bottom: 2px solid #000000;
+//       page-break-after: avoid;
+//       break-after: avoid;
+//     }
+
+//     .t7-resume .name {
+//       font-size: 28px;
+//       font-weight: 700;
+//       letter-spacing: 2px;
+//       text-transform: uppercase;
+//       margin-bottom: 8px;
+//       color: #000000;
+//       font-family: 'Nunito', sans-serif;
+//     }
+
+//     .t7-resume .job-title {
+//       font-size: 16px;
+//       font-weight: 500;
+//       color: #333333;
+//       margin-bottom: 12px;
+//       font-family: 'Nunito', sans-serif;
+//     }
+
+//     .t7-resume .contact-row {
+//       display: flex;
+//       justify-content: center;
+//       flex-wrap: wrap;
+//       gap: 16px;
+//       font-size: 12px;
+//       color: #444444;
+//       margin-bottom: 8px;
+//     }
+
+//     .t7-resume .address {
+//       font-size: 12px;
+//       color: #444444;
+//       margin-top: 4px;
+//     }
+
+//     .t7-resume .links {
+//       margin-top: 8px;
+//       display: flex;
+//       justify-content: center;
+//       flex-wrap: wrap;
+//       gap: 16px;
+//     }
+
+//     .t7-resume .link-item {
+//       color: #000000;
+//       text-decoration: underline;
+//       font-size: 12px;
+//     }
+
+//     /* Section Styles */
+//     .t7-resume .section {
+//       margin-bottom: 20px;
+//       page-break-inside: avoid;
+//       break-inside: avoid;
+//     }
+
+//     .t7-resume .section-title {
+//       font-size: 16px;
+//       font-weight: 700;
+//       text-transform: uppercase;
+//       letter-spacing: 1.5px;
+//       color: #000000;
+//       margin-bottom: 12px;
+//       padding-bottom: 6px;
+//       border-bottom: 1px solid #000000;
+//       text-align: center !important;
+//       font-family: 'Nunito', sans-serif;
+//       page-break-after: avoid;
+//       break-after: avoid;
+//     }
+
+//     /* Custom Section Title */
+//     .t7-resume .custom-section-title {
+//       font-size: 16px;
+//       font-weight: 700;
+//       text-transform: uppercase;
+//       letter-spacing: 1.5px;
+//       color: #000000;
+//       margin-bottom: 12px;
+//       padding-bottom: 6px;
+//       border-bottom: 1px solid #000000;
+//       text-align: center !important;
+//       font-family: 'Nunito', sans-serif;
+//       page-break-after: avoid;
+//       break-after: avoid;
+//     }
+
+//     /* Experience Items */
+//     .t7-resume .experience-item {
+//       margin-bottom: 20px;
+//       page-break-inside: avoid;
+//       break-inside: avoid;
+//     }
+
+//     .t7-resume .experience-header {
+//       display: flex;
+//       justify-content: space-between;
+//       align-items: baseline;
+//       flex-wrap: wrap;
+//       gap: 10px;
+//       margin-bottom: 8px;
+//     }
+
+//     .t7-resume .experience-title {
+//       font-size: 15px;
+//       font-weight: 700;
+//       color: #000000;
+//       font-family: 'Nunito', sans-serif;
+//     }
+
+//     .t7-resume .experience-subtitle {
+//       font-size: 13px;
+//       font-weight: 500;
+//       color: #555555;
+//       margin-top: 2px;
+//       font-family: 'Nunito', sans-serif;
+//     }
+
+//     .t7-resume .experience-date {
+//       font-size: 12px;
+//       color: #555555;
+//       white-space: nowrap;
+//       font-family: 'Nunito', sans-serif;
+//     }
+
+//     .t7-resume .experience-description {
+//       margin-top: 8px;
+//       font-size: 13px;
+//       line-height: 1.5;
+//       color: #222222;
+//     }
+
+//     /* Education Items */
+//     .t7-resume .education-item {
+//       margin-bottom: 20px;
+//       page-break-inside: avoid;
+//       break-inside: avoid;
+//     }
+
+//     .t7-resume .education-header {
+//       display: flex;
+//       justify-content: space-between;
+//       align-items: baseline;
+//       flex-wrap: wrap;
+//       gap: 10px;
+//       margin-bottom: 8px;
+//     }
+
+//     .t7-resume .education-school {
+//       font-size: 15px;
+//       font-weight: 700;
+//       color: #000000;
+//       font-family: 'Nunito', sans-serif;
+//     }
+
+//     .t7-resume .education-subtitle {
+//       font-size: 13px;
+//       color: #555555;
+//       margin-top: 2px;
+//       font-family: 'Nunito', sans-serif;
+//     }
+
+//     .t7-resume .education-date {
+//       font-size: 12px;
+//       color: #555555;
+//       white-space: nowrap;
+//       font-family: 'Nunito', sans-serif;
+//     }
+
+//     .t7-resume .education-grade {
+//       font-size: 12px;
+//       color: #555555;
+//       margin-top: 4px;
+//       font-weight: 500;
+//       display: inline-block;
+//     }
+
+//     .t7-resume .education-description {
+//       margin-top: 8px;
+//       font-size: 13px;
+//       line-height: 1.5;
+//       color: #222222;
+//     }
+
+//     /* Project Items */
+//     .t7-resume .project-item {
+//       margin-bottom: 16px;
+//       page-break-inside: avoid;
+//       break-inside: avoid;
+//     }
+
+//     .t7-resume .project-header {
+//       display: flex;
+//       justify-content: space-between;
+//       align-items: baseline;
+//       flex-wrap: wrap;
+//       gap: 10px;
+//       margin-bottom: 6px;
+//     }
+
+//     .t7-resume .project-title {
+//       font-size: 15px;
+//       font-weight: 700;
+//       color: #000000;
+//       font-family: 'Nunito', sans-serif;
+//     }
+
+//     .t7-resume .project-links {
+//       display: flex;
+//       gap: 12px;
+//     }
+
+//     .t7-resume .project-link {
+//       color: #000000;
+//       text-decoration: underline;
+//       font-size: 12px;
+//     }
+
+//     .t7-resume .project-tech-stack {
+//       font-size: 12px;
+//       color: #555555;
+//       margin: 4px 0 6px;
+//     }
+
+//     .t7-resume .project-description {
+//       margin-top: 6px;
+//       font-size: 13px;
+//       line-height: 1.5;
+//       color: #222222;
+//     }
+
+//     /* Skills Content */
+//     .t7-resume .skills-content {
+//       padding: 0 5px;
+//     }
+
+//     .t7-resume .skills-content ul {
+//       list-style-type: disc !important;
+//       margin: 8px 0 8px 25px !important;
+//       padding-left: 0 !important;
+//     }
+
+//     .t7-resume .skills-content ol {
+//       list-style-type: decimal !important;
+//       margin: 8px 0 8px 25px !important;
+//       padding-left: 0 !important;
+//     }
+
+//     .t7-resume .skills-content li {
+//       margin-bottom: 4px !important;
+//       line-height: 1.5 !important;
+//       page-break-inside: avoid;
+//       break-inside: avoid;
+//     }
+
+//     .t7-resume .skills-content p {
+//       margin: 0 0 6px 0 !important;
+//       padding: 0 !important;
+//       line-height: 1.5 !important;
+//     }
+
+//     /* Custom Section Content */
+//     .t7-resume .custom-section-content ul {
+//       list-style-type: disc !important;
+//       margin: 8px 0 8px 25px !important;
+//       padding-left: 0 !important;
+//     }
+
+//     .t7-resume .custom-section-content ol {
+//       list-style-type: decimal !important;
+//       margin: 8px 0 8px 25px !important;
+//       padding-left: 0 !important;
+//     }
+
+//     .t7-resume .custom-section-content li {
+//       margin-bottom: 4px !important;
+//       line-height: 1.5 !important;
+//     }
+
+//     /* Summary Text */
+//     .t7-resume .summary-text ul {
+//       list-style-type: disc !important;
+//       margin: 8px 0 8px 25px !important;
+//       padding-left: 0 !important;
+//     }
+
+//     .t7-resume .summary-text ol {
+//       list-style-type: decimal !important;
+//       margin: 8px 0 8px 25px !important;
+//       padding-left: 0 !important;
+//     }
+
+//     .t7-resume .summary-text li {
+//       margin-bottom: 4px !important;
+//       line-height: 1.5 !important;
+//     }
+
+//     /* Experience Description Lists */
+//     .t7-resume .experience-description ul,
+//     .t7-resume .experience-description ol {
+//       margin: 8px 0 8px 25px !important;
+//       padding-left: 0 !important;
+//     }
+
+//     .t7-resume .experience-description ul {
+//       list-style-type: disc !important;
+//     }
+
+//     .t7-resume .experience-description ol {
+//       list-style-type: decimal !important;
+//     }
+
+//     .t7-resume .experience-description li {
+//       margin-bottom: 4px !important;
+//       line-height: 1.5 !important;
+//     }
+
+//     /* Education Description Lists */
+//     .t7-resume .education-description ul,
+//     .t7-resume .education-description ol {
+//       margin: 8px 0 8px 25px !important;
+//       padding-left: 0 !important;
+//     }
+
+//     .t7-resume .education-description ul {
+//       list-style-type: disc !important;
+//     }
+
+//     .t7-resume .education-description ol {
+//       list-style-type: decimal !important;
+//     }
+
+//     .t7-resume .education-description li {
+//       margin-bottom: 4px !important;
+//       line-height: 1.5 !important;
+//     }
+
+//     /* Project Description Lists */
+//     .t7-resume .project-description ul,
+//     .t7-resume .project-description ol {
+//       margin: 8px 0 8px 25px !important;
+//       padding-left: 0 !important;
+//     }
+
+//     .t7-resume .project-description ul {
+//       list-style-type: disc !important;
+//     }
+
+//     .t7-resume .project-description ol {
+//       list-style-type: decimal !important;
+//     }
+
+//     .t7-resume .project-description li {
+//       margin-bottom: 4px !important;
+//       line-height: 1.5 !important;
+//     }
+
+//     /* Preserve spaces in content */
+//     .t7-resume .experience-description p,
+//     .t7-resume .education-description p,
+//     .t7-resume .project-description p,
+//     .t7-resume .summary-text p,
+//     .t7-resume .custom-section-content p,
+//     .t7-resume .skills-content p {
+//       white-space: pre-wrap !important;
+//     }
+
+//     /* 
+//       ── SINGLE PRINT BLOCK ── 
+//       Everything print-related goes here, once.
+//     */
+//     @media print {
+//       body {
+//         padding: 0;
+//         margin: 0;
+//       }
+
+//       * {
+//         -webkit-print-color-adjust: exact !important;
+//         print-color-adjust: exact !important;
+//       }
+
+//       .t7-resume {
+//         max-width: none;
+//         margin: 0;
+//         padding: 0;
+//         border: none;
+//         box-shadow: none;
+//         background: white;
+//       }
+
+//       .t7-resume .resume-header {
+//         margin-top: 0;
+//         padding-top: 0;
+//       }
+
+//       .t7-resume .section {
+//         page-break-inside: avoid;
+//       }
+
+//       .t7-resume .experience-item {
+//         page-break-inside: avoid;
+//       }
+
+//       .t7-resume .project-link,
+//       .t7-resume .link-item {
+//         color: #000000 !important;
+//         text-decoration: underline !important;
+//       }
+//     }
+//   `;
+
+//   // ── Height-reporting script injected into iframe ──────────
+//   const HEIGHT_SCRIPT = `
+//     <script>
+//       function reportHeight() {
+//         var h = document.documentElement.scrollHeight || document.body.scrollHeight;
+//         window.parent.postMessage({ type: 'RESUME_HEIGHT', height: h }, '*');
+//       }
+//       if (document.readyState === 'complete') reportHeight();
+//       else window.addEventListener('load', reportHeight);
+//       if (document.fonts && document.fonts.ready) {
+//         document.fonts.ready.then(reportHeight);
+//       }
+//       const observer = new MutationObserver(reportHeight);
+//       observer.observe(document.body, { childList: true, subtree: true, attributes: true });
+//     </script>
+//   `;
+
+//   /* ======================================================
+//      HTML GENERATION — single source for preview and PDF
+//   ====================================================== */
+//   const generateHTML = useCallback((): string => {
+//     const formattedDob = formatDateOfBirth(dateOfBirth ? dateOfBirth : "");
+
+//     // Generate skills HTML
+//     const generateSkillsHTML = () => {
+//       if (!skills || (typeof skills === "string" && !skills.trim())) return "";
+
+//       const cleanedSkills = cleanQuillHTML(skills);
+//       if (
+//         !cleanedSkills ||
+//         cleanedSkills === "<p><br></p>" ||
+//         cleanedSkills === ""
+//       )
+//         return "";
+
+//       return `
+//         <div class="section">
+//           <h2 class="section-title">Skills</h2>
+//           <div class="skills-content">${cleanedSkills}</div>
+//         </div>
+//       `;
+//     };
+
+//     // Generate projects HTML
+//     const generateProjectsHTML = () => {
+//       if (!projects || projects.length === 0) return "";
+
+//       return `
+//         <div class="section">
+//           <h2 class="section-title">Projects</h2>
+//           ${projects
+//             .map(
+//               (project: any) => `
+//             <div class="project-item">
+//               <div class="project-header">
+//                 <div class="project-title">${project.title || ""}</div>
+//                 ${
+//                   project.liveUrl || project.githubUrl
+//                     ? `
+//                   <div class="project-links">
+//                     ${project.liveUrl ? `<a href="${project.liveUrl.startsWith("http") ? project.liveUrl : `https://${project.liveUrl}`}" class="project-link" target="_blank">Live Demo</a>` : ""}
+//                     ${project.githubUrl ? `<a href="${project.githubUrl.startsWith("http") ? project.githubUrl : `https://${project.githubUrl}`}" class="project-link" target="_blank">GitHub</a>` : ""}
+//                   </div>
+//                 `
+//                     : ""
+//                 }
+//               </div>
+//               ${
+//                 project.techStack && project.techStack.length > 0
+//                   ? `
+//                 <div class="project-tech-stack"><strong>Tech:</strong> ${project.techStack.join(", ")}</div>
+//               `
+//                   : ""
+//               }
+//               ${
+//                 project.description
+//                   ? `
+//                 <div class="project-description">${cleanQuillHTML(project.description)}</div>
+//               `
+//                   : ""
+//               }
+//             </div>
+//           `,
+//             )
+//             .join("")}
+//         </div>
+//       `;
+//     };
+
+//     // Generate custom sections HTML
+//     const generateCustomSectionsHTML = () => {
+//       if (
+//         !finalize ||
+//         Array.isArray(finalize) ||
+//         !Array.isArray(finalize.customSection) ||
+//         !finalize.customSection.some(
+//           (s: any) => s?.name?.trim() || s?.description?.trim(),
+//         )
+//       ) {
+//         return "";
+//       }
+
+//       return `
+//         <div class="section">
+//           ${finalize.customSection
+//             .filter((s: any) => s?.name?.trim() || s?.description?.trim())
+//             .map(
+//               (s: any) => `
+//             <div class="custom-section">
+//               ${s.name ? `<h2 class="custom-section-title">${s.name}</h2>` : ""}
+//               ${s.description ? `<div class="custom-section-content">${cleanQuillHTML(s.description)}</div>` : ""}
+//             </div>
+//           `,
+//             )
+//             .join("")}
+//         </div>
+//       `;
+//     };
+
+//     return `<!DOCTYPE html>
+// <html>
+// <head>
+//   <meta charset="UTF-8"/>
+//   <title>Resume - ${contact?.firstName || ""} ${contact?.lastName || ""}</title>
+//   <link rel="preconnect" href="https://fonts.googleapis.com"/>
+//   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+//   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+//   <style>${styles}</style>
+// </head>
+// <body>
+// <div class="t7-resume">
+
+//   <!-- HEADER -->
+//   <div class="resume-header">
+//     <h1 class="name">${contact?.firstName || ""} ${contact?.lastName || ""}</h1>
+//     <div class="job-title">${contact?.jobTitle || ""}</div>
+//     <div class="contact-row">
+//       ${contact?.email ? `<div class="contact-item">${contact.email}</div>` : ""}
+//       ${contact?.phone ? `<div class="contact-item">${contact.phone}</div>` : ""}
+//       ${formattedDob ? `<div class="contact-item">${formattedDob}</div>` : ""}
+//     </div>
+//     ${addressParts.length ? `<div class="address">${addressParts.join(" , ")}</div>` : ""}
+//     <div class="links">
+//       ${linkedinUrl ? `<a href="${linkedinUrl.startsWith("http") ? linkedinUrl : `https://${linkedinUrl}`}" class="link-item" target="_blank">LinkedIn</a>` : ""}
+//       ${githubUrl ? `<a href="${githubUrl.startsWith("http") ? githubUrl : `https://${githubUrl}`}" class="link-item" target="_blank">GitHub</a>` : ""}
+//       ${portfolioUrl ? `<a href="${portfolioUrl.startsWith("http") ? portfolioUrl : `https://${portfolioUrl}`}" class="link-item" target="_blank">Portfolio</a>` : ""}
+//     </div>
+//   </div>
+
+//   <!-- SUMMARY -->
+//   ${
+//     summary
+//       ? `
+//   <div class="section">
+//     <h2 class="section-title">Professional Summary</h2>
+//     <div class="summary-text">${cleanQuillHTML(summary)}</div>
+//   </div>
+//   `
+//       : ""
+//   }
+
+//   <!-- EXPERIENCE -->
+//   ${
+//     experiences.length > 0
+//       ? `
+//   <div class="section">
+//     <h2 class="section-title">Experience</h2>
+//     ${experiences
+//       .map((exp) => {
+//         const startFormatted = formatMonthYear(exp.startDate, false);
+//         const endFormatted = exp.endDate
+//           ? formatMonthYear(exp.endDate, false)
+//           : "Present";
+//         return `
+//         <div class="experience-item">
+//           <div class="experience-header">
+//             <div>
+//               <div class="experience-title">${exp.jobTitle || ""}</div>
+//               <div class="experience-subtitle">${[exp.employer, exp.location].filter(Boolean).join(" — ")}</div>
+//             </div>
+//             <div class="experience-date">${startFormatted} — ${endFormatted}</div>
+//           </div>
+//           ${
+//             exp.text
+//               ? `<div class="experience-description">${cleanQuillHTML(exp.text)}</div>`
+//               : ""
+//           }
+//         </div>
+//       `;
+//       })
+//       .join("")}
+//   </div>
+//   `
+//       : ""
+//   }
+
+//   <!-- PROJECTS -->
+//   ${generateProjectsHTML()}
+
+//   <!-- EDUCATION -->
+//   ${
+//     educations.length > 0
+//       ? `
+//   <div class="section">
+//     <h2 class="section-title">Education</h2>
+//     ${educations
+//       .map((edu) => {
+//         const formattedGrade = formatGradeToCgpdAndPercentage(edu.grade || "");
+//         return `
+//         <div class="education-item">
+//           <div class="education-header">
+//             <div>
+//               <div class="education-school">${edu.schoolname || ""}</div>
+//               <div class="education-subtitle">${[edu.degree, edu.location].filter(Boolean).join(" — ")}</div>
+//               ${formattedGrade ? `<div class="education-grade">${formattedGrade}</div>` : ""}
+//             </div>
+//             <div class="education-date">${[edu.startDate, edu.endDate || "Present"].filter(Boolean).join(" — ")}</div>
+//           </div>
+//           ${edu.text ? `<div class="education-description">${cleanQuillHTML(edu.text)}</div>` : ""}
+//         </div>
+//       `;
+//       })
+//       .join("")}
+//   </div>
+//   `
+//       : ""
+//   }
+
+//   <!-- SKILLS -->
+//   ${generateSkillsHTML()}
+
+//   <!-- CUSTOM SECTIONS -->
+//   ${generateCustomSectionsHTML()}
+
+// </div>
+// ${HEIGHT_SCRIPT}
+// </body>
+// </html>`;
+//   }, [contact, educations, experiences, skills, projects, finalize, summary, linkedinUrl, portfolioUrl, githubUrl, dateOfBirth, addressParts]);
+
+//   // Debounced update
+//   const debouncedUpdate = useCallback((newHtml: string) => {
+//     if (debounceTimerRef.current) {
+//       clearTimeout(debounceTimerRef.current);
+//     }
+//     debounceTimerRef.current = setTimeout(() => {
+//       setHtmlContent(newHtml);
+//     }, 300);
+//   }, []);
+
+//   // Update HTML when data changes (with debounce)
+//   useEffect(() => {
+//     const newHtml = generateHTML();
+//     debouncedUpdate(newHtml);
+    
+//     return () => {
+//       if (debounceTimerRef.current) {
+//         clearTimeout(debounceTimerRef.current);
+//       }
+//     };
+//   }, [generateHTML, debouncedUpdate]);
+
+//   // Initial HTML generation
+//   useEffect(() => {
+//     setHtmlContent(generateHTML());
+//   }, []);
+
+//   // Update blob URL when htmlContent changes (for full view mode)
+//   useEffect(() => {
+//     if (!alldata && htmlContent) {
+//       if (blobUrlRef.current) {
+//         URL.revokeObjectURL(blobUrlRef.current);
+//       }
+      
+//       const blob = new Blob([htmlContent], { type: 'text/html' });
+//       const url = URL.createObjectURL(blob);
+//       blobUrlRef.current = url;
+      
+//       if (iframeRef.current) {
+//         iframeRef.current.src = url;
+//       }
+//     }
+//   }, [htmlContent, alldata]);
+
+//   // Cleanup blob URL on unmount
+//   useEffect(() => {
+//     return () => {
+//       if (blobUrlRef.current) {
+//         URL.revokeObjectURL(blobUrlRef.current);
+//       }
+//     };
+//   }, []);
+
+//   /* ======================================================
+//      PDF DOWNLOAD
+//   ====================================================== */
+//   const handleDownload = async (): Promise<void> => {
+//     try {
+//       const html: string = generateHTML();
+
+//       const res: AxiosResponse<Blob> = await axios.post(
+//         `${API_URL}/api/candidates/generate-pdf`,
+//         { 
+//           html,
+//           options: {
+//             margin: {
+//               top: '10mm',
+//               right: '10mm',
+//               bottom: '10mm',
+//               left: '10mm'
+//             }
+//           }
+//         },
+//         { responseType: "blob" },
+//       );
+
+//       const pdfBlob: Blob = res.data;
+
+//       const url: string = URL.createObjectURL(pdfBlob);
+//       const a: HTMLAnchorElement = document.createElement("a");
+
+//       a.href = url;
+//       a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
+//       document.body.appendChild(a);
+//       a.click();
+//       document.body.removeChild(a);
+//       URL.revokeObjectURL(url);
+//     } catch (error) {
+//       console.error("Error generating PDF:", error);
+//       alert("Failed to generate PDF. Please try again.");
+//     }
+//   };
+
+//   /* ======================================================
+//      RENDER
+//   ====================================================== */
+//   return (
+//     <>
+//       <div className="text-center my-5">
+//         {lastSegment === "download-resume" && (
+//           <motion.button
+//             onClick={handleDownload}
+//             whileHover={{ scale: 1.05 }}
+//             whileTap={{ scale: 0.95 }}
+//             className="bg-emerald-500 text-2xl md:text-base hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 cursor-pointer shadow-md hover:shadow-lg"
+//           >
+//             Download Resume
+//           </motion.button>
+//         )}
+//       </div>
+
+//       {alldata ? (
+//         /* THUMBNAIL mode */
+//         <div
+//           style={{
+//             width: "210mm",
+//             height: "297mm",
+//             transform: "scale(0.36)",
+//             transformOrigin: "top left",
+//             overflow: "auto",
+//             pointerEvents: "none",
+//             backgroundColor: "white",
+//             boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+//           }}
+//         >
+//           <iframe
+//             src={blobUrlRef.current || undefined}
+//             title="resume-preview"
+//             style={{
+//               width: "210mm",
+//               height: "297mm",
+//               border: "none",
+//               display: "block",
+//             }}
+//             sandbox="allow-same-origin allow-scripts"
+//           />
+//         </div>
+//       ) : (
+//         /* FULL VIEW mode */
+//         <div
+//           style={{
+//             width: "210mm",
+//             margin: "0 auto",
+//             boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+//           }}
+//         >
+//           <iframe
+//             ref={iframeRef}
+//             title="resume-full"
+//             style={{
+//               width: "210mm",
+//               height: `${iframeHeight}px`,
+//               border: "none",
+//               display: "block",
+//               overflow: "hidden",
+//             }}
+//             sandbox="allow-same-origin allow-scripts"
+//           />
+//         </div>
+//       )}
+//     </>
+//   );
+// };
+
+// export default TemplateSeven;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 "use client";
 import React, { useContext, useState, useEffect, useRef, useCallback } from "react";
 import axios, { AxiosResponse } from "axios";
@@ -1123,26 +2055,53 @@ import { usePathname } from "next/navigation";
 import { ResumeProps } from "@/app/types";
 import { motion } from "framer-motion";
 
+// ─────────────────────────────────────────────────────────────────────────────
+// PIXEL-PERFECT A4 CONSTANTS
+//
+// PDF renderer (Puppeteer) options:
+//   page: A4  →  210 mm × 297 mm
+//   margin: 15 mm on all sides
+//
+// At 96 dpi: 1 mm = 3.7795275591 px
+//   210 mm → 793.70 px  → A4_W        = 794
+//   297 mm → 1122.52 px → A4_H        = 1123
+//    15 mm →  56.69 px  → MARGIN       = 57
+//
+// CRITICAL — how Puppeteer pages content:
+//   Puppeteer renders with 15mm margins, so EACH PAGE has:
+//     top margin    = 57px  (white space)
+//     content area  = 1009px  ← this is where content sits
+//     bottom margin = 57px  (white space)
+//     total         = 1123px
+//
+//   Content is paginated in 1009px SLICES, not 1123px slices.
+//   Page N content starts at: N × 1009px (content offset)
+//   Displayed at:             N × 1123px + 57px (with margin offset)
+//
+// For the preview to match, we must:
+//   1. Cut content every PAGE_CONTENT_H (1009px) — same as Puppeteer
+//   2. Render each page with MARGIN (57px) top/bottom white space
+//   3. Page card height = A4_H (1123px) = MARGIN + content + MARGIN
+//
+// CRITICAL — box-sizing: border-box:
+//   .t7-resume { width: 794px; padding: 57px; box-sizing: border-box }
+//   → inner text width = 794 - 57 - 57 = 680 px
+//   → matches PDF text width = 210mm - 15mm - 15mm = 180mm = 680px ✓
+// ─────────────────────────────────────────────────────────────────────────────
+const A4_W = 794; // px — A4 width at 96 dpi
+const A4_H = 1123; // px — A4 height at 96 dpi
+const MARGIN = 57; // px — 15 mm at 96 dpi
+const PAGE_CONTENT_H = A4_H - MARGIN * 2; // 1009px — usable content per page
+
 const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
   const context = useContext(CreateContext);
   const pathname = usePathname();
   const lastSegment = pathname.split("/").pop();
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const measureRef = useRef<HTMLIFrameElement>(null);
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const blobUrlRef = useRef<string | null>(null);
   
-  const [iframeHeight, setIframeHeight] = useState<number>(1122);
   const [htmlContent, setHtmlContent] = useState<string>("");
-
-  useEffect(() => {
-    const handler = (e: MessageEvent) => {
-      if (e.data?.type === "RESUME_HEIGHT") {
-        setIframeHeight(e.data.height);
-      }
-    };
-    window.addEventListener("message", handler);
-    return () => window.removeEventListener("message", handler);
-  }, []);
+  const [pages, setPages] = useState<string[]>([]);
 
   const contact = alldata?.contact || context.contact || {};
   const educations = alldata?.educations || context?.education || [];
@@ -1167,19 +2126,22 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
   /* ======================================================
      CSS — SINGLE SOURCE with ONE @media print block
   ====================================================== */
-  const styles = `
-   
+  const CSS = `
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&display=swap');
 
-   
-    /* PDF page margins - ONLY ONCE */
     @page {
       size: A4;
-      margin: 10mm;
+      margin: 15mm;
     }
 
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body { margin: 0; padding: 0; background: white; }
+
     .t7-resume {
-      max-width: 190mm;
-      margin: 0 auto;
+      width: ${A4_W}px;
+      /* LEFT+RIGHT margins only — top/bottom are handled per-page by .page-content-clip */
+      padding: 0 ${MARGIN}px;
       background: white;
       font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       font-size: 14px;
@@ -1201,8 +2163,8 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
       margin-bottom: 20px;
       padding-bottom: 15px;
       border-bottom: 2px solid #000000;
-      page-break-after: avoid;
-      break-after: avoid;
+      page-break-inside: avoid;
+      break-inside: avoid;
     }
 
     .t7-resume .name {
@@ -1576,36 +2538,21 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
       Everything print-related goes here, once.
     */
     @media print {
-      body {
-        padding: 0;
-        margin: 0;
-      }
-
       * {
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
       }
 
       .t7-resume {
-        max-width: none;
-        margin: 0;
-        padding: 0;
-        border: none;
-        box-shadow: none;
+        width: 100% !important;
+        padding: 0 !important;
+        box-shadow: none !important;
         background: white;
       }
 
       .t7-resume .resume-header {
         margin-top: 0;
         padding-top: 0;
-      }
-
-      .t7-resume .section {
-        page-break-inside: avoid;
-      }
-
-      .t7-resume .experience-item {
-        page-break-inside: avoid;
       }
 
       .t7-resume .project-link,
@@ -1616,28 +2563,14 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
     }
   `;
 
-  // ── Height-reporting script injected into iframe ──────────
-  const HEIGHT_SCRIPT = `
-    <script>
-      function reportHeight() {
-        var h = document.documentElement.scrollHeight || document.body.scrollHeight;
-        window.parent.postMessage({ type: 'RESUME_HEIGHT', height: h }, '*');
-      }
-      if (document.readyState === 'complete') reportHeight();
-      else window.addEventListener('load', reportHeight);
-      if (document.fonts && document.fonts.ready) {
-        document.fonts.ready.then(reportHeight);
-      }
-      const observer = new MutationObserver(reportHeight);
-      observer.observe(document.body, { childList: true, subtree: true, attributes: true });
-    </script>
-  `;
-
   /* ======================================================
      HTML GENERATION — single source for preview and PDF
   ====================================================== */
-  const generateHTML = useCallback((): string => {
+  const generateHTML = useCallback((forPDF = false): string => {
     const formattedDob = formatDateOfBirth(dateOfBirth ? dateOfBirth : "");
+
+    const href = (url: string) =>
+      url.startsWith("http") ? url : `https://${url}`;
 
     // Generate skills HTML
     const generateSkillsHTML = () => {
@@ -1676,8 +2609,8 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
                   project.liveUrl || project.githubUrl
                     ? `
                   <div class="project-links">
-                    ${project.liveUrl ? `<a href="${project.liveUrl.startsWith("http") ? project.liveUrl : `https://${project.liveUrl}`}" class="project-link" target="_blank">Live Demo</a>` : ""}
-                    ${project.githubUrl ? `<a href="${project.githubUrl.startsWith("http") ? project.githubUrl : `https://${project.githubUrl}`}" class="project-link" target="_blank">GitHub</a>` : ""}
+                    ${project.liveUrl ? `<a href="${href(project.liveUrl)}" class="project-link" target="_blank">Live Demo</a>` : ""}
+                    ${project.githubUrl ? `<a href="${href(project.githubUrl)}" class="project-link" target="_blank">GitHub</a>` : ""}
                   </div>
                 `
                     : ""
@@ -1735,23 +2668,31 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
       `;
     };
 
+    // PDF override: strip the fixed width/padding from .t7-resume so Puppeteer's
+    // own 15mm margins control the layout
+    const pdfOverrideStyle = forPDF
+      ? `<style>.t7-resume { width: 100% !important; padding: 0 !important; }</style>`
+      : "";
+
     return `<!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Resume - ${contact?.firstName || ""} ${contact?.lastName || ""}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
-  <style>${styles}</style>
+  <style>${CSS}</style>
+  ${pdfOverrideStyle}
 </head>
-<body>
+<body style="margin:0;padding:0;background:white;">
 <div class="t7-resume">
 
   <!-- HEADER -->
   <div class="resume-header">
     <h1 class="name">${contact?.firstName || ""} ${contact?.lastName || ""}</h1>
-    <div class="job-title">${contact?.jobTitle || ""}</div>
+    <div class="job-title">${typeof contact?.jobTitle === "string" ? contact.jobTitle : (contact?.jobTitle as any)?.name || ""}</div>
     <div class="contact-row">
       ${contact?.email ? `<div class="contact-item">${contact.email}</div>` : ""}
       ${contact?.phone ? `<div class="contact-item">${contact.phone}</div>` : ""}
@@ -1759,9 +2700,9 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
     </div>
     ${addressParts.length ? `<div class="address">${addressParts.join(" , ")}</div>` : ""}
     <div class="links">
-      ${linkedinUrl ? `<a href="${linkedinUrl.startsWith("http") ? linkedinUrl : `https://${linkedinUrl}`}" class="link-item" target="_blank">LinkedIn</a>` : ""}
-      ${githubUrl ? `<a href="${githubUrl.startsWith("http") ? githubUrl : `https://${githubUrl}`}" class="link-item" target="_blank">GitHub</a>` : ""}
-      ${portfolioUrl ? `<a href="${portfolioUrl.startsWith("http") ? portfolioUrl : `https://${portfolioUrl}`}" class="link-item" target="_blank">Portfolio</a>` : ""}
+      ${linkedinUrl ? `<a href="${href(linkedinUrl)}" class="link-item" target="_blank">LinkedIn</a>` : ""}
+      ${githubUrl ? `<a href="${href(githubUrl)}" class="link-item" target="_blank">GitHub</a>` : ""}
+      ${portfolioUrl ? `<a href="${href(portfolioUrl)}" class="link-item" target="_blank">Portfolio</a>` : ""}
     </div>
   </div>
 
@@ -1851,90 +2792,210 @@ const TemplateSeven: React.FC<ResumeProps> = ({ alldata }) => {
   ${generateCustomSectionsHTML()}
 
 </div>
-${HEIGHT_SCRIPT}
 </body>
 </html>`;
-  }, [contact, educations, experiences, skills, projects, finalize, summary, linkedinUrl, portfolioUrl, githubUrl, dateOfBirth, addressParts]);
+  }, [contact, educations, experiences, skills, projects, finalize, summary, linkedinUrl, portfolioUrl, githubUrl, dateOfBirth, addressParts, CSS]);
 
-  // Debounced update
-  const debouncedUpdate = useCallback((newHtml: string) => {
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
+  // ─────────────────────────────────────────────────────────────────────────
+  // PAGE SPLITTER — mirrors Puppeteer's page-break-inside:avoid logic
+  // ─────────────────────────────────────────────────────────────────────────
+  const splitIntoPages = useCallback(
+    (fullHtml: string): Promise<string[]> => {
+      return new Promise((resolve) => {
+        const iframe = measureRef.current;
+        if (!iframe) {
+          resolve([fullHtml]);
+          return;
+        }
+
+        const doc = iframe.contentDocument || iframe.contentWindow?.document;
+        if (!doc) {
+          resolve([fullHtml]);
+          return;
+        }
+
+        doc.open();
+        doc.write(fullHtml);
+        doc.close();
+
+        const doSplit = () => {
+          const resume = doc.querySelector<HTMLElement>(".t7-resume");
+          if (!resume) {
+            resolve([fullHtml]);
+            return;
+          }
+
+          const resumeTop =
+            resume.getBoundingClientRect().top +
+            (doc.documentElement.scrollTop || doc.body.scrollTop);
+          const totalH = resume.scrollHeight;
+
+          // ── Collect avoid-break elements ──────────────────────────────────
+          const AVOID_SELECTORS = [
+            ".resume-header",
+            ".section",
+            ".experience-item",
+            ".education-item",
+            ".project-item",
+          ].join(", ");
+
+          interface Block {
+            top: number;
+            bottom: number;
+          }
+          const blocks: Block[] = [];
+
+          resume
+            .querySelectorAll<HTMLElement>(AVOID_SELECTORS)
+            .forEach((el) => {
+              const rect = el.getBoundingClientRect();
+              const elTop =
+                rect.top -
+                resumeTop +
+                (doc.documentElement.scrollTop || doc.body.scrollTop);
+              const elBot =
+                rect.bottom -
+                resumeTop +
+                (doc.documentElement.scrollTop || doc.body.scrollTop);
+              if (elBot - elTop > 8) blocks.push({ top: elTop, bottom: elBot });
+            });
+
+          blocks.sort((a, b) => a.top - b.top);
+
+          // ── Calculate actual page cut points ──────────────────────────────
+          const pageStarts: number[] = [0];
+
+          while (true) {
+            const currentStart = pageStarts[pageStarts.length - 1];
+            const naiveCut = currentStart + PAGE_CONTENT_H;
+
+            if (naiveCut >= totalH) break;
+
+            let actualCut = naiveCut;
+
+            for (const block of blocks) {
+              if (block.top >= naiveCut) break;
+              if (block.bottom <= currentStart) continue;
+              if (block.top >= currentStart && block.bottom > naiveCut) {
+                actualCut = block.top;
+                break;
+              }
+            }
+
+            if (actualCut <= currentStart) actualCut = naiveCut;
+            pageStarts.push(actualCut);
+          }
+
+          // ── Build one HTML doc per page ───────────────────────────────────
+          const pageHtmls = pageStarts.map(
+            (contentOffsetY) => `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <style>
+    ${CSS}
+    html, body {
+      margin: 0 !important; padding: 0 !important;
+      width: ${A4_W}px !important; height: ${A4_H}px !important;
+      overflow: hidden !important; background: white !important;
     }
-    debounceTimerRef.current = setTimeout(() => {
-      setHtmlContent(newHtml);
-    }, 300);
+    .page-margin-box {
+      position: relative;
+      width: ${A4_W}px;
+      height: ${A4_H}px;
+      background: white;
+      overflow: hidden;
+    }
+    .page-content-clip {
+      position: absolute;
+      top: ${MARGIN}px;
+      left: 0;
+      width: ${A4_W}px;
+      height: ${PAGE_CONTENT_H}px;
+      overflow: hidden;
+    }
+    .page-shift {
+      position: absolute;
+      top: ${-contentOffsetY}px;
+      left: 0;
+      width: ${A4_W}px;
+    }
+    .t7-resume {
+      width: ${A4_W}px !important;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+      padding-left: ${MARGIN}px !important;
+      padding-right: ${MARGIN}px !important;
+      margin: 0 !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-margin-box">
+    <div class="page-content-clip">
+      <div class="page-shift">
+        ${resume.outerHTML}
+      </div>
+    </div>
+  </div>
+</body>
+</html>`,
+          );
+
+          resolve(pageHtmls);
+        };
+
+        const win = iframe.contentWindow as any;
+        if (win?.document?.fonts?.ready) {
+          win.document.fonts.ready.then(() => {
+            typeof win.requestAnimationFrame === "function"
+              ? win.requestAnimationFrame(doSplit)
+              : setTimeout(doSplit, 0);
+          });
+        } else {
+          setTimeout(doSplit, 350);
+        }
+      });
+    },
+    [CSS],
+  );
+
+  // ── Debounced updates ────────────────────────────────────
+  const scheduleUpdate = useCallback((html: string) => {
+    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    debounceTimerRef.current = setTimeout(() => setHtmlContent(html), 300);
   }, []);
 
-  // Update HTML when data changes (with debounce)
   useEffect(() => {
-    const newHtml = generateHTML();
-    debouncedUpdate(newHtml);
-    
+    scheduleUpdate(generateHTML());
     return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
     };
-  }, [generateHTML, debouncedUpdate]);
+  }, [generateHTML, scheduleUpdate]);
 
-  // Initial HTML generation
   useEffect(() => {
     setHtmlContent(generateHTML());
-  }, []);
+  }, [generateHTML]);
 
-  // Update blob URL when htmlContent changes (for full view mode)
   useEffect(() => {
-    if (!alldata && htmlContent) {
-      if (blobUrlRef.current) {
-        URL.revokeObjectURL(blobUrlRef.current);
-      }
-      
-      const blob = new Blob([htmlContent], { type: 'text/html' });
-      const url = URL.createObjectURL(blob);
-      blobUrlRef.current = url;
-      
-      if (iframeRef.current) {
-        iframeRef.current.src = url;
-      }
-    }
-  }, [htmlContent, alldata]);
-
-  // Cleanup blob URL on unmount
-  useEffect(() => {
-    return () => {
-      if (blobUrlRef.current) {
-        URL.revokeObjectURL(blobUrlRef.current);
-      }
-    };
-  }, []);
+    if (!htmlContent) return;
+    splitIntoPages(htmlContent).then(setPages);
+  }, [htmlContent, splitIntoPages]);
 
   /* ======================================================
      PDF DOWNLOAD
   ====================================================== */
   const handleDownload = async (): Promise<void> => {
     try {
-      const html: string = generateHTML();
-
       const res: AxiosResponse<Blob> = await axios.post(
         `${API_URL}/api/candidates/generate-pdf`,
         { 
-          html,
-          options: {
-            margin: {
-              top: '10mm',
-              right: '10mm',
-              bottom: '10mm',
-              left: '10mm'
-            }
-          }
+          html: generateHTML(true),
         },
         { responseType: "blob" },
       );
 
-      const pdfBlob: Blob = res.data;
-
-      const url: string = URL.createObjectURL(pdfBlob);
+      const url: string = URL.createObjectURL(res.data);
       const a: HTMLAnchorElement = document.createElement("a");
 
       a.href = url;
@@ -1954,8 +3015,27 @@ ${HEIGHT_SCRIPT}
   ====================================================== */
   return (
     <>
-      <div className="text-center my-5">
-        {lastSegment === "download-resume" && (
+      {/* Invisible measurement iframe */}
+      <iframe
+        ref={measureRef}
+        title="resume-measure"
+        aria-hidden="true"
+        style={{
+          position: "fixed",
+          top: "-99999px",
+          left: "-99999px",
+          width: `${A4_W}px`,
+          height: `${A4_H * 10}px`,
+          border: "none",
+          visibility: "hidden",
+          pointerEvents: "none",
+        }}
+        sandbox="allow-same-origin allow-scripts"
+      />
+
+      {/* Download button */}
+      {lastSegment === "download-resume" && (
+        <div className="text-center my-5">
           <motion.button
             onClick={handleDownload}
             whileHover={{ scale: 1.05 }}
@@ -1964,56 +3044,122 @@ ${HEIGHT_SCRIPT}
           >
             Download Resume
           </motion.button>
-        )}
-      </div>
+        </div>
+      )}
 
       {alldata ? (
-        /* THUMBNAIL mode */
+        // ── THUMBNAIL mode: first page only, scaled 36% ──────────────────
         <div
           style={{
-            width: "210mm",
-            height: "297mm",
+            width: `${A4_W}px`,
+            height: `${A4_H}px`,
             transform: "scale(0.36)",
             transformOrigin: "top left",
-            overflow: "auto",
+            overflow: "hidden",
             pointerEvents: "none",
-            backgroundColor: "white",
-            boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+            flexShrink: 0,
           }}
         >
-          <iframe
-            src={blobUrlRef.current || undefined}
-            title="resume-preview"
-            style={{
-              width: "210mm",
-              height: "297mm",
-              border: "none",
-              display: "block",
-            }}
-            sandbox="allow-same-origin allow-scripts"
-          />
+          {pages[0] ? (
+            <iframe
+              title="resume-thumb"
+              srcDoc={pages[0]}
+              style={{
+                width: `${A4_W}px`,
+                height: `${A4_H}px`,
+                border: "none",
+                display: "block",
+                pointerEvents: "none",
+              }}
+              sandbox="allow-same-origin"
+            />
+          ) : (
+            <div
+              style={{
+                width: `${A4_W}px`,
+                height: `${A4_H}px`,
+                background: "white",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#ccc",
+                fontSize: 14,
+                fontFamily: "sans-serif",
+              }}
+            >
+              Loading…
+            </div>
+          )}
         </div>
       ) : (
-        /* FULL VIEW mode */
-        <div
-          style={{
-            width: "210mm",
-            margin: "0 auto",
-            boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-          }}
-        >
-          <iframe
-            ref={iframeRef}
-            title="resume-full"
-            style={{
-              width: "210mm",
-              height: `${iframeHeight}px`,
-              border: "none",
-              display: "block",
-              overflow: "hidden",
-            }}
-            sandbox="allow-same-origin allow-scripts"
-          />
+        // ── FULL PREVIEW mode: paginated A4 pages ────────────────────────
+        <div style={{ width: `${A4_W}px`, margin: "0 auto" }}>
+          {(pages.length > 0 ? pages : [htmlContent]).map((pageHtml, idx) => (
+            <div key={idx} style={{ marginBottom: "28px" }}>
+              {/* Page pill */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "10px",
+                  marginBottom: "10px",
+                }}
+              >
+                <div
+                  style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+                />
+                <span
+                  style={{
+                    fontSize: "11px",
+                    fontWeight: 600,
+                    color: "#6b7280",
+                    whiteSpace: "nowrap",
+                    padding: "3px 12px",
+                    background: "#f3f4f6",
+                    borderRadius: "999px",
+                    border: "1px solid #e5e7eb",
+                    letterSpacing: "0.05em",
+                    fontFamily: "system-ui, sans-serif",
+                  }}
+                >
+                  Page {idx + 1}
+                  {pages.length > 1 ? ` of ${pages.length}` : ""}
+                </span>
+                <div
+                  style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+                />
+              </div>
+
+              {/* A4 card */}
+              <div
+                style={{
+                  width: `${A4_W}px`,
+                  height: `${A4_H}px`,
+                  overflow: "hidden",
+                  background: "white",
+                  boxShadow:
+                    "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
+                  borderRadius: "2px",
+                  flexShrink: 0,
+                }}
+              >
+                <iframe
+                  title={`resume-page-${idx + 1}`}
+                  srcDoc={pageHtml}
+                  style={{
+                    width: `${A4_W}px`,
+                    height: `${A4_H}px`,
+                    border: "none",
+                    display: "block",
+                    pointerEvents: "none",
+                  }}
+                  scrolling="no"
+                  sandbox="allow-same-origin allow-scripts"
+                />
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </>

@@ -1948,17 +1948,823 @@
 
 // export default TemplateThree;
 
-"use client";
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// "use client";
+
+// import React, {
+//   useContext,
+//   useState,
+//   useEffect,
+//   useRef,
+//   useMemo,
+//   useCallback,
+// } from "react";
+// import axios from "axios";
+// import { CreateContext } from "@/app/context/CreateContext";
+// import { API_URL } from "@/app/config/api";
+// import {
+//   formatMonthYear,
+//   cleanQuillHTML,
+//   formatDateOfBirth,
+//   formatGradeToCgpdAndPercentage,
+// } from "@/app/utils";
+// import {
+//   Contact,
+//   Education,
+//   Experience,
+//   Finalize,
+//   ResumeProps,
+// } from "@/app/types/context.types";
+// import { usePathname } from "next/navigation";
+// import { motion } from "framer-motion";
+
+// const TemplateThree: React.FC<ResumeProps> = ({ alldata }) => {
+//   const context = useContext(CreateContext);
+//   const pathname = usePathname();
+//   const lastSegment = pathname.split("/").pop();
+//   const iframeRef = useRef<HTMLIFrameElement>(null);
+//   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+//   const [iframeHeight, setIframeHeight] = useState<number>(1122);
+//   const [htmlContent, setHtmlContent] = useState<string>("");
+
+//   useEffect(() => {
+//     const handler = (e: MessageEvent) => {
+//       if (e.data?.type === "RESUME_HEIGHT") {
+//         setIframeHeight(e.data.height);
+//       }
+//     };
+//     window.addEventListener("message", handler);
+//     return () => window.removeEventListener("message", handler);
+//   }, []);
+
+//   const contact = alldata?.contact || context?.contact || ({} as Contact);
+//   const educations = alldata?.educations || context?.education || [];
+//   const experiences = alldata?.experiences || context?.experiences || [];
+//   const skills = alldata?.skills?.text || context?.skills?.text || "";
+//   const projects = alldata?.projects || context?.projects || [];
+//   const finalize = alldata?.finalize || context?.finalize || ({} as Finalize);
+//   const summary = alldata?.summary || context?.summary || "";
+
+//   const linkedinUrl = contact?.linkedIn;
+//   const portfolioUrl = contact?.portfolio;
+//   const githubUrl = contact?.github;
+//   const dateOfBirth = contact?.dob;
+
+//   const addressParts = [
+//     contact?.address,
+//     contact?.city,
+//     contact?.postCode,
+//     contact?.country,
+//   ]
+//     .filter(Boolean)
+//     .join(", ");
+
+//   const formattedDob = formatDateOfBirth(dateOfBirth ? dateOfBirth : "");
+
+//   const customSection = Array.isArray(finalize?.customSection)
+//     ? finalize.customSection
+//     : [];
+
+//   // ── CSS (single source — used in both iframe & PDF) ───────
+//   const CSS = `
+//     @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap');
+
+    
+
+   
+
+//     /* PDF margins */
+//     @page {
+//       size: A4;
+//       margin: 10mm;
+//     }
+
+//     /* Print margins reset */
+//     @media print {
+//       body {
+//         padding: 0;
+//         margin: 0;
+//       }
+//     }
+
+//     /* Resume container */
+//     .t3-resume {
+//       max-width: 190mm;
+//       margin: 0 auto;
+//       background-color: white;
+//       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+//       font-size: 15px;
+//       line-height: 1.5;
+//       color: #374151;
+//     }
+
+//     @media print {
+//       .t3-resume {
+//         max-width: none;
+//         margin: 0;
+//       }
+//     }
+
+//     .t3-resume * {
+//       box-sizing: border-box;
+//     }
+
+//     .t3-body {
+//       padding: 0 20px;
+//     }
+
+//     /* ── HEADER ── */
+//     .t3-header {
+//       display: flex;
+//       justify-content: space-between;
+//       background-color: #878787;
+//       padding: 4px;
+//       border-radius: 16px;
+//       color: white;
+//     }
+
+//     .t3-header-left {
+//       width: 40%;
+//       font-size: 27px;
+//       font-weight: 500;
+//       padding: 12px;
+//       text-transform: uppercase;
+//       word-wrap: break-word;
+//       overflow-wrap: break-word;
+//     }
+
+//     .t3-header-job {
+//       font-size: 14px;
+//       font-weight: 400;
+//       text-transform: lowercase;
+//       margin-top: 4px;
+//     }
+
+//     .t3-header-links {
+//       display: flex;
+//       align-items: center;
+//       gap: 16px;
+//       padding-bottom: 8px;
+//       margin-top: 4px;
+//       flex-wrap: wrap;
+//     }
+
+//     .t3-header-link {
+//       font-size: 14px;
+//       font-weight: 600;
+//       text-decoration: underline;
+//       color: white;
+//     }
+
+//     .t3-header-right {
+//       width: 60%;
+//       padding: 12px;
+//       font-size: 14px;
+//     }
+
+//     .t3-header-contact-line {
+//       text-align: right;
+//       word-wrap: break-word;
+//       overflow-wrap: break-word;
+//       margin-bottom: 2px;
+//     }
+
+//     /* ── SECTION TITLE ── */
+//     .t3-section-title {
+//       font-size: 22px;
+//       font-weight: 600;
+//       margin-top: 10px;
+//       margin-bottom: 4px;
+//       color: #111827;
+//     }
+
+//     /* ── SUMMARY ── */
+//     .t3-summary {
+//       padding-top: 6px;
+//       padding-bottom: 10px;
+//       color: #374151;
+//       font-size: 15px;
+//       word-wrap: break-word;
+//       overflow-wrap: break-word;
+//     }
+
+//     /* Rich Text Content Styles */
+//     .t3-summary ul,
+//     .t3-summary ol,
+//     .t3-entry-content ul,
+//     .t3-entry-content ol,
+//     .t3-project-description ul,
+//     .t3-project-description ol,
+//     .t3-extra ul,
+//     .t3-extra ol,
+//     .t3-skills-content ul,
+//     .t3-skills-content ol {
+//       margin: 8px 0 8px 20px !important;
+//       padding-left: 0 !important;
+//     }
+
+//     .t3-summary li,
+//     .t3-entry-content li,
+//     .t3-project-description li,
+//     .t3-extra li,
+//     .t3-skills-content li {
+//       margin-bottom: 4px !important;
+//       line-height: 1.5 !important;
+//     }
+
+//     .t3-summary strong,
+//     .t3-entry-content strong,
+//     .t3-project-description strong,
+//     .t3-extra strong,
+//     .t3-skills-content strong {
+//       font-weight: 700 !important;
+//     }
+
+//     .t3-summary em,
+//     .t3-entry-content em,
+//     .t3-project-description em,
+//     .t3-extra em,
+//     .t3-skills-content em {
+//       font-style: italic !important;
+//     }
+
+//     .t3-summary u,
+//     .t3-entry-content u,
+//     .t3-project-description u,
+//     .t3-extra u,
+//     .t3-skills-content u {
+//       text-decoration: underline !important;
+//     }
+
+//     /* Skills Content Styles */
+//     .t3-skills-block {
+//       margin-top: 8px;
+//       margin-bottom: 8px;
+//     }
+
+//     .t3-skills-content {
+//       color: #374151;
+//       font-size: 15px;
+//       word-wrap: break-word;
+//       overflow-wrap: break-word;
+//     }
+
+//     .t3-skills-content p {
+//       margin: 0 0 6px 0 !important;
+//       padding: 0 !important;
+//       line-height: 1.5 !important;
+//     }
+
+//     /* ── ENTRY ── */
+//     .t3-entry {
+//       margin-top: 8px;
+//       padding-bottom: 6px;
+//     }
+
+//     .t3-experience-header {
+//       display: flex;
+//       justify-content: space-between;
+//       align-items: baseline;
+//       flex-wrap: wrap;
+//       gap: 8px;
+//       margin-bottom: 4px;
+//     }
+
+//     .t3-experience-title {
+//       font-size: 18px;
+//       font-weight: 600;
+//       color: #111827;
+//     }
+
+//     .t3-experience-date {
+//       font-size: 14px;
+//       color: #4b5563;
+//     }
+
+//     .t3-experience-subtitle {
+//       font-size: 15px;
+//       color: #6b7280;
+//       font-weight: 500;
+//     }
+
+//     .t3-education-header {
+//       display: flex;
+//       justify-content: space-between;
+//       align-items: baseline;
+//       flex-wrap: wrap;
+//       gap: 8px;
+//       margin-bottom: 4px;
+//     }
+
+//     .t3-education-school {
+//       font-size: 18px;
+//       font-weight: 600;
+//       color: #111827;
+//     }
+
+//     .t3-education-date {
+//       font-size: 14px;
+//       color: #4b5563;
+//     }
+
+//     .t3-education-subtitle {
+//       font-size: 15px;
+//       color: #6b7280;
+//       margin-bottom: 4px;
+//       font-weight: 500;
+//     }
+
+//     .t3-entry-content {
+//       padding-top: 6px;
+//       padding-bottom: 6px;
+//       color: #374151;
+//       font-size: 15px;
+//       word-wrap: break-word;
+//       overflow-wrap: break-word;
+//     }
+
+//     .t3-entry-content p { margin: 0 !important; padding: 0 !important; line-height: 1.5 !important; }
+//     .t3-entry-content ul { list-style-type: disc !important; padding-left: 20px !important; margin: 0 !important; }
+//     .t3-entry-content ol { list-style-type: decimal !important; padding-left: 20px !important; margin: 0 !important; }
+//     .t3-entry-content li { margin: 0 !important; padding: 0 !important; line-height: 1.5 !important; margin-bottom: 1px !important; }
+
+//     .t3-education-grade {
+//       font-size: 13px;
+//       color: #6b7280;
+//       margin-top: 4px;
+//       font-weight: 500;
+//     }
+
+//     /* ── PROJECTS ── */
+//     .t3-project-item {
+//       margin-top: 8px;
+//       padding-bottom: 6px;
+//     }
+
+//     .t3-project-header {
+//       display: flex;
+//       justify-content: space-between;
+//       align-items: baseline;
+//       flex-wrap: wrap;
+//       gap: 8px;
+//       margin-bottom: 4px;
+//     }
+
+//     .t3-project-title {
+//       font-size: 18px;
+//       font-weight: 600;
+//       color: #111827;
+//     }
+
+//     .t3-project-links {
+//       display: flex;
+//       gap: 12px;
+//     }
+
+//     .t3-project-link {
+//       font-size: 12px;
+//       color: #6b7280;
+//       text-decoration: underline;
+//     }
+
+//     .t3-project-tech-stack {
+//       font-size: 13px;
+//       color: #6b7280;
+//       margin: 4px 0;
+//     }
+
+//     .t3-project-description {
+//       padding-top: 6px;
+//       color: #374151;
+//       font-size: 14px;
+//       word-wrap: break-word;
+//       overflow-wrap: break-word;
+//     }
+
+//     /* Custom section */
+//     .t3-custom-section {
+//       margin-top: 16px;
+//     }
+
+//     .t3-custom-section:first-of-type {
+//       margin-top: 0;
+//     }
+
+//     .t3-custom-section-title {
+//       font-size: 22px;
+//       font-weight: 600;
+//       margin-top: 10px;
+//       margin-bottom: 4px;
+//       color: #111827;
+//     }
+
+//     .t3-custom-section-content {
+//       padding-top: 6px;
+//       padding-bottom: 6px;
+//       color: #374151;
+//       font-size: 15px;
+//       word-wrap: break-word;
+//       overflow-wrap: break-word;
+//     }
+
+//     /* Print overrides */
+//     @media print {
+//       * {
+//         -webkit-print-color-adjust: exact !important;
+//         print-color-adjust: exact !important;
+//       }
+//       .t3-header {
+//         -webkit-print-color-adjust: exact;
+//         print-color-adjust: exact;
+//       }
+//       .t3-entry, .t3-project-item { 
+//         page-break-inside: avoid; 
+//         break-inside: avoid; 
+//       }
+//       .t3-section-title { 
+//         page-break-after: avoid; 
+//         break-after: avoid; 
+//       }
+//     }
+//   `;
+
+//   // ── Height-reporting script injected into iframe ──────────
+//   const HEIGHT_SCRIPT = `
+//     <script>
+//       function reportHeight() {
+//         var h = document.documentElement.scrollHeight || document.body.scrollHeight;
+//         window.parent.postMessage({ type: 'RESUME_HEIGHT', height: h }, '*');
+//       }
+//       if (document.readyState === 'complete') reportHeight();
+//       else window.addEventListener('load', reportHeight);
+//       if (document.fonts && document.fonts.ready) {
+//         document.fonts.ready.then(reportHeight);
+//       }
+//       // Observe DOM changes to report height updates
+//       const observer = new MutationObserver(reportHeight);
+//       observer.observe(document.body, { childList: true, subtree: true, attributes: true });
+//     </script>
+//   `;
+
+//   // ── HTML generation logic (memoized) ───────────────────────
+//   const generateHTML = useCallback((): string => {
+//     const href = (url: string) =>
+//       url.startsWith("http") ? url : `https://${url}`;
+//     const rich = (html: string) => {
+//       const c = cleanQuillHTML(html);
+//       return c && c !== "<p><br></p>" ? c : "";
+//     };
+
+//     const addressStr = [
+//       contact?.address,
+//       contact?.city,
+//       contact?.postCode,
+//       contact?.country,
+//     ]
+//       .filter(Boolean)
+//       .join(", ");
+
+//     const formDob = formatDateOfBirth(dateOfBirth || "");
+
+//     // Generate skills HTML
+//     const generateSkillsHTML = () => {
+//       if (!skills || (typeof skills === "string" && !skills.trim())) return "";
+//       const cleanedSkills = rich(skills);
+//       if (
+//         !cleanedSkills ||
+//         cleanedSkills === "<p><br></p>" ||
+//         cleanedSkills === ""
+//       )
+//         return "";
+//       return `
+//         <div class="t3-section-title">Skills</div>
+//         <div class="t3-skills-block">
+//           <div class="t3-skills-content">${cleanedSkills}</div>
+//         </div>
+//       `;
+//     };
+
+//     // Generate projects HTML
+//     const generateProjectsHTML = () => {
+//       if (!projects || projects.length === 0) return "";
+//       return `
+//         <div class="t3-section-title">Projects</div>
+//         ${projects
+//           .map(
+//             (project: any) => `
+//           <div class="t3-project-item">
+//             <div class="t3-project-header">
+//               <div class="t3-project-title">${project.title || ""}</div>
+//               <div class="t3-project-links">
+//                 ${project.liveUrl ? `<a href="${href(project.liveUrl)}" class="t3-project-link" target="_blank">Live Demo</a>` : ""}
+//                 ${project.githubUrl ? `<a href="${href(project.githubUrl)}" class="t3-project-link" target="_blank">GitHub</a>` : ""}
+//               </div>
+//             </div>
+//             ${project.techStack?.length ? `<div class="t3-project-tech-stack"><strong>Tech:</strong> ${project.techStack.join(" • ")}</div>` : ""}
+//             ${project.description ? `<div class="t3-project-description">${rich(project.description)}</div>` : ""}
+//           </div>
+//         `,
+//           )
+//           .join("")}
+//       `;
+//     };
+
+//     // Generate custom sections HTML
+//     const generateCustomSectionsHTML = () => {
+//       if (!customSection.length) return "";
+//       return customSection
+//         .filter((s) => s?.name?.trim() || s?.description?.trim())
+//         .map(
+//           (s) => `
+//           <div class="t3-custom-section">
+//             ${s.name ? `<div class="t3-custom-section-title">${s.name}</div>` : ""}
+//             ${s.description ? `<div class="t3-custom-section-content">${rich(s.description)}</div>` : ""}
+//           </div>
+//         `,
+//         )
+//         .join("");
+//     };
+
+//     return `<!DOCTYPE html>
+// <html>
+// <head>
+//   <meta charset="UTF-8"/>
+//   <title>Resume - ${contact?.firstName || ""} ${contact?.lastName || ""}</title>
+//   <style>${CSS}</style>
+// </head>
+// <body>
+// <div class="t3-resume">
+
+//   <!-- HEADER -->
+//   <div class="t3-header">
+//     <div class="t3-header-left">
+//       ${contact?.firstName || ""} ${contact?.lastName || ""}
+//       ${contact?.jobTitle ? `<div class="t3-header-job">${typeof contact.jobTitle === "string" ? contact.jobTitle : (contact.jobTitle as any)?.name || ""}</div>` : ""}
+//       <div class="t3-header-links">
+//         ${linkedinUrl?.trim() ? `<a href="${href(linkedinUrl)}" class="t3-header-link" target="_blank">LinkedIn</a>` : ""}
+//         ${githubUrl?.trim() ? `<a href="${href(githubUrl)}" class="t3-header-link" target="_blank">GitHub</a>` : ""}
+//         ${portfolioUrl?.trim() ? `<a href="${href(portfolioUrl)}" class="t3-header-link" target="_blank">Portfolio</a>` : ""}
+//       </div>
+//     </div>
+//     <div class="t3-header-right">
+//       <div class="t3-header-contact-line">${[contact?.email, contact?.phone].filter(Boolean).join(" • ")}</div>
+//       ${addressStr ? `<div class="t3-header-contact-line">${addressStr}</div>` : ""}
+//       ${formDob ? `<div class="t3-header-contact-line">${formDob}</div>` : ""}
+//     </div>
+//   </div>
+
+//   <div class="t3-body">
+//     ${summary ? `<div class="t3-section-title">Summary</div><div class="t3-summary">${rich(summary)}</div>` : ""}
+    
+//     ${
+//       experiences.length
+//         ? `<div class="t3-section-title">Experience</div>
+//       ${experiences
+//         .map((exp) => {
+//           const start = formatMonthYear(exp.startDate, false);
+//           const end = exp.endDate
+//             ? formatMonthYear(exp.endDate, false)
+//             : exp.startDate
+//               ? "Present"
+//               : "";
+//           return `
+//           <div class="t3-entry">
+//             <div class="t3-experience-header">
+//               <div class="t3-experience-title">${exp.jobTitle || ""}</div>
+//               <div class="t3-experience-date">${start}${start && end ? " - " : ""}${end}</div>
+//             </div>
+//             <div class="t3-experience-subtitle">${[exp.employer, exp.location].filter(Boolean).join(" — ")}</div>
+//             ${exp.text ? `<div class="t3-entry-content">${rich(exp.text)}</div>` : ""}
+//           </div>`;
+//         })
+//         .join("")}`
+//         : ""
+//     }
+
+//     ${generateProjectsHTML()}
+
+//     ${
+//       educations.length
+//         ? `<div class="t3-section-title">Education</div>
+//       ${educations
+//         .map((edu) => {
+//           const formattedGrade = formatGradeToCgpdAndPercentage(
+//             edu.grade || "",
+//           );
+//           return `
+//           <div class="t3-entry">
+//             <div class="t3-education-header">
+//               <div class="t3-education-school">${edu.schoolname || ""}</div>
+//               <div class="t3-education-date">${[edu.startDate, edu.endDate || "Present"].filter(Boolean).join(" — ")}</div>
+//             </div>
+//             <div class="t3-education-subtitle">${[edu.degree, edu.location].filter(Boolean).join(" — ")}</div>
+//             ${formattedGrade ? `<div class="t3-education-grade">${formattedGrade}</div>` : ""}
+//             ${edu.text ? `<div class="t3-entry-content">${rich(edu.text)}</div>` : ""}
+//           </div>`;
+//         })
+//         .join("")}`
+//         : ""
+//     }
+
+//     ${generateSkillsHTML()}
+//     ${generateCustomSectionsHTML()}
+//   </div>
+// </div>
+// ${HEIGHT_SCRIPT}
+// </body>
+// </html>`;
+//   }, [
+//     contact,
+//     educations,
+//     experiences,
+//     skills,
+//     projects,
+//     customSection,
+//     summary,
+//     linkedinUrl,
+//     portfolioUrl,
+//     githubUrl,
+//     dateOfBirth,
+//   ]);
+
+//   // Simple debounce function without lodash
+//   const debouncedUpdate = useCallback((newHtml: string) => {
+//     if (debounceTimerRef.current) {
+//       clearTimeout(debounceTimerRef.current);
+//     }
+//     debounceTimerRef.current = setTimeout(() => {
+//       setHtmlContent(newHtml);
+//     }, 300);
+//   }, []);
+
+//   // Update HTML when data changes (with debounce)
+//   useEffect(() => {
+//     const newHtml = generateHTML();
+//     debouncedUpdate(newHtml);
+
+//     return () => {
+//       if (debounceTimerRef.current) {
+//         clearTimeout(debounceTimerRef.current);
+//       }
+//     };
+//   }, [generateHTML, debouncedUpdate]);
+
+//   // Initial HTML generation
+//   useEffect(() => {
+//     setHtmlContent(generateHTML());
+//   }, []);
+
+//   // ── PDF download ──────────────────────────────────────────
+//   const handleDownload = async () => {
+//     try {
+//       const res = await axios.post(
+//         `${API_URL}/api/candidates/generate-pdf`,
+//         {
+//           html: generateHTML(),
+//           options: {
+//             margin: {
+//               top: "10mm",
+//               right: "10mm",
+//               bottom: "10mm",
+//               left: "10mm",
+//             },
+//           },
+//         },
+//         { responseType: "blob" },
+//       );
+//       const url = window.URL.createObjectURL(res.data);
+//       const a = document.createElement("a");
+//       a.href = url;
+//       a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
+//       document.body.appendChild(a);
+//       a.click();
+//       document.body.removeChild(a);
+//       window.URL.revokeObjectURL(url);
+//     } catch (error) {
+//       console.error("Error generating PDF:", error);
+//       alert("Failed to generate PDF. Please try again.");
+//     }
+//   };
+
+//   // Update iframe content when htmlContent changes
+//   useEffect(() => {
+//     if (iframeRef.current && htmlContent && !alldata) {
+//       const iframe = iframeRef.current;
+//       const doc = iframe.contentDocument || iframe.contentWindow?.document;
+//       if (doc) {
+//         doc.open();
+//         doc.write(htmlContent);
+//         doc.close();
+//       }
+//     }
+//   }, [htmlContent, alldata]);
+
+//   // ── RENDER ────────────────────────────────────────────────
+//   return (
+//     <>
+//       {lastSegment === "download-resume" && (
+//         <div className="text-center my-5">
+//           <motion.button
+//             onClick={handleDownload}
+//             whileHover={{ scale: 1.05 }}
+//             whileTap={{ scale: 0.95 }}
+//             className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors shadow-md hover:shadow-lg cursor-pointer"
+//           >
+//             Download Resume
+//           </motion.button>
+//         </div>
+//       )}
+
+//       {alldata ? (
+//         /* THUMBNAIL mode - using direct div for better performance */
+//         <div
+//           style={{
+//             width: "210mm",
+//             height: "297mm",
+//             transform: "scale(0.36)",
+//             transformOrigin: "top left",
+//             overflow: "auto",
+//             pointerEvents: "none",
+//             backgroundColor: "white",
+//             boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+//           }}
+//         >
+//           <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
+//         </div>
+//       ) : (
+//         /* FULL VIEW mode with iframe */
+//         <div
+//           style={{
+//             width: "210mm",
+//             margin: "0 auto",
+//             boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+//           }}
+//         >
+//           <iframe
+//             ref={iframeRef}
+//             title="resume-full"
+//             style={{
+//               width: "210mm",
+//               height: `${iframeHeight}px`,
+//               border: "none",
+//               display: "block",
+//               overflow: "hidden",
+//             }}
+//             scrolling="no"
+//             sandbox="allow-same-origin allow-scripts"
+//           />
+//         </div>
+//       )}
+//     </>
+//   );
+// };
+
+// export default TemplateThree;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"use client";
 import React, {
   useContext,
   useState,
   useEffect,
   useRef,
-  useMemo,
   useCallback,
 } from "react";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { CreateContext } from "@/app/context/CreateContext";
 import { API_URL } from "@/app/config/api";
 import {
@@ -1977,25 +2783,55 @@ import {
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 
+// ─────────────────────────────────────────────────────────────────────────────
+// PIXEL-PERFECT A4 CONSTANTS
+//
+// PDF renderer (Puppeteer) options:
+//   page: A4  →  210 mm × 297 mm
+//   margin: 15 mm on all sides
+//
+// At 96 dpi: 1 mm = 3.7795275591 px
+//   210 mm → 793.70 px  → A4_W        = 794
+//   297 mm → 1122.52 px → A4_H        = 1123
+//    15 mm →  56.69 px  → MARGIN       = 57
+//
+// CRITICAL — how Puppeteer pages content:
+//   Puppeteer renders with 15mm margins, so EACH PAGE has:
+//     top margin    = 57px  (white space)
+//     content area  = 1009px  ← this is where content sits
+//     bottom margin = 57px  (white space)
+//     total         = 1123px
+//
+//   Content is paginated in 1009px SLICES, not 1123px slices.
+//   Page N content starts at: N × 1009px (content offset)
+//   Displayed at:             N × 1123px + 57px (with margin offset)
+//
+// For the preview to match, we must:
+//   1. Cut content every PAGE_CONTENT_H (1009px) — same as Puppeteer
+//   2. Render each page with MARGIN (57px) top/bottom white space
+//   3. Page card height = A4_H (1123px) = MARGIN + content + MARGIN
+//
+// CRITICAL — box-sizing: border-box:
+//   .t3-resume { width: 794px; padding: 57px; box-sizing: border-box }
+//   → inner text width = 794 - 57 - 57 = 680 px
+//   → matches PDF text width = 210mm - 15mm - 15mm = 180mm = 680px ✓
+// ─────────────────────────────────────────────────────────────────────────────
+const A4_W = 794; // px — A4 width at 96 dpi
+const A4_H = 1123; // px — A4 height at 96 dpi
+const MARGIN = 57; // px — 15 mm at 96 dpi
+const PAGE_CONTENT_H = A4_H - MARGIN * 2; // 1009px — usable content per page
+
 const TemplateThree: React.FC<ResumeProps> = ({ alldata }) => {
   const context = useContext(CreateContext);
   const pathname = usePathname();
   const lastSegment = pathname.split("/").pop();
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const measureRef = useRef<HTMLIFrameElement>(null);
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const [iframeHeight, setIframeHeight] = useState<number>(1122);
+
   const [htmlContent, setHtmlContent] = useState<string>("");
+  const [pages, setPages] = useState<string[]>([]);
 
-  useEffect(() => {
-    const handler = (e: MessageEvent) => {
-      if (e.data?.type === "RESUME_HEIGHT") {
-        setIframeHeight(e.data.height);
-      }
-    };
-    window.addEventListener("message", handler);
-    return () => window.removeEventListener("message", handler);
-  }, []);
-
+  // ── Data ──────────────────────────────────────────────────
   const contact = alldata?.contact || context?.contact || ({} as Contact);
   const educations = alldata?.educations || context?.education || [];
   const experiences = alldata?.experiences || context?.experiences || [];
@@ -2028,28 +2864,19 @@ const TemplateThree: React.FC<ResumeProps> = ({ alldata }) => {
   const CSS = `
     @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap');
 
-    
-
-   
-
-    /* PDF margins */
     @page {
       size: A4;
-      margin: 10mm;
+      margin: 15mm;
     }
 
-    /* Print margins reset */
-    @media print {
-      body {
-        padding: 0;
-        margin: 0;
-      }
-    }
+    *, *::before, *::after { box-sizing: border-box; }
 
-    /* Resume container */
+    html, body { margin: 0; padding: 0; background: white; }
+
     .t3-resume {
-      max-width: 190mm;
-      margin: 0 auto;
+      width: ${A4_W}px;
+      /* LEFT+RIGHT margins only — top/bottom are handled per-page by .page-content-clip */
+      padding: 0 ${MARGIN}px;
       background-color: white;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       font-size: 15px;
@@ -2057,19 +2884,8 @@ const TemplateThree: React.FC<ResumeProps> = ({ alldata }) => {
       color: #374151;
     }
 
-    @media print {
-      .t3-resume {
-        max-width: none;
-        margin: 0;
-      }
-    }
-
-    .t3-resume * {
-      box-sizing: border-box;
-    }
-
     .t3-body {
-      padding: 0 20px;
+      padding: 0;
     }
 
     /* ── HEADER ── */
@@ -2080,6 +2896,8 @@ const TemplateThree: React.FC<ResumeProps> = ({ alldata }) => {
       padding: 4px;
       border-radius: 16px;
       color: white;
+      page-break-inside: avoid;
+      break-inside: avoid;
     }
 
     .t3-header-left {
@@ -2135,6 +2953,8 @@ const TemplateThree: React.FC<ResumeProps> = ({ alldata }) => {
       margin-top: 10px;
       margin-bottom: 4px;
       color: #111827;
+      page-break-after: avoid;
+      break-after: avoid;
     }
 
     /* ── SUMMARY ── */
@@ -2169,6 +2989,8 @@ const TemplateThree: React.FC<ResumeProps> = ({ alldata }) => {
     .t3-skills-content li {
       margin-bottom: 4px !important;
       line-height: 1.5 !important;
+      page-break-inside: avoid;
+      break-inside: avoid;
     }
 
     .t3-summary strong,
@@ -2218,6 +3040,8 @@ const TemplateThree: React.FC<ResumeProps> = ({ alldata }) => {
     .t3-entry {
       margin-top: 8px;
       padding-bottom: 6px;
+      page-break-inside: avoid;
+      break-inside: avoid;
     }
 
     .t3-experience-header {
@@ -2298,6 +3122,8 @@ const TemplateThree: React.FC<ResumeProps> = ({ alldata }) => {
     .t3-project-item {
       margin-top: 8px;
       padding-bottom: 6px;
+      page-break-inside: avoid;
+      break-inside: avoid;
     }
 
     .t3-project-header {
@@ -2343,6 +3169,8 @@ const TemplateThree: React.FC<ResumeProps> = ({ alldata }) => {
     /* Custom section */
     .t3-custom-section {
       margin-top: 16px;
+      page-break-inside: avoid;
+      break-inside: avoid;
     }
 
     .t3-custom-section:first-of-type {
@@ -2355,6 +3183,8 @@ const TemplateThree: React.FC<ResumeProps> = ({ alldata }) => {
       margin-top: 10px;
       margin-bottom: 4px;
       color: #111827;
+      page-break-after: avoid;
+      break-after: avoid;
     }
 
     .t3-custom-section-content {
@@ -2376,54 +3206,17 @@ const TemplateThree: React.FC<ResumeProps> = ({ alldata }) => {
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
       }
-      .t3-entry, .t3-project-item { 
-        page-break-inside: avoid; 
-        break-inside: avoid; 
-      }
-      .t3-section-title { 
-        page-break-after: avoid; 
-        break-after: avoid; 
-      }
     }
   `;
 
-  // ── Height-reporting script injected into iframe ──────────
-  const HEIGHT_SCRIPT = `
-    <script>
-      function reportHeight() {
-        var h = document.documentElement.scrollHeight || document.body.scrollHeight;
-        window.parent.postMessage({ type: 'RESUME_HEIGHT', height: h }, '*');
-      }
-      if (document.readyState === 'complete') reportHeight();
-      else window.addEventListener('load', reportHeight);
-      if (document.fonts && document.fonts.ready) {
-        document.fonts.ready.then(reportHeight);
-      }
-      // Observe DOM changes to report height updates
-      const observer = new MutationObserver(reportHeight);
-      observer.observe(document.body, { childList: true, subtree: true, attributes: true });
-    </script>
-  `;
-
-  // ── HTML generation logic (memoized) ───────────────────────
-  const generateHTML = useCallback((): string => {
+  // ── HTML builder ─────────────────────────────────────────
+  const generateHTML = useCallback((forPDF = false): string => {
     const href = (url: string) =>
       url.startsWith("http") ? url : `https://${url}`;
     const rich = (html: string) => {
       const c = cleanQuillHTML(html);
       return c && c !== "<p><br></p>" ? c : "";
     };
-
-    const addressStr = [
-      contact?.address,
-      contact?.city,
-      contact?.postCode,
-      contact?.country,
-    ]
-      .filter(Boolean)
-      .join(", ");
-
-    const formDob = formatDateOfBirth(dateOfBirth || "");
 
     // Generate skills HTML
     const generateSkillsHTML = () => {
@@ -2484,14 +3277,22 @@ const TemplateThree: React.FC<ResumeProps> = ({ alldata }) => {
         .join("");
     };
 
+    // PDF override: strip the fixed width/padding from .t3-resume so Puppeteer's
+    // own 15mm margins control the layout
+    const pdfOverrideStyle = forPDF
+      ? `<style>.t3-resume { width: 100% !important; padding: 0 !important; }</style>`
+      : "";
+
     return `<!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Resume - ${contact?.firstName || ""} ${contact?.lastName || ""}</title>
   <style>${CSS}</style>
+  ${pdfOverrideStyle}
 </head>
-<body>
+<body style="margin:0;padding:0;background:white;">
 <div class="t3-resume">
 
   <!-- HEADER -->
@@ -2507,8 +3308,8 @@ const TemplateThree: React.FC<ResumeProps> = ({ alldata }) => {
     </div>
     <div class="t3-header-right">
       <div class="t3-header-contact-line">${[contact?.email, contact?.phone].filter(Boolean).join(" • ")}</div>
-      ${addressStr ? `<div class="t3-header-contact-line">${addressStr}</div>` : ""}
-      ${formDob ? `<div class="t3-header-contact-line">${formDob}</div>` : ""}
+      ${addressParts ? `<div class="t3-header-contact-line">${addressParts}</div>` : ""}
+      ${formattedDob ? `<div class="t3-header-contact-line">${formattedDob}</div>` : ""}
     </div>
   </div>
 
@@ -2569,7 +3370,6 @@ const TemplateThree: React.FC<ResumeProps> = ({ alldata }) => {
     ${generateCustomSectionsHTML()}
   </div>
 </div>
-${HEIGHT_SCRIPT}
 </body>
 </html>`;
   }, [
@@ -2583,84 +3383,243 @@ ${HEIGHT_SCRIPT}
     linkedinUrl,
     portfolioUrl,
     githubUrl,
-    dateOfBirth,
+    addressParts,
+    formattedDob,
   ]);
 
-  // Simple debounce function without lodash
-  const debouncedUpdate = useCallback((newHtml: string) => {
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
+  // ─────────────────────────────────────────────────────────────────────────
+  // PAGE SPLITTER — mirrors Puppeteer's page-break-inside:avoid logic
+  // (Same as Template One)
+  // ─────────────────────────────────────────────────────────────────────────
+  const splitIntoPages = useCallback(
+    (fullHtml: string): Promise<string[]> => {
+      return new Promise((resolve) => {
+        const iframe = measureRef.current;
+        if (!iframe) {
+          resolve([fullHtml]);
+          return;
+        }
+
+        const doc = iframe.contentDocument || iframe.contentWindow?.document;
+        if (!doc) {
+          resolve([fullHtml]);
+          return;
+        }
+
+        doc.open();
+        doc.write(fullHtml);
+        doc.close();
+
+        const doSplit = () => {
+          const resume = doc.querySelector<HTMLElement>(".t3-resume");
+          if (!resume) {
+            resolve([fullHtml]);
+            return;
+          }
+
+          const resumeTop =
+            resume.getBoundingClientRect().top +
+            (doc.documentElement.scrollTop || doc.body.scrollTop);
+          const totalH = resume.scrollHeight;
+
+          // ── Collect avoid-break elements ──────────────────────────────────
+          const AVOID_SELECTORS = [
+            ".t3-header",
+            ".t3-entry",
+            ".t3-project-item",
+            ".t3-section-title",
+            ".t3-custom-section",
+          ].join(", ");
+
+          interface Block {
+            top: number;
+            bottom: number;
+          }
+          const blocks: Block[] = [];
+
+          resume
+            .querySelectorAll<HTMLElement>(AVOID_SELECTORS)
+            .forEach((el) => {
+              const rect = el.getBoundingClientRect();
+              const elTop =
+                rect.top -
+                resumeTop +
+                (doc.documentElement.scrollTop || doc.body.scrollTop);
+              const elBot =
+                rect.bottom -
+                resumeTop +
+                (doc.documentElement.scrollTop || doc.body.scrollTop);
+              if (elBot - elTop > 8) blocks.push({ top: elTop, bottom: elBot });
+            });
+
+          blocks.sort((a, b) => a.top - b.top);
+
+          // ── Calculate actual page cut points ──────────────────────────────
+          const pageStarts: number[] = [0];
+
+          while (true) {
+            const currentStart = pageStarts[pageStarts.length - 1];
+            const naiveCut = currentStart + PAGE_CONTENT_H;
+
+            if (naiveCut >= totalH) break;
+
+            let actualCut = naiveCut;
+
+            for (const block of blocks) {
+              if (block.top >= naiveCut) break;
+              if (block.bottom <= currentStart) continue;
+              if (block.top >= currentStart && block.bottom > naiveCut) {
+                actualCut = block.top;
+                break;
+              }
+            }
+
+            if (actualCut <= currentStart) actualCut = naiveCut;
+            pageStarts.push(actualCut);
+          }
+
+          // ── Build one HTML doc per page ───────────────────────────────────
+          const pageHtmls = pageStarts.map(
+            (contentOffsetY) => `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <style>
+    ${CSS}
+    html, body {
+      margin: 0 !important; padding: 0 !important;
+      width: ${A4_W}px !important; height: ${A4_H}px !important;
+      overflow: hidden !important; background: white !important;
     }
-    debounceTimerRef.current = setTimeout(() => {
-      setHtmlContent(newHtml);
-    }, 300);
+    .page-margin-box {
+      position: relative;
+      width: ${A4_W}px;
+      height: ${A4_H}px;
+      background: white;
+      overflow: hidden;
+    }
+    .page-content-clip {
+      position: absolute;
+      top: ${MARGIN}px;
+      left: 0;
+      width: ${A4_W}px;
+      height: ${PAGE_CONTENT_H}px;
+      overflow: hidden;
+    }
+    .page-shift {
+      position: absolute;
+      top: ${-contentOffsetY}px;
+      left: 0;
+      width: ${A4_W}px;
+    }
+    .t3-resume {
+      width: ${A4_W}px !important;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+      padding-left: ${MARGIN}px !important;
+      padding-right: ${MARGIN}px !important;
+      margin: 0 !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-margin-box">
+    <div class="page-content-clip">
+      <div class="page-shift">
+        ${resume.outerHTML}
+      </div>
+    </div>
+  </div>
+</body>
+</html>`,
+          );
+
+          resolve(pageHtmls);
+        };
+
+        const win = iframe.contentWindow as any;
+        if (win?.document?.fonts?.ready) {
+          win.document.fonts.ready.then(() => {
+            typeof win.requestAnimationFrame === "function"
+              ? win.requestAnimationFrame(doSplit)
+              : setTimeout(doSplit, 0);
+          });
+        } else {
+          setTimeout(doSplit, 350);
+        }
+      });
+    },
+    [CSS],
+  );
+
+  // ── Debounced updates ────────────────────────────────────
+  const scheduleUpdate = useCallback((html: string) => {
+    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    debounceTimerRef.current = setTimeout(() => setHtmlContent(html), 300);
   }, []);
 
-  // Update HTML when data changes (with debounce)
   useEffect(() => {
-    const newHtml = generateHTML();
-    debouncedUpdate(newHtml);
-
+    scheduleUpdate(generateHTML());
     return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
     };
-  }, [generateHTML, debouncedUpdate]);
+  }, [generateHTML, scheduleUpdate]);
 
-  // Initial HTML generation
   useEffect(() => {
     setHtmlContent(generateHTML());
-  }, []);
+  }, [generateHTML]);
+
+  useEffect(() => {
+    if (!htmlContent) return;
+    splitIntoPages(htmlContent).then(setPages);
+  }, [htmlContent, splitIntoPages]);
 
   // ── PDF download ──────────────────────────────────────────
-  const handleDownload = async () => {
+  const handleDownload = async (): Promise<void> => {
     try {
-      const res = await axios.post(
+      const res: AxiosResponse<Blob> = await axios.post(
         `${API_URL}/api/candidates/generate-pdf`,
         {
-          html: generateHTML(),
-          options: {
-            margin: {
-              top: "10mm",
-              right: "10mm",
-              bottom: "10mm",
-              left: "10mm",
-            },
-          },
+          html: generateHTML(true),
         },
         { responseType: "blob" },
       );
-      const url = window.URL.createObjectURL(res.data);
+      const url = URL.createObjectURL(res.data);
       const a = document.createElement("a");
       a.href = url;
       a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("Error generating PDF:", error);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("PDF error:", err);
       alert("Failed to generate PDF. Please try again.");
     }
   };
 
-  // Update iframe content when htmlContent changes
-  useEffect(() => {
-    if (iframeRef.current && htmlContent && !alldata) {
-      const iframe = iframeRef.current;
-      const doc = iframe.contentDocument || iframe.contentWindow?.document;
-      if (doc) {
-        doc.open();
-        doc.write(htmlContent);
-        doc.close();
-      }
-    }
-  }, [htmlContent, alldata]);
-
   // ── RENDER ────────────────────────────────────────────────
   return (
     <>
+      {/* Invisible measurement iframe */}
+      <iframe
+        ref={measureRef}
+        title="resume-measure"
+        aria-hidden="true"
+        style={{
+          position: "fixed",
+          top: "-99999px",
+          left: "-99999px",
+          width: `${A4_W}px`,
+          height: `${A4_H * 10}px`,
+          border: "none",
+          visibility: "hidden",
+          pointerEvents: "none",
+        }}
+        sandbox="allow-same-origin allow-scripts"
+      />
+
+      {/* Download button */}
       {lastSegment === "download-resume" && (
         <div className="text-center my-5">
           <motion.button
@@ -2675,43 +3634,118 @@ ${HEIGHT_SCRIPT}
       )}
 
       {alldata ? (
-        /* THUMBNAIL mode - using direct div for better performance */
+        // ── THUMBNAIL mode: first page only, scaled 36% ──────────────────
         <div
           style={{
-            width: "210mm",
-            height: "297mm",
+            width: `${A4_W}px`,
+            height: `${A4_H}px`,
             transform: "scale(0.36)",
             transformOrigin: "top left",
-            overflow: "auto",
+            overflow: "hidden",
             pointerEvents: "none",
-            backgroundColor: "white",
-            boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+            flexShrink: 0,
           }}
         >
-          <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
+          {pages[0] ? (
+            <iframe
+              title="resume-thumb"
+              srcDoc={pages[0]}
+              style={{
+                width: `${A4_W}px`,
+                height: `${A4_H}px`,
+                border: "none",
+                display: "block",
+                pointerEvents: "none",
+              }}
+              sandbox="allow-same-origin"
+            />
+          ) : (
+            <div
+              style={{
+                width: `${A4_W}px`,
+                height: `${A4_H}px`,
+                background: "white",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#ccc",
+                fontSize: 14,
+                fontFamily: "sans-serif",
+              }}
+            >
+              Loading…
+            </div>
+          )}
         </div>
       ) : (
-        /* FULL VIEW mode with iframe */
-        <div
-          style={{
-            width: "210mm",
-            margin: "0 auto",
-            boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-          }}
-        >
-          <iframe
-            ref={iframeRef}
-            title="resume-full"
-            style={{
-              width: "210mm",
-              height: `${iframeHeight}px`,
-              border: "none",
-              display: "block",
-              overflow: "hidden",
-            }}
-            scrolling="no"
-            sandbox="allow-same-origin allow-scripts"
-          />
+        // ── FULL PREVIEW mode: paginated A4 pages ────────────────────────
+        <div style={{ width: `${A4_W}px`, margin: "0 auto" }}>
+          {(pages.length > 0 ? pages : [htmlContent]).map((pageHtml, idx) => (
+            <div key={idx} style={{ marginBottom: "28px" }}>
+              {/* Page pill */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "10px",
+                  marginBottom: "10px",
+                }}
+              >
+                <div
+                  style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+                />
+                <span
+                  style={{
+                    fontSize: "11px",
+                    fontWeight: 600,
+                    color: "#6b7280",
+                    whiteSpace: "nowrap",
+                    padding: "3px 12px",
+                    background: "#f3f4f6",
+                    borderRadius: "999px",
+                    border: "1px solid #e5e7eb",
+                    letterSpacing: "0.05em",
+                    fontFamily: "system-ui, sans-serif",
+                  }}
+                >
+                  Page {idx + 1}
+                  {pages.length > 1 ? ` of ${pages.length}` : ""}
+                </span>
+                <div
+                  style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+                />
+              </div>
+
+              {/* A4 card */}
+              <div
+                style={{
+                  width: `${A4_W}px`,
+                  height: `${A4_H}px`,
+                  overflow: "hidden",
+                  background: "white",
+                  boxShadow:
+                    "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
+                  borderRadius: "2px",
+                  flexShrink: 0,
+                }}
+              >
+                <iframe
+                  title={`resume-page-${idx + 1}`}
+                  srcDoc={pageHtml}
+                  style={{
+                    width: `${A4_W}px`,
+                    height: `${A4_H}px`,
+                    border: "none",
+                    display: "block",
+                    pointerEvents: "none",
+                  }}
+                  scrolling="no"
+                  sandbox="allow-same-origin allow-scripts"
+                />
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </>

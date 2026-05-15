@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { FiArrowRight, FiUsers, FiTrendingUp, FiStar } from "react-icons/fi";
 
 const stats = [
-  {   label: "106K Followers", icon: FiUsers },
-  {  label: "98% ATS Success", icon: FiTrendingUp },
-  {   label: "Backed by Aryu Academy", icon: FiStar },
+  { label: "106K Followers", icon: FiUsers },
+  { label: "98% ATS Success", icon: FiTrendingUp },
+  { label: "Backed by Aryu Academy", icon: FiStar },
 ];
 
 export const HeroSection = () => {
@@ -17,8 +17,7 @@ export const HeroSection = () => {
     <section className="relative h-auto md:min-h-screen flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8 py-12  sm:py-16 md:py-20">
       <div className="relative z-10 text-center w-full max-w-7xl mx-auto">
         {/* Top Badge - Hidden on mobile, smaller on tablet */}
-      
-      
+
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -46,7 +45,8 @@ export const HeroSection = () => {
           </span>
           <br className="max-xs:hidden " />
           <span className="bg-linear-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
-            {" "}starts with the right resume
+            {" "}
+            starts with the right resume
           </span>
         </motion.h1>
 
@@ -108,7 +108,6 @@ export const HeroSection = () => {
                 <stat.icon className="w-3 h-3 sm:w-4 sm:h-4 text-indigo-500" />
               </div>
               <div className="flex items-baseline gap-0.5 sm:gap-1">
-                
                 <span className="text-[9px] xs:text-[10px] sm:text-xs text-gray-600">
                   {stat.label}
                 </span>
