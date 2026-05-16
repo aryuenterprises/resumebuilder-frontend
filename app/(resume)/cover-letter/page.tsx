@@ -15683,6 +15683,2713 @@
 //   );
 // }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+// "use client";
+// import React, {
+//   useState,
+//   useRef,
+//   useEffect,
+//   useCallback,
+//   ReactNode,
+// } from "react";
+// import axios from "axios";
+// import { motion, AnimatePresence } from "framer-motion";
+// import {
+//   FiZoomIn,
+//   FiZoomOut,
+//   FiRefreshCw,
+//   FiEye,
+//   FiLock,
+//   FiX,
+//   FiBriefcase,
+//   FiMapPin,
+//   FiUser,
+//   FiLink,
+//   FiGlobe,
+//   FiPhone,
+//   FiMail,
+// } from "react-icons/fi";
+// import Image from "next/image";
+// import { useRouter } from "next/navigation";
+// import { API_URL } from "@/app/config/api";
+// import { getLocalStorage } from "@/app/utils/localStorage";
+// import { Editor } from "primereact/editor";
+// // import "primereact/resources/themes/lara-light-indigo/theme.css";
+// // import "primereact/resources/primereact.min.css";
+
+// import {
+//   coverLetterTemplateData as TEMPLATES,
+//   getCLTemplateTags,
+//   filterCLTemplates,
+// } from "@/app/data/coverLetterTemplates";
+
+// /* ─────────────────────────────────────────────────────────────
+//    TYPES
+// ───────────────────────────────────────────────────────────────*/
+// interface User {
+//   id: string;
+// }
+
+// interface CLData {
+//   personal: {
+//     fullName: string;
+//     title: string;
+//     email: string;
+//     phone: string;
+//     location: string;
+//     website: string;
+//     linkedin: string;
+//     github: string;
+//     summary: string;
+//     signature: string;
+//   };
+//   company: {
+//     name: string;
+//     jobTitle: string;
+//     hiringManager: string;
+//     hiringManagerTitle: string;
+//     city: string;
+//     state: string;
+//     country: string;
+//     jobSource: string;
+//     referral: string;
+//     jobId: string;
+//     department: string;
+//     companyWebsite: string;
+//     industry: string;
+//   };
+//   letterContent: string; // rich HTML from PrimeReact editor
+//   tone: string;
+//   letterDate: string;
+//   accentColor: string;
+//   fontFamily: string;
+// }
+
+// const BLANK: CLData = {
+//   personal: {
+//     fullName: "",
+//     title: "",
+//     email: "",
+//     phone: "",
+//     location: "",
+//     website: "",
+//     linkedin: "",
+//     github: "",
+//     summary: "",
+//     signature: "Sincerely",
+//   },
+//   company: {
+//     name: "",
+//     jobTitle: "",
+//     hiringManager: "",
+//     hiringManagerTitle: "",
+//     city: "",
+//     state: "",
+//     country: "",
+//     jobSource: "",
+//     referral: "",
+//     jobId: "",
+//     department: "",
+//     companyWebsite: "",
+//     industry: "",
+//   },
+//   letterContent: "",
+//   tone: "Professional",
+//   letterDate: new Date().toISOString().split("T")[0],
+//   accentColor: "#1a1a2e",
+//   fontFamily: "Cormorant Garamond",
+// };
+
+// /* ─────────────────────────────────────────────────────────────
+//    FONTS
+// ───────────────────────────────────────────────────────────────*/
+// const FONT_FAMILIES = [
+//   {
+//     id: "Cormorant Garamond",
+//     label: "Cormorant",
+//     url: "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&display=swap",
+//     style: "serif",
+//   },
+//   {
+//     id: "Playfair Display",
+//     label: "Playfair",
+//     url: "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap",
+//     style: "serif",
+//   },
+//   {
+//     id: "Lora",
+//     label: "Lora",
+//     url: "https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&display=swap",
+//     style: "serif",
+//   },
+//   {
+//     id: "DM Sans",
+//     label: "DM Sans",
+//     url: "https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap",
+//     style: "sans-serif",
+//   },
+//   {
+//     id: "Plus Jakarta Sans",
+//     label: "Plus Jakarta",
+//     url: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap",
+//     style: "sans-serif",
+//   },
+//   {
+//     id: "Outfit",
+//     label: "Outfit",
+//     url: "https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap",
+//     style: "sans-serif",
+//   },
+//   {
+//     id: "Syne",
+//     label: "Syne",
+//     url: "https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&display=swap",
+//     style: "sans-serif",
+//   },
+//   {
+//     id: "Space Grotesk",
+//     label: "Space Grotesk",
+//     url: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap",
+//     style: "sans-serif",
+//   },
+//   {
+//     id: "IBM Plex Serif",
+//     label: "IBM Plex Serif",
+//     url: "https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;500;600&display=swap",
+//     style: "serif",
+//   },
+//   {
+//     id: "Manrope",
+//     label: "Manrope",
+//     url: "https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap",
+//     style: "sans-serif",
+//   },
+// ];
+
+// const COLOR_PALETTES = [
+//   { label: "Midnight", value: "#1a1a2e" },
+//   { label: "Obsidian", value: "#0f0f0f" },
+//   { label: "Navy", value: "#1e3a5f" },
+//   { label: "Forest", value: "#1b4332" },
+//   { label: "Burgundy", value: "#6b1f2a" },
+//   { label: "Slate", value: "#334155" },
+//   { label: "Indigo", value: "#3730a3" },
+//   { label: "Teal", value: "#0d6e6e" },
+//   { label: "Copper", value: "#b87333" },
+//   { label: "Charcoal", value: "#2d2d2d" },
+//   { label: "Plum", value: "#4a1942" },
+//   { label: "Cobalt", value: "#0047ab" },
+// ];
+
+// /* ─────────────────────────────────────────────────────────────
+//    20 TRULY UNIQUE TEMPLATES
+//    Each has a radically different layout, color approach,
+//    typographic hierarchy, and visual identity.
+// ───────────────────────────────────────────────────────────────*/
+// const TEMPLATE_DEFS: {
+//   id: string;
+//   name: string;
+//   tag: string;
+//   tier: string;
+//   description: string;
+//   image: string;
+// }[] = [
+//   {
+//     id: "chancellor",
+//     name: "Chancellor",
+//     tag: "Executive",
+//     tier: "premium",
+//     description: "Dark header, gold rule — authoritative C-suite presence",
+//     image: "/images/cover-letters/cl-chancellor.jpg",
+//   },
+//   {
+//     id: "newsprint",
+//     name: "Newsprint",
+//     tag: "Editorial",
+//     tier: "premium",
+//     description: "Newspaper masthead grid — editorial / media / journalism",
+//     image: "/images/cover-letters/cl-newsprint.jpg",
+//   },
+//   {
+//     id: "atelier",
+//     name: "Atelier",
+//     tag: "Creative",
+//     tier: "premium",
+//     description: "Full-bleed sidebar with large name treatment — design / art",
+//     image: "/images/cover-letters/cl-atelier.jpg",
+//   },
+//   {
+//     id: "protocol",
+//     name: "Protocol",
+//     tag: "Tech",
+//     tier: "premium",
+//     description: "Monospaced header, circuit grid lines — engineering / SaaS",
+//     image: "/images/cover-letters/cl-protocol.jpg",
+//   },
+//   {
+//     id: "ledger",
+//     name: "Ledger",
+//     tag: "Finance",
+//     tier: "premium",
+//     description: "Double-rule accounting layout — banking / consulting",
+//     image: "/images/cover-letters/cl-ledger.jpg",
+//   },
+//   {
+//     id: "palisade",
+//     name: "Palisade",
+//     tag: "Legal",
+//     tier: "premium",
+//     description: "Centered serif, formal column — law / policy / academia",
+//     image: "/images/cover-letters/cl-palisade.jpg",
+//   },
+//   {
+//     id: "sundial",
+//     name: "Sundial",
+//     tag: "Modern",
+//     tier: "free",
+//     description: "Radial accent arc, clean whitespace — modern professional",
+//     image: "/images/cover-letters/cl-sundial.jpg",
+//   },
+//   {
+//     id: "meridiem",
+//     name: "Meridiem",
+//     tag: "Corporate",
+//     tier: "free",
+//     description: "Split header with role badge — corporate / operations",
+//     image: "/images/cover-letters/cl-meridiem.jpg",
+//   },
+//   {
+//     id: "folio",
+//     name: "Folio",
+//     tag: "Portfolio",
+//     tier: "premium",
+//     description: "Layered card design — UX / product / strategy",
+//     image: "/images/cover-letters/cl-folio.jpg",
+//   },
+//   {
+//     id: "dispatch",
+//     name: "Dispatch",
+//     tag: "Startup",
+//     tier: "free",
+//     description: "Bold cap name, minimal border — startup / growth roles",
+//     image: "/images/cover-letters/cl-dispatch.jpg",
+//   },
+//   {
+//     id: "vellum",
+//     name: "Vellum",
+//     tag: "Classic",
+//     tier: "free",
+//     description: "Warm ivory, traditional letterhead — timeless any industry",
+//     image: "/images/cover-letters/cl-vellum.jpg",
+//   },
+//   {
+//     id: "pavilion",
+//     name: "Pavilion",
+//     tag: "Architecture",
+//     tier: "premium",
+//     description: "Blueprint grid overlay — architecture / engineering",
+//     image: "/images/cover-letters/cl-pavilion.jpg",
+//   },
+//   {
+//     id: "revue",
+//     name: "Revue",
+//     tag: "Fashion",
+//     tier: "premium",
+//     description: "Asymmetric column, italic contrast — fashion / luxury brands",
+//     image: "/images/cover-letters/cl-revue.jpg",
+//   },
+//   {
+//     id: "helix",
+//     name: "Helix",
+//     tag: "Science",
+//     tier: "premium",
+//     description: "Strand-inspired sidebar — biotech / pharma / research",
+//     image: "/images/cover-letters/cl-helix.jpg",
+//   },
+//   {
+//     id: "embassy",
+//     name: "Embassy",
+//     tag: "Government",
+//     tier: "free",
+//     description: "Official seal-style header — public sector / NGO / diplomacy",
+//     image: "/images/cover-letters/cl-embassy.jpg",
+//   },
+//   {
+//     id: "kodex",
+//     name: "Kodex",
+//     tag: "Data",
+//     tier: "premium",
+//     description: "Structured data table header — analytics / data science",
+//     image: "/images/cover-letters/cl-kodex.jpg",
+//   },
+//   {
+//     id: "brushwork",
+//     name: "Brushwork",
+//     tag: "Arts",
+//     tier: "premium",
+//     description:
+//       "Watercolor band, expressive layout — arts / non-profit / therapy",
+//     image: "/images/cover-letters/cl-brushwork.jpg",
+//   },
+//   {
+//     id: "terrace",
+//     name: "Terrace",
+//     tag: "Hospitality",
+//     tier: "free",
+//     description:
+//       "Warm earth tones, layered bands — hospitality / HR / healthcare",
+//     image: "/images/cover-letters/cl-terrace.jpg",
+//   },
+//   {
+//     id: "alpine",
+//     name: "Alpine",
+//     tag: "Outdoor",
+//     tier: "premium",
+//     description:
+//       "Diagonal slash, sharp geometry — sports / sustainability / field ops",
+//     image: "/images/cover-letters/cl-alpine.jpg",
+//   },
+//   {
+//     id: "signal",
+//     name: "Signal",
+//     tag: "Media",
+//     tier: "premium",
+//     description: "Broadcast bar, bold type — media / PR / communications",
+//     image: "/images/cover-letters/cl-signal.jpg",
+//   },
+//   // ── 10 NEW ──────────────────────────────────────────────────────────────
+//   {
+//     id: "mono",
+//     name: "Mono",
+//     tag: "B&W",
+//     tier: "free",
+//     description: "Pure black & white, single rule — the purest minimal",
+//     image: "/images/cover-letters/cl-mono.jpg",
+//   },
+//   {
+//     id: "typewriter",
+//     name: "Typewriter",
+//     tag: "B&W",
+//     tier: "free",
+//     description: "Courier-style, top black bar — retro-minimal black & white",
+//     image: "/images/cover-letters/cl-typewriter.jpg",
+//   },
+//   {
+//     id: "specimen",
+//     name: "Specimen",
+//     tag: "B&W",
+//     tier: "free",
+//     description:
+//       "Font specimen layout, oversized initials — bold B&W editorial",
+//     image: "/images/cover-letters/cl-specimen.jpg",
+//   },
+//   {
+//     id: "grid",
+//     name: "Grid",
+//     tag: "B&W",
+//     tier: "free",
+//     description: "Ruled-paper grid lines — structured clean black & white",
+//     image: "/images/cover-letters/cl-grid.jpg",
+//   },
+//   {
+//     id: "stencil",
+//     name: "Stencil",
+//     tag: "B&W",
+//     tier: "premium",
+//     description: "Military stencil caps, thick border — stark authority",
+//     image: "/images/cover-letters/cl-stencil.jpg",
+//   },
+//   {
+//     id: "hairline",
+//     name: "Hairline",
+//     tag: "B&W",
+//     tier: "free",
+//     description: "Ultra-thin rules, airy whitespace — understated refinement",
+//     image: "/images/cover-letters/cl-hairline.jpg",
+//   },
+//   {
+//     id: "broadsheet",
+//     name: "Broadsheet",
+//     tag: "B&W",
+//     tier: "premium",
+//     description: "Full-width black masthead, reversed name — press authority",
+//     image: "/images/cover-letters/cl-broadsheet.jpg",
+//   },
+//   {
+//     id: "margin",
+//     name: "Margin",
+//     tag: "B&W",
+//     tier: "free",
+//     description: "Left margin line, indented body — academic notebook style",
+//     image: "/images/cover-letters/cl-margin.jpg",
+//   },
+//   {
+//     id: "overture",
+//     name: "Overture",
+//     tag: "Simple",
+//     tier: "free",
+//     description: "Name-only large, no colour at all — zen blank-slate simple",
+//     image: "/images/cover-letters/cl-overture.jpg",
+//   },
+//   {
+//     id: "ruled",
+//     name: "Ruled",
+//     tag: "Simple",
+//     tier: "free",
+//     description: "Bottom-border on name, nothing else — ultra-minimal clean",
+//     image: "/images/cover-letters/cl-ruled.jpg",
+//   },
+// ];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// /* ─────────────────────────────────────────────────────────────
+//    HTML BUILDER — 20 genuinely distinct layouts
+// ───────────────────────────────────────────────────────────────*/
+// function buildHTML(id: string, d: CLData): string {
+//   const fontDef =
+//     FONT_FAMILIES.find((f) => f.id === d.fontFamily) || FONT_FAMILIES[0];
+//   const fontStack = `'${d.fontFamily}',${fontDef.style}`;
+//   const c = d.accentColor || "#1a1a2e";
+//   const sig = d.personal.signature || "Sincerely";
+//   const nm = d.personal.fullName || "Your Name";
+//   const ttl = d.personal.title || "Professional";
+//   const mgr = d.company.hiringManager || "Hiring Manager";
+//   const loc = [d.company.city, d.company.state, d.company.country]
+//     .filter(Boolean)
+//     .join(", ");
+//   const dt = d.letterDate
+//     ? new Date(d.letterDate + "T12:00:00").toLocaleDateString("en-US", {
+//         year: "numeric",
+//         month: "long",
+//         day: "numeric",
+//       })
+//     : new Date().toLocaleDateString("en-US", {
+//         year: "numeric",
+//         month: "long",
+//         day: "numeric",
+//       });
+
+//   const contactLine = [
+//     d.personal.email,
+//     d.personal.phone,
+//     d.personal.location,
+//     d.personal.linkedin,
+//     d.personal.website,
+//   ]
+//     .filter(Boolean)
+//     .join("  ·  ");
+
+//   const bodyContent =
+//     d.letterContent || "<p>Your letter content will appear here.</p>";
+
+//   const referralNote = d.company.referral
+//     ? `<p style="font-size:12px;color:#6b7280;margin-bottom:12px">Referred by: <strong>${d.company.referral}</strong></p>`
+//     : "";
+
+//   const addrBlock = `<div style="margin-bottom:20px;font-size:13px;line-height:2;color:#374151">
+//     <strong>${mgr}${d.company.hiringManagerTitle ? `, ${d.company.hiringManagerTitle}` : ""}</strong><br>
+//     ${d.company.name}${loc ? `<br>${loc}` : ""}${d.company.department ? `<br>Department: ${d.company.department}` : ""}
+//   </div>`;
+
+//   const greet = `<p style="font-size:15px;font-weight:600;margin-bottom:20px;color:#111">Dear ${mgr},</p>`;
+
+//   const closing = `<div style="margin-top:32px;font-size:13.5px;line-height:2">
+//     ${sig},<br><br>
+//     <strong style="font-size:16px;letter-spacing:-0.3px">${nm}</strong>
+//     ${d.personal.title ? `<br><span style="font-size:12px;color:#6b7280">${d.personal.title}</span>` : ""}
+//     ${d.personal.email ? `<br><a href="mailto:${d.personal.email}" style="font-size:12px;color:${c};text-decoration:none">${d.personal.email}</a>` : ""}
+//     ${d.personal.phone ? `<br><span style="font-size:12px;color:#9ca3af">${d.personal.phone}</span>` : ""}
+//   </div>`;
+
+//   const baseCSS = (extra = "") =>
+//     `@import url('${fontDef.url}');*{margin:0;padding:0;box-sizing:border-box}html,body{background:#fff}body{font-family:${fontStack};color:#374151;-webkit-print-color-adjust:exact;print-color-adjust:exact}${extra}`;
+//   const wrap = (css: string, body: string) =>
+//     `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>${css}</style></head><body>${body}</body></html>`;
+
+//   // ─── 1. CHANCELLOR — dark header, gold rule, gravitas ───
+//   if (id === "chancellor")
+//     return wrap(
+//       baseCSS(
+//         `.pg{max-width:860px;margin:0 auto;background:#fff}.hdr{background:${c};padding:52px 64px 44px;color:white}.pre{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:10px}.nm{font-size:46px;font-weight:700;letter-spacing:-1.5px;color:#fff;margin-bottom:6px}.ttl{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.65)}.gold{height:2px;background:linear-gradient(90deg,#c9a84c,#f5d78e,#c9a84c);margin:24px 0}.contact{font-size:11.5px;color:rgba(255,255,255,.7);letter-spacing:.5px}.body{padding:52px 64px}`,
+//       ),
+//       `<div class="pg"><div class="hdr"><div class="pre">Cover Letter</div><div class="nm">${nm}</div><div class="ttl">${ttl}</div><div class="gold"></div><div class="contact">${contactLine}</div></div><div class="body"><p style="font-size:11.5px;color:#9ca3af;margin-bottom:24px">${dt}</p>${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div></div>`,
+//     );
+
+//   // ─── 2. NEWSPRINT — newspaper masthead ───
+//   if (id === "newsprint")
+//     return wrap(
+//       baseCSS(
+//         `.pg{max-width:860px;margin:0 auto;padding:48px 60px;background:#fff;font-family:'${d.fontFamily}',serif}.mast{text-align:center;border-top:4px solid #111;border-bottom:4px solid #111;padding:16px 0;margin-bottom:6px}.nm{font-size:52px;font-weight:900;letter-spacing:-2px;color:#111;line-height:1}.rule{display:flex;align-items:center;gap:12px;margin:10px 0}.line{flex:1;height:1px;background:#111}.tag{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#555;white-space:nowrap}.meta{display:flex;justify-content:space-between;font-size:10.5px;color:#555;border-bottom:1px solid #ddd;padding-bottom:8px;margin-bottom:32px}.col2{column-count:1}`,
+//       ),
+//       `<div class="pg"><div class="mast"><div class="nm">${nm}</div><div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#555;margin-top:4px">${ttl}</div></div><div class="rule"><div class="line"></div><div class="tag">Correspondence</div><div class="line"></div></div><div class="meta"><span>${dt}</span><span>${contactLine}</span></div>${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div>`,
+//     );
+
+//   // ─── 3. ATELIER — wide left sidebar, large name ───
+//   if (id === "atelier")
+//     return wrap(
+//       baseCSS(
+//         `.pg{max-width:900px;margin:0 auto;display:flex;min-height:1120px;background:#fff}.sidebar{width:220px;background:${c};padding:48px 28px;display:flex;flex-direction:column;flex-shrink:0}.si-nm{font-size:28px;font-weight:700;color:#fff;line-height:1.15;margin-bottom:8px;writing-mode:horizontal-tb}.si-ttl{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid rgba(255,255,255,.15)}.si-lbl{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:4px;margin-top:20px}.si-val{font-size:10.5px;color:rgba(255,255,255,.8);line-height:1.7;word-break:break-all}.si-val a{color:rgba(255,255,255,.8);text-decoration:none}.main{flex:1;padding:52px 56px}.dot{width:6px;height:6px;border-radius:50%;background:${c};display:inline-block;margin-right:8px;vertical-align:middle}`,
+//       ),
+//       `<div class="pg"><div class="sidebar"><div class="si-nm">${nm}</div><div class="si-ttl">${ttl}</div>${d.personal.email ? `<div class="si-lbl">Email</div><div class="si-val"><a href="mailto:${d.personal.email}">${d.personal.email}</a></div>` : ""}${d.personal.phone ? `<div class="si-lbl">Phone</div><div class="si-val">${d.personal.phone}</div>` : ""}${d.personal.location ? `<div class="si-lbl">Location</div><div class="si-val">${d.personal.location}</div>` : ""}${d.personal.linkedin ? `<div class="si-lbl">LinkedIn</div><div class="si-val"><a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.linkedin}</a></div>` : ""}${d.personal.website ? `<div class="si-lbl">Portfolio</div><div class="si-val"><a href="https://${d.personal.website.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.website}</a></div>` : ""}</div><div class="main"><p style="font-size:11px;color:#9ca3af;margin-bottom:28px">${dt}</p>${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div></div>`,
+//     );
+
+//   // ─── 4. PROTOCOL — monospace header, code aesthetic ───
+//   if (id === "protocol")
+//     return wrap(
+//       baseCSS(
+//         `@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');.pg{max-width:860px;margin:0 auto;background:#0d1117;color:#c9d1d9;font-family:'${d.fontFamily}',sans-serif}.hdr{padding:44px 56px;border-bottom:1px solid #30363d;font-family:'JetBrains Mono',monospace}.prompt{font-size:10px;color:#58a6ff;margin-bottom:8px}.nm{font-size:36px;font-weight:700;color:#f0f6fc;letter-spacing:-1px}.ttl{font-size:12px;color:#8b949e;margin-top:4px;margin-bottom:20px}.meta{display:flex;flex-wrap:wrap;gap:6px}.chip{font-size:10px;color:#58a6ff;background:#161b22;border:1px solid #30363d;padding:3px 10px;border-radius:4px;font-family:'JetBrains Mono',monospace}.body{padding:44px 56px;background:#fff;color:#24292f}.body p{margin-bottom:14px;line-height:1.85}`,
+//       ),
+//       `<div class="pg"><div class="hdr"><div class="prompt">$ cat cover_letter.txt</div><div class="nm">${nm}</div><div class="ttl">${ttl}</div><div class="meta">${[
+//         d.personal.email,
+//         d.personal.phone,
+//         d.personal.location,
+//       ]
+//         .filter(Boolean)
+//         .map((v) => `<span class="chip">${v}</span>`)
+//         .join(
+//           "",
+//         )}</div></div><div class="body"><p style="font-size:11px;color:#6b7280;margin-bottom:24px">${dt}</p>${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div></div>`,
+//     );
+
+//   // ─── 5. LEDGER — double-rule accounting style ───
+//   if (id === "ledger")
+//     return wrap(
+//       baseCSS(
+//         `.pg{max-width:840px;margin:0 auto;padding:56px 72px;background:#fff}.r1{height:3px;background:${c}}.r2{height:1px;background:${c};margin-top:3px;margin-bottom:28px}.nm{font-size:38px;font-weight:700;color:${c};letter-spacing:-1px;text-transform:uppercase;margin-bottom:4px}.ttl{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#6b7280;margin-bottom:16px}.info-row{display:flex;flex-wrap:wrap;gap:0;margin-bottom:24px;border:1px solid #e5e7eb}.info-cell{flex:1;min-width:140px;padding:10px 16px;border-right:1px solid #e5e7eb;font-size:11px;color:#374151;line-height:1.8}.info-cell:last-child{border-right:none}.info-cell strong{display:block;font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:#9ca3af;margin-bottom:2px}.r3{height:1px;background:${c};margin:24px 0}.r4{height:3px;background:${c};margin-top:3px}`,
+//       ),
+//       `<div class="pg"><div class="r1"></div><div class="r2"></div><div class="nm">${nm}</div><div class="ttl">${ttl}</div><div class="info-row">${[
+//         ["Date", dt],
+//         ["Email", d.personal.email || "—"],
+//         ["Phone", d.personal.phone || "—"],
+//         ["Location", d.personal.location || "—"],
+//       ]
+//         .map(
+//           ([l, v]) => `<div class="info-cell"><strong>${l}</strong>${v}</div>`,
+//         )
+//         .join(
+//           "",
+//         )}</div>${addrBlock}${referralNote}${greet}${bodyContent}${closing}<div class="r3"></div><div class="r4"></div></div>`,
+//     );
+
+//   // ─── 6. PALISADE — centered serif, formal column ───
+//   if (id === "palisade")
+//     return wrap(
+//       baseCSS(
+//         `.pg{max-width:760px;margin:0 auto;padding:64px 80px;background:#faf9f7}.top{text-align:center;margin-bottom:36px}.nm{font-size:42px;font-weight:700;color:#1c1917;letter-spacing:-.5px;line-height:1.1}.ttl{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#78716c;margin-top:8px}.ornament{display:flex;align-items:center;gap:12px;margin:20px 0}.orn-line{flex:1;height:.5px;background:#d6d3d1}.orn-dot{font-size:18px;color:#a8a29e}.contact{text-align:center;font-size:12px;color:#78716c;letter-spacing:.5px;margin-bottom:8px}`,
+//       ),
+//       `<div class="pg"><div class="top"><div class="nm">${nm}</div><div class="ttl">${ttl}</div><div class="ornament"><div class="orn-line"></div><div class="orn-dot">✦</div><div class="orn-line"></div></div><div class="contact">${contactLine}</div></div><p style="font-size:12px;color:#9ca3af;margin-bottom:28px">${dt}</p>${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div>`,
+//     );
+
+//   // ─── 7. SUNDIAL — radial arc accent ───
+//   if (id === "sundial")
+//     return wrap(
+//       baseCSS(
+//         `.pg{max-width:860px;margin:0 auto;background:#fff;position:relative;overflow:hidden}.arc{position:absolute;top:-80px;right:-80px;width:280px;height:280px;border-radius:50%;border:40px solid ${c}10;pointer-events:none}.arc2{position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;border:20px solid ${c}18;pointer-events:none}.hdr{padding:52px 64px 36px;border-bottom:2px solid ${c}15;position:relative}.nm{font-size:42px;font-weight:700;color:#111;letter-spacing:-1.5px;margin-bottom:6px}.ttl{font-size:13px;color:${c};font-weight:600;margin-bottom:20px}.ctrow{display:flex;flex-wrap:wrap;gap:4px 20px}.cv{font-size:12px;color:#6b7280}.body{padding:52px 64px}`,
+//       ),
+//       `<div class="pg"><div class="arc"></div><div class="arc2"></div><div class="hdr"><div class="nm">${nm}</div><div class="ttl">${ttl}</div><div class="ctrow">${[
+//         d.personal.email,
+//         d.personal.phone,
+//         d.personal.location,
+//       ]
+//         .filter(Boolean)
+//         .map((v) => `<span class="cv">${v}</span>`)
+//         .join(
+//           "",
+//         )}</div></div><div class="body"><p style="font-size:11.5px;color:#9ca3af;margin-bottom:28px">${dt}</p>${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div></div>`,
+//     );
+
+//   // ─── 8. MERIDIEM — split header with role badge ───
+//   if (id === "meridiem")
+//     return wrap(
+//       baseCSS(
+//         `.pg{max-width:880px;margin:0 auto;background:#f8fafc}.hdr{padding:0 52px;background:${c};display:grid;grid-template-columns:1fr auto;align-items:center;gap:24px;min-height:120px}.hl .nm{font-size:34px;font-weight:700;color:#fff;letter-spacing:-1.5px}.hl .ttl{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.55);margin-top:6px}.badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:16px 22px;text-align:right}.badge-l{font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:4px}.badge-v{font-size:13px;font-weight:700;color:#fff;line-height:1.4}.stripe{height:4px;background:rgba(255,255,255,.25)}.ctbar{background:${c}dd;padding:10px 52px;display:flex;flex-wrap:wrap;gap:0 28px}.cv{font-size:11px;color:rgba(255,255,255,.6);padding:6px 0}.body{padding:44px 52px;background:#fff}`,
+//       ),
+//       `<div class="pg"><div class="hdr"><div class="hl"><div class="nm">${nm}</div><div class="ttl">${ttl}</div></div>${d.company.name ? `<div class="badge"><div class="badge-l">Applying To</div><div class="badge-v">${d.company.jobTitle || "Open Role"}<br><span style="font-size:11px;font-weight:400;opacity:.75">${d.company.name}</span></div></div>` : ""}</div><div class="stripe"></div><div class="ctbar">${[
+//         d.personal.email,
+//         d.personal.phone,
+//         d.personal.location,
+//         d.personal.linkedin,
+//       ]
+//         .filter(Boolean)
+//         .map((v) => `<span class="cv">${v}</span>`)
+//         .join(
+//           "",
+//         )}</div><div class="body"><p style="font-size:11.5px;color:#9ca3af;margin-bottom:28px">${dt}</p>${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div></div>`,
+//     );
+
+//   // ─── 9. FOLIO — layered card design ───
+//   if (id === "folio")
+//     return wrap(
+//       baseCSS(
+//         `.pg{max-width:820px;margin:0 auto;padding:16px;background:#f1f5f9}.outer{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.08)}.inner-hdr{background:${c};padding:44px 52px;position:relative;overflow:hidden}.geo{position:absolute;right:-30px;bottom:-30px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.06)}.geo2{position:absolute;right:20px;bottom:20px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.06)}.nm{font-size:40px;font-weight:700;color:#fff;letter-spacing:-1.5px;position:relative}.ttl{font-size:12px;color:rgba(255,255,255,.6);margin-top:6px;margin-bottom:20px;letter-spacing:1px;position:relative}.chips{display:flex;flex-wrap:wrap;gap:6px;position:relative}.chip{font-size:11px;color:rgba(255,255,255,.8);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);padding:4px 12px;border-radius:20px}.body{padding:44px 52px}`,
+//       ),
+//       `<div class="pg"><div class="outer"><div class="inner-hdr"><div class="geo"></div><div class="geo2"></div><div class="nm">${nm}</div><div class="ttl">${ttl}</div><div class="chips">${[
+//         d.personal.email,
+//         d.personal.phone,
+//         d.personal.location,
+//       ]
+//         .filter(Boolean)
+//         .map((v) => `<span class="chip">${v}</span>`)
+//         .join(
+//           "",
+//         )}</div></div><div class="body"><p style="font-size:11.5px;color:#9ca3af;margin-bottom:28px">${dt}</p>${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div></div></div>`,
+//     );
+
+//   // ─── 10. DISPATCH — bold cap name, startup minimalist ───
+//   if (id === "dispatch")
+//     return wrap(
+//       baseCSS(
+//         `.pg{max-width:820px;margin:0 auto;padding:60px 72px;background:#fff}.nm{font-size:64px;font-weight:900;color:#111;letter-spacing:-4px;text-transform:uppercase;line-height:.9;margin-bottom:14px}.div{display:flex;gap:16px;align-items:center;margin-bottom:20px}.ttl-pill{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#fff;background:${c};padding:5px 14px;border-radius:4px}.cv-row{font-size:11.5px;color:#6b7280;display:flex;flex-wrap:wrap;gap:4px 16px;margin-bottom:40px}.hr{height:1.5px;background:#111;margin-bottom:32px}`,
+//       ),
+//       `<div class="pg"><div class="nm">${nm}</div><div class="div"><div class="ttl-pill">${ttl}</div></div><div class="cv-row">${[
+//         d.personal.email,
+//         d.personal.phone,
+//         d.personal.location,
+//         d.personal.linkedin,
+//       ]
+//         .filter(Boolean)
+//         .map((v) => `<span>${v}</span>`)
+//         .join(
+//           "",
+//         )}</div><div class="hr"></div><p style="font-size:11.5px;color:#9ca3af;margin-bottom:24px">${dt}</p>${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div>`,
+//     );
+
+//   // ─── 11. VELLUM — warm ivory, traditional letterhead ───
+//   if (id === "vellum")
+//     return wrap(
+//       baseCSS(
+//         `.pg{max-width:800px;margin:0 auto;padding:64px 80px;background:#fefce8;border-left:4px solid ${c}66;border-right:4px solid ${c}66}.nm{font-size:38px;font-weight:700;color:#1c1917;letter-spacing:-.5px;margin-bottom:4px}.ttl{font-size:12px;color:#78716c;font-style:italic;margin-bottom:20px}.hr1{height:.5px;background:${c}66;margin-bottom:8px}.hr2{height:2px;background:${c}66;margin-bottom:28px}.cv-row{display:flex;flex-wrap:wrap;gap:4px 20px;margin-bottom:12px;font-size:12px;color:#78716c}`,
+//       ),
+//       `<div class="pg"><div class="nm">${nm}</div><div class="ttl">${ttl}</div><div class="hr1"></div><div class="hr2"></div><div class="cv-row">${[
+//         d.personal.email,
+//         d.personal.phone,
+//         d.personal.location,
+//       ]
+//         .filter(Boolean)
+//         .map((v) => `<span>${v}</span>`)
+//         .join(
+//           "",
+//         )}</div><div style="height:.5px;background:${c}33;margin-bottom:32px"></div><p style="font-size:12px;color:#9ca3af;margin-bottom:24px">${dt}</p>${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div>`,
+//     );
+
+//   // ─── 12. PAVILION — blueprint grid ───
+//   if (id === "pavilion")
+//     return wrap(
+//       baseCSS(
+//         `.pg{max-width:880px;margin:0 auto;background:#eff6ff}.hdr{padding:48px 56px;background:#1e3a8a;position:relative;overflow:hidden}.grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:24px 24px}.nm{position:relative;font-size:42px;font-weight:800;color:#fff;letter-spacing:-1.5px;margin-bottom:6px}.ttl{position:relative;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#93c5fd;margin-bottom:20px}.cv-row{position:relative;display:flex;flex-wrap:wrap;gap:4px 16px;font-size:11px;color:#bfdbfe}.body{padding:44px 56px;background:#fff}`,
+//       ),
+//       `<div class="pg"><div class="hdr"><div class="grid-bg"></div><div class="nm">${nm}</div><div class="ttl">${ttl}</div><div class="cv-row">${[
+//         d.personal.email,
+//         d.personal.phone,
+//         d.personal.location,
+//       ]
+//         .filter(Boolean)
+//         .map((v) => `<span>${v}</span>`)
+//         .join(
+//           "",
+//         )}</div></div><div class="body"><p style="font-size:11.5px;color:#9ca3af;margin-bottom:28px">${dt}</p>${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div></div>`,
+//     );
+
+//   // ─── 13. REVUE — asymmetric, italic contrast ───
+//   if (id === "revue")
+//     return wrap(
+//       baseCSS(
+//         `.pg{max-width:860px;margin:0 auto;padding:0;background:#fff}.hdr{display:flex;min-height:160px}.hdr-accent{width:12px;background:${c};flex-shrink:0}.hdr-body{padding:44px 56px;flex:1;border-bottom:1px solid #f3f4f6}.nm{font-size:52px;font-weight:900;letter-spacing:-3px;color:#111;line-height:.9;font-style:italic}.meta{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;margin-top:12px}.ttl{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:${c};font-style:normal}.cv-row{font-size:11.5px;color:#6b7280;display:flex;flex-wrap:wrap;gap:4px 16px}.body{padding:44px 56px}`,
+//       ),
+//       `<div class="pg"><div class="hdr"><div class="hdr-accent"></div><div class="hdr-body"><div class="nm">${nm}</div><div class="meta"><div class="ttl">${ttl}</div><div class="cv-row">${[
+//         d.personal.email,
+//         d.personal.phone,
+//         d.personal.location,
+//       ]
+//         .filter(Boolean)
+//         .map((v) => `<span>${v}</span>`)
+//         .join(
+//           "",
+//         )}</div></div></div></div><div class="body"><p style="font-size:11.5px;color:#9ca3af;margin-bottom:28px">${dt}</p>${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div></div>`,
+//     );
+
+//   // ─── 14. HELIX — strand sidebar ───
+//   if (id === "helix")
+//     return wrap(
+//       baseCSS(
+//         `.pg{max-width:900px;margin:0 auto;display:flex;min-height:1120px;background:#fff}.strand{width:8px;flex-shrink:0;background:repeating-linear-gradient(to bottom,${c} 0px,${c} 20px,${c}33 20px,${c}33 30px)}.side{width:200px;background:${c}06;padding:44px 24px;border-right:1px solid ${c}15;flex-shrink:0}.si-nm{font-size:22px;font-weight:700;color:${c};line-height:1.2;margin-bottom:6px}.si-ttl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#9ca3af;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid ${c}15}.si-lbl{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:${c}88;margin-top:16px;margin-bottom:3px}.si-val{font-size:11px;color:#374151;line-height:1.7}.si-val a{color:${c};text-decoration:none}.main{flex:1;padding:48px 48px}`,
+//       ),
+//       `<div class="pg"><div class="strand"></div><div class="side"><div class="si-nm">${nm}</div><div class="si-ttl">${ttl}</div>${d.personal.email ? `<div class="si-lbl">Email</div><div class="si-val"><a href="mailto:${d.personal.email}">${d.personal.email}</a></div>` : ""}${d.personal.phone ? `<div class="si-lbl">Phone</div><div class="si-val">${d.personal.phone}</div>` : ""}${d.personal.location ? `<div class="si-lbl">Location</div><div class="si-val">${d.personal.location}</div>` : ""}${d.personal.linkedin ? `<div class="si-lbl">LinkedIn</div><div class="si-val"><a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}" target="_blank">${d.personal.linkedin}</a></div>` : ""}</div><div class="main"><p style="font-size:11.5px;color:#9ca3af;margin-bottom:28px">${dt}</p>${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div></div>`,
+//     );
+
+//   // ─── 15. EMBASSY — official seal-style header ───
+//   if (id === "embassy")
+//     return wrap(
+//       baseCSS(
+//         `.pg{max-width:800px;margin:0 auto;padding:56px 72px;background:#fff}.seal-row{display:flex;flex-direction:column;align-items:center;margin-bottom:32px}.seal{width:64px;height:64px;border-radius:50%;border:3px double ${c};display:flex;align-items:center;justify-content:center;font-size:22px;color:${c};margin-bottom:12px}.nm{text-align:center;font-size:40px;font-weight:700;letter-spacing:-1px;color:#111;margin-bottom:6px}.ttl{text-align:center;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#6b7280}.rule-row{display:flex;align-items:center;gap:8px;margin:20px 0}.rule-line{flex:1;height:1px;background:${c}55}.rule-diamond{font-size:10px;color:${c}}.cv-row{text-align:center;font-size:12px;color:#6b7280;margin-bottom:32px;display:flex;flex-wrap:wrap;justify-content:center;gap:4px 16px}`,
+//       ),
+//       `<div class="pg"><div class="seal-row"><div class="seal">✦</div><div class="nm">${nm}</div><div class="ttl">${ttl}</div></div><div class="rule-row"><div class="rule-line"></div><div class="rule-diamond">◆</div><div class="rule-line"></div></div><div class="cv-row">${[
+//         d.personal.email,
+//         d.personal.phone,
+//         d.personal.location,
+//       ]
+//         .filter(Boolean)
+//         .map((v) => `<span>${v}</span>`)
+//         .join(
+//           "",
+//         )}</div><p style="font-size:12px;color:#9ca3af;margin-bottom:24px">${dt}</p>${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div>`,
+//     );
+
+//   // ─── 16. KODEX — data table header ───
+//   if (id === "kodex")
+//     return wrap(
+//       baseCSS(
+//         `@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');.pg{max-width:880px;margin:0 auto;background:#fff}.hdr{background:${c};padding:36px 52px}.nm{font-size:38px;font-weight:800;color:#fff;letter-spacing:-1.5px;margin-bottom:6px}.ttl{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:20px}.table{width:100%;border-collapse:collapse;background:rgba(255,255,255,.08)}.table td{padding:8px 14px;font-size:11px;color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.1);font-family:'JetBrains Mono',monospace}.table .lbl{color:rgba(255,255,255,.45);font-size:9px;text-transform:uppercase;letter-spacing:1px}.body{padding:44px 52px}`,
+//       ),
+//       `<div class="pg"><div class="hdr"><div class="nm">${nm}</div><div class="ttl">${ttl}</div><table class="table"><tr>${[
+//         ["EMAIL", d.personal.email || "—"],
+//         ["PHONE", d.personal.phone || "—"],
+//         ["LOCATION", d.personal.location || "—"],
+//         ["DATE", dt],
+//       ]
+//         .map(([l, v]) => `<td><div class="lbl">${l}</div>${v}</td>`)
+//         .join(
+//           "",
+//         )}</tr></table></div><div class="body"><p style="font-size:11.5px;color:#9ca3af;margin-bottom:28px"></p>${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div></div>`,
+//     );
+
+//   // ─── 17. BRUSHWORK — watercolor band ───
+//   if (id === "brushwork")
+//     return wrap(
+//       baseCSS(
+//         `.pg{max-width:840px;margin:0 auto;padding:0;background:#fff}.brush{height:12px;background:linear-gradient(90deg,${c}cc,${c}44,${c}88,${c}66);border-radius:0 0 50% 50%/0 0 8px 8px;margin-bottom:0}.hdr{padding:44px 60px 36px;border-bottom:1px dashed ${c}33}.nm{font-size:44px;font-weight:700;color:#1c1917;letter-spacing:-1.5px;margin-bottom:6px}.ttl{font-size:12px;color:${c};font-style:italic;margin-bottom:18px}.cv-row{display:flex;flex-wrap:wrap;gap:4px 18px;font-size:12px;color:#78716c}.body{padding:44px 60px}.foot-brush{height:8px;background:linear-gradient(90deg,${c}44,${c}88,${c}22);border-radius:50% 50% 0 0/8px 8px 0 0}`,
+//       ),
+//       `<div class="pg"><div class="brush"></div><div class="hdr"><div class="nm">${nm}</div><div class="ttl">${ttl}</div><div class="cv-row">${[
+//         d.personal.email,
+//         d.personal.phone,
+//         d.personal.location,
+//       ]
+//         .filter(Boolean)
+//         .map((v) => `<span>${v}</span>`)
+//         .join(
+//           "",
+//         )}</div></div><div class="body"><p style="font-size:11.5px;color:#9ca3af;margin-bottom:28px">${dt}</p>${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div><div class="foot-brush"></div></div>`,
+//     );
+
+//   // ─── 18. TERRACE — warm earth, layered bands ───
+//   if (id === "terrace")
+//     return wrap(
+//       baseCSS(
+//         `.pg{max-width:880px;margin:0 auto;background:#fff}.t1{height:8px;background:${c}}.t2{background:${c}dd;padding:36px 52px}.t3{background:${c}aa;padding:12px 52px}.nm{font-size:40px;font-weight:700;color:#fff;letter-spacing:-1.5px;margin-bottom:4px}.ttl{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.6)}.cv-row{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:11px;color:rgba(255,255,255,.7)}.body{padding:44px 52px}`,
+//       ),
+//       `<div class="pg"><div class="t1"></div><div class="t2"><div class="nm">${nm}</div><div class="ttl">${ttl}</div></div><div class="t3"><div class="cv-row">${[
+//         d.personal.email,
+//         d.personal.phone,
+//         d.personal.location,
+//         d.personal.linkedin,
+//       ]
+//         .filter(Boolean)
+//         .map((v) => `<span>${v}</span>`)
+//         .join(
+//           "",
+//         )}</div></div><div class="body"><p style="font-size:11.5px;color:#9ca3af;margin-bottom:28px">${dt}</p>${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div></div>`,
+//     );
+
+//   // ─── 19. ALPINE — diagonal slash geometry ───
+//   if (id === "alpine")
+//     return wrap(
+//       baseCSS(
+//         `.pg{max-width:880px;margin:0 auto;background:#fff;overflow:hidden}.hdr{position:relative;background:${c};padding:52px 60px 48px;overflow:hidden}.slash{position:absolute;right:0;top:0;bottom:0;width:45%;background:rgba(255,255,255,.07);clip-path:polygon(30% 0,100% 0,100% 100%,0 100%)}.slash2{position:absolute;right:0;top:0;bottom:0;width:30%;background:rgba(255,255,255,.05);clip-path:polygon(40% 0,100% 0,100% 100%,0 100%)}.nm{position:relative;font-size:46px;font-weight:800;color:#fff;letter-spacing:-2px;line-height:.95;margin-bottom:8px}.ttl{position:relative;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:20px}.cv-row{position:relative;display:flex;flex-wrap:wrap;gap:6px}.cv-chip{font-size:11px;color:rgba(255,255,255,.8);background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);padding:4px 12px;border-radius:3px}.body{padding:48px 60px}`,
+//       ),
+//       `<div class="pg"><div class="hdr"><div class="slash"></div><div class="slash2"></div><div class="nm">${nm}</div><div class="ttl">${ttl}</div><div class="cv-row">${[
+//         d.personal.email,
+//         d.personal.phone,
+//         d.personal.location,
+//       ]
+//         .filter(Boolean)
+//         .map((v) => `<span class="cv-chip">${v}</span>`)
+//         .join(
+//           "",
+//         )}</div></div><div class="body"><p style="font-size:11.5px;color:#9ca3af;margin-bottom:28px">${dt}</p>${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div></div>`,
+//     );
+
+//   // ─── 20. SIGNAL — broadcast bar, bold type ───
+//   if (id === "signal")
+//     return wrap(
+//       baseCSS(
+//         `.pg{max-width:880px;margin:0 auto;background:#fff}.broadcast{background:${c};padding:10px 52px;display:flex;align-items:center;gap:12px}.dot{width:8px;height:8px;border-radius:50%;background:#fff;flex-shrink:0;box-shadow:0 0 0 2px rgba(255,255,255,.3)}.broadcast-txt{font-size:9.5px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.8)}.hdr{padding:40px 52px;border-bottom:2px solid #111}.nm{font-size:48px;font-weight:900;color:#111;letter-spacing:-3px;text-transform:uppercase;line-height:.9;margin-bottom:10px}.bottom-row{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px}.ttl{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:${c};font-weight:700}.cv-row{font-size:11.5px;color:#6b7280;display:flex;flex-wrap:wrap;gap:4px 14px}.body{padding:44px 52px}`,
+//       ),
+//       `<div class="pg"><div class="broadcast"><div class="dot"></div><div class="broadcast-txt">Cover Letter · ${dt}</div></div><div class="hdr"><div class="nm">${nm}</div><div class="bottom-row"><div class="ttl">${ttl}</div><div class="cv-row">${[
+//         d.personal.email,
+//         d.personal.phone,
+//         d.personal.location,
+//       ]
+//         .filter(Boolean)
+//         .map((v) => `<span>${v}</span>`)
+//         .join(
+//           "",
+//         )}</div></div></div><div class="body">${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div></div>`,
+//     );
+
+//   // ─── 21. MONO — pure B&W, single hairline rule ───
+//   if (id === "mono")
+//     return wrap(
+//       baseCSS(
+//         `.pg{max-width:800px;margin:0 auto;padding:72px 88px;background:#fff}.nm{font-size:44px;font-weight:800;color:#000;letter-spacing:-2px;margin-bottom:2px}.ttl{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:#000;margin-bottom:20px}.rule{height:1px;background:#000;margin-bottom:20px}.cv-row{display:flex;flex-wrap:wrap;gap:4px 20px;font-size:11.5px;color:#333;margin-bottom:40px}p{margin-bottom:14px;line-height:1.9;font-size:13.5px;color:#111}`,
+//       ),
+//       `<div class="pg"><div class="nm">${nm}</div><div class="ttl">${ttl}</div><div class="rule"></div><div class="cv-row">${[
+//         d.personal.email,
+//         d.personal.phone,
+//         d.personal.location,
+//         d.personal.linkedin,
+//       ]
+//         .filter(Boolean)
+//         .map((v) => `<span>${v}</span>`)
+//         .join(
+//           " &nbsp;·&nbsp; ",
+//         )}</div><p style="font-size:11px;color:#888;margin-bottom:28px">${dt}</p>${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div>`,
+//     );
+
+//   // ─── 22. TYPEWRITER — Courier top black bar, B&W ───
+//   if (id === "typewriter")
+//     return wrap(
+//       baseCSS(
+//         `@import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap');.pg{max-width:820px;margin:0 auto;background:#fff;font-family:'Courier Prime','Courier New',monospace}.hdr{background:#111;padding:32px 56px}.nm{font-size:32px;font-weight:700;color:#fff;letter-spacing:2px;text-transform:uppercase}.ttl{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#aaa;margin-top:6px}.sub{background:#f5f5f0;padding:12px 56px;border-bottom:2px solid #111;display:flex;flex-wrap:wrap;gap:4px 20px;font-size:11px;color:#333;font-family:'Courier Prime','Courier New',monospace}.body{padding:48px 56px;font-family:'Courier Prime','Courier New',monospace;font-size:13.5px;line-height:1.9;color:#111}p{margin-bottom:14px}`,
+//       ),
+//       `<div class="pg"><div class="hdr"><div class="nm">${nm}</div><div class="ttl">${ttl}</div></div><div class="sub">${[
+//         dt,
+//         d.personal.email,
+//         d.personal.phone,
+//         d.personal.location,
+//       ]
+//         .filter(Boolean)
+//         .map((v) => `<span>${v}</span>`)
+//         .join(
+//           " &nbsp;|&nbsp; ",
+//         )}</div><div class="body">${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div></div>`,
+//     );
+
+//   // ─── 23. SPECIMEN — oversized drop-initial, B&W editorial ───
+//   if (id === "specimen")
+//     return wrap(
+//       baseCSS(
+//         `.pg{max-width:820px;margin:0 auto;padding:64px 72px;background:#fff}.top-row{display:flex;align-items:flex-end;gap:20px;margin-bottom:0;padding-bottom:16px;border-bottom:3px solid #000}.initial{font-size:96px;font-weight:900;color:#000;line-height:1;margin-bottom:-12px;letter-spacing:-6px;flex-shrink:0}.name-col .nm{font-size:22px;font-weight:800;color:#000;letter-spacing:-0.5px;text-transform:uppercase}.name-col .ttl{font-size:9px;letter-spacing:3.5px;text-transform:uppercase;color:#555;margin-top:4px;margin-bottom:10px}.cv-row{display:flex;flex-wrap:wrap;gap:3px 14px;font-size:11px;color:#333}.r2{height:1px;background:#ddd;margin-top:16px;margin-bottom:32px}p{margin-bottom:14px;line-height:1.85;font-size:13.5px}`,
+//       ),
+//       `<div class="pg"><div class="top-row"><div class="initial">${nm.charAt(0) || "A"}</div><div class="name-col"><div class="nm">${nm}</div><div class="ttl">${ttl}</div><div class="cv-row">${[
+//         d.personal.email,
+//         d.personal.phone,
+//         d.personal.location,
+//       ]
+//         .filter(Boolean)
+//         .map((v) => `<span>${v}</span>`)
+//         .join(
+//           " · ",
+//         )}</div></div></div><div class="r2"></div><p style="font-size:11px;color:#888;margin-bottom:24px">${dt}</p>${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div>`,
+//     );
+
+//   // ─── 24. GRID — ruled-paper horizontal lines, B&W ───
+//   if (id === "grid")
+//     return wrap(
+//       baseCSS(
+//         `.pg{max-width:840px;margin:0 auto;padding:64px 72px;background:#fff;background-image:repeating-linear-gradient(to bottom,transparent,transparent 27px,#e8e8e8 27px,#e8e8e8 28px);background-size:100% 28px;background-position:0 64px}.nm{font-size:42px;font-weight:800;color:#000;letter-spacing:-1.5px;margin-bottom:0;position:relative;z-index:1}.ttl{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#444;margin-bottom:16px;position:relative;z-index:1}.cv-row{display:flex;flex-wrap:wrap;gap:3px 16px;font-size:11.5px;color:#333;margin-bottom:56px;position:relative;z-index:1}.rule{height:2px;background:#000;margin-bottom:28px;position:relative;z-index:1}p{margin-bottom:0;line-height:28px;font-size:13px;color:#111;position:relative;z-index:1}`,
+//       ),
+//       `<div class="pg"><div class="nm">${nm}</div><div class="ttl">${ttl}</div><div class="cv-row">${[
+//         d.personal.email,
+//         d.personal.phone,
+//         d.personal.location,
+//       ]
+//         .filter(Boolean)
+//         .map((v) => `<span>${v}</span>`)
+//         .join(
+//           " · ",
+//         )}</div><div class="rule"></div><p style="font-size:11px;color:#888;margin-bottom:28px">${dt}</p>${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div>`,
+//     );
+
+//   // ─── 25. STENCIL — military stencil caps, B&W authority ───
+//   if (id === "stencil")
+//     return wrap(
+//       baseCSS(
+//         `@import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap');.pg{max-width:840px;margin:0 auto;padding:8px;background:#fff}.inner{border:3px solid #000;padding:52px 60px}.nm{font-family:'Black Han Sans','Arial Black',sans-serif;font-size:48px;font-weight:900;color:#000;letter-spacing:4px;text-transform:uppercase;line-height:1;margin-bottom:8px}.ttl{font-size:9px;letter-spacing:6px;text-transform:uppercase;color:#000;border:1px solid #000;display:inline-block;padding:4px 12px;margin-bottom:20px}.dbl{height:3px;background:#000;margin-bottom:3px}.dbl2{height:1px;background:#000;margin-bottom:24px}.cv-row{font-size:11px;color:#222;letter-spacing:1px;margin-bottom:8px;text-transform:uppercase}p{margin-bottom:14px;line-height:1.85;font-size:13px;color:#000}`,
+//       ),
+//       `<div class="pg"><div class="inner"><div class="nm">${nm}</div><div class="ttl">${ttl}</div><div class="dbl"></div><div class="dbl2"></div><div class="cv-row">${[d.personal.email, d.personal.phone, d.personal.location].filter(Boolean).join("  ·  ")}</div><p style="font-size:11px;color:#777;margin:20px 0 24px">${dt}</p>${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div></div>`,
+//     );
+
+//   // ─── 26. HAIRLINE — ultra-thin rules, B&W airiness ───
+//   if (id === "hairline")
+//     return wrap(
+//       baseCSS(
+//         `.pg{max-width:780px;margin:0 auto;padding:80px 96px;background:#fff}.r0{height:.5px;background:#ccc;margin-bottom:28px}.nm{font-size:38px;font-weight:300;color:#111;letter-spacing:-.5px;margin-bottom:6px}.ttl{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#888;font-weight:400;margin-bottom:20px}.r1{height:.5px;background:#bbb;margin-bottom:14px}.cv-row{display:flex;flex-wrap:wrap;gap:3px 20px;font-size:11px;color:#666;margin-bottom:14px}.r2{height:.5px;background:#bbb;margin-bottom:36px}p{margin-bottom:14px;line-height:1.9;font-size:13.5px;color:#222;font-weight:300}`,
+//       ),
+//       `<div class="pg"><div class="r0"></div><div class="nm">${nm}</div><div class="ttl">${ttl}</div><div class="r1"></div><div class="cv-row">${[
+//         d.personal.email,
+//         d.personal.phone,
+//         d.personal.location,
+//         d.personal.linkedin,
+//       ]
+//         .filter(Boolean)
+//         .map((v) => `<span>${v}</span>`)
+//         .join(
+//           "",
+//         )}</div><div class="r2"></div><p style="font-size:11px;color:#aaa;margin-bottom:28px">${dt}</p>${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div>`,
+//     );
+
+//   // ─── 27. BROADSHEET — full-width reversed black masthead ───
+//   if (id === "broadsheet")
+//     return wrap(
+//       baseCSS(
+//         `.pg{max-width:880px;margin:0 auto;background:#fff}.mast{background:#000;padding:0 56px;display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:100px;flex-wrap:wrap}.nm{font-size:48px;font-weight:900;color:#fff;letter-spacing:-2px;line-height:1}.right{text-align:right}.ttl{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:#aaa;margin-bottom:6px}.cv-sm{font-size:10.5px;color:#ccc;line-height:1.8}.stripe{height:6px;background:repeating-linear-gradient(90deg,#fff 0,#fff 8px,#000 8px,#000 16px)}.subbar{background:#f0f0f0;padding:10px 56px;border-bottom:1px solid #ddd;font-size:10.5px;color:#444;display:flex;flex-wrap:wrap;gap:4px 20px}.body{padding:48px 56px}p{margin-bottom:14px;line-height:1.85;font-size:13.5px}`,
+//       ),
+//       `<div class="pg"><div class="mast"><div class="nm">${nm}</div><div class="right"><div class="ttl">${ttl}</div><div class="cv-sm">${[
+//         d.personal.email,
+//         d.personal.phone,
+//       ]
+//         .filter(Boolean)
+//         .map((v) => `<div>${v}</div>`)
+//         .join(
+//           "",
+//         )}</div></div></div><div class="stripe"></div><div class="subbar">${[
+//         dt,
+//         d.personal.location,
+//         d.personal.linkedin,
+//       ]
+//         .filter(Boolean)
+//         .map((v) => `<span>${v}</span>`)
+//         .join(
+//           " &nbsp;·&nbsp; ",
+//         )}</div><div class="body">${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div></div>`,
+//     );
+
+//   // ─── 28. MARGIN — left red margin line, notebook style ───
+//   if (id === "margin")
+//     return wrap(
+//       baseCSS(
+//         `.pg{max-width:820px;margin:0 auto;padding:56px 64px 56px 100px;background:#fff;border-left:4px solid #cc0000;position:relative}.margin-line{position:absolute;left:80px;top:0;bottom:0;width:1px;background:#f4b8b8;pointer-events:none}.nm{font-size:40px;font-weight:700;color:#000;letter-spacing:-1px;margin-bottom:4px}.ttl{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#333;margin-bottom:16px}.rule{height:1px;background:#000;margin-bottom:14px}.cv-row{display:flex;flex-wrap:wrap;gap:3px 16px;font-size:11.5px;color:#444;margin-bottom:12px}.rule2{height:.5px;background:#ccc;margin-bottom:32px}p{margin-bottom:14px;line-height:1.9;font-size:13.5px;color:#111}`,
+//       ),
+//       `<div class="pg"><div class="margin-line"></div><div class="nm">${nm}</div><div class="ttl">${ttl}</div><div class="rule"></div><div class="cv-row">${[
+//         d.personal.email,
+//         d.personal.phone,
+//         d.personal.location,
+//       ]
+//         .filter(Boolean)
+//         .map((v) => `<span>${v}</span>`)
+//         .join(
+//           " · ",
+//         )}</div><div class="rule2"></div><p style="font-size:11px;color:#999;margin-bottom:24px">${dt}</p>${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div>`,
+//     );
+
+//   // ─── 29. OVERTURE — name only large, pure zen ───
+//   if (id === "overture")
+//     return wrap(
+//       baseCSS(
+//         `.pg{max-width:780px;margin:0 auto;padding:80px 96px;background:#fff}.nm{font-size:52px;font-weight:200;color:#111;letter-spacing:-1px;margin-bottom:32px;line-height:1}.divider{display:flex;align-items:center;gap:12px;margin-bottom:32px}.d-line{flex:1;height:1px;background:#e0e0e0}.d-txt{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#bbb;white-space:nowrap}.cv-row{font-size:12px;color:#888;margin-bottom:40px;line-height:2}p{margin-bottom:16px;line-height:1.95;font-size:14px;color:#222;font-weight:300}`,
+//       ),
+//       `<div class="pg"><div class="nm">${nm}</div><div class="divider"><div class="d-line"></div><div class="d-txt">${ttl}</div><div class="d-line"></div></div><div class="cv-row">${[d.personal.email, d.personal.phone, d.personal.location, d.personal.linkedin].filter(Boolean).join("  ·  ")}</div><p style="font-size:11px;color:#bbb;margin-bottom:28px">${dt}</p>${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div>`,
+//     );
+
+//   // ─── 30. RULED — bottom-border name only, cleanest possible ───
+//   if (id === "ruled")
+//     return wrap(
+//       baseCSS(
+//         `.pg{max-width:760px;margin:0 auto;padding:72px 88px;background:#fff}.nm-wrap{padding-bottom:12px;border-bottom:2px solid #111;margin-bottom:10px}.nm{font-size:40px;font-weight:600;color:#111;letter-spacing:-.5px}.ttl{font-size:10.5px;letter-spacing:2.5px;text-transform:uppercase;color:#666;margin-bottom:18px}.cv-row{display:flex;flex-wrap:wrap;gap:3px 18px;font-size:11.5px;color:#555;margin-bottom:12px}.r-thin{height:.5px;background:#ddd;margin-bottom:36px}p{margin-bottom:16px;line-height:1.9;font-size:13.5px;color:#1a1a1a;font-weight:400}`,
+//       ),
+//       `<div class="pg"><div class="nm-wrap"><div class="nm">${nm}</div></div><div class="ttl">${ttl}</div><div class="cv-row">${[
+//         d.personal.email,
+//         d.personal.phone,
+//         d.personal.location,
+//         d.personal.linkedin,
+//       ]
+//         .filter(Boolean)
+//         .map((v) => `<span>${v}</span>`)
+//         .join(
+//           " · ",
+//         )}</div><div class="r-thin"></div><p style="font-size:11px;color:#aaa;margin-bottom:28px">${dt}</p>${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div>`,
+//     );
+
+//   // fallback → chancellor
+//   return buildHTML("chancellor", d);
+// }
+
+// /* ─────────────────────────────────────────────────────────────
+//    CANVAS PREVIEW
+// ───────────────────────────────────────────────────────────────*/
+// function CanvasPreview({ children }: { children: ReactNode }) {
+//   const wrapRef = useRef<HTMLDivElement>(null);
+//   const posRef = useRef({ x: 20, y: 20 });
+//   const scaleRef = useRef(0.58);
+//   const downRef = useRef<{ x: number; y: number } | null>(null);
+//   const startRef = useRef({ x: 0, y: 0 });
+//   const isDrag = useRef(false);
+//   const animRef = useRef<number | null>(null);
+//   const lastDist = useRef(0);
+//   const [pos, setPos] = useState({ x: 20, y: 20 });
+//   const [scale, setScale] = useState(0.58);
+//   const [drag, setDrag] = useState(false);
+
+//   const initS = useCallback(() => {
+//     const w = window.innerWidth;
+//     return w < 480
+//       ? 0.33
+//       : w < 640
+//         ? 0.4
+//         : w < 820
+//           ? 0.5
+//           : w < 1024
+//             ? 0.57
+//             : w < 1280
+//               ? 0.63
+//               : 0.68;
+//   }, []);
+
+//   useEffect(() => {
+//     const s = initS();
+//     scaleRef.current = s;
+//     setScale(s);
+//     const fn = () => {
+//       const s2 = initS();
+//       scaleRef.current = s2;
+//       setScale(s2);
+//     };
+//     window.addEventListener("resize", fn);
+//     return () => window.removeEventListener("resize", fn);
+//   }, [initS]);
+
+//   const smoothZoom = (target: number) => {
+//     if (animRef.current) cancelAnimationFrame(animRef.current);
+//     const from = scaleRef.current,
+//       t0 = performance.now();
+//     const tick = (now: number) => {
+//       const p = Math.min((now - t0) / 160, 1);
+//       const v = from + (target - from) * (1 - Math.pow(1 - p, 3));
+//       scaleRef.current = v;
+//       setScale(v);
+//       if (p < 1) animRef.current = requestAnimationFrame(tick);
+//     };
+//     animRef.current = requestAnimationFrame(tick);
+//   };
+//   const zoomIn = () => smoothZoom(Math.min(scaleRef.current + 0.12, 3));
+//   const zoomOut = () => smoothZoom(Math.max(scaleRef.current - 0.12, 0.2));
+//   const reset = () => {
+//     const p = { x: 20, y: 20 };
+//     posRef.current = p;
+//     setPos(p);
+//     smoothZoom(initS());
+//   };
+
+//   useEffect(() => {
+//     const el = wrapRef.current;
+//     if (!el) return;
+//     const inEl = (e: MouseEvent) => {
+//       const r = el.getBoundingClientRect();
+//       return (
+//         e.clientX >= r.left &&
+//         e.clientX <= r.right &&
+//         e.clientY >= r.top &&
+//         e.clientY <= r.bottom
+//       );
+//     };
+//     const onDown = (e: MouseEvent) => {
+//       if (!inEl(e)) return;
+//       if ((e.target as HTMLElement)?.closest?.("[data-nodrag]")) return;
+//       e.preventDefault();
+//       downRef.current = { x: e.clientX, y: e.clientY };
+//       isDrag.current = false;
+//     };
+//     const onMove = (e: MouseEvent) => {
+//       if (!downRef.current) return;
+//       const dx = e.clientX - downRef.current.x,
+//         dy = e.clientY - downRef.current.y;
+//       if (!isDrag.current && Math.hypot(dx, dy) > 3) {
+//         isDrag.current = true;
+//         setDrag(true);
+//         startRef.current = {
+//           x: downRef.current.x - posRef.current.x,
+//           y: downRef.current.y - posRef.current.y,
+//         };
+//       }
+//       if (isDrag.current) {
+//         const np = {
+//           x: e.clientX - startRef.current.x,
+//           y: e.clientY - startRef.current.y,
+//         };
+//         posRef.current = np;
+//         setPos({ ...np });
+//       }
+//     };
+//     const onUp = () => {
+//       downRef.current = null;
+//       isDrag.current = false;
+//       setDrag(false);
+//     };
+//     const onWheel = (e: WheelEvent) => {
+//       if (!inEl(e)) return;
+//       e.preventDefault();
+//       if (e.ctrlKey || e.metaKey) {
+//         const v = Math.max(
+//           0.2,
+//           Math.min(3, scaleRef.current * Math.exp(-e.deltaY * 0.002)),
+//         );
+//         scaleRef.current = v;
+//         setScale(v);
+//       } else {
+//         const np = {
+//           x: posRef.current.x - e.deltaX * 0.5,
+//           y: posRef.current.y - e.deltaY * 0.5,
+//         };
+//         posRef.current = np;
+//         setPos({ ...np });
+//       }
+//     };
+//     window.addEventListener("mousedown", onDown, {
+//       capture: true,
+//       passive: false,
+//     });
+//     window.addEventListener("mousemove", onMove);
+//     window.addEventListener("mouseup", onUp);
+//     window.addEventListener("wheel", onWheel, {
+//       capture: true,
+//       passive: false,
+//     });
+//     return () => {
+//       window.removeEventListener("mousedown", onDown, { capture: true });
+//       window.removeEventListener("mousemove", onMove);
+//       window.removeEventListener("mouseup", onUp);
+//       window.removeEventListener("wheel", onWheel, { capture: true });
+//     };
+//   }, []);
+
+//   return (
+//     <div className="relative w-full h-full" style={{ minHeight: 360 }}>
+//       <style>{`.cvs-root iframe{pointer-events:none!important}`}</style>
+//       <div
+//         ref={wrapRef}
+//         className="cvs-root absolute inset-0 overflow-hidden select-none"
+//         style={{
+//           cursor: drag ? "grabbing" : "grab",
+//           borderRadius: 12,
+//           background: "#e8e6f2",
+//         }}
+//       >
+//         <div
+//           style={{
+//             position: "absolute",
+//             top: 0,
+//             left: 0,
+//             transformOrigin: "top left",
+//             transform: `translate(${pos.x}px,${pos.y}px) scale(${scale})`,
+//             willChange: "transform",
+//             zIndex: 1,
+//           }}
+//         >
+//           {children}
+//         </div>
+//       </div>
+//       <div
+//         data-nodrag
+//         className="absolute top-2.5 left-2.5 z-30 pointer-events-none bg-white/90 backdrop-blur-sm border border-indigo-100 text-indigo-600 text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm"
+//       >
+//         {Math.round(scale * 100)}%
+//       </div>
+//       <div
+//         data-nodrag
+//         className="absolute bottom-3 right-3 z-30 flex flex-col gap-1.5"
+//       >
+//         {[
+//           { fn: zoomIn, icon: <FiZoomIn className="w-3.5 h-3.5" /> },
+//           { fn: zoomOut, icon: <FiZoomOut className="w-3.5 h-3.5" /> },
+//           { fn: reset, icon: <FiRefreshCw className="w-3 h-3" /> },
+//         ].map((b, i) => (
+//           <motion.button
+//             key={i}
+//             type="button"
+//             onClick={b.fn}
+//             whileHover={{ scale: 1.08 }}
+//             whileTap={{ scale: 0.92 }}
+//             className={`w-7 h-7 rounded-lg flex items-center justify-center text-white shadow-md ${i < 2 ? "bg-gradient-to-br from-indigo-600 to-violet-600" : "bg-gray-700 hover:bg-gray-800"}`}
+//           >
+//             {b.icon}
+//           </motion.button>
+//         ))}
+//       </div>
+//       <p
+//         data-nodrag
+//         className="absolute bottom-3 left-2 z-30 pointer-events-none text-[9px] font-semibold text-slate-400"
+//       >
+//         Drag · Pinch · Scroll
+//       </p>
+//     </div>
+//   );
+// }
+
+// /* ─────────────────────────────────────────────────────────────
+//    TEMPLATE CARD
+// ───────────────────────────────────────────────────────────────*/
+// function TemplateCard({
+//   template,
+//   selected,
+//   onClick,
+//   showLock,chancellor
+// }: {
+//   template: (typeof TEMPLATE_DEFS)[0];
+//   selected: boolean;
+//   onClick: () => void;
+//   showLock: boolean;
+// }) {
+//   return (
+//     <div
+//       onClick={onClick}
+//       className={`relative bg-white rounded-2xl border-2 overflow-hidden cursor-pointer transition-all duration-200 group ${selected ? "border-indigo-500 shadow-[0_0_0_3px_rgba(99,102,241,.14)]" : "border-slate-100 shadow-sm hover:-translate-y-1 hover:shadow-lg hover:border-indigo-200"}`}
+//     >
+//       <div
+//         className="relative w-full"
+//         style={{ paddingBottom: "130%", background: "#f8fafc" }}
+//       >
+//         <Image
+//           src={template.image}
+//           alt={template.name}
+//           fill
+//           className="object-cover object-top transition-transform duration-300 group-hover:scale-[1.03]"
+//           sizes="(max-width:640px) 45vw, (max-width:1024px) 30vw, 20vw"
+//           onError={(e) => {
+//             (e.currentTarget as HTMLImageElement).style.display = "none";
+//           }}
+//         />
+//         <div className="absolute bottom-0 inset-x-0 h-8 bg-gradient-to-t from-white/80 to-transparent pointer-events-none" />
+//       </div>
+//       {selected && (
+//         <div className="absolute top-2 right-2 w-6 h-6 bg-indigo-600 rounded-full flex items-center justify-center shadow-md z-10">
+//           <svg viewBox="0 0 14 14" width="11" height="11" fill="none">
+//             <polyline points="2,8 5,12 12,3" stroke="white" strokeWidth="2.4" />
+//           </svg>
+//         </div>
+//       )}
+//       {showLock && (
+//         <div
+//           className="absolute top-2 left-2 w-5 h-5 bg-amber-400 rounded-full flex items-center justify-center shadow z-10"
+//           title="Premium"
+//         >
+//           <FiLock className="w-2.5 h-2.5 text-white" />
+//         </div>
+//       )}
+//       <div className="px-2.5 py-2.5">
+//         <div className="flex items-center justify-between mb-0.5">
+//           <span className="text-[8.5px] font-extrabold tracking-[1.2px] uppercase text-slate-400">
+//             {template.tag}
+//           </span>
+//           {template.tier === "premium" && (
+//             <span className="text-[8px] font-bold text-amber-600 bg-amber-50 border border-amber-100 px-1.5 py-0.5 rounded-full">
+//               PRO
+//             </span>
+//           )}
+//         </div>
+//         <div className="text-[12.5px] font-bold text-slate-900 leading-tight">
+//           {template.name}
+//         </div>
+//         <div className="text-[10.5px] text-slate-400 leading-tight mt-0.5 line-clamp-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+//           {template.description}
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+// /* ─────────────────────────────────────────────────────────────
+//    STEPS
+// ───────────────────────────────────────────────────────────────*/
+// type Step = "template" | "personal" | "company" | "content" | "review";
+// const STEPS: { id: Step; label: string; icon: string }[] = [
+//   { id: "template", label: "Template", icon: "🎨" },
+//   { id: "personal", label: "Personal", icon: "👤" },
+//   { id: "company", label: "Company", icon: "🏢" },
+//   { id: "content", label: "Content", icon: "✍️" },
+//   { id: "review", label: "Review", icon: "✅" },
+// ];
+
+// /* ─────────────────────────────────────────────────────────────
+//    FIELD WRAPPER
+// ───────────────────────────────────────────────────────────────*/
+// function F({
+//   label,
+//   required,
+//   icon: Icon,
+//   hint,
+//   children,
+// }: {
+//   label: string;
+//   required?: boolean;
+//   icon?: React.ElementType;
+//   hint?: string;
+//   children: React.ReactNode;
+// }) {
+//   return (
+//     <div className="mb-4">
+//       <label className="flex items-center gap-1.5 text-[10.5px] font-bold tracking-wide uppercase text-slate-500 mb-1.5">
+//         {Icon && <Icon className="w-3 h-3 text-indigo-400" />}
+//         {label}
+//         {required && <span className="text-red-400 ml-0.5">*</span>}
+//       </label>
+//       {children}
+//       {hint && <p className="text-[10.5px] text-slate-400 mt-1">{hint}</p>}
+//     </div>
+//   );
+// }
+
+// const inp =
+//   "w-full px-3 py-2.5 text-[13px] font-[500] border-[1.5px] border-slate-200 rounded-xl outline-none transition-all duration-150 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 placeholder:text-slate-300 bg-white text-slate-800";
+
+// /* ─────────────────────────────────────────────────────────────
+//    POPUPS
+// ───────────────────────────────────────────────────────────────*/
+// function LoginPopup({
+//   onClose,
+//   onLogin,
+// }: {
+//   onClose: () => void;
+//   onLogin: () => void;
+// }) {
+//   return (
+//     <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-[2000] flex items-center justify-center p-4">
+//       <motion.div
+//         initial={{ opacity: 0, scale: 0.92, y: 20 }}
+//         animate={{ opacity: 1, scale: 1, y: 0 }}
+//         exit={{ opacity: 0, scale: 0.95 }}
+//         className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full relative overflow-hidden"
+//       >
+//         <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/60 via-white to-violet-50/40 pointer-events-none" />
+//         <div className="relative">
+//           <div className="w-16 h-16 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-5 shadow-lg shadow-indigo-200">
+//             ✦
+//           </div>
+//           <h2 className="text-[22px] font-extrabold text-slate-900 text-center mb-2">
+//             Sign in to Continue
+//           </h2>
+//           <p className="text-[13.5px] text-slate-500 text-center mb-6 leading-relaxed">
+//             You need to be logged in to build and download your professional
+//             cover letter.
+//           </p>
+//           <button
+//             onClick={onLogin}
+//             className="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-bold text-[14px] rounded-2xl shadow-lg shadow-indigo-200 hover:shadow-xl hover:-translate-y-0.5 transition-all mb-3"
+//           >
+//             Sign In to Your Account
+//           </button>
+//           <button
+//             onClick={onClose}
+//             className="w-full py-2.5 text-[13px] text-slate-400 font-semibold hover:text-slate-600 transition-colors"
+//           >
+//             Browse templates first →
+//           </button>
+//         </div>
+//       </motion.div>
+//     </div>
+//   );
+// }
+
+// function PremiumPopup({
+//   onClose,
+//   onUpgrade,
+// }: {
+//   onClose: () => void;
+//   onUpgrade: () => void;
+// }) {
+//   return (
+//     <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-[2000] flex items-center justify-center p-4">
+//       <motion.div
+//         initial={{ opacity: 0, scale: 0.92, y: 20 }}
+//         animate={{ opacity: 1, scale: 1, y: 0 }}
+//         exit={{ opacity: 0, scale: 0.95 }}
+//         className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full relative overflow-hidden"
+//       >
+//         <div className="absolute inset-0 bg-gradient-to-br from-amber-50/60 via-white to-indigo-50/40 pointer-events-none" />
+//         <div className="relative">
+//           <button
+//             onClick={onClose}
+//             className="absolute -top-1 -right-1 w-8 h-8 bg-slate-100 hover:bg-red-50 rounded-full flex items-center justify-center text-slate-400 hover:text-red-400 transition-all"
+//           >
+//             <FiX className="w-4 h-4" />
+//           </button>
+//           <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-3 shadow-lg shadow-amber-200">
+//             ⭐
+//           </div>
+//           <h2 className="text-[22px] font-extrabold text-slate-900 text-center mb-2">
+//             Upgrade to Premium
+//           </h2>
+//           <p className="text-[13.5px] text-slate-500 text-center mb-6 leading-relaxed">
+//             Unlock all 20 industry templates, rich text editor, and PDF
+//             download.
+//           </p>
+//           <button
+//             onClick={onUpgrade}
+//             className="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-bold text-[14px] rounded-2xl shadow-lg shadow-indigo-200 hover:shadow-xl hover:-translate-y-0.5 transition-all"
+//           >
+//             Upgrade to Premium →
+//           </button>
+//           <button
+//             onClick={onClose}
+//             className="mt-2.5 w-full py-2 text-[12.5px] text-slate-400 font-semibold hover:text-slate-600 transition-colors"
+//           >
+//             Maybe later
+//           </button>
+//         </div>
+//       </motion.div>
+//     </div>
+//   );
+// }
+
+// /* ─────────────────────────────────────────────────────────────
+//    MAIN COMPONENT
+// ───────────────────────────────────────────────────────────────*/
+// export default function CoverLetterGenerator() {
+//   const router = useRouter();
+//   const [isPremium, setIsPremium] = useState<boolean | null>(null);
+//   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+//   const [step, setStep] = useState<Step>("template");
+//   const [tplId, setTplId] = useState("chancellor");
+//   const [data, setData] = useState<CLData>(JSON.parse(JSON.stringify(BLANK)));
+//   const [html, setHtml] = useState("");
+//   const [modal, setModal] = useState(false);
+//   const [toast, setToast] = useState("");
+//   const [busy, setBusy] = useState(false);
+//   const [filter, setFilter] = useState("All");
+//   const [showColors, setShowColors] = useState(false);
+//   const [showFonts, setShowFonts] = useState(false);
+//   const [showLoginPopup, setShowLoginPopup] = useState(false);
+//   const [showPremiumPopup, setShowPremiumPopup] = useState(false);
+
+//   const liveRef = useRef<HTMLIFrameElement>(null);
+//   const modalRef = useRef<HTMLIFrameElement>(null);
+
+//   useEffect(() => {
+//     const userDetails = getLocalStorage<User>("user_details");
+//     const userId = userDetails?.id;
+//     if (!userId) {
+//       setIsLoggedIn(false);
+//       setIsPremium(false);
+//       setTimeout(() => setShowLoginPopup(true), 600);
+//       return;
+//     }
+//     setIsLoggedIn(true);
+//     axios
+//       .get(`${API_URL}/api/users/dashboard`, { params: { userId } })
+//       .then((res) => {
+//         const payment = res?.data?.payments?.[0];
+//         const premium = payment?.plan === "Premium";
+//         setIsPremium(premium);
+//         if (!premium) setTimeout(() => setShowPremiumPopup(true), 600);
+//       })
+//       .catch(() => setIsPremium(false));
+//   }, []);
+
+//   const showToast = (m: string) => {
+//     setToast(m);
+//     setTimeout(() => setToast(""), 2800);
+//   };
+
+//   const rebuild = useCallback(() => {
+//     const h = buildHTML(tplId, data);
+//     setHtml(h);
+//     return h;
+//   }, [tplId, data]);
+//   useEffect(() => {
+//     const t = setTimeout(rebuild, 200);
+//     return () => clearTimeout(t);
+//   }, [rebuild]);
+
+//   const writeIframe = (
+//     ref: React.RefObject<HTMLIFrameElement | null>,
+//     h: string,
+//   ) => {
+//     if (!ref.current) return;
+//     const doc = ref.current.contentDocument;
+//     if (!doc) return;
+//     doc.open();
+//     doc.write(h);
+//     doc.close();
+//   };
+//   useEffect(() => {
+//     if (html && liveRef.current) writeIframe(liveRef, html);
+//   }, [html]);
+//   useEffect(() => {
+//     if (modal && html && modalRef.current) writeIframe(modalRef, html);
+//   }, [modal, html]);
+
+//   const set = (path: string[], val: string) =>
+//     setData((prev) => {
+//       const n = JSON.parse(JSON.stringify(prev)) as CLData;
+//       let c: any = n;
+//       for (let i = 0; i < path.length - 1; i++) c = c[path[i]];
+//       c[path[path.length - 1]] = val;
+//       return n;
+//     });
+
+//   const handleStepChange = (targetStep: Step) => {
+//     if (targetStep === "template") {
+//       setStep(targetStep);
+//       return;
+//     }
+//     if (!isLoggedIn) {
+//       setShowLoginPopup(true);
+//       return;
+//     }
+//     if (!isPremium) {
+//       setShowPremiumPopup(true);
+//       return;
+//     }
+//     setStep(targetStep);
+//   };
+//   const handleContinue = () => {
+//     const idx = STEPS.findIndex((s) => s.id === step);
+//     if (step === "template") {
+//       if (!isLoggedIn) {
+//         setShowLoginPopup(true);
+//         return;
+//       }
+//       if (!isPremium) {
+//         setShowPremiumPopup(true);
+//         return;
+//       }
+//     }
+//     if (idx < STEPS.length - 1) setStep(STEPS[idx + 1].id);
+//   };
+
+//   const downloadPDF = async () => {
+//     if (!isLoggedIn) {
+//       setShowLoginPopup(true);
+//       return;
+//     }
+//     if (!isPremium) {
+//       setShowPremiumPopup(true);
+//       return;
+//     }
+//     const h = rebuild();
+//     setBusy(true);
+//     try {
+//       const r = await axios.post(
+//         `${API_URL}/api/candidates/generate-pdf`,
+//         { html: h },
+//         { responseType: "blob" },
+//       );
+//       const url = URL.createObjectURL(r.data);
+//       const a = document.createElement("a");
+//       a.href = url;
+//       a.download = `Cover_Letter_${data.personal.fullName || "Draft"}.pdf`;
+//       document.body.appendChild(a);
+//       a.click();
+//       document.body.removeChild(a);
+//       URL.revokeObjectURL(url);
+//       showToast("✓ PDF downloaded");
+//     } catch {
+//       showToast("Download failed — try again");
+//     } finally {
+//       setBusy(false);
+//     }
+//   };
+
+//   const tpl = TEMPLATE_DEFS.find((t) => t.id === tplId)!;
+//   const stepIdx = STEPS.findIndex((s) => s.id === step);
+
+//   // Filter tags from the 20 templates
+//   const allTags = [
+//     "All",
+//     ...Array.from(new Set(TEMPLATE_DEFS.map((t) => t.tag))),
+//   ];
+//   const shownTemplates =
+//     filter === "All"
+//       ? TEMPLATE_DEFS
+//       : TEMPLATE_DEFS.filter((t) => t.tag === filter);
+
+//   if (isLoggedIn === null)
+//     return (
+//       <div className="min-h-screen bg-indigo-50 flex items-center justify-center">
+//         <div className="text-indigo-600 font-bold text-[14px] animate-pulse">
+//           Loading Cover Letter Studio…
+//         </div>
+//       </div>
+//     );
+
+//   return (
+//     <>
+//       <style>{`
+//         html,body{overflow:hidden}
+//         @media(max-width:820px){html,body{overflow:auto}}
+//         .canvas-iframe{width:860px;height:1120px;border:none;display:block;background:#fff;pointer-events:none}
+//         .modal-iframe{width:860px;height:1120px;border:none;display:block;background:#fff}
+//         @keyframes livePulse{0%,100%{box-shadow:0 0 0 2px rgba(16,185,129,.2)}50%{box-shadow:0 0 0 5px rgba(16,185,129,.07)}}
+//         .live-dot{animation:livePulse 2s infinite}
+//         @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+//         .toast-anim{animation:toastIn .22s ease}
+//         @keyframes modalIn{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+//         .modal-anim{animation:modalIn .22s ease}
+//         @keyframes ovIn{from{opacity:0}to{opacity:1}}
+//         .ov-anim{animation:ovIn .18s ease}
+//         .scrollbar-none{scrollbar-width:none}
+//         .scrollbar-none::-webkit-scrollbar{display:none}
+//         /* PrimeReact editor height override */
+//         .p-editor-container .p-editor-content{min-height:420px}
+//         .p-editor-container .ql-editor{font-size:14px;line-height:1.85;font-family:inherit}
+//         .p-editor-container{border-radius:12px;overflow:hidden;border:1.5px solid #e2e8f0}
+//         .p-editor-container:focus-within{border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.1)}
+//         .p-editor-toolbar{background:#f8fafc!important;border-bottom:1px solid #e2e8f0!important;padding:8px 12px!important}
+//       `}</style>
+
+//       <AnimatePresence>
+//         {showLoginPopup && (
+//           <LoginPopup
+//             onClose={() => setShowLoginPopup(false)}
+//             onLogin={() => router.push("/login")}
+//           />
+//         )}
+//       </AnimatePresence>
+//       <AnimatePresence>
+//         {showPremiumPopup && !showLoginPopup && (
+//           <PremiumPopup
+//             onClose={() => setShowPremiumPopup(false)}
+//             onUpgrade={() => router.push("/choose-plan")}
+//           />
+//         )}
+//       </AnimatePresence>
+
+//       {/* NAV */}
+//       <nav className="h-[58px] bg-white border-b border-slate-200 flex items-center px-4 md:px-5 gap-3 z-50 relative shadow-sm flex-shrink-0">
+//         <button
+//           onClick={() => router.push("/")}
+//           className="cursor-pointer flex-shrink-0"
+//         >
+//           <div className="relative w-[100px] sm:w-[140px] h-[34px] sm:h-[46px]">
+//             <Image
+//               src="/logo.png"
+//               alt="Logo"
+//               fill
+//               className="object-contain"
+//               priority
+//               sizes="(max-width:640px) 100px,140px"
+//             />
+//           </div>
+//         </button>
+//         <div className="flex items-center flex-1 justify-center overflow-x-auto scrollbar-none gap-0 py-1">
+//           {STEPS.map((s, i) => (
+//             <React.Fragment key={s.id}>
+//               {i > 0 && (
+//                 <div
+//                   className={`w-5 h-0.5 flex-shrink-0 transition-colors ${i <= stepIdx ? "bg-emerald-500" : "bg-slate-200"}`}
+//                 />
+//               )}
+//               <button
+//                 onClick={() => handleStepChange(s.id)}
+//                 className={`flex items-center gap-1.5 px-2 py-1 rounded-full text-[12px] font-semibold transition-all flex-shrink-0 cursor-pointer ${i < stepIdx ? "text-slate-800" : i === stepIdx ? "text-indigo-600 bg-indigo-50" : "text-slate-400 hover:bg-slate-50"}`}
+//               >
+//                 <span
+//                   className={`w-[22px] h-[22px] rounded-full flex items-center justify-center text-[10px] flex-shrink-0 ${i < stepIdx ? "bg-emerald-500 text-white" : i === stepIdx ? "bg-gradient-to-br from-indigo-600 to-violet-600 text-white shadow-[0_0_0_3px_rgba(91,56,240,.16)]" : "bg-slate-100 text-slate-400"}`}
+//                 >
+//                   {i < stepIdx ? (
+//                     <svg viewBox="0 0 14 14" width="11" height="11" fill="none">
+//                       <polyline
+//                         points="2,8 5,12 12,3"
+//                         stroke="white"
+//                         strokeWidth="2.2"
+//                       />
+//                     </svg>
+//                   ) : (
+//                     i + 1
+//                   )}
+//                 </span>
+//                 <span className="hidden sm:inline">{s.label}</span>
+//               </button>
+//             </React.Fragment>
+//           ))}
+//         </div>
+//         <button
+//           onClick={downloadPDF}
+//           disabled={busy}
+//           className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[12px] font-bold bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md hover:shadow-lg hover:-translate-y-px disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none transition-all flex-shrink-0"
+//         >
+//           {busy ? "⏳" : "⬇"} PDF
+//         </button>
+//       </nav>
+
+//       {/* SHELL */}
+//       <div className="grid lg:grid-cols-[400px_1fr] xl:grid-cols-[720px_1fr] h-[calc(100vh-58px)]">
+//         {/* LEFT PANEL */}
+//         <div className="flex flex-col overflow-hidden bg-slate-50 border-r border-slate-200">
+//           <div className="flex-shrink-0 px-5 pt-4 pb-0">
+//             <h2 className="font-semibold text-slate-900 tracking-tight mb-0.5 text-[15px]">
+//               {step === "template"
+//                 ? "Choose Template"
+//                 : step === "personal"
+//                   ? "Personal Information"
+//                   : step === "company"
+//                     ? "Company Details"
+//                     : step === "content"
+//                       ? "Letter Content"
+//                       : "Review & Download"}
+//             </h2>
+//             <p className="text-[12.5px] text-slate-500 mb-2">
+//               {step === "template"
+//                 ? "20 unique industry-grade designs"
+//                 : step === "personal"
+//                   ? "Your contact details"
+//                   : step === "company"
+//                     ? "Where you're applying"
+//                     : step === "content"
+//                       ? "Write your letter in the rich text editor below"
+//                       : "Check everything before downloading"}
+//             </p>
+//           </div>
+
+//           <div className="flex-1 overflow-y-auto px-4 pt-3 pb-20 scrollbar-thin scrollbar-thumb-indigo-200 scrollbar-track-transparent">
+//             {/* ── TEMPLATE STEP ── */}
+//             {step === "template" && (
+//               <>
+//                 {isLoggedIn && !isPremium && (
+//                   <div className="mb-3 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-3 flex items-center gap-3">
+//                     <div className="w-8 h-8 bg-amber-400 rounded-lg flex items-center justify-center text-white flex-shrink-0">
+//                       ⭐
+//                     </div>
+//                     <div className="flex-1 min-w-0">
+//                       <p className="text-[12px] font-bold text-amber-800">
+//                         Browse freely, upgrade to use
+//                       </p>
+//                       <p className="text-[11px] text-amber-600">
+//                         Select any template then upgrade to Premium
+//                       </p>
+//                     </div>
+//                     <button
+//                       onClick={() => setShowPremiumPopup(true)}
+//                       className="text-[11px] font-bold text-amber-700 bg-amber-100 border border-amber-200 px-2.5 py-1.5 rounded-lg flex-shrink-0"
+//                     >
+//                       Upgrade
+//                     </button>
+//                   </div>
+//                 )}
+//                 {!isLoggedIn && (
+//                   <div className="mb-3 bg-gradient-to-r from-indigo-50 to-violet-50 border border-indigo-200 rounded-2xl p-3 flex items-center gap-3">
+//                     <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white flex-shrink-0">
+//                       ✦
+//                     </div>
+//                     <div className="flex-1 min-w-0">
+//                       <p className="text-[12px] font-bold text-indigo-800">
+//                         Browse templates freely
+//                       </p>
+//                       <p className="text-[11px] text-indigo-600">
+//                         Sign in to build and download
+//                       </p>
+//                     </div>
+//                     <button
+//                       onClick={() => setShowLoginPopup(true)}
+//                       className="text-[11px] font-bold text-indigo-700 bg-indigo-100 border border-indigo-200 px-2.5 py-1.5 rounded-lg flex-shrink-0"
+//                     >
+//                       Sign In
+//                     </button>
+//                   </div>
+//                 )}
+
+//                 {/* Filter pills */}
+//                 <div className="flex flex-wrap gap-1.5 mb-3">
+//                   {allTags.map((cat) => (
+//                     <button
+//                       key={cat}
+//                       onClick={() => setFilter(cat)}
+//                       className={`px-3 py-1 rounded-full text-[11px] font-bold border-[1.5px] transition-all ${filter === cat ? "border-indigo-500 text-indigo-600 bg-indigo-50" : "border-slate-200 text-slate-500 bg-white hover:border-indigo-200"}`}
+//                     >
+//                       {cat}
+//                     </button>
+//                   ))}
+//                 </div>
+
+//                 {/* Accent color */}
+//                 <div className="mb-3 bg-white rounded-2xl border border-indigo-100 p-3">
+//                   <button
+//                     onClick={() => setShowColors((v) => !v)}
+//                     className="w-full flex items-center justify-between text-[12px] font-bold text-slate-700"
+//                   >
+//                     <span className="flex items-center gap-2">
+//                       <span
+//                         className="w-4 h-4 rounded-full border border-white shadow-sm"
+//                         style={{ background: data.accentColor || "#1a1a2e" }}
+//                       />
+//                       Accent Color
+//                     </span>
+//                     <span className="text-slate-400 text-[10px]">
+//                       {showColors ? "▲" : "▼"}
+//                     </span>
+//                   </button>
+//                   {showColors && (
+//                     <div className="flex flex-wrap gap-2 mt-2.5">
+//                       {COLOR_PALETTES.map((p) => (
+//                         <button
+//                           key={p.value}
+//                           title={p.label}
+//                           onClick={() =>
+//                             setData((d) => ({ ...d, accentColor: p.value }))
+//                           }
+//                           className={`w-7 h-7 rounded-full border-2 transition-all ${data.accentColor === p.value ? "border-white scale-110 shadow-lg" : "border-transparent hover:scale-105"}`}
+//                           style={{
+//                             background: p.value,
+//                             boxShadow:
+//                               data.accentColor === p.value
+//                                 ? `0 0 0 2px ${p.value}`
+//                                 : "",
+//                           }}
+//                         />
+//                       ))}
+//                       <label
+//                         className="w-7 h-7 rounded-full border-2 border-slate-200 overflow-hidden cursor-pointer hover:scale-105 transition-all"
+//                         title="Custom color"
+//                       >
+//                         <input
+//                           type="color"
+//                           value={data.accentColor || "#1a1a2e"}
+//                           onChange={(e) =>
+//                             setData((d) => ({
+//                               ...d,
+//                               accentColor: e.target.value,
+//                             }))
+//                           }
+//                           className="w-8 h-8 -ml-0.5 -mt-0.5 cursor-pointer"
+//                         />
+//                       </label>
+//                     </div>
+//                   )}
+//                 </div>
+
+//                 {/* Font picker */}
+//                 <div className="mb-3 bg-white rounded-2xl border border-indigo-100 p-3">
+//                   <button
+//                     onClick={() => setShowFonts((v) => !v)}
+//                     className="w-full flex items-center justify-between text-[12px] font-bold text-slate-700"
+//                   >
+//                     <span className="flex items-center gap-2">
+//                       <span className="text-indigo-500">Aa</span>Font:{" "}
+//                       {data.fontFamily}
+//                     </span>
+//                     <span className="text-slate-400 text-[10px]">
+//                       {showFonts ? "▲" : "▼"}
+//                     </span>
+//                   </button>
+//                   {showFonts && (
+//                     <div className="mt-2.5 space-y-1.5 max-h-40 overflow-y-auto">
+//                       {FONT_FAMILIES.map((f) => (
+//                         <button
+//                           key={f.id}
+//                           onClick={() =>
+//                             setData((d) => ({ ...d, fontFamily: f.id }))
+//                           }
+//                           className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-[12.5px] transition-all ${data.fontFamily === f.id ? "bg-indigo-50 border border-indigo-200 text-indigo-700 font-bold" : "hover:bg-slate-50 text-slate-700 border border-transparent"}`}
+//                         >
+//                           <span style={{ fontFamily: `'${f.id}',${f.style}` }}>
+//                             {f.label}
+//                           </span>
+//                           <span className="text-[10px] text-slate-400 font-normal">
+//                             {f.style}
+//                           </span>
+//                         </button>
+//                       ))}
+//                     </div>
+//                   )}
+//                 </div>
+
+//                 {/* Template grid */}
+//                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+//                   {shownTemplates.map((t) => (
+//                     <TemplateCard
+//                       key={t.id}
+//                       template={t}
+//                       selected={tplId === t.id}
+//                       onClick={() => setTplId(t.id)}
+//                       showLock={!isLoggedIn || !isPremium}
+//                     />
+//                   ))}
+//                 </div>
+//               </>
+//             )}
+
+//             {/* ── PERSONAL STEP ── */}
+//             {step === "personal" && (
+//               <div className="bg-white rounded-2xl p-5 shadow-sm border border-indigo-100/60">
+//                 <div className="flex items-center gap-3 mb-5 pb-4 border-b border-slate-100">
+//                   <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
+//                     <FiUser className="w-5 h-5 text-indigo-600" />
+//                   </div>
+//                   <div>
+//                     <p className="text-[14px] font-extrabold text-slate-900">
+//                       Your Profile
+//                     </p>
+//                     <p className="text-[11.5px] text-slate-500">
+//                       Contact details that appear in your letter
+//                     </p>
+//                   </div>
+//                 </div>
+
+//                 <div className="grid sm:grid-cols-2 gap-x-4">
+//                   <F label="Full Name" required icon={FiUser}>
+//                     <input
+//                       className={inp}
+//                       placeholder="Alexandra Chen"
+//                       value={data.personal.fullName}
+//                       onChange={(e) =>
+//                         set(["personal", "fullName"], e.target.value)
+//                       }
+//                     />
+//                   </F>
+//                   <F label="Professional Title">
+//                     <input
+//                       className={inp}
+//                       placeholder="Senior UX Designer"
+//                       value={data.personal.title}
+//                       onChange={(e) =>
+//                         set(["personal", "title"], e.target.value)
+//                       }
+//                     />
+//                   </F>
+//                 </div>
+//                 <div className="grid sm:grid-cols-2 gap-x-4">
+//                   <F label="Email Address" required icon={FiMail}>
+//                     <input
+//                       className={inp}
+//                       type="email"
+//                       placeholder="alex@email.com"
+//                       value={data.personal.email}
+//                       onChange={(e) =>
+//                         set(["personal", "email"], e.target.value)
+//                       }
+//                     />
+//                   </F>
+//                   <F label="Phone Number" icon={FiPhone}>
+//                     <input
+//                       className={inp}
+//                       type="tel"
+//                       placeholder="+1 555 000 0000"
+//                       value={data.personal.phone}
+//                       onChange={(e) =>
+//                         set(["personal", "phone"], e.target.value)
+//                       }
+//                     />
+//                   </F>
+//                 </div>
+//                 <F label="Location" icon={FiMapPin}>
+//                   <input
+//                     className={inp}
+//                     placeholder="San Francisco, CA"
+//                     value={data.personal.location}
+//                     onChange={(e) =>
+//                       set(["personal", "location"], e.target.value)
+//                     }
+//                   />
+//                 </F>
+
+//                 <div className="h-px bg-indigo-50 my-4" />
+//                 <p className="text-[10px] font-extrabold tracking-widest uppercase text-indigo-500 mb-3 flex items-center gap-1.5">
+//                   <FiLink className="w-3 h-3" /> Online Presence
+//                 </p>
+
+//                 <F
+//                   label="LinkedIn URL"
+//                   icon={FiLink}
+//                   hint="e.g. linkedin.com/in/yourname"
+//                 >
+//                   <input
+//                     className={inp}
+//                     placeholder="linkedin.com/in/alexchen"
+//                     value={data.personal.linkedin}
+//                     onChange={(e) =>
+//                       set(["personal", "linkedin"], e.target.value)
+//                     }
+//                   />
+//                 </F>
+//                 <div className="grid sm:grid-cols-2 gap-x-4">
+//                   <F label="GitHub URL" icon={FiLink}>
+//                     <input
+//                       className={inp}
+//                       placeholder="github.com/alexchen"
+//                       value={data.personal.github}
+//                       onChange={(e) =>
+//                         set(["personal", "github"], e.target.value)
+//                       }
+//                     />
+//                   </F>
+//                   <F label="Portfolio / Website" icon={FiGlobe}>
+//                     <input
+//                       className={inp}
+//                       placeholder="alexchen.io"
+//                       value={data.personal.website}
+//                       onChange={(e) =>
+//                         set(["personal", "website"], e.target.value)
+//                       }
+//                     />
+//                   </F>
+//                 </div>
+
+//                 <div className="h-px bg-indigo-50 my-4" />
+//                 <F
+//                   label="Closing Salutation"
+//                   hint="Appears before your signature"
+//                 >
+//                   <input
+//                     className={inp}
+//                     placeholder="Sincerely"
+//                     value={data.personal.signature}
+//                     onChange={(e) =>
+//                       set(["personal", "signature"], e.target.value)
+//                     }
+//                   />
+//                 </F>
+//               </div>
+//             )}
+
+//             {/* ── COMPANY STEP (improved) ── */}
+//             {step === "company" && (
+//               <div className="space-y-4">
+//                 {/* Target role card */}
+//                 <div className="bg-white rounded-2xl p-5 shadow-sm border border-indigo-100/60">
+//                   <div className="flex items-center gap-3 mb-5 pb-4 border-b border-slate-100">
+//                     <div className="w-10 h-10 bg-violet-50 rounded-xl flex items-center justify-center">
+//                       <FiBriefcase className="w-5 h-5 text-violet-600" />
+//                     </div>
+//                     <div>
+//                       <p className="text-[14px] font-extrabold text-slate-900">
+//                         Target Role
+//                       </p>
+//                       <p className="text-[11.5px] text-slate-500">
+//                         The position you're applying for
+//                       </p>
+//                     </div>
+//                   </div>
+//                   <F label="Company Name" required icon={FiBriefcase}>
+//                     <input
+//                       className={inp}
+//                       placeholder="Google, Stripe, Airbnb…"
+//                       value={data.company.name}
+//                       onChange={(e) => set(["company", "name"], e.target.value)}
+//                     />
+//                   </F>
+//                   <div className="grid sm:grid-cols-2 gap-x-4">
+//                     <F label="Role / Job Title" required>
+//                       <input
+//                         className={inp}
+//                         placeholder="Senior UX Designer"
+//                         value={data.company.jobTitle}
+//                         onChange={(e) =>
+//                           set(["company", "jobTitle"], e.target.value)
+//                         }
+//                       />
+//                     </F>
+//                     <F label="Department" hint="Optional">
+//                       <input
+//                         className={inp}
+//                         placeholder="Product Design"
+//                         value={data.company.department}
+//                         onChange={(e) =>
+//                           set(["company", "department"], e.target.value)
+//                         }
+//                       />
+//                     </F>
+//                   </div>
+//                   <div className="grid sm:grid-cols-2 gap-x-4">
+//                     <F label="Industry" hint="Helps tailor tone">
+//                       <select
+//                         className={inp}
+//                         value={data.company.industry}
+//                         onChange={(e) =>
+//                           set(["company", "industry"], e.target.value)
+//                         }
+//                       >
+//                         <option value="">Select industry…</option>
+//                         {[
+//                           "Technology",
+//                           "Finance & Banking",
+//                           "Healthcare",
+//                           "Legal",
+//                           "Education",
+//                           "Architecture",
+//                           "Engineering",
+//                           "Creative & Design",
+//                           "Media & Publishing",
+//                           "Fashion & Luxury",
+//                           "Government & Public Sector",
+//                           "Non-Profit",
+//                           "Hospitality",
+//                           "Science & Research",
+//                           "Consulting",
+//                           "Retail & E-Commerce",
+//                           "Sports & Fitness",
+//                           "Real Estate",
+//                           "Logistics",
+//                           "Other",
+//                         ].map((v) => (
+//                           <option key={v} value={v}>
+//                             {v}
+//                           </option>
+//                         ))}
+//                       </select>
+//                     </F>
+//                     <F label="Job Posting ID" hint="From job board">
+//                       <input
+//                         className={inp}
+//                         placeholder="JR-12345"
+//                         value={data.company.jobId}
+//                         onChange={(e) =>
+//                           set(["company", "jobId"], e.target.value)
+//                         }
+//                       />
+//                     </F>
+//                   </div>
+//                   <F label="Company Website" icon={FiGlobe}>
+//                     <input
+//                       className={inp}
+//                       placeholder="stripe.com"
+//                       value={data.company.companyWebsite}
+//                       onChange={(e) =>
+//                         set(["company", "companyWebsite"], e.target.value)
+//                       }
+//                     />
+//                   </F>
+//                 </div>
+
+//                 {/* Contact at company */}
+//                 <div className="bg-white rounded-2xl p-5 shadow-sm border border-indigo-100/60">
+//                   <div className="flex items-center gap-3 mb-5 pb-4 border-b border-slate-100">
+//                     <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">
+//                       <FiUser className="w-5 h-5 text-emerald-600" />
+//                     </div>
+//                     <div>
+//                       <p className="text-[14px] font-extrabold text-slate-900">
+//                         Hiring Contact
+//                       </p>
+//                       <p className="text-[11.5px] text-slate-500">
+//                         Who is receiving this letter
+//                       </p>
+//                     </div>
+//                   </div>
+//                   <div className="grid sm:grid-cols-2 gap-x-4">
+//                     <F label="Hiring Manager Name">
+//                       <input
+//                         className={inp}
+//                         placeholder="Sarah Johnson"
+//                         value={data.company.hiringManager}
+//                         onChange={(e) =>
+//                           set(["company", "hiringManager"], e.target.value)
+//                         }
+//                       />
+//                     </F>
+//                     <F label="Their Title">
+//                       <input
+//                         className={inp}
+//                         placeholder="Head of Design"
+//                         value={data.company.hiringManagerTitle}
+//                         onChange={(e) =>
+//                           set(["company", "hiringManagerTitle"], e.target.value)
+//                         }
+//                       />
+//                     </F>
+//                   </div>
+//                   <F
+//                     label="Referral / Introduction"
+//                     hint="Leave blank if not applicable"
+//                   >
+//                     <input
+//                       className={inp}
+//                       placeholder="Referred by John Smith, VP Engineering"
+//                       value={data.company.referral}
+//                       onChange={(e) =>
+//                         set(["company", "referral"], e.target.value)
+//                       }
+//                     />
+//                   </F>
+//                 </div>
+
+//                 {/* Location & source */}
+//                 <div className="bg-white rounded-2xl p-5 shadow-sm border border-indigo-100/60">
+//                   <div className="flex items-center gap-3 mb-5 pb-4 border-b border-slate-100">
+//                     <div className="w-10 h-10 bg-sky-50 rounded-xl flex items-center justify-center">
+//                       <FiMapPin className="w-5 h-5 text-sky-600" />
+//                     </div>
+//                     <div>
+//                       <p className="text-[14px] font-extrabold text-slate-900">
+//                         Location & Source
+//                       </p>
+//                       <p className="text-[11.5px] text-slate-500">
+//                         Where the company is and where you found this job
+//                       </p>
+//                     </div>
+//                   </div>
+//                   <div className="grid sm:grid-cols-3 gap-x-3">
+//                     <F label="City">
+//                       <input
+//                         className={inp}
+//                         placeholder="Mountain View"
+//                         value={data.company.city}
+//                         onChange={(e) =>
+//                           set(["company", "city"], e.target.value)
+//                         }
+//                       />
+//                     </F>
+//                     <F label="State / Region">
+//                       <input
+//                         className={inp}
+//                         placeholder="CA"
+//                         value={data.company.state}
+//                         onChange={(e) =>
+//                           set(["company", "state"], e.target.value)
+//                         }
+//                       />
+//                     </F>
+//                     <F label="Country">
+//                       <input
+//                         className={inp}
+//                         placeholder="USA"
+//                         value={data.company.country}
+//                         onChange={(e) =>
+//                           set(["company", "country"], e.target.value)
+//                         }
+//                       />
+//                     </F>
+//                   </div>
+//                   <F label="Job Source" hint="Where you found this posting">
+//                     <select
+//                       className={inp}
+//                       value={data.company.jobSource}
+//                       onChange={(e) =>
+//                         set(["company", "jobSource"], e.target.value)
+//                       }
+//                     >
+//                       <option value="">Select source…</option>
+//                       {[
+//                         "LinkedIn",
+//                         "Company Website",
+//                         "Indeed",
+//                         "Glassdoor",
+//                         "Referral",
+//                         "AngelList / Wellfound",
+//                         "Twitter / X",
+//                         "GitHub Jobs",
+//                         "Handshake",
+//                         "Recruiter Outreach",
+//                         "Newspaper / Print",
+//                         "Other",
+//                       ].map((v) => (
+//                         <option key={v} value={v}>
+//                           {v}
+//                         </option>
+//                       ))}
+//                     </select>
+//                   </F>
+//                 </div>
+
+//                 {/* Letter date */}
+//                 <div className="bg-white rounded-2xl p-5 shadow-sm border border-indigo-100/60">
+//                   <F label="Letter Date">
+//                     <input
+//                       className={inp}
+//                       type="date"
+//                       value={data.letterDate}
+//                       onChange={(e) => set(["letterDate"], e.target.value)}
+//                     />
+//                   </F>
+//                 </div>
+//               </div>
+//             )}
+
+//             {/* ── CONTENT STEP — PrimeReact Editor only ── */}
+//             {step === "content" && (
+//               <div className="bg-white rounded-2xl p-5 shadow-sm border border-indigo-100/60">
+//                 <div className="flex items-center gap-3 mb-5 pb-4 border-b border-slate-100">
+//                   <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center text-lg">
+//                     ✍️
+//                   </div>
+//                   <div>
+//                     <p className="text-[14px] font-extrabold text-slate-900">
+//                       Write Your Letter
+//                     </p>
+//                     <p className="text-[11.5px] text-slate-500">
+//                       Use the editor below — your formatting is preserved in the
+//                       preview
+//                     </p>
+//                   </div>
+//                 </div>
+
+//                 {/* Tone selector — kept minimal above editor */}
+//                 <div className="mb-4">
+//                   <p className="text-[10px] font-extrabold tracking-widest uppercase text-indigo-500 mb-2">
+//                     Tone
+//                   </p>
+//                   <div className="flex flex-wrap gap-1.5">
+//                     {[
+//                       "Professional",
+//                       "Confident",
+//                       "Enthusiastic",
+//                       "Formal",
+//                       "Creative",
+//                       "Friendly",
+//                     ].map((t) => (
+//                       <button
+//                         key={t}
+//                         onClick={() => setData((p) => ({ ...p, tone: t }))}
+//                         className={`px-3 py-1 rounded-full text-[11.5px] font-semibold border-[1.5px] transition-all ${data.tone === t ? "border-indigo-500 text-indigo-600 bg-indigo-50" : "border-slate-200 text-slate-500 bg-white hover:border-indigo-200"}`}
+//                       >
+//                         {t}
+//                       </button>
+//                     ))}
+//                   </div>
+//                 </div>
+
+//                 {/* PrimeReact Rich Text Editor */}
+//                 <Editor
+//                   value={data.letterContent}
+//                   onTextChange={(e) =>
+//                     setData((p) => ({ ...p, letterContent: e.htmlValue || "" }))
+//                   }
+//                   style={{ minHeight: "420px" }}
+//                   placeholder="Start writing your cover letter here…
+
+// • Opening paragraph: Express your enthusiasm and mention the role.
+// • Body paragraph(s): Highlight your most relevant experience and achievements.
+// • Why this company: Show genuine research and alignment.
+// • Closing: Restate interest, include a clear call to action."
+//                 />
+
+//                 <p className="text-[11px] text-slate-400 mt-2.5 flex items-center gap-1">
+//                   <span>💡</span> Use <strong>bold</strong> for key
+//                   achievements. Your formatted text appears live in the preview
+//                   →
+//                 </p>
+//               </div>
+//             )}
+
+//             {/* ── REVIEW STEP ── */}
+//             {step === "review" && (
+//               <div className="bg-white rounded-2xl p-5 shadow-sm border border-indigo-100/60">
+//                 <div className="flex items-center gap-3 mb-4">
+//                   <div className="w-9 h-9 rounded-[11px] bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-lg">
+//                     ✅
+//                   </div>
+//                   <div>
+//                     <p className="text-[14px] font-extrabold text-slate-900">
+//                       Review Summary
+//                     </p>
+//                     <p className="text-[11.5px] text-slate-500">
+//                       Check before downloading
+//                     </p>
+//                   </div>
+//                 </div>
+//                 {(
+//                   [
+//                     ["Template", tpl?.name, "template"],
+//                     ["Accent", data.accentColor, "template"],
+//                     ["Font", data.fontFamily, "template"],
+//                     ["Full Name", data.personal.fullName, "personal"],
+//                     ["Title", data.personal.title, "personal"],
+//                     ["Email", data.personal.email, "personal"],
+//                     ["Company", data.company.name, "company"],
+//                     ["Role", data.company.jobTitle, "company"],
+//                     ["Industry", data.company.industry, "company"],
+//                     [
+//                       "Location",
+//                       [
+//                         data.company.city,
+//                         data.company.state,
+//                         data.company.country,
+//                       ]
+//                         .filter(Boolean)
+//                         .join(", "),
+//                       "company",
+//                     ],
+//                     ["Letter Date", data.letterDate, "company"],
+//                     [
+//                       "Content",
+//                       data.letterContent ? "Written ✓" : "Empty",
+//                       "content",
+//                     ],
+//                   ] as [string, string, Step][]
+//                 ).map(([l, v, s]) => (
+//                   <div
+//                     key={l}
+//                     className="flex items-center justify-between py-2.5 border-b border-slate-50 last:border-0"
+//                   >
+//                     <span className="text-[11px] font-extrabold uppercase tracking-[.5px] text-slate-400">
+//                       {l}
+//                     </span>
+//                     <div className="flex items-center gap-2">
+//                       {l === "Accent" && v ? (
+//                         <span
+//                           className="w-4 h-4 rounded-full border border-white shadow-sm"
+//                           style={{ background: v }}
+//                         />
+//                       ) : null}
+//                       <span
+//                         className={`text-[12.5px] font-medium text-right max-w-[180px] truncate ${v ? "text-slate-800" : "text-slate-300"}`}
+//                       >
+//                         {v || "—"}
+//                       </span>
+//                       <button
+//                         onClick={() => setStep(s)}
+//                         className="text-[11px] font-bold text-indigo-500 hover:text-indigo-700"
+//                       >
+//                         Edit
+//                       </button>
+//                     </div>
+//                   </div>
+//                 ))}
+//                 <div className="mt-4 p-4 bg-indigo-50 rounded-xl border border-indigo-100">
+//                   <p className="text-[13px] font-bold text-slate-900 mb-1">
+//                     ✅ Ready to Download
+//                   </p>
+//                   <p className="text-[12px] text-slate-500">
+//                     Download your cover letter as a high-quality PDF below.
+//                   </p>
+//                 </div>
+//               </div>
+//             )}
+//           </div>
+
+//           {/* FOOTER */}
+//           <div className="flex-shrink-0 px-5 py-3 border-t border-slate-200 bg-white flex justify-between items-center gap-3">
+//             <button
+//               onClick={() =>
+//                 stepIdx === 0
+//                   ? router.push("/")
+//                   : setStep(STEPS[stepIdx - 1].id)
+//               }
+//               className="flex items-center gap-1.5 px-4 py-2.5 rounded-full text-[13px] font-bold border-[1.5px] border-slate-200 bg-white text-slate-500 hover:bg-indigo-50 hover:border-indigo-200 hover:text-indigo-600 transition-all cursor-pointer"
+//             >
+//               ← {stepIdx > 0 ? "Back" : "Home"}
+//             </button>
+//             {stepIdx < STEPS.length - 1 ? (
+//               <button
+//                 onClick={handleContinue}
+//                 className="flex items-center gap-2 px-6 py-2.5 rounded-full text-[13.5px] font-semibold bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md hover:shadow-lg hover:-translate-y-px transition-all cursor-pointer"
+//               >
+//                 Continue to {STEPS[stepIdx + 1].label}{" "}
+//                 {(!isLoggedIn || !isPremium) && step === "template" ? "🔒" : ""}
+//               </button>
+//             ) : (
+//               <button
+//                 onClick={downloadPDF}
+//                 disabled={busy}
+//                 className="flex items-center gap-2 px-6 py-2.5 rounded-full text-[13.5px] font-extrabold bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md hover:shadow-lg hover:-translate-y-px disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none transition-all"
+//               >
+//                 {busy ? "⏳ Generating…" : "⬇ Download PDF"}
+//               </button>
+//             )}
+//           </div>
+//         </div>
+
+//         {/* RIGHT — CANVAS */}
+//         <div className="hidden lg:flex flex-col bg-slate-100 overflow-hidden">
+//           <div className="flex-shrink-0 h-[52px] bg-white border-b border-slate-200 px-4 flex items-center justify-between gap-3">
+//             <div className="flex items-center gap-2.5">
+//               <span className="w-2 h-2 rounded-full bg-emerald-500 live-dot" />
+//               <div>
+//                 <p className="text-[13px] font-bold text-slate-900 leading-tight">
+//                   Live Preview
+//                 </p>
+//                 <p className="text-[10.5px] text-slate-400">
+//                   Drag anywhere · Pinch · Scroll
+//                 </p>
+//               </div>
+//             </div>
+//             <div className="flex items-center gap-2">
+//               <button
+//                 onClick={() => setStep("template")}
+//                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold bg-indigo-50 border border-indigo-100 text-indigo-600 hover:bg-indigo-100 transition-all"
+//               >
+//                 🎨 Change
+//               </button>
+//               <button
+//                 onClick={() => {
+//                   rebuild();
+//                   setModal(true);
+//                 }}
+//                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold border-[1.5px] border-slate-200 text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 transition-all"
+//               >
+//                 ⛶ Fullscreen
+//               </button>
+//             </div>
+//           </div>
+//           <div className="flex-1 overflow-hidden">
+//             <CanvasPreview>
+//               {html ? (
+//                 <iframe
+//                   ref={liveRef}
+//                   className="canvas-iframe"
+//                   title="preview"
+//                   sandbox="allow-same-origin"
+//                 />
+//               ) : (
+//                 <div className="w-[860px] h-[1120px] bg-white flex flex-col items-center justify-center gap-3 text-slate-400 rounded-xl">
+//                   <span className="text-[52px] opacity-20">📄</span>
+//                   <p className="text-[16px] font-bold">Preview appears here</p>
+//                   <p className="text-[13px]">
+//                     Fill in your details to see the letter
+//                   </p>
+//                 </div>
+//               )}
+//             </CanvasPreview>
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* MOBILE FAB */}
+//       <button
+//         onClick={() => {
+//           rebuild();
+//           setModal(true);
+//         }}
+//         className="lg:hidden fixed top-[70px] right-3 z-50 bg-gradient-to-r from-indigo-600 to-violet-600 text-white p-2.5 rounded-full shadow-xl"
+//       >
+//         <FiEye className="w-4 h-4" />
+//       </button>
+
+//       {/* FULLSCREEN MODAL */}
+//       <AnimatePresence>
+//         {modal && (
+//           <div
+//             className="ov-anim fixed inset-0 bg-[rgba(10,6,30,.86)] backdrop-blur-[14px] z-[1000] flex items-center justify-center p-3 sm:p-5"
+//             onClick={() => setModal(false)}
+//           >
+//             <div
+//               className="modal-anim w-full max-w-[980px] h-[92vh] bg-white rounded-2xl overflow-hidden flex flex-col shadow-[0_48px_100px_rgba(0,0,0,.48)]"
+//               onClick={(e) => e.stopPropagation()}
+//             >
+//               <div className="flex-shrink-0 h-[56px] px-5 bg-white border-b border-slate-100 flex items-center justify-between">
+//                 <div className="flex items-center gap-2.5">
+//                   <div className="w-8 h-8 rounded-[9px] bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-sm text-white">
+//                     📄
+//                   </div>
+//                   <div>
+//                     <p className="text-[14px] font-extrabold text-slate-900 leading-tight">
+//                       {data.personal.fullName || "Cover Letter"}
+//                     </p>
+//                     <p className="text-[11px] text-slate-400">
+//                       {tpl?.name} · {tpl?.tag}
+//                     </p>
+//                   </div>
+//                 </div>
+//                 <button
+//                   onClick={() => setModal(false)}
+//                   className="w-8 h-8 rounded-full bg-indigo-50 border border-indigo-100 text-slate-400 hover:bg-red-50 hover:text-red-500 flex items-center justify-center text-[16px] transition-all"
+//                 >
+//                   ✕
+//                 </button>
+//               </div>
+//               <div className="flex-1 overflow-hidden bg-slate-100">
+//                 <CanvasPreview>
+//                   {html ? (
+//                     <iframe
+//                       ref={modalRef}
+//                       className="modal-iframe"
+//                       title="full-preview"
+//                       sandbox="allow-same-origin"
+//                     />
+//                   ) : (
+//                     <div className="w-[860px] h-[1120px] bg-white flex items-center justify-center text-slate-400">
+//                       <span className="text-5xl opacity-20">📄</span>
+//                     </div>
+//                   )}
+//                 </CanvasPreview>
+//               </div>
+//               <div className="flex-shrink-0 px-5 py-3 border-t border-slate-100 bg-white flex justify-end gap-2.5">
+//                 <button
+//                   onClick={() => setModal(false)}
+//                   className="px-4 py-2 rounded-full text-[12.5px] font-bold border-[1.5px] border-slate-200 text-slate-500 hover:bg-slate-50 transition-all"
+//                 >
+//                   Close
+//                 </button>
+//                 <button
+//                   onClick={downloadPDF}
+//                   disabled={busy}
+//                   className="flex items-center gap-1.5 px-5 py-2 rounded-full text-[12.5px] font-bold bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md hover:shadow-lg disabled:opacity-50 transition-all"
+//                 >
+//                   {busy ? "⏳ Generating…" : "⬇ Download PDF"}
+//                 </button>
+//               </div>
+//             </div>
+//           </div>
+//         )}
+//       </AnimatePresence>
+
+//       {toast && (
+//         <div className="toast-anim fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] bg-slate-900 text-white px-6 py-2.5 rounded-full text-[13px] font-bold shadow-xl whitespace-nowrap">
+//           {toast}
+//         </div>
+//       )}
+//     </>
+//   );
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 "use client";
 import React, {
   useState,
@@ -15725,36 +18432,19 @@ import {
 /* ─────────────────────────────────────────────────────────────
    TYPES
 ───────────────────────────────────────────────────────────────*/
-interface User {
-  id: string;
-}
+interface User { id: string }
 
 interface CLData {
   personal: {
-    fullName: string;
-    title: string;
-    email: string;
-    phone: string;
-    location: string;
-    website: string;
-    linkedin: string;
-    github: string;
-    summary: string;
-    signature: string;
+    fullName: string; title: string; email: string; phone: string;
+    location: string; website: string; linkedin: string; github: string;
+    summary: string; signature: string;
   };
   company: {
-    name: string;
-    jobTitle: string;
-    hiringManager: string;
-    hiringManagerTitle: string;
-    city: string;
-    state: string;
-    country: string;
-    jobSource: string;
-    referral: string;
-    jobId: string;
-    department: string;
-    companyWebsite: string;
+    name: string; jobTitle: string; hiringManager: string;
+    hiringManagerTitle: string; city: string; state: string;
+    country: string; jobSource: string; referral: string;
+    jobId: string; department: string; companyWebsite: string;
     industry: string;
   };
   letterContent: string; // rich HTML from PrimeReact editor
@@ -15766,31 +18456,14 @@ interface CLData {
 
 const BLANK: CLData = {
   personal: {
-    fullName: "",
-    title: "",
-    email: "",
-    phone: "",
-    location: "",
-    website: "",
-    linkedin: "",
-    github: "",
-    summary: "",
-    signature: "Sincerely",
+    fullName: "", title: "", email: "", phone: "",
+    location: "", website: "", linkedin: "", github: "",
+    summary: "", signature: "Sincerely",
   },
   company: {
-    name: "",
-    jobTitle: "",
-    hiringManager: "",
-    hiringManagerTitle: "",
-    city: "",
-    state: "",
-    country: "",
-    jobSource: "",
-    referral: "",
-    jobId: "",
-    department: "",
-    companyWebsite: "",
-    industry: "",
+    name: "", jobTitle: "", hiringManager: "", hiringManagerTitle: "",
+    city: "", state: "", country: "", jobSource: "", referral: "",
+    jobId: "", department: "", companyWebsite: "", industry: "",
   },
   letterContent: "",
   tone: "Professional",
@@ -15803,66 +18476,16 @@ const BLANK: CLData = {
    FONTS
 ───────────────────────────────────────────────────────────────*/
 const FONT_FAMILIES = [
-  {
-    id: "Cormorant Garamond",
-    label: "Cormorant",
-    url: "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&display=swap",
-    style: "serif",
-  },
-  {
-    id: "Playfair Display",
-    label: "Playfair",
-    url: "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap",
-    style: "serif",
-  },
-  {
-    id: "Lora",
-    label: "Lora",
-    url: "https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&display=swap",
-    style: "serif",
-  },
-  {
-    id: "DM Sans",
-    label: "DM Sans",
-    url: "https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap",
-    style: "sans-serif",
-  },
-  {
-    id: "Plus Jakarta Sans",
-    label: "Plus Jakarta",
-    url: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap",
-    style: "sans-serif",
-  },
-  {
-    id: "Outfit",
-    label: "Outfit",
-    url: "https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap",
-    style: "sans-serif",
-  },
-  {
-    id: "Syne",
-    label: "Syne",
-    url: "https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&display=swap",
-    style: "sans-serif",
-  },
-  {
-    id: "Space Grotesk",
-    label: "Space Grotesk",
-    url: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap",
-    style: "sans-serif",
-  },
-  {
-    id: "IBM Plex Serif",
-    label: "IBM Plex Serif",
-    url: "https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;500;600&display=swap",
-    style: "serif",
-  },
-  {
-    id: "Manrope",
-    label: "Manrope",
-    url: "https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap",
-    style: "sans-serif",
-  },
+  { id: "Cormorant Garamond", label: "Cormorant", url: "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&display=swap", style: "serif" },
+  { id: "Playfair Display", label: "Playfair", url: "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap", style: "serif" },
+  { id: "Lora", label: "Lora", url: "https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&display=swap", style: "serif" },
+  { id: "DM Sans", label: "DM Sans", url: "https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap", style: "sans-serif" },
+  { id: "Plus Jakarta Sans", label: "Plus Jakarta", url: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap", style: "sans-serif" },
+  { id: "Outfit", label: "Outfit", url: "https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap", style: "sans-serif" },
+  { id: "Syne", label: "Syne", url: "https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&display=swap", style: "sans-serif" },
+  { id: "Space Grotesk", label: "Space Grotesk", url: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap", style: "sans-serif" },
+  { id: "IBM Plex Serif", label: "IBM Plex Serif", url: "https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;500;600&display=swap", style: "serif" },
+  { id: "Manrope", label: "Manrope", url: "https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap", style: "sans-serif" },
 ];
 
 const COLOR_PALETTES = [
@@ -15885,264 +18508,49 @@ const COLOR_PALETTES = [
    Each has a radically different layout, color approach,
    typographic hierarchy, and visual identity.
 ───────────────────────────────────────────────────────────────*/
-const TEMPLATE_DEFS: {
-  id: string;
-  name: string;
-  tag: string;
-  tier: string;
-  description: string;
-  image: string;
-}[] = [
-  {
-    id: "chancellor",
-    name: "Chancellor",
-    tag: "Executive",
-    tier: "premium",
-    description: "Dark header, gold rule — authoritative C-suite presence",
-    image: "/images/cover-letters/cl-chancellor.jpg",
-  },
-  {
-    id: "newsprint",
-    name: "Newsprint",
-    tag: "Editorial",
-    tier: "premium",
-    description: "Newspaper masthead grid — editorial / media / journalism",
-    image: "/images/cover-letters/cl-newsprint.jpg",
-  },
-  {
-    id: "atelier",
-    name: "Atelier",
-    tag: "Creative",
-    tier: "premium",
-    description: "Full-bleed sidebar with large name treatment — design / art",
-    image: "/images/cover-letters/cl-atelier.jpg",
-  },
-  {
-    id: "protocol",
-    name: "Protocol",
-    tag: "Tech",
-    tier: "premium",
-    description: "Monospaced header, circuit grid lines — engineering / SaaS",
-    image: "/images/cover-letters/cl-protocol.jpg",
-  },
-  {
-    id: "ledger",
-    name: "Ledger",
-    tag: "Finance",
-    tier: "premium",
-    description: "Double-rule accounting layout — banking / consulting",
-    image: "/images/cover-letters/cl-ledger.jpg",
-  },
-  {
-    id: "palisade",
-    name: "Palisade",
-    tag: "Legal",
-    tier: "premium",
-    description: "Centered serif, formal column — law / policy / academia",
-    image: "/images/cover-letters/cl-palisade.jpg",
-  },
-  {
-    id: "sundial",
-    name: "Sundial",
-    tag: "Modern",
-    tier: "free",
-    description: "Radial accent arc, clean whitespace — modern professional",
-    image: "/images/cover-letters/cl-sundial.jpg",
-  },
-  {
-    id: "meridiem",
-    name: "Meridiem",
-    tag: "Corporate",
-    tier: "free",
-    description: "Split header with role badge — corporate / operations",
-    image: "/images/cover-letters/cl-meridiem.jpg",
-  },
-  {
-    id: "folio",
-    name: "Folio",
-    tag: "Portfolio",
-    tier: "premium",
-    description: "Layered card design — UX / product / strategy",
-    image: "/images/cover-letters/cl-folio.jpg",
-  },
-  {
-    id: "dispatch",
-    name: "Dispatch",
-    tag: "Startup",
-    tier: "free",
-    description: "Bold cap name, minimal border — startup / growth roles",
-    image: "/images/cover-letters/cl-dispatch.jpg",
-  },
-  {
-    id: "vellum",
-    name: "Vellum",
-    tag: "Classic",
-    tier: "free",
-    description: "Warm ivory, traditional letterhead — timeless any industry",
-    image: "/images/cover-letters/cl-vellum.jpg",
-  },
-  {
-    id: "pavilion",
-    name: "Pavilion",
-    tag: "Architecture",
-    tier: "premium",
-    description: "Blueprint grid overlay — architecture / engineering",
-    image: "/images/cover-letters/cl-pavilion.jpg",
-  },
-  {
-    id: "revue",
-    name: "Revue",
-    tag: "Fashion",
-    tier: "premium",
-    description: "Asymmetric column, italic contrast — fashion / luxury brands",
-    image: "/images/cover-letters/cl-revue.jpg",
-  },
-  {
-    id: "helix",
-    name: "Helix",
-    tag: "Science",
-    tier: "premium",
-    description: "Strand-inspired sidebar — biotech / pharma / research",
-    image: "/images/cover-letters/cl-helix.jpg",
-  },
-  {
-    id: "embassy",
-    name: "Embassy",
-    tag: "Government",
-    tier: "free",
-    description: "Official seal-style header — public sector / NGO / diplomacy",
-    image: "/images/cover-letters/cl-embassy.jpg",
-  },
-  {
-    id: "kodex",
-    name: "Kodex",
-    tag: "Data",
-    tier: "premium",
-    description: "Structured data table header — analytics / data science",
-    image: "/images/cover-letters/cl-kodex.jpg",
-  },
-  {
-    id: "brushwork",
-    name: "Brushwork",
-    tag: "Arts",
-    tier: "premium",
-    description:
-      "Watercolor band, expressive layout — arts / non-profit / therapy",
-    image: "/images/cover-letters/cl-brushwork.jpg",
-  },
-  {
-    id: "terrace",
-    name: "Terrace",
-    tag: "Hospitality",
-    tier: "free",
-    description:
-      "Warm earth tones, layered bands — hospitality / HR / healthcare",
-    image: "/images/cover-letters/cl-terrace.jpg",
-  },
-  {
-    id: "alpine",
-    name: "Alpine",
-    tag: "Outdoor",
-    tier: "premium",
-    description:
-      "Diagonal slash, sharp geometry — sports / sustainability / field ops",
-    image: "/images/cover-letters/cl-alpine.jpg",
-  },
-  {
-    id: "signal",
-    name: "Signal",
-    tag: "Media",
-    tier: "premium",
-    description: "Broadcast bar, bold type — media / PR / communications",
-    image: "/images/cover-letters/cl-signal.jpg",
-  },
+const TEMPLATE_DEFS: { id: string; name: string; tag: string; tier: string; description: string; image: string }[] = [
+  { id: "chancellor", name: "Chancellor", tag: "Executive", tier: "premium", description: "Dark header, gold rule — authoritative C-suite presence", image: "/images/cover-letters/cl-chancellor.jpg" },
+  { id: "newsprint", name: "Newsprint", tag: "Editorial", tier: "premium", description: "Newspaper masthead grid — editorial / media / journalism", image: "/images/cover-letters/cl-newsprint.jpg" },
+  { id: "atelier", name: "Atelier", tag: "Creative", tier: "premium", description: "Full-bleed sidebar with large name treatment — design / art", image: "/images/cover-letters/cl-atelier.jpg" },
+  { id: "protocol", name: "Protocol", tag: "Tech", tier: "premium", description: "Monospaced header, circuit grid lines — engineering / SaaS", image: "/images/cover-letters/cl-protocol.jpg" },
+  { id: "ledger", name: "Ledger", tag: "Finance", tier: "premium", description: "Double-rule accounting layout — banking / consulting", image: "/images/cover-letters/cl-ledger.jpg" },
+  { id: "palisade", name: "Palisade", tag: "Legal", tier: "premium", description: "Centered serif, formal column — law / policy / academia", image: "/images/cover-letters/cl-palisade.jpg" },
+  { id: "sundial", name: "Sundial", tag: "Modern", tier: "free", description: "Radial accent arc, clean whitespace — modern professional", image: "/images/cover-letters/cl-sundial.jpg" },
+  { id: "meridiem", name: "Meridiem", tag: "Corporate", tier: "free", description: "Split header with role badge — corporate / operations", image: "/images/cover-letters/cl-meridiem.jpg" },
+  { id: "folio", name: "Folio", tag: "Portfolio", tier: "premium", description: "Layered card design — UX / product / strategy", image: "/images/cover-letters/cl-folio.jpg" },
+  { id: "dispatch", name: "Dispatch", tag: "Startup", tier: "free", description: "Bold cap name, minimal border — startup / growth roles", image: "/images/cover-letters/cl-dispatch.jpg" },
+  { id: "vellum", name: "Vellum", tag: "Classic", tier: "free", description: "Warm ivory, traditional letterhead — timeless any industry", image: "/images/cover-letters/cl-vellum.jpg" },
+  { id: "pavilion", name: "Pavilion", tag: "Architecture", tier: "premium", description: "Blueprint grid overlay — architecture / engineering", image: "/images/cover-letters/cl-pavilion.jpg" },
+  { id: "revue", name: "Revue", tag: "Fashion", tier: "premium", description: "Asymmetric column, italic contrast — fashion / luxury brands", image: "/images/cover-letters/cl-revue.jpg" },
+  { id: "helix", name: "Helix", tag: "Science", tier: "premium", description: "Strand-inspired sidebar — biotech / pharma / research", image: "/images/cover-letters/cl-helix.jpg" },
+  { id: "embassy", name: "Embassy", tag: "Government", tier: "free", description: "Official seal-style header — public sector / NGO / diplomacy", image: "/images/cover-letters/cl-embassy.jpg" },
+  { id: "kodex", name: "Kodex", tag: "Data", tier: "premium", description: "Structured data table header — analytics / data science", image: "/images/cover-letters/cl-kodex.jpg" },
+  { id: "brushwork", name: "Brushwork", tag: "Arts", tier: "premium", description: "Watercolor band, expressive layout — arts / non-profit / therapy", image: "/images/cover-letters/cl-brushwork.jpg" },
+  { id: "terrace", name: "Terrace", tag: "Hospitality", tier: "free", description: "Warm earth tones, layered bands — hospitality / HR / healthcare", image: "/images/cover-letters/cl-terrace.jpg" },
+  { id: "alpine", name: "Alpine", tag: "Outdoor", tier: "premium", description: "Diagonal slash, sharp geometry — sports / sustainability / field ops", image: "/images/cover-letters/cl-alpine.jpg" },
+  { id: "signal", name: "Signal", tag: "Media", tier: "premium", description: "Broadcast bar, bold type — media / PR / communications", image: "/images/cover-letters/cl-signal.jpg" },
   // ── 10 NEW ──────────────────────────────────────────────────────────────
-  {
-    id: "mono",
-    name: "Mono",
-    tag: "B&W",
-    tier: "free",
-    description: "Pure black & white, single rule — the purest minimal",
-    image: "/images/cover-letters/cl-mono.jpg",
-  },
-  {
-    id: "typewriter",
-    name: "Typewriter",
-    tag: "B&W",
-    tier: "free",
-    description: "Courier-style, top black bar — retro-minimal black & white",
-    image: "/images/cover-letters/cl-typewriter.jpg",
-  },
-  {
-    id: "specimen",
-    name: "Specimen",
-    tag: "B&W",
-    tier: "free",
-    description:
-      "Font specimen layout, oversized initials — bold B&W editorial",
-    image: "/images/cover-letters/cl-specimen.jpg",
-  },
-  {
-    id: "grid",
-    name: "Grid",
-    tag: "B&W",
-    tier: "free",
-    description: "Ruled-paper grid lines — structured clean black & white",
-    image: "/images/cover-letters/cl-grid.jpg",
-  },
-  {
-    id: "stencil",
-    name: "Stencil",
-    tag: "B&W",
-    tier: "premium",
-    description: "Military stencil caps, thick border — stark authority",
-    image: "/images/cover-letters/cl-stencil.jpg",
-  },
-  {
-    id: "hairline",
-    name: "Hairline",
-    tag: "B&W",
-    tier: "free",
-    description: "Ultra-thin rules, airy whitespace — understated refinement",
-    image: "/images/cover-letters/cl-hairline.jpg",
-  },
-  {
-    id: "broadsheet",
-    name: "Broadsheet",
-    tag: "B&W",
-    tier: "premium",
-    description: "Full-width black masthead, reversed name — press authority",
-    image: "/images/cover-letters/cl-broadsheet.jpg",
-  },
-  {
-    id: "margin",
-    name: "Margin",
-    tag: "B&W",
-    tier: "free",
-    description: "Left margin line, indented body — academic notebook style",
-    image: "/images/cover-letters/cl-margin.jpg",
-  },
-  {
-    id: "overture",
-    name: "Overture",
-    tag: "Simple",
-    tier: "free",
-    description: "Name-only large, no colour at all — zen blank-slate simple",
-    image: "/images/cover-letters/cl-overture.jpg",
-  },
-  {
-    id: "ruled",
-    name: "Ruled",
-    tag: "Simple",
-    tier: "free",
-    description: "Bottom-border on name, nothing else — ultra-minimal clean",
-    image: "/images/cover-letters/cl-ruled.jpg",
-  },
+  { id: "mono", name: "Mono", tag: "B&W", tier: "free", description: "Pure black & white, single rule — the purest minimal", image: "/images/cover-letters/cl-mono.jpg" },
+  { id: "typewriter", name: "Typewriter", tag: "B&W", tier: "free", description: "Courier-style, top black bar — retro-minimal black & white", image: "/images/cover-letters/cl-typewriter.jpg" },
+  { id: "specimen", name: "Specimen", tag: "B&W", tier: "free", description: "Font specimen layout, oversized initials — bold B&W editorial", image: "/images/cover-letters/cl-specimen.jpg" },
+  { id: "grid", name: "Grid", tag: "B&W", tier: "free", description: "Ruled-paper grid lines — structured clean black & white", image: "/images/cover-letters/cl-grid.jpg" },
+  { id: "stencil", name: "Stencil", tag: "B&W", tier: "premium", description: "Military stencil caps, thick border — stark authority", image: "/images/cover-letters/cl-stencil.jpg" },
+  { id: "hairline", name: "Hairline", tag: "B&W", tier: "free", description: "Ultra-thin rules, airy whitespace — understated refinement", image: "/images/cover-letters/cl-hairline.jpg" },
+  { id: "broadsheet", name: "Broadsheet", tag: "B&W", tier: "premium", description: "Full-width black masthead, reversed name — press authority", image: "/images/cover-letters/cl-broadsheet.jpg" },
+  { id: "margin", name: "Margin", tag: "B&W", tier: "free", description: "Left margin line, indented body — academic notebook style", image: "/images/cover-letters/cl-margin.jpg" },
+  { id: "overture", name: "Overture", tag: "Simple", tier: "free", description: "Name-only large, no colour at all — zen blank-slate simple", image: "/images/cover-letters/cl-overture.jpg" },
+  { id: "ruled", name: "Ruled", tag: "Simple", tier: "free", description: "Bottom-border on name, nothing else — ultra-minimal clean", image: "/images/cover-letters/cl-ruled.jpg" },
 ];
 
-/* ─────────────────────────────────────────────────────────────
-   HTML BUILDER — 20 genuinely distinct layouts
-───────────────────────────────────────────────────────────────*/
+
+
+
+
+
+
+// /* ─────────────────────────────────────────────────────────────
+//    HTML BUILDER — 20 genuinely distinct layouts
+// ───────────────────────────────────────────────────────────────*/
 function buildHTML(id: string, d: CLData): string {
   const fontDef =
     FONT_FAMILIES.find((f) => f.id === d.fontFamily) || FONT_FAMILIES[0];
@@ -16702,10 +19110,13 @@ function buildHTML(id: string, d: CLData): string {
   return buildHTML("chancellor", d);
 }
 
+
+
+
 /* ─────────────────────────────────────────────────────────────
    CANVAS PREVIEW
 ───────────────────────────────────────────────────────────────*/
-function CanvasPreview({ children }: { children: ReactNode }) {
+function CanvasPreview({ children }: { children: (iframeH: number) => ReactNode }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const posRef = useRef({ x: 20, y: 20 });
   const scaleRef = useRef(0.58);
@@ -16717,198 +19128,75 @@ function CanvasPreview({ children }: { children: ReactNode }) {
   const [pos, setPos] = useState({ x: 20, y: 20 });
   const [scale, setScale] = useState(0.58);
   const [drag, setDrag] = useState(false);
+  const [iframeH, setIframeH] = useState(1122); // grows with content
+
+  // Listen for content-height messages from the iframe
+  useEffect(() => {
+    const handler = (e: MessageEvent) => {
+      if (e.data?.type === "iframeHeight" && typeof e.data.h === "number") {
+        setIframeH(Math.max(1122, e.data.h + 40));
+      }
+    };
+    window.addEventListener("message", handler);
+    return () => window.removeEventListener("message", handler);
+  }, []);
 
   const initS = useCallback(() => {
     const w = window.innerWidth;
-    return w < 480
-      ? 0.33
-      : w < 640
-        ? 0.4
-        : w < 820
-          ? 0.5
-          : w < 1024
-            ? 0.57
-            : w < 1280
-              ? 0.63
-              : 0.68;
+    return w < 480 ? 0.33 : w < 640 ? 0.4 : w < 820 ? 0.5 : w < 1024 ? 0.57 : w < 1280 ? 0.63 : 0.68;
   }, []);
 
   useEffect(() => {
-    const s = initS();
-    scaleRef.current = s;
-    setScale(s);
-    const fn = () => {
-      const s2 = initS();
-      scaleRef.current = s2;
-      setScale(s2);
-    };
+    const s = initS(); scaleRef.current = s; setScale(s);
+    const fn = () => { const s2 = initS(); scaleRef.current = s2; setScale(s2); };
     window.addEventListener("resize", fn);
     return () => window.removeEventListener("resize", fn);
   }, [initS]);
 
   const smoothZoom = (target: number) => {
     if (animRef.current) cancelAnimationFrame(animRef.current);
-    const from = scaleRef.current,
-      t0 = performance.now();
+    const from = scaleRef.current, t0 = performance.now();
     const tick = (now: number) => {
       const p = Math.min((now - t0) / 160, 1);
       const v = from + (target - from) * (1 - Math.pow(1 - p, 3));
-      scaleRef.current = v;
-      setScale(v);
+      scaleRef.current = v; setScale(v);
       if (p < 1) animRef.current = requestAnimationFrame(tick);
     };
     animRef.current = requestAnimationFrame(tick);
   };
   const zoomIn = () => smoothZoom(Math.min(scaleRef.current + 0.12, 3));
   const zoomOut = () => smoothZoom(Math.max(scaleRef.current - 0.12, 0.2));
-  const reset = () => {
-    const p = { x: 20, y: 20 };
-    posRef.current = p;
-    setPos(p);
-    smoothZoom(initS());
-  };
+  const reset = () => { const p = { x: 20, y: 20 }; posRef.current = p; setPos(p); smoothZoom(initS()); };
 
   useEffect(() => {
-    const el = wrapRef.current;
-    if (!el) return;
-    const inEl = (e: MouseEvent) => {
-      const r = el.getBoundingClientRect();
-      return (
-        e.clientX >= r.left &&
-        e.clientX <= r.right &&
-        e.clientY >= r.top &&
-        e.clientY <= r.bottom
-      );
-    };
-    const onDown = (e: MouseEvent) => {
-      if (!inEl(e)) return;
-      if ((e.target as HTMLElement)?.closest?.("[data-nodrag]")) return;
-      e.preventDefault();
-      downRef.current = { x: e.clientX, y: e.clientY };
-      isDrag.current = false;
-    };
-    const onMove = (e: MouseEvent) => {
-      if (!downRef.current) return;
-      const dx = e.clientX - downRef.current.x,
-        dy = e.clientY - downRef.current.y;
-      if (!isDrag.current && Math.hypot(dx, dy) > 3) {
-        isDrag.current = true;
-        setDrag(true);
-        startRef.current = {
-          x: downRef.current.x - posRef.current.x,
-          y: downRef.current.y - posRef.current.y,
-        };
-      }
-      if (isDrag.current) {
-        const np = {
-          x: e.clientX - startRef.current.x,
-          y: e.clientY - startRef.current.y,
-        };
-        posRef.current = np;
-        setPos({ ...np });
-      }
-    };
-    const onUp = () => {
-      downRef.current = null;
-      isDrag.current = false;
-      setDrag(false);
-    };
-    const onWheel = (e: WheelEvent) => {
-      if (!inEl(e)) return;
-      e.preventDefault();
-      if (e.ctrlKey || e.metaKey) {
-        const v = Math.max(
-          0.2,
-          Math.min(3, scaleRef.current * Math.exp(-e.deltaY * 0.002)),
-        );
-        scaleRef.current = v;
-        setScale(v);
-      } else {
-        const np = {
-          x: posRef.current.x - e.deltaX * 0.5,
-          y: posRef.current.y - e.deltaY * 0.5,
-        };
-        posRef.current = np;
-        setPos({ ...np });
-      }
-    };
-    window.addEventListener("mousedown", onDown, {
-      capture: true,
-      passive: false,
-    });
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup", onUp);
-    window.addEventListener("wheel", onWheel, {
-      capture: true,
-      passive: false,
-    });
-    return () => {
-      window.removeEventListener("mousedown", onDown, { capture: true });
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseup", onUp);
-      window.removeEventListener("wheel", onWheel, { capture: true });
-    };
+    const el = wrapRef.current; if (!el) return;
+    const inEl = (e: MouseEvent) => { const r = el.getBoundingClientRect(); return e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom; };
+    const onDown = (e: MouseEvent) => { if (!inEl(e)) return; if ((e.target as HTMLElement)?.closest?.("[data-nodrag]")) return; e.preventDefault(); downRef.current = { x: e.clientX, y: e.clientY }; isDrag.current = false; };
+    const onMove = (e: MouseEvent) => { if (!downRef.current) return; const dx=e.clientX-downRef.current.x,dy=e.clientY-downRef.current.y; if (!isDrag.current&&Math.hypot(dx,dy)>3) { isDrag.current=true; setDrag(true); startRef.current={x:downRef.current.x-posRef.current.x,y:downRef.current.y-posRef.current.y}; } if (isDrag.current) { const np={x:e.clientX-startRef.current.x,y:e.clientY-startRef.current.y}; posRef.current=np; setPos({...np}); } };
+    const onUp = () => { downRef.current=null; isDrag.current=false; setDrag(false); };
+    const onWheel = (e: WheelEvent) => { if (!inEl(e)) return; e.preventDefault(); if (e.ctrlKey||e.metaKey) { const v=Math.max(0.2,Math.min(3,scaleRef.current*Math.exp(-e.deltaY*0.002))); scaleRef.current=v; setScale(v); } else { const np={x:posRef.current.x-e.deltaX*0.5,y:posRef.current.y-e.deltaY*0.5}; posRef.current=np; setPos({...np}); } };
+    window.addEventListener("mousedown",onDown,{capture:true,passive:false});
+    window.addEventListener("mousemove",onMove);
+    window.addEventListener("mouseup",onUp);
+    window.addEventListener("wheel",onWheel,{capture:true,passive:false});
+    return () => { window.removeEventListener("mousedown",onDown,{capture:true}); window.removeEventListener("mousemove",onMove); window.removeEventListener("mouseup",onUp); window.removeEventListener("wheel",onWheel,{capture:true}); };
   }, []);
 
   return (
     <div className="relative w-full h-full" style={{ minHeight: 360 }}>
       <style>{`.cvs-root iframe{pointer-events:none!important}`}</style>
-      <div
-        ref={wrapRef}
-        className="cvs-root absolute inset-0 overflow-hidden select-none"
-        style={{
-          cursor: drag ? "grabbing" : "grab",
-          borderRadius: 12,
-          background: "#e8e6f2",
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            transformOrigin: "top left",
-            transform: `translate(${pos.x}px,${pos.y}px) scale(${scale})`,
-            willChange: "transform",
-            zIndex: 1,
-          }}
-        >
-          {children}
+      <div ref={wrapRef} className="cvs-root absolute inset-0 overflow-hidden select-none" style={{ cursor: drag ? "grabbing" : "grab", borderRadius: 12, background: "#e8e6f2" }}>
+        <div style={{ position: "absolute", top: 0, left: 0, transformOrigin: "top left", transform: `translate(${pos.x}px,${pos.y}px) scale(${scale})`, willChange: "transform", zIndex: 1 }}>
+          {children(iframeH)}
         </div>
       </div>
-      <div
-        data-nodrag
-        className="absolute top-2.5 left-2.5 z-30 pointer-events-none bg-white/90 backdrop-blur-sm border border-indigo-100 text-indigo-600 text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm"
-      >
-        {Math.round(scale * 100)}%
-      </div>
-      <div
-        data-nodrag
-        className="absolute bottom-3 right-3 z-30 flex flex-col gap-1.5"
-      >
-        {[
-          { fn: zoomIn, icon: <FiZoomIn className="w-3.5 h-3.5" /> },
-          { fn: zoomOut, icon: <FiZoomOut className="w-3.5 h-3.5" /> },
-          { fn: reset, icon: <FiRefreshCw className="w-3 h-3" /> },
-        ].map((b, i) => (
-          <motion.button
-            key={i}
-            type="button"
-            onClick={b.fn}
-            whileHover={{ scale: 1.08 }}
-            whileTap={{ scale: 0.92 }}
-            className={`w-7 h-7 rounded-lg flex items-center justify-center text-white shadow-md ${i < 2 ? "bg-gradient-to-br from-indigo-600 to-violet-600" : "bg-gray-700 hover:bg-gray-800"}`}
-          >
-            {b.icon}
-          </motion.button>
+      <div data-nodrag className="absolute top-2.5 left-2.5 z-30 pointer-events-none bg-white/90 backdrop-blur-sm border border-indigo-100 text-indigo-600 text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm">{Math.round(scale * 100)}%</div>
+      <div data-nodrag className="absolute bottom-3 right-3 z-30 flex flex-col gap-1.5">
+        {[{ fn: zoomIn, icon: <FiZoomIn className="w-3.5 h-3.5" /> }, { fn: zoomOut, icon: <FiZoomOut className="w-3.5 h-3.5" /> }, { fn: reset, icon: <FiRefreshCw className="w-3 h-3" /> }].map((b, i) => (
+          <motion.button key={i} type="button" onClick={b.fn} whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }} className={`w-7 h-7 rounded-lg flex items-center justify-center text-white shadow-md ${i < 2 ? "bg-gradient-to-br from-indigo-600 to-violet-600" : "bg-gray-700 hover:bg-gray-800"}`}>{b.icon}</motion.button>
         ))}
       </div>
-      <p
-        data-nodrag
-        className="absolute bottom-3 left-2 z-30 pointer-events-none text-[9px] font-semibold text-slate-400"
-      >
-        Drag · Pinch · Scroll
-      </p>
+      <p data-nodrag className="absolute bottom-3 left-2 z-30 pointer-events-none text-[9px] font-semibold text-slate-400">Drag · Pinch · Scroll</p>
     </div>
   );
 }
@@ -16916,70 +19204,24 @@ function CanvasPreview({ children }: { children: ReactNode }) {
 /* ─────────────────────────────────────────────────────────────
    TEMPLATE CARD
 ───────────────────────────────────────────────────────────────*/
-function TemplateCard({
-  template,
-  selected,
-  onClick,
-  showLock,
-}: {
-  template: (typeof TEMPLATE_DEFS)[0];
-  selected: boolean;
-  onClick: () => void;
-  showLock: boolean;
+function TemplateCard({ template, selected, onClick, showLock }: {
+  template: typeof TEMPLATE_DEFS[0]; selected: boolean; onClick: () => void; showLock: boolean;
 }) {
   return (
-    <div
-      onClick={onClick}
-      className={`relative bg-white rounded-2xl border-2 overflow-hidden cursor-pointer transition-all duration-200 group ${selected ? "border-indigo-500 shadow-[0_0_0_3px_rgba(99,102,241,.14)]" : "border-slate-100 shadow-sm hover:-translate-y-1 hover:shadow-lg hover:border-indigo-200"}`}
-    >
-      <div
-        className="relative w-full"
-        style={{ paddingBottom: "130%", background: "#f8fafc" }}
-      >
-        <Image
-          src={template.image}
-          alt={template.name}
-          fill
-          className="object-cover object-top transition-transform duration-300 group-hover:scale-[1.03]"
-          sizes="(max-width:640px) 45vw, (max-width:1024px) 30vw, 20vw"
-          onError={(e) => {
-            (e.currentTarget as HTMLImageElement).style.display = "none";
-          }}
-        />
+    <div onClick={onClick} className={`relative bg-white rounded-2xl border-2 overflow-hidden cursor-pointer transition-all duration-200 group ${selected ? "border-indigo-500 shadow-[0_0_0_3px_rgba(99,102,241,.14)]" : "border-slate-100 shadow-sm hover:-translate-y-1 hover:shadow-lg hover:border-indigo-200"}`}>
+      <div className="relative w-full" style={{ paddingBottom: "130%", background: "#f8fafc" }}>
+        <Image src={template.image} alt={template.name} fill className="object-cover object-top transition-transform duration-300 group-hover:scale-[1.03]" sizes="(max-width:640px) 45vw, (max-width:1024px) 30vw, 20vw" onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }} />
         <div className="absolute bottom-0 inset-x-0 h-8 bg-gradient-to-t from-white/80 to-transparent pointer-events-none" />
       </div>
-      {selected && (
-        <div className="absolute top-2 right-2 w-6 h-6 bg-indigo-600 rounded-full flex items-center justify-center shadow-md z-10">
-          <svg viewBox="0 0 14 14" width="11" height="11" fill="none">
-            <polyline points="2,8 5,12 12,3" stroke="white" strokeWidth="2.4" />
-          </svg>
-        </div>
-      )}
-      {showLock && (
-        <div
-          className="absolute top-2 left-2 w-5 h-5 bg-amber-400 rounded-full flex items-center justify-center shadow z-10"
-          title="Premium"
-        >
-          <FiLock className="w-2.5 h-2.5 text-white" />
-        </div>
-      )}
+      {selected && <div className="absolute top-2 right-2 w-6 h-6 bg-indigo-600 rounded-full flex items-center justify-center shadow-md z-10"><svg viewBox="0 0 14 14" width="11" height="11" fill="none"><polyline points="2,8 5,12 12,3" stroke="white" strokeWidth="2.4" /></svg></div>}
+      {showLock && <div className="absolute top-2 left-2 w-5 h-5 bg-amber-400 rounded-full flex items-center justify-center shadow z-10" title="Premium"><FiLock className="w-2.5 h-2.5 text-white" /></div>}
       <div className="px-2.5 py-2.5">
         <div className="flex items-center justify-between mb-0.5">
-          <span className="text-[8.5px] font-extrabold tracking-[1.2px] uppercase text-slate-400">
-            {template.tag}
-          </span>
-          {template.tier === "premium" && (
-            <span className="text-[8px] font-bold text-amber-600 bg-amber-50 border border-amber-100 px-1.5 py-0.5 rounded-full">
-              PRO
-            </span>
-          )}
+          <span className="text-[8.5px] font-extrabold tracking-[1.2px] uppercase text-slate-400">{template.tag}</span>
+          {template.tier === "premium" && <span className="text-[8px] font-bold text-amber-600 bg-amber-50 border border-amber-100 px-1.5 py-0.5 rounded-full">PRO</span>}
         </div>
-        <div className="text-[12.5px] font-bold text-slate-900 leading-tight">
-          {template.name}
-        </div>
-        <div className="text-[10.5px] text-slate-400 leading-tight mt-0.5 line-clamp-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-          {template.description}
-        </div>
+        <div className="text-[12.5px] font-bold text-slate-900 leading-tight">{template.name}</div>
+        <div className="text-[10.5px] text-slate-400 leading-tight mt-0.5 line-clamp-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">{template.description}</div>
       </div>
     </div>
   );
@@ -17000,25 +19242,14 @@ const STEPS: { id: Step; label: string; icon: string }[] = [
 /* ─────────────────────────────────────────────────────────────
    FIELD WRAPPER
 ───────────────────────────────────────────────────────────────*/
-function F({
-  label,
-  required,
-  icon: Icon,
-  hint,
-  children,
-}: {
-  label: string;
-  required?: boolean;
-  icon?: React.ElementType;
-  hint?: string;
-  children: React.ReactNode;
+function F({ label, required, icon: Icon, hint, children }: {
+  label: string; required?: boolean; icon?: React.ElementType; hint?: string; children: React.ReactNode;
 }) {
   return (
     <div className="mb-4">
       <label className="flex items-center gap-1.5 text-[10.5px] font-bold tracking-wide uppercase text-slate-500 mb-1.5">
         {Icon && <Icon className="w-3 h-3 text-indigo-400" />}
-        {label}
-        {required && <span className="text-red-400 ml-0.5">*</span>}
+        {label}{required && <span className="text-red-400 ml-0.5">*</span>}
       </label>
       {children}
       {hint && <p className="text-[10.5px] text-slate-400 mt-1">{hint}</p>}
@@ -17026,102 +19257,40 @@ function F({
   );
 }
 
-const inp =
-  "w-full px-3 py-2.5 text-[13px] font-[500] border-[1.5px] border-slate-200 rounded-xl outline-none transition-all duration-150 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 placeholder:text-slate-300 bg-white text-slate-800";
+const inp = "w-full px-3 py-2.5 text-[13px] font-[500] border-[1.5px] border-slate-200 rounded-xl outline-none transition-all duration-150 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 placeholder:text-slate-300 bg-white text-slate-800";
 
 /* ─────────────────────────────────────────────────────────────
    POPUPS
 ───────────────────────────────────────────────────────────────*/
-function LoginPopup({
-  onClose,
-  onLogin,
-}: {
-  onClose: () => void;
-  onLogin: () => void;
-}) {
+function LoginPopup({ onClose, onLogin }: { onClose: () => void; onLogin: () => void }) {
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-[2000] flex items-center justify-center p-4">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.92, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95 }}
-        className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full relative overflow-hidden"
-      >
+      <motion.div initial={{ opacity: 0, scale: 0.92, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/60 via-white to-violet-50/40 pointer-events-none" />
         <div className="relative">
-          <div className="w-16 h-16 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-5 shadow-lg shadow-indigo-200">
-            ✦
-          </div>
-          <h2 className="text-[22px] font-extrabold text-slate-900 text-center mb-2">
-            Sign in to Continue
-          </h2>
-          <p className="text-[13.5px] text-slate-500 text-center mb-6 leading-relaxed">
-            You need to be logged in to build and download your professional
-            cover letter.
-          </p>
-          <button
-            onClick={onLogin}
-            className="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-bold text-[14px] rounded-2xl shadow-lg shadow-indigo-200 hover:shadow-xl hover:-translate-y-0.5 transition-all mb-3"
-          >
-            Sign In to Your Account
-          </button>
-          <button
-            onClick={onClose}
-            className="w-full py-2.5 text-[13px] text-slate-400 font-semibold hover:text-slate-600 transition-colors"
-          >
-            Browse templates first →
-          </button>
+          <div className="w-16 h-16 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-5 shadow-lg shadow-indigo-200">✦</div>
+          <h2 className="text-[22px] font-extrabold text-slate-900 text-center mb-2">Sign in to Continue</h2>
+          <p className="text-[13.5px] text-slate-500 text-center mb-6 leading-relaxed">You need to be logged in to build and download your professional cover letter.</p>
+          <button onClick={onLogin} className="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-bold text-[14px] rounded-2xl shadow-lg shadow-indigo-200 hover:shadow-xl hover:-translate-y-0.5 transition-all mb-3">Sign In to Your Account</button>
+          <button onClick={onClose} className="w-full py-2.5 text-[13px] text-slate-400 font-semibold hover:text-slate-600 transition-colors">Browse templates first →</button>
         </div>
       </motion.div>
     </div>
   );
 }
 
-function PremiumPopup({
-  onClose,
-  onUpgrade,
-}: {
-  onClose: () => void;
-  onUpgrade: () => void;
-}) {
+function PremiumPopup({ onClose, onUpgrade }: { onClose: () => void; onUpgrade: () => void }) {
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-[2000] flex items-center justify-center p-4">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.92, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95 }}
-        className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full relative overflow-hidden"
-      >
+      <motion.div initial={{ opacity: 0, scale: 0.92, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-amber-50/60 via-white to-indigo-50/40 pointer-events-none" />
         <div className="relative">
-          <button
-            onClick={onClose}
-            className="absolute -top-1 -right-1 w-8 h-8 bg-slate-100 hover:bg-red-50 rounded-full flex items-center justify-center text-slate-400 hover:text-red-400 transition-all"
-          >
-            <FiX className="w-4 h-4" />
-          </button>
-          <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-3 shadow-lg shadow-amber-200">
-            ⭐
-          </div>
-          <h2 className="text-[22px] font-extrabold text-slate-900 text-center mb-2">
-            Upgrade to Premium
-          </h2>
-          <p className="text-[13.5px] text-slate-500 text-center mb-6 leading-relaxed">
-            Unlock all 20 industry templates, rich text editor, and PDF
-            download.
-          </p>
-          <button
-            onClick={onUpgrade}
-            className="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-bold text-[14px] rounded-2xl shadow-lg shadow-indigo-200 hover:shadow-xl hover:-translate-y-0.5 transition-all"
-          >
-            Upgrade to Premium →
-          </button>
-          <button
-            onClick={onClose}
-            className="mt-2.5 w-full py-2 text-[12.5px] text-slate-400 font-semibold hover:text-slate-600 transition-colors"
-          >
-            Maybe later
-          </button>
+          <button onClick={onClose} className="absolute -top-1 -right-1 w-8 h-8 bg-slate-100 hover:bg-red-50 rounded-full flex items-center justify-center text-slate-400 hover:text-red-400 transition-all"><FiX className="w-4 h-4" /></button>
+          <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-3 shadow-lg shadow-amber-200">⭐</div>
+          <h2 className="text-[22px] font-extrabold text-slate-900 text-center mb-2">Upgrade to Premium</h2>
+          <p className="text-[13.5px] text-slate-500 text-center mb-6 leading-relaxed">Unlock all 20 industry templates, rich text editor, and PDF download.</p>
+          <button onClick={onUpgrade} className="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-bold text-[14px] rounded-2xl shadow-lg shadow-indigo-200 hover:shadow-xl hover:-translate-y-0.5 transition-all">Upgrade to Premium →</button>
+          <button onClick={onClose} className="mt-2.5 w-full py-2 text-[12.5px] text-slate-400 font-semibold hover:text-slate-600 transition-colors">Maybe later</button>
         </div>
       </motion.div>
     </div>
@@ -17154,158 +19323,87 @@ export default function CoverLetterGenerator() {
   useEffect(() => {
     const userDetails = getLocalStorage<User>("user_details");
     const userId = userDetails?.id;
-    if (!userId) {
-      setIsLoggedIn(false);
-      setIsPremium(false);
-      setTimeout(() => setShowLoginPopup(true), 600);
-      return;
-    }
+    if (!userId) { setIsLoggedIn(false); setIsPremium(false); setTimeout(() => setShowLoginPopup(true), 600); return; }
     setIsLoggedIn(true);
-    axios
-      .get(`${API_URL}/api/users/dashboard`, { params: { userId } })
-      .then((res) => {
-        const payment = res?.data?.payments?.[0];
-        const premium = payment?.plan === "Premium";
-        setIsPremium(premium);
-        if (!premium) setTimeout(() => setShowPremiumPopup(true), 600);
-      })
+    axios.get(`${API_URL}/api/users/dashboard`, { params: { userId } })
+      .then((res) => { const payment = res?.data?.payments?.[0]; const premium = payment?.plan === "Premium"; setIsPremium(premium); if (!premium) setTimeout(() => setShowPremiumPopup(true), 600); })
       .catch(() => setIsPremium(false));
   }, []);
 
-  const showToast = (m: string) => {
-    setToast(m);
-    setTimeout(() => setToast(""), 2800);
-  };
+  const showToast = (m: string) => { setToast(m); setTimeout(() => setToast(""), 2800); };
 
-  const rebuild = useCallback(() => {
-    const h = buildHTML(tplId, data);
-    setHtml(h);
-    return h;
-  }, [tplId, data]);
-  useEffect(() => {
-    const t = setTimeout(rebuild, 200);
-    return () => clearTimeout(t);
-  }, [rebuild]);
+  const rebuild = useCallback(() => { const h = buildHTML(tplId, data); setHtml(h); return h; }, [tplId, data]);
+  useEffect(() => { const t = setTimeout(rebuild, 200); return () => clearTimeout(t); }, [rebuild]);
 
-  const writeIframe = (
-    ref: React.RefObject<HTMLIFrameElement | null>,
-    h: string,
-  ) => {
-    if (!ref.current) return;
-    const doc = ref.current.contentDocument;
-    if (!doc) return;
-    doc.open();
-    doc.write(h);
-    doc.close();
+  const writeIframe = (ref: React.RefObject<HTMLIFrameElement | null>, h: string) => {
+    if (!ref.current) return; const doc = ref.current.contentDocument; if (!doc) return;
+    doc.open(); doc.write(h); doc.close();
   };
-  useEffect(() => {
-    if (html && liveRef.current) writeIframe(liveRef, html);
-  }, [html]);
-  useEffect(() => {
-    if (modal && html && modalRef.current) writeIframe(modalRef, html);
-  }, [modal, html]);
+  useEffect(() => { if (html && liveRef.current) writeIframe(liveRef, html); }, [html]);
+  useEffect(() => { if (modal && html && modalRef.current) writeIframe(modalRef, html); }, [modal, html]);
 
   const set = (path: string[], val: string) =>
-    setData((prev) => {
-      const n = JSON.parse(JSON.stringify(prev)) as CLData;
-      let c: any = n;
-      for (let i = 0; i < path.length - 1; i++) c = c[path[i]];
-      c[path[path.length - 1]] = val;
-      return n;
-    });
+    setData((prev) => { const n = JSON.parse(JSON.stringify(prev)) as CLData; let c: any = n; for (let i = 0; i < path.length - 1; i++) c = c[path[i]]; c[path[path.length - 1]] = val; return n; });
 
   const handleStepChange = (targetStep: Step) => {
-    if (targetStep === "template") {
-      setStep(targetStep);
-      return;
-    }
-    if (!isLoggedIn) {
-      setShowLoginPopup(true);
-      return;
-    }
-    if (!isPremium) {
-      setShowPremiumPopup(true);
-      return;
-    }
+    if (targetStep === "template") { setStep(targetStep); return; }
+    if (!isLoggedIn) { setShowLoginPopup(true); return; }
+    if (!isPremium) { setShowPremiumPopup(true); return; }
     setStep(targetStep);
   };
   const handleContinue = () => {
     const idx = STEPS.findIndex((s) => s.id === step);
-    if (step === "template") {
-      if (!isLoggedIn) {
-        setShowLoginPopup(true);
-        return;
-      }
-      if (!isPremium) {
-        setShowPremiumPopup(true);
-        return;
-      }
-    }
+    if (step === "template") { if (!isLoggedIn) { setShowLoginPopup(true); return; } if (!isPremium) { setShowPremiumPopup(true); return; } }
     if (idx < STEPS.length - 1) setStep(STEPS[idx + 1].id);
   };
 
   const downloadPDF = async () => {
-    if (!isLoggedIn) {
-      setShowLoginPopup(true);
-      return;
-    }
-    if (!isPremium) {
-      setShowPremiumPopup(true);
-      return;
-    }
-    const h = rebuild();
-    setBusy(true);
+    if (!isLoggedIn) { setShowLoginPopup(true); return; }
+    if (!isPremium) { setShowPremiumPopup(true); return; }
+    const h = rebuild(); setBusy(true);
     try {
-      const r = await axios.post(
-        `${API_URL}/api/candidates/generate-pdf`,
-        { html: h },
-        { responseType: "blob" },
-      );
+      const r = await axios.post(`${API_URL}/api/candidates/generate-pdf`, { html: h }, { responseType: "blob" });
       const url = URL.createObjectURL(r.data);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `Cover_Letter_${data.personal.fullName || "Draft"}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      const a = document.createElement("a"); a.href = url; a.download = `Cover_Letter_${data.personal.fullName || "Draft"}.pdf`;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
       showToast("✓ PDF downloaded");
-    } catch {
-      showToast("Download failed — try again");
-    } finally {
-      setBusy(false);
-    }
+    } catch { showToast("Download failed — try again"); } finally { setBusy(false); }
   };
 
   const tpl = TEMPLATE_DEFS.find((t) => t.id === tplId)!;
   const stepIdx = STEPS.findIndex((s) => s.id === step);
 
   // Filter tags from the 20 templates
-  const allTags = [
-    "All",
-    ...Array.from(new Set(TEMPLATE_DEFS.map((t) => t.tag))),
-  ];
-  const shownTemplates =
-    filter === "All"
-      ? TEMPLATE_DEFS
-      : TEMPLATE_DEFS.filter((t) => t.tag === filter);
+  const allTags = ["All", ...Array.from(new Set(TEMPLATE_DEFS.map(t => t.tag)))];
+  const shownTemplates = filter === "All" ? TEMPLATE_DEFS : TEMPLATE_DEFS.filter(t => t.tag === filter);
 
-  if (isLoggedIn === null)
-    return (
-      <div className="min-h-screen bg-indigo-50 flex items-center justify-center">
-        <div className="text-indigo-600 font-bold text-[14px] animate-pulse">
-          Loading Cover Letter Studio…
-        </div>
-      </div>
-    );
+  if (isLoggedIn === null) return (
+    <div className="min-h-screen bg-indigo-50 flex items-center justify-center">
+      <div className="text-indigo-600 font-bold text-[14px] animate-pulse">Loading Cover Letter Studio…</div>
+    </div>
+  );
 
   return (
     <>
       <style>{`
         html,body{overflow:hidden}
         @media(max-width:820px){html,body{overflow:auto}}
-        .canvas-iframe{width:860px;height:1120px;border:none;display:block;background:#fff;pointer-events:none}
-        .modal-iframe{width:860px;height:1120px;border:none;display:block;background:#fff}
+
+        /* Iframe: NEVER show a scrollbar at any level */
+        .canvas-iframe{width:860px;border:none;display:block;background:#fff;pointer-events:none;overflow:hidden}
+        .modal-iframe{width:860px;border:none;display:block;background:#fff;overflow:hidden}
+        iframe{overflow:hidden!important}
+
+        /* Left panel scroll — thin, subtle, no track */
+        .left-scroll{scrollbar-width:thin;scrollbar-color:#c7d2fe transparent}
+        .left-scroll::-webkit-scrollbar{width:4px}
+        .left-scroll::-webkit-scrollbar-track{background:transparent}
+        .left-scroll::-webkit-scrollbar-thumb{background:#c7d2fe;border-radius:4px}
+        .left-scroll::-webkit-scrollbar-thumb:hover{background:#a5b4fc}
+
+        .scrollbar-none{scrollbar-width:none}
+        .scrollbar-none::-webkit-scrollbar{display:none}
+
         @keyframes livePulse{0%,100%{box-shadow:0 0 0 2px rgba(16,185,129,.2)}50%{box-shadow:0 0 0 5px rgba(16,185,129,.07)}}
         .live-dot{animation:livePulse 2s infinite}
         @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
@@ -17314,231 +19412,107 @@ export default function CoverLetterGenerator() {
         .modal-anim{animation:modalIn .22s ease}
         @keyframes ovIn{from{opacity:0}to{opacity:1}}
         .ov-anim{animation:ovIn .18s ease}
-        .scrollbar-none{scrollbar-width:none}
-        .scrollbar-none::-webkit-scrollbar{display:none}
-        /* PrimeReact editor height override */
-        .p-editor-container .p-editor-content{min-height:420px}
-        .p-editor-container .ql-editor{font-size:14px;line-height:1.85;font-family:inherit}
+
+        /* PrimeReact editor */
+        .p-editor-container .p-editor-content{min-height:400px}
+        .p-editor-container .ql-editor{font-size:14px;line-height:1.85;font-family:inherit;padding:16px 20px}
         .p-editor-container{border-radius:12px;overflow:hidden;border:1.5px solid #e2e8f0}
         .p-editor-container:focus-within{border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.1)}
-        .p-editor-toolbar{background:#f8fafc!important;border-bottom:1px solid #e2e8f0!important;padding:8px 12px!important}
+        .p-editor-toolbar{background:#f8fafc!important;border-bottom:1px solid #e2e8f0!important;padding:8px 12px!important;border-radius:0!important}
       `}</style>
 
       <AnimatePresence>
-        {showLoginPopup && (
-          <LoginPopup
-            onClose={() => setShowLoginPopup(false)}
-            onLogin={() => router.push("/login")}
-          />
-        )}
+        {showLoginPopup && <LoginPopup onClose={() => setShowLoginPopup(false)} onLogin={() => router.push("/login")} />}
       </AnimatePresence>
       <AnimatePresence>
-        {showPremiumPopup && !showLoginPopup && (
-          <PremiumPopup
-            onClose={() => setShowPremiumPopup(false)}
-            onUpgrade={() => router.push("/choose-plan")}
-          />
-        )}
+        {showPremiumPopup && !showLoginPopup && <PremiumPopup onClose={() => setShowPremiumPopup(false)} onUpgrade={() => router.push("/choose-plan")} />}
       </AnimatePresence>
 
       {/* NAV */}
       <nav className="h-[58px] bg-white border-b border-slate-200 flex items-center px-4 md:px-5 gap-3 z-50 relative shadow-sm flex-shrink-0">
-        <button
-          onClick={() => router.push("/")}
-          className="cursor-pointer flex-shrink-0"
-        >
+        <button onClick={() => router.push("/")} className="cursor-pointer flex-shrink-0">
           <div className="relative w-[100px] sm:w-[140px] h-[34px] sm:h-[46px]">
-            <Image
-              src="/logo.png"
-              alt="Logo"
-              fill
-              className="object-contain"
-              priority
-              sizes="(max-width:640px) 100px,140px"
-            />
+            <Image src="/logo.png" alt="Logo" fill className="object-contain" priority sizes="(max-width:640px) 100px,140px" />
           </div>
         </button>
         <div className="flex items-center flex-1 justify-center overflow-x-auto scrollbar-none gap-0 py-1">
           {STEPS.map((s, i) => (
             <React.Fragment key={s.id}>
-              {i > 0 && (
-                <div
-                  className={`w-5 h-0.5 flex-shrink-0 transition-colors ${i <= stepIdx ? "bg-emerald-500" : "bg-slate-200"}`}
-                />
-              )}
-              <button
-                onClick={() => handleStepChange(s.id)}
-                className={`flex items-center gap-1.5 px-2 py-1 rounded-full text-[12px] font-semibold transition-all flex-shrink-0 cursor-pointer ${i < stepIdx ? "text-slate-800" : i === stepIdx ? "text-indigo-600 bg-indigo-50" : "text-slate-400 hover:bg-slate-50"}`}
-              >
-                <span
-                  className={`w-[22px] h-[22px] rounded-full flex items-center justify-center text-[10px] flex-shrink-0 ${i < stepIdx ? "bg-emerald-500 text-white" : i === stepIdx ? "bg-gradient-to-br from-indigo-600 to-violet-600 text-white shadow-[0_0_0_3px_rgba(91,56,240,.16)]" : "bg-slate-100 text-slate-400"}`}
-                >
-                  {i < stepIdx ? (
-                    <svg viewBox="0 0 14 14" width="11" height="11" fill="none">
-                      <polyline
-                        points="2,8 5,12 12,3"
-                        stroke="white"
-                        strokeWidth="2.2"
-                      />
-                    </svg>
-                  ) : (
-                    i + 1
-                  )}
+              {i > 0 && <div className={`w-5 h-0.5 flex-shrink-0 transition-colors ${i <= stepIdx ? "bg-emerald-500" : "bg-slate-200"}`} />}
+              <button onClick={() => handleStepChange(s.id)} className={`flex items-center gap-1.5 px-2 py-1 rounded-full text-[12px] font-semibold transition-all flex-shrink-0 cursor-pointer ${i < stepIdx ? "text-slate-800" : i === stepIdx ? "text-indigo-600 bg-indigo-50" : "text-slate-400 hover:bg-slate-50"}`}>
+                <span className={`w-[22px] h-[22px] rounded-full flex items-center justify-center text-[10px] flex-shrink-0 ${i < stepIdx ? "bg-emerald-500 text-white" : i === stepIdx ? "bg-gradient-to-br from-indigo-600 to-violet-600 text-white shadow-[0_0_0_3px_rgba(91,56,240,.16)]" : "bg-slate-100 text-slate-400"}`}>
+                  {i < stepIdx ? <svg viewBox="0 0 14 14" width="11" height="11" fill="none"><polyline points="2,8 5,12 12,3" stroke="white" strokeWidth="2.2" /></svg> : i + 1}
                 </span>
                 <span className="hidden sm:inline">{s.label}</span>
               </button>
             </React.Fragment>
           ))}
         </div>
-        <button
-          onClick={downloadPDF}
-          disabled={busy}
-          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[12px] font-bold bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md hover:shadow-lg hover:-translate-y-px disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none transition-all flex-shrink-0"
-        >
+        <button onClick={downloadPDF} disabled={busy} className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[12px] font-bold bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md hover:shadow-lg hover:-translate-y-px disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none transition-all flex-shrink-0">
           {busy ? "⏳" : "⬇"} PDF
         </button>
       </nav>
 
       {/* SHELL */}
       <div className="grid lg:grid-cols-[400px_1fr] xl:grid-cols-[720px_1fr] h-[calc(100vh-58px)]">
+
         {/* LEFT PANEL */}
         <div className="flex flex-col overflow-hidden bg-slate-50 border-r border-slate-200">
           <div className="flex-shrink-0 px-5 pt-4 pb-0">
             <h2 className="font-semibold text-slate-900 tracking-tight mb-0.5 text-[15px]">
-              {step === "template"
-                ? "Choose Template"
-                : step === "personal"
-                  ? "Personal Information"
-                  : step === "company"
-                    ? "Company Details"
-                    : step === "content"
-                      ? "Letter Content"
-                      : "Review & Download"}
+              {step === "template" ? "Choose Template" : step === "personal" ? "Personal Information" : step === "company" ? "Company Details" : step === "content" ? "Letter Content" : "Review & Download"}
             </h2>
             <p className="text-[12.5px] text-slate-500 mb-2">
-              {step === "template"
-                ? "20 unique industry-grade designs"
-                : step === "personal"
-                  ? "Your contact details"
-                  : step === "company"
-                    ? "Where you're applying"
-                    : step === "content"
-                      ? "Write your letter in the rich text editor below"
-                      : "Check everything before downloading"}
+              {step === "template" ? "20 unique industry-grade designs" : step === "personal" ? "Your contact details" : step === "company" ? "Where you're applying" : step === "content" ? "Write your letter in the rich text editor below" : "Check everything before downloading"}
             </p>
           </div>
 
-          <div className="flex-1 overflow-y-auto px-4 pt-3 pb-20 scrollbar-thin scrollbar-thumb-indigo-200 scrollbar-track-transparent">
+          <div className="flex-1 overflow-y-auto px-4 pt-3 pb-20 left-scroll">
+
             {/* ── TEMPLATE STEP ── */}
             {step === "template" && (
               <>
                 {isLoggedIn && !isPremium && (
                   <div className="mb-3 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-3 flex items-center gap-3">
-                    <div className="w-8 h-8 bg-amber-400 rounded-lg flex items-center justify-center text-white flex-shrink-0">
-                      ⭐
-                    </div>
+                    <div className="w-8 h-8 bg-amber-400 rounded-lg flex items-center justify-center text-white flex-shrink-0">⭐</div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[12px] font-bold text-amber-800">
-                        Browse freely, upgrade to use
-                      </p>
-                      <p className="text-[11px] text-amber-600">
-                        Select any template then upgrade to Premium
-                      </p>
+                      <p className="text-[12px] font-bold text-amber-800">Browse freely, upgrade to use</p>
+                      <p className="text-[11px] text-amber-600">Select any template then upgrade to Premium</p>
                     </div>
-                    <button
-                      onClick={() => setShowPremiumPopup(true)}
-                      className="text-[11px] font-bold text-amber-700 bg-amber-100 border border-amber-200 px-2.5 py-1.5 rounded-lg flex-shrink-0"
-                    >
-                      Upgrade
-                    </button>
+                    <button onClick={() => setShowPremiumPopup(true)} className="text-[11px] font-bold text-amber-700 bg-amber-100 border border-amber-200 px-2.5 py-1.5 rounded-lg flex-shrink-0">Upgrade</button>
                   </div>
                 )}
                 {!isLoggedIn && (
                   <div className="mb-3 bg-gradient-to-r from-indigo-50 to-violet-50 border border-indigo-200 rounded-2xl p-3 flex items-center gap-3">
-                    <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white flex-shrink-0">
-                      ✦
-                    </div>
+                    <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white flex-shrink-0">✦</div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[12px] font-bold text-indigo-800">
-                        Browse templates freely
-                      </p>
-                      <p className="text-[11px] text-indigo-600">
-                        Sign in to build and download
-                      </p>
+                      <p className="text-[12px] font-bold text-indigo-800">Browse templates freely</p>
+                      <p className="text-[11px] text-indigo-600">Sign in to build and download</p>
                     </div>
-                    <button
-                      onClick={() => setShowLoginPopup(true)}
-                      className="text-[11px] font-bold text-indigo-700 bg-indigo-100 border border-indigo-200 px-2.5 py-1.5 rounded-lg flex-shrink-0"
-                    >
-                      Sign In
-                    </button>
+                    <button onClick={() => setShowLoginPopup(true)} className="text-[11px] font-bold text-indigo-700 bg-indigo-100 border border-indigo-200 px-2.5 py-1.5 rounded-lg flex-shrink-0">Sign In</button>
                   </div>
                 )}
 
                 {/* Filter pills */}
                 <div className="flex flex-wrap gap-1.5 mb-3">
                   {allTags.map((cat) => (
-                    <button
-                      key={cat}
-                      onClick={() => setFilter(cat)}
-                      className={`px-3 py-1 rounded-full text-[11px] font-bold border-[1.5px] transition-all ${filter === cat ? "border-indigo-500 text-indigo-600 bg-indigo-50" : "border-slate-200 text-slate-500 bg-white hover:border-indigo-200"}`}
-                    >
-                      {cat}
-                    </button>
+                    <button key={cat} onClick={() => setFilter(cat)} className={`px-3 py-1 rounded-full text-[11px] font-bold border-[1.5px] transition-all ${filter === cat ? "border-indigo-500 text-indigo-600 bg-indigo-50" : "border-slate-200 text-slate-500 bg-white hover:border-indigo-200"}`}>{cat}</button>
                   ))}
                 </div>
 
                 {/* Accent color */}
                 <div className="mb-3 bg-white rounded-2xl border border-indigo-100 p-3">
-                  <button
-                    onClick={() => setShowColors((v) => !v)}
-                    className="w-full flex items-center justify-between text-[12px] font-bold text-slate-700"
-                  >
-                    <span className="flex items-center gap-2">
-                      <span
-                        className="w-4 h-4 rounded-full border border-white shadow-sm"
-                        style={{ background: data.accentColor || "#1a1a2e" }}
-                      />
-                      Accent Color
-                    </span>
-                    <span className="text-slate-400 text-[10px]">
-                      {showColors ? "▲" : "▼"}
-                    </span>
+                  <button onClick={() => setShowColors((v) => !v)} className="w-full flex items-center justify-between text-[12px] font-bold text-slate-700">
+                    <span className="flex items-center gap-2"><span className="w-4 h-4 rounded-full border border-white shadow-sm" style={{ background: data.accentColor || "#1a1a2e" }} />Accent Color</span>
+                    <span className="text-slate-400 text-[10px]">{showColors ? "▲" : "▼"}</span>
                   </button>
                   {showColors && (
                     <div className="flex flex-wrap gap-2 mt-2.5">
                       {COLOR_PALETTES.map((p) => (
-                        <button
-                          key={p.value}
-                          title={p.label}
-                          onClick={() =>
-                            setData((d) => ({ ...d, accentColor: p.value }))
-                          }
-                          className={`w-7 h-7 rounded-full border-2 transition-all ${data.accentColor === p.value ? "border-white scale-110 shadow-lg" : "border-transparent hover:scale-105"}`}
-                          style={{
-                            background: p.value,
-                            boxShadow:
-                              data.accentColor === p.value
-                                ? `0 0 0 2px ${p.value}`
-                                : "",
-                          }}
-                        />
+                        <button key={p.value} title={p.label} onClick={() => setData((d) => ({ ...d, accentColor: p.value }))} className={`w-7 h-7 rounded-full border-2 transition-all ${data.accentColor === p.value ? "border-white scale-110 shadow-lg" : "border-transparent hover:scale-105"}`} style={{ background: p.value, boxShadow: data.accentColor === p.value ? `0 0 0 2px ${p.value}` : "" }} />
                       ))}
-                      <label
-                        className="w-7 h-7 rounded-full border-2 border-slate-200 overflow-hidden cursor-pointer hover:scale-105 transition-all"
-                        title="Custom color"
-                      >
-                        <input
-                          type="color"
-                          value={data.accentColor || "#1a1a2e"}
-                          onChange={(e) =>
-                            setData((d) => ({
-                              ...d,
-                              accentColor: e.target.value,
-                            }))
-                          }
-                          className="w-8 h-8 -ml-0.5 -mt-0.5 cursor-pointer"
-                        />
+                      <label className="w-7 h-7 rounded-full border-2 border-slate-200 overflow-hidden cursor-pointer hover:scale-105 transition-all" title="Custom color">
+                        <input type="color" value={data.accentColor || "#1a1a2e"} onChange={(e) => setData((d) => ({ ...d, accentColor: e.target.value }))} className="w-8 h-8 -ml-0.5 -mt-0.5 cursor-pointer" />
                       </label>
                     </div>
                   )}
@@ -17546,34 +19520,16 @@ export default function CoverLetterGenerator() {
 
                 {/* Font picker */}
                 <div className="mb-3 bg-white rounded-2xl border border-indigo-100 p-3">
-                  <button
-                    onClick={() => setShowFonts((v) => !v)}
-                    className="w-full flex items-center justify-between text-[12px] font-bold text-slate-700"
-                  >
-                    <span className="flex items-center gap-2">
-                      <span className="text-indigo-500">Aa</span>Font:{" "}
-                      {data.fontFamily}
-                    </span>
-                    <span className="text-slate-400 text-[10px]">
-                      {showFonts ? "▲" : "▼"}
-                    </span>
+                  <button onClick={() => setShowFonts((v) => !v)} className="w-full flex items-center justify-between text-[12px] font-bold text-slate-700">
+                    <span className="flex items-center gap-2"><span className="text-indigo-500">Aa</span>Font: {data.fontFamily}</span>
+                    <span className="text-slate-400 text-[10px]">{showFonts ? "▲" : "▼"}</span>
                   </button>
                   {showFonts && (
                     <div className="mt-2.5 space-y-1.5 max-h-40 overflow-y-auto">
                       {FONT_FAMILIES.map((f) => (
-                        <button
-                          key={f.id}
-                          onClick={() =>
-                            setData((d) => ({ ...d, fontFamily: f.id }))
-                          }
-                          className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-[12.5px] transition-all ${data.fontFamily === f.id ? "bg-indigo-50 border border-indigo-200 text-indigo-700 font-bold" : "hover:bg-slate-50 text-slate-700 border border-transparent"}`}
-                        >
-                          <span style={{ fontFamily: `'${f.id}',${f.style}` }}>
-                            {f.label}
-                          </span>
-                          <span className="text-[10px] text-slate-400 font-normal">
-                            {f.style}
-                          </span>
+                        <button key={f.id} onClick={() => setData((d) => ({ ...d, fontFamily: f.id }))} className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-[12.5px] transition-all ${data.fontFamily === f.id ? "bg-indigo-50 border border-indigo-200 text-indigo-700 font-bold" : "hover:bg-slate-50 text-slate-700 border border-transparent"}`}>
+                          <span style={{ fontFamily: `'${f.id}',${f.style}` }}>{f.label}</span>
+                          <span className="text-[10px] text-slate-400 font-normal">{f.style}</span>
                         </button>
                       ))}
                     </div>
@@ -17583,13 +19539,7 @@ export default function CoverLetterGenerator() {
                 {/* Template grid */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   {shownTemplates.map((t) => (
-                    <TemplateCard
-                      key={t.id}
-                      template={t}
-                      selected={tplId === t.id}
-                      onClick={() => setTplId(t.id)}
-                      showLock={!isLoggedIn || !isPremium}
-                    />
+                    <TemplateCard key={t.id} template={t} selected={tplId === t.id} onClick={() => setTplId(t.id)} showLock={!isLoggedIn || !isPremium} />
                   ))}
                 </div>
               </>
@@ -17599,427 +19549,202 @@ export default function CoverLetterGenerator() {
             {step === "personal" && (
               <div className="bg-white rounded-2xl p-5 shadow-sm border border-indigo-100/60">
                 <div className="flex items-center gap-3 mb-5 pb-4 border-b border-slate-100">
-                  <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
-                    <FiUser className="w-5 h-5 text-indigo-600" />
-                  </div>
-                  <div>
-                    <p className="text-[14px] font-extrabold text-slate-900">
-                      Your Profile
-                    </p>
-                    <p className="text-[11.5px] text-slate-500">
-                      Contact details that appear in your letter
-                    </p>
-                  </div>
+                  <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center"><FiUser className="w-5 h-5 text-indigo-600" /></div>
+                  <div><p className="text-[14px] font-extrabold text-slate-900">Your Profile</p><p className="text-[11.5px] text-slate-500">Contact details that appear in your letter</p></div>
                 </div>
 
                 <div className="grid sm:grid-cols-2 gap-x-4">
                   <F label="Full Name" required icon={FiUser}>
-                    <input
-                      className={inp}
-                      placeholder="Alexandra Chen"
-                      value={data.personal.fullName}
-                      onChange={(e) =>
-                        set(["personal", "fullName"], e.target.value)
-                      }
-                    />
+                    <input className={inp} placeholder="Alexandra Chen" value={data.personal.fullName} onChange={(e) => set(["personal", "fullName"], e.target.value)} />
                   </F>
                   <F label="Professional Title">
-                    <input
-                      className={inp}
-                      placeholder="Senior UX Designer"
-                      value={data.personal.title}
-                      onChange={(e) =>
-                        set(["personal", "title"], e.target.value)
-                      }
-                    />
+                    <input className={inp} placeholder="Senior UX Designer" value={data.personal.title} onChange={(e) => set(["personal", "title"], e.target.value)} />
                   </F>
                 </div>
                 <div className="grid sm:grid-cols-2 gap-x-4">
                   <F label="Email Address" required icon={FiMail}>
-                    <input
-                      className={inp}
-                      type="email"
-                      placeholder="alex@email.com"
-                      value={data.personal.email}
-                      onChange={(e) =>
-                        set(["personal", "email"], e.target.value)
-                      }
-                    />
+                    <input className={inp} type="email" placeholder="alex@email.com" value={data.personal.email} onChange={(e) => set(["personal", "email"], e.target.value)} />
                   </F>
                   <F label="Phone Number" icon={FiPhone}>
-                    <input
-                      className={inp}
-                      type="tel"
-                      placeholder="+1 555 000 0000"
-                      value={data.personal.phone}
-                      onChange={(e) =>
-                        set(["personal", "phone"], e.target.value)
-                      }
-                    />
+                    <input className={inp} type="tel" placeholder="+1 555 000 0000" value={data.personal.phone} onChange={(e) => set(["personal", "phone"], e.target.value)} />
                   </F>
                 </div>
                 <F label="Location" icon={FiMapPin}>
-                  <input
-                    className={inp}
-                    placeholder="San Francisco, CA"
-                    value={data.personal.location}
-                    onChange={(e) =>
-                      set(["personal", "location"], e.target.value)
-                    }
-                  />
+                  <input className={inp} placeholder="San Francisco, CA" value={data.personal.location} onChange={(e) => set(["personal", "location"], e.target.value)} />
                 </F>
 
                 <div className="h-px bg-indigo-50 my-4" />
-                <p className="text-[10px] font-extrabold tracking-widest uppercase text-indigo-500 mb-3 flex items-center gap-1.5">
-                  <FiLink className="w-3 h-3" /> Online Presence
-                </p>
+                <p className="text-[10px] font-extrabold tracking-widest uppercase text-indigo-500 mb-3 flex items-center gap-1.5"><FiLink className="w-3 h-3" /> Online Presence</p>
 
-                <F
-                  label="LinkedIn URL"
-                  icon={FiLink}
-                  hint="e.g. linkedin.com/in/yourname"
-                >
-                  <input
-                    className={inp}
-                    placeholder="linkedin.com/in/alexchen"
-                    value={data.personal.linkedin}
-                    onChange={(e) =>
-                      set(["personal", "linkedin"], e.target.value)
-                    }
-                  />
+                <F label="LinkedIn URL" icon={FiLink} hint="e.g. linkedin.com/in/yourname">
+                  <input className={inp} placeholder="linkedin.com/in/alexchen" value={data.personal.linkedin} onChange={(e) => set(["personal", "linkedin"], e.target.value)} />
                 </F>
                 <div className="grid sm:grid-cols-2 gap-x-4">
                   <F label="GitHub URL" icon={FiLink}>
-                    <input
-                      className={inp}
-                      placeholder="github.com/alexchen"
-                      value={data.personal.github}
-                      onChange={(e) =>
-                        set(["personal", "github"], e.target.value)
-                      }
-                    />
+                    <input className={inp} placeholder="github.com/alexchen" value={data.personal.github} onChange={(e) => set(["personal", "github"], e.target.value)} />
                   </F>
                   <F label="Portfolio / Website" icon={FiGlobe}>
-                    <input
-                      className={inp}
-                      placeholder="alexchen.io"
-                      value={data.personal.website}
-                      onChange={(e) =>
-                        set(["personal", "website"], e.target.value)
-                      }
-                    />
+                    <input className={inp} placeholder="alexchen.io" value={data.personal.website} onChange={(e) => set(["personal", "website"], e.target.value)} />
                   </F>
                 </div>
 
                 <div className="h-px bg-indigo-50 my-4" />
-                <F
-                  label="Closing Salutation"
-                  hint="Appears before your signature"
-                >
-                  <input
-                    className={inp}
-                    placeholder="Sincerely"
-                    value={data.personal.signature}
-                    onChange={(e) =>
-                      set(["personal", "signature"], e.target.value)
-                    }
-                  />
+                <F label="Closing Salutation" hint="Appears before your signature">
+                  <input className={inp} placeholder="Sincerely" value={data.personal.signature} onChange={(e) => set(["personal", "signature"], e.target.value)} />
                 </F>
               </div>
             )}
 
-            {/* ── COMPANY STEP (improved) ── */}
-            {step === "company" && (
-              <div className="space-y-4">
-                {/* Target role card */}
-                <div className="bg-white rounded-2xl p-5 shadow-sm border border-indigo-100/60">
-                  <div className="flex items-center gap-3 mb-5 pb-4 border-b border-slate-100">
-                    <div className="w-10 h-10 bg-violet-50 rounded-xl flex items-center justify-center">
-                      <FiBriefcase className="w-5 h-5 text-violet-600" />
-                    </div>
-                    <div>
-                      <p className="text-[14px] font-extrabold text-slate-900">
-                        Target Role
-                      </p>
-                      <p className="text-[11.5px] text-slate-500">
-                        The position you're applying for
-                      </p>
-                    </div>
-                  </div>
-                  <F label="Company Name" required icon={FiBriefcase}>
-                    <input
-                      className={inp}
-                      placeholder="Google, Stripe, Airbnb…"
-                      value={data.company.name}
-                      onChange={(e) => set(["company", "name"], e.target.value)}
-                    />
-                  </F>
-                  <div className="grid sm:grid-cols-2 gap-x-4">
-                    <F label="Role / Job Title" required>
-                      <input
-                        className={inp}
-                        placeholder="Senior UX Designer"
-                        value={data.company.jobTitle}
-                        onChange={(e) =>
-                          set(["company", "jobTitle"], e.target.value)
-                        }
-                      />
-                    </F>
-                    <F label="Department" hint="Optional">
-                      <input
-                        className={inp}
-                        placeholder="Product Design"
-                        value={data.company.department}
-                        onChange={(e) =>
-                          set(["company", "department"], e.target.value)
-                        }
-                      />
-                    </F>
-                  </div>
-                  <div className="grid sm:grid-cols-2 gap-x-4">
-                    <F label="Industry" hint="Helps tailor tone">
-                      <select
-                        className={inp}
-                        value={data.company.industry}
-                        onChange={(e) =>
-                          set(["company", "industry"], e.target.value)
-                        }
-                      >
-                        <option value="">Select industry…</option>
-                        {[
-                          "Technology",
-                          "Finance & Banking",
-                          "Healthcare",
-                          "Legal",
-                          "Education",
-                          "Architecture",
-                          "Engineering",
-                          "Creative & Design",
-                          "Media & Publishing",
-                          "Fashion & Luxury",
-                          "Government & Public Sector",
-                          "Non-Profit",
-                          "Hospitality",
-                          "Science & Research",
-                          "Consulting",
-                          "Retail & E-Commerce",
-                          "Sports & Fitness",
-                          "Real Estate",
-                          "Logistics",
-                          "Other",
-                        ].map((v) => (
-                          <option key={v} value={v}>
-                            {v}
-                          </option>
-                        ))}
-                      </select>
-                    </F>
-                    <F label="Job Posting ID" hint="From job board">
-                      <input
-                        className={inp}
-                        placeholder="JR-12345"
-                        value={data.company.jobId}
-                        onChange={(e) =>
-                          set(["company", "jobId"], e.target.value)
-                        }
-                      />
-                    </F>
-                  </div>
-                  <F label="Company Website" icon={FiGlobe}>
-                    <input
-                      className={inp}
-                      placeholder="stripe.com"
-                      value={data.company.companyWebsite}
-                      onChange={(e) =>
-                        set(["company", "companyWebsite"], e.target.value)
-                      }
-                    />
-                  </F>
-                </div>
+            {/* ── COMPANY STEP ── */}
+      {step === "company" && (
+  <div className="space-y-6">
+    
+    {/* ── Card 1: Company Details (combined) ── */}
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+      {/* Card header */}
+      <div className="flex items-center gap-3 px-5 py-4 border-b border-slate-50 bg-gradient-to-r from-violet-50/60 to-white">
+        <div className="w-8 h-8 bg-violet-100 rounded-xl flex items-center justify-center flex-shrink-0">
+          <FiBriefcase className="w-4 h-4 text-violet-600" />
+        </div>
+        <div>
+          <p className="text-[13px] font-extrabold text-slate-800 leading-none">Company Details</p>
+          <p className="text-[10.5px] text-slate-400 mt-0.5">Company information & hiring contact</p>
+        </div>
+      </div>
+      
+      {/* Fields */}
+      <div className="p-5 space-y-4">
+        {/* Company name */}
+        <div>
+          <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1.5 block">
+            Company Name <span className="text-red-400">*</span>
+          </label>
+          <input 
+            className={inp} 
+            placeholder="e.g. Google, Stripe, Airbnb" 
+            value={data.company.name} 
+            onChange={(e) => set(["company", "name"], e.target.value)} 
+          />
+        </div>
+        
+        {/* Location - 3 columns */}
+        <div>
+          <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-3 block">
+            Company Location
+          </label>
+          <div className="grid grid-cols-3 gap-3">
+            <input 
+              className={inp} 
+              placeholder="City" 
+              value={data.company.city} 
+              onChange={(e) => set(["company", "city"], e.target.value)} 
+            />
+            <input 
+              className={inp} 
+              placeholder="State" 
+              value={data.company.state} 
+              onChange={(e) => set(["company", "state"], e.target.value)} 
+            />
+            <input 
+              className={inp} 
+              placeholder="Country" 
+              value={data.company.country} 
+              onChange={(e) => set(["company", "country"], e.target.value)} 
+            />
+          </div>
+        </div>
+        
+        {/* Department */}
+        <div>
+          <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1.5 block">
+            Department
+          </label>
+          <input 
+            className={inp} 
+            placeholder="Product Design" 
+            value={data.company.department} 
+            onChange={(e) => set(["company", "department"], e.target.value)} 
+          />
+        </div>
+        
+        {/* Hiring Contact - 2 columns */}
+        <div>
+          <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-3 block">
+            Hiring Contact
+          </label>
+          <div className="grid grid-cols-2 gap-3">
+            <input 
+              className={inp} 
+              placeholder="Manager Name (e.g. Sarah Johnson)" 
+              value={data.company.hiringManager} 
+              onChange={(e) => set(["company", "hiringManager"], e.target.value)} 
+            />
+            <input 
+              className={inp} 
+              placeholder="Their Title (e.g. Head of Design)" 
+              value={data.company.hiringManagerTitle} 
+              onChange={(e) => set(["company", "hiringManagerTitle"], e.target.value)} 
+            />
+          </div>
+        </div>
+        
+        {/* Referral */}
+        <div>
+          <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1.5 flex items-center gap-1.5">
+            🤝 Referred By <span className="text-slate-300 normal-case font-normal">(optional)</span>
+          </label>
+          <input 
+            className={inp} 
+            placeholder="e.g. John Smith, VP Engineering" 
+            value={data.company.referral} 
+            onChange={(e) => set(["company", "referral"], e.target.value)} 
+          />
+          <p className="text-[10px] text-slate-400 mt-1">Referrals appear as a note below the address block</p>
+        </div>
+      </div>
+    </div>
 
-                {/* Contact at company */}
-                <div className="bg-white rounded-2xl p-5 shadow-sm border border-indigo-100/60">
-                  <div className="flex items-center gap-3 mb-5 pb-4 border-b border-slate-100">
-                    <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">
-                      <FiUser className="w-5 h-5 text-emerald-600" />
-                    </div>
-                    <div>
-                      <p className="text-[14px] font-extrabold text-slate-900">
-                        Hiring Contact
-                      </p>
-                      <p className="text-[11.5px] text-slate-500">
-                        Who is receiving this letter
-                      </p>
-                    </div>
-                  </div>
-                  <div className="grid sm:grid-cols-2 gap-x-4">
-                    <F label="Hiring Manager Name">
-                      <input
-                        className={inp}
-                        placeholder="Sarah Johnson"
-                        value={data.company.hiringManager}
-                        onChange={(e) =>
-                          set(["company", "hiringManager"], e.target.value)
-                        }
-                      />
-                    </F>
-                    <F label="Their Title">
-                      <input
-                        className={inp}
-                        placeholder="Head of Design"
-                        value={data.company.hiringManagerTitle}
-                        onChange={(e) =>
-                          set(["company", "hiringManagerTitle"], e.target.value)
-                        }
-                      />
-                    </F>
-                  </div>
-                  <F
-                    label="Referral / Introduction"
-                    hint="Leave blank if not applicable"
-                  >
-                    <input
-                      className={inp}
-                      placeholder="Referred by John Smith, VP Engineering"
-                      value={data.company.referral}
-                      onChange={(e) =>
-                        set(["company", "referral"], e.target.value)
-                      }
-                    />
-                  </F>
-                </div>
+    {/* ── Card 2: Letter Date ── */}
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+      <div className="flex items-center justify-between px-5 py-4">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-rose-50 rounded-xl flex items-center justify-center flex-shrink-0 text-[16px]">
+            📅
+          </div>
+          <div>
+            <p className="text-[13px] font-extrabold text-slate-800 leading-none">Letter Date</p>
+            <p className="text-[10.5px] text-slate-400 mt-0.5">Shown at the top of your letter</p>
+          </div>
+        </div>
+        <input
+          className="px-3 py-2 text-[12.5px] font-semibold border-[1.5px] border-slate-200 rounded-xl outline-none transition-all focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 bg-white text-slate-700 cursor-pointer"
+          type="date" 
+          value={data.letterDate} 
+          onChange={(e) => set(["letterDate"], e.target.value)}
+        />
+      </div>
+    </div>
 
-                {/* Location & source */}
-                <div className="bg-white rounded-2xl p-5 shadow-sm border border-indigo-100/60">
-                  <div className="flex items-center gap-3 mb-5 pb-4 border-b border-slate-100">
-                    <div className="w-10 h-10 bg-sky-50 rounded-xl flex items-center justify-center">
-                      <FiMapPin className="w-5 h-5 text-sky-600" />
-                    </div>
-                    <div>
-                      <p className="text-[14px] font-extrabold text-slate-900">
-                        Location & Source
-                      </p>
-                      <p className="text-[11.5px] text-slate-500">
-                        Where the company is and where you found this job
-                      </p>
-                    </div>
-                  </div>
-                  <div className="grid sm:grid-cols-3 gap-x-3">
-                    <F label="City">
-                      <input
-                        className={inp}
-                        placeholder="Mountain View"
-                        value={data.company.city}
-                        onChange={(e) =>
-                          set(["company", "city"], e.target.value)
-                        }
-                      />
-                    </F>
-                    <F label="State / Region">
-                      <input
-                        className={inp}
-                        placeholder="CA"
-                        value={data.company.state}
-                        onChange={(e) =>
-                          set(["company", "state"], e.target.value)
-                        }
-                      />
-                    </F>
-                    <F label="Country">
-                      <input
-                        className={inp}
-                        placeholder="USA"
-                        value={data.company.country}
-                        onChange={(e) =>
-                          set(["company", "country"], e.target.value)
-                        }
-                      />
-                    </F>
-                  </div>
-                  <F label="Job Source" hint="Where you found this posting">
-                    <select
-                      className={inp}
-                      value={data.company.jobSource}
-                      onChange={(e) =>
-                        set(["company", "jobSource"], e.target.value)
-                      }
-                    >
-                      <option value="">Select source…</option>
-                      {[
-                        "LinkedIn",
-                        "Company Website",
-                        "Indeed",
-                        "Glassdoor",
-                        "Referral",
-                        "AngelList / Wellfound",
-                        "Twitter / X",
-                        "GitHub Jobs",
-                        "Handshake",
-                        "Recruiter Outreach",
-                        "Newspaper / Print",
-                        "Other",
-                      ].map((v) => (
-                        <option key={v} value={v}>
-                          {v}
-                        </option>
-                      ))}
-                    </select>
-                  </F>
-                </div>
-
-                {/* Letter date */}
-                <div className="bg-white rounded-2xl p-5 shadow-sm border border-indigo-100/60">
-                  <F label="Letter Date">
-                    <input
-                      className={inp}
-                      type="date"
-                      value={data.letterDate}
-                      onChange={(e) => set(["letterDate"], e.target.value)}
-                    />
-                  </F>
-                </div>
-              </div>
-            )}
+  </div>
+)}
 
             {/* ── CONTENT STEP — PrimeReact Editor only ── */}
             {step === "content" && (
               <div className="bg-white rounded-2xl p-5 shadow-sm border border-indigo-100/60">
                 <div className="flex items-center gap-3 mb-5 pb-4 border-b border-slate-100">
-                  <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center text-lg">
-                    ✍️
-                  </div>
+                  <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center text-lg">✍️</div>
                   <div>
-                    <p className="text-[14px] font-extrabold text-slate-900">
-                      Write Your Letter
-                    </p>
-                    <p className="text-[11.5px] text-slate-500">
-                      Use the editor below — your formatting is preserved in the
-                      preview
-                    </p>
+                    <p className="text-[14px] font-extrabold text-slate-900">Write Your Letter</p>
+                    <p className="text-[11.5px] text-slate-500">Use the editor below — your formatting is preserved in the preview</p>
                   </div>
                 </div>
 
                 {/* Tone selector — kept minimal above editor */}
                 <div className="mb-4">
-                  <p className="text-[10px] font-extrabold tracking-widest uppercase text-indigo-500 mb-2">
-                    Tone
-                  </p>
+                  <p className="text-[10px] font-extrabold tracking-widest uppercase text-indigo-500 mb-2">Tone</p>
                   <div className="flex flex-wrap gap-1.5">
-                    {[
-                      "Professional",
-                      "Confident",
-                      "Enthusiastic",
-                      "Formal",
-                      "Creative",
-                      "Friendly",
-                    ].map((t) => (
-                      <button
-                        key={t}
-                        onClick={() => setData((p) => ({ ...p, tone: t }))}
-                        className={`px-3 py-1 rounded-full text-[11.5px] font-semibold border-[1.5px] transition-all ${data.tone === t ? "border-indigo-500 text-indigo-600 bg-indigo-50" : "border-slate-200 text-slate-500 bg-white hover:border-indigo-200"}`}
-                      >
-                        {t}
-                      </button>
+                    {["Professional","Confident","Enthusiastic","Formal","Creative","Friendly"].map((t) => (
+                      <button key={t} onClick={() => setData((p) => ({ ...p, tone: t }))} className={`px-3 py-1 rounded-full text-[11.5px] font-semibold border-[1.5px] transition-all ${data.tone === t ? "border-indigo-500 text-indigo-600 bg-indigo-50" : "border-slate-200 text-slate-500 bg-white hover:border-indigo-200"}`}>{t}</button>
                     ))}
                   </div>
                 </div>
@@ -18027,9 +19752,7 @@ export default function CoverLetterGenerator() {
                 {/* PrimeReact Rich Text Editor */}
                 <Editor
                   value={data.letterContent}
-                  onTextChange={(e) =>
-                    setData((p) => ({ ...p, letterContent: e.htmlValue || "" }))
-                  }
+                  onTextChange={(e) => setData((p) => ({ ...p, letterContent: e.htmlValue || "" }))}
                   style={{ minHeight: "420px" }}
                   placeholder="Start writing your cover letter here…
 
@@ -18040,9 +19763,7 @@ export default function CoverLetterGenerator() {
                 />
 
                 <p className="text-[11px] text-slate-400 mt-2.5 flex items-center gap-1">
-                  <span>💡</span> Use <strong>bold</strong> for key
-                  achievements. Your formatted text appears live in the preview
-                  →
+                  <span>💡</span> Use <strong>bold</strong> for key achievements. Your formatted text appears live in the preview →
                 </p>
               </div>
             )}
@@ -18051,83 +19772,35 @@ export default function CoverLetterGenerator() {
             {step === "review" && (
               <div className="bg-white rounded-2xl p-5 shadow-sm border border-indigo-100/60">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-9 h-9 rounded-[11px] bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-lg">
-                    ✅
-                  </div>
-                  <div>
-                    <p className="text-[14px] font-extrabold text-slate-900">
-                      Review Summary
-                    </p>
-                    <p className="text-[11.5px] text-slate-500">
-                      Check before downloading
-                    </p>
-                  </div>
+                  <div className="w-9 h-9 rounded-[11px] bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-lg">✅</div>
+                  <div><p className="text-[14px] font-extrabold text-slate-900">Review Summary</p><p className="text-[11.5px] text-slate-500">Check before downloading</p></div>
                 </div>
-                {(
-                  [
-                    ["Template", tpl?.name, "template"],
-                    ["Accent", data.accentColor, "template"],
-                    ["Font", data.fontFamily, "template"],
-                    ["Full Name", data.personal.fullName, "personal"],
-                    ["Title", data.personal.title, "personal"],
-                    ["Email", data.personal.email, "personal"],
-                    ["Company", data.company.name, "company"],
-                    ["Role", data.company.jobTitle, "company"],
-                    ["Industry", data.company.industry, "company"],
-                    [
-                      "Location",
-                      [
-                        data.company.city,
-                        data.company.state,
-                        data.company.country,
-                      ]
-                        .filter(Boolean)
-                        .join(", "),
-                      "company",
-                    ],
-                    ["Letter Date", data.letterDate, "company"],
-                    [
-                      "Content",
-                      data.letterContent ? "Written ✓" : "Empty",
-                      "content",
-                    ],
-                  ] as [string, string, Step][]
-                ).map(([l, v, s]) => (
-                  <div
-                    key={l}
-                    className="flex items-center justify-between py-2.5 border-b border-slate-50 last:border-0"
-                  >
-                    <span className="text-[11px] font-extrabold uppercase tracking-[.5px] text-slate-400">
-                      {l}
-                    </span>
+                {([
+                  ["Template", tpl?.name, "template"],
+                  ["Accent", data.accentColor, "template"],
+                  ["Font", data.fontFamily, "template"],
+                  ["Full Name", data.personal.fullName, "personal"],
+                  ["Title", data.personal.title, "personal"],
+                  ["Email", data.personal.email, "personal"],
+                  ["Company", data.company.name, "company"],
+                  ["Role", data.company.jobTitle, "company"],
+                  ["Industry", data.company.industry, "company"],
+                  ["Location", [data.company.city, data.company.state, data.company.country].filter(Boolean).join(", "), "company"],
+                  ["Letter Date", data.letterDate, "company"],
+                  ["Content", data.letterContent ? "Written ✓" : "Empty", "content"],
+                ] as [string, string, Step][]).map(([l, v, s]) => (
+                  <div key={l} className="flex items-center justify-between py-2.5 border-b border-slate-50 last:border-0">
+                    <span className="text-[11px] font-extrabold uppercase tracking-[.5px] text-slate-400">{l}</span>
                     <div className="flex items-center gap-2">
-                      {l === "Accent" && v ? (
-                        <span
-                          className="w-4 h-4 rounded-full border border-white shadow-sm"
-                          style={{ background: v }}
-                        />
-                      ) : null}
-                      <span
-                        className={`text-[12.5px] font-medium text-right max-w-[180px] truncate ${v ? "text-slate-800" : "text-slate-300"}`}
-                      >
-                        {v || "—"}
-                      </span>
-                      <button
-                        onClick={() => setStep(s)}
-                        className="text-[11px] font-bold text-indigo-500 hover:text-indigo-700"
-                      >
-                        Edit
-                      </button>
+                      {l === "Accent" && v ? <span className="w-4 h-4 rounded-full border border-white shadow-sm" style={{ background: v }} /> : null}
+                      <span className={`text-[12.5px] font-medium text-right max-w-[180px] truncate ${v ? "text-slate-800" : "text-slate-300"}`}>{v || "—"}</span>
+                      <button onClick={() => setStep(s)} className="text-[11px] font-bold text-indigo-500 hover:text-indigo-700">Edit</button>
                     </div>
                   </div>
                 ))}
                 <div className="mt-4 p-4 bg-indigo-50 rounded-xl border border-indigo-100">
-                  <p className="text-[13px] font-bold text-slate-900 mb-1">
-                    ✅ Ready to Download
-                  </p>
-                  <p className="text-[12px] text-slate-500">
-                    Download your cover letter as a high-quality PDF below.
-                  </p>
+                  <p className="text-[13px] font-bold text-slate-900 mb-1">✅ Ready to Download</p>
+                  <p className="text-[12px] text-slate-500">Download your cover letter as a high-quality PDF below.</p>
                 </div>
               </div>
             )}
@@ -18135,30 +19808,15 @@ export default function CoverLetterGenerator() {
 
           {/* FOOTER */}
           <div className="flex-shrink-0 px-5 py-3 border-t border-slate-200 bg-white flex justify-between items-center gap-3">
-            <button
-              onClick={() =>
-                stepIdx === 0
-                  ? router.push("/")
-                  : setStep(STEPS[stepIdx - 1].id)
-              }
-              className="flex items-center gap-1.5 px-4 py-2.5 rounded-full text-[13px] font-bold border-[1.5px] border-slate-200 bg-white text-slate-500 hover:bg-indigo-50 hover:border-indigo-200 hover:text-indigo-600 transition-all cursor-pointer"
-            >
+            <button onClick={() => stepIdx === 0 ? router.push("/") : setStep(STEPS[stepIdx - 1].id)} className="flex items-center gap-1.5 px-4 py-2.5 rounded-full text-[13px] font-bold border-[1.5px] border-slate-200 bg-white text-slate-500 hover:bg-indigo-50 hover:border-indigo-200 hover:text-indigo-600 transition-all cursor-pointer">
               ← {stepIdx > 0 ? "Back" : "Home"}
             </button>
             {stepIdx < STEPS.length - 1 ? (
-              <button
-                onClick={handleContinue}
-                className="flex items-center gap-2 px-6 py-2.5 rounded-full text-[13.5px] font-semibold bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md hover:shadow-lg hover:-translate-y-px transition-all cursor-pointer"
-              >
-                Continue to {STEPS[stepIdx + 1].label}{" "}
-                {(!isLoggedIn || !isPremium) && step === "template" ? "🔒" : ""}
+              <button onClick={handleContinue} className="flex items-center gap-2 px-6 py-2.5 rounded-full text-[13.5px] font-semibold bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md hover:shadow-lg hover:-translate-y-px transition-all cursor-pointer">
+                Continue to {STEPS[stepIdx + 1].label} {(!isLoggedIn || !isPremium) && step === "template" ? "🔒" : ""}
               </button>
             ) : (
-              <button
-                onClick={downloadPDF}
-                disabled={busy}
-                className="flex items-center gap-2 px-6 py-2.5 rounded-full text-[13.5px] font-extrabold bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md hover:shadow-lg hover:-translate-y-px disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none transition-all"
-              >
+              <button onClick={downloadPDF} disabled={busy} className="flex items-center gap-2 px-6 py-2.5 rounded-full text-[13.5px] font-extrabold bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md hover:shadow-lg hover:-translate-y-px disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none transition-all">
                 {busy ? "⏳ Generating…" : "⬇ Download PDF"}
               </button>
             )}
@@ -18170,49 +19828,22 @@ export default function CoverLetterGenerator() {
           <div className="flex-shrink-0 h-[52px] bg-white border-b border-slate-200 px-4 flex items-center justify-between gap-3">
             <div className="flex items-center gap-2.5">
               <span className="w-2 h-2 rounded-full bg-emerald-500 live-dot" />
-              <div>
-                <p className="text-[13px] font-bold text-slate-900 leading-tight">
-                  Live Preview
-                </p>
-                <p className="text-[10.5px] text-slate-400">
-                  Drag anywhere · Pinch · Scroll
-                </p>
-              </div>
+              <div><p className="text-[13px] font-bold text-slate-900 leading-tight">Live Preview</p><p className="text-[10.5px] text-slate-400">Drag anywhere · Pinch · Scroll</p></div>
             </div>
             <div className="flex items-center gap-2">
-              <button
-                onClick={() => setStep("template")}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold bg-indigo-50 border border-indigo-100 text-indigo-600 hover:bg-indigo-100 transition-all"
-              >
-                🎨 Change
-              </button>
-              <button
-                onClick={() => {
-                  rebuild();
-                  setModal(true);
-                }}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold border-[1.5px] border-slate-200 text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 transition-all"
-              >
-                ⛶ Fullscreen
-              </button>
+              <button onClick={() => setStep("template")} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold bg-indigo-50 border border-indigo-100 text-indigo-600 hover:bg-indigo-100 transition-all">🎨 Change</button>
+              <button onClick={() => { rebuild(); setModal(true); }} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold border-[1.5px] border-slate-200 text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 transition-all">⛶ Fullscreen</button>
             </div>
           </div>
           <div className="flex-1 overflow-hidden">
             <CanvasPreview>
-              {html ? (
-                <iframe
-                  ref={liveRef}
-                  className="canvas-iframe"
-                  title="preview"
-                  sandbox="allow-same-origin"
-                />
+              {(iframeH) => html ? (
+                <iframe ref={liveRef} className="canvas-iframe" scrolling="no" style={{ height: iframeH }} title="preview" sandbox="allow-same-origin" />
               ) : (
-                <div className="w-[860px] h-[1120px] bg-white flex flex-col items-center justify-center gap-3 text-slate-400 rounded-xl">
+                <div className="w-[860px] bg-white flex flex-col items-center justify-center gap-3 text-slate-400 rounded-xl" style={{ height: iframeH }}>
                   <span className="text-[52px] opacity-20">📄</span>
                   <p className="text-[16px] font-bold">Preview appears here</p>
-                  <p className="text-[13px]">
-                    Fill in your details to see the letter
-                  </p>
+                  <p className="text-[13px]">Fill in your details to see the letter</p>
                 </div>
               )}
             </CanvasPreview>
@@ -18221,78 +19852,34 @@ export default function CoverLetterGenerator() {
       </div>
 
       {/* MOBILE FAB */}
-      <button
-        onClick={() => {
-          rebuild();
-          setModal(true);
-        }}
-        className="lg:hidden fixed top-[70px] right-3 z-50 bg-gradient-to-r from-indigo-600 to-violet-600 text-white p-2.5 rounded-full shadow-xl"
-      >
+      <button onClick={() => { rebuild(); setModal(true); }} className="lg:hidden fixed top-[70px] right-3 z-50 bg-gradient-to-r from-indigo-600 to-violet-600 text-white p-2.5 rounded-full shadow-xl">
         <FiEye className="w-4 h-4" />
       </button>
 
       {/* FULLSCREEN MODAL */}
       <AnimatePresence>
         {modal && (
-          <div
-            className="ov-anim fixed inset-0 bg-[rgba(10,6,30,.86)] backdrop-blur-[14px] z-[1000] flex items-center justify-center p-3 sm:p-5"
-            onClick={() => setModal(false)}
-          >
-            <div
-              className="modal-anim w-full max-w-[980px] h-[92vh] bg-white rounded-2xl overflow-hidden flex flex-col shadow-[0_48px_100px_rgba(0,0,0,.48)]"
-              onClick={(e) => e.stopPropagation()}
-            >
+          <div className="ov-anim fixed inset-0 bg-[rgba(10,6,30,.86)] backdrop-blur-[14px] z-[1000] flex items-center justify-center p-3 sm:p-5" onClick={() => setModal(false)}>
+            <div className="modal-anim w-full max-w-[980px] h-[92vh] bg-white rounded-2xl overflow-hidden flex flex-col shadow-[0_48px_100px_rgba(0,0,0,.48)]" onClick={(e) => e.stopPropagation()}>
               <div className="flex-shrink-0 h-[56px] px-5 bg-white border-b border-slate-100 flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-[9px] bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-sm text-white">
-                    📄
-                  </div>
-                  <div>
-                    <p className="text-[14px] font-extrabold text-slate-900 leading-tight">
-                      {data.personal.fullName || "Cover Letter"}
-                    </p>
-                    <p className="text-[11px] text-slate-400">
-                      {tpl?.name} · {tpl?.tag}
-                    </p>
-                  </div>
+                  <div className="w-8 h-8 rounded-[9px] bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-sm text-white">📄</div>
+                  <div><p className="text-[14px] font-extrabold text-slate-900 leading-tight">{data.personal.fullName || "Cover Letter"}</p><p className="text-[11px] text-slate-400">{tpl?.name} · {tpl?.tag}</p></div>
                 </div>
-                <button
-                  onClick={() => setModal(false)}
-                  className="w-8 h-8 rounded-full bg-indigo-50 border border-indigo-100 text-slate-400 hover:bg-red-50 hover:text-red-500 flex items-center justify-center text-[16px] transition-all"
-                >
-                  ✕
-                </button>
+                <button onClick={() => setModal(false)} className="w-8 h-8 rounded-full bg-indigo-50 border border-indigo-100 text-slate-400 hover:bg-red-50 hover:text-red-500 flex items-center justify-center text-[16px] transition-all">✕</button>
               </div>
               <div className="flex-1 overflow-hidden bg-slate-100">
                 <CanvasPreview>
-                  {html ? (
-                    <iframe
-                      ref={modalRef}
-                      className="modal-iframe"
-                      title="full-preview"
-                      sandbox="allow-same-origin"
-                    />
+                  {(iframeH) => html ? (
+                    <iframe ref={modalRef} className="modal-iframe" scrolling="no" style={{ height: iframeH }} title="full-preview" sandbox="allow-same-origin" />
                   ) : (
-                    <div className="w-[860px] h-[1120px] bg-white flex items-center justify-center text-slate-400">
-                      <span className="text-5xl opacity-20">📄</span>
-                    </div>
+                    <div className="w-[860px] bg-white flex items-center justify-center text-slate-400" style={{ height: iframeH }}><span className="text-5xl opacity-20">📄</span></div>
                   )}
                 </CanvasPreview>
               </div>
               <div className="flex-shrink-0 px-5 py-3 border-t border-slate-100 bg-white flex justify-end gap-2.5">
-                <button
-                  onClick={() => setModal(false)}
-                  className="px-4 py-2 rounded-full text-[12.5px] font-bold border-[1.5px] border-slate-200 text-slate-500 hover:bg-slate-50 transition-all"
-                >
-                  Close
-                </button>
-                <button
-                  onClick={downloadPDF}
-                  disabled={busy}
-                  className="flex items-center gap-1.5 px-5 py-2 rounded-full text-[12.5px] font-bold bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md hover:shadow-lg disabled:opacity-50 transition-all"
-                >
-                  {busy ? "⏳ Generating…" : "⬇ Download PDF"}
-                </button>
+                <button onClick={() => setModal(false)} className="px-4 py-2 rounded-full text-[12.5px] font-bold border-[1.5px] border-slate-200 text-slate-500 hover:bg-slate-50 transition-all">Close</button>
+                <button onClick={downloadPDF} disabled={busy} className="flex items-center gap-1.5 px-5 py-2 rounded-full text-[12.5px] font-bold bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md hover:shadow-lg disabled:opacity-50 transition-all">{busy ? "⏳ Generating…" : "⬇ Download PDF"}</button>
               </div>
             </div>
           </div>
@@ -18300,9 +19887,7 @@ export default function CoverLetterGenerator() {
       </AnimatePresence>
 
       {toast && (
-        <div className="toast-anim fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] bg-slate-900 text-white px-6 py-2.5 rounded-full text-[13px] font-bold shadow-xl whitespace-nowrap">
-          {toast}
-        </div>
+        <div className="toast-anim fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] bg-slate-900 text-white px-6 py-2.5 rounded-full text-[13px] font-bold shadow-xl whitespace-nowrap">{toast}</div>
       )}
     </>
   );

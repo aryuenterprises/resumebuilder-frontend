@@ -7349,6 +7349,7 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
             overflow: "hidden",
             pointerEvents: "none",
             flexShrink: 0,
+
           }}
         >
           {pages[0] ? (
@@ -7379,6 +7380,7 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
               }}
             >
               Loading…
+            
             </div>
           )}
         </div>
