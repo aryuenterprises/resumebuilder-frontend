@@ -19,7 +19,7 @@ import { API_URL } from "@/app/config/api";
 import { CreateContext } from "@/app/context/CreateContext";
 import LoginModel from "@/app/components/auth/LoginModel";
 import { ResumeDataFetcher, usePreventReload } from "@/app/hooks";
-import {SimpleCanvasPreview, Stepper} from "@/app/components/resume";
+import { SimpleCanvasPreview, Stepper } from "@/app/components/resume";
 
 export default function RootLayout({
   children,
