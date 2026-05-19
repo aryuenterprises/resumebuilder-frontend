@@ -671,7 +671,7 @@ const Education_form = () => {
                               <button
                                 onClick={() => handleSubmitAi(index)}
                                 disabled={loading}
-                                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
+                                className={`inline-flex cursor-pointer items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
                                   !exp.degree || exp.degree.trim() === ""
                                     ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                                     : "bg-linear-to-r from-indigo-600 to-indigo-500 text-white hover:shadow-md"

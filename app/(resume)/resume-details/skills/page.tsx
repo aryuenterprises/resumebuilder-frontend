@@ -262,7 +262,7 @@ const SkillsForm = () => {
                       }
                     }}
                     disabled={loading}
-                    className={`flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-lg text-sm font-medium hover:shadow-lg transition-all ${
+                    className={`flex items-center cursor-pointer justify-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-lg text-sm font-medium hover:shadow-lg transition-all ${
                       experienceTitlesList.length === 0
                         ? "cursor-not-allowed opacity-50"
                         : ""

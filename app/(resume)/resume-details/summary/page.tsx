@@ -254,7 +254,7 @@ const filteredSkills = skills?.text
                     <button
                       onClick={handleSubmitAi}
                       disabled={loading}
-                      className={`inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                      className={`inline-flex cursor-pointer items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                         loading
                           ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                           : "bg-linear-to-r from-indigo-600 to-indigo-500 text-white hover:shadow-lg"

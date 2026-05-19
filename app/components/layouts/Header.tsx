@@ -540,7 +540,7 @@ const Header: React.FC = () => {
       transition={{ duration: 0.4, ease: "easeInOut" }}
       className="bg-white backdrop-blur-lg border-b shadow-red-300/10 border-gray-100 sticky top-0 z-50 overflow-hidden"
     >
-      <div className="flex justify-between items-center px-3 xs:px-4 sm:px-6 lg:px-8 xl:px-10 py-2 xs:py-2.5 sm:py-3 md:py-4 mx-auto">
+      <div className="flex justify-between items-center px-3 xs:px-4 sm:px-6 lg:px-8 xl:px-10 py-2 xs:py-2.5 sm:py-3 md:py-3.5 mx-auto">
         {/* Logo - responsive sizing */}
         <button onClick={() => router.push("/")} className="cursor-pointer flex-shrink-0">
           <div className="relative w-[100px] xs:w-[120px] sm:w-[140px] md:w-[150px] h-[33px] xs:h-[40px] sm:h-[46px] md:h-[50px]">

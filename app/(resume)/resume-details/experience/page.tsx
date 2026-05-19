@@ -1,10 +1,3 @@
-
-
-
-
-
-
-
 "use client";
 import React, { useState, useRef, useEffect, useContext } from "react";
 import dynamic from "next/dynamic";
@@ -71,8 +64,12 @@ const ExperienceForm = () => {
     UseContext;
 
   // Drag and drop state
-  const [draggedItemId, setDraggedItemId] = useState<string | number | null>(null);
-  const [dragOverItemId, setDragOverItemId] = useState<string | number | null>(null);
+  const [draggedItemId, setDraggedItemId] = useState<string | number | null>(
+    null,
+  );
+  const [dragOverItemId, setDragOverItemId] = useState<string | number | null>(
+    null,
+  );
 
   const addExperience = () => {
     setExperiences([
@@ -123,24 +120,24 @@ const ExperienceForm = () => {
 
   const handleDrop = (e: React.DragEvent, targetId: string | number) => {
     e.preventDefault();
-    
+
     if (draggedItemId === null) return;
     if (draggedItemId === targetId) return;
 
     // Reorder the experiences array
     setExperiences((prev) => {
-      const draggedIndex = prev.findIndex(exp => exp.id === draggedItemId);
-      const targetIndex = prev.findIndex(exp => exp.id === targetId);
-      
+      const draggedIndex = prev.findIndex((exp) => exp.id === draggedItemId);
+      const targetIndex = prev.findIndex((exp) => exp.id === targetId);
+
       if (draggedIndex === -1 || targetIndex === -1) return prev;
-      
+
       const newExperiences = [...prev];
       const [draggedItem] = newExperiences.splice(draggedIndex, 1);
       newExperiences.splice(targetIndex, 0, draggedItem);
-      
+
       return newExperiences;
     });
-    
+
     setDraggedItemId(null);
     setDragOverItemId(null);
   };
@@ -433,29 +430,31 @@ const ExperienceForm = () => {
                   {experiences.map((exp, index) => (
                     <div
                       key={exp.id}
-                     
                       className={`bg-white rounded-xl sm:rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 
-                        ${draggedItemId === exp.id ? 'opacity-50' : ''}
-                        ${dragOverItemId === exp.id ? 'border-2 border-indigo-400 shadow-lg transform scale-[1.02]' : ''}
+                        ${draggedItemId === exp.id ? "opacity-50" : ""}
+                        ${dragOverItemId === exp.id ? "border-2 border-indigo-400 shadow-lg transform scale-[1.02]" : ""}
                       `}
                     >
                       {/* Header */}
                       <div
-                       draggable={true}
-                      onDragStart={(e) => handleDragStart(e, exp.id)}
-                      onDragEnd={handleDragEnd}
-                      onDragOver={(e) => handleDragOver(e, exp.id)}
-                      onDragLeave={handleDragLeave}
-                      onDrop={(e) => handleDrop(e, exp.id)}
+                        draggable={true}
+                        onDragStart={(e) => handleDragStart(e, exp.id)}
+                        onDragEnd={handleDragEnd}
+                        onDragOver={(e) => handleDragOver(e, exp.id)}
+                        onDragLeave={handleDragLeave}
+                        onDrop={(e) => handleDrop(e, exp.id)}
                         onClick={() => toggleForm(exp.id)}
                         className="flex justify-between items-center cursor-pointer p-4 sm:p-5 group hover:bg-gray-50/50 transition-all duration-300"
                       >
                         <div className="flex items-center gap-3 flex-1 min-w-0">
                           {/* Drag Handle Icon */}
-                          <div onClick={(e)=>e.stopPropagation()} className="flex-shrink-0 text-gray-400 group-hover:text-indigo-400 transition-colors cursor-move">
+                          <div
+                            onClick={(e) => e.stopPropagation()}
+                            className="flex-shrink-0 text-gray-400 group-hover:text-indigo-400 transition-colors cursor-move"
+                          >
                             <FiMenu className="w-4 h-4 sm:w-5 sm:h-5" />
                           </div>
-                          
+
                           <div className="flex-1 min-w-0">
                             <h3 className="text-sm sm:text-base font-semibold text-gray-800 mb-0.5 sm:mb-1 truncate group-hover:text-indigo-600 transition-colors">
                               {exp.jobTitle || "Job Title"}
@@ -469,8 +468,8 @@ const ExperienceForm = () => {
                               </span>
                               <span className="whitespace-nowrap">
                                 {/* <MonthYearDisplay */}
-                                  {/* // value={exp.startDate} */}
-                                  {/* shortYear={true} */}
+                                {/* // value={exp.startDate} */}
+                                {/* shortYear={true} */}
                                 {/* /> */}
 
                                 {formatMonthYear(exp.startDate, false)}
@@ -485,8 +484,7 @@ const ExperienceForm = () => {
                                   //   shortYear={true}
                                   // />
 
-                                                                  formatMonthYear(exp.endDate, false)
-
+                                  formatMonthYear(exp.endDate, false)
                                 )}
                               </span>
                             </div>
@@ -669,7 +667,7 @@ const ExperienceForm = () => {
                                 <button
                                   onClick={() => handleSubmitAi(index)}
                                   disabled={loading}
-                                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
+                                  className={`inline-flex cursor-pointer items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
                                     !exp.jobTitle || exp.jobTitle.trim() === ""
                                       ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                                       : "bg-linear-to-r from-indigo-600 to-indigo-500 text-white hover:shadow-md"
