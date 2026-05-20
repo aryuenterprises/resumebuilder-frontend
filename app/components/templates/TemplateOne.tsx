@@ -7503,6 +7503,7 @@ import { motion } from "framer-motion";
 //   → inner text width = 794 - 57 - 57 = 680 px
 //   → matches PDF text width = 210mm - 15mm - 15mm = 180mm = 680px ✓
 // ─────────────────────────────────────────────────────────────────────────────
+
 const A4_W = 794; // px — A4 width at 96 dpi
 const A4_H = 1123; // px — A4 height at 96 dpi
 const MARGIN = 57; // px — 15 mm at 96 dpi
@@ -7797,13 +7798,22 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
         : "";
 
       const skillsClean = cleanQuillHTML(skills || "");
+      // const skillsBlock =
+      //   skillsClean && skillsClean !== "<p><br></p>"
+      //     ? `
+      // <div class="t1-section-content">
+      //   <div class="t1-section-title">Skills</div>
+      //   <div class="t1-skills-content">${skillsClean}</div>
+      // </div>`
+      //     : "";
+
       const skillsBlock =
         skillsClean && skillsClean !== "<p><br></p>"
           ? `
-      <div class="t1-section-content">
-        <div class="t1-section-title">Skills</div>
-        <div class="t1-skills-content">${skillsClean}</div>
-      </div>`
+<div class="t1-section-content" style="page-break-inside: avoid; break-inside: avoid;">
+  <div class="t1-section-title">Skills</div>
+  <div class="t1-skills-content">${skillsClean}</div>
+</div>`
           : "";
 
       const customBlock =
@@ -7828,8 +7838,46 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
 
       // PDF override: strip the fixed width/padding from .t1-resume so Puppeteer's
       // own 15mm margins control the layout — exactly 680px of text width either way.
+      // const pdfOverrideStyle = forPDF
+      //   ? `<style>.t1-resume { width: 100% !important; padding: 0 !important; }</style>`
+      //   : "";
+
       const pdfOverrideStyle = forPDF
-        ? `<style>.t1-resume { width: 100% !important; padding: 0 !important; }</style>`
+        ? `<style>
+      .t1-resume { width: 100% !important; padding: 0 !important; }
+      
+      /* Keep section title glued to first item below it */
+      .t1-section-title {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      
+      /* Keep each item's header glued to its content */
+      .t1-item-header {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      
+      /* Never break inside these blocks */
+      .t1-experience-item,
+      .t1-education-item,
+      .t1-project-item,
+      .t1-custom-section {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+
+      /* Keep section title with the section content block */
+      .t1-section-content {
+        page-break-inside: avoid-page !important;
+      }
+
+      /* Critical: keep title + first child together */
+      .t1-section-title + * {
+        page-break-before: avoid !important;
+        break-before: avoid !important;
+      }
+    </style>`
         : "";
 
       return `<!DOCTYPE html>
@@ -7925,49 +7973,22 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
             return;
           }
 
+          const resumeSnapshot = resume.outerHTML; // snapshot first
           const resumeTop =
             resume.getBoundingClientRect().top +
             (doc.documentElement.scrollTop || doc.body.scrollTop);
           const totalH = resume.scrollHeight;
 
-          // ── Collect avoid-break elements ──────────────────────────────────
           interface Block {
             top: number;
             bottom: number;
           }
           const blocks: Block[] = [];
-
-          // Track elements we've already processed to avoid duplicates
           const processedElements = new Set<HTMLElement>();
 
-          // ── Process section wrappers that contain titles ───────────────────
-          // Each .t1-section-content contains a title + content that must stay together
-          resume
-            .querySelectorAll<HTMLElement>(".t1-section-content")
-            .forEach((section) => {
-              const rect = section.getBoundingClientRect();
-              const top =
-                rect.top -
-                resumeTop +
-                (doc.documentElement.scrollTop || doc.body.scrollTop);
-              const bottom =
-                rect.bottom -
-                resumeTop +
-                (doc.documentElement.scrollTop || doc.body.scrollTop);
-
-              if (bottom - top > 8) {
-                blocks.push({ top, bottom });
-                processedElements.add(section);
-
-                // Also mark all children as processed to avoid duplicates
-                section.querySelectorAll<HTMLElement>("*").forEach((child) => {
-                  processedElements.add(child);
-                });
-              }
-            });
-
-          // ── Process other avoid-break elements ─────────────────────────────
+          // ✅ Only avoid-break on ITEMS and HEADERS, not whole sections
           const AVOID_SELECTORS = [
+            ".t1-section-title", // keep title with first item below it
             ".t1-experience-item",
             ".t1-education-item",
             ".t1-project-item",
@@ -7978,7 +7999,6 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
           resume
             .querySelectorAll<HTMLElement>(AVOID_SELECTORS)
             .forEach((el) => {
-              // Skip if already processed (part of a section-content block)
               if (processedElements.has(el)) return;
 
               const rect = el.getBoundingClientRect();
@@ -7994,10 +8014,12 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
               if (elBot - elTop > 8) {
                 blocks.push({ top: elTop, bottom: elBot });
                 processedElements.add(el);
+                el.querySelectorAll<HTMLElement>("*").forEach((child) => {
+                  processedElements.add(child);
+                });
               }
             });
 
-          // Sort by top position
           blocks.sort((a, b) => a.top - b.top);
 
           // ── Calculate actual page cut points ──────────────────────────────
@@ -8124,9 +8146,9 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
     };
   }, [generateHTML, scheduleUpdate]);
 
-  useEffect(() => {
-    setHtmlContent(generateHTML());
-  }, [generateHTML]);
+  // useEffect(() => {
+  //   setHtmlContent(generateHTML());
+  // }, [generateHTML]);
 
   useEffect(() => {
     if (!htmlContent) return;
@@ -8180,18 +8202,18 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
       />
 
       {/* ── Download button (only on /download-resume route) ── */}
-      {/* {lastSegment === "download-resume" && ( */}
-      <div className="text-center my-5">
-        <motion.button
-          onClick={handleDownload}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors shadow-md hover:shadow-lg cursor-pointer"
-        >
-          Download Resume
-        </motion.button>
-      </div>
-      {/* )}  */}
+      {lastSegment === "download-resume" && (
+        <div className="text-center my-5">
+          <motion.button
+            onClick={handleDownload}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors shadow-md hover:shadow-lg cursor-pointer"
+          >
+            Download Resume
+          </motion.button>
+        </div>
+      )}
 
       {alldata ? (
         // ── THUMBNAIL mode: first page only, scaled 36% ──────────────────

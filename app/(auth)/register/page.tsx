@@ -280,6 +280,19 @@ export default function RegisterForm() {
         `${API_URL}/api/users/create`,
         values,
       );
+      //   const response = await axios.post(
+      //   `${API_URL}/registraion`,
+      //   {
+      //     first_name: values.firstName,
+      //     last_name: values.lastName,
+      //     email: values.email,
+      //     phone: values.phone,
+      //     password: values.password,
+      //     city: values.city,
+      //     state: values.state,
+      //     country: values.country,
+      //   },
+      // );
       setLoading(false);
 
       // Show success modal

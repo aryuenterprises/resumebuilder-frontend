@@ -40,14 +40,14 @@ export default function RootLayout({
   // usePreventReload()
 
   return (
-    <div className="flex h-screen bg-gray-100 gap-5 relative">
+    <div className="flex h-screen bg-gray-100  relative">
       <LoginModel />
 
       <aside className="w-full lg:w-1/2 overflow-y-auto ">
         <ResumeDataFetcher>{children}</ResumeDataFetcher>
       </aside>
 
-      <section className="max-lg:hidden w-1/2 bg-gray-100">
+      <section className="max-lg:hidden w-1/2 bg-[#e8e6f2]">
         {/* <div
           className="absolute top-2 right-5 z-10"
           onMouseEnter={() => setIsHovered(true)}
@@ -87,7 +87,7 @@ export default function RootLayout({
             whileTap={{ scale: 0.98 }}
             className={`
       flex items-center gap-2 px-4 py-2.5 
-      bg-white/80 backdrop-blur-md 
+    bg-white backdrop-blur-md 
       border border-gray-200/50 hover:border-indigo-400 
       text-gray-700 hover:text-indigo-600 
       font-medium rounded-xl shadow-md hover:shadow-lg 

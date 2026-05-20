@@ -391,9 +391,22 @@ const ContactPage = () => {
         name: name,
         email: email,
         message: message,
+
+
       };
 
+      //  const formData: FormData = {
+      //   full_name: name,
+      //   email: email,
+      //   message: message,
+
+        
+      // };
+
       await axios.post(`${API_URL}/api/contacts/create`, formData);
+
+            // await axios.post(`${API_URL}/contact`, formData);
+
 
       Swal.fire({
         icon: 'success',
