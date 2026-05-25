@@ -5282,6 +5282,7 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
   // ── RENDER ───────────────────────────────────────────────────────────────
   return (
     <>
+           {lastSegment === "download-resume" && ( 
       <div className="text-center my-5">
         <motion.button
           onClick={handleDownload}
@@ -5292,6 +5293,7 @@ const TemplateFive: React.FC<ResumeProps> = ({ alldata }) => {
           Download Resume
         </motion.button>
       </div>
+      )}
 
       {alldata ? (
         <div

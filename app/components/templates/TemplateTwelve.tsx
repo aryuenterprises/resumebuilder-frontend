@@ -5416,8 +5416,8 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
                    const formattedGrade = formatGradeToCgpdAndPercentage(edu.grade || "");
                    const dateStr = [
                      edu.startDate || "",
-                     edu.startDate && edu.endDate ? "\n–\n" : "",
-                     edu.endDate || "",
+                     edu.startDate ? "\n–\n" : "",
+                     edu.endDate || "Present",
                    ].join("");
                    return `<div class="entry-block" data-block-id="t12-edu-${i}">
                      <div class="entry-left">

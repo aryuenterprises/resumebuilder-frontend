@@ -5960,9 +5960,8 @@ const TemplateEleven: React.FC<ResumeProps> = ({ alldata }) => {
 
     /* Header Section */
     .t11-resume .resume-header {
-      padding: 45px 0 30px 0;
+      padding: 0 0 0 0;
       text-align: left;
-      margin: 0 45px;
       page-break-inside: avoid;
       break-inside: avoid;
     }
@@ -6040,7 +6039,6 @@ const TemplateEleven: React.FC<ResumeProps> = ({ alldata }) => {
     .t11-resume .resume-main {
       padding: 20px 0 50px 0;
       text-align: left;
-      margin: 0 45px;
     }
 
     /* Section Styles */
@@ -6442,7 +6440,7 @@ const TemplateEleven: React.FC<ResumeProps> = ({ alldata }) => {
             <h2 class="section-title">Education</h2>
             ${educations.map((edu, i: number) => {
               const dateStr = edu.startDate || edu.endDate
-                ? `${edu.startDate || ""}${edu.startDate && edu.endDate ? " — " : ""}${edu.endDate || ""}`
+                ? `${edu.startDate || ""}${edu.startDate  ? " — " : ""}${edu.endDate || "Present"}`
                 : "";
               const formattedGrade = formatGradeToCgpdAndPercentage(edu.grade || "");
               const eduTextHtml = edu.text ? cleanQuillHTML(edu.text) : "";

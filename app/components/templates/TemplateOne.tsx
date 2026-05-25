@@ -9937,6 +9937,7 @@ const PAGE_CONTENT_H = A4_H - MARGIN * 2; // 1009px
 const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
   const context = useContext(CreateContext);
   const pathname = usePathname();
+  const lastSegment = pathname.split("/").pop();
 
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const [htmlContent, setHtmlContent] = useState<string>("");
@@ -10624,6 +10625,8 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
   // ── RENDER ───────────────────────────────────────────────────────────────
   return (
     <>
+          {lastSegment === "download-resume" && (
+
       <div className="text-center my-5">
         <motion.button
           onClick={handleDownload}
@@ -10634,6 +10637,8 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
           Download Resume
         </motion.button>
       </div>
+              )}
+
 
       {alldata ? (
         <div

@@ -5849,7 +5849,7 @@ const TemplateThree: React.FC<ResumeProps> = ({ alldata }) => {
   return (
     <>
       {/* Download button */}
-      {/* {lastSegment === "download-resume" && ( */}
+      {lastSegment === "download-resume" && (
         <div className="text-center my-5">
           <motion.button
             onClick={handleDownload}
@@ -5860,7 +5860,7 @@ const TemplateThree: React.FC<ResumeProps> = ({ alldata }) => {
             Download Resume
           </motion.button>
         </div>
-      {/* )} */}
+      )}
 
       {alldata ? (
         // ── THUMBNAIL mode: first page only, scaled 36% ──────────────────

@@ -3263,13 +3263,13 @@ export default function CoverLetterGenerator() {
         </div>
 
         {/* Download PDF button */}
-        <button
+        {/* <button
           onClick={downloadPDF}
           disabled={busy}
           className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[12px] font-bold bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md hover:shadow-lg hover:-translate-y-px disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none transition-all flex-shrink-0"
         >
           {busy ? "⏳" : "⬇"} PDF
-        </button>
+        </button> */}
       </nav>
 
       {/* ── MAIN LAYOUT — left panel + right canvas ── */}
