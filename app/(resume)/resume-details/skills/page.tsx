@@ -39,19 +39,15 @@ const SkillsForm = () => {
   const [skillTipsClicked, setSkillTipsClicked] = useState(false);
   const router = useRouter();
   const UseContext = useContext(CreateContext);
-  // const contactId = UseContext?.contact?._id;
-    // const contactId =  UseContext?.contact.contactId;
-
-      const contactId = UseContext?.contact.contactId ||  UseContext?.contact._id ;
-
-
+  const contactId = UseContext?.contact.contactId || UseContext?.contact._id;
 
   const { skills, setSkills } = UseContext;
-
   const [skillsText, setSkillsText] = useState<string>("");
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [lastSavedData, setLastSavedData] = useState<string>("");
+
+console.log("skills",skills)
 
   // Check if mobile
   useEffect(() => {
@@ -79,7 +75,6 @@ const SkillsForm = () => {
 
   const saveToAPI = async (skillsDataToSave: string) => {
     if (!contactId) return false;
-
 
     setIsSaving(true);
     try {
@@ -112,7 +107,6 @@ const SkillsForm = () => {
   const experienceTitlesList =
     UseContext?.experiences?.map((item: any) => item.jobTitle) || [];
 
-
   const [showMobileWarning, setShowMobileWarning] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [Airesponse, setAiresponse] = useState<string[] | null>(null);
@@ -141,35 +135,34 @@ const SkillsForm = () => {
 
   const insertAIResponse = (skill: string, index: number) => {
     // Format as bullet point if not already present
-    const formattedSkill = skill.startsWith('•') ? skill : `• ${skill}`;
-    
+    const formattedSkill = skill.startsWith("•") ? skill : `• ${skill}`;
+
     // Add the skill to existing text
     const newText = skillsText
       ? `${skillsText}\n${formattedSkill}`
       : formattedSkill;
-    
+
     setSkillsText(newText);
     setSkills((prev: any) => ({ ...prev, text: newText }));
-    
+
     // Remove the added skill from AI response list
     if (Airesponse) {
       const newAiResponse = Airesponse.filter((_, idx) => idx !== index);
       setAiresponse(newAiResponse.length > 0 ? newAiResponse : null);
     }
-    
+
     toast.success(`"${skill}" added!`);
   };
 
   const addAllAISkills = () => {
     if (Airesponse && Airesponse.length > 0) {
       // Format all skills as bullet points
-      const formattedSkills = Airesponse
-        .map(skill =>  skill) .join('\n');
-      
+      const formattedSkills = Airesponse.map((skill) => skill).join("\n");
+
       const newText = skillsText
         ? `${skillsText}\n\n${formattedSkills}`
         : formattedSkills;
-      
+
       setSkillsText(newText);
       setSkills((prev: any) => ({ ...prev, text: newText }));
       setAiresponse(null);
@@ -178,8 +171,7 @@ const SkillsForm = () => {
     }
   };
 
-
-  console.log("UseContext",UseContext)
+  console.log("UseContext", UseContext);
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-indigo-50/40">
@@ -242,8 +234,6 @@ const SkillsForm = () => {
 
             {/* Form Content */}
             <div className="p-4 sm:p-6 lg:p-8">
-              
-
               {/* Action Buttons */}
               <div className="flex flex-wrap justify-end items-center gap-3 mb-4">
                 <div className="relative inline-block group">
@@ -280,7 +270,7 @@ const SkillsForm = () => {
                   {experienceTitlesList.length === 0 && !isMobile && (
                     // <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg shadow-lg whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-50 w-full wrap-break-word  ">
                     //   <div className="flex items-center gap-2">
-                        
+
                     //       <span className="inline-block mr-1">
                     //                     ⚠️
                     //                   </span>
@@ -292,14 +282,12 @@ const SkillsForm = () => {
                     // </div>
 
                     <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-full bg-gray-900 text-white text-xs rounded-lg py-2 px-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-100 shadow-lg whitespace-normal">
-                                    <div className="relative text-center">
-                                      <span className="inline-block mr-1">
-                                        ⚠️
-                                      </span>
-                           Add work experience first for personalized suggestions
-                                      <div className="absolute left-1/2 -translate-x-1/2 -bottom-1.5 w-2 h-2 bg-gray-900 rotate-45"></div>
-                                    </div>
-                                  </div>
+                      <div className="relative text-center">
+                        <span className="inline-block mr-1">⚠️</span>
+                        Add work experience first for personalized suggestions
+                        <div className="absolute left-1/2 -translate-x-1/2 -bottom-1.5 w-2 h-2 bg-gray-900 rotate-45"></div>
+                      </div>
+                    </div>
                   )}
                 </div>
               </div>
@@ -320,61 +308,60 @@ const SkillsForm = () => {
                   }}
                 /> */}
 
+              <Editor
+                className="rounded-lg bg-white border border-gray-200 overflow-hidden"
+                value={skillsText || ""}
+                onTextChange={handleTextChange}
+                headerTemplate={
+                  <div className="flex gap-1 p-2 flex-wrap items-center bg-gray-50 border-b border-gray-200">
+                    <button
+                      type="button"
+                      className="ql-bold p-1.5 hover:bg-gray-200 rounded transition"
+                    >
+                      B
+                    </button>
+                    <button
+                      type="button"
+                      className="ql-italic p-1.5 hover:bg-gray-200 rounded transition"
+                    >
+                      I
+                    </button>
+                    <button
+                      type="button"
+                      className="ql-underline p-1.5 hover:bg-gray-200 rounded transition"
+                    >
+                      U
+                    </button>
+                    <button
+                      type="button"
+                      className="ql-list p-1.5 hover:bg-gray-200 rounded transition"
+                      value="ordered"
+                    >
+                      1.
+                    </button>
+                    <button
+                      type="button"
+                      className="ql-list p-1.5 hover:bg-gray-200 rounded transition"
+                      value="bullet"
+                    >
+                      •
+                    </button>
+                    <button
+                      type="button"
+                      className="ql-clean p-1.5 hover:bg-gray-200 rounded transition"
+                    >
+                      ⌫
+                    </button>
+                  </div>
+                }
+                style={{
+                  height: "200px",
+                  minHeight: "200px",
+                  background: "white",
+                }}
+              />
+            </div>
 
-                  <Editor
-                      className="rounded-lg bg-white border border-gray-200 overflow-hidden"
-                      value={skillsText || ""}
-                      onTextChange={handleTextChange}
-                      headerTemplate={
-                                <div className="flex gap-1 p-2 flex-wrap items-center bg-gray-50 border-b border-gray-200">
-                                  <button
-                                    type="button"
-                                    className="ql-bold p-1.5 hover:bg-gray-200 rounded transition"
-                                  >
-                                    B
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="ql-italic p-1.5 hover:bg-gray-200 rounded transition"
-                                  >
-                                    I
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="ql-underline p-1.5 hover:bg-gray-200 rounded transition"
-                                  >
-                                    U
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="ql-list p-1.5 hover:bg-gray-200 rounded transition"
-                                    value="ordered"
-                                  >
-                                    1.
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="ql-list p-1.5 hover:bg-gray-200 rounded transition"
-                                    value="bullet"
-                                  >
-                                    •
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="ql-clean p-1.5 hover:bg-gray-200 rounded transition"
-                                  >
-                                    ⌫
-                                  </button>
-                                </div>
-                              }
-                      style={{
-                        height: "200px",
-                        minHeight: "200px",
-                        background: "white",
-                      }}
-                    />
-              </div>
-              
             {/* </div> */}
           </div>
         </div>
@@ -512,21 +499,8 @@ const SkillsForm = () => {
                   </motion.button>
                 ))}
               </div>
-              
-              <div className="flex gap-3 mt-4 pt-4 border-t border-gray-200">
-                <button
-                  onClick={addAllAISkills}
-                  className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors"
-                >
-                  Add All Skills
-                </button>
-                <button
-                  onClick={() => setShowPopup(false)}
-                  className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
-                >
-                  Close
-                </button>
-              </div>
+
+       
             </div>
           </motion.div>
         </div>

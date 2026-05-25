@@ -127,7 +127,7 @@ export default function RootLayout({
         {SelectedComponent && (
           <SimpleCanvasPreview>
             <SelectedComponent />
-          </SimpleCanvasPreview>
+         </SimpleCanvasPreview>
         )}
       </section>
 
