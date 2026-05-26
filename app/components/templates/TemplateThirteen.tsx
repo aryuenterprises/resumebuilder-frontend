@@ -4882,6 +4882,722 @@
 
 
 
+// "use client";
+// import React, { useContext, useState, useEffect, useRef, useCallback } from "react";
+// import axios, { AxiosResponse } from "axios";
+// import { CreateContext } from "@/app/context/CreateContext";
+// import { API_URL } from "@/app/config/api";
+// import { formatMonthYear, cleanQuillHTML, formatDateOfBirth, formatGradeToCgpdAndPercentage } from "@/app/utils";
+// import { usePathname } from "next/navigation";
+// import { ResumeProps } from "@/app/types";
+// import { motion } from "framer-motion";
+
+// const A4_W = 794;
+// const A4_H = 1123;
+// const MARGIN = 57;
+// const PAGE_CONTENT_H = A4_H - MARGIN * 2; // 1009px
+
+// const TemplateThirteen: React.FC<ResumeProps> = ({ alldata }) => {
+//   const context = useContext(CreateContext);
+//   const pathname = usePathname();
+//   const lastSegment = pathname.split("/").pop();
+//   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+//   const [htmlContent, setHtmlContent] = useState<string>("");
+//   const [pages, setPages] = useState<string[]>([]);
+
+//   const contact = alldata?.contact || context.contact || {};
+//   const educations = alldata?.educations || context?.education || [];
+//   const experiences = alldata?.experiences || context?.experiences || [];
+//   const skills = alldata?.skills?.text || context?.skills?.text || "";
+//   const projects = alldata?.projects || context?.projects || [];
+//   const finalize = alldata?.finalize || context?.finalize || {};
+//   const summary = alldata?.summary || context?.summary || "";
+
+//   const addressParts = [
+//     contact?.address, contact?.city, contact?.postCode, contact?.country,
+//   ].filter(Boolean);
+
+//   const linkedinUrl = contact?.linkedIn;
+//   const portfolioUrl = contact?.portfolio;
+//   const githubUrl = contact?.github;
+//   const dateOfBirth = contact?.dob;
+//   const formattedDob = formatDateOfBirth(dateOfBirth ? dateOfBirth : "");
+
+//   const styles = `
+//     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap');
+
+//     @page { size: A4; margin: 15mm; }
+
+//     *, *::before, *::after { box-sizing: border-box; }
+
+//     html, body { margin: 0; padding: 0; background: white; }
+
+//     .t13-resume {
+//       width: ${A4_W}px;
+//       padding: 0 ${MARGIN}px;
+//       background: white;
+//       font-family: 'Montserrat', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+//       color: #111111;
+//     }
+
+//     .t13-resume, .t13-resume * {
+//       font-family: 'Montserrat', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+//     }
+
+//     .t13-resume p {
+//       margin: 0 0 4px 0 !important; padding: 0 !important; line-height: 1.6 !important;
+//     }
+//     .t13-resume p:last-child { margin-bottom: 0 !important; }
+
+//     .t13-resume .experience-description ul, .t13-resume .experience-description ol,
+//     .t13-resume .education-description ul,  .t13-resume .education-description ol,
+//     .t13-resume .skills-content ul,         .t13-resume .skills-content ol,
+//     .t13-resume .custom-section-content ul, .t13-resume .custom-section-content ol {
+//       margin: 4px 0 4px 20px !important; padding-left: 20px !important;
+//     }
+//     .t13-resume .experience-description li, .t13-resume .education-description li,
+//     .t13-resume .skills-content li,         .t13-resume .custom-section-content li {
+//       margin-bottom: 2px !important; line-height: 1.6 !important;
+//     }
+//     .t13-resume .experience-description ul, .t13-resume .education-description ul,
+//     .t13-resume .skills-content ul,         .t13-resume .custom-section-content ul { list-style-type: disc !important; }
+//     .t13-resume .experience-description ol, .t13-resume .education-description ol,
+//     .t13-resume .skills-content ol,         .t13-resume .custom-section-content ol { list-style-type: decimal !important; }
+//     .t13-resume .experience-description strong, .t13-resume .education-description strong,
+//     .t13-resume .skills-content strong,         .t13-resume .custom-section-content strong { font-weight: 700 !important; }
+//     .t13-resume .experience-description em, .t13-resume .education-description em,
+//     .t13-resume .skills-content em,         .t13-resume .custom-section-content em { font-style: italic !important; }
+//     .t13-resume .experience-description u, .t13-resume .education-description u,
+//     .t13-resume .skills-content u,          .t13-resume .custom-section-content u { text-decoration: underline !important; }
+//     .t13-resume .experience-description p, .t13-resume .education-description p,
+//     .t13-resume .skills-content p,          .t13-resume .custom-section-content p { white-space: pre-wrap !important; }
+
+//     .t13-resume .skills-content {
+//       font-size: 13px; font-weight: 500; color: #444444; line-height: 1.6;
+//     }
+
+//     /* Header */
+//     .t13-resume .resume-header {
+//       padding: 40px 0 30px 0;
+//       background: #0a0a0a;
+//       color: white;
+//       -webkit-print-color-adjust: exact;
+//       print-color-adjust: exact;
+//       margin: 0 -${MARGIN}px;
+//       padding-left: ${MARGIN}px;
+//       padding-right: ${MARGIN}px;
+//     }
+//     .t13-resume .name {
+//       font-size: 40px; font-weight: 800; letter-spacing: -0.5px;
+//       margin: 0 0 8px 0; color: white; text-transform: uppercase; line-height: 1.1;
+//     }
+//     .t13-resume .job-title {
+//       font-size: 14px; font-weight: 500; letter-spacing: 3px;
+//       text-transform: uppercase; color: #aaaaaa; margin-bottom: 25px;
+//       padding-bottom: 20px; border-bottom: 2px solid rgba(255,255,255,0.15);
+//     }
+//     .t13-resume .contact-grid {
+//       display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+//       gap: 14px; margin-top: 10px;
+//     }
+//     .t13-resume .contact-item { display: flex; flex-direction: column; gap: 4px; }
+//     .t13-resume .contact-label {
+//       font-size: 10px; font-weight: 700; text-transform: uppercase;
+//       letter-spacing: 1.5px; color: #888888;
+//     }
+//     .t13-resume .contact-value {
+//       font-size: 13px; font-weight: 500; color: white; line-height: 1.4; word-break: break-word;
+//     }
+//     .t13-resume .contact-value a { color: white; text-decoration: none; }
+
+//     .t13-resume .education-grade { font-size: 12px; font-weight: 500; color: #666666; margin-top: 4px; }
+
+//     /* Main content */
+//     .t13-resume .resume-main { padding: 35px 0 45px 0; }
+
+//     .t13-resume .section { margin-bottom: 30px; }
+//     .t13-resume .section:last-child { margin-bottom: 0; }
+
+//     .t13-resume .section-title {
+//       font-size: 18px; font-weight: 800; text-transform: uppercase;
+//       letter-spacing: 2px; color: #111111; margin: 0 0 18px 0;
+//       padding-bottom: 8px; border-bottom: 3px solid #111111;
+//       display: inline-block;
+//       page-break-after: avoid; break-after: avoid;
+//     }
+
+//     .t13-resume .summary-text {
+//       font-size: 13.5px; line-height: 1.65; color: #333333; font-weight: 500;
+//     }
+
+//     .t13-resume .experience-item {
+//       margin-bottom: 28px;
+//       page-break-inside: avoid; break-inside: avoid;
+//     }
+//     .t13-resume .experience-item:last-child { margin-bottom: 0; }
+//     .t13-resume .experience-header { margin-bottom: 10px; }
+//     .t13-resume .experience-title-row {
+//       display: flex; justify-content: space-between; align-items: baseline;
+//       flex-wrap: wrap; gap: 10px; margin-bottom: 4px;
+//     }
+//     .t13-resume .experience-title { font-size: 17px; font-weight: 800; color: #111111; }
+//     .t13-resume .experience-date { font-size: 11.5px; font-weight: 600; color: #666666; letter-spacing: 0.5px; }
+//     .t13-resume .experience-company { font-size: 14px; font-weight: 600; color: #444444; margin-top: 2px; }
+//     .t13-resume .experience-description { margin-top: 10px; }
+
+//     .t13-resume .education-item {
+//       margin-bottom: 24px;
+//       page-break-inside: avoid; break-inside: avoid;
+//     }
+//     .t13-resume .education-item:last-child { margin-bottom: 0; }
+//     .t13-resume .education-header { margin-bottom: 8px; }
+//     .t13-resume .education-title-row {
+//       display: flex; justify-content: space-between; align-items: baseline;
+//       flex-wrap: wrap; gap: 10px; margin-bottom: 4px;
+//     }
+//     .t13-resume .education-school { font-size: 17px; font-weight: 800; color: #111111; }
+//     .t13-resume .education-date { font-size: 11.5px; font-weight: 600; color: #666666; }
+//     .t13-resume .education-degree { font-size: 14px; font-weight: 600; color: #444444; margin-top: 2px; }
+//     .t13-resume .education-description { margin-top: 8px; }
+
+//     .t13-resume .skills-container { margin-top: 8px; }
+
+//     .t13-resume .project-links { display: flex; gap: 15px; }
+//     .t13-resume .project-link { font-size: 10px; font-weight: 600; color: #666666; text-decoration: underline; }
+//     .t13-resume .project-tech-stack { font-size: 11px; font-weight: 500; color: #777777; margin: 4px 0; }
+
+//     .t13-resume .custom-section { margin-bottom: 20px; }
+//     .t13-resume .custom-section:last-child { margin-bottom: 0; }
+//     .t13-resume .custom-section-title {
+//       font-size: 15px; font-weight: 800; color: #111111;
+//       margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 1px;
+//     }
+//     .t13-resume .custom-section-content {
+//       font-size: 13.5px; font-weight: 500; color: #444444; line-height: 1.6;
+//     }
+
+//     /* Page break marker injected for PDF */
+//     .t13-page-break {
+//       page-break-before: always !important;
+//       break-before: page !important;
+//       display: block; height: 0; margin: 0; padding: 0;
+//     }
+
+//     @media print {
+//       * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+//       .t13-resume { width: 100% !important; padding: 0 !important; margin: 0 !important; }
+//       .t13-resume .resume-header {
+//         background: #0a0a0a !important;
+//         margin: 0 !important;
+//         padding: 40px 50px 30px 50px !important;
+//       }
+//       .t13-resume .resume-main { padding: 35px 0 45px 0 !important; }
+//       .t13-resume .section-title { border-bottom: 3px solid #111111 !important; }
+//       .t13-resume p { margin: 0 0 4px 0 !important; }
+//     }
+//   `;
+
+//   // ── HTML builder ─────────────────────────────────────────
+//   const generateHTML = useCallback((forPDF = false, pageBreakIds: string[] = []): string => {
+//     const href = (url: string) => url.startsWith("http") ? url : `https://${url}`;
+//     const cleanUrl = (url: string) => url.replace(/^https?:\/\//, "").replace(/^www\./, "");
+
+//     const skillsClean = cleanQuillHTML(skills);
+//     const skillsBlock = skillsClean && skillsClean !== "<p><br></p>"
+//       ? `<div class="section" data-block-id="skills-section">
+//            <h2 class="section-title">Skills</h2>
+//            <div class="skills-container">
+//              <div class="skills-content" data-block-id="skills-content">${skillsClean}</div>
+//            </div>
+//          </div>`
+//       : "";
+
+//     const projectsBlock = projects.length
+//       ? `<div class="section" data-block-id="proj-section">
+//            <h2 class="section-title">Projects</h2>
+//            ${projects.map((p: any, i: number) => `
+//              <div class="experience-item" data-block-id="proj-${i}">
+//                <div class="experience-header">
+//                  <div class="experience-title-row">
+//                    <span class="experience-title">${p.title || ""}</span>
+//                    <div class="project-links">
+//                      ${p.liveUrl ? `<a href="${href(p.liveUrl)}" class="project-link">Live Demo</a>` : ""}
+//                      ${p.githubUrl ? `<a href="${href(p.githubUrl)}" class="project-link">GitHub</a>` : ""}
+//                    </div>
+//                  </div>
+//                  ${p.techStack?.length ? `<div class="project-tech-stack"><strong>Tech:</strong> ${p.techStack.join(", ")}</div>` : ""}
+//                  ${p.description ? `<div class="experience-description">${cleanQuillHTML(p.description)}</div>` : ""}
+//                </div>
+//              </div>`).join("")}
+//          </div>`
+//       : "";
+
+//     const customBlock =
+//       !Array.isArray(finalize) &&
+//       Array.isArray(finalize?.customSection) &&
+//       finalize.customSection.some((s: any) => s?.name?.trim() || s?.description?.trim())
+//         ? `<div class="section" data-block-id="custom-section">
+//              ${finalize.customSection
+//                .filter((s: any) => s?.name?.trim() || s?.description?.trim())
+//                .map((s: any, i: number) => `
+//                  <div class="custom-section" data-block-id="custom-${i}">
+//                    ${s.name ? `<h3 class="custom-section-title">${s.name}</h3>` : ""}
+//                    ${s.description ? `<div class="custom-section-content">${cleanQuillHTML(s.description)}</div>` : ""}
+//                  </div>`).join("")}
+//            </div>`
+//         : "";
+
+//     const summaryBlock = summary
+//       ? `<div class="section" data-block-id="summary">
+//            <h2 class="section-title">Profile</h2>
+//            <div class="summary-text">${cleanQuillHTML(summary)}</div>
+//          </div>`
+//       : "";
+
+//     const expBlock = experiences.length
+//       ? `<div class="section" data-block-id="exp-section">
+//            <h2 class="section-title">Experience</h2>
+//            ${experiences.map((exp: any, i: number) => {
+//              const startFormatted = formatMonthYear(exp.startDate, false);
+//              const endFormatted = exp.endDate ? formatMonthYear(exp.endDate, false) : "Present";
+//              const companyLocation = [exp.employer, exp.location].filter(Boolean).join(" • ");
+//              return `<div class="experience-item" data-block-id="exp-${i}">
+//                <div class="experience-header">
+//                  <div class="experience-title-row">
+//                    <span class="experience-title">${exp.jobTitle || ""}</span>
+//                    <span class="experience-date">${startFormatted} — ${endFormatted}</span>
+//                  </div>
+//                  <div class="experience-company">${companyLocation}</div>
+//                </div>
+//                ${exp.text ? `<div class="experience-description">${cleanQuillHTML(exp.text)}</div>` : ""}
+//              </div>`;
+//            }).join("")}
+//          </div>`
+//       : "";
+
+//     const eduBlock = educations.length
+//       ? `<div class="section" data-block-id="edu-section">
+//            <h2 class="section-title">Education</h2>
+//            ${educations.map((edu: any, i: number) => {
+//              const dateStr = edu.startDate || edu.endDate
+//                ? `${edu.startDate || ""} — ${edu.endDate || "Present"}` : "";
+//              const formattedGrade = formatGradeToCgpdAndPercentage(edu.grade || "");
+//              const eduTextHtml = edu.text ? cleanQuillHTML(edu.text) : "";
+//              return `<div class="education-item" data-block-id="edu-${i}">
+//                <div class="education-header">
+//                  <div class="education-title-row">
+//                    <span class="education-school">${edu.schoolname || ""}</span>
+//                    ${dateStr ? `<span class="education-date">${dateStr}</span>` : ""}
+//                  </div>
+//                  ${edu.degree ? `<div class="education-degree">${edu.degree}</div>` : ""}
+//                  ${formattedGrade ? `<div class="education-grade">${formattedGrade}</div>` : ""}
+//                </div>
+//                ${eduTextHtml ? `<div class="education-description">${eduTextHtml}</div>` : ""}
+//              </div>`;
+//            }).join("")}
+//          </div>`
+//       : "";
+
+//     const pdfStyle = forPDF
+//       ? `<style>
+//           .t13-resume { width: 100% !important; padding: 0 !important; }
+//           .t13-resume .resume-header { margin: 0 !important; padding: 40px 50px 30px 50px !important; }
+//           .t13-resume .resume-main { padding: 35px 50px 45px 50px !important; }
+//         </style>`
+//       : "";
+
+//     let mainContent = `
+//       ${summaryBlock}
+//       ${expBlock}
+//       ${projectsBlock}
+//       ${eduBlock}
+//       ${skillsBlock}
+//       ${customBlock}
+//     `;
+
+//     // Inject page-break markers before elements at cut points (PDF only)
+//     if (forPDF && pageBreakIds.length > 0) {
+//       const tempDiv = document.createElement("div");
+//       tempDiv.innerHTML = mainContent;
+//       pageBreakIds.forEach((id) => {
+//         const el = tempDiv.querySelector(`[data-block-id="${id}"]`);
+//         if (el) {
+//           const breakDiv = document.createElement("div");
+//           breakDiv.className = "t13-page-break";
+//           el.parentNode?.insertBefore(breakDiv, el);
+//         }
+//       });
+//       mainContent = tempDiv.innerHTML;
+//     }
+
+//     return `<!DOCTYPE html>
+// <html>
+// <head>
+//   <meta charset="UTF-8"/>
+//   <meta name="viewport" content="width=device-width, initial-scale=1"/>
+//   <title>Resume - ${contact?.firstName || ""} ${contact?.lastName || ""}</title>
+//   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+//   <style>${styles}</style>
+//   ${pdfStyle}
+// </head>
+// <body style="margin:0;padding:0;background:white;">
+//   <div class="t13-resume">
+//     <div class="resume-header" data-block-id="header">
+//       <h1 class="name">${contact?.firstName || ""} ${contact?.lastName || ""}</h1>
+//       <div class="job-title">${
+//         contact?.jobTitle
+//           ? typeof contact.jobTitle === "string" ? contact.jobTitle : (contact.jobTitle as any)?.name || ""
+//           : ""
+//       }</div>
+//       <div class="contact-grid">
+//         ${contact?.email ? `<div class="contact-item"><div class="contact-label">EMAIL</div><div class="contact-value">${contact.email}</div></div>` : ""}
+//         ${contact?.phone ? `<div class="contact-item"><div class="contact-label">PHONE</div><div class="contact-value">${contact.phone}</div></div>` : ""}
+//         ${formattedDob ? `<div class="contact-item"><div class="contact-label">BIRTH DATE</div><div class="contact-value">${formattedDob}</div></div>` : ""}
+//         ${linkedinUrl ? `<div class="contact-item"><div class="contact-label">LINKEDIN</div><div class="contact-value"><a href="${href(linkedinUrl)}">${cleanUrl(linkedinUrl)}</a></div></div>` : ""}
+//         ${githubUrl ? `<div class="contact-item"><div class="contact-label">GITHUB</div><div class="contact-value"><a href="${href(githubUrl)}">${cleanUrl(githubUrl)}</a></div></div>` : ""}
+//         ${portfolioUrl ? `<div class="contact-item"><div class="contact-label">PORTFOLIO</div><div class="contact-value"><a href="${href(portfolioUrl)}">${cleanUrl(portfolioUrl)}</a></div></div>` : ""}
+//         ${addressParts.length ? `<div class="contact-item"><div class="contact-label">LOCATION</div><div class="contact-value">${addressParts.join(", ")}</div></div>` : ""}
+//       </div>
+//     </div>
+//     <div class="resume-main">
+//       ${mainContent}
+//     </div>
+//   </div>
+// </body>
+// </html>`;
+//   }, [contact, educations, experiences, skills, projects, finalize, summary, linkedinUrl, portfolioUrl, githubUrl, formattedDob, addressParts, styles]);
+
+//   // ─────────────────────────────────────────────────────────────────────────
+//   // PAGE SPLITTER — same logic as TemplateOne
+//   // ─────────────────────────────────────────────────────────────────────────
+//   const splitIntoPages = useCallback(
+//     (fullHtml: string): Promise<string[]> => {
+//       return new Promise((resolve) => {
+//         const parser = new DOMParser();
+//         const parsed = parser.parseFromString(fullHtml, "text/html");
+//         const resumeEl = parsed.querySelector<HTMLElement>(".t13-resume");
+//         if (!resumeEl) { resolve([fullHtml]); return; }
+//         const resumeSnapshot = resumeEl.outerHTML;
+
+//         const iframe = document.createElement("iframe");
+//         iframe.style.cssText = [
+//           "position:fixed", "top:0", "left:-9999px",
+//           `width:${A4_W}px`, "height:10000px", "border:none",
+//           "opacity:0", "pointer-events:none", "z-index:-1",
+//         ].join(";");
+//         document.body.appendChild(iframe);
+
+//         const measureDoc = iframe.contentDocument!;
+//         measureDoc.open();
+//         measureDoc.write(`<!DOCTYPE html>
+// <html>
+// <head>
+//   <meta charset="UTF-8"/>
+//   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+//   <style>
+//     ${styles}
+//     html, body {
+//       margin: 0 !important; padding: 0 !important;
+//       width: ${A4_W}px !important; height: auto !important;
+//       overflow: visible !important; background: white !important;
+//     }
+//     .t13-resume {
+//       width: ${A4_W}px !important;
+//       padding-left: ${MARGIN}px !important; padding-right: ${MARGIN}px !important;
+//       padding-top: 0 !important; padding-bottom: 0 !important;
+//       margin: 0 !important; box-sizing: border-box !important;
+//     }
+//     .t13-resume .resume-header {
+//       margin: 0 -${MARGIN}px !important;
+//       padding-left: ${MARGIN}px !important;
+//       padding-right: ${MARGIN}px !important;
+//     }
+//   </style>
+// </head>
+// <body>${resumeSnapshot}</body>
+// </html>`);
+//         measureDoc.close();
+
+//         const doMeasure = () => {
+//           const resume = measureDoc.querySelector<HTMLElement>(".t13-resume");
+//           if (!resume) {
+//             document.body.removeChild(iframe);
+//             resolve([fullHtml]);
+//             return;
+//           }
+
+//           measureDoc.documentElement.style.cssText = "height:auto!important;overflow:visible!important;";
+//           measureDoc.body.style.cssText = "margin:0;padding:0;height:auto!important;overflow:visible!important;";
+//           void resume.offsetHeight;
+
+//           const totalH = resume.scrollHeight;
+//           const resumeRect = resume.getBoundingClientRect();
+//           const scrollY = measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
+
+//           const getRelTop = (el: HTMLElement): number => {
+//             const r = el.getBoundingClientRect();
+//             return r.top - resumeRect.top + scrollY;
+//           };
+//           const getRelBottom = (el: HTMLElement): number =>
+//             getRelTop(el) + el.getBoundingClientRect().height;
+
+//           interface Block { top: number; bottom: number; id?: string; }
+//           const blocks: Block[] = [];
+
+//           // Individual avoid-break items
+//           const ITEM_SELECTORS = [
+//             ".experience-item",
+//             ".education-item",
+//             ".custom-section",
+//             ".resume-header",
+//             ".summary-text",
+//             ".skills-container",
+//           ].join(", ");
+
+//           resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
+//             const top = getRelTop(el);
+//             const bottom = getRelBottom(el);
+//             if (bottom - top > 8) blocks.push({ top, bottom, id: el.dataset.blockId });
+//           });
+
+//           // Section title + first item paired — prevents orphaned titles
+//           resume.querySelectorAll<HTMLElement>(".section-title").forEach((title) => {
+//             const titleTop = getRelTop(title);
+//             let firstItem: HTMLElement | null = null;
+//             let sib = title.nextElementSibling as HTMLElement | null;
+//             while (sib) {
+//               if (sib.getBoundingClientRect().height > 8) { firstItem = sib; break; }
+//               sib = sib.nextElementSibling as HTMLElement | null;
+//             }
+//             if (firstItem) {
+//               const deepChild = firstItem.querySelector<HTMLElement>(
+//                 ".experience-item, .education-item, .custom-section, .skills-container, .summary-text"
+//               );
+//               const anchor = deepChild || firstItem;
+//               const anchorBottom = getRelBottom(anchor);
+//               if (anchorBottom - titleTop > 8) {
+//                 const sectionId = (title.parentElement as HTMLElement)?.dataset?.blockId;
+//                 blocks.push({ top: titleTop, bottom: anchorBottom, id: sectionId });
+//               }
+//             }
+//           });
+
+//           blocks.sort((a, b) => a.top - b.top);
+
+//           // Calculate cut points — pick min(top) among all straddling blocks
+//           const pageStarts: number[] = [0];
+//           const pageBreakIds: string[] = [];
+//           const MAX_PAGES = 20;
+
+//           while (pageStarts.length < MAX_PAGES) {
+//             const currentStart = pageStarts[pageStarts.length - 1];
+//             const naiveCut = currentStart + PAGE_CONTENT_H;
+//             if (naiveCut >= totalH) break;
+
+//             let actualCut = naiveCut;
+//             let cutBlockId: string | undefined;
+
+//             for (const block of blocks) {
+//               if (block.top >= naiveCut) break;
+//               if (block.bottom <= currentStart) continue;
+//               if (block.top >= currentStart && block.bottom > naiveCut) {
+//                 if (block.top < actualCut) {
+//                   actualCut = block.top;
+//                   cutBlockId = block.id;
+//                 }
+//               }
+//             }
+
+//             if (actualCut <= currentStart) actualCut = naiveCut;
+//             pageStarts.push(actualCut);
+//             if (cutBlockId) pageBreakIds.push(cutBlockId);
+//           }
+
+//           // Store pageBreakIds for PDF download
+//           (window as any).__resumeT13PageBreakIds = pageBreakIds;
+
+//           document.body.removeChild(iframe);
+
+//           // Build page HTMLs — clip at actual cut point, not always PAGE_CONTENT_H
+//           const pageHtmls: string[] = [];
+
+//           for (let i = 0; i < pageStarts.length; i++) {
+//             const contentOffsetY = pageStarts[i];
+//             const nextStart = pageStarts[i + 1] ?? totalH;
+//             const clipH = nextStart - contentOffsetY;
+
+//             pageHtmls.push(`<!DOCTYPE html>
+// <html lang="en">
+// <head>
+//   <meta charset="UTF-8"/>
+//   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+//   <style>
+//     ${styles}
+//     html, body {
+//       margin: 0 !important; padding: 0 !important;
+//       width: ${A4_W}px !important; height: ${A4_H}px !important;
+//       overflow: hidden !important; background: white !important;
+//     }
+//     .page-margin-box {
+//       position: relative; width: ${A4_W}px; height: ${A4_H}px;
+//       background: white; overflow: hidden;
+//     }
+//     .page-content-clip {
+//       position: absolute; top: ${MARGIN}px; left: 0;
+//       width: ${A4_W}px; height: ${clipH}px; overflow: hidden;
+//     }
+//     .page-shift {
+//       position: absolute; top: ${-contentOffsetY}px; left: 0; width: ${A4_W}px;
+//     }
+//     .t13-resume {
+//       width: ${A4_W}px !important;
+//       padding-top: 0 !important; padding-bottom: 0 !important;
+//       // padding-left: ${MARGIN}px !important; padding-right: ${MARGIN}px !important;
+//       margin: 0 !important;
+//     }
+//     .t13-resume .resume-header {
+//       margin: 0 -${MARGIN}px !important;
+//       // padding-left: ${MARGIN}px !important;
+//       // padding-right: ${MARGIN}px !important;
+//     }
+//   </style>
+// </head>
+// <body>
+//   <div class="page-margin-box">
+//     <div class="page-content-clip">
+//       <div class="page-shift">
+//         ${resumeSnapshot}
+//       </div>
+//     </div>
+//   </div>
+// </body>
+// </html>`);
+//           }
+
+//           resolve(pageHtmls);
+//         };
+
+//         const win = iframe.contentWindow as any;
+//         if (win?.document?.fonts?.ready) {
+//           win.document.fonts.ready.then(() => {
+//             setTimeout(() => requestAnimationFrame(doMeasure), 100);
+//           });
+//         } else {
+//           setTimeout(doMeasure, 500);
+//         }
+//       });
+//     },
+//     [styles],
+//   );
+
+//   // ── Debounced updates ────────────────────────────────────
+//   const scheduleUpdate = useCallback((html: string) => {
+//     if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+//     debounceTimerRef.current = setTimeout(() => setHtmlContent(html), 300);
+//   }, []);
+
+//   useEffect(() => {
+//     scheduleUpdate(generateHTML());
+//     return () => { if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current); };
+//   }, [generateHTML, scheduleUpdate]);
+
+//   useEffect(() => {
+//     if (!htmlContent) return;
+//     splitIntoPages(htmlContent).then(setPages);
+//   }, [htmlContent, splitIntoPages]);
+
+//   // ── PDF download — uses pageBreakIds from splitIntoPages ─
+//   const handleDownload = async () => {
+//     try {
+//       const pageBreakIds: string[] = (window as any).__resumeT13PageBreakIds || [];
+//       const res: AxiosResponse<Blob> = await axios.post(
+//         `${API_URL}/api/candidates/generate-pdf`,
+//         { html: generateHTML(true, pageBreakIds) },
+//         { responseType: "blob" },
+//       );
+//       const url = URL.createObjectURL(res.data);
+//       const a = document.createElement("a");
+//       a.href = url;
+//       a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
+//       document.body.appendChild(a);
+//       a.click();
+//       document.body.removeChild(a);
+//       URL.revokeObjectURL(url);
+//     } catch (error) {
+//       console.error("Error generating PDF:", error);
+//       alert("Failed to generate PDF. Please try again.");
+//     }
+//   };
+
+//   return (
+//     <>
+//       {/* {lastSegment === "download-resume" && ( */}
+//         <div className="text-center my-5">
+//           <motion.button
+//             onClick={handleDownload}
+//             whileHover={{ scale: 1.05 }}
+//             whileTap={{ scale: 0.95 }}
+//             className="bg-emerald-500 text-2xl md:text-base hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 cursor-pointer shadow-md hover:shadow-lg"
+//           >
+//             Download Resume
+//           </motion.button>
+//         </div>
+//       {/* )} */}
+
+//       {alldata ? (
+//         <div style={{ width: `${A4_W}px`, height: `${A4_H}px`, transform: "scale(0.36)", transformOrigin: "top left", overflow: "hidden", pointerEvents: "none", flexShrink: 0 }}>
+//           {pages[0] ? (
+//             <iframe title="resume-thumb" srcDoc={pages[0]}
+//               style={{ width: `${A4_W}px`, height: `${A4_H}px`, border: "none", display: "block", pointerEvents: "none" }}
+//               sandbox="allow-same-origin" />
+//           ) : (
+//             <div style={{ width: `${A4_W}px`, height: `${A4_H}px`, background: "white", display: "flex", alignItems: "center", justifyContent: "center", color: "#ccc", fontSize: 14, fontFamily: "sans-serif" }}>
+//               Loading…
+//             </div>
+//           )}
+//         </div>
+//       ) : (
+//         <div style={{ width: `${A4_W}px`, margin: "0 auto" }}>
+//           {(pages.length > 0 ? pages : [htmlContent]).map((pageHtml, idx) => (
+//             <div key={idx} style={{ marginBottom: "28px" }}>
+//               <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", marginBottom: "10px" }}>
+//                 <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
+//                 <span style={{ fontSize: "11px", fontWeight: 600, color: "#6b7280", whiteSpace: "nowrap", padding: "3px 12px", background: "#f3f4f6", borderRadius: "999px", border: "1px solid #e5e7eb", letterSpacing: "0.05em", fontFamily: "system-ui, sans-serif" }}>
+//                   Page {idx + 1}{pages.length > 1 ? ` of ${pages.length}` : ""}
+//                 </span>
+//                 <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
+//               </div>
+//               <div style={{ width: `${A4_W}px`, height: `${A4_H}px`, overflow: "hidden", background: "white", boxShadow: "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)", borderRadius: "2px", flexShrink: 0 }}>
+//                 <iframe
+//                   title={`resume-page-${idx + 1}`}
+//                   srcDoc={pageHtml}
+//                   style={{ width: `${A4_W}px`, height: `${A4_H}px`, border: "none", display: "block", pointerEvents: "none" }}
+//                   scrolling="no"
+//                   sandbox="allow-same-origin allow-scripts"
+//                 />
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+//       )}
+//     </>
+//   );
+// };
+
+// export default TemplateThirteen;
+
+
+
+
+
+
+
+
+
+
+
+
 "use client";
 import React, { useContext, useState, useEffect, useRef, useCallback } from "react";
 import axios, { AxiosResponse } from "axios";
@@ -4935,7 +5651,7 @@ const TemplateThirteen: React.FC<ResumeProps> = ({ alldata }) => {
 
     .t13-resume {
       width: ${A4_W}px;
-      padding: 0 ${MARGIN}px;
+      padding: 0;
       background: white;
       font-family: 'Montserrat', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       color: #111111;
@@ -4979,14 +5695,11 @@ const TemplateThirteen: React.FC<ResumeProps> = ({ alldata }) => {
 
     /* Header */
     .t13-resume .resume-header {
-      padding: 40px 0 30px 0;
+      padding: 40px ${MARGIN}px 30px ${MARGIN}px;
       background: #0a0a0a;
       color: white;
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
-      margin: 0 -${MARGIN}px;
-      padding-left: ${MARGIN}px;
-      padding-right: ${MARGIN}px;
     }
     .t13-resume .name {
       font-size: 40px; font-weight: 800; letter-spacing: -0.5px;
@@ -5014,7 +5727,7 @@ const TemplateThirteen: React.FC<ResumeProps> = ({ alldata }) => {
     .t13-resume .education-grade { font-size: 12px; font-weight: 500; color: #666666; margin-top: 4px; }
 
     /* Main content */
-    .t13-resume .resume-main { padding: 35px 0 45px 0; }
+    .t13-resume .resume-main { padding: 35px ${MARGIN}px 45px ${MARGIN}px; }
 
     .t13-resume .section { margin-bottom: 30px; }
     .t13-resume .section:last-child { margin-bottom: 0; }
@@ -5089,10 +5802,9 @@ const TemplateThirteen: React.FC<ResumeProps> = ({ alldata }) => {
       .t13-resume { width: 100% !important; padding: 0 !important; margin: 0 !important; }
       .t13-resume .resume-header {
         background: #0a0a0a !important;
-        margin: 0 !important;
         padding: 40px 50px 30px 50px !important;
       }
-      .t13-resume .resume-main { padding: 35px 0 45px 0 !important; }
+      .t13-resume .resume-main { padding: 35px 50px 45px 50px !important; }
       .t13-resume .section-title { border-bottom: 3px solid #111111 !important; }
       .t13-resume p { margin: 0 0 4px 0 !important; }
     }
@@ -5202,7 +5914,7 @@ const TemplateThirteen: React.FC<ResumeProps> = ({ alldata }) => {
     const pdfStyle = forPDF
       ? `<style>
           .t13-resume { width: 100% !important; padding: 0 !important; }
-          .t13-resume .resume-header { margin: 0 !important; padding: 40px 50px 30px 50px !important; }
+          .t13-resume .resume-header { padding: 40px 50px 30px 50px !important; }
           .t13-resume .resume-main { padding: 35px 50px 45px 50px !important; }
         </style>`
       : "";
@@ -5304,14 +6016,8 @@ const TemplateThirteen: React.FC<ResumeProps> = ({ alldata }) => {
     }
     .t13-resume {
       width: ${A4_W}px !important;
-      padding-left: ${MARGIN}px !important; padding-right: ${MARGIN}px !important;
-      padding-top: 0 !important; padding-bottom: 0 !important;
+      padding: 0 !important;
       margin: 0 !important; box-sizing: border-box !important;
-    }
-    .t13-resume .resume-header {
-      margin: 0 -${MARGIN}px !important;
-      padding-left: ${MARGIN}px !important;
-      padding-right: ${MARGIN}px !important;
     }
   </style>
 </head>
@@ -5452,14 +6158,8 @@ const TemplateThirteen: React.FC<ResumeProps> = ({ alldata }) => {
     }
     .t13-resume {
       width: ${A4_W}px !important;
-      padding-top: 0 !important; padding-bottom: 0 !important;
-      padding-left: ${MARGIN}px !important; padding-right: ${MARGIN}px !important;
+      padding: 0 !important;
       margin: 0 !important;
-    }
-    .t13-resume .resume-header {
-      margin: 0 -${MARGIN}px !important;
-      padding-left: ${MARGIN}px !important;
-      padding-right: ${MARGIN}px !important;
     }
   </style>
 </head>

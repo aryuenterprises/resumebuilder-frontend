@@ -49,18 +49,18 @@ api.interceptors.response.use(
 
         console.log("res",res)
 
-     //    const newAccessToken = res.data.access;
+        const newAccessToken = res.data.access;
         
         // Use your custom function to save the new access token
-     //    setLocalStorage<string>('access_token', newAccessToken);
+        setLocalStorage<string>('access_token', newAccessToken);
 
         // Update the authorization header for the original failed request
-     //    if (originalRequest.headers) {
-     //      originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-     //    }
+        if (originalRequest.headers) {
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        }
 
         // Retry the original request automatically
-     //    return api(originalRequest);
+        return api(originalRequest);
       } catch (refreshError) {
         console.error('Refresh token expired too. Logging out...');
      //    handleLogout();

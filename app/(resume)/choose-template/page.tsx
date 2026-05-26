@@ -2981,11 +2981,8 @@ import { API_URL } from "@/app/config/api";
 import { User } from "@/app/types/user.types";
 import toast, { Toaster } from "react-hot-toast";
 import { ResumePreviewModal } from "@/app/components/resume";
+import api from "@/app/utils/api";
 
-interface usersCurrentPlan {
-  amount: number;
-  plan: string;
-}
 
 const PLAN_CONFIG = {
   no_plan: {
@@ -3053,7 +3050,7 @@ function Choose_template() {
   removeSessionStorage("oldRouteNameDashboard");
 
   const [usersCurrentPlan, setUsersCurrentPlan] =
-    useState<usersCurrentPlan | null>(null);
+    useState<string | null>(null);
   const [showUpgradePopup, setShowUpgradePopup] = useState(false);
   const [selectedLockedTemplate, setSelectedLockedTemplate] = useState<{
     template: Template;
@@ -3096,7 +3093,7 @@ function Choose_template() {
       return "no_plan";
     }
 
-    const plan = usersCurrentPlan?.plan?.toLowerCase() || "";
+    const plan = usersCurrentPlan?.toLowerCase() || "";
 
     if (!plan) {
       return "no_plan";
@@ -3177,34 +3174,50 @@ function Choose_template() {
     setShowUploadPopup(true);
   };
 
-  useEffect(() => {
+  // useEffect(() => {
+  //   const fetchUserData = async () => {
+  //     try {
+  //       const userDetails = getLocalStorage<User>("user_details");
+
+  //       if (!userDetails?.id) {
+  //         setUsersCurrentPlan(null);
+  //         return;
+  //       }
+
+  //       const response = await axios.get(`${API_URL}/api/users/dashboard`, {
+  //         params: { userId: userDetails.id },
+  //       });
+
+  //       const userPlan = response?.data?.payments?.[0];
+
+  //       if (!userPlan) {
+  //         setUsersCurrentPlan(null);
+  //       } else {
+  //         setUsersCurrentPlan(userPlan);
+  //       }
+  //     } catch (err) {
+  //       console.error("Error fetching user data:", err);
+  //       setUsersCurrentPlan(null);
+  //     }
+  //   };
+  //   fetchUserData();
+  // }, []);
+
+
+
+   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userDetails = getLocalStorage<User>("user_details");
-
-        if (!userDetails?.id) {
-          setUsersCurrentPlan(null);
-          return;
-        }
-
-        const response = await axios.get(`${API_URL}/api/users/dashboard`, {
-          params: { userId: userDetails.id },
-        });
-
-        const userPlan = response?.data?.payments?.[0];
-
-        if (!userPlan) {
-          setUsersCurrentPlan(null);
-        } else {
-          setUsersCurrentPlan(userPlan);
-        }
+        const res = await api.get("/dashboard");
+        const { subscription } = res?.data;
+        setUsersCurrentPlan(subscription.current_plan);
       } catch (err) {
-        console.error("Error fetching user data:", err);
-        setUsersCurrentPlan(null);
+        console.error(err);
       }
     };
     fetchUserData();
   }, []);
+
 
   const currentPlan = getCurrentPlan();
   const availableTemplates = getAvailableTemplatesCount();

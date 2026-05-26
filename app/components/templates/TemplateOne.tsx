@@ -10603,8 +10603,10 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
       const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
       const pdfHtml = generateHTML(true, pageBreakIds);
 
+      // /api/resume/candidates/generate-pdf
+
       const res: AxiosResponse<Blob> = await axios.post(
-        `${API_URL}/api/candidates/generate-pdf`,
+        `${API_URL}/candidates/generate-pdf`,
         { html: pdfHtml },
         { responseType: "blob" },
       );
@@ -10625,7 +10627,7 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
   // ── RENDER ───────────────────────────────────────────────────────────────
   return (
     <>
-          {lastSegment === "download-resume" && (
+          {/* {lastSegment === "download-resume" && ( */}
 
       <div className="text-center my-5">
         <motion.button
@@ -10637,7 +10639,7 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
           Download Resume
         </motion.button>
       </div>
-              )}
+              {/* )} */}
 
 
       {alldata ? (

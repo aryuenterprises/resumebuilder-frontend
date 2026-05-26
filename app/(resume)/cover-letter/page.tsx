@@ -53,6 +53,7 @@ import { getLocalStorage, setLocalStorage } from "@/app/utils/localStorage"; // 
 import { Editor } from "primereact/editor"; // rich text editor
 import { IoDocumentText, IoHomeOutline } from "react-icons/io5";
 import { SlSizeFullscreen } from "react-icons/sl";
+import api from "@/app/utils/api";
 
 // ============================================================
 // 2. TYPES — TypeScript "shapes" for our data
@@ -2938,8 +2939,33 @@ export default function CoverLetterGenerator() {
   const modalRef = useRef<HTMLIFrameElement>(null); // fullscreen modal iframe
 
   // ── Fetch auth on mount ──
-  useEffect(() => {
-    const userDetails = getLocalStorage<User>("user_details");
+  // useEffect(() => {
+  //   const userDetails = getLocalStorage<User>("user_details");
+  //   const userId = userDetails?.id;
+  //   if (!userId) {
+  //     setIsLoggedIn(false);
+  //     setIsPremium(false);
+  //     setTimeout(() => setShowLoginPopup(true), 600);
+  //     return;
+  //   }
+  //   setIsLoggedIn(true);
+
+  //   axios
+  //     .get(`${API_URL}/api/users/dashboard`, { params: { userId } })
+  //     .then((res) => {
+  //       const payment = res?.data?.payments?.[0];
+  //       const premium = payment?.plan === "Premium";
+  //       setIsPremium(premium);
+  //       if (!premium) setTimeout(() => setShowPremiumPopup(true), 600);
+  //     })
+  //     .catch(() => setIsPremium(false));
+  // }, []);
+
+
+   useEffect(() => {
+      const fetchUserData = async () => {
+
+           const userDetails = getLocalStorage<User>("user_details");
     const userId = userDetails?.id;
     if (!userId) {
       setIsLoggedIn(false);
@@ -2947,17 +2973,22 @@ export default function CoverLetterGenerator() {
       setTimeout(() => setShowLoginPopup(true), 600);
       return;
     }
-    setIsLoggedIn(true);
-    axios
-      .get(`${API_URL}/api/users/dashboard`, { params: { userId } })
-      .then((res) => {
-        const payment = res?.data?.payments?.[0];
-        const premium = payment?.plan === "Premium";
-        setIsPremium(premium);
-        if (!premium) setTimeout(() => setShowPremiumPopup(true), 600);
-      })
-      .catch(() => setIsPremium(false));
-  }, []);
+    setIsLoggedIn(true)
+
+        try {
+          const res = await api.get("/dashboard");
+          const { subscription } = res?.data;
+          // setUsersCurrentPlan(subscription.current_plan);
+                  const premium = subscription.current_plan === "Premium";
+                          setIsPremium(premium);
+
+
+        } catch (err) {
+          console.error(err);
+        }
+      };
+      fetchUserData();
+    }, []);
 
   // ── Toast helper ──
   const showToast = (m: string) => {
