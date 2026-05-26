@@ -415,16 +415,20 @@ export default function RegisterForm() {
     setLoading(true);
 
     try {
-      const response = await axios.post(`${API_URL}/auth/signup/`, {
-        first_name: values.firstName,
-        last_name: values.lastName,
-        email: values.email,
-        phone: values.phone,
-        password: values.password,
-        city: values.city,
-        state: values.state,
-        country: values.country,
-      });
+      // const response = await axios.post(`${API_URL}/auth/signup/`, {
+      //   first_name: values.firstName,
+      //   last_name: values.lastName,
+      //   email: values.email,
+      //   phone: values.phone,
+      //   password: values.password,
+      //   city: values.city,
+      //   state: values.state,
+      //   country: values.country,
+      // });
+       const response = await axios.post(
+        `${API_URL}/api/users/create`,
+        values,
+      );
       setLoading(false);
 
       setResendEmail(values.email);
