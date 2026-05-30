@@ -1326,6 +1326,7 @@ const DashboardPage = () => {
   const [paymentRecords, setPaymentRecords] = useState<BillingRecord[] | null>(
     null,
   );
+  const [createdResumes, setCreatedResumes] = useState([]);
   const [statsData, setStatsData] = useState<any>(null);
 
   const [showBillingHistory, setShowBillingHistory] = useState(false);
@@ -1373,6 +1374,21 @@ const DashboardPage = () => {
         setusersCurrentPlan(subscription);
         setPaymentRecords(transactions);
         setStatsData(statistics);
+
+        console.log("resumes", resumes);
+
+        const filter = resumes.flatMap((data1) => {
+          const templateMatch = templateData.find(
+            (t) => t?.id == data1.template?.id,
+          );
+          return templateMatch
+            ? [{ ...data1, component: templateMatch.component }]
+            : [];
+        });
+
+        console.log("filter", filter);
+
+        setFilteredOldResumeData(filter);
       } catch (err) {
         console.error(err);
       }
@@ -1380,10 +1396,7 @@ const DashboardPage = () => {
     fetchUserData();
   }, []);
 
-  console.log("usersCurrentPlan", usersCurrentPlan);
-  console.log("userProfile", userProfile);
-  console.log("statsData", statsData);
-  console.log("paymentRecords", paymentRecords);
+  console.log("filteredOldResumeData", filteredOldResumeData);
 
   const handleDeleteResume = async (id: string, name: string) => {
     const result = await Swal.fire({
@@ -1478,23 +1491,6 @@ const DashboardPage = () => {
     }
   };
 
-  // useEffect(() => {
-  //   const fetchPaymentRecords = async () => {
-  //     try {
-  //       const response = await axios.get(
-  //         `${API_URL}/api/payment-razor/payment-all-records`,
-  //         {
-  //           params: { userId: userId },
-  //         },
-  //       );
-  //       setPaymentRecords(response?.data?.paymentRecord);
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   };
-  //   fetchPaymentRecords();
-  // }, []);
-
   useEffect(() => {
     document.body.style.overflow = showBillingHistory ? "hidden" : "auto";
     return () => {
@@ -1514,13 +1510,14 @@ const DashboardPage = () => {
 
   // Calculate billing statistics
   const totalTransactions = paymentRecords?.length || 0;
-  const totalAmountSpent = paymentRecords?.reduce(
-    (sum, record) =>
-      record.payment_status === "created" ? sum +  Number(record.amount) : sum,
-    0,
-  ) || 0;
+  const totalAmountSpent =
+    paymentRecords?.reduce(
+      (sum, record) =>
+        record.payment_status === "created" ? sum + Number(record.amount) : sum,
+      0,
+    ) || 0;
 
-  console.log("totalAmountSpent",totalAmountSpent)
+  console.log("totalAmountSpent", totalAmountSpent);
 
   // Responsive grid columns based on screen size
   const getResumeGridCols = () => {
@@ -2054,7 +2051,7 @@ const DashboardPage = () => {
                       }}
                     >
                       <div className="w-full h-full">
-                        <ComponentToRender alldata={item} />
+                        <ComponentToRender alldata={item.resume_data} />
                       </div>
 
                       {/* Overlay with actions */}
@@ -2069,12 +2066,16 @@ const DashboardPage = () => {
                               whileHover={{ scale: 1.1 }}
                               whileTap={{ scale: 0.95 }}
                               onClick={() => {
-                                router.push(`/resume-details/contact`);
-                                setLocalStorage("chosenTemplate", item);
+                                setLocalStorage(
+                                  "chosenTemplate",
+                                  item.template,
+                                );
                                 setSessionStorage(
                                   "oldRouteNameDashboard",
                                   true,
                                 );
+                                router.push(`/resume-details/contact`);
+
                                 setIsUploadMode(false);
                               }}
                               className="bg-white rounded-full p-1.5 sm:p-2.5 hover:bg-purple-50 transition-all duration-300 shadow-lg cursor-pointer group/btn"
@@ -2271,7 +2272,7 @@ const DashboardPage = () => {
                             Total Spent
                           </p>
                           <p className="text-base sm:text-xl lg:text-2xl font-bold text-emerald-600">
-                            ₹{totalAmountSpent?.toFixed(2) || '0.00'}
+                            ₹{totalAmountSpent?.toFixed(2) || "0.00"}
                           </p>
                         </div>
                         <div className="w-7 h-7 sm:w-8 sm:h-10 bg-emerald-50 rounded-lg sm:rounded-xl flex items-center justify-center">

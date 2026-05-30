@@ -4264,7 +4264,7 @@ function Choose_template() {
                       </div>
 
                       <div className="mt-3 sm:mt-4 pt-2 sm:pt-3 border-t border-gray-100">
-                        <div className="flex items-center justify-between">
+                        <div className="flex gap-3 items-center justify-between">
                           <div>
                             <h4 className="text-sm sm:text-base font-semibold text-gray-900">
                               {template.style || "Template"}

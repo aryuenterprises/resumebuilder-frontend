@@ -63,7 +63,7 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshError) {
         console.error('Refresh token expired too. Logging out...');
-     //    handleLogout();
+        handleLogout();
         return Promise.reject(refreshError);
       }
     }

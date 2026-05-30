@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   formatMonthYear,
+  getLocalStorage,
   MonthYearDisplay,
   removeSessionStorage,
   setSessionStorage,
@@ -26,7 +27,7 @@ import { BsArrowLeftCircleFill } from "react-icons/bs";
 
 import { CreateContext } from "@/app/context/CreateContext";
 import { useRouter } from "next/navigation";
-import { Experience } from "@/app/types";
+import { Experience, Template } from "@/app/types";
 import { API_URL } from "@/app/config/api";
 import {
   IoArrowForward,
@@ -35,6 +36,7 @@ import {
   IoSparkles,
 } from "react-icons/io5";
 import { Stepper, TipsModal } from "@/app/components/resume";
+import api from "@/app/utils/api";
 
 // Dynamically import Editor to avoid SSR issues
 const Editor = dynamic(
@@ -55,13 +57,18 @@ const ExperienceForm = () => {
   const router = useRouter();
   const UseContext = useContext(CreateContext);
   const contactId = UseContext?.contact.contactId || UseContext?.contact._id;
+  const chosenResumeDetails = getLocalStorage<Template>("chosenTemplate");
 
   const [isExperienced, setIsExperienced] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   removeSessionStorage("oldRouteNameDashboard");
 
-  const { experiences, setExperiences, fullResumeData, setFullResumeData } =
+  const {contact, experiences, setExperiences, fullResumeData, setFullResumeData } =
     UseContext;
+
+
+    console.log("contact contact",contact)
+
 
   // Drag and drop state
   const [draggedItemId, setDraggedItemId] = useState<string | number | null>(
@@ -142,6 +149,10 @@ const ExperienceForm = () => {
     setDragOverItemId(null);
   };
 
+  const latestResumeId = localStorage.getItem("latest_resume_id");
+
+  console.log("latestResumeId",latestResumeId)
+
   const fetchExp = async () => {
     try {
       const response = await axios.get(
@@ -177,32 +188,90 @@ const ExperienceForm = () => {
     }
   };
 
+  // const saveToAPI = async (experiencesData: typeof experiences) => {
+  //   if (!contactId) {
+  //     console.error("Contact ID is required");
+  //     return false;
+  //   }
+
+  //   try {
+  //     const formData = {
+  //       experiences: experiencesData,
+  //     };
+
+  //     const response = await axios.post(
+  //       `${API_URL}/api/experience/update`,
+  //       formData,
+  //       { params: { contactId: contactId } },
+  //     );
+
+  //     return true;
+  //   } catch (err: any) {
+  //     console.error("Error saving experience:", err);
+  //     toast.error("Failed to save experience!");
+  //     return false;
+  //   } finally {
+  //     setIsSaving(false);
+  //   }
+  // };
+
+
   const saveToAPI = async (experiencesData: typeof experiences) => {
-    if (!contactId) {
-      console.error("Contact ID is required");
-      return false;
-    }
+    console.log("experiencesData",experiencesData)
+  // if (!userId) {
+  //   console.error("User ID is required");
+  //   return false;
+  // }
 
-    try {
-      const formData = {
-        experiences: experiencesData,
-      };
+  setIsSaving(true);
 
-      const response = await axios.post(
-        `${API_URL}/api/experience/update`,
-        formData,
-        { params: { contactId: contactId } },
-      );
+  try {
 
-      return true;
-    } catch (err: any) {
-      console.error("Error saving experience:", err);
-      toast.error("Failed to save experience!");
-      return false;
-    } finally {
-      setIsSaving(false);
-    }
-  };
+
+//     {
+//   "section_name": "Work Experience",
+//   "is_completed": false,
+//   "section_payload": [
+//     {
+//       "company": "TechCorp Systems",
+//       "role": "Staff Engineer",
+//       "start_date": "2024-01",
+//       "end_date": "Present",
+//       "description": "Designed microservices using Django REST framework and handling 10k requests per second."
+//     },
+//     {
+//       "company": "Startup Labs",
+//       "role": "Python Developer",
+//       "start_date": "2022-03",
+//       "end_date": "2023-12",
+//       "description": "Built data pipelines and automated onboarding configurations."
+//     }
+//   ]
+// }
+   
+
+    // 2. Build your exact single JSON payload schema
+    const singlePayload = {
+        "section_name": "experiences",
+          "section_payload": experiencesData
+      }
+    
+    
+
+    // 3. Send it as standard 'application/json'
+    const response = await api.patch(`${API_URL}/user-resumes/${latestResumeId}`,singlePayload);
+
+    console.log("contactResponse:", response.data);
+    return true;
+
+  } catch (err) {
+    console.error("Error saving contact unified payload:", err);
+    return false;
+  } finally {
+    setIsSaving(false);
+  }
+};
+
 
   const toggleExperienceMode = () => {
     const newValue = !isExperienced;

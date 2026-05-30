@@ -25,6 +25,7 @@ import {
 import { FaRegLightbulb, FaStar, FaGem, FaMagic } from "react-icons/fa";
 import { FiCheckCircle, FiShield, FiX, FiXCircle } from "react-icons/fi";
 import { Stepper, TipsModal } from "@/app/components/resume";
+import api from "@/app/utils/api";
 
 // Dynamically import Editor to avoid SSR issues
 const Editor = dynamic(
@@ -68,6 +69,8 @@ const SummaryForm = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [summaryTipsClicked, setSummaryTipsClicked] = useState(false);
   const router = useRouter();
+    const latestResumeId = localStorage.getItem("latest_resume_id");
+
 
   const filteredExperiences =
     experiences?.map((exp) => ({
@@ -104,23 +107,34 @@ const filteredSkills = skills?.text
   };
 
   const saveToAPI = async (summaryText: string) => {
-    if (!contactId) {
-      console.error("Contact ID is required");
-      return false;
-    }
+    // if (!contactId) {
+    //   console.error("Contact ID is required");
+    //   return false;
+    // }
 
     setIsSaving(true);
 
     try {
-      const formData = {
-        text: summaryText,
-      };
+      // const formData = {
+      //   text: summaryText,
+      // };
 
-      const response = await axios.post(
-        `${API_URL}/api/summary/update`,
-        formData,
-        { params: { contactId: contactId } },
-      );
+      // const response = await axios.post(
+      //   `${API_URL}/api/summary/update`,
+      //   formData,
+      //   { params: { contactId: contactId } },
+      // );
+
+         const singlePayload = {
+        "section_name": "skills",
+          "section_payload": summaryText
+      }
+    
+    
+
+    // 3. Send it as standard 'application/json'
+    const response = await api.patch(`${API_URL}/user-resumes/${latestResumeId}`,singlePayload);
+
 
       return true;
     } catch (err: any) {

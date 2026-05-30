@@ -28,6 +28,7 @@ import { getLocalStorage } from "@/app/utils";
 import { API_URL } from "@/app/config/api";
 import { IoArrowForward, IoSparkles } from "react-icons/io5";
 import { Stepper, TipsModal } from "@/app/components/resume";
+import api from "@/app/utils/api";
 
 // Dynamically import Editor to avoid SSR issues
 const Editor = dynamic(
@@ -68,6 +69,8 @@ const FinalizeForm = () => {
   const [atsVerdict, setAtsVerdict] = useState("");
   const [progress, setProgress] = useState(0);
   const [showTips, setShowTips] = useState(false);
+  const latestResumeId = localStorage.getItem("latest_resume_id");
+
 
   // Drag and drop state
   const [draggedItemId, setDraggedItemId] = useState<string | null>(null);
@@ -130,13 +133,13 @@ const FinalizeForm = () => {
 
   // Save to API - Only save customSection since other sections are removed
   const saveToAPI = async (finalizeData: FinalizeType) => {
-    if (!contactId) {
-      console.error("Contact ID is required");
-      return false;
-    }
+    // if (!contactId) {
+    //   console.error("Contact ID is required");
+    //   return false;
+    // }
 
     const currentDataString = JSON.stringify({ customSection: finalizeData.customSection });
-    if (currentDataString === lastSavedData) return true;
+    // if (currentDataString === lastSavedData) return true;
 
     setIsSaving(true);
 
@@ -147,11 +150,23 @@ const FinalizeForm = () => {
         ) || [],
       };
 
-      await axios.post(
-        `${API_URL}/api/finalize-resume/update`,
-        { skillsData: cleanedData, templateId: chosenTemplate?.id },
-        { params: { contactId } }
-      );
+      // await axios.post(
+      //   `${API_URL}/api/finalize-resume/update`,
+      //   { skillsData: cleanedData, templateId: chosenTemplate?.id },
+      //   { params: { contactId } }
+      // );
+
+
+         const singlePayload = {
+        "section_name": "finalize",
+          "section_payload": cleanedData
+      }
+    
+    
+
+    // 3. Send it as standard 'application/json'
+    const response = await api.patch(`${API_URL}/user-resumes/${latestResumeId}`,singlePayload);
+
 
       setLastSavedData(currentDataString);
       toast.success("Changes saved successfully!");

@@ -1,12 +1,3 @@
-
-
-
-
-
-
-
-
-
 "use client";
 
 import React, {
@@ -44,6 +35,7 @@ import { getLocalStorage, setLocalStorage } from "@/app/utils";
 import { API_URL } from "@/app/config/api";
 import { Project } from "@/app/types";
 import { Stepper, TipsModal } from "@/app/components/resume";
+import api from "@/app/utils/api";
 
 // Dynamically import Editor to avoid SSR issues
 const Editor = dynamic(
@@ -63,6 +55,7 @@ const Editor = dynamic(
 const ProjectsForm = () => {
   const UseContext = useContext(CreateContext);
   // const contactId =  UseContext?.contact.contactId;
+  const latestResumeId = localStorage.getItem("latest_resume_id");
 
   const contactId = UseContext?.contact.contactId || UseContext?.contact._id;
 
@@ -153,21 +146,34 @@ const ProjectsForm = () => {
   };
 
   const saveToAPI = async (projectsData: Project[]) => {
-    if (!contactId) {
-      console.error("Contact ID is required");
-      return false;
-    }
+    // if (!contactId) {
+    //   console.error("Contact ID is required");
+    //   return false;
+    // }
 
     setIsSaving(true);
 
     try {
-      const formData = {
-        projects: projectsData,
-      };
 
-      await axios.post(`${API_URL}/api/project-resume/update`, formData, {
-        params: { contactId: contactId },
-      });
+
+
+          const singlePayload = {
+        "section_name": "projects",
+          "section_payload": projectsData
+      }
+    
+    
+
+    // 3. Send it as standard 'application/json'
+    const response = await api.patch(`${API_URL}/user-resumes/${latestResumeId}`,singlePayload);
+
+      // const formData = {
+      //   projects: projectsData,
+      // };
+
+      // await axios.post(`${API_URL}/api/project-resume/update`, formData, {
+      //   params: { contactId: contactId },
+      // });
 
       // fetchProjects();
       return true;

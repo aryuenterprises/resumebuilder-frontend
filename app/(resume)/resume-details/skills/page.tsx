@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import { API_URL } from "@/app/config/api";
 import { Stepper, TipsModal } from "@/app/components/resume";
 import dynamic from "next/dynamic";
+import api from "@/app/utils/api";
 
 const Editor = dynamic(
   () => import("primereact/editor").then((mod) => mod.Editor),
@@ -40,6 +41,7 @@ const SkillsForm = () => {
   const router = useRouter();
   const UseContext = useContext(CreateContext);
   const contactId = UseContext?.contact.contactId || UseContext?.contact._id;
+  const latestResumeId = localStorage.getItem("latest_resume_id");
 
   const { skills, setSkills } = UseContext;
   const [skillsText, setSkillsText] = useState<string>("");
@@ -78,13 +80,27 @@ console.log("skills",skills)
 
     setIsSaving(true);
     try {
-      await axios.post(
-        `${API_URL}/api/skill/update`,
-        { text: skillsDataToSave },
-        {
-          params: { contactId },
-        },
-      );
+      // await axios.post(
+      //   `${API_URL}/api/skill/update`,
+      //   { text: skillsDataToSave },
+      //   {
+      //     params: { contactId },
+      //   },
+      // );
+
+
+          const singlePayload = {
+        "section_name": "skills",
+          "section_payload": skillsDataToSave
+      }
+    
+    
+
+    // 3. Send it as standard 'application/json'
+    const response = await api.patch(`${API_URL}/user-resumes/${latestResumeId}`,singlePayload);
+
+
+
       setLastSavedData(skillsDataToSave);
       toast.success("Skills saved successfully!");
       return true;

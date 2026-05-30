@@ -45,6 +45,7 @@ import {
   IoSparkles,
 } from "react-icons/io5";
 import { Stepper, TipsModal } from "@/app/components/resume";
+import api from "@/app/utils/api";
 
 // Dynamically import Editor to avoid SSR issues
 const Editor = dynamic(
@@ -66,6 +67,8 @@ const Education_form = () => {
   const contactId = UseContext?.contact.contactId || UseContext?.contact._id;
 
   const { fullResumeData, setFullResumeData } = UseContext || {};
+  const latestResumeId = localStorage.getItem("latest_resume_id");
+
 
   const router = useRouter();
   const { education, setEducation } = UseContext || {
@@ -172,28 +175,40 @@ const Education_form = () => {
   };
 
   const saveToAPI = async (educationData: typeof education) => {
-    if (!contactId) {
-      console.error("Contact ID is required");
-      return false;
-    }
+    // if (!contactId) {
+    //   console.error("Contact ID is required");
+    //   return false;
+    // }
 
-    const currentDataString = JSON.stringify(educationData);
-    if (currentDataString === lastSavedData) {
-      return true;
-    }
+    // const currentDataString = JSON.stringify(educationData);
+    // if (currentDataString === lastSavedData) {
+    //   return true;
+    // }
 
     setIsSaving(true);
 
     try {
-      const formData = {
-        education: educationData,
-      };
+      // const formData = {
+      //   education: educationData,
+      // };
 
-      const response = await axios.post(
-        `${API_URL}/api/education/update`,
-        formData,
-        { params: { contactId: contactId } },
-      );
+      // const response = await axios.post(
+      //   `${API_URL}/api/education/update`,
+      //   formData,
+      //   { params: { contactId: contactId } },
+      // );
+
+
+        // 2. Build your exact single JSON payload schema
+    const singlePayload = {
+        "section_name": "educations",
+          "section_payload": educationData
+      }
+    
+    
+
+    // 3. Send it as standard 'application/json'
+    const response = await api.patch(`${API_URL}/user-resumes/${latestResumeId}`,singlePayload);
 
       return true;
     } catch (err: any) {

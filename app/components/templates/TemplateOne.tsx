@@ -9923,6 +9923,7 @@ import {
 import { usePathname } from "next/navigation";
 import { ResumeProps } from "@/app/types";
 import { motion } from "framer-motion";
+import api from "@/app/utils/api";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PIXEL-PERFECT A4 CONSTANTS
@@ -10603,13 +10604,13 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
       const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
       const pdfHtml = generateHTML(true, pageBreakIds);
 
-      // /api/resume/candidates/generate-pdf
-
-      const res: AxiosResponse<Blob> = await axios.post(
+      const res: AxiosResponse<Blob> = await api.post(
         `${API_URL}/candidates/generate-pdf`,
         { html: pdfHtml },
         { responseType: "blob" },
       );
+
+      console.log("res",res)
       const url = URL.createObjectURL(res.data);
       const a = document.createElement("a");
       a.href = url;
