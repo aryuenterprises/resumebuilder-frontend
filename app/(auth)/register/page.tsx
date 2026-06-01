@@ -1509,7 +1509,6 @@ export default function RegisterForm() {
         },
       );
 
-      console.log("response",response)
       setResendEmailSuccess(response.data.message || "Verification email resent successfully");
     } catch (err) {
       console.log(err);

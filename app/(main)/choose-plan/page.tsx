@@ -1116,7 +1116,6 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
   if (!isOpen || !plan) return null;
 
-  console.log("plan", plan);
 
   const handlePayment = async () => {
     try {
@@ -1551,7 +1550,10 @@ export default function ChoosePlanPage() {
   useEffect(() => {
     const fetchPlans = async () => {
       try {
-        const res = await api.get("/plans/");
+        // const res = await api.get("/plans/");
+
+                const res = await axios.get(`${API_URL}/pricing-plans`);
+
 
         const apiPlans = res.data.plans || [];
         const transformedPlans = apiPlans.map(transformAPIPlanToPlan);

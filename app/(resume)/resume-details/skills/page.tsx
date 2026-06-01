@@ -76,7 +76,7 @@ console.log("skills",skills)
   }, [skills]);
 
   const saveToAPI = async (skillsDataToSave: string) => {
-    if (!contactId) return false;
+    // if (!contactId) return false;
 
     setIsSaving(true);
     try {

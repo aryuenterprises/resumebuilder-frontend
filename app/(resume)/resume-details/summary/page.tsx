@@ -126,7 +126,7 @@ const filteredSkills = skills?.text
       // );
 
          const singlePayload = {
-        "section_name": "skills",
+        "section_name": "summary",
           "section_payload": summaryText
       }
     

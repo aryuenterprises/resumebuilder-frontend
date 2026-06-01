@@ -2961,34 +2961,32 @@ export default function CoverLetterGenerator() {
   //     .catch(() => setIsPremium(false));
   // }, []);
 
+  useEffect(() => {
 
-   useEffect(() => {
-      const fetchUserData = async () => {
+    const fetchUserData = async () => {
+      const userDetails = getLocalStorage<User>("user_details");
+      const userId = userDetails?.id;
+    
+      if (!userId) {
+        setIsLoggedIn(false);
+        setIsPremium(false);
+        setTimeout(() => setShowLoginPopup(true), 600);
+        return;
+      }
+      setIsLoggedIn(true);
 
-           const userDetails = getLocalStorage<User>("user_details");
-    const userId = userDetails?.id;
-    if (!userId) {
-      setIsLoggedIn(false);
-      setIsPremium(false);
-      setTimeout(() => setShowLoginPopup(true), 600);
-      return;
-    }
-    setIsLoggedIn(true)
-
-        try {
-          const res = await api.get("/dashboard");
-          const { subscription } = res?.data;
-          // setUsersCurrentPlan(subscription.current_plan);
-                  const premium = subscription.current_plan === "Premium";
-                          setIsPremium(premium);
-
-
-        } catch (err) {
-          console.error(err);
-        }
-      };
-      fetchUserData();
-    }, []);
+      try {
+        const res = await api.get("/dashboard");
+        const { subscription } = res?.data;
+        // setUsersCurrentPlan(subscription.current_plan);
+        const premium = subscription.current_plan === "premium";
+        setIsPremium(premium);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchUserData();
+  }, []);
 
   // ── Toast helper ──
   const showToast = (m: string) => {
@@ -3026,6 +3024,7 @@ export default function CoverLetterGenerator() {
   useEffect(() => {
     if (html && liveRef.current) writeIframe(liveRef, html);
   }, [html]);
+
   useEffect(() => {
     if (modal && html && modalRef.current) writeIframe(modalRef, html);
   }, [modal, html]);
@@ -3149,11 +3148,19 @@ export default function CoverLetterGenerator() {
     const h = rebuild();
     setBusy(true);
     try {
-      const r = await axios.post(
-        `${API_URL}/api/candidates/generate-pdf`,
+      // const r = await axios.post(
+      //   `https://passats.aryuacademy.com/api/candidates/generate-pdf`,
+      //   { html: h },
+      //   { responseType: "blob" },
+      // );
+
+      const r = await api.post(
+        `${API_URL}/candidates/generate-pdf`,
         { html: h },
         { responseType: "blob" },
       );
+
+
       const url = URL.createObjectURL(r.data);
       const a = document.createElement("a");
       a.href = url;
@@ -3174,7 +3181,6 @@ export default function CoverLetterGenerator() {
   const tpl = TEMPLATE_DEFS.find((t) => t.id === tplId)!;
   const stepIdx = STEPS.findIndex((s) => s.id === step);
 
-  console.log("data", data);
 
   // ══════════════════════════════════════════════════
   // RENDER
@@ -3824,8 +3830,6 @@ export default function CoverLetterGenerator() {
                     </div>
                   </div>
                 </div>
-
-             
               </div>
             )}
 
@@ -3995,7 +3999,7 @@ export default function CoverLetterGenerator() {
                   </div>
                 </div>
 
-                   {/* Card: Closing Salutation */}
+                {/* Card: Closing Salutation */}
                 <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
                   <div className="flex items-center gap-3 px-5 py-4 bg-linear-to-r from-emerald-50/40 to-white border-b border-slate-50">
                     <div className="w-8 h-8 shrink-0 bg-linear-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-md shadow-emerald-500/25 text-base">
@@ -4255,7 +4259,11 @@ export default function CoverLetterGenerator() {
                           {(
                             [
                               ["Company", data.company.name, "company"],
-                              ["Role", data.company.hiringManagerTitle, "company"],
+                              [
+                                "Role",
+                                data.company.hiringManagerTitle,
+                                "company",
+                              ],
                               [
                                 "Department",
                                 data.company.department,

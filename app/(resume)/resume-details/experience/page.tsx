@@ -67,9 +67,6 @@ const ExperienceForm = () => {
     UseContext;
 
 
-    console.log("contact contact",contact)
-
-
   // Drag and drop state
   const [draggedItemId, setDraggedItemId] = useState<string | number | null>(
     null,
@@ -151,7 +148,6 @@ const ExperienceForm = () => {
 
   const latestResumeId = localStorage.getItem("latest_resume_id");
 
-  console.log("latestResumeId",latestResumeId)
 
   const fetchExp = async () => {
     try {
@@ -217,7 +213,6 @@ const ExperienceForm = () => {
 
 
   const saveToAPI = async (experiencesData: typeof experiences) => {
-    console.log("experiencesData",experiencesData)
   // if (!userId) {
   //   console.error("User ID is required");
   //   return false;
@@ -260,8 +255,6 @@ const ExperienceForm = () => {
 
     // 3. Send it as standard 'application/json'
     const response = await api.patch(`${API_URL}/user-resumes/${latestResumeId}`,singlePayload);
-
-    console.log("contactResponse:", response.data);
     return true;
 
   } catch (err) {

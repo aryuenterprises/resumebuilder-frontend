@@ -9903,6 +9903,40 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 "use client";
 import React, {
   useContext,
@@ -10628,7 +10662,7 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
   // ── RENDER ───────────────────────────────────────────────────────────────
   return (
     <>
-          {/* {lastSegment === "download-resume" && ( */}
+         {lastSegment === "download-resume" && ( 
 
       <div className="text-center my-5">
         <motion.button
@@ -10640,7 +10674,7 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
           Download Resume
         </motion.button>
       </div>
-              {/* )} */}
+              )} 
 
 
       {alldata ? (

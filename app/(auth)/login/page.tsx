@@ -633,8 +633,6 @@ const Login = () => {
      
 
       const response = await axios.post(`${API_URL}/auth/login/`, formData);
-      console.log("response",response)
-
       if (response.data && response.data.access_token) {
         const { user, access_token,refresh_token } = response.data;
 

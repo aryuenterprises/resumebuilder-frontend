@@ -1285,14 +1285,11 @@ import toast, { Toaster } from "react-hot-toast";
 import api from "@/app/utils/api";
 
 interface BillingRecord {
-  length: number;
-  createdAt: string;
+  invoice_date: string;
+  plan_name: string;
   amount: number;
   payment_status: "created" | "failed";
-  plan: string;
-  planId: {
-    name: string;
-  };
+  
 }
 
 interface usersCurrentPlan {
@@ -1317,6 +1314,21 @@ interface ResumeItem {
   [key: string]: any;
 }
 
+interface Resume {
+  id: number;
+  is_completed: boolean;
+  last_completed_section: string;
+  resume_data: object;
+  resume_title: string;
+  template: {
+    id: number;
+    name: string;
+    thumbnail: string | null;
+    tier: string;
+  };
+  updated_at: string;
+}
+
 const DashboardPage = () => {
   const router = useRouter();
 
@@ -1326,7 +1338,6 @@ const DashboardPage = () => {
   const [paymentRecords, setPaymentRecords] = useState<BillingRecord[] | null>(
     null,
   );
-  const [createdResumes, setCreatedResumes] = useState([]);
   const [statsData, setStatsData] = useState<any>(null);
 
   const [showBillingHistory, setShowBillingHistory] = useState(false);
@@ -1334,22 +1345,16 @@ const DashboardPage = () => {
   const [filteredOldResumeData, setFilteredOldResumeData] = useState<
     ResumeItem[]
   >([]);
+
+
   const [isMobile, setIsMobile] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
-  const [hoveredCard, setHoveredCard] = useState<string | null>(null);
-  const [hoveredStat, setHoveredStat] = useState<number | null>(null);
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
-
   const { setIsUploadMode } = useContext(CreateContext);
-
   const userDetails = getLocalStorage<User>("user_details");
   const userId = userDetails?.id;
-  const userName = `${userDetails?.firstName} ${userDetails?.lastName}`;
-  const userEmail = userDetails?.email;
-  const userPhone = userDetails?.phone;
-  const userLocation =
-    userDetails?.city && `${userDetails.city}, ${userDetails.country}`;
+  
 
   useEffect(() => {
     const handleResize = () => {
@@ -1375,9 +1380,8 @@ const DashboardPage = () => {
         setPaymentRecords(transactions);
         setStatsData(statistics);
 
-        console.log("resumes", resumes);
 
-        const filter = resumes.flatMap((data1) => {
+        const filter = resumes.flatMap((data1:Resume) => {
           const templateMatch = templateData.find(
             (t) => t?.id == data1.template?.id,
           );
@@ -1385,8 +1389,6 @@ const DashboardPage = () => {
             ? [{ ...data1, component: templateMatch.component }]
             : [];
         });
-
-        console.log("filter", filter);
 
         setFilteredOldResumeData(filter);
       } catch (err) {
@@ -1396,9 +1398,8 @@ const DashboardPage = () => {
     fetchUserData();
   }, []);
 
-  console.log("filteredOldResumeData", filteredOldResumeData);
 
-  const handleDeleteResume = async (id: string, name: string) => {
+  const handleDeleteResume = async (id: string) => {
     const result = await Swal.fire({
       title: '<span class="text-lg sm:text-xl font-bold">Delete Resume?</span>',
       html: `
@@ -1409,7 +1410,7 @@ const DashboardPage = () => {
             </svg>
           </div>
           <p class="text-gray-600 text-sm sm:text-base mb-2">Are you sure you want to delete</p>
-          <p class="font-semibold text-gray-900 text-sm sm:text-base">"${name || "this resume"}"?</p>
+          <p class="font-semibold text-gray-900 text-sm sm:text-base"> this resume?</p>
           <p class="text-xs sm:text-sm text-gray-500 mt-3">This action cannot be undone.</p>
         </div>
       `,
@@ -1431,7 +1432,7 @@ const DashboardPage = () => {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete(`${API_URL}/api/contact-resume/delete-resume/${id}`);
+        await api.delete(`${API_URL}/user-resumes/${id}`);
 
         toast.custom(
           (t) => (
@@ -1471,20 +1472,49 @@ const DashboardPage = () => {
           { duration: 4000 },
         );
 
-        const response = await axios.get(
-          `${API_URL}/api/contact-resume/all-contact/${userId}`,
-        );
-        const filter = response.data.flatMap(
-          (data1: { templateId: string | number }) => {
-            const templateMatch = templateData.find(
-              (t) => t.id == data1.templateId,
-            );
-            return templateMatch
-              ? [{ ...data1, component: templateMatch.component }]
-              : [];
-          },
-        );
+
+         const fetchUserData = async () => {
+      try {
+        const res = await api.get("/dashboard");
+
+        const { profile, resumes, statistics, subscription, transactions } =
+          res?.data;
+
+        setUserProfile(profile);
+        setusersCurrentPlan(subscription);
+        setPaymentRecords(transactions);
+        setStatsData(statistics);
+
+        const filter = resumes.flatMap((data1:Resume) => {
+          const templateMatch = templateData.find(
+            (t) => t?.id == data1.template?.id,
+          );
+          return templateMatch
+            ? [{ ...data1, component: templateMatch.component }]
+            : [];
+        });
+
         setFilteredOldResumeData(filter);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchUserData();
+
+        // const response = await axios.get(
+        //   `${API_URL}/api/contact-resume/all-contact/${userId}`,
+        // );
+        // const filter = response.data.flatMap(
+        //   (data1: { templateId: string | number }) => {
+        //     const templateMatch = templateData.find(
+        //       (t) => t.id == data1.templateId,
+        //     );
+        //     return templateMatch
+        //       ? [{ ...data1, component: templateMatch.component }]
+        //       : [];
+        //   },
+        // );
+        // setFilteredOldResumeData(filter);
       } catch (err) {
         toast.error("Failed to delete resume. Please try again.");
       }
@@ -1517,7 +1547,6 @@ const DashboardPage = () => {
       0,
     ) || 0;
 
-  console.log("totalAmountSpent", totalAmountSpent);
 
   // Responsive grid columns based on screen size
   const getResumeGridCols = () => {
@@ -1525,6 +1554,8 @@ const DashboardPage = () => {
     if (isTablet) return "grid-cols-2";
     return "grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
   };
+
+
 
   return (
     <ProtectedRoute>
@@ -1553,7 +1584,8 @@ const DashboardPage = () => {
                 <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">
                   Welcome back,{" "}
                   <span className="bg-gradient-to-r from-indigo-600 to-indigo-400 bg-clip-text text-transparent">
-                    {userName?.split(" ")[0]}
+                    {/* {userName?.split(" ")[0]} */}
+                    {userProfile?.first_name} {userProfile?.last_name}
                   </span>
                 </h1>
                 <p className="text-gray-500 text-xs sm:text-sm mt-1 sm:mt-2">
@@ -1667,7 +1699,7 @@ const DashboardPage = () => {
                       {
                         icon: FiMapPin,
                         label: "Location",
-                        value: userProfile?.location || "",
+                        value: userProfile?.city || "",
                         color: "purple",
                       },
                     ].map((item, idx) => (
@@ -2036,8 +2068,6 @@ const DashboardPage = () => {
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: Math.min(index * 0.05, 0.5) }}
                       whileHover={{ y: -4 }}
-                      onMouseEnter={() => setHoveredCard(item.contact?._id)}
-                      onMouseLeave={() => setHoveredCard(null)}
                       className="relative group cursor-pointer"
                       style={{
                         height: isMobile
@@ -2086,7 +2116,7 @@ const DashboardPage = () => {
                               whileHover={{ scale: 1.1 }}
                               whileTap={{ scale: 0.95 }}
                               onClick={() =>
-                                handleDeleteResume(item.contact?._id, item.name)
+                                handleDeleteResume(item.id)
                               }
                               className="bg-white rounded-full p-1.5 sm:p-2.5 hover:bg-rose-50 transition-all duration-300 shadow-lg cursor-pointer group/btn"
                             >
@@ -2146,8 +2176,7 @@ const DashboardPage = () => {
                                 <button
                                   onClick={() => {
                                     handleDeleteResume(
-                                      item.contact?._id,
-                                      item.name,
+                                      item.id
                                     );
                                     setActiveMenuId(null);
                                   }}
@@ -2348,7 +2377,7 @@ const DashboardPage = () => {
                                   </motion.div>
                                   <span className="text-[11px] sm:text-sm text-gray-700">
                                     {new Date(
-                                      record.createdAt,
+                                      record.invoice_date,
                                     ).toLocaleDateString("en-US", {
                                       year: "numeric",
                                       month: "short",
@@ -2359,7 +2388,7 @@ const DashboardPage = () => {
                               </td>
                               <td className="px-2 sm:px-4 py-2 sm:py-3">
                                 <span className="text-[11px] sm:text-sm font-semibold text-gray-800">
-                                  {/* {record.planId.name} */}
+                                  {record.plan_name}
                                 </span>
                               </td>
                               <td className="px-2 sm:px-4 py-2 sm:py-3">

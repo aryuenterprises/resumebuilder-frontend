@@ -31,6 +31,7 @@ export const templateData: Template[] = [
       "A sleek, contemporary design with bold headings and clean lines.",
     temp: "free",
     component: TemplateOne,
+
   },
   {
     id: 2,
@@ -40,6 +41,7 @@ export const templateData: Template[] = [
     pic: "true",
     temp: "paid",
     component: TemplateTwo,
+    // twoColumn: true,
   },
 
   {

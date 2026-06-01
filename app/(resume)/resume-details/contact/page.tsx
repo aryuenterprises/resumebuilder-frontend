@@ -1398,7 +1398,6 @@ const saveToAPI = async (contactData: typeof contact) => {
     // 3. Send it as standard 'application/json'
     const response = await api.post(`${API_URL}/user-resumes`, singlePayload);
 
-    console.log("contactResponse:", response.data);
 
     setLocalStorage("latest_resume_id", response.data.id);
     return true;
@@ -1414,10 +1413,6 @@ const saveToAPI = async (contactData: typeof contact) => {
 
 
 
-
-
-
-  console.log("contact", contact);
 
   const fetchContact = async (data1: string | number) => {
     try {

@@ -902,11 +902,9 @@ import axios from "axios";
 import { User } from "@/app/types/user.types";
 import { API_URL } from "@/app/config/api";
 import ProtectedRoute from "@/app/utils/ProtectedRoute";
+import api from "@/app/utils/api";
 
-interface usersCurrentPlan {
-  amount: number;
-  plan: string;
-}
+
 
 // Define plan limits with required plan for each template index
 const PLAN_CONFIG = {
@@ -962,7 +960,7 @@ export default function ChangeTemplate() {
   );
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [usersCurrentPlan, setUsersCurrentPlan] = useState<usersCurrentPlan | null>(null);
+  const [usersCurrentPlan, setUsersCurrentPlan] = useState<string | null>(null);
   const [showUpgradePopup, setShowUpgradePopup] = useState(false);
   const [selectedLockedTemplate, setSelectedLockedTemplate] = useState<{
     template: Template;
@@ -979,10 +977,10 @@ export default function ChangeTemplate() {
 
   // Get current plan name (normalized)
   const getCurrentPlan = (): keyof typeof PLAN_CONFIG => {
-    const plan = usersCurrentPlan?.plan?.toLowerCase() || "";
-    if (plan.includes("pro plus")) return "proplus";
-    if (plan.includes("pro")) return "pro";
-    if (plan.includes("premium")) return "premium";
+    const plan = usersCurrentPlan;
+    if (plan?.includes("pro plus")) return "proplus";
+    if (plan?.includes("pro")) return "pro";
+    if (plan?.includes("premium")) return "premium";
     return "free";
   };
 
@@ -1125,19 +1123,32 @@ export default function ChangeTemplate() {
   useEffect(() => {
     const userDetails = getLocalStorage<User>("user_details");
 
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get(`${API_URL}/api/users/dashboard`, {
-          params: { userId: userDetails?.id },
-        });
-        setUsersCurrentPlan(response?.data?.payments?.[0]);
-      } catch (err) {
-        console.log(err);
-      }
-    };
+    // const fetchUserData = async () => {
+    //   try {
+    //     const response = await axios.get(`${API_URL}/api/users/dashboard`, {
+    //       params: { userId: userDetails?.id },
+    //     });
+    //     setUsersCurrentPlan(response?.data?.payments?.[0]);
+    //   } catch (err) {
+    //     console.log(err);
+    //   }
+    // };
+
+        const fetchUserData = async () => {
+          try {
+            const res = await api.get("/dashboard");
+            const { subscription } = res?.data;
+            setUsersCurrentPlan(subscription.current_plan);
+          } catch (err) {
+            console.error(err);
+          }
+        };
+       
 
     if (userDetails?.id) fetchUserData();
   }, []);
+
+
 
   // Check if mobile on mount and resize
   useEffect(() => {
