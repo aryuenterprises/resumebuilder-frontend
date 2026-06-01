@@ -55,7 +55,9 @@ const Editor = dynamic(
 const ProjectsForm = () => {
   const UseContext = useContext(CreateContext);
   // const contactId =  UseContext?.contact.contactId;
-  const latestResumeId = localStorage.getItem("latest_resume_id");
+  // const latestResumeId = localStorage.getItem("latest_resume_id");
+      const latestResumeId = getLocalStorage("latest_resume_id");
+
 
   const contactId = UseContext?.contact.contactId || UseContext?.contact._id;
 

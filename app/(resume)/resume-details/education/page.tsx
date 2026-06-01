@@ -67,7 +67,10 @@ const Education_form = () => {
   const contactId = UseContext?.contact.contactId || UseContext?.contact._id;
 
   const { fullResumeData, setFullResumeData } = UseContext || {};
-  const latestResumeId = localStorage.getItem("latest_resume_id");
+  // const latestResumeId = localStorage.getItem("latest_resume_id");  
+
+        const latestResumeId = getLocalStorage("latest_resume_id");
+  
 
 
   const router = useRouter();

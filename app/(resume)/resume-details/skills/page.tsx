@@ -21,6 +21,7 @@ import { API_URL } from "@/app/config/api";
 import { Stepper, TipsModal } from "@/app/components/resume";
 import dynamic from "next/dynamic";
 import api from "@/app/utils/api";
+import { getLocalStorage } from "@/app/utils";
 
 const Editor = dynamic(
   () => import("primereact/editor").then((mod) => mod.Editor),
@@ -41,7 +42,9 @@ const SkillsForm = () => {
   const router = useRouter();
   const UseContext = useContext(CreateContext);
   const contactId = UseContext?.contact.contactId || UseContext?.contact._id;
-  const latestResumeId = localStorage.getItem("latest_resume_id");
+  // const latestResumeId = localStorage.getItem("latest_resume_id");
+        const latestResumeId = getLocalStorage("latest_resume_id");
+  
 
   const { skills, setSkills } = UseContext;
   const [skillsText, setSkillsText] = useState<string>("");

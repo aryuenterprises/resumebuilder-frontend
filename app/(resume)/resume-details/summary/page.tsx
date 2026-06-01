@@ -69,7 +69,9 @@ const SummaryForm = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [summaryTipsClicked, setSummaryTipsClicked] = useState(false);
   const router = useRouter();
-    const latestResumeId = localStorage.getItem("latest_resume_id");
+    // const latestResumeId = localStorage.getItem("latest_resume_id");
+          const latestResumeId = getLocalStorage("latest_resume_id");
+    
 
 
   const filteredExperiences =

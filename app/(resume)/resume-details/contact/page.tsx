@@ -1400,6 +1400,8 @@ const saveToAPI = async (contactData: typeof contact) => {
 
 
     setLocalStorage("latest_resume_id", response.data.id);
+
+    
     return true;
 
   } catch (err) {

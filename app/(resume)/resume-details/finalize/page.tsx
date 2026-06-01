@@ -69,7 +69,9 @@ const FinalizeForm = () => {
   const [atsVerdict, setAtsVerdict] = useState("");
   const [progress, setProgress] = useState(0);
   const [showTips, setShowTips] = useState(false);
-  const latestResumeId = localStorage.getItem("latest_resume_id");
+  // const latestResumeId = localStorage.getItem("latest_resume_id");
+        const latestResumeId = getLocalStorage("latest_resume_id");
+  
 
 
   // Drag and drop state

@@ -146,7 +146,13 @@ const ExperienceForm = () => {
     setDragOverItemId(null);
   };
 
-  const latestResumeId = localStorage.getItem("latest_resume_id");
+  // const latestResumeId = localStorage.getItem("latest_resume_id");
+
+      // const latestResumeId = getLocalStorage("latest_resume_id");
+
+            const latestResumeId = getLocalStorage("latest_resume_id");
+
+  
 
 
   const fetchExp = async () => {
