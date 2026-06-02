@@ -56,6 +56,7 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import Script from "next/script";
 import { CreateProvider } from "./context/CreateContext";
+import { removeSessionStorage } from "./utils";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -124,6 +125,8 @@ export const metadata: Metadata = {
     canonical: "https://passats.aryuacademy.com/",
   },
 };
+
+ 
 
 export default function RootLayout({
   children,

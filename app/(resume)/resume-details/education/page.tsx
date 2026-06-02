@@ -35,6 +35,7 @@ import { Education } from "@/app/types/context.types";
 import {
   formatGradeToCgpdAndPercentage,
   getLocalStorage,
+  removeSessionStorage,
   setLocalStorage,
 } from "@/app/utils";
 import { API_URL } from "@/app/config/api";
@@ -67,11 +68,11 @@ const Education_form = () => {
   const contactId = UseContext?.contact.contactId || UseContext?.contact._id;
 
   const { fullResumeData, setFullResumeData } = UseContext || {};
-  // const latestResumeId = localStorage.getItem("latest_resume_id");  
+  // const latestResumeId = localStorage.getItem("latest_resume_id");
+  removeSessionStorage("oldRouteNameDashboard");
+          removeSessionStorage("editingResumeIdAndData");
 
-        const latestResumeId = getLocalStorage("latest_resume_id");
-  
-
+  const latestResumeId = getLocalStorage("latest_resume_id");
 
   const router = useRouter();
   const { education, setEducation } = UseContext || {
@@ -88,8 +89,12 @@ const Education_form = () => {
   const [isMobile, setIsMobile] = useState(false);
 
   // Drag and drop state
-  const [draggedItemId, setDraggedItemId] = useState<string | number | null>(null);
-  const [dragOverItemId, setDragOverItemId] = useState<string | number | null>(null);
+  const [draggedItemId, setDraggedItemId] = useState<string | number | null>(
+    null,
+  );
+  const [dragOverItemId, setDragOverItemId] = useState<string | number | null>(
+    null,
+  );
 
   // Check if mobile
   useEffect(() => {
@@ -155,24 +160,24 @@ const Education_form = () => {
 
   const handleDrop = (e: React.DragEvent, targetId: string | number) => {
     e.preventDefault();
-    
+
     if (draggedItemId === null) return;
     if (draggedItemId === targetId) return;
 
     // Reorder the education array
     setEducation((prev) => {
-      const draggedIndex = prev.findIndex(edu => edu.id === draggedItemId);
-      const targetIndex = prev.findIndex(edu => edu.id === targetId);
-      
+      const draggedIndex = prev.findIndex((edu) => edu.id === draggedItemId);
+      const targetIndex = prev.findIndex((edu) => edu.id === targetId);
+
       if (draggedIndex === -1 || targetIndex === -1) return prev;
-      
+
       const newEducation = [...prev];
       const [draggedItem] = newEducation.splice(draggedIndex, 1);
       newEducation.splice(targetIndex, 0, draggedItem);
-      
+
       return newEducation;
     });
-    
+
     setDraggedItemId(null);
     setDragOverItemId(null);
   };
@@ -201,17 +206,17 @@ const Education_form = () => {
       //   { params: { contactId: contactId } },
       // );
 
+      // 2. Build your exact single JSON payload schema
+      const singlePayload = {
+        section_name: "educations",
+        section_payload: educationData,
+      };
 
-        // 2. Build your exact single JSON payload schema
-    const singlePayload = {
-        "section_name": "educations",
-          "section_payload": educationData
-      }
-    
-    
-
-    // 3. Send it as standard 'application/json'
-    const response = await api.patch(`${API_URL}/user-resumes/${latestResumeId}`,singlePayload);
+      // 3. Send it as standard 'application/json'
+      const response = await api.patch(
+        `${API_URL}/user-resumes/${latestResumeId}`,
+        singlePayload,
+      );
 
       return true;
     } catch (err: any) {
@@ -421,29 +426,31 @@ const Education_form = () => {
                 {education?.map((exp: Education, index: number) => (
                   <div
                     key={exp.id}
-                  
                     className={`bg-white rounded-xl sm:rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 
-                      ${draggedItemId === exp.id ? 'opacity-50' : ''}
-                      ${dragOverItemId === exp.id ? 'border-2 border-indigo-400 shadow-lg transform scale-[1.02]' : ''}
+                      ${draggedItemId === exp.id ? "opacity-50" : ""}
+                      ${dragOverItemId === exp.id ? "border-2 border-indigo-400 shadow-lg transform scale-[1.02]" : ""}
                     `}
                   >
                     {/* Header */}
                     <div
                       draggable={true}
-                    onDragStart={(e) => handleDragStart(e, exp.id)}
-                    onDragEnd={handleDragEnd}
-                    onDragOver={(e) => handleDragOver(e, exp.id)}
-                    onDragLeave={handleDragLeave}
-                    onDrop={(e) => handleDrop(e, exp.id)}
+                      onDragStart={(e) => handleDragStart(e, exp.id)}
+                      onDragEnd={handleDragEnd}
+                      onDragOver={(e) => handleDragOver(e, exp.id)}
+                      onDragLeave={handleDragLeave}
+                      onDrop={(e) => handleDrop(e, exp.id)}
                       onClick={() => toggleForm(exp.id)}
                       className="flex justify-between items-center cursor-pointer p-4 sm:p-5 group hover:bg-gray-50/50 transition-all duration-300"
                     >
                       <div className="flex items-center gap-3 flex-1 min-w-0">
                         {/* Drag Handle Icon */}
-                        <div onClick={(e) => e.stopPropagation()} className="flex-shrink-0 text-gray-400 group-hover:text-indigo-400 transition-colors cursor-move">
+                        <div
+                          onClick={(e) => e.stopPropagation()}
+                          className="flex-shrink-0 text-gray-400 group-hover:text-indigo-400 transition-colors cursor-move"
+                        >
                           <FiMenu className="w-4 h-4 sm:w-5 sm:h-5" />
                         </div>
-                        
+
                         <div className="flex-1 min-w-0">
                           <h3 className="text-sm sm:text-base font-semibold text-gray-800 mb-0.5 sm:mb-1 truncate group-hover:text-indigo-600 transition-colors">
                             {exp.schoolname || "School Name"}

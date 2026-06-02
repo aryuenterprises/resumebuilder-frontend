@@ -228,6 +228,8 @@ api.interceptors.response.use(
 function handleLogout(): void {
   removeLocalStorage("access_token");
   removeLocalStorage("refresh_token");
+    removeLocalStorage("refresh_token");
+
   if (typeof window !== "undefined") {
     window.location.href = "/login";
   }

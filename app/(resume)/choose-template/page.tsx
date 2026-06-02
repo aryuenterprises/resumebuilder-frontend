@@ -3047,8 +3047,10 @@ function Choose_template() {
     clearUploadMode,
   } = useContext(CreateContext);
 
-  removeSessionStorage("oldRouteNameDashboard");
+removeSessionStorage("oldRouteNameDashboard");
+        removeSessionStorage("editingResumeIdAndData");
 
+        
   const [usersCurrentPlan, setUsersCurrentPlan] =
     useState<string | null>(null);
   const [showUpgradePopup, setShowUpgradePopup] = useState(false);

@@ -897,7 +897,7 @@ import { templateData } from "@/app/data";
 import { Template } from "@/app/types";
 import { CreateContext } from "@/app/context/CreateContext";
 import Header from "@/app/components/layouts/Header";
-import { getLocalStorage, setLocalStorage } from "@/app/utils";
+import { getLocalStorage, removeSessionStorage, setLocalStorage } from "@/app/utils";
 import axios from "axios";
 import { User } from "@/app/types/user.types";
 import { API_URL } from "@/app/config/api";
@@ -954,6 +954,8 @@ export default function ChangeTemplate() {
     chosenTemplate: null,
     setChosenTemplate: () => {},
   };
+  removeSessionStorage("oldRouteNameDashboard");
+          removeSessionStorage("editingResumeIdAndData");
 
   const [previewTemplate, setPreviewTemplate] = useState<Template | null>(
     chosenTemplate || templateData[0] || null,

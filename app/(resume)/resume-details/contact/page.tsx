@@ -1019,35 +1019,6 @@
 
 // export default ContactForm;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 
 import React, {
@@ -1114,7 +1085,7 @@ import {
   setLocalStorage,
   setSessionStorage,
 } from "@/app/utils";
-import { Contact, Template } from "@/app/types";
+import { Contact, EditingResumeData, Template } from "@/app/types";
 import { User } from "@/app/types/user.types";
 import { IoIosArrowDown } from "react-icons/io";
 import { Stepper, TipsModal } from "@/app/components/resume";
@@ -1148,6 +1119,11 @@ const ContactForm = () => {
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  const editingResumeIdAndData = getLocalStorage<EditingResumeData>(
+    "editingResumeIdAndData",
+  );
+  const isOldRouteNameDashboard = getSessionStorage("oldRouteNameDashboard");
+
   const blobUrlToFile = async (
     blobUrl: string,
     fileName: string,
@@ -1169,252 +1145,104 @@ const ContactForm = () => {
     return new File([u8arr], fileName, { type: mime });
   };
 
-  // const saveToAPI = async (contactData: typeof contact) => {
-  //   if (!userId) {
-  //     console.error("User ID is required");
-  //     return false;
-  //   }
-
-  //   setIsSaving(true);
-
-  //   try {
-  //     const fd = new FormData();
-
-  //     fd.append("userId", userId);
-  //     fd.append("firstName", contactData.firstName || "");
-  //     fd.append("lastName", contactData.lastName || "");
-  //     fd.append("email", contactData.email || "");
-  //     fd.append("jobTitle", contactData.jobTitle || "");
-  //     fd.append("dob", contactData.dob || "");
-  //     fd.append("phone", contactData.phone || "");
-  //     fd.append("country", contactData.country || "");
-  //     fd.append("city", contactData.city || "");
-  //     fd.append("address", contactData.address || "");
-  //     fd.append("postCode", contactData.postCode || "");
-  //     fd.append("linkedIn", contactData.linkedIn || "");
-  //     fd.append("github", contactData.github || "");
-  //     fd.append("portfolio", contactData.portfolio || "");
-
-  //     if (chosenResumeDetails?.id) {
-  //       fd.append("templateId", String(chosenResumeDetails.id));
-  //     }
-
-  //     if (
-  //       contactData.photo &&
-  //       (contactData.photo.startsWith("blob:") ||
-  //         contactData.photo.startsWith("data:image"))
-  //     ) {
-  //       let fileImage;
-
-  //       if (contactData.photo.startsWith("blob:")) {
-  //         fileImage = await blobUrlToFile(contactData.photo, "profile.jpg");
-  //       } else if (contactData.photo.startsWith("data:image")) {
-  //         fileImage = base64ToFile(contactData.photo, "profile.jpg");
-  //       }
-
-  //       if (fileImage) {
-  //         fd.append("photo", fileImage);
-  //       }
-  //     }
-
-  //             const contactResponse = api.post(`${API_URL}/user-resumes/1`,fd);
-
-  //             console.log("contactResponse", contactResponse);
-
-
-
-  //             // const response = await axios.post(
-  //       // `${API_URL}/api/contact-resume/update`,
-  //       // fd,
-  //       // {
-  //       //   params: {
-  //       //     userId: userId,
-  //       //     templateId:
-  //       //       chosenResumeDetails?.id || chosenResumeDetails?.templateId,
-  //       //     id: contactId || "",
-  //       //     resume: resumeId || "abc",
-  //       //   },
-  //       //   headers: {
-  //       //     "Content-Type": "multipart/form-data",
-  //       //   },
-  //       // },
-  //     // );
-
-
-  //     // const response = await axios.post(
-  //     //   `${API_URL}/api/contact-resume/update`,
-  //     //   fd,
-  //     //   {
-  //     //     params: {
-  //     //       userId: userId,
-  //     //       templateId:
-  //     //         chosenResumeDetails?.id || chosenResumeDetails?.templateId,
-  //     //       id: contactId || "",
-  //     //       resume: resumeId || "abc",
-  //     //     },
-  //     //     headers: {
-  //     //       "Content-Type": "multipart/form-data",
-  //     //     },
-  //     //   },
-  //     // );
-
-  //     // setContact((prev) => ({ ...prev, contactId: response.data.resume._id }));
-  //     // fetchContact(response.data.resume._id);
-  //     return true;
-  //   } catch (err) {
-  //     console.error("Error saving contact:", err);
-  //     return false;
-  //   } finally {
-  //     setIsSaving(false);
-  //   }
-  // };
-
-
-
-//   const saveToAPI = async (contactData: typeof contact) => {
-//   if (!userId) {
-//     console.error("User ID is required");
-//     return false;
-//   }
-
-//   setIsSaving(true);
-
-//   try {
-//     const fd = new FormData();
-
-//     // 1. Construct your exact desired nested structure
-//     const resumePayload = {
-//       template: chosenResumeDetails?.id ? Number(chosenResumeDetails.id) : 1,
-//       resume_title: `${contactData.jobTitle || "Position"} Resume`, // Or wherever you store the title
-//       resume_data: {
-//         "Personal Info": {
-//           full_name: `${contactData.firstName || ""} ${contactData.lastName || ""}`.trim(),
-//           job_title: contactData.jobTitle || "",
-//           location_city: contactData.city || "",
-//           // Add other fields here if needed
-//         }
-//       }
-//     };
-
-//     // 2. Append the nested object as a serialized JSON string
-//     fd.append("resume_payload", JSON.stringify(resumePayload));
-
-//     // 3. Handle and append the file separately
-//     if (
-//       contactData.photo &&
-//       (contactData.photo.startsWith("blob:") || contactData.photo.startsWith("data:image"))
-//     ) {
-//       let fileImage;
-//       if (contactData.photo.startsWith("blob:")) {
-//         fileImage = await blobUrlToFile(contactData.photo, "profile.jpg");
-//       } else if (contactData.photo.startsWith("data:image")) {
-//         fileImage = base64ToFile(contactData.photo, "profile.jpg");
-//       }
-
-//       if (fileImage) {
-//         fd.append("photo", fileImage); 
-//       }
-//     }
-
-//     // 4. Send the request (Don't forget to 'await' your API+ call!)
-//     const response = await api.post(`${API_URL}/user-resumes`, fd, {
-//       headers: {
-//         "Content-Type": "multipart/form-data",
-//       },
-//     });
-
-//     console.log("contactResponse", response.data);
-//     return true;
-//   } catch (err) {
-//     console.error("Error saving contact:", err);
-//     return false;
-//   } finally {
-//     setIsSaving(false);
-//   }
-// };
-
-
-
-
-const saveToAPI = async (contactData: typeof contact) => {
-  if (!userId) {
-    console.error("User ID is required");
-    return false;
-  }
-
-  setIsSaving(true);
-
-  try {
-    // 1. Process the photo into a Base64 string if it's currently a blob URL
-    let finalPhotoBase64 = "";
-
-    if (contactData.photo) {
-      if (contactData.photo.startsWith("data:image")) {
-        // It's already base64 encoded
-        finalPhotoBase64 = contactData.photo;
-      } else if (contactData.photo.startsWith("blob:")) {
-        // Convert blob URL to a Base64 data URI string
-        const responseBlob = await fetch(contactData.photo);
-        const blobData = await responseBlob.blob();
-        
-        finalPhotoBase64 = await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result as string);
-          reader.onerror = reject;
-          reader.readAsDataURL(blobData);
-        });
-      } else {
-        // In case it's a regular hosting URL already stored
-        finalPhotoBase64 = contactData.photo;
-      }
+ 
+  const saveToAPI = async (contactData: typeof contact) => {
+    if (!userId) {
+      console.error("User ID is required");
+      return false;
     }
 
-    // 2. Build your exact single JSON payload schema
-    const singlePayload = {
-      template: chosenResumeDetails?.id ? Number(chosenResumeDetails.id) : 1,
-      resume_title: contactData.jobTitle 
-        ? `${contactData.jobTitle} Position Resume` 
-        : "Senior Engineer Position Resume",
-      resume_data: {
-        "contact": {
-          firstName: contactData.firstName || "",
-          lastName: contactData.lastName || "",
-          job_title: contactData.jobTitle || "",
-          location_city: contactData.city || "",
-          email: contactData.email || "",
-          phone: contactData.phone || "",
-          dob: contactData.dob || "",
-          country: contactData.country || "",
-          address: contactData.address || "",
-          postCode: contactData.postCode || "",
-          linkedIn: contactData.linkedIn || "",
-          github: contactData.github || "",
-          portfolio: contactData.portfolio || "",
-          photo: finalPhotoBase64 // Nesting the image right inside the JSON structure!
+    setIsSaving(true);
+
+    try {
+      // 1. Process the photo into a Base64 string if it's currently a blob URL
+      let finalPhotoBase64 = "";
+
+      if (contactData.photo) {
+        if (contactData.photo.startsWith("data:image")) {
+          // It's already base64 encoded
+          finalPhotoBase64 = contactData.photo;
+        } else if (contactData.photo.startsWith("blob:")) {
+          // Convert blob URL to a Base64 data URI string
+          const responseBlob = await fetch(contactData.photo);
+          const blobData = await responseBlob.blob();
+
+          finalPhotoBase64 = await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result as string);
+            reader.onerror = reject;
+            reader.readAsDataURL(blobData);
+          });
+        } else {
+          // In case it's a regular hosting URL already stored
+          finalPhotoBase64 = contactData.photo;
         }
       }
-    };
 
-    // 3. Send it as standard 'application/json'
-    const response = await api.post(`${API_URL}/user-resumes`, singlePayload);
+      // 2. Build your exact single JSON payload schema
+      const singlePayload = {
+        template: chosenResumeDetails?.id ? Number(chosenResumeDetails.id) : 1,
+        resume_title: contactData.jobTitle
+          ? `${contactData.jobTitle} Position Resume`
+          : "Senior Engineer Position Resume",
+        resume_data: {
+          contact: {
+            firstName: contactData.firstName || "",
+            lastName: contactData.lastName || "",
+            job_title: contactData.jobTitle || "",
+            location_city: contactData.city || "",
+            email: contactData.email || "",
+            phone: contactData.phone || "",
+            dob: contactData.dob || "",
+            country: contactData.country || "",
+            address: contactData.address || "",
+            postCode: contactData.postCode || "",
+            linkedIn: contactData.linkedIn || "",
+            github: contactData.github || "",
+            portfolio: contactData.portfolio || "",
+            photo: finalPhotoBase64, // Nesting the image right inside the JSON structure!
+          },
+        },
+      };
 
+      const oldResumeEditPayload = {
+        section_name: "contact",
+        section_payload: contactData,
+      };
 
-    setLocalStorage("latest_resume_id", response.data.id);
+      // 3. Send it as standard 'application/json'
 
-    
-    return true;
+      //  const response = await api.patch(
+      //     `${API_URL}/user-resumes/${latestResumeId}`,
+      //     singlePayload,
+      //   );
 
-  } catch (err) {
-    console.error("Error saving contact unified payload:", err);
-    return false;
-  } finally {
-    setIsSaving(false);
-  }
-};
+      if (isOldRouteNameDashboard && editingResumeIdAndData) {
+        // If we're editing an existing resume, we should update instead of creating new
+        await api.patch(
+          `${API_URL}/user-resumes/${editingResumeIdAndData.id}`,
+          oldResumeEditPayload,
+        );
+        removeSessionStorage("oldRouteNameDashboard");
+        removeSessionStorage("editingResumeIdAndData");
+        setLocalStorage("latest_resume_id", editingResumeIdAndData.id);
+      } else {
+        // Otherwise, create a new resume entry
+        const response = await api.post(
+          `${API_URL}/user-resumes`,
+          singlePayload,
+        );
+        setLocalStorage("latest_resume_id", response.data.id);
 
-
-
-
+        return true;
+      }
+    } catch (err) {
+      console.error("Error saving contact unified payload:", err);
+      return false;
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const fetchContact = async (data1: string | number) => {
     try {

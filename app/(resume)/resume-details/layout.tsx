@@ -35,6 +35,8 @@ export default function RootLayout({
     (resume) => resume.id == (chosenTemplate?.id || chosenTemplate?.templateId),
   );
 
+  console.log("Selected Resume Template:", selectedResume);
+
   const SelectedComponent = selectedResume?.component;
 
   // usePreventReload()

@@ -181,8 +181,6 @@
 //       return false;
 //     }
 
-    
-
 //     if (!emailFromQuery) {
 //       showModal('error', {
 //         title: "Email Missing",
@@ -223,7 +221,7 @@
 //       setLoading(false);
 //       const error = err as ApiError;
 //       const errorMessage = error.response?.data?.message || "Invalid OTP or something went wrong.";
-      
+
 //       showModal('error', {
 //         title: "Password Reset Failed",
 //         message: errorMessage,
@@ -233,15 +231,10 @@
 //     }
 //   };
 
-
-
-
 //   const generatePassword = () => {
 //     const newPassword = passwordGenerator();
 //     setPassword(newPassword);
-    
 
-    
 //     // Add animation effect to button
 //     const button = document.getElementById('generate-password-btn');
 //     if (button) {
@@ -323,7 +316,7 @@
 //                     </label>
 //                     <div className="flex items-center gap-1.5 sm:gap-2">
 //                       <div className="w-16 sm:w-20 h-1.5 sm:h-2 bg-gray-200 rounded-full overflow-hidden">
-//                         <div 
+//                         <div
 //                           className={`h-full ${passwordStrength.color} transition-all duration-300 rounded-full`}
 //                           style={{ width: `${passwordStrength.percentage}%` }}
 //                         />
@@ -338,7 +331,7 @@
 //                       </span>
 //                     </div>
 //                   </div>
-                  
+
 //                   <div className="flex gap-2">
 //                     <div className="relative flex-1">
 //                       <div
@@ -372,7 +365,7 @@
 //                         )}
 //                       </button>
 //                     </div>
-                    
+
 //                       <button
 //                         id="generate-password-btn"
 //                         type="button"
@@ -534,7 +527,7 @@
 //               onClick={(e) => e.stopPropagation()}
 //             >
 //               <div className="bg-white rounded-2xl shadow-2xl overflow-hidden border border-indigo-100">
-                
+
 //                 {/* Close Button */}
 //                 <button
 //                   onClick={() => setShowSuccessModal(false)}
@@ -650,7 +643,7 @@
 //               onClick={(e) => e.stopPropagation()}
 //             >
 //               <div className="bg-white rounded-2xl shadow-2xl overflow-hidden border border-red-100">
-                
+
 //                 {/* Close Button */}
 //                 <button
 //                   onClick={() => setShowErrorModal(false)}
@@ -765,7 +758,7 @@
 //               onClick={(e) => e.stopPropagation()}
 //             >
 //               <div className="bg-white rounded-2xl shadow-2xl overflow-hidden border border-yellow-100">
-                
+
 //                 {/* Close Button */}
 //                 <button
 //                   onClick={() => setShowWarningModal(false)}
@@ -864,8 +857,6 @@
 //         )}
 //       </AnimatePresence>
 
-  
-
 //       {/* Add custom CSS for animations */}
 //       <style jsx>{`
 //         @keyframes fadeInUp {
@@ -896,22 +887,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 
 import { useState, FormEvent, ChangeEvent, useEffect } from "react";
@@ -929,6 +904,7 @@ import {
   FiAlertCircle,
   FiSend,
   FiKey,
+  FiCheck,
 } from "react-icons/fi";
 import axios from "axios";
 import { API_URL } from "../../config/api";
@@ -940,7 +916,7 @@ import Link from "next/link";
 interface ApiError {
   response?: {
     data?: {
-      message?: string;
+      error?: string; 
     };
   };
 }
@@ -975,7 +951,8 @@ const ChangePassword = () => {
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [step, setStep] = useState<"otp" | "newPassword">("otp");
@@ -994,14 +971,14 @@ const ChangePassword = () => {
     title: "",
     message: "",
     subMessage: "",
-    email: ""
+    email: "",
   });
 
-  const showModal = (type: 'success' | 'error' | 'warning', config: any) => {
+  const showModal = (type: "success" | "error" | "warning", config: any) => {
     setModalConfig(config);
-    if (type === 'success') setShowSuccessModal(true);
-    else if (type === 'error') setShowErrorModal(true);
-    else if (type === 'warning') setShowWarningModal(true);
+    if (type === "success") setShowSuccessModal(true);
+    else if (type === "error") setShowErrorModal(true);
+    else if (type === "warning") setShowWarningModal(true);
   };
 
   useEffect(() => {
@@ -1091,100 +1068,131 @@ const ChangePassword = () => {
 
   const validateOtpForm = (): boolean => {
     if (!otp.trim()) {
-      showModal('warning', {
+      showModal("warning", {
         title: "OTP Required",
         message: "Please enter the verification code sent to your email.",
         subMessage: "Check your inbox for the 6-digit code.",
-        email: ""
+        email: "",
       });
       return false;
     }
 
     if (otp.length !== 6) {
-      showModal('warning', {
+      showModal("warning", {
         title: "Invalid OTP",
         message: "OTP must be 6 digits.",
         subMessage: "Please enter the complete 6-digit verification code.",
-        email: ""
+        email: "",
       });
       return false;
     }
 
     if (!emailFromQuery) {
-      showModal('error', {
+      showModal("error", {
         title: "Email Missing",
         message: "Please try the reset password process again.",
         subMessage: "Your session may have expired. Request a new OTP.",
-        email: ""
+        email: "",
       });
       return false;
     }
 
     return true;
   };
+
+
 
   const validatePasswordForm = (): boolean => {
-    if (!password) {
-      showModal('warning', {
-        title: "Password Required",
-        message: "Please enter a new password.",
-        subMessage: "Create a strong password to secure your account.",
-        email: ""
-      });
-      return false;
-    }
+  if (!password) {
+    showModal("warning", {
+      title: "Password Required",
+      message: "Please enter a new password.",
+      subMessage: "Create a strong password to secure your account.",
+      email: "",
+    });
+    return false;
+  }
 
-    if (password.length < 8) {
-      showModal('warning', {
-        title: "Password Too Short",
-        message: "Password must be at least 8 characters long.",
-        subMessage: "For better security, use a longer password with mixed characters.",
-        email: ""
-      });
-      return false;
-    }
+  if (password !== confirmPassword) {
+    showModal("warning", {
+      title: "Passwords Don't Match",
+      message: "The passwords you entered do not match.",
+      subMessage: "Please re-enter your password carefully.",
+      email: "",
+    });
+    return false;
+  }
 
-    if (password !== confirmPassword) {
-      showModal('warning', {
-        title: "Passwords Don't Match",
-        message: "The passwords you entered do not match.",
-        subMessage: "Please re-enter your password carefully.",
-        email: ""
-      });
-      return false;
-    }
+  // Check ALL password requirements
+  const hasLength8 = password.length >= 8;
+  const hasLowercase = /[a-z]/.test(password);
+  const hasUppercase = /[A-Z]/.test(password);
+  const hasNumbers = /[0-9]/.test(password);
+  const hasSpecial = /[^A-Za-z0-9]/.test(password);
 
-    // Check password strength (at least 3 out of 6 requirements for minimum security)
-    let score = 0;
-    if (password.length >= 8) score++;
-    if (password.length >= 12) score++;
-    if (/[a-z]/.test(password)) score++;
-    if (/[A-Z]/.test(password)) score++;
-    if (/[0-9]/.test(password)) score++;
-    if (/[^A-Za-z0-9]/.test(password)) score++;
-    
-    if (score < 3) {
-      showModal('warning', {
-        title: "Weak Password",
-        message: "Your password is too weak. Please choose a stronger password.",
-        subMessage: "Include uppercase, lowercase, numbers, and special characters.",
-        email: ""
-      });
-      return false;
-    }
+  if (!hasLength8) {
+    showModal("warning", {
+      title: "Password Too Short",
+      message: "Password must be at least 8 characters long.",
+      subMessage: "Please make sure your password meets all requirements.",
+      email: "",
+    });
+    return false;
+  }
 
-    if (!resetToken) {
-      showModal('error', {
-        title: "Session Expired",
-        message: "Please verify OTP again.",
-        subMessage: "Your reset token is missing. Request a new OTP.",
-        email: ""
-      });
-      return false;
-    }
+  if (!hasLowercase) {
+    showModal("warning", {
+      title: "Missing Lowercase Letter",
+      message: "Password must contain at least one lowercase letter.",
+      subMessage: "Please add a lowercase letter (a-z) to your password.",
+      email: "",
+    });
+    return false;
+  }
 
-    return true;
-  };
+  if (!hasUppercase) {
+    showModal("warning", {
+      title: "Missing Uppercase Letter",
+      message: "Password must contain at least one uppercase letter.",
+      subMessage: "Please add an uppercase letter (A-Z) to your password.",
+      email: "",
+    });
+    return false;
+  }
+
+  if (!hasNumbers) {
+    showModal("warning", {
+      title: "Missing Number",
+      message: "Password must contain at least one number.",
+      subMessage: "Please add a number (0-9) to your password.",
+      email: "",
+    });
+    return false;
+  }
+
+  if (!hasSpecial) {
+    showModal("warning", {
+      title: "Missing Special Character",
+      message: "Password must contain at least one special character.",
+      subMessage: "Please add a special character (!@#$% etc.) to your password.",
+      email: "",
+    });
+    return false;
+  }
+
+  if (!resetToken) {
+    showModal("error", {
+      title: "Session Expired",
+      message: "Please verify OTP again.",
+      subMessage: "Your reset token is missing. Request a new OTP.",
+      email: "",
+    });
+    return false;
+  }
+
+  return true;
+};
+
 
   const handleVerifyOtp = async (e: FormEvent) => {
     e.preventDefault();
@@ -1201,25 +1209,26 @@ const ChangePassword = () => {
         `${API_URL}/auth/verify-reset-otp/`,
         payload,
       );
-      
+
       // Save the reset token from response
       const token = response.data.reset_token;
       setResetToken(token);
-      
+
       setLoading(false);
       // Move to next step - show new password form
       setStep("newPassword");
-      
     } catch (err: unknown) {
       setLoading(false);
       const error = err as ApiError;
-      const errorMessage = error.response?.data?.message || "Invalid OTP or something went wrong.";
-      
-      showModal('error', {
+      const errorMessage =
+        error.response?.data?.error || "Invalid OTP or something went wrong.";
+
+      showModal("error", {
         title: "OTP Verification Failed",
         message: errorMessage,
-        subMessage: "Please check your OTP and try again. Request a new OTP if needed.",
-        email: ""
+        subMessage:
+          "Please check your OTP and try again. Request a new OTP if needed.",
+        email: "",
       });
     }
   };
@@ -1235,32 +1244,29 @@ const ChangePassword = () => {
         new_password: password,
       };
 
+      await axios.post(`${API_URL}/auth/reset-password/`, payload);
 
-
-
-      await axios.post(
-        `${API_URL}/auth/reset-password/`,
-        payload,
-      );
-      
       setLoading(false);
 
-      showModal('success', {
+      showModal("success", {
         title: "Password Changed Successfully!",
         message: "Your password has been reset successfully.",
         subMessage: "You can now login with your new password.",
-        email: emailFromQuery
+        email: emailFromQuery,
       });
     } catch (err: unknown) {
       setLoading(false);
       const error = err as ApiError;
-      const errorMessage = error.response?.data?.message || "Failed to reset password. Please try again.";
-      
-      showModal('error', {
+      const errorMessage =
+        error.response?.data?.error ||
+        "Failed to reset password. Please try again.";
+
+      showModal("error", {
         title: "Password Reset Failed",
         message: errorMessage,
-        subMessage: "Please try again or request a new OTP if the issue persists.",
-        email: ""
+        subMessage:
+          "Please try again or request a new OTP if the issue persists.",
+        email: "",
       });
     }
   };
@@ -1269,12 +1275,12 @@ const ChangePassword = () => {
     const newPassword = passwordGenerator();
     setPassword(newPassword);
     setConfirmPassword("");
-    
+
     // Add animation effect to button
-    const button = document.getElementById('generate-password-btn');
+    const button = document.getElementById("generate-password-btn");
     if (button) {
-      button.classList.add('scale-95');
-      setTimeout(() => button.classList.remove('scale-95'), 200);
+      button.classList.add("scale-95");
+      setTimeout(() => button.classList.remove("scale-95"), 200);
     }
   };
 
@@ -1283,6 +1289,22 @@ const ChangePassword = () => {
     setPassword("");
     setConfirmPassword("");
   };
+
+   const passwordRequirements = [
+    { label: "At least 8 characters", met: password.length >= 8 },
+    { label: "Contains lowercase letter", met: /[a-z]/.test(password) },
+    { label: "Contains uppercase letter", met: /[A-Z]/.test(password) },
+    { label: "Contains number", met: /[0-9]/.test(password) },
+    {
+      label: "Contains special character",
+      met: /[^A-Za-z0-9]/.test(password),
+    },
+    {
+      label: "At least 12 characters (extra strength)",
+      met: password.length >= 12,
+    },
+  ];
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 flex flex-col">
@@ -1301,19 +1323,33 @@ const ChangePassword = () => {
               <div className="mb-6 sm:mb-8">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
-                    <div className={`h-1 rounded-full transition-all duration-300 ${step === "otp" ? "bg-indigo-600" : "bg-indigo-200"}`}></div>
+                    <div
+                      className={`h-1 rounded-full transition-all duration-300 ${step === "otp" ? "bg-indigo-600" : "bg-indigo-200"}`}
+                    ></div>
                   </div>
                   <div className="flex-1 mx-2">
-                    <div className={`h-1 rounded-full transition-all duration-300 ${step === "newPassword" ? "bg-indigo-600" : "bg-gray-200"}`}></div>
+                    <div
+                      className={`h-1 rounded-full transition-all duration-300 ${step === "newPassword" ? "bg-indigo-600" : "bg-gray-200"}`}
+                    ></div>
                   </div>
                   <div className="flex-1">
                     <div className="h-1 rounded-full bg-gray-200"></div>
                   </div>
                 </div>
                 <div className="flex justify-between mt-2">
-                  <span className={`text-xs font-medium ${step === "otp" ? "text-indigo-600" : "text-gray-400"}`}>Verify OTP</span>
-                  <span className={`text-xs font-medium ${step === "newPassword" ? "text-indigo-600" : "text-gray-400"}`}>New Password</span>
-                  <span className="text-xs font-medium text-gray-400">Complete</span>
+                  <span
+                    className={`text-xs font-medium ${step === "otp" ? "text-indigo-600" : "text-gray-400"}`}
+                  >
+                    Verify OTP
+                  </span>
+                  <span
+                    className={`text-xs font-medium ${step === "newPassword" ? "text-indigo-600" : "text-gray-400"}`}
+                  >
+                    New Password
+                  </span>
+                  <span className="text-xs font-medium text-gray-400">
+                    Complete
+                  </span>
                 </div>
               </div>
 
@@ -1330,10 +1366,9 @@ const ChangePassword = () => {
                   {step === "otp" ? "Verify OTP" : "Create New Password"}
                 </h2>
                 <p className="text-[11px] sm:text-xs md:text-sm text-gray-500 mt-1.5 sm:mt-2">
-                  {step === "otp" 
+                  {step === "otp"
                     ? "Enter the verification code sent to your email"
-                    : "Set a strong password for your account"
-                  }
+                    : "Set a strong password for your account"}
                 </p>
                 {emailFromQuery && (
                   <div className="mt-2 inline-flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-0.5 sm:py-1.5 bg-indigo-50 rounded-full">
@@ -1422,7 +1457,7 @@ const ChangePassword = () => {
                       </label>
                       <div className="flex items-center gap-1.5 sm:gap-2">
                         <div className="w-16 sm:w-20 h-1.5 sm:h-2 bg-gray-200 rounded-full overflow-hidden">
-                          <div 
+                          <div
                             className={`h-full ${passwordStrength.color} transition-all duration-300 rounded-full`}
                             style={{ width: `${passwordStrength.percentage}%` }}
                           />
@@ -1437,7 +1472,7 @@ const ChangePassword = () => {
                         </span>
                       </div>
                     </div>
-                    
+
                     <div className="flex gap-2">
                       <div className="relative flex-1">
                         <div
@@ -1462,7 +1497,9 @@ const ChangePassword = () => {
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
                           className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-indigo-600 transition-colors cursor-pointer"
-                          aria-label={showPassword ? "Hide password" : "Show password"}
+                          aria-label={
+                            showPassword ? "Hide password" : "Show password"
+                          }
                         >
                           {showPassword ? (
                             <FiEyeOff className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -1471,7 +1508,7 @@ const ChangePassword = () => {
                           )}
                         </button>
                       </div>
-                      
+
                       <button
                         id="generate-password-btn"
                         type="button"
@@ -1486,6 +1523,44 @@ const ChangePassword = () => {
                       </button>
                     </div>
                   </div>
+
+                     <AnimatePresence>
+                                      {password && (
+                                        <motion.div
+                                          initial={{ opacity: 0, height: 0 }}
+                                          animate={{ opacity: 1, height: "auto" }}
+                                          exit={{ opacity: 0, height: 0 }}
+                                          transition={{ duration: 0.2 }}
+                                          className="mt-2 sm:mt-3 p-2.5 sm:p-3 bg-gray-50 rounded-lg sm:rounded-xl border border-gray-100 overflow-hidden"
+                                        >
+                                          <h4 className="text-xs  font-semibold text-gray-700 mb-1.5 sm:mb-2">
+                                            Password Requirements:
+                                          </h4>
+                                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2">
+                                            {passwordRequirements.map((req, index) => (
+                                              <motion.div
+                                                key={index}
+                                                initial={{ opacity: 0, x: -10 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                transition={{ delay: index * 0.05 }}
+                                                className="flex items-center gap-1.5 sm:gap-2"
+                                              >
+                                                {req.met ? (
+                                                  <FiCheck className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-emerald-500" />
+                                                ) : (
+                                                  <FiAlertCircle className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-gray-300" />
+                                                )}
+                                                <span
+                                                  className={`text-[10px] md:text-[11px] ${req.met ? "text-emerald-600 font-medium" : "text-gray-500"}`}
+                                                >
+                                                  {req.label}
+                                                </span>
+                                              </motion.div>
+                                            ))}
+                                          </div>
+                                        </motion.div>
+                                      )}
+                                    </AnimatePresence>
 
                   {/* Confirm Password Field */}
                   <div className="mb-5 sm:mb-6">
@@ -1513,9 +1588,15 @@ const ChangePassword = () => {
                       />
                       <button
                         type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-indigo-600 transition-colors cursor-pointer"
-                        aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                        aria-label={
+                          showConfirmPassword
+                            ? "Hide password"
+                            : "Show password"
+                        }
                       >
                         {showConfirmPassword ? (
                           <FiEyeOff className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -1531,96 +1612,7 @@ const ChangePassword = () => {
                     )}
                   </div>
 
-                  {/* Password Requirements */}
-                  <AnimatePresence>
-                    {password && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="mb-5 sm:mb-6 p-2.5 sm:p-3 bg-gray-50 rounded-lg sm:rounded-xl border border-gray-100 overflow-hidden"
-                      >
-                        <h4 className="text-[9px] sm:text-[10px] md:text-xs font-semibold text-gray-700 mb-2 sm:mb-2.5">
-                          Password Requirements:
-                        </h4>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2">
-                          <div className="flex items-center gap-1.5 sm:gap-2">
-                            {password.length >= 8 ? (
-                              <FiCheckCircle className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-emerald-500 flex-shrink-0" />
-                            ) : (
-                              <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 border border-gray-300 rounded-full flex-shrink-0" />
-                            )}
-                            <span
-                              className={`text-[8px] sm:text-[9px] md:text-[10px] ${password.length >= 8 ? "text-emerald-600" : "text-gray-500"}`}
-                            >
-                              At least 8 characters
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-1.5 sm:gap-2">
-                            {password.length >= 12 ? (
-                              <FiCheckCircle className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-emerald-500 flex-shrink-0" />
-                            ) : (
-                              <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 border border-gray-300 rounded-full flex-shrink-0" />
-                            )}
-                            <span
-                              className={`text-[8px] sm:text-[9px] md:text-[10px] ${password.length >= 12 ? "text-emerald-600" : "text-gray-500"}`}
-                            >
-                              At least 12 characters (stronger)
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-1.5 sm:gap-2">
-                            {/[a-z]/.test(password) ? (
-                              <FiCheckCircle className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-emerald-500 flex-shrink-0" />
-                            ) : (
-                              <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 border border-gray-300 rounded-full flex-shrink-0" />
-                            )}
-                            <span
-                              className={`text-[8px] sm:text-[9px] md:text-[10px] ${/[a-z]/.test(password) ? "text-emerald-600" : "text-gray-500"}`}
-                            >
-                              Contains lowercase letter
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-1.5 sm:gap-2">
-                            {/[A-Z]/.test(password) ? (
-                              <FiCheckCircle className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-emerald-500 flex-shrink-0" />
-                            ) : (
-                              <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 border border-gray-300 rounded-full flex-shrink-0" />
-                            )}
-                            <span
-                              className={`text-[8px] sm:text-[9px] md:text-[10px] ${/[A-Z]/.test(password) ? "text-emerald-600" : "text-gray-500"}`}
-                            >
-                              Contains uppercase letter
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-1.5 sm:gap-2">
-                            {/[0-9]/.test(password) ? (
-                              <FiCheckCircle className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-emerald-500 flex-shrink-0" />
-                            ) : (
-                              <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 border border-gray-300 rounded-full flex-shrink-0" />
-                            )}
-                            <span
-                              className={`text-[8px] sm:text-[9px] md:text-[10px] ${/[0-9]/.test(password) ? "text-emerald-600" : "text-gray-500"}`}
-                            >
-                              Contains number
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-1.5 sm:gap-2">
-                            {/[^A-Za-z0-9]/.test(password) ? (
-                              <FiCheckCircle className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-emerald-500 flex-shrink-0" />
-                            ) : (
-                              <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 border border-gray-300 rounded-full flex-shrink-0" />
-                            )}
-                            <span
-                              className={`text-[8px] sm:text-[9px] md:text-[10px] ${/[^A-Za-z0-9]/.test(password) ? "text-emerald-600" : "text-gray-500"}`}
-                            >
-                              Contains special character (!@#$% etc.)
-                            </span>
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                
 
                   {/* Action Buttons */}
                   <div className="flex gap-3">
@@ -1675,7 +1667,6 @@ const ChangePassword = () => {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="bg-white rounded-2xl shadow-2xl overflow-hidden border border-indigo-100">
-                
                 {/* Close Button */}
                 <button
                   onClick={() => setShowSuccessModal(false)}
@@ -1791,7 +1782,6 @@ const ChangePassword = () => {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="bg-white rounded-2xl shadow-2xl overflow-hidden border border-red-100">
-                
                 {/* Close Button */}
                 <button
                   onClick={() => setShowErrorModal(false)}
@@ -1861,7 +1851,9 @@ const ChangePassword = () => {
                       onClick={() => {
                         setShowErrorModal(false);
                         if (step === "otp") {
-                          const otpInput = document.querySelector('input[placeholder*="6-digit"]');
+                          const otpInput = document.querySelector(
+                            'input[placeholder*="6-digit"]',
+                          );
                           if (otpInput) (otpInput as HTMLInputElement).focus();
                         }
                       }}
@@ -1905,7 +1897,6 @@ const ChangePassword = () => {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="bg-white rounded-2xl shadow-2xl overflow-hidden border border-yellow-100">
-                
                 {/* Close Button */}
                 <button
                   onClick={() => setShowWarningModal(false)}
@@ -1971,21 +1962,7 @@ const ChangePassword = () => {
                     transition={{ delay: 0.4 }}
                     className="flex gap-3"
                   >
-                    <button
-                      onClick={() => {
-                        setShowWarningModal(false);
-                        if (step === "otp") {
-                          const otpInput = document.querySelector('input[placeholder*="6-digit"]');
-                          if (otpInput) (otpInput as HTMLInputElement).focus();
-                        } else {
-                          const passwordInput = document.querySelector('input[type="password"]');
-                          if (passwordInput) (passwordInput as HTMLInputElement).focus();
-                        }
-                      }}
-                      className="flex-1 px-4 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl font-medium hover:from-amber-600 hover:to-orange-600 transition-all duration-200 transform hover:scale-[1.02] shadow-md cursor-pointer text-sm"
-                    >
-                      Try Again
-                    </button>
+                   
                     <button
                       onClick={() => {
                         setShowWarningModal(false);
@@ -1997,7 +1974,30 @@ const ChangePassword = () => {
                       }}
                       className="flex-1 px-4 py-2.5 text-gray-700 bg-gray-100 rounded-xl font-medium hover:bg-gray-200 transition-all duration-200 cursor-pointer text-sm"
                     >
-                      {step === "otp" ? "Back to Forgot Password" : "Back to OTP"}
+                      {step === "otp"
+                        ? "Back to Forgot Password"
+                        : "Back to OTP"}
+                    </button>
+
+                     <button
+                      onClick={() => {
+                        setShowWarningModal(false);
+                        if (step === "otp") {
+                          const otpInput = document.querySelector(
+                            'input[placeholder*="6-digit"]',
+                          );
+                          if (otpInput) (otpInput as HTMLInputElement).focus();
+                        } else {
+                          const passwordInput = document.querySelector(
+                            'input[type="password"]',
+                          );
+                          if (passwordInput)
+                            (passwordInput as HTMLInputElement).focus();
+                        }
+                      }}
+                      className="flex-1 px-4 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl font-medium hover:from-amber-600 hover:to-orange-600 transition-all duration-200 transform hover:scale-[1.02] shadow-md cursor-pointer text-sm"
+                    >
+                      Try Again
                     </button>
                   </motion.div>
                 </div>

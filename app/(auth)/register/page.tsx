@@ -1393,28 +1393,71 @@ export default function RegisterForm() {
     handleChange("password", newPassword);
   };
 
+  // const validateForm = (): boolean => {
+  //   const newErrors: FormErrors = {};
+
+  //   if (!values.firstName.trim())
+  //     newErrors.firstName = "First name is required";
+  //   if (!values.lastName.trim()) newErrors.lastName = "Last name is required";
+  //   if (!values.email.trim()) newErrors.email = "Email is required";
+  //   else if (!/\S+@\S+\.\S+/.test(values.email))
+  //     newErrors.email = "Invalid email format";
+  //   if (!values.phone.trim()) newErrors.phone = "Phone number is required";
+  //   if (!values.password.trim()) newErrors.password = "Password is required";
+  //   else if (values.password.length < 8)
+  //     newErrors.password = "Password must be at least 8 characters";
+  //   else if (passwordStrength.score < 3)
+  //     newErrors.password = "Please choose a stronger password ";
+  //   if (!values.city.trim()) newErrors.city = "City is required";
+  //   if (!values.state.trim()) newErrors.state = "State is required";
+  //   if (!values.country.trim()) newErrors.country = "Country is required";
+
+  //   setErrors(newErrors);
+  //   return Object.keys(newErrors).length === 0;
+  // };
+
+
+
   const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
+  const newErrors: FormErrors = {};
 
-    if (!values.firstName.trim())
-      newErrors.firstName = "First name is required";
-    if (!values.lastName.trim()) newErrors.lastName = "Last name is required";
-    if (!values.email.trim()) newErrors.email = "Email is required";
-    else if (!/\S+@\S+\.\S+/.test(values.email))
-      newErrors.email = "Invalid email format";
-    if (!values.phone.trim()) newErrors.phone = "Phone number is required";
-    if (!values.password.trim()) newErrors.password = "Password is required";
-    else if (values.password.length < 8)
-      newErrors.password = "Password must be at least 8 characters";
-    else if (passwordStrength.score < 3)
-      newErrors.password = "Please choose a stronger password (at least Fair)";
-    if (!values.city.trim()) newErrors.city = "City is required";
-    if (!values.state.trim()) newErrors.state = "State is required";
-    if (!values.country.trim()) newErrors.country = "Country is required";
+  // Basic Field Validations
+  if (!values.firstName.trim()) newErrors.firstName = "First name is required";
+  if (!values.lastName.trim()) newErrors.lastName = "Last name is required";
+  
+  if (!values.email.trim()) {
+    newErrors.email = "Email is required";
+  } else if (!/\S+@\S+\.\S+/.test(values.email)) {
+    newErrors.email = "Invalid email format";
+  }
+  
+  if (!values.phone.trim()) newErrors.phone = "Phone number is required";
+  if (!values.city.trim()) newErrors.city = "City is required";
+  if (!values.state.trim()) newErrors.state = "State is required";
+  if (!values.country.trim()) newErrors.country = "Country is required";
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  // --- Password Validation Logic ---
+  if (!values.password.trim()) {
+    newErrors.password = "Password is required";
+  } else {
+    // 1. Check the baseline mandatory rules (e.g., length, casing, numbers, symbols)
+    // We exclude the 12-character "extra strength" rule from being a hard blocker
+  
+
+    const allMandatoryMet = passwordRequirements.every((req) => req.met);
+
+    if (!allMandatoryMet) {
+      newErrors.password = "Password does not meet all required criteria";
+    } 
+    // 2. Fallback to your passwordStrength score check if mandatory rules pass
+    else if (passwordStrength.score < 3) {
+      newErrors.password = "Please choose a stronger password";
+    }
+  }
+
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+};
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();

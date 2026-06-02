@@ -172,7 +172,7 @@ export interface Template {
 }
 
 export interface FullResumeData {
-  template?: Template | null | string;
+  template?: Template | null | string | number;
   contact: Contact;
   experiences: Experience[];
   education: Education[];
@@ -190,6 +190,19 @@ export interface AllData {
   finalize?: Finalize;
   summary?: string;
   projects?: Project[];
+}
+
+export interface EditingResumeData {
+  id: number | string;
+  resume_data: {
+    contact?: Contact;
+    educations?: Education[];
+    experiences?: Experience[];
+    projects?: Project[];
+    skills?: Skill;
+    summary?: string[];
+    finalize?: Finalize[];
+  };
 }
 
 export interface ResumeProps {

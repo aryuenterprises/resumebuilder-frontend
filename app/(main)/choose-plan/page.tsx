@@ -1667,7 +1667,7 @@ export default function ChoosePlanPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5 md:gap-6 items-stretch">
-            {planDetails.map((plan, index) => {
+            {planDetails.toReversed().map((plan, index) => {
               const isHovered = hoveredPlan === plan.id;
               const isSamePlan =
                 plan.name.toLowerCase() === usersCurrentPlan?.toLowerCase();

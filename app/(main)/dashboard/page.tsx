@@ -1289,7 +1289,6 @@ interface BillingRecord {
   plan_name: string;
   amount: number;
   payment_status: "created" | "failed";
-  
 }
 
 interface usersCurrentPlan {
@@ -1346,7 +1345,6 @@ const DashboardPage = () => {
     ResumeItem[]
   >([]);
 
-
   const [isMobile, setIsMobile] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
@@ -1354,7 +1352,6 @@ const DashboardPage = () => {
   const { setIsUploadMode } = useContext(CreateContext);
   const userDetails = getLocalStorage<User>("user_details");
   const userId = userDetails?.id;
-  
 
   useEffect(() => {
     const handleResize = () => {
@@ -1380,8 +1377,7 @@ const DashboardPage = () => {
         setPaymentRecords(transactions);
         setStatsData(statistics);
 
-
-        const filter = resumes.flatMap((data1:Resume) => {
+        const filter = resumes.flatMap((data1: Resume) => {
           const templateMatch = templateData.find(
             (t) => t?.id == data1.template?.id,
           );
@@ -1397,7 +1393,6 @@ const DashboardPage = () => {
     };
     fetchUserData();
   }, []);
-
 
   const handleDeleteResume = async (id: string) => {
     const result = await Swal.fire({
@@ -1472,34 +1467,33 @@ const DashboardPage = () => {
           { duration: 4000 },
         );
 
+        const fetchUserData = async () => {
+          try {
+            const res = await api.get("/dashboard");
 
-         const fetchUserData = async () => {
-      try {
-        const res = await api.get("/dashboard");
+            const { profile, resumes, statistics, subscription, transactions } =
+              res?.data;
 
-        const { profile, resumes, statistics, subscription, transactions } =
-          res?.data;
+            setUserProfile(profile);
+            setusersCurrentPlan(subscription);
+            setPaymentRecords(transactions);
+            setStatsData(statistics);
 
-        setUserProfile(profile);
-        setusersCurrentPlan(subscription);
-        setPaymentRecords(transactions);
-        setStatsData(statistics);
+            const filter = resumes.flatMap((data1: Resume) => {
+              const templateMatch = templateData.find(
+                (t) => t?.id == data1.template?.id,
+              );
+              return templateMatch
+                ? [{ ...data1, component: templateMatch.component }]
+                : [];
+            });
 
-        const filter = resumes.flatMap((data1:Resume) => {
-          const templateMatch = templateData.find(
-            (t) => t?.id == data1.template?.id,
-          );
-          return templateMatch
-            ? [{ ...data1, component: templateMatch.component }]
-            : [];
-        });
-
-        setFilteredOldResumeData(filter);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchUserData();
+            setFilteredOldResumeData(filter);
+          } catch (err) {
+            console.error(err);
+          }
+        };
+        fetchUserData();
 
         // const response = await axios.get(
         //   `${API_URL}/api/contact-resume/all-contact/${userId}`,
@@ -1532,7 +1526,14 @@ const DashboardPage = () => {
     removeLocalStorage("user_details");
     removeLocalStorage("fullResumeData");
     removeLocalStorage("chosenTemplate");
-    removeLocalStorage("accessToken");
+    removeLocalStorage("access_token");
+    removeLocalStorage("refresh_token");
+    removeLocalStorage("user_token");
+
+    removeLocalStorage("coverLetterData");
+    removeLocalStorage("editingResumeIdAndData");
+    removeLocalStorage("user_token");
+
     router.push("/login");
   };
 
@@ -1547,15 +1548,12 @@ const DashboardPage = () => {
       0,
     ) || 0;
 
-
   // Responsive grid columns based on screen size
   const getResumeGridCols = () => {
     if (isMobile) return "grid-cols-1";
     if (isTablet) return "grid-cols-2";
     return "grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
   };
-
-
 
   return (
     <ProtectedRoute>
@@ -1856,7 +1854,7 @@ const DashboardPage = () => {
                           )}
 
                           {/* Expiry/Validity Info - Conditional based on plan type */}
-                          {usersCurrentPlan?.current_plan === "Premium" ? (
+                          {usersCurrentPlan?.current_plan === "premium" ? (
                             // Lifetime plan - Show lifetime badge instead of expiry
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 text-xs sm:text-sm">
                               <span className="text-gray-600 flex items-center gap-1.5">
@@ -1891,7 +1889,7 @@ const DashboardPage = () => {
                                       usersCurrentPlan.plan_details.expires_at,
                                     ) < new Date() && (
                                       <span className="ml-2 text-red-500 text-[10px] sm:text-xs font-semibold">
-                                        (Expiring Today)
+                                        (Expired)
                                       </span>
                                     )}
                                   </span>
@@ -2100,6 +2098,11 @@ const DashboardPage = () => {
                                   "chosenTemplate",
                                   item.template,
                                 );
+
+                                setLocalStorage("editingResumeIdAndData", {
+                                  id: item.id,
+                                  resume_data: item.resume_data,
+                                });
                                 setSessionStorage(
                                   "oldRouteNameDashboard",
                                   true,
@@ -2115,9 +2118,7 @@ const DashboardPage = () => {
                             <motion.button
                               whileHover={{ scale: 1.1 }}
                               whileTap={{ scale: 0.95 }}
-                              onClick={() =>
-                                handleDeleteResume(item.id)
-                              }
+                              onClick={() => handleDeleteResume(item.id)}
                               className="bg-white rounded-full p-1.5 sm:p-2.5 hover:bg-rose-50 transition-all duration-300 shadow-lg cursor-pointer group/btn"
                             >
                               <FiTrash2 className="h-3 w-3 sm:h-4 sm:w-4 text-rose-600 group-hover/btn:scale-110 transition-transform" />
@@ -2127,7 +2128,7 @@ const DashboardPage = () => {
                             {item.name || `Resume ${index + 1}`}
                           </p>
                           <p className="text-white/60 text-[10px] sm:text-xs text-center mt-0.5 sm:mt-1">
-                            Template: {item.templateId}
+                            Template: {item.template.id}
                           </p>
                         </div>
                       </motion.div>
@@ -2175,9 +2176,7 @@ const DashboardPage = () => {
                                 </button>
                                 <button
                                   onClick={() => {
-                                    handleDeleteResume(
-                                      item.id
-                                    );
+                                    handleDeleteResume(item.id);
                                     setActiveMenuId(null);
                                   }}
                                   className="w-full px-3 py-2 text-left text-xs text-gray-700 hover:bg-rose-50 hover:text-rose-600 transition-colors flex items-center gap-2"

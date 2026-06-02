@@ -94,7 +94,9 @@ console.log("skills",skills)
 
           const singlePayload = {
         "section_name": "skills",
-          "section_payload": skillsDataToSave
+          "section_payload": {
+            "text": skillsDataToSave
+          }
       }
     
     
