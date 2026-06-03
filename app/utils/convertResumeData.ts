@@ -398,7 +398,9 @@ export const convertParsedResumeToFrontendFormat = (
     parsedData.projects?.map((project, index) => ({
       id: crypto.randomUUID(),
       title: `${project.title}`,
-      description: formatBulletsToHTML(project.bullets || []),
+      // description: formatBulletsToHTML(project.bullets || []),
+            description: project.description || "",
+
       techStack: project.technologies || [],
     })) || [];
 

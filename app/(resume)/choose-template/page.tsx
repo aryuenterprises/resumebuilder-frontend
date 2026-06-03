@@ -3212,7 +3212,9 @@ removeSessionStorage("oldRouteNameDashboard");
       try {
         const res = await api.get("/dashboard");
         const { subscription } = res?.data;
-        setUsersCurrentPlan(subscription.current_plan);
+        // setUsersCurrentPlan(subscription.current_plan);
+                setUsersCurrentPlan("premium");
+
       } catch (err) {
         console.error(err);
       }
@@ -3222,6 +3224,7 @@ removeSessionStorage("oldRouteNameDashboard");
 
 
   const currentPlan = getCurrentPlan();
+  console.log("Current Plan:", currentPlan);
   const availableTemplates = getAvailableTemplatesCount();
   const totalTemplates = templateData.length;
   const isUpgradeNeeded =
@@ -3252,6 +3255,8 @@ removeSessionStorage("oldRouteNameDashboard");
     showPlanRequiredPopup,
     selectedTemplateForMobile,
   ]);
+
+  
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();

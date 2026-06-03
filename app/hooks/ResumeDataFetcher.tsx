@@ -711,6 +711,9 @@ export function ResumeDataFetcher({ children }: ResumeDataFetcherProps) {
     setProjects,
   } = useContext(CreateContext);
 
+
+  console.log("isUploadMode",isUploadMode)
+
   const chosenTemplate = getLocalStorage<Template>("chosenTemplate");
   const editingResumeIdAndData = getLocalStorage<EditingResumeData>("editingResumeIdAndData");
   const isOldRouteNameDashboard = getSessionStorage("oldRouteNameDashboard");

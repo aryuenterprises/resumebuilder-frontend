@@ -8985,21 +8985,6 @@
 
 // export default TemplateOne;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
 // import React, {
 //   useContext,
@@ -9924,30 +9909,6 @@
 
 // export default TemplateOne;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 import React, {
   useContext,
@@ -9997,10 +9958,6 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
   const projects = alldata?.projects || context?.projects || [];
   const finalize = alldata?.finalize || context?.finalize || {};
   const summary = alldata?.summary || context?.summary || "";
-
-
- 
-
 
   const addressParts = [
     contact?.address,
@@ -10053,7 +10010,7 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
     }
     .t1-contact-details span { padding: 2px 8px; }
     .t1-links { margin-top: 5px; text-align: center; }
-    .t1-link-item { color: #0077b5; text-decoration: none; font-size: 14px; padding: 2px 8px; }
+    .t1-link-item { color: #000 !important; text-decoration: underline !important; font-size: 14px; padding: 2px 8px; }
 
     .t1-section-content { margin-bottom: 16px; }
     .t1-section-title {
@@ -10113,7 +10070,7 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
     }
     .t1-project-title      { font-weight: 700; font-size: 15px; color: #222; }
     .t1-project-links      { display: flex; gap: 12px; }
-    .t1-project-link       { font-size: 11px; color: #0077b5; text-decoration: none; }
+    .t1-project-link       { font-size: 11px; color: #000 !important; text-decoration: underline !important; }
     .t1-project-tech-stack { font-size: 12px; color: #666; margin: 4px 0 6px; }
 
     /* Page break marker — injected at exact cut points for PDF */
@@ -10133,7 +10090,7 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
       }
       html, body { overflow: visible; }
       .t1-resume { width: 100% !important; padding: 0 !important; }
-      .t1-project-link, .t1-link-item { color: #000 !important; text-decoration: underline !important; }
+      // .t1-project-link, .t1-link-item { color: #000 !important; text-decoration: underline !important; }
     }
   `;
 
@@ -10689,7 +10646,7 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
           Download Resume
         </motion.button>
       </div>
-  )}   
+   )}  
 
       {alldata ? (
         <div

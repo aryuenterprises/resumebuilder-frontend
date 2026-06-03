@@ -58,6 +58,8 @@ const ExperienceForm = () => {
   const UseContext = useContext(CreateContext);
   const contactId = UseContext?.contact.contactId || UseContext?.contact._id;
   const chosenResumeDetails = getLocalStorage<Template>("chosenTemplate");
+        setSessionStorage("resume_upload_mode", false);
+  
 
   const [isExperienced, setIsExperienced] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
