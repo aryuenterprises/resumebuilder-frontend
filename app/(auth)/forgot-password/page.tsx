@@ -601,7 +601,7 @@ import Link from "next/link";
 interface ApiError {
   response?: {
     data?: {
-      message?: string;
+      error?: string;
     };
   };
 }
@@ -687,7 +687,7 @@ const ForgetPassword = () => {
 
       const error = err as ApiError;
       const errorMessage =
-        error.response?.data?.message ||
+        error.response?.data?.error ||
         "Something went wrong. Please try again later.";
 
       showModal("error", {
@@ -833,7 +833,7 @@ const ForgetPassword = () => {
                 {/* Close Button */}
                 <button
                   onClick={() => setShowSuccessModal(false)}
-                  className="absolute top-4 right-4 z-10 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+                  className="absolute top-4 right-4 z-10 text-gray-100 hover:text-gray-600 transition-colors cursor-pointer"
                 >
                   <FiX className="w-5 h-5" />
                 </button>
@@ -941,7 +941,7 @@ const ForgetPassword = () => {
                 {/* Close Button */}
                 <button
                   onClick={() => setShowErrorModal(false)}
-                  className="absolute top-4 right-4 z-10 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+                  className="absolute top-4 right-4 z-10 text-gray-100 hover:text-gray-600 transition-colors cursor-pointer"
                 >
                   <FiX className="w-5 h-5" />
                 </button>
@@ -1057,7 +1057,7 @@ const ForgetPassword = () => {
                 {/* Close Button */}
                 <button
                   onClick={() => setShowWarningModal(false)}
-                  className="absolute top-4 right-4 z-10 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+                  className="absolute top-4 right-4 z-10 text-gray-100 hover:text-gray-600 transition-colors cursor-pointer"
                 >
                   <FiX className="w-5 h-5" />
                 </button>

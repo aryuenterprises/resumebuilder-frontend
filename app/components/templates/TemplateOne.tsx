@@ -8985,6 +8985,21 @@
 
 // export default TemplateOne;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // "use client";
 // import React, {
 //   useContext,
@@ -9909,6 +9924,30 @@
 
 // export default TemplateOne;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 "use client";
 import React, {
   useContext,
@@ -9958,6 +9997,10 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
   const projects = alldata?.projects || context?.projects || [];
   const finalize = alldata?.finalize || context?.finalize || {};
   const summary = alldata?.summary || context?.summary || "";
+
+
+ 
+
 
   const addressParts = [
     contact?.address,
@@ -10646,7 +10689,7 @@ const TemplateOne: React.FC<ResumeProps> = ({ alldata }) => {
           Download Resume
         </motion.button>
       </div>
-  )}  
+  )}   
 
       {alldata ? (
         <div

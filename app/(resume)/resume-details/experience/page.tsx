@@ -61,12 +61,16 @@ const ExperienceForm = () => {
 
   const [isExperienced, setIsExperienced] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-removeSessionStorage("oldRouteNameDashboard");
-        removeSessionStorage("editingResumeIdAndData");
-        
-  const {contact, experiences, setExperiences, fullResumeData, setFullResumeData } =
-    UseContext;
+  removeSessionStorage("oldRouteNameDashboard");
+  removeSessionStorage("editingResumeIdAndData");
 
+  const {
+    contact,
+    experiences,
+    setExperiences,
+    fullResumeData,
+    setFullResumeData,
+  } = UseContext;
 
   // Drag and drop state
   const [draggedItemId, setDraggedItemId] = useState<string | number | null>(
@@ -149,12 +153,9 @@ removeSessionStorage("oldRouteNameDashboard");
 
   // const latestResumeId = localStorage.getItem("latest_resume_id");
 
-      // const latestResumeId = getLocalStorage("latest_resume_id");
+  // const latestResumeId = getLocalStorage("latest_resume_id");
 
-            const latestResumeId = getLocalStorage("latest_resume_id");
-
-  
-
+  const latestResumeId = getLocalStorage("latest_resume_id");
 
   const fetchExp = async () => {
     try {
@@ -218,60 +219,55 @@ removeSessionStorage("oldRouteNameDashboard");
   //   }
   // };
 
-
   const saveToAPI = async (experiencesData: typeof experiences) => {
-  // if (!userId) {
-  //   console.error("User ID is required");
-  //   return false;
-  // }
+    // if (!userId) {
+    //   console.error("User ID is required");
+    //   return false;
+    // }
 
-  setIsSaving(true);
+    setIsSaving(true);
 
-  try {
+    try {
+      //     {
+      //   "section_name": "Work Experience",
+      //   "is_completed": false,
+      //   "section_payload": [
+      //     {
+      //       "company": "TechCorp Systems",
+      //       "role": "Staff Engineer",
+      //       "start_date": "2024-01",
+      //       "end_date": "Present",
+      //       "description": "Designed microservices using Django REST framework and handling 10k requests per second."
+      //     },
+      //     {
+      //       "company": "Startup Labs",
+      //       "role": "Python Developer",
+      //       "start_date": "2022-03",
+      //       "end_date": "2023-12",
+      //       "description": "Built data pipelines and automated onboarding configurations."
+      //     }
+      //   ]
+      // }
 
+      // 2. Build your exact single JSON payload schema
+      const singlePayload = {
+        section_name: "experiences",
+        section_payload: experiencesData,
+      };
 
-//     {
-//   "section_name": "Work Experience",
-//   "is_completed": false,
-//   "section_payload": [
-//     {
-//       "company": "TechCorp Systems",
-//       "role": "Staff Engineer",
-//       "start_date": "2024-01",
-//       "end_date": "Present",
-//       "description": "Designed microservices using Django REST framework and handling 10k requests per second."
-//     },
-//     {
-//       "company": "Startup Labs",
-//       "role": "Python Developer",
-//       "start_date": "2022-03",
-//       "end_date": "2023-12",
-//       "description": "Built data pipelines and automated onboarding configurations."
-//     }
-//   ]
-// }
-   
-
-    // 2. Build your exact single JSON payload schema
-    const singlePayload = {
-        "section_name": "experiences",
-          "section_payload": experiencesData
-      }
-    
-    
-
-    // 3. Send it as standard 'application/json'
-    const response = await api.patch(`${API_URL}/user-resumes/${latestResumeId}`,singlePayload);
-    return true;
-
-  } catch (err) {
-    console.error("Error saving contact unified payload:", err);
-    return false;
-  } finally {
-    setIsSaving(false);
-  }
-};
-
+      // 3. Send it as standard 'application/json'
+      const response = await api.patch(
+        `${API_URL}/user-resumes/${latestResumeId}`,
+        singlePayload,
+      );
+      return true;
+    } catch (err) {
+      console.error("Error saving contact unified payload:", err);
+      return false;
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const toggleExperienceMode = () => {
     const newValue = !isExperienced;

@@ -1061,14 +1061,16 @@ interface PlanFeature {
 interface Plan {
   id: string;
   name: string;
-  price: number;
-  interval: "1 month" | "year" | "one-time" | "3 months" | "Lifetime";
+  // interval: "1 month" | "year" | "one-time" | "3 months" | "Lifetime";
+  duration_days: string;
   description: string;
   features: PlanFeature[];
   popular?: boolean;
   color: string;
   icon: React.ReactNode;
   badge?: string;
+  regularPrice: string;
+  discountPrice: string;
 }
 
 interface CheckoutModalProps {
@@ -1080,22 +1082,20 @@ interface CheckoutModalProps {
   onSuccess: () => void;
 }
 
-interface UsersCurrentPlan {
-  plan: string;
-}
-
 interface ApiPlan {
   id: string;
   name: string;
-  price: number;
+  price: string;
   plan: string;
   title: string;
   description: string;
+  discount_price: string;
   order: string;
   status: string;
   createdAt: string;
   updatedAt: string;
   slug: string;
+  duration_days: string;
 }
 
 // Checkout Modal Component
@@ -1116,7 +1116,6 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
   if (!isOpen || !plan) return null;
 
-
   const handlePayment = async () => {
     try {
       setLoading(true);
@@ -1128,7 +1127,6 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
         subscription_id: plan.id,
       });
 
-      console.log("res", res);
       const options = {
         key: RAZORPAY_KEY_ID,
         amount: res.data.amount,
@@ -1143,8 +1141,6 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature,
-              // planId: plan.id,
-              // userId: userId,
             });
 
             setPaymentStatus("success");
@@ -1240,10 +1236,10 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 <div className="mb-5 sm:mb-6">
                   <div className="flex items-baseline gap-2 mb-3 sm:mb-4">
                     <span className="text-3xl sm:text-4xl font-bold text-gray-900">
-                      ₹{plan.price}
+                      ₹{plan.discountPrice}
                     </span>
                     <span className="text-gray-500 text-xs sm:text-sm">
-                      /{plan.interval}
+                      /{plan.duration_days} 
                     </span>
                   </div>
                   <div className="space-y-2 sm:space-y-3">
@@ -1279,10 +1275,10 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                       <span className="text-xs sm:text-sm">Processing...</span>
                     </div>
-                  ) : plan.price === 0 ? (
+                  ) : plan.name == "free" ? (
                     "Activate Free Plan"
                   ) : (
-                    `Pay ₹${plan.price}`
+                    `Pay ₹${plan.discountPrice}`
                   )}
                 </motion.button>
                 <p className="text-[10px] sm:text-xs text-gray-500 text-center mt-3 sm:mt-4 flex items-center justify-center gap-1">
@@ -1426,7 +1422,6 @@ export default function ChoosePlanPage() {
     else if (type === "error") setShowErrorModal(true);
   };
 
-  
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -1441,46 +1436,53 @@ export default function ChoosePlanPage() {
   }, []);
 
   const transformAPIPlanToPlan = (apiPlan: ApiPlan): Plan => {
-    console.log("apiPlan", apiPlan);
-
     const parseFeaturesFromHTML = (htmlString: string): PlanFeature[] => {
       const parser = new DOMParser();
       const doc = parser.parseFromString(htmlString, "text/html");
-      const listItems = doc.querySelectorAll("li");
 
-      const features = Array.from(listItems).map((item) => {
-        const text = item.textContent?.trim() || "";
-        const isBullet = item.getAttribute("data-list") === "bullet";
-        const included = isBullet;
+      // Get both ul and ol elements
+      const lists = doc.querySelectorAll("ul, ol");
 
-        const isHighlight = text.toLowerCase().includes("premium");
+      const features: PlanFeature[] = [];
 
-        return {
-          name: text,
-          included: included,
-          highlight: isHighlight,
-        };
+      lists.forEach((list) => {
+        const listItems = list.querySelectorAll("li");
+        const isOrdered = list.tagName.toLowerCase() === "ol";
+
+        listItems.forEach((item, index) => {
+          const text = item.textContent?.trim() || "";
+          const isBullet = !isOrdered; // ul = bullet, ol = numbered
+          const included = isBullet; // or however you want to determine inclusion
+          const isHighlight = text.toLowerCase().includes("premium");
+
+          features.push({
+            name: text,
+            included: included,
+            highlight: isHighlight,
+            ...(isOrdered && { order: index + 1 }), // optional: track order
+          });
+        });
       });
 
       return features;
     };
 
-    const getPlanInterval = (
-      planType: string,
-    ): "1 month" | "3 months" | "Lifetime" => {
-      switch (planType?.toLowerCase()) {
-        case "free":
-          return "1 month";
-        case "one month":
-          return "1 month";
-        case "three months":
-          return "3 months";
-        case "unlimited":
-          return "Lifetime";
-        default:
-          return "1 month";
-      }
-    };
+    // const getPlanInterval = (
+    //   planType: string,
+    // ): "1 month" | "3 months" | "Lifetime" => {
+    //   switch (planType?.toLowerCase()) {
+    //     case "free":
+    //       return "1 month";
+    //     case "one month":
+    //       return "1 month";
+    //     case "three months":
+    //       return "3 months";
+    //     case "unlimited":
+    //       return "Lifetime";
+    //     default:
+    //       return "1 month";
+    //   }
+    // };
 
     const getPlanColor = (planName: string): string => {
       switch (planName?.toLowerCase()) {
@@ -1488,8 +1490,6 @@ export default function ChoosePlanPage() {
           return "from-slate-500 to-slate-600";
         case "pro":
           return "from-indigo-600 to-indigo-500";
-        case "pro plus":
-          return "from-amber-500 to-orange-500";
         case "premium":
           return "from-purple-500 to-indigo-600";
         default:
@@ -1503,8 +1503,6 @@ export default function ChoosePlanPage() {
           return <FiHeart className="w-4 h-4 sm:w-5 sm:h-5" />;
         case "pro":
           return <FaChessQueen className="w-4 h-4 sm:w-5 sm:h-5" />;
-        case "pro plus":
-          return <FaChessKing className="w-4 h-4 sm:w-5 sm:h-5" />;
         case "premium":
           return <FaGem className="w-4 h-4 sm:w-5 sm:h-5" />;
         default:
@@ -1527,7 +1525,7 @@ export default function ChoosePlanPage() {
       return planName?.toLowerCase() === "pro";
     };
 
-    const interval = getPlanInterval(apiPlan.plan);
+    // const interval = getPlanInterval(apiPlan.name);
     const features = parseFeaturesFromHTML(apiPlan.description);
     const planColor = getPlanColor(apiPlan.name);
     const planIcon = getPlanIcon(apiPlan.name);
@@ -1536,8 +1534,10 @@ export default function ChoosePlanPage() {
     return {
       id: apiPlan.id,
       name: apiPlan.name,
-      price: apiPlan.price,
-      interval: interval,
+      regularPrice: apiPlan.price,
+      discountPrice: apiPlan.discount_price,
+      // interval: interval,
+      duration_days: apiPlan.duration_days,
       description: apiPlan.slug,
       color: planColor,
       icon: planIcon,
@@ -1550,10 +1550,7 @@ export default function ChoosePlanPage() {
   useEffect(() => {
     const fetchPlans = async () => {
       try {
-        // const res = await api.get("/plans/");
-
-                const res = await axios.get(`${API_URL}/pricing-plans`);
-
+        const res = await axios.get(`${API_URL}/pricing-plans`);
 
         const apiPlans = res.data.plans || [];
         const transformedPlans = apiPlans.map(transformAPIPlanToPlan);
@@ -1574,7 +1571,7 @@ export default function ChoosePlanPage() {
       return;
     }
 
-    if (plan.price === 0) {
+    if (plan.regularPrice === "0") {
       setLoading(true);
       try {
         await axios.post(`${API_URL}/api/payment-razor/free-plan`, {
@@ -1612,6 +1609,8 @@ export default function ChoosePlanPage() {
   const handlePaymentSuccess = () => {
     router.push("/choose-template");
   };
+
+  console.log("planDetails", planDetails);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50/30 via-white to-indigo-50/30">
@@ -1718,48 +1717,32 @@ export default function ChoosePlanPage() {
                         </motion.div>
                         <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-0.5 sm:mb-1">
                           {plan.name}
-                          {/* <ul className="space-y-2 sm:space-y-3 mb-4 sm:mb-5 md:mb-6 flex-grow">
-                        {plan.features.map((feature, idx) => (
-                          <motion.li
-                            key={idx}
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: index * 0.05 + idx * 0.02 }}
-                            whileHover={{ x: 2 }}
-                            className="flex items-start gap-1.5 sm:gap-2 group"
-                          >
-                            <motion.div
-                              className={`w-3.5 h-3.5 sm:w-5 sm:h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${feature.included ? "bg-emerald-100" : "bg-gray-100"}`}
-                              whileHover={{ scale: 1.1 }}
-                            >
-                              {feature.included ? (
-                                <IoCheckmarkCircle className="w-2 h-2 sm:w-3 sm:h-3 text-emerald-500 shrink-0" />
-                              ) : (
-                                <FiX className="w-2 h-2 sm:w-2.5 sm:h-3 text-gray-400" />
-                              )}
-                            </motion.div>
-                            <span
-                              className={`text-[11px] sm:text-xs md:text-sm ${feature.highlight ? "text-gray-900 font-semibold" : "text-gray-600"} group-hover:text-gray-900 transition-colors`}
-                            >
-                              {feature.name}
-                            </span>
-                          </motion.li>
-                        ))}
-                      </ul> */}
                         </h3>
                         <p className="text-white/80 text-xs sm:text-sm mb-2 sm:mb-3 min-h-[40px] sm:min-h-[48px]">
                           {plan.description}
                         </p>
                         <div className="flex items-baseline gap-1">
+                          <p className=" line-through text-white/70">
+                            {plan.name !== "free" && (
+                              <span>₹{plan.regularPrice}</span>
+                            )}{" "}
+                          </p>
+
                           <motion.span
                             className="text-2xl sm:text-3xl md:text-4xl font-bold"
                             animate={{ scale: isHovered ? 1.03 : 1 }}
                             transition={{ duration: 0.2 }}
                           >
-                            ₹{plan.price}
+                            {/* {plan.name !== "free" ? ( <span>₹{plan.discountPrice}</span> : 0)} */}
+
+                            {plan.name !== "free" ? (
+                              <span>₹{plan.discountPrice}</span>
+                            ) : (
+                              "₹0"
+                            )}
                           </motion.span>
                           <span className="text-white/80 text-[10px] sm:text-xs">
-                            /{plan.interval}
+                            / {" "} {plan.duration_days}
                           </span>
                         </div>
                         {plan.badge && !isSamePlan && (
@@ -1826,10 +1809,10 @@ export default function ChoosePlanPage() {
                           whileTap={{ scale: 0.98 }}
                           onClick={() => handleSelectPlan(plan)}
                           disabled={loading}
-                          className={`w-full py-2 sm:py-2.5 md:py-3 rounded-lg sm:rounded-xl font-semibold text-[11px] sm:text-xs md:text-sm transition-all duration-300 relative overflow-hidden cursor-pointer group ${plan.price === 0 ? "bg-gray-100 text-gray-700 hover:bg-gray-200" : `bg-gradient-to-r ${plan.color} text-white shadow-md`}`}
+                          className={`w-full py-2 sm:py-2.5 md:py-3 rounded-lg sm:rounded-xl font-semibold text-[11px] sm:text-xs md:text-sm transition-all duration-300 relative overflow-hidden cursor-pointer group ${plan.regularPrice === "0" ? "bg-gray-100 text-gray-700 hover:bg-gray-200" : `bg-gradient-to-r ${plan.color} text-white shadow-md`}`}
                         >
                           <span className="relative z-10">
-                            {plan.price === 0
+                            {plan.regularPrice === "0"
                               ? "Switch to Free"
                               : `Upgrade to ${plan.name}`}
                           </span>

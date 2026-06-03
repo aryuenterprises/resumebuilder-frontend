@@ -215,8 +215,8 @@ api.interceptors.response.use(
         processQueue(refreshError, null);
         isRefreshing = false;
         console.error("Refresh token expired too. Logging out...");
-        // handleLogout();
-        alert("Session expired. Please log in again.");
+        handleLogout();
+        // alert("Session expired. Please log in again.");
         return Promise.reject(refreshError);
       }
     }
