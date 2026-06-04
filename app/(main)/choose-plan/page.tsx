@@ -2609,7 +2609,7 @@ export default function ChoosePlanPage() {
   useEffect(() => {
     const fetchPlans = async () => {
       try {
-        const res = await axios.get(`${API_URL}/pricing-plans`);
+        const res = await axios.get(`${API_URL}/pricing-plans/`);
         const apiPlans = res.data.plans || [];
         const transformedPlans = apiPlans.map(transformAPIPlanToPlan);
         setPlanDetails(transformedPlans);
@@ -2668,7 +2668,6 @@ export default function ChoosePlanPage() {
     router.push("/choose-template");
   };
 
-  console.log("planDetails", planDetails);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50/30 via-white to-indigo-50/30">
