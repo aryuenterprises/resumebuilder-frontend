@@ -771,8 +771,8 @@ export function ResumeDataFetcher({ children }: ResumeDataFetcherProps) {
     if (resume_data.experiences) setExperiences(resume_data.experiences);
     if (resume_data.projects) setProjects(resume_data.projects);
     if (resume_data.skills) setSkills(resume_data.skills);
-    if (resume_data.summary?.[0]) setSummary(resume_data.summary[0]);
-    if (resume_data.finalize?.[0]) setFinalize(resume_data.finalize[0]);
+    if (resume_data.summary) setSummary(resume_data.summary);
+    if (resume_data.finalize) setFinalize(resume_data.finalize);
 
     setFullResumeData({
       template: chosenTemplate?.templateId || chosenTemplate?.id,
@@ -780,8 +780,8 @@ export function ResumeDataFetcher({ children }: ResumeDataFetcherProps) {
       experiences: resume_data.experiences || [],
       education: resume_data.educations || [],
       skills: resume_data.skills || ({} as Skill),
-      summary: resume_data.summary?.[0] || "",
-      finalize: resume_data.finalize?.[0] || {},
+      summary: resume_data.summary || "",
+      finalize: resume_data.finalize || {},
       projects: resume_data.projects || [],
     });
 
@@ -844,8 +844,8 @@ export function ResumeDataFetcher({ children }: ResumeDataFetcherProps) {
           experiences: resumeData?.experiences || [],
           education: resumeData?.educations || [],
           skills: resumeData?.skills || ({} as Skill),
-          summary: resumeData?.summary?.[0] || "",
-          finalize: resumeData?.finalize?.[0] || {},
+          summary: resumeData?.summary || "",
+          finalize: resumeData?.finalize || {},
           projects: resumeData?.projects || [],
         });
         

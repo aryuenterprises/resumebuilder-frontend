@@ -2882,6 +2882,7 @@ import {
 import { Finalize, ResumeProps } from "@/app/types/context.types";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
+import api from "@/app/utils/api";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PIXEL-PERFECT A4 CONSTANTS
@@ -3789,11 +3790,18 @@ const TemplateFour: React.FC<ResumeProps> = ({ alldata }) => {
       const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
       const pdfHtml = generateHTML(true, pageBreakIds);
 
-      const res: AxiosResponse<Blob> = await axios.post(
-        `${API_URL}/api/candidates/generate-pdf`,
-        { html: pdfHtml },
+      // const res: AxiosResponse<Blob> = await axios.post(
+      //   `${API_URL}/api/candidates/generate-pdf`,
+      //   { html: pdfHtml },
+      //   { responseType: "blob" },
+      // );
+
+             const res: AxiosResponse<Blob> = await api.post(
+        `${API_URL}/candidates/generate-pdf`,
+        { html:pdfHtml  },
         { responseType: "blob" },
       );
+
       const url = window.URL.createObjectURL(res.data);
       const a = document.createElement("a");
       a.href = url;

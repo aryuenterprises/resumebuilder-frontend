@@ -40,7 +40,7 @@
 //   .t6-resume.is-preview {
 //     transform: scale(0.36);
 //     transform-origin: top left;
-//     width: 210mm; 
+//     width: 210mm;
 //     height: auto;
 //     max-height: none;
 //     min-height: auto;
@@ -537,17 +537,17 @@
 //   // Helper function to render skills (now just a string with HTML content)
 //   const renderSkills = () => {
 //     if (!skills || (typeof skills === 'string' && !skills.trim())) return null;
-    
+
 //     // Clean the HTML content from Quill editor
 //     const cleanedSkills = cleanQuillHTML(skills);
-    
+
 //     if (!cleanedSkills || cleanedSkills === "<p><br></p>" || cleanedSkills === "") return null;
-    
+
 //     return (
 //       <>
 //         <div className="t6-lsection">Skills</div>
 //         <hr className="t6-divider-sm" />
-//         <div 
+//         <div
 //           className="t6-skills-content"
 //           dangerouslySetInnerHTML={{ __html: cleanedSkills }}
 //         />
@@ -629,10 +629,10 @@
 //     // Generate skills HTML for PDF (now just clean the HTML string)
 //     const generateSkillsHTML = () => {
 //       if (!skills || (typeof skills === 'string' && !skills.trim())) return "";
-      
+
 //       const cleanedSkills = cleanQuillHTML(skills);
 //       if (!cleanedSkills || cleanedSkills === "<p><br></p>" || cleanedSkills === "") return "";
-      
+
 //       return `
 //         <div class="t6-lsection">Skills</div>
 //         <hr class="t6-divider-sm"/>
@@ -1134,15 +1134,6 @@
 
 // export default TemplateSix;
 
-
-
-
-
-
-
-
-
-
 // "use client";
 
 // import React, { useContext, useState, useEffect, useRef, useCallback } from "react";
@@ -1169,9 +1160,6 @@
 //    SHARED CSS — scoped to .t6-resume, no leaks.
 // ====================================================== */
 // const styles = `
-  
-
- 
 
 //   /* PDF margins */
 //   @page {
@@ -1608,7 +1596,7 @@
 //   const iframeRef = useRef<HTMLIFrameElement>(null);
 //   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 //   const blobUrlRef = useRef<string | null>(null);
-  
+
 //   const [iframeHeight, setIframeHeight] = useState<number>(1122);
 //   const [htmlContent, setHtmlContent] = useState<string>("");
 
@@ -1676,10 +1664,10 @@
 //     // Generate skills HTML
 //     const generateSkillsHTML = () => {
 //       if (!skills || (typeof skills === 'string' && !skills.trim())) return "";
-      
+
 //       const cleanedSkills = cleanQuillHTML(skills);
 //       if (!cleanedSkills || cleanedSkills === "<p><br></p>" || cleanedSkills === "") return "";
-      
+
 //       return `
 //         <div class="t6-lsection">Skills</div>
 //         <hr class="t6-divider-sm"/>
@@ -1908,7 +1896,7 @@
 //   useEffect(() => {
 //     const newHtml = generateHTML();
 //     debouncedUpdate(newHtml);
-    
+
 //     return () => {
 //       if (debounceTimerRef.current) {
 //         clearTimeout(debounceTimerRef.current);
@@ -1927,11 +1915,11 @@
 //       if (blobUrlRef.current) {
 //         URL.revokeObjectURL(blobUrlRef.current);
 //       }
-      
+
 //       const blob = new Blob([htmlContent], { type: 'text/html' });
 //       const url = URL.createObjectURL(blob);
 //       blobUrlRef.current = url;
-      
+
 //       if (iframeRef.current) {
 //         iframeRef.current.src = url;
 //       }
@@ -1955,7 +1943,7 @@
 //       const html = generateHTML();
 //       const res = await axios.post(
 //         `${API_URL}/api/candidates/generate-pdf`,
-//         { 
+//         {
 //           html,
 //           options: {
 //             margin: {
@@ -2055,22 +2043,6 @@
 
 // export default TemplateSix;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
 // import React, { useContext, useState, useEffect, useRef, useCallback } from "react";
 // import axios, { AxiosResponse } from "axios";
@@ -2152,7 +2124,7 @@
 //   const lastSegment = pathname.split("/").pop();
 //   const measureRef = useRef<HTMLIFrameElement>(null);
 //   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
-  
+
 //   const [htmlContent, setHtmlContent] = useState<string>("");
 //   const [pages, setPages] = useState<string[]>([]);
 
@@ -2607,10 +2579,10 @@
 //     // Generate skills HTML
 //     const generateSkillsHTML = () => {
 //       if (!skills || (typeof skills === 'string' && !skills.trim())) return "";
-      
+
 //       const cleanedSkills = cleanQuillHTML(skills);
 //       if (!cleanedSkills || cleanedSkills === "<p><br></p>" || cleanedSkills === "") return "";
-      
+
 //       return `
 //         <div class="t6-lsection">Skills</div>
 //         <hr class="t6-divider-sm"/>
@@ -3026,7 +2998,7 @@
 //     try {
 //       const res: AxiosResponse<Blob> = await axios.post(
 //         `${API_URL}/api/candidates/generate-pdf`,
-//         { 
+//         {
 //           html: generateHTML(true),
 //         },
 //         { responseType: "blob" },
@@ -3203,12 +3175,1083 @@
 
 // export default TemplateSix;
 
+// "use client";
+// import React, {
+//   useContext,
+//   useRef,
+//   useEffect,
+//   useState,
+//   useCallback,
+// } from "react";
+// import axios, { AxiosResponse } from "axios";
+// import { CreateContext } from "@/app/context/CreateContext";
+// import { API_URL } from "@/app/config/api";
+// import {
+//   cleanQuillHTML,
+//   formatDateOfBirth,
+//   formatGradeToCgpdAndPercentage,
+//   formatMonthYear,
+// } from "@/app/utils";
+// import { usePathname } from "next/navigation";
+// import { Contact, Finalize, ResumeProps } from "@/app/types/context.types";
+// import { motion } from "framer-motion";
+// import api from "@/app/utils/api";
 
+// // ─────────────────────────────────────────────────────────────────────────────
+// // PIXEL-PERFECT A4 CONSTANTS
+// // At 96 dpi: 210mm→794px, 297mm→1123px, 15mm→57px
+// // PAGE_CONTENT_H = 1123 - 57*2 = 1009px (usable content per page)
+// // ─────────────────────────────────────────────────────────────────────────────
+// const A4_W = 794;
+// const A4_H = 1123;
+// const MARGIN = 57;
+// const PAGE_CONTENT_H = A4_H - MARGIN * 2; // 1009px
 
+// // Helper to render SVG icons as HTML strings for PDF generation
+// const getIconHTML = (type: "email" | "phone" | "location" | "calendar") => {
+//   switch (type) {
+//     case "email":
+//       return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 7L2 7"/></svg>`;
+//     case "phone":
+//       return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`;
+//     case "location":
+//       return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>`;
+//     case "calendar":
+//       return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`;
+//     default:
+//       return "";
+//   }
+// };
 
+// const TemplateSix: React.FC<ResumeProps> = ({ alldata }) => {
+//   const context = useContext(CreateContext);
+//   const pathname = usePathname();
+//   const lastSegment = pathname.split("/").pop();
+//   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
+//   const [htmlContent, setHtmlContent] = useState<string>("");
+//   const [pages, setPages] = useState<string[]>([]);
 
+//   // ── Data sources ─────────────────────────────────────────────────────────
+//   const contact = alldata?.contact || context?.contact || ({} as Contact);
+//   const educations = alldata?.educations || context?.education || [];
+//   const experiences = alldata?.experiences || context?.experiences || [];
+//   const skills = alldata?.skills?.text || context?.skills?.text || "";
+//   const projects = alldata?.projects || context?.projects || [];
+//   const finalize = alldata?.finalize || context?.finalize || ({} as Finalize);
+//   const summary = alldata?.summary || context?.summary || "";
 
+//   const linkedinUrl = contact?.linkedIn;
+//   const portfolioUrl = contact?.portfolio;
+//   const githubUrl = contact?.github;
+//   const dateOfBirth = contact?.dob;
+
+//   const customSection = Array.isArray(finalize?.customSection)
+//     ? finalize.customSection
+//     : [];
+
+//   const addressParts = [
+//     contact?.address,
+//     contact?.city,
+//     contact?.postCode,
+//     contact?.country,
+//   ]
+//     .filter(Boolean)
+//     .join(", ");
+
+//   // ── CSS ──────────────────────────────────────────────────────────────────
+//   const CSS = `
+//     @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap');
+
+//     @page { size: A4; margin: 15mm; }
+
+//     *, *::before, *::after { box-sizing: border-box; }
+
+//     html, body { margin: 0; padding: 0; background: white; }
+
+//     .t6-resume {
+//   width: ${A4_W}px;
+//   padding: 0 ${MARGIN}px;
+//   background: white;
+//   font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+//   font-size: 15px;
+//   line-height: 1.5;
+//   color: #374151;
+//   display: flex;
+//   min-height: ${PAGE_CONTENT_H}px;
+//   align-items: stretch;
+// }
+
+//     .t6-resume * { box-sizing: border-box; }
+
+//     /* Rich text content styles */
+//     .t6-resume .t6-entry-content ul,
+//     .t6-resume .t6-entry-content ol,
+//     .t6-resume .t6-summary ul,
+//     .t6-resume .t6-summary ol,
+//     .t6-resume .t6-extra ul,
+//     .t6-resume .t6-extra ol,
+//     .t6-resume .t6-skills-content ul,
+//     .t6-resume .t6-skills-content ol {
+//       margin: 8px 0 8px 20px !important;
+//       padding-left: 0 !important;
+//     }
+
+//     .t6-resume .t6-entry-content li,
+//     .t6-resume .t6-summary li,
+//     .t6-resume .t6-extra li,
+//     .t6-resume .t6-skills-content li {
+//       margin-bottom: 4px !important;
+//     }
+
+//     .t6-resume .t6-entry-content strong,
+//     .t6-resume .t6-summary strong,
+//     .t6-resume .t6-extra strong,
+//     .t6-resume .t6-skills-content strong { font-weight: 700 !important; }
+
+//     .t6-resume .t6-entry-content em,
+//     .t6-resume .t6-summary em,
+//     .t6-resume .t6-extra em,
+//     .t6-resume .t6-skills-content em { font-style: italic !important; }
+
+//     .t6-resume .t6-entry-content u,
+//     .t6-resume .t6-summary u,
+//     .t6-resume .t6-extra u,
+//     .t6-resume .t6-skills-content u { text-decoration: underline !important; }
+
+//     .t6-resume .t6-entry-content p,
+//     .t6-resume .t6-summary p,
+//     .t6-resume .t6-extra p,
+//     .t6-resume .t6-skills-content p { white-space: pre-wrap !important; }
+
+//     .t6-resume .t6-skills-content { margin-top: 8px; }
+//     .t6-resume .t6-skills-content p { margin: 0 0 6px 0 !important; }
+
+//     /* ── LEFT COLUMN ── */
+//     // .t6-resume .t6-left {
+//     //   width: 40%;
+//     //   padding: 20px;
+//     //   background-color: #f3f4f6;
+//     //   border-radius: 16px 0 0 0;
+//     //   flex-shrink: 0;
+//     //     height: 100%; /* ADD THIS */
+//     // }
+
+//     .t6-resume .t6-left {
+//   width: 40%;
+//   padding: 20px;
+//   background-color: #f3f4f6;
+//   border-radius: 16px 0 0 0;
+//   flex-shrink: 0;
+//   align-self: stretch;
+// }
+
+//     .t6-resume .t6-name {
+//       font-size: 28px;
+//       text-transform: uppercase;
+//       color: #4b5563;
+//       margin-bottom: 4px;
+//       word-wrap: break-word;
+//       overflow-wrap: break-word;
+//       line-height: 1.2;
+//     }
+
+//     .t6-resume .t6-jobtitle {
+//       font-size: 14px;
+//       color: #4b5563;
+//       margin-bottom: 8px;
+//       word-wrap: break-word;
+//       overflow-wrap: break-word;
+//     }
+
+//     .t6-resume .t6-links {
+//       display: flex;
+//       align-items: center;
+//       gap: 16px;
+//       margin-bottom: 8px;
+//       flex-wrap: wrap;
+//     }
+
+//     .t6-resume .t6-link {
+//       font-size: 14px;
+//       font-weight: 600;
+//       text-decoration: underline;
+//       color: #4b5563;
+//     }
+
+//     /* ── LEFT SECTION HEADING ── */
+//     .t6-resume .t6-lsection {
+//       font-size: 13px;
+//       font-weight: 500;
+//       text-transform: uppercase;
+//       letter-spacing: 0.1em;
+//       color: #4b5563;
+//       padding-bottom: 6px;
+//       margin-top: 12px;
+//       page-break-after: avoid;
+//       break-after: avoid;
+//     }
+
+//     .t6-resume .t6-divider-sm {
+//       border: none;
+//       border-top: 1px solid #6b7280;
+//       margin-bottom: 8px;
+//     }
+
+//     /* ── CONTACT ITEMS ── */
+//     .t6-resume .t6-contact-row {
+//       display: flex;
+//       align-items: center;
+//       gap: 8px;
+//       padding: 4px 0;
+//     }
+
+//     .t6-resume .t6-icon-wrap {
+//       width: 24px;
+//       height: 24px;
+//       display: flex;
+//       align-items: center;
+//       justify-content: center;
+//       flex-shrink: 0;
+//     }
+
+//     .t6-resume .t6-icon-wrap svg {
+//       width: 14px;
+//       height: 14px;
+//       color: #4b5563;
+//       stroke: #4b5563;
+//       fill: none;
+//     }
+
+//     .t6-resume .t6-contact-text {
+//       font-size: 13px;
+//       color: #4b5563;
+//       word-wrap: break-word;
+//       overflow-wrap: break-word;
+//       line-height: 1.4;
+//     }
+
+//     .t6-resume .t6-education-grade {
+//       font-size: 12px;
+//       color: #6b7280;
+//       margin-top: 4px;
+//       font-weight: 500;
+//     }
+
+//     /* ── PROJECTS ── */
+//     .t6-resume .t6-project-item {
+//       margin-bottom: 14px;
+//       page-break-inside: avoid;
+//       break-inside: avoid;
+//     }
+
+//     .t6-resume .t6-project-header {
+//       display: flex;
+//       justify-content: space-between;
+//       align-items: baseline;
+//       flex-wrap: wrap;
+//       gap: 8px;
+//       margin-bottom: 4px;
+//     }
+
+//     .t6-resume .t6-project-links { display: flex; gap: 12px; }
+//     .t6-resume .t6-project-link  { font-size: 12px; color: #4b5563; text-decoration: underline; }
+//     .t6-resume .t6-project-tech  { font-size: 12px; color: #6b7280; margin: 4px 0; }
+
+//     .t6-resume .t6-extra {
+//       padding-top: 6px;
+//       padding-bottom: 4px;
+//       color: #374151;
+//       font-size: 14px;
+//       word-wrap: break-word;
+//       overflow-wrap: break-word;
+//     }
+
+//     /* ── RIGHT COLUMN ── */
+//     .t6-resume .t6-right {
+//       width: 60%;
+//       padding-left: 16px;
+//       padding-right: 4px;
+//         height: 100%; /* ADD THIS */
+//   overflow-y: visible; /* ADD THIS */
+//     }
+
+//     /* ── RIGHT SECTION HEADING ── */
+//     .t6-resume .t6-rsection {
+//       font-size: 13px;
+//       font-weight: 500;
+//       text-transform: uppercase;
+//       letter-spacing: 0.1em;
+//       color: #4b5563;
+//       padding-bottom: 6px;
+//       margin-top: 10px;
+//       page-break-after: avoid;
+//       break-after: avoid;
+//     }
+
+//     .t6-resume .t6-divider-md {
+//       border: none;
+//       border-top: 2px solid #d1d5db;
+//       margin-bottom: 8px;
+//     }
+
+//     /* ── EXPERIENCE ── */
+//     .t6-resume .t6-experience-header {
+//       display: flex;
+//       justify-content: space-between;
+//       align-items: baseline;
+//       flex-wrap: wrap;
+//       gap: 8px;
+//       margin-bottom: 4px;
+//     }
+
+//     .t6-resume .t6-experience-title  { font-size: 15px; font-weight: 600; color: #111827; }
+//     .t6-resume .t6-experience-date   { font-size: 13px; color: #4b5563; }
+//     .t6-resume .t6-experience-subtitle {
+//       font-size: 14px; color: #6b7280; margin-bottom: 6px; font-weight: 500;
+//     }
+
+//     /* ── EDUCATION ── */
+//     .t6-resume .t6-education-header {
+//       display: flex;
+//       justify-content: space-between;
+//       align-items: baseline;
+//       flex-wrap: wrap;
+//       gap: 8px;
+//       margin-bottom: 4px;
+//     }
+
+//     .t6-resume .t6-education-school   { font-size: 15px; font-weight: 600; color: #111827; }
+//     .t6-resume .t6-education-date     { font-size: 13px; color: #4b5563; }
+//     .t6-resume .t6-education-subtitle { font-size: 14px; color: #6b7280; margin-bottom: 4px; font-weight: 500; }
+
+//     /* ── ENTRY ── */
+//     .t6-resume .t6-entry {
+//       margin-bottom: 14px;
+//       page-break-inside: avoid;
+//       break-inside: avoid;
+//     }
+
+//     .t6-resume .t6-entry-title {
+//       font-size: 15px; font-weight: 600; color: #111827;
+//       word-wrap: break-word; overflow-wrap: break-word; margin-top: 6px;
+//     }
+
+//     .t6-resume .t6-entry-date   { font-size: 13px; color: #4b5563; margin-top: 3px; }
+
+//     .t6-resume .t6-entry-content {
+//       padding-top: 6px; padding-bottom: 4px;
+//       color: #374151; font-size: 14px;
+//       word-wrap: break-word; overflow-wrap: break-word;
+//     }
+
+//     .t6-resume .t6-entry-content p  { margin: 0 !important; padding: 0 !important; line-height: 1.5 !important; }
+//     .t6-resume .t6-entry-content ul { list-style-type: disc    !important; padding-left: 16px !important; margin: 0 !important; }
+//     .t6-resume .t6-entry-content ol { list-style-type: decimal !important; padding-left: 16px !important; margin: 0 !important; }
+//     .t6-resume .t6-entry-content li { margin: 0 !important; padding: 0 !important; line-height: 1.5 !important; margin-bottom: 1px !important; }
+
+//     /* ── SUMMARY ── */
+//     .t6-resume .t6-summary {
+//       padding-top: 8px; padding-bottom: 10px;
+//       color: #374151; font-size: 14px;
+//       word-wrap: break-word; overflow-wrap: break-word;
+//     }
+
+//     .t6-resume .t6-summary p { margin: 0 !important; padding: 0 !important; line-height: 1.5 !important; }
+
+//     /* Custom Section Wrapper */
+//     .t6-resume .custom-section-wrapper {
+//       margin-top: 0;
+//       page-break-inside: avoid;
+//       break-inside: avoid;
+//     }
+
+//     /* Page-break marker injected at exact cut points for PDF */
+//     .t6-page-break {
+//       page-break-before: always !important;
+//       break-before: page !important;
+//       display: block;
+//       height: 0;
+//       margin: 0;
+//       padding: 0;
+//     }
+
+//     @media print {
+//       *, *::before, *::after {
+//         -webkit-print-color-adjust: exact !important;
+//         print-color-adjust: exact !important;
+//       }
+//       html, body { overflow: visible; }
+//       .t6-resume { width: 100% !important; padding: 0 !important;         height: 100% !important }
+//       .t6-resume .t6-left {
+//         -webkit-print-color-adjust: exact;
+//         print-color-adjust: exact;
+//         height: 100% !important
+//       }
+//     }
+//   `;
+
+//   // ── HTML builder ─────────────────────────────────────────────────────────
+//   // pageBreakIds: array of element data-ids where page breaks should be injected.
+//   // Used when forPDF=true so Puppeteer breaks at the same points as the preview.
+//   //
+//   // TWO-COLUMN NOTE:
+//   //   Page breaks are injected INSIDE .t6-right only.
+//   //   .t6-left is a fixed sidebar — it has no cut points.
+//   //   data-block-id attributes are placed on right-column section groups and entries.
+//   const generateHTML = useCallback(
+//     (forPDF = false, pageBreakIds: string[] = []): string => {
+//       const href = (url: string) =>
+//         url.startsWith("http") ? url : `https://${url}`;
+
+//       const formattedDob = formatDateOfBirth(dateOfBirth || "");
+
+//       // ── Left column ──────────────────────────────────────────────────────
+//       const skillsClean = cleanQuillHTML(skills || "");
+//       const skillsHTML =
+//         skillsClean && skillsClean !== "<p><br></p>"
+//           ? `<div class="t6-lsection">Skills</div>
+//              <hr class="t6-divider-sm"/>
+//              <div class="t6-skills-content">${skillsClean}</div>`
+//           : "";
+
+//       const leftCol = `
+//       <div class="t6-left">
+//         <div class="t6-name">${contact?.firstName || ""} ${contact?.lastName || ""}</div>
+//         ${contact?.jobTitle
+//           ? `<div class="t6-jobtitle">${
+//               typeof contact.jobTitle === "string"
+//                 ? contact.jobTitle
+//                 : (contact.jobTitle as any)?.name || ""
+//             }</div>`
+//           : ""}
+
+//         <div class="t6-links">
+//           ${linkedinUrl?.trim() ? `<a href="${href(linkedinUrl)}" class="t6-link" target="_blank">LinkedIn</a>` : ""}
+//           ${githubUrl?.trim()   ? `<a href="${href(githubUrl)}"   class="t6-link" target="_blank">GitHub</a>`   : ""}
+//           ${portfolioUrl?.trim() ? `<a href="${href(portfolioUrl)}" class="t6-link" target="_blank">Portfolio</a>` : ""}
+//         </div>
+
+//         <div class="t6-lsection">Details</div>
+//         <hr class="t6-divider-sm"/>
+//         ${contact?.email
+//           ? `<div class="t6-contact-row">
+//                <div class="t6-icon-wrap">${getIconHTML("email")}</div>
+//                <div class="t6-contact-text">${contact.email}</div>
+//              </div>`
+//           : ""}
+//         ${contact?.phone
+//           ? `<div class="t6-contact-row">
+//                <div class="t6-icon-wrap">${getIconHTML("phone")}</div>
+//                <div class="t6-contact-text">${contact.phone}</div>
+//              </div>`
+//           : ""}
+//         ${addressParts
+//           ? `<div class="t6-contact-row">
+//                <div class="t6-icon-wrap">${getIconHTML("location")}</div>
+//                <div class="t6-contact-text">${addressParts}</div>
+//              </div>`
+//           : ""}
+//         ${formattedDob
+//           ? `<div class="t6-contact-row">
+//                <div class="t6-icon-wrap">${getIconHTML("calendar")}</div>
+//                <div class="t6-contact-text">${formattedDob}</div>
+//              </div>`
+//           : ""}
+
+//         ${skillsHTML}
+//       </div>`;
+
+//       // ── Right column sections (each gets a data-block-id) ────────────────
+//       const summaryBlock = summary
+//         ? `<div class="t6-right-section" data-block-id="t6-summary">
+//              <div class="t6-rsection">Summary</div>
+//              <hr class="t6-divider-md"/>
+//              <div class="t6-summary">${cleanQuillHTML(summary)}</div>
+//            </div>`
+//         : "";
+
+//       const expBlock =
+//         experiences.length > 0
+//           ? `<div class="t6-right-section" data-block-id="t6-exp-section">
+//                <div class="t6-rsection">Experience</div>
+//                <hr class="t6-divider-md"/>
+//                ${experiences
+//                  .map((exp: any, i: number) => {
+//                    const start = formatMonthYear(exp.startDate, false);
+//                    const end = exp.endDate
+//                      ? formatMonthYear(exp.endDate, false)
+//                      : exp.startDate ? "Present" : "";
+//                    return `<div class="t6-entry" data-block-id="t6-exp-${i}">
+//                      <div class="t6-experience-header">
+//                        <div class="t6-experience-title">${exp.jobTitle || ""}</div>
+//                        <div class="t6-experience-date">${start}${start && end ? " - " : ""}${end}</div>
+//                      </div>
+//                      <div class="t6-experience-subtitle">
+//                        ${[exp.employer, exp.location].filter(Boolean).join(" — ")}
+//                      </div>
+//                      ${exp.text ? `<div class="t6-entry-content">${cleanQuillHTML(exp.text)}</div>` : ""}
+//                    </div>`;
+//                  })
+//                  .join("")}
+//              </div>`
+//           : "";
+
+//       const projBlock =
+//         projects.length > 0
+//           ? `<div class="t6-right-section" data-block-id="t6-proj-section">
+//                <div class="t6-rsection">Projects</div>
+//                <hr class="t6-divider-md"/>
+//                ${projects
+//                  .map(
+//                    (p: any, i: number) => `
+//                  <div class="t6-project-item" data-block-id="t6-proj-${i}">
+//                    <div class="t6-project-header">
+//                      <div class="t6-entry-title">${p.title || ""}</div>
+//                      <div class="t6-project-links">
+//                        ${p.liveUrl   ? `<a href="${href(p.liveUrl)}"   class="t6-project-link" target="_blank">Live Demo</a>` : ""}
+//                        ${p.githubUrl ? `<a href="${href(p.githubUrl)}" class="t6-project-link" target="_blank">GitHub</a>`   : ""}
+//                      </div>
+//                    </div>
+//                    ${p.techStack?.length ? `<div class="t6-project-tech"><strong>Tech:</strong> ${p.techStack.join(" • ")}</div>` : ""}
+//                    ${p.description ? `<div class="t6-entry-content">${cleanQuillHTML(p.description)}</div>` : ""}
+//                  </div>`,
+//                  )
+//                  .join("")}
+//              </div>`
+//           : "";
+
+//       const eduBlock =
+//         educations.length > 0
+//           ? `<div class="t6-right-section" data-block-id="t6-edu-section">
+//                <div class="t6-rsection">Education</div>
+//                <hr class="t6-divider-md"/>
+//                ${educations
+//                  .map((edu: any, i: number) => {
+//                    const grade = formatGradeToCgpdAndPercentage(edu.grade || "");
+//                    return `<div class="t6-entry" data-block-id="t6-edu-${i}">
+//                      <div class="t6-education-header">
+//                        <div class="t6-education-school">${edu.schoolname || ""}</div>
+//                        <div class="t6-education-date">${[edu.startDate, edu.endDate || "Present"].filter(Boolean).join(" — ")}</div>
+//                      </div>
+//                      <div class="t6-education-subtitle">
+//                        ${[edu.degree, edu.location].filter(Boolean).join(" — ")}
+//                      </div>
+//                      ${grade ? `<div class="t6-education-grade">${grade}</div>` : ""}
+//                      ${edu.text ? `<div class="t6-entry-content">${cleanQuillHTML(edu.text)}</div>` : ""}
+//                    </div>`;
+//                  })
+//                  .join("")}
+//              </div>`
+//           : "";
+
+//       const customBlock = customSection
+//         .filter((s: any) => s?.name?.trim() || s?.description?.trim())
+//         .map(
+//           (s: any, i: number) => `
+//           <div class="t6-right-section custom-section-wrapper" data-block-id="t6-custom-${i}">
+//             ${s.name ? `<div class="t6-rsection">${s.name}</div><hr class="t6-divider-md"/>` : ""}
+//             ${s.description ? `<div class="t6-extra">${cleanQuillHTML(s.description)}</div>` : ""}
+//           </div>`,
+//         )
+//         .join("");
+
+//       // For PDF: inject <div class="t6-page-break"> before the right-column
+//       // element whose data-block-id matches each cut point ID.
+//       // We rebuild rightColContent, then do the injection inside .t6-right only.
+//       let rightColContent = `
+//         ${summaryBlock}
+//         ${expBlock}
+//         ${projBlock}
+//         ${eduBlock}
+//         ${customBlock}
+//       `;
+
+//       if (forPDF && pageBreakIds.length > 0) {
+//         const tempDiv = document.createElement("div");
+//         tempDiv.innerHTML = rightColContent;
+//         pageBreakIds.forEach((id) => {
+//           const el = tempDiv.querySelector(`[data-block-id="${id}"]`);
+//           if (el) {
+//             const breakDiv = document.createElement("div");
+//             breakDiv.className = "t6-page-break";
+//             el.parentNode?.insertBefore(breakDiv, el);
+//           }
+//         });
+//         rightColContent = tempDiv.innerHTML;
+//       }
+
+//       const pdfStyle = forPDF
+//   ? `<style>
+//       html, body {
+//         margin: 0 !important;
+//         padding: 0 !important;
+//         width: 794px !important;
+//         height: 1123px !important;
+//       }
+//       .t6-resume {
+//         width: 100% !important;
+//         padding: 0 !important;
+//         height: 1123px !important;
+//         min-height: 1123px !important;
+//         align-items: stretch !important;
+//       }
+//       .t6-resume .t6-left {
+//         min-height: 1123px !important;
+//         align-self: stretch !important;
+//         -webkit-print-color-adjust: exact !important;
+//         print-color-adjust: exact !important;
+//       }
+//       .t6-resume .t6-right {
+//         align-self: stretch !important;
+//       }
+//     </style>`
+//   : "";
+
+//       return `<!DOCTYPE html>
+// <html lang="en">
+// <head>
+//   <meta charset="UTF-8"/>
+//   <meta name="viewport" content="width=device-width,initial-scale=1"/>
+//   <title>Resume - ${contact?.firstName || ""} ${contact?.lastName || ""}</title>
+//   <link rel="preconnect" href="https://fonts.googleapis.com"/>
+//   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+//   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+//   <style>${CSS}</style>
+//   ${pdfStyle}
+// </head>
+// <body style="margin:0;padding:0;background:white;">
+//   <div class="t6-resume">
+//     ${leftCol}
+//     <div class="t6-right">
+//       ${rightColContent}
+//     </div>
+//   </div>
+// </body>
+// </html>`;
+//     },
+//     [
+//       contact,
+//       educations,
+//       experiences,
+//       skills,
+//       projects,
+//       customSection,
+//       summary,
+//       linkedinUrl,
+//       portfolioUrl,
+//       githubUrl,
+//       dateOfBirth,
+//       addressParts,
+//       CSS,
+//     ],
+//   );
+
+//   // ─────────────────────────────────────────────────────────────────────────
+//   // PAGE SPLITTER — adapted from TemplateOne for two-column layout
+//   //
+//   // KEY DIFFERENCE vs single-column templates:
+//   //   We measure the RIGHT COLUMN height only (not the full .t6-resume flex row).
+//   //   The left sidebar is always full-height — it has no independent cut points.
+//   //   All block positions are relative to the top of .t6-right, not .t6-resume.
+//   //
+//   //   Cut-point IDs come from .t6-right-section and .t6-entry elements.
+//   //   Section heading + first entry are paired to prevent orphaned headings.
+//   //
+//   //   clipH = nextStart - thisStart prevents content bleeding on preview pages.
+//   //   pageBreakIds stored on window for handleDownload to read.
+//   // ─────────────────────────────────────────────────────────────────────────
+//   const splitIntoPages = useCallback(
+//     (fullHtml: string): Promise<string[]> => {
+//       return new Promise((resolve) => {
+//         const parser = new DOMParser();
+//         const parsed = parser.parseFromString(fullHtml, "text/html");
+//         const resumeEl = parsed.querySelector<HTMLElement>(".t6-resume");
+//         if (!resumeEl) { resolve([fullHtml]); return; }
+//         const resumeSnapshot = resumeEl.outerHTML;
+
+//         // Fresh hidden iframe — ensures fonts and layout match the render iframes
+//         const iframe = document.createElement("iframe");
+//         iframe.style.cssText = [
+//           "position:fixed",
+//           "top:0",
+//           "left:-9999px",
+//           `width:${A4_W}px`,
+//           "height:10000px",
+//           "border:none",
+//           "opacity:0",
+//           "pointer-events:none",
+//           "z-index:-1",
+//         ].join(";");
+//         document.body.appendChild(iframe);
+
+//         const measureDoc = iframe.contentDocument!;
+//         measureDoc.open();
+//         measureDoc.write(`<!DOCTYPE html>
+// <html>
+// <head>
+//   <meta charset="UTF-8"/>
+//   <style>
+//     ${CSS}
+//     html, body {
+//       margin: 0 !important; padding: 0 !important;
+//       width: ${A4_W}px !important; height: auto !important;
+//       overflow: visible !important; background: white !important;
+//     }
+//     .t6-resume {
+//       width: ${A4_W}px !important;
+//       padding-left: ${MARGIN}px !important;
+//       padding-right: ${MARGIN}px !important;
+//       padding-top: 0 !important; padding-bottom: 0 !important;
+//       margin: 0 !important; box-sizing: border-box !important;
+//     }
+//   </style>
+// </head>
+// <body>${resumeSnapshot}</body>
+// </html>`);
+//         measureDoc.close();
+
+//         const doMeasure = () => {
+//           // We measure the RIGHT COLUMN — it controls pagination in a two-col layout.
+//           // The left sidebar is purely decorative from a pagination standpoint.
+//           const rightCol = measureDoc.querySelector<HTMLElement>(".t6-right");
+//           if (!rightCol) {
+//             document.body.removeChild(iframe);
+//             resolve([fullHtml]);
+//             return;
+//           }
+
+//           measureDoc.documentElement.style.cssText =
+//             "height:auto!important;overflow:visible!important;";
+//           measureDoc.body.style.cssText =
+//             "margin:0;padding:0;height:auto!important;overflow:visible!important;";
+//           void rightCol.offsetHeight; // force reflow
+
+//           const totalH = rightCol.scrollHeight;
+//           const rightRect = rightCol.getBoundingClientRect();
+//           const scrollY =
+//             measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
+
+//           // Position relative to the top of .t6-right
+//           const getRelTop = (el: HTMLElement): number => {
+//             const r = el.getBoundingClientRect();
+//             return r.top - rightRect.top + scrollY;
+//           };
+//           const getRelBottom = (el: HTMLElement): number =>
+//             getRelTop(el) + el.getBoundingClientRect().height;
+
+//           // ── Collect avoid-break blocks ──────────────────────────────────
+//           interface Block { top: number; bottom: number; id?: string; }
+//           const blocks: Block[] = [];
+
+//           // Individual entries and project items
+//           const ITEM_SELECTORS = [
+//             ".t6-entry",
+//             ".t6-project-item",
+//             ".custom-section-wrapper",
+//           ].join(", ");
+
+//           rightCol.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
+//             const top    = getRelTop(el);
+//             const bottom = getRelBottom(el);
+//             if (bottom - top > 8) {
+//               blocks.push({ top, bottom, id: el.dataset.blockId });
+//             }
+//           });
+
+//           // Section heading + first entry paired — avoids orphaned headings.
+//           // In T6 the heading (.t6-rsection) and its <hr> live directly inside
+//           // .t6-right-section, so we walk the section wrapper's children.
+//           rightCol
+//             .querySelectorAll<HTMLElement>(".t6-right-section")
+//             .forEach((section) => {
+//               const sectionTop = getRelTop(section);
+//               // Find the first .t6-entry or .t6-project-item inside this section
+//               const firstItem = section.querySelector<HTMLElement>(
+//                 ".t6-entry, .t6-project-item",
+//               );
+//               if (firstItem) {
+//                 const anchorBottom = getRelBottom(firstItem);
+//                 if (anchorBottom - sectionTop > 8) {
+//                   blocks.push({
+//                     top:    sectionTop,
+//                     bottom: anchorBottom,
+//                     id:     section.dataset.blockId,
+//                   });
+//                 }
+//               }
+//             });
+
+//           blocks.sort((a, b) => a.top - b.top);
+
+//           // ── Calculate cut points ────────────────────────────────────────
+//           const pageStarts: number[] = [0];
+//           const pageBreakIds: string[] = [];
+//           const MAX_PAGES = 20;
+
+//           while (pageStarts.length < MAX_PAGES) {
+//             const currentStart = pageStarts[pageStarts.length - 1];
+//             const naiveCut     = currentStart + PAGE_CONTENT_H;
+//             if (naiveCut >= totalH) break;
+
+//             let actualCut  = naiveCut;
+//             let cutBlockId: string | undefined;
+
+//             for (const block of blocks) {
+//               if (block.top  >= naiveCut)     break;
+//               if (block.bottom <= currentStart) continue;
+//               if (block.top >= currentStart && block.bottom > naiveCut) {
+//                 if (block.top < actualCut) {
+//                   actualCut  = block.top;
+//                   cutBlockId = block.id;
+//                 }
+//               }
+//             }
+
+//             if (actualCut <= currentStart) actualCut = naiveCut;
+//             pageStarts.push(actualCut);
+//             if (cutBlockId) pageBreakIds.push(cutBlockId);
+//           }
+
+//           document.body.removeChild(iframe);
+
+//           // Store for handleDownload
+//           (window as any).__resumePageBreakIds = pageBreakIds;
+
+//           // ── Build preview page HTMLs ──────────────────────────────────
+//           const pageHtmls: string[] = [];
+
+//           for (let i = 0; i < pageStarts.length; i++) {
+//             const contentOffsetY = pageStarts[i];
+//             const nextStart      = pageStarts[i + 1] ?? totalH;
+//             // Clip at actual cut point — prevents bleed into the next page
+//             const clipH          = nextStart - contentOffsetY;
+
+//          pageHtmls.push(`<!DOCTYPE html>
+// <html lang="en">
+// <head>
+//   <meta charset="UTF-8"/>
+//   <style>
+//     ${CSS}
+//     html, body {
+//       margin: 0 !important; padding: 0 !important;
+//       width: ${A4_W}px !important; height: ${A4_H}px !important;
+//       overflow: hidden !important; background: white !important;
+//     }
+//     .page-margin-box {
+//       position: relative; width: ${A4_W}px; height: ${A4_H}px;
+//       background: white; overflow: hidden;
+//     }
+//     .page-content-clip {
+//       position: absolute; top: ${MARGIN}px; left: 0;
+//       width: ${A4_W}px; height: ${clipH}px; overflow: hidden;
+//     }
+//     .page-shift {
+//       position: absolute; top: ${-contentOffsetY}px; left: 0;
+//       width: ${A4_W}px;
+//       min-height: ${PAGE_CONTENT_H}px;
+//     }
+//     .t6-resume {
+//       width: ${A4_W}px !important;
+//       padding-top: 0 !important; padding-bottom: 0 !important;
+//       padding-left: ${MARGIN}px !important; padding-right: ${MARGIN}px !important;
+//       margin: 0 !important;
+//       display: flex !important;
+//       align-items: stretch !important;
+//       min-height: ${PAGE_CONTENT_H}px !important;
+//       box-sizing: border-box !important;
+//     }
+//     .t6-resume .t6-left {
+//       min-height: ${PAGE_CONTENT_H}px !important;
+//       align-self: stretch !important;
+//     }
+//     .t6-resume .t6-name {
+//       font-size: 28px !important;
+//       white-space: normal !important;
+//       word-break: break-word !important;
+//       overflow-wrap: break-word !important;
+//     }
+//   </style>
+// </head>
+// <body>
+//   <div class="page-margin-box">
+//     <div class="page-content-clip">
+//       <div class="page-shift">
+//         ${resumeSnapshot}
+//       </div>
+//     </div>
+//   </div>
+// </body>
+// </html>`);
+//           }
+
+//           resolve(pageHtmls);
+//         };
+
+//         const win = iframe.contentWindow as any;
+//         if (win?.document?.fonts?.ready) {
+//           win.document.fonts.ready.then(() => {
+//             setTimeout(() => requestAnimationFrame(doMeasure), 100);
+//           });
+//         } else {
+//           setTimeout(doMeasure, 500);
+//         }
+//       });
+//     },
+//     [CSS],
+//   );
+
+//   // ── Debounced updates ────────────────────────────────────────────────────
+//   const scheduleUpdate = useCallback((html: string) => {
+//     if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+//     debounceTimerRef.current = setTimeout(() => setHtmlContent(html), 300);
+//   }, []);
+
+//   useEffect(() => {
+//     scheduleUpdate(generateHTML());
+//     return () => {
+//       if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+//     };
+//   }, [generateHTML, scheduleUpdate]);
+
+//   useEffect(() => {
+//     if (!htmlContent) return;
+//     splitIntoPages(htmlContent).then(setPages);
+//   }, [htmlContent, splitIntoPages]);
+
+//   // ── PDF download ─────────────────────────────────────────────────────────
+//   // Reads pageBreakIds from splitIntoPages and passes them to generateHTML so
+//   // Puppeteer inserts CSS page-break markers at the exact same cut points.
+//   const handleDownload = async (): Promise<void> => {
+//     try {
+//       const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
+//       const pdfHtml = generateHTML(true, pageBreakIds);
+//       const res: AxiosResponse<Blob> = await api.post(
+//               `${API_URL}/candidates/generate-pdf`,
+//               { html:pdfHtml  },
+//               { responseType: "blob" },
+//             );
+
+//       const url = URL.createObjectURL(res.data);
+//       const a   = document.createElement("a");
+//       a.href    = url;
+//       a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
+//       document.body.appendChild(a);
+//       a.click();
+//       document.body.removeChild(a);
+//       URL.revokeObjectURL(url);
+//     } catch (err) {
+//       console.error("PDF error:", err);
+//       alert("Failed to generate PDF. Please try again.");
+//     }
+//   };
+
+//   // ── RENDER ───────────────────────────────────────────────────────────────
+//   return (
+//     <>
+//       {lastSegment === "download-resume" && (
+//         <div className="text-center my-5">
+//           <motion.button
+//             onClick={handleDownload}
+//             whileHover={{ scale: 1.05 }}
+//             whileTap={{ scale: 0.95 }}
+//             className="bg-emerald-500 text-2xl md:text-base hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 cursor-pointer shadow-md hover:shadow-lg"
+//           >
+//             Download Resume
+//           </motion.button>
+//         </div>
+//        )}
+
+//       {alldata ? (
+//         // ── THUMBNAIL mode: first page only, scaled 36% ──────────────────
+//         <div
+//           style={{
+//             width: `${A4_W}px`,
+//             height: `${A4_H}px`,
+//             transform: "scale(0.36)",
+//             transformOrigin: "top left",
+//             overflow: "hidden",
+//             pointerEvents: "none",
+//             flexShrink: 0,
+//           }}
+//         >
+//           {pages[0] ? (
+//             <iframe
+//               title="resume-thumb"
+//               srcDoc={pages[0]}
+//               style={{
+//                 width: `${A4_W}px`,
+//                 height: `${A4_H}px`,
+//                 border: "none",
+//                 display: "block",
+//                 pointerEvents: "none",
+//               }}
+//               sandbox="allow-same-origin"
+//             />
+//           ) : (
+//             <div
+//               style={{
+//                 width: `${A4_W}px`,
+//                 height: `${A4_H}px`,
+//                 background: "white",
+//                 display: "flex",
+//                 alignItems: "center",
+//                 justifyContent: "center",
+//                 color: "#ccc",
+//                 fontSize: 14,
+//                 fontFamily: "sans-serif",
+//               }}
+//             >
+//               Loading…
+//             </div>
+//           )}
+//         </div>
+//       ) : (
+//         // For full preview mode, change the outer div:
+// <div style={{ width: `${A4_W}px`, margin: "0 auto" }}>
+//   {(pages.length > 0 ? pages : [htmlContent]).map((pageHtml, idx) => (
+//     <div key={idx} style={{ marginBottom: "28px" }}>
+//       {/* Page pill remains the same */}
+
+//       {/* A4 card - ensure it takes full height */}
+//       <div
+//         style={{
+//           width: `${A4_W}px`,
+//           height: `${A4_H}px`, // This is correct - fixed height
+//           overflow: "hidden",
+//           background: "white",
+//           boxShadow: "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
+//           borderRadius: "2px",
+//           flexShrink: 0,
+//           position: "relative", // ADD THIS
+//         }}
+//       >
+//         <iframe
+//           title={`resume-page-${idx + 1}`}
+//           srcDoc={pageHtml}
+//           style={{
+//             width: `${A4_W}px`,
+//             height: `${A4_H}px`, // This is correct - fixed height
+//             border: "none",
+//             display: "block",
+//             pointerEvents: "none",
+//             position: "absolute", // ADD THIS
+//             top: 0, // ADD THIS
+//             left: 0, // ADD THIS
+//           }}
+//           scrolling="no"
+//           sandbox="allow-same-origin allow-scripts"
+//         />
+//       </div>
+//     </div>
+//   ))}
+// </div>
+//       )}
+//     </>
+//   );
+// };
+
+// export default TemplateSix;
 
 
 
@@ -3241,6 +4284,7 @@ import {
 import { usePathname } from "next/navigation";
 import { Contact, Finalize, ResumeProps } from "@/app/types/context.types";
 import { motion } from "framer-motion";
+import api from "@/app/utils/api";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PIXEL-PERFECT A4 CONSTANTS
@@ -3252,7 +4296,10 @@ const A4_H = 1123;
 const MARGIN = 57;
 const PAGE_CONTENT_H = A4_H - MARGIN * 2; // 1009px
 
-// Helper to render SVG icons as HTML strings for PDF generation
+// Left column is 40% of content width (A4_W - 2*MARGIN = 680px → 40% = 272px)
+// This is used to constrain the name width identically in preview and PDF.
+const LEFT_COL_W = Math.round((A4_W - MARGIN * 2) * 0.4); // 272px
+
 const getIconHTML = (type: "email" | "phone" | "location" | "calendar") => {
   switch (type) {
     case "email":
@@ -3305,10 +4352,15 @@ const TemplateSix: React.FC<ResumeProps> = ({ alldata }) => {
     .join(", ");
 
   // ── CSS ──────────────────────────────────────────────────────────────────
+  // KEY DESIGN DECISION:
+  //   .t6-resume uses padding: 0 ${MARGIN}px so that the inner content width
+  //   is A4_W - 2*MARGIN = 680px. The left column is 40% of THIS (272px),
+  //   not 40% of A4_W. This must be identical in preview and PDF.
+  //   We use explicit pixel widths on .t6-left and .t6-right to lock this.
   const CSS = `
     @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap');
 
-    @page { size: A4; margin: 15mm; }
+    @page { size: A4; margin: 0; }
 
     *, *::before, *::after { box-sizing: border-box; }
 
@@ -3317,15 +4369,15 @@ const TemplateSix: React.FC<ResumeProps> = ({ alldata }) => {
     .t6-resume {
       width: ${A4_W}px;
       padding: 0 ${MARGIN}px;
-      
       background: white;
       font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       font-size: 15px;
       line-height: 1.5;
       color: #374151;
       display: flex;
-       height: 100%; /* ADD THIS */
-  min-height: ${PAGE_CONTENT_H}px; /* ADD THIS */
+      align-items: stretch;
+      min-height: ${PAGE_CONTENT_H}px;
+      box-sizing: border-box;
     }
 
     .t6-resume * { box-sizing: border-box; }
@@ -3346,9 +4398,7 @@ const TemplateSix: React.FC<ResumeProps> = ({ alldata }) => {
     .t6-resume .t6-entry-content li,
     .t6-resume .t6-summary li,
     .t6-resume .t6-extra li,
-    .t6-resume .t6-skills-content li {
-      margin-bottom: 4px !important;
-    }
+    .t6-resume .t6-skills-content li { margin-bottom: 4px !important; }
 
     .t6-resume .t6-entry-content strong,
     .t6-resume .t6-summary strong,
@@ -3374,14 +4424,16 @@ const TemplateSix: React.FC<ResumeProps> = ({ alldata }) => {
     .t6-resume .t6-skills-content p { margin: 0 0 6px 0 !important; }
 
     /* ── LEFT COLUMN ── */
+    /* Use explicit pixel width so it's identical in preview and PDF */
     .t6-resume .t6-left {
-      width: 40%;
+      width: ${LEFT_COL_W}px;
+      flex-shrink: 0;
+      flex-grow: 0;
       padding: 20px;
       background-color: #f3f4f6;
       border-radius: 16px 0 0 0;
-      flex-shrink: 0;
-        height: 100%; /* ADD THIS */
-
+      align-self: stretch;
+      min-height: ${PAGE_CONTENT_H}px;
     }
 
     .t6-resume .t6-name {
@@ -3391,6 +4443,7 @@ const TemplateSix: React.FC<ResumeProps> = ({ alldata }) => {
       margin-bottom: 4px;
       word-wrap: break-word;
       overflow-wrap: break-word;
+      white-space: normal;
       line-height: 1.2;
     }
 
@@ -3507,11 +4560,12 @@ const TemplateSix: React.FC<ResumeProps> = ({ alldata }) => {
 
     /* ── RIGHT COLUMN ── */
     .t6-resume .t6-right {
-      width: 60%;
+      flex: 1;
+      min-width: 0;
       padding-left: 16px;
       padding-right: 4px;
-        height: 100%; /* ADD THIS */
-  overflow-y: visible; /* ADD THIS */
+      align-self: stretch;
+      overflow-y: visible;
     }
 
     /* ── RIGHT SECTION HEADING ── */
@@ -3575,7 +4629,7 @@ const TemplateSix: React.FC<ResumeProps> = ({ alldata }) => {
       word-wrap: break-word; overflow-wrap: break-word; margin-top: 6px;
     }
 
-    .t6-resume .t6-entry-date   { font-size: 13px; color: #4b5563; margin-top: 3px; }
+    .t6-resume .t6-entry-date { font-size: 13px; color: #4b5563; margin-top: 3px; }
 
     .t6-resume .t6-entry-content {
       padding-top: 6px; padding-bottom: 4px;
@@ -3605,37 +4659,35 @@ const TemplateSix: React.FC<ResumeProps> = ({ alldata }) => {
     }
 
     /* Page-break marker injected at exact cut points for PDF */
-    .t6-page-break {
-      page-break-before: always !important;
-      break-before: page !important;
-      display: block;
-      height: 0;
-      margin: 0;
-      padding: 0;
-    }
+ .t6-page-break {
+  page-break-before: always !important;
+  break-before: page !important;
+  display: block;
+  height: 0;
+  margin: 0;
+  padding: 0;
+}
 
-    @media print {
-      *, *::before, *::after {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-      }
-      html, body { overflow: visible; }
-      .t6-resume { width: 100% !important; padding: 0 !important; }
-      .t6-resume .t6-left {
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-      }
-    }
+   @media print {
+  *, *::before, *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  html, body { margin: 0 !important; padding: 0 !important; overflow: visible; }
+  .t6-resume {
+    width: ${A4_W - MARGIN * 2}px !important;
+    padding: 0 !important;
+    align-items: stretch !important;
+  }
+  .t6-resume .t6-left {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    align-self: stretch !important;
+  }
+}
   `;
 
   // ── HTML builder ─────────────────────────────────────────────────────────
-  // pageBreakIds: array of element data-ids where page breaks should be injected.
-  // Used when forPDF=true so Puppeteer breaks at the same points as the preview.
-  //
-  // TWO-COLUMN NOTE:
-  //   Page breaks are injected INSIDE .t6-right only.
-  //   .t6-left is a fixed sidebar — it has no cut points.
-  //   data-block-id attributes are placed on right-column section groups and entries.
   const generateHTML = useCallback(
     (forPDF = false, pageBreakIds: string[] = []): string => {
       const href = (url: string) =>
@@ -3643,7 +4695,6 @@ const TemplateSix: React.FC<ResumeProps> = ({ alldata }) => {
 
       const formattedDob = formatDateOfBirth(dateOfBirth || "");
 
-      // ── Left column ──────────────────────────────────────────────────────
       const skillsClean = cleanQuillHTML(skills || "");
       const skillsHTML =
         skillsClean && skillsClean !== "<p><br></p>"
@@ -3655,51 +4706,57 @@ const TemplateSix: React.FC<ResumeProps> = ({ alldata }) => {
       const leftCol = `
       <div class="t6-left">
         <div class="t6-name">${contact?.firstName || ""} ${contact?.lastName || ""}</div>
-        ${contact?.jobTitle
-          ? `<div class="t6-jobtitle">${
-              typeof contact.jobTitle === "string"
-                ? contact.jobTitle
-                : (contact.jobTitle as any)?.name || ""
-            }</div>`
-          : ""}
-
+        ${
+          contact?.jobTitle
+            ? `<div class="t6-jobtitle">${
+                typeof contact.jobTitle === "string"
+                  ? contact.jobTitle
+                  : (contact.jobTitle as any)?.name || ""
+              }</div>`
+            : ""
+        }
         <div class="t6-links">
           ${linkedinUrl?.trim() ? `<a href="${href(linkedinUrl)}" class="t6-link" target="_blank">LinkedIn</a>` : ""}
-          ${githubUrl?.trim()   ? `<a href="${href(githubUrl)}"   class="t6-link" target="_blank">GitHub</a>`   : ""}
+          ${githubUrl?.trim() ? `<a href="${href(githubUrl)}"   class="t6-link" target="_blank">GitHub</a>` : ""}
           ${portfolioUrl?.trim() ? `<a href="${href(portfolioUrl)}" class="t6-link" target="_blank">Portfolio</a>` : ""}
         </div>
-
         <div class="t6-lsection">Details</div>
         <hr class="t6-divider-sm"/>
-        ${contact?.email
-          ? `<div class="t6-contact-row">
+        ${
+          contact?.email
+            ? `<div class="t6-contact-row">
                <div class="t6-icon-wrap">${getIconHTML("email")}</div>
                <div class="t6-contact-text">${contact.email}</div>
              </div>`
-          : ""}
-        ${contact?.phone
-          ? `<div class="t6-contact-row">
+            : ""
+        }
+        ${
+          contact?.phone
+            ? `<div class="t6-contact-row">
                <div class="t6-icon-wrap">${getIconHTML("phone")}</div>
                <div class="t6-contact-text">${contact.phone}</div>
              </div>`
-          : ""}
-        ${addressParts
-          ? `<div class="t6-contact-row">
+            : ""
+        }
+        ${
+          addressParts
+            ? `<div class="t6-contact-row">
                <div class="t6-icon-wrap">${getIconHTML("location")}</div>
                <div class="t6-contact-text">${addressParts}</div>
              </div>`
-          : ""}
-        ${formattedDob
-          ? `<div class="t6-contact-row">
+            : ""
+        }
+        ${
+          formattedDob
+            ? `<div class="t6-contact-row">
                <div class="t6-icon-wrap">${getIconHTML("calendar")}</div>
                <div class="t6-contact-text">${formattedDob}</div>
              </div>`
-          : ""}
-
+            : ""
+        }
         ${skillsHTML}
       </div>`;
 
-      // ── Right column sections (each gets a data-block-id) ────────────────
       const summaryBlock = summary
         ? `<div class="t6-right-section" data-block-id="t6-summary">
              <div class="t6-rsection">Summary</div>
@@ -3718,7 +4775,9 @@ const TemplateSix: React.FC<ResumeProps> = ({ alldata }) => {
                    const start = formatMonthYear(exp.startDate, false);
                    const end = exp.endDate
                      ? formatMonthYear(exp.endDate, false)
-                     : exp.startDate ? "Present" : "";
+                     : exp.startDate
+                       ? "Present"
+                       : "";
                    return `<div class="t6-entry" data-block-id="t6-exp-${i}">
                      <div class="t6-experience-header">
                        <div class="t6-experience-title">${exp.jobTitle || ""}</div>
@@ -3746,8 +4805,8 @@ const TemplateSix: React.FC<ResumeProps> = ({ alldata }) => {
                    <div class="t6-project-header">
                      <div class="t6-entry-title">${p.title || ""}</div>
                      <div class="t6-project-links">
-                       ${p.liveUrl   ? `<a href="${href(p.liveUrl)}"   class="t6-project-link" target="_blank">Live Demo</a>` : ""}
-                       ${p.githubUrl ? `<a href="${href(p.githubUrl)}" class="t6-project-link" target="_blank">GitHub</a>`   : ""}
+                       ${p.liveUrl ? `<a href="${href(p.liveUrl)}"   class="t6-project-link" target="_blank">Live Demo</a>` : ""}
+                       ${p.githubUrl ? `<a href="${href(p.githubUrl)}" class="t6-project-link" target="_blank">GitHub</a>` : ""}
                      </div>
                    </div>
                    ${p.techStack?.length ? `<div class="t6-project-tech"><strong>Tech:</strong> ${p.techStack.join(" • ")}</div>` : ""}
@@ -3765,7 +4824,9 @@ const TemplateSix: React.FC<ResumeProps> = ({ alldata }) => {
                <hr class="t6-divider-md"/>
                ${educations
                  .map((edu: any, i: number) => {
-                   const grade = formatGradeToCgpdAndPercentage(edu.grade || "");
+                   const grade = formatGradeToCgpdAndPercentage(
+                     edu.grade || "",
+                   );
                    return `<div class="t6-entry" data-block-id="t6-edu-${i}">
                      <div class="t6-education-header">
                        <div class="t6-education-school">${edu.schoolname || ""}</div>
@@ -3793,9 +4854,6 @@ const TemplateSix: React.FC<ResumeProps> = ({ alldata }) => {
         )
         .join("");
 
-      // For PDF: inject <div class="t6-page-break"> before the right-column
-      // element whose data-block-id matches each cut point ID.
-      // We rebuild rightColContent, then do the injection inside .t6-right only.
       let rightColContent = `
         ${summaryBlock}
         ${expBlock}
@@ -3819,7 +4877,32 @@ const TemplateSix: React.FC<ResumeProps> = ({ alldata }) => {
       }
 
       const pdfStyle = forPDF
-        ? `<style>.t6-resume { width: 100% !important; padding: 0 !important; }</style>`
+        ? `<style>
+      *, *::before, *::after {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      @page { size: A4; margin: ${MARGIN}px !important; }
+      html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: ${A4_W}px !important;
+      }
+      .t6-resume {
+        width: ${A4_W - MARGIN * 2}px !important;
+        padding: 0 !important;
+        align-items: stretch !important;
+      }
+      .t6-resume .t6-left {
+        width: ${LEFT_COL_W}px !important;
+        align-self: stretch !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .t6-resume .t6-right {
+        align-self: stretch !important;
+      }
+    </style>`
         : "";
 
       return `<!DOCTYPE html>
@@ -3862,18 +4945,9 @@ const TemplateSix: React.FC<ResumeProps> = ({ alldata }) => {
   );
 
   // ─────────────────────────────────────────────────────────────────────────
-  // PAGE SPLITTER — adapted from TemplateOne for two-column layout
-  //
-  // KEY DIFFERENCE vs single-column templates:
-  //   We measure the RIGHT COLUMN height only (not the full .t6-resume flex row).
-  //   The left sidebar is always full-height — it has no independent cut points.
-  //   All block positions are relative to the top of .t6-right, not .t6-resume.
-  //
-  //   Cut-point IDs come from .t6-right-section and .t6-entry elements.
-  //   Section heading + first entry are paired to prevent orphaned headings.
-  //
-  //   clipH = nextStart - thisStart prevents content bleeding on preview pages.
-  //   pageBreakIds stored on window for handleDownload to read.
+  // PAGE SPLITTER
+  // Measures right column height, calculates cut points, builds per-page HTMLs.
+  // The left sidebar stretches to PAGE_CONTENT_H on every page via min-height.
   // ─────────────────────────────────────────────────────────────────────────
   const splitIntoPages = useCallback(
     (fullHtml: string): Promise<string[]> => {
@@ -3881,10 +4955,12 @@ const TemplateSix: React.FC<ResumeProps> = ({ alldata }) => {
         const parser = new DOMParser();
         const parsed = parser.parseFromString(fullHtml, "text/html");
         const resumeEl = parsed.querySelector<HTMLElement>(".t6-resume");
-        if (!resumeEl) { resolve([fullHtml]); return; }
+        if (!resumeEl) {
+          resolve([fullHtml]);
+          return;
+        }
         const resumeSnapshot = resumeEl.outerHTML;
 
-        // Fresh hidden iframe — ensures fonts and layout match the render iframes
         const iframe = document.createElement("iframe");
         iframe.style.cssText = [
           "position:fixed",
@@ -3918,6 +4994,10 @@ const TemplateSix: React.FC<ResumeProps> = ({ alldata }) => {
       padding-right: ${MARGIN}px !important;
       padding-top: 0 !important; padding-bottom: 0 !important;
       margin: 0 !important; box-sizing: border-box !important;
+      min-height: 0 !important;
+    }
+    .t6-resume .t6-left {
+      min-height: 0 !important;
     }
   </style>
 </head>
@@ -3926,8 +5006,6 @@ const TemplateSix: React.FC<ResumeProps> = ({ alldata }) => {
         measureDoc.close();
 
         const doMeasure = () => {
-          // We measure the RIGHT COLUMN — it controls pagination in a two-col layout.
-          // The left sidebar is purely decorative from a pagination standpoint.
           const rightCol = measureDoc.querySelector<HTMLElement>(".t6-right");
           if (!rightCol) {
             document.body.removeChild(iframe);
@@ -3939,14 +5017,13 @@ const TemplateSix: React.FC<ResumeProps> = ({ alldata }) => {
             "height:auto!important;overflow:visible!important;";
           measureDoc.body.style.cssText =
             "margin:0;padding:0;height:auto!important;overflow:visible!important;";
-          void rightCol.offsetHeight; // force reflow
+          void rightCol.offsetHeight;
 
           const totalH = rightCol.scrollHeight;
           const rightRect = rightCol.getBoundingClientRect();
           const scrollY =
             measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
 
-          // Position relative to the top of .t6-right
           const getRelTop = (el: HTMLElement): number => {
             const r = el.getBoundingClientRect();
             return r.top - rightRect.top + scrollY;
@@ -3954,33 +5031,33 @@ const TemplateSix: React.FC<ResumeProps> = ({ alldata }) => {
           const getRelBottom = (el: HTMLElement): number =>
             getRelTop(el) + el.getBoundingClientRect().height;
 
-          // ── Collect avoid-break blocks ──────────────────────────────────
-          interface Block { top: number; bottom: number; id?: string; }
+          interface Block {
+            top: number;
+            bottom: number;
+            id?: string;
+          }
           const blocks: Block[] = [];
 
-          // Individual entries and project items
           const ITEM_SELECTORS = [
             ".t6-entry",
             ".t6-project-item",
             ".custom-section-wrapper",
           ].join(", ");
 
-          rightCol.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
-            const top    = getRelTop(el);
-            const bottom = getRelBottom(el);
-            if (bottom - top > 8) {
-              blocks.push({ top, bottom, id: el.dataset.blockId });
-            }
-          });
+          rightCol
+            .querySelectorAll<HTMLElement>(ITEM_SELECTORS)
+            .forEach((el) => {
+              const top = getRelTop(el);
+              const bottom = getRelBottom(el);
+              if (bottom - top > 8) {
+                blocks.push({ top, bottom, id: el.dataset.blockId });
+              }
+            });
 
-          // Section heading + first entry paired — avoids orphaned headings.
-          // In T6 the heading (.t6-rsection) and its <hr> live directly inside
-          // .t6-right-section, so we walk the section wrapper's children.
           rightCol
             .querySelectorAll<HTMLElement>(".t6-right-section")
             .forEach((section) => {
               const sectionTop = getRelTop(section);
-              // Find the first .t6-entry or .t6-project-item inside this section
               const firstItem = section.querySelector<HTMLElement>(
                 ".t6-entry, .t6-project-item",
               );
@@ -3988,9 +5065,9 @@ const TemplateSix: React.FC<ResumeProps> = ({ alldata }) => {
                 const anchorBottom = getRelBottom(firstItem);
                 if (anchorBottom - sectionTop > 8) {
                   blocks.push({
-                    top:    sectionTop,
+                    top: sectionTop,
                     bottom: anchorBottom,
-                    id:     section.dataset.blockId,
+                    id: section.dataset.blockId,
                   });
                 }
               }
@@ -3998,25 +5075,24 @@ const TemplateSix: React.FC<ResumeProps> = ({ alldata }) => {
 
           blocks.sort((a, b) => a.top - b.top);
 
-          // ── Calculate cut points ────────────────────────────────────────
           const pageStarts: number[] = [0];
           const pageBreakIds: string[] = [];
           const MAX_PAGES = 20;
 
           while (pageStarts.length < MAX_PAGES) {
             const currentStart = pageStarts[pageStarts.length - 1];
-            const naiveCut     = currentStart + PAGE_CONTENT_H;
+            const naiveCut = currentStart + PAGE_CONTENT_H;
             if (naiveCut >= totalH) break;
 
-            let actualCut  = naiveCut;
+            let actualCut = naiveCut;
             let cutBlockId: string | undefined;
 
             for (const block of blocks) {
-              if (block.top  >= naiveCut)     break;
+              if (block.top >= naiveCut) break;
               if (block.bottom <= currentStart) continue;
               if (block.top >= currentStart && block.bottom > naiveCut) {
                 if (block.top < actualCut) {
-                  actualCut  = block.top;
+                  actualCut = block.top;
                   cutBlockId = block.id;
                 }
               }
@@ -4028,21 +5104,16 @@ const TemplateSix: React.FC<ResumeProps> = ({ alldata }) => {
           }
 
           document.body.removeChild(iframe);
-
-          // Store for handleDownload
           (window as any).__resumePageBreakIds = pageBreakIds;
 
-          // ── Build preview page HTMLs ──────────────────────────────────
           const pageHtmls: string[] = [];
 
           for (let i = 0; i < pageStarts.length; i++) {
             const contentOffsetY = pageStarts[i];
-            const nextStart      = pageStarts[i + 1] ?? totalH;
-            // Clip at actual cut point — prevents bleed into the next page
-            const clipH          = nextStart - contentOffsetY;
+            const nextStart = pageStarts[i + 1] ?? totalH;
+            const clipH = nextStart - contentOffsetY;
 
-         // Replace the pageHtmls push block with this:
-pageHtmls.push(`<!DOCTYPE html>
+            pageHtmls.push(`<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
@@ -4059,19 +5130,31 @@ pageHtmls.push(`<!DOCTYPE html>
     }
     .page-content-clip {
       position: absolute; top: ${MARGIN}px; left: 0;
-      width: ${A4_W}px; height: ${A4_H - MARGIN * 2}px; /* CHANGE THIS - use full page content height */
-      overflow-y: auto; /* CHANGE THIS - allow scrolling within clip */
-      overflow-x: hidden;
+      width: ${A4_W}px; height: ${clipH}px; overflow: hidden;
     }
     .page-shift {
-      position: absolute; top: ${-contentOffsetY}px; left: 0; width: ${A4_W}px;
+      position: absolute; top: ${-contentOffsetY}px; left: 0;
+      width: ${A4_W}px;
     }
+    /* Force .t6-resume and left column to fill full page height in preview */
     .t6-resume {
       width: ${A4_W}px !important;
-      padding-top: 0 !important; padding-bottom: 0 !important;
-      padding-left: ${MARGIN}px !important; padding-right: ${MARGIN}px !important;
+      padding-left: ${MARGIN}px !important;
+      padding-right: ${MARGIN}px !important;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
       margin: 0 !important;
-      min-height: ${totalH}px !important; /* ADD THIS - use full content height */
+      display: flex !important;
+      align-items: stretch !important;
+      min-height: ${PAGE_CONTENT_H}px !important;
+      box-sizing: border-box !important;
+    }
+    .t6-resume .t6-left {
+      width: ${LEFT_COL_W}px !important;
+      flex-shrink: 0 !important;
+      flex-grow: 0 !important;
+      min-height: ${PAGE_CONTENT_H}px !important;
+      align-self: stretch !important;
     }
   </style>
 </head>
@@ -4122,21 +5205,20 @@ pageHtmls.push(`<!DOCTYPE html>
   }, [htmlContent, splitIntoPages]);
 
   // ── PDF download ─────────────────────────────────────────────────────────
-  // Reads pageBreakIds from splitIntoPages and passes them to generateHTML so
-  // Puppeteer inserts CSS page-break markers at the exact same cut points.
   const handleDownload = async (): Promise<void> => {
     try {
       const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
       const pdfHtml = generateHTML(true, pageBreakIds);
 
-      const res: AxiosResponse<Blob> = await axios.post(
-        `${API_URL}/api/candidates/generate-pdf`,
+      const res: AxiosResponse<Blob> = await api.post(
+        `${API_URL}/candidates/generate-pdf`,
         { html: pdfHtml },
         { responseType: "blob" },
       );
+
       const url = URL.createObjectURL(res.data);
-      const a   = document.createElement("a");
-      a.href    = url;
+      const a = document.createElement("a");
+      a.href = url;
       a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
       document.body.appendChild(a);
       a.click();
@@ -4162,10 +5244,10 @@ pageHtmls.push(`<!DOCTYPE html>
             Download Resume
           </motion.button>
         </div>
-       )}
+      )}
 
       {alldata ? (
-        // ── THUMBNAIL mode: first page only, scaled 36% ──────────────────
+        // ── THUMBNAIL mode ───────────────────────────────────────────────
         <div
           style={{
             width: `${A4_W}px`,
@@ -4209,45 +5291,77 @@ pageHtmls.push(`<!DOCTYPE html>
           )}
         </div>
       ) : (
-        // For full preview mode, change the outer div:
-<div style={{ width: `${A4_W}px`, margin: "0 auto" }}>
-  {(pages.length > 0 ? pages : [htmlContent]).map((pageHtml, idx) => (
-    <div key={idx} style={{ marginBottom: "28px" }}>
-      {/* Page pill remains the same */}
-      
-      {/* A4 card - ensure it takes full height */}
-      <div
-        style={{
-          width: `${A4_W}px`,
-          height: `${A4_H}px`, // This is correct - fixed height
-          overflow: "hidden",
-          background: "white",
-          boxShadow: "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
-          borderRadius: "2px",
-          flexShrink: 0,
-          position: "relative", // ADD THIS
-        }}
-      >
-        <iframe
-          title={`resume-page-${idx + 1}`}
-          srcDoc={pageHtml}
-          style={{
-            width: `${A4_W}px`,
-            height: `${A4_H}px`, // This is correct - fixed height
-            border: "none",
-            display: "block",
-            pointerEvents: "none",
-            position: "absolute", // ADD THIS
-            top: 0, // ADD THIS
-            left: 0, // ADD THIS
-          }}
-          scrolling="no"
-          sandbox="allow-same-origin allow-scripts"
-        />
-      </div>
-    </div>
-  ))}
-</div>
+        // ── FULL PREVIEW mode ────────────────────────────────────────────
+        <div style={{ width: `${A4_W}px`, margin: "0 auto" }}>
+          {(pages.length > 0 ? pages : [htmlContent]).map((pageHtml, idx) => (
+            <div key={idx} style={{ marginBottom: "28px" }}>
+              {pages.length > 1 && (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "10px",
+                    marginBottom: "10px",
+                  }}
+                >
+                  <div
+                    style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+                  />
+                  <span
+                    style={{
+                      fontSize: "11px",
+                      fontWeight: 600,
+                      color: "#6b7280",
+                      whiteSpace: "nowrap",
+                      padding: "3px 12px",
+                      background: "#f3f4f6",
+                      borderRadius: "999px",
+                      border: "1px solid #e5e7eb",
+                      letterSpacing: "0.05em",
+                      fontFamily: "system-ui, sans-serif",
+                    }}
+                  >
+                    Page {idx + 1} of {pages.length}
+                  </span>
+                  <div
+                    style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+                  />
+                </div>
+              )}
+              <div
+                style={{
+                  width: `${A4_W}px`,
+                  height: `${A4_H}px`,
+                  overflow: "hidden",
+                  background: "white",
+                  boxShadow:
+                    "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
+                  borderRadius: "2px",
+                  flexShrink: 0,
+                  position: "relative",
+                }}
+              >
+                <iframe
+                  title={`resume-page-${idx + 1}`}
+                  srcDoc={pageHtml}
+                  style={{
+                    width: `${A4_W}px`,
+                    height: `${A4_H}px`,
+                    border: "none",
+                    display: "block",
+                    pointerEvents: "none",
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                  }}
+                  scrolling="no"
+                  sandbox="allow-same-origin allow-scripts"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
       )}
     </>
   );

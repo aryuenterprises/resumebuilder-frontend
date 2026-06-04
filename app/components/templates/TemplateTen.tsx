@@ -6344,6 +6344,7 @@ import { formatMonthYear, cleanQuillHTML, formatDateOfBirth, formatGradeToCgpdAn
 import { usePathname } from "next/navigation";
 import { ResumeProps } from "@/app/types";
 import { motion } from "framer-motion";
+import api from "@/app/utils/api";
 
 const A4_W = 794;
 const A4_H = 1123;
@@ -6952,11 +6953,18 @@ const TemplateTen: React.FC<ResumeProps> = ({ alldata }) => {
   const handleDownload = async () => {
     try {
       const pageBreakIds: string[] = (window as any).__resumeT10PageBreakIds || [];
-      const res: AxiosResponse<Blob> = await axios.post(
-        `${API_URL}/api/candidates/generate-pdf`,
-        { html: generateHTML(true, pageBreakIds) },
-        { responseType: "blob" },
-      );
+     
+      // const res: AxiosResponse<Blob> = await axios.post(
+      //   `${API_URL}/api/candidates/generate-pdf`,
+      //   { html: generateHTML(true, pageBreakIds) },
+      //   { responseType: "blob" },
+      // );
+
+         const res: AxiosResponse<Blob> = await api.post(
+              `${API_URL}/candidates/generate-pdf`,
+              { html:generateHTML(true, pageBreakIds)  },
+              { responseType: "blob" },
+            );
       const url = URL.createObjectURL(res.data);
       const a = document.createElement("a");
       a.href = url;

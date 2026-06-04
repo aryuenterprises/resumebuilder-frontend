@@ -200,8 +200,8 @@ export interface EditingResumeData {
     experiences?: Experience[];
     projects?: Project[];
     skills?: Skill;
-    summary?: string[];
-    finalize?: Finalize[];
+    summary?: string;
+    finalize?: Finalize;
   };
 }
 

@@ -4456,7 +4456,7 @@ const TemplateTwo: React.FC<ResumeProps> = ({ alldata }) => {
     .t2-resume .skills-content p  { margin: 0 0 4px 0 !important; }
 
     .t2-resume .project-links    { display: flex; gap: 12px; }
-    .t2-resume .project-link     { font-size: 10px; color: #6b7280; text-decoration: underline; }
+    .t2-resume .project-link     { font-size: 10px; color: #111827; text-decoration: underline; }
     .t2-resume .project-tech-stack { font-size: 11px; color: #6b7280; margin: 2px 0 4px; }
 
     .t2-resume .entry-block {
