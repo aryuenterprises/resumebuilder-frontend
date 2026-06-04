@@ -1,6 +1,3 @@
-
-
-
 // // ─── Template Five ───────────────────────────────────────────────
 // "use client";
 // import React, { useContext } from "react";
@@ -26,13 +23,12 @@
 //   // const finalize = context?.finalize || {};
 //   // const summary = context?.summary || "";
 
-
 //    const context = useContext(CreateContext);
 //     console.log("context,", context);
-  
+
 //     const pathname = usePathname();
 //     const lastSegment = pathname.split("/").pop();
-  
+
 //     const contact = alldata?.contact || context.contact || {};
 //     const educations = alldata?.educations || context?.education || [];
 //     const experiences = alldata?.experiences || context?.experiences || [];
@@ -56,8 +52,6 @@
 //   const styles = `
 //   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Sans+3:wght@300;400;600&display=swap');
 
-  
-
 //   .t12-resume  {
 //    margin: 0;
 //     background-color: white;
@@ -76,7 +70,7 @@
 //       transform: scale(0.36);
 
 //     transform-origin: top left;
-//     width: 210mm; 
+//     width: 210mm;
 //     height: auto;
 //     max-height: none;
 //     min-height: auto;
@@ -169,7 +163,7 @@
 
 //   /* ── SUMMARY ── */
 //   .t12-resume .summary-text {
-  
+
 //     font-size: 14px;
 //     line-height: 1.85;
 //     color: #222;
@@ -782,7 +776,7 @@
 
 //       <div
 //         className={`t12-resume ${alldata ? 'is-preview' : ''} `}
-//         style={{ margin: "0 auto",           boxShadow: !alldata ? "0 0 10px rgba(0,0,0,0.1)" : "" 
+//         style={{ margin: "0 auto",           boxShadow: !alldata ? "0 0 10px rgba(0,0,0,0.1)" : ""
 //  }}
 //       >
 //         <style>{styles}</style>
@@ -1132,9 +1126,6 @@
 
 // export default TemplateTwelve;
 
-
-
-
 // ─── Template Five ───────────────────────────────────────────────
 // "use client";
 // import React, { useContext } from "react";
@@ -1314,7 +1305,7 @@
 //   .t12-resume.is-preview {
 //     transform: scale(0.36);
 //     transform-origin: top left;
-//     width: 210mm; 
+//     width: 210mm;
 //     height: auto;
 //     max-height: none;
 //     min-height: auto;
@@ -1777,9 +1768,9 @@
 //     // Generate skills HTML for PDF
 //     const generateSkillsHTML = () => {
 //       if (!skills || skills.length === 0) return "";
-      
+
 //       const isCategorized = isCategorizedSkills(skills);
-      
+
 //       if (isCategorized) {
 //         return `
 //           <div class="section-block">
@@ -1828,7 +1819,7 @@
 //     // Generate projects HTML for PDF
 //     const generateProjectsHTML = () => {
 //       if (!projects || projects.length === 0) return "";
-      
+
 //       return `
 //         <div class="section-block">
 //           <div class="section-title">Projects</div>
@@ -2468,12 +2459,6 @@
 
 // export default TemplateTwelve;
 
-
-
-
-
-
-
 // "use client";
 // import React, { useContext } from "react";
 // import axios from "axios";
@@ -2483,7 +2468,6 @@
 // import { usePathname } from "next/navigation";
 // import { ResumeProps } from "@/app/types";
 // import { motion } from "framer-motion";
-
 
 // const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
 //   const context = useContext(CreateContext);
@@ -2526,13 +2510,13 @@
 //   // Helper function to format grade (CGPA/Percentage)
 //   const formatGrade = (grade: string, gradeType?: string) => {
 //     if (!grade) return "";
-    
+
 //     if (gradeType === "cgpa") {
 //       return `CGPA: ${grade}`;
 //     } else if (gradeType === "percentage") {
 //       return `Percentage: ${grade}%`;
 //     }
-    
+
 //     const numGrade = parseFloat(grade);
 //     if (!isNaN(numGrade)) {
 //       if (numGrade <= 10 && grade.includes('.')) {
@@ -2541,7 +2525,7 @@
 //         return `Percentage: ${grade}%`;
 //       }
 //     }
-    
+
 //     return grade;
 //   };
 
@@ -2689,7 +2673,7 @@
 //   .t12-resume.is-preview {
 //     transform: scale(0.36);
 //     transform-origin: top left;
-//     width: 210mm; 
+//     width: 210mm;
 //     height: auto;
 //     max-height: none;
 //     min-height: auto;
@@ -3162,9 +3146,9 @@
 //     // Generate skills HTML for PDF
 //     const generateSkillsHTML = () => {
 //       if (!skills || skills.length === 0) return "";
-      
+
 //       const isCategorized = isCategorizedSkills(skills);
-      
+
 //       if (isCategorized) {
 //         return `
 //           <div class="section-block">
@@ -3213,7 +3197,7 @@
 //     // Generate projects HTML for PDF
 //     const generateProjectsHTML = () => {
 //       if (!projects || projects.length === 0) return "";
-      
+
 //       return `
 //         <div class="section-block">
 //           <div class="section-title">Projects</div>
@@ -3635,7 +3619,7 @@
 //             {educations.map((edu, index) => {
 //               let textContent = null;
 //               const formattedGrade = formatGrade(edu.grade || "");
-              
+
 //               if (edu.text) {
 //                 if (edu.text.includes("<") && edu.text.includes(">")) {
 //                   textContent = (
@@ -3878,60 +3862,6 @@
 
 // export default TemplateTwelve;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
 // import React, { useContext } from "react";
 // import axios from "axios";
@@ -4061,7 +3991,6 @@
 //   const styles = `
 //   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Sans+3:wght@300;400;600&display=swap');
 
- 
 //   .t12-resume {
 //     margin: 0 auto;
 //     background-color: white;
@@ -4078,7 +4007,7 @@
 //   .t12-resume.is-preview {
 //     transform: scale(0.36);
 //     transform-origin: top left;
-//     width: 210mm; 
+//     width: 210mm;
 //     height: auto;
 //     max-height: none;
 //     min-height: auto;
@@ -4086,8 +4015,6 @@
 //     min-width: auto;
 //     overflow: visible;
 //   }
-
-  
 
 //   /* Rich text content styles */
 //   .t12-resume .entry-content ul,
@@ -4449,7 +4376,6 @@
 //     }
 //   }
 
- 
 // `;
 
 //   /* ======================================================
@@ -4482,10 +4408,10 @@
 //     // Generate skills HTML for PDF
 //     const generateSkillsHTML = () => {
 //       if (!skills || (typeof skills === "string" && !skills.trim())) return "";
-      
+
 //       const cleanedSkills = cleanQuillHTML(skills);
 //       if (!cleanedSkills || cleanedSkills === "<p><br></p>" || cleanedSkills === "") return "";
-      
+
 //       return `
 //         <div class="section-block">
 //           <div class="section-title">Skills</div>
@@ -4502,7 +4428,7 @@
 //     // Generate projects HTML for PDF
 //     const generateProjectsHTML = () => {
 //       if (!projects || projects.length === 0) return "";
-      
+
 //       return `
 //         <div class="section-block">
 //           <div class="section-title">Projects</div>
@@ -4832,7 +4758,7 @@
 //             {educations.map((edu, index) => {
 //               const formattedGrade = formatGradeToCgpdAndPercentage(edu.grade || "");
 //               const eduTextHtml = edu.text ? cleanQuillHTML(edu.text) : "";
-              
+
 //               return (
 //                 <div key={edu.id || index} className="entry-block">
 //                   <div className="entry-left">
@@ -4908,6 +4834,13 @@
 
 
 
+
+
+
+
+
+
+
 "use client";
 import React, {
   useContext,
@@ -4943,32 +4876,32 @@ import api from "@/app/utils/api";
 // Inner horizontal padding: 22mm → 83px  (instead of the 15mm outer margin)
 // Inner top padding:        20mm → 76px  (decorative only — shown on page 1)
 // ─────────────────────────────────────────────────────────────────────────────
-const A4_W          = 794;   // px — A4 width at 96 dpi
-const A4_H          = 1123;  // px — A4 height at 96 dpi
-const MARGIN        = 57;    // px — 15 mm at 96 dpi (Puppeteer outer margin)
+const A4_W = 794; // px — A4 width at 96 dpi
+const A4_H = 1123; // px — A4 height at 96 dpi
+const MARGIN = 57; // px — 15 mm at 96 dpi (Puppeteer outer margin)
 const PAGE_CONTENT_H = A4_H - MARGIN * 2; // 1009px
 
 // Extra inner padding to match T12's original 20mm/22mm design intent
-const INNER_PAD_X   = 83;   // px ≈ 22mm — left/right inside the resume div
-const INNER_PAD_TOP = 76;   // px ≈ 20mm — top inside the resume div
+const INNER_PAD_X = 83; // px ≈ 22mm — left/right inside the resume div
+const INNER_PAD_TOP = 76; // px ≈ 20mm — top inside the resume div
 
 const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
-  const context      = useContext(CreateContext);
-  const pathname     = usePathname();
-  const lastSegment  = pathname.split("/").pop();
+  const context = useContext(CreateContext);
+  const pathname = usePathname();
+  const lastSegment = pathname.split("/").pop();
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const [htmlContent, setHtmlContent] = useState<string>("");
-  const [pages,       setPages]       = useState<string[]>([]);
+  const [pages, setPages] = useState<string[]>([]);
 
   // ── Data sources ─────────────────────────────────────────────────────────
-  const contact    = alldata?.contact    || context.contact    || {};
+  const contact = alldata?.contact || context.contact || {};
   const educations = alldata?.educations || context?.education || [];
-  const experiences= alldata?.experiences|| context?.experiences|| [];
-  const skills     = alldata?.skills?.text || context?.skills?.text || "";
-  const projects   = alldata?.projects   || context?.projects  || [];
-  const finalize   = alldata?.finalize   || context?.finalize  || {};
-  const summary    = alldata?.summary    || context?.summary   || "";
+  const experiences = alldata?.experiences || context?.experiences || [];
+  const skills = alldata?.skills?.text || context?.skills?.text || "";
+  const projects = alldata?.projects || context?.projects || [];
+  const finalize = alldata?.finalize || context?.finalize || {};
+  const summary = alldata?.summary || context?.summary || "";
 
   const addressParts = [
     contact?.address,
@@ -4977,10 +4910,10 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
     contact?.country,
   ].filter(Boolean);
 
-  const linkedinUrl  = contact?.linkedIn;
+  const linkedinUrl = contact?.linkedIn;
   const portfolioUrl = contact?.portfolio;
-  const githubUrl    = contact?.github;
-  const dateOfBirth  = contact?.dob;
+  const githubUrl = contact?.github;
+  const dateOfBirth = contact?.dob;
 
   // ── CSS ──────────────────────────────────────────────────────────────────
   const CSS = `
@@ -5333,11 +5266,11 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
         <div class="header-divider"></div>
         <div class="header-meta-row">
           ${addressParts.length > 0 ? `<span class="header-meta-item">${addressParts.join(", ")}</span>` : ""}
-          ${contact?.email    ? `<span class="header-meta-item">${contact.email}</span>`    : ""}
-          ${contact?.phone    ? `<span class="header-meta-item">${contact.phone}</span>`    : ""}
-          ${formattedDob      ? `<span class="header-meta-item">${formattedDob}</span>`     : ""}
-          ${linkedinUrl  ? `<span class="header-meta-item"><a href="${href(linkedinUrl)}"  target="_blank">LinkedIn</a></span>`  : ""}
-          ${githubUrl    ? `<span class="header-meta-item"><a href="${href(githubUrl)}"    target="_blank">GitHub</a></span>`    : ""}
+          ${contact?.email ? `<span class="header-meta-item">${contact.email}</span>` : ""}
+          ${contact?.phone ? `<span class="header-meta-item">${contact.phone}</span>` : ""}
+          ${formattedDob ? `<span class="header-meta-item">${formattedDob}</span>` : ""}
+          ${linkedinUrl ? `<span class="header-meta-item"><a href="${href(linkedinUrl)}"  target="_blank">LinkedIn</a></span>` : ""}
+          ${githubUrl ? `<span class="header-meta-item"><a href="${href(githubUrl)}"    target="_blank">GitHub</a></span>` : ""}
           ${portfolioUrl ? `<span class="header-meta-item"><a href="${href(portfolioUrl)}" target="_blank">Portfolio</a></span>` : ""}
         </div>
       </div>`;
@@ -5358,7 +5291,7 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
                ${experiences
                  .map((exp: any, i: number) => {
                    const start = formatMonthYear(exp.startDate, false);
-                   const end   = exp.endDate
+                   const end = exp.endDate
                      ? formatMonthYear(exp.endDate, false)
                      : "Present";
                    return `<div class="entry-block" data-block-id="t12-exp-${i}">
@@ -5391,12 +5324,14 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
                    <div class="entry-right">
                      <div class="project-header">
                        <div class="entry-title">${p.title || ""}</div>
-                       ${p.liveUrl || p.githubUrl
-                         ? `<div class="project-links">
-                              ${p.liveUrl   ? `<a href="${href(p.liveUrl)}"   class="project-link" target="_blank">Live Demo</a>` : ""}
-                              ${p.githubUrl ? `<a href="${href(p.githubUrl)}" class="project-link" target="_blank">GitHub</a>`   : ""}
+                       ${
+                         p.liveUrl || p.githubUrl
+                           ? `<div class="project-links">
+                              ${p.liveUrl ? `<a href="${href(p.liveUrl)}"   class="project-link" target="_blank">Live Demo</a>` : ""}
+                              ${p.githubUrl ? `<a href="${href(p.githubUrl)}" class="project-link" target="_blank">GitHub</a>` : ""}
                             </div>`
-                         : ""}
+                           : ""
+                       }
                      </div>
                      ${p.techStack?.length ? `<div class="project-tech-stack"><strong>Tech:</strong> ${p.techStack.join(" • ")}</div>` : ""}
                      ${p.description ? `<div class="entry-content">${cleanQuillHTML(p.description)}</div>` : ""}
@@ -5414,7 +5349,9 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
                <div class="section-title">Education</div>
                ${educations
                  .map((edu: any, i: number) => {
-                   const formattedGrade = formatGradeToCgpdAndPercentage(edu.grade || "");
+                   const formattedGrade = formatGradeToCgpdAndPercentage(
+                     edu.grade || "",
+                   );
                    const dateStr = [
                      edu.startDate || "",
                      edu.startDate ? "\n–\n" : "",
@@ -5426,12 +5363,14 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
                      </div>
                      <div class="entry-right">
                        <div class="entry-title">${edu.schoolname || ""}</div>
-                       ${edu.degree || edu.location || formattedGrade
-                         ? `<div class="entry-subtitle">
+                       ${
+                         edu.degree || edu.location || formattedGrade
+                           ? `<div class="entry-subtitle">
                               ${edu.degree || ""}${edu.degree && edu.location ? ", " : ""}${edu.location || ""}
                               ${formattedGrade ? `<div class="education-grade">${formattedGrade}</div>` : ""}
                             </div>`
-                         : ""}
+                           : ""
+                       }
                        ${edu.text ? `<div class="entry-content">${cleanQuillHTML(edu.text)}</div>` : ""}
                      </div>
                    </div>`;
@@ -5572,10 +5511,13 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
   const splitIntoPages = useCallback(
     (fullHtml: string): Promise<string[]> => {
       return new Promise((resolve) => {
-        const parser  = new DOMParser();
-        const parsed  = parser.parseFromString(fullHtml, "text/html");
+        const parser = new DOMParser();
+        const parsed = parser.parseFromString(fullHtml, "text/html");
         const resumeEl = parsed.querySelector<HTMLElement>(".t12-resume");
-        if (!resumeEl) { resolve([fullHtml]); return; }
+        if (!resumeEl) {
+          resolve([fullHtml]);
+          return;
+        }
         const resumeSnapshot = resumeEl.outerHTML;
 
         // Fresh hidden iframe — ensures fonts & layout always match render iframes
@@ -5637,11 +5579,12 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
             "margin:0;padding:0;height:auto!important;overflow:visible!important;";
           void resume.offsetHeight; // force reflow
 
-          const totalH    = resume.scrollHeight;
+          const totalH = resume.scrollHeight;
           const resumeRect = resume.getBoundingClientRect();
-          const scrollY   = measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
+          const scrollY =
+            measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
 
-          const getRelTop    = (el: HTMLElement): number => {
+          const getRelTop = (el: HTMLElement): number => {
             const r = el.getBoundingClientRect();
             return r.top - resumeRect.top + scrollY;
           };
@@ -5649,7 +5592,11 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
             getRelTop(el) + el.getBoundingClientRect().height;
 
           // ── Collect avoid-break blocks ──────────────────────────────────
-          interface Block { top: number; bottom: number; id?: string; }
+          interface Block {
+            top: number;
+            bottom: number;
+            id?: string;
+          }
           const blocks: Block[] = [];
 
           // Atomic units that must not be split across pages
@@ -5661,7 +5608,7 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
           ].join(", ");
 
           resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
-            const top    = getRelTop(el);
+            const top = getRelTop(el);
             const bottom = getRelBottom(el);
             if (bottom - top > 8) {
               blocks.push({ top, bottom, id: el.dataset.blockId });
@@ -5669,54 +5616,56 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
           });
 
           // Section-title + first item paired — prevents orphaned .section-title
-          resume.querySelectorAll<HTMLElement>(".section-block").forEach((section) => {
-            const sectionTop = getRelTop(section);
-            const firstItem  = section.querySelector<HTMLElement>(
-              ".entry-block, .custom-wrapper, .skills-wrapper",
-            );
-            if (firstItem) {
-              const anchorBottom = getRelBottom(firstItem);
-              if (anchorBottom - sectionTop > 8) {
-                blocks.push({
-                  top:    sectionTop,
-                  bottom: anchorBottom,
-                  id:     section.dataset.blockId,
-                });
+          resume
+            .querySelectorAll<HTMLElement>(".section-block")
+            .forEach((section) => {
+              const sectionTop = getRelTop(section);
+              const firstItem = section.querySelector<HTMLElement>(
+                ".entry-block, .custom-wrapper, .skills-wrapper",
+              );
+              if (firstItem) {
+                const anchorBottom = getRelBottom(firstItem);
+                if (anchorBottom - sectionTop > 8) {
+                  blocks.push({
+                    top: sectionTop,
+                    bottom: anchorBottom,
+                    id: section.dataset.blockId,
+                  });
+                }
+              } else {
+                // Summary and similar text-only sections — treat whole block atomically
+                const sectionBottom = getRelBottom(section);
+                if (sectionBottom - sectionTop > 8) {
+                  blocks.push({
+                    top: sectionTop,
+                    bottom: sectionBottom,
+                    id: section.dataset.blockId,
+                  });
+                }
               }
-            } else {
-              // Summary and similar text-only sections — treat whole block atomically
-              const sectionBottom = getRelBottom(section);
-              if (sectionBottom - sectionTop > 8) {
-                blocks.push({
-                  top:    sectionTop,
-                  bottom: sectionBottom,
-                  id:     section.dataset.blockId,
-                });
-              }
-            }
-          });
+            });
 
           blocks.sort((a, b) => a.top - b.top);
 
           // ── Calculate cut points ────────────────────────────────────────
-          const pageStarts:   number[] = [0];
+          const pageStarts: number[] = [0];
           const pageBreakIds: string[] = [];
           const MAX_PAGES = 20;
 
           while (pageStarts.length < MAX_PAGES) {
             const currentStart = pageStarts[pageStarts.length - 1];
-            const naiveCut     = currentStart + PAGE_CONTENT_H;
+            const naiveCut = currentStart + PAGE_CONTENT_H;
             if (naiveCut >= totalH) break;
 
-            let actualCut  = naiveCut;
+            let actualCut = naiveCut;
             let cutBlockId: string | undefined;
 
             for (const block of blocks) {
-              if (block.top  >= naiveCut)       break;
-              if (block.bottom <= currentStart)  continue;
+              if (block.top >= naiveCut) break;
+              if (block.bottom <= currentStart) continue;
               if (block.top >= currentStart && block.bottom > naiveCut) {
                 if (block.top < actualCut) {
-                  actualCut  = block.top;
+                  actualCut = block.top;
                   cutBlockId = block.id;
                 }
               }
@@ -5737,9 +5686,9 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
 
           for (let i = 0; i < pageStarts.length; i++) {
             const contentOffsetY = pageStarts[i];
-            const nextStart      = pageStarts[i + 1] ?? totalH;
+            const nextStart = pageStarts[i + 1] ?? totalH;
             // KEY: clip at actual cut point — prevents bleed into the next page card
-            const clipH          = nextStart - contentOffsetY;
+            const clipH = nextStart - contentOffsetY;
 
             pageHtmls.push(`<!DOCTYPE html>
 <html lang="en">
@@ -5832,16 +5781,15 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
       //   { responseType: "blob" },
       // );
 
-
-       const res: AxiosResponse<Blob> = await api.post(
-              `${API_URL}/candidates/generate-pdf`,
-              { html:pdfHtml  },
-              { responseType: "blob" },
-            );
+      const res: AxiosResponse<Blob> = await api.post(
+        `${API_URL}/candidates/generate-pdf`,
+        { html: pdfHtml },
+        { responseType: "blob" },
+      );
 
       const url = URL.createObjectURL(res.data);
-      const a   = document.createElement("a");
-      a.href     = url;
+      const a = document.createElement("a");
+      a.href = url;
       a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
       document.body.appendChild(a);
       a.click();
@@ -5927,7 +5875,9 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
                   marginBottom: "10px",
                 }}
               >
-                <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
+                <div
+                  style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+                />
                 <span
                   style={{
                     fontSize: "11px",
@@ -5945,7 +5895,9 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
                   Page {idx + 1}
                   {pages.length > 1 ? ` of ${pages.length}` : ""}
                 </span>
-                <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
+                <div
+                  style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+                />
               </div>
 
               <div

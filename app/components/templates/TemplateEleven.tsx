@@ -5499,18 +5499,6 @@
 
 // export default TemplateEleven;
 
-
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
 // import React, {
 //   useContext,
@@ -6773,27 +6761,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 import React, {
   useContext,
@@ -6889,7 +6856,7 @@ const TemplateEleven: React.FC<ResumeProps> = ({ alldata }) => {
   const styles = `
     @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;600;700&display=swap');
 
-    @page { size: A4; margin: 0; }
+@page { size: A4; margin: 15mm; }
 
     *, *::before, *::after { box-sizing: border-box; }
 
@@ -6908,16 +6875,15 @@ const TemplateEleven: React.FC<ResumeProps> = ({ alldata }) => {
 
     .t11-resume * { box-sizing: border-box; }
 
-    .t11-resume .section,
-    .t11-resume .experience-item,
-    .t11-resume .education-item,
-    .t11-resume .skills-content,
-    .t11-resume .custom-section,
-    .t11-resume .resume-header,
-    .t11-resume .project-header {
-      page-break-inside: avoid;
-      break-inside: avoid;
-    }
+   .t11-resume .experience-item,
+.t11-resume .education-item,
+.t11-resume .skills-content,
+.t11-resume .custom-section,
+.t11-resume .resume-header,
+.t11-resume .project-header {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
 
     .t11-resume .section-title {
       page-break-after: avoid;
@@ -7066,13 +7032,10 @@ const TemplateEleven: React.FC<ResumeProps> = ({ alldata }) => {
       text-align: left;
     }
 
-    .t11-resume .section {
-      margin-bottom: 28px;
-      text-align: left;
-      page-break-inside: avoid;
-      break-inside: avoid;
-    }
-
+   .t11-resume .section {
+  margin-bottom: 28px;
+  text-align: left;
+}
     .t11-resume .section:last-child { margin-bottom: 0; }
 
     .t11-resume .section-title {
@@ -7262,20 +7225,20 @@ const TemplateEleven: React.FC<ResumeProps> = ({ alldata }) => {
       padding: 0;
     }
 
-    @media print {
-      *, *::before, *::after {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-      }
-      html, body { margin: 0 !important; padding: 0 !important; overflow: visible; }
-      .t11-resume {
-        width: ${A4_W}px !important;
-        padding: 0 ${MARGIN}px !important;
-        margin: 0 !important;
-        box-shadow: none !important;
-        background: white;
-      }
-    }
+  @media print {
+  *, *::before, *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  html, body { margin: 0 !important; padding: 0 !important; overflow: visible; }
+  .t11-resume {
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    background: white;
+  }
+}
   `;
 
   const renderDescription = (text: string) => {
@@ -7291,9 +7254,15 @@ const TemplateEleven: React.FC<ResumeProps> = ({ alldata }) => {
       const addressStr = addressParts.join(" | ");
 
       const generateSkillsHTML = () => {
-        if (!skills || (typeof skills === "string" && !skills.trim())) return "";
+        if (!skills || (typeof skills === "string" && !skills.trim()))
+          return "";
         const cleanedSkills = cleanQuillHTML(skills);
-        if (!cleanedSkills || cleanedSkills === "<p><br></p>" || cleanedSkills === "") return "";
+        if (
+          !cleanedSkills ||
+          cleanedSkills === "<p><br></p>" ||
+          cleanedSkills === ""
+        )
+          return "";
         return `
         <div class="section" data-block-id="skills-section">
           <h2 class="section-title">Skills</h2>
@@ -7306,7 +7275,9 @@ const TemplateEleven: React.FC<ResumeProps> = ({ alldata }) => {
         return `
         <div class="section" data-block-id="proj-section">
           <h2 class="section-title">Projects</h2>
-          ${projects.map((project: any, i: number) => `
+          ${projects
+            .map(
+              (project: any, i: number) => `
             <div class="experience-item" data-block-id="proj-${i}">
               <div class="project-header">
                 <div class="experience-title-row">
@@ -7319,34 +7290,43 @@ const TemplateEleven: React.FC<ResumeProps> = ({ alldata }) => {
               </div>
               ${project.techStack && project.techStack.length > 0 ? `<div class="project-tech-stack"><strong>Tech:</strong> ${project.techStack.join(" • ")}</div>` : ""}
               ${project.description ? `<div class="experience-description">${cleanQuillHTML(project.description)}</div>` : ""}
-            </div>`).join("")}
+            </div>`,
+            )
+            .join("")}
         </div>`;
       };
 
       const generateCustomSectionsHTML = () => {
         const filteredSections = getFilteredCustomSections();
         if (filteredSections.length === 0) return "";
-        return filteredSections.map((s: any, i: number) => `
+        return filteredSections
+          .map(
+            (s: any, i: number) => `
           <div class="section" data-block-id="custom-${i}">
             <div class="custom-section">
               ${s.name ? `<h2 class="custom-section-title">${s.name}</h2>` : ""}
               ${s.description ? `<div class="custom-section-content">${cleanQuillHTML(s.description)}</div>` : ""}
             </div>
-          </div>`).join("");
+          </div>`,
+          )
+          .join("");
       };
 
-      // KEY: pdfOverrideStyle only adds print-color-adjust.
-      // It NEVER changes padding, width, or layout.
-      // Preview and PDF use identical .t11-resume dimensions.
-      const pdfOverrideStyle = forPDF
-        ? `<style>
-            *, *::before, *::after {
-              -webkit-print-color-adjust: exact !important;
-              print-color-adjust: exact !important;
-            }
-            @page { size: A4; margin: ${MARGIN}px !important; }
-          </style>`
-        : "";
+     const pdfOverrideStyle = forPDF
+  ? `<style>
+      .t11-resume { width: 100% !important; padding: 0 !important; }
+      .t11-resume .section,
+      .t11-resume .experience-item,
+      .t11-resume .education-item,
+      .t11-resume .custom-section,
+      .t11-resume .skills-content,
+      .t11-resume .resume-header,
+      .t11-resume .project-header {
+        page-break-inside: auto !important;
+        break-inside: auto !important;
+      }
+    </style>`
+  : "";
 
       let bodyContent = `
       <div class="resume-header" data-block-id="header">
@@ -7373,20 +7353,31 @@ const TemplateEleven: React.FC<ResumeProps> = ({ alldata }) => {
       </div>
 
       <div class="resume-main">
-        ${summary ? `
+        ${
+          summary
+            ? `
           <div class="section" data-block-id="summary">
             <h2 class="section-title">About</h2>
             <div class="summary-text">${cleanQuillHTML(summary)}</div>
-          </div>` : ""}
+          </div>`
+            : ""
+        }
 
-        ${experiences.length > 0 ? `
+        ${
+          experiences.length > 0
+            ? `
           <div class="section" data-block-id="exp-section">
             <h2 class="section-title">Experience</h2>
-            ${experiences.map((exp, i: number) => {
-              const startFormatted = formatMonthYear(exp.startDate, false);
-              const endFormatted = exp.endDate ? formatMonthYear(exp.endDate, false) : "Present";
-              const companyLocation = [exp.employer, exp.location].filter(Boolean).join(" • ");
-              return `
+            ${experiences
+              .map((exp, i: number) => {
+                const startFormatted = formatMonthYear(exp.startDate, false);
+                const endFormatted = exp.endDate
+                  ? formatMonthYear(exp.endDate, false)
+                  : "Present";
+                const companyLocation = [exp.employer, exp.location]
+                  .filter(Boolean)
+                  .join(" • ");
+                return `
               <div class="experience-item" data-block-id="exp-${i}">
                 <div class="experience-header">
                   <div class="experience-title-row">
@@ -7397,22 +7388,33 @@ const TemplateEleven: React.FC<ResumeProps> = ({ alldata }) => {
                 </div>
                 ${exp.text ? renderDescription(exp.text) : ""}
               </div>`;
-            }).join("")}
-          </div>` : ""}
+              })
+              .join("")}
+          </div>`
+            : ""
+        }
 
         ${generateProjectsHTML()}
 
-        ${educations.length > 0 ? `
+        ${
+          educations.length > 0
+            ? `
           <div class="section" data-block-id="edu-section">
             <h2 class="section-title">Education</h2>
-            ${educations.map((edu, i: number) => {
-              const dateStr = edu.startDate || edu.endDate
-                ? `${edu.startDate || ""}${edu.startDate ? " — " : ""}${edu.endDate || "Present"}`
-                : "";
-              const formattedGrade = formatGradeToCgpdAndPercentage(edu.grade || "");
-              const eduTextHtml = edu.text ? cleanQuillHTML(edu.text) : "";
-              const schoolLocation = [edu.schoolname, edu.location].filter(Boolean).join(" • ");
-              return `
+            ${educations
+              .map((edu, i: number) => {
+                const dateStr =
+                  edu.startDate || edu.endDate
+                    ? `${edu.startDate || ""}${edu.startDate ? " — " : ""}${edu.endDate || "Present"}`
+                    : "";
+                const formattedGrade = formatGradeToCgpdAndPercentage(
+                  edu.grade || "",
+                );
+                const eduTextHtml = edu.text ? cleanQuillHTML(edu.text) : "";
+                const schoolLocation = [edu.schoolname, edu.location]
+                  .filter(Boolean)
+                  .join(" • ");
+                return `
               <div class="education-item" data-block-id="edu-${i}">
                 <div class="education-header">
                   <div class="education-title-row">
@@ -7426,8 +7428,11 @@ const TemplateEleven: React.FC<ResumeProps> = ({ alldata }) => {
                 </div>
                 ${eduTextHtml ? `<div class="education-description">${eduTextHtml}</div>` : ""}
               </div>`;
-            }).join("")}
-          </div>` : ""}
+              })
+              .join("")}
+          </div>`
+            : ""
+        }
 
         ${generateSkillsHTML()}
         ${generateCustomSectionsHTML()}
@@ -7465,8 +7470,19 @@ const TemplateEleven: React.FC<ResumeProps> = ({ alldata }) => {
 </html>`;
     },
     [
-      contact, educations, experiences, skills, projects, finalize, summary,
-      linkedinUrl, portfolioUrl, githubUrl, formattedDob, addressParts, styles,
+      contact,
+      educations,
+      experiences,
+      skills,
+      projects,
+      finalize,
+      summary,
+      linkedinUrl,
+      portfolioUrl,
+      githubUrl,
+      formattedDob,
+      addressParts,
+      styles,
     ],
   );
 
@@ -7476,14 +7492,23 @@ const TemplateEleven: React.FC<ResumeProps> = ({ alldata }) => {
         const parser = new DOMParser();
         const parsed = parser.parseFromString(fullHtml, "text/html");
         const resumeEl = parsed.querySelector<HTMLElement>(".t11-resume");
-        if (!resumeEl) { resolve([fullHtml]); return; }
+        if (!resumeEl) {
+          resolve([fullHtml]);
+          return;
+        }
         const resumeSnapshot = resumeEl.outerHTML;
 
         const iframe = document.createElement("iframe");
         iframe.style.cssText = [
-          "position:fixed", "top:0", "left:-9999px",
-          `width:${A4_W}px`, "height:10000px", "border:none",
-          "opacity:0", "pointer-events:none", "z-index:-1",
+          "position:fixed",
+          "top:0",
+          "left:-9999px",
+          `width:${A4_W}px`,
+          "height:10000px",
+          "border:none",
+          "opacity:0",
+          "pointer-events:none",
+          "z-index:-1",
         ].join(";");
         document.body.appendChild(iframe);
 
@@ -7521,13 +7546,16 @@ const TemplateEleven: React.FC<ResumeProps> = ({ alldata }) => {
             return;
           }
 
-          measureDoc.documentElement.style.cssText = "height:auto!important;overflow:visible!important;";
-          measureDoc.body.style.cssText = "margin:0;padding:0;height:auto!important;overflow:visible!important;";
+          measureDoc.documentElement.style.cssText =
+            "height:auto!important;overflow:visible!important;";
+          measureDoc.body.style.cssText =
+            "margin:0;padding:0;height:auto!important;overflow:visible!important;";
           void resume.offsetHeight;
 
           const totalH = resume.scrollHeight;
           const resumeRect = resume.getBoundingClientRect();
-          const scrollY = measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
+          const scrollY =
+            measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
 
           const getRelTop = (el: HTMLElement): number => {
             const r = el.getBoundingClientRect();
@@ -7536,16 +7564,22 @@ const TemplateEleven: React.FC<ResumeProps> = ({ alldata }) => {
           const getRelBottom = (el: HTMLElement): number =>
             getRelTop(el) + el.getBoundingClientRect().height;
 
-          interface Block { top: number; bottom: number; id?: string; }
+          interface Block {
+            top: number;
+            bottom: number;
+            id?: string;
+          }
           const blocks: Block[] = [];
 
-          // Only individual items — NOT .section containers
-          const ITEM_SELECTORS = [
-            ".experience-item",
-            ".education-item",
-            ".skills-content",
-            ".custom-section",
-          ].join(", ");
+          // ── Same selectors as T1 but with t11 class names ──
+       const ITEM_SELECTORS = [
+  ".experience-item",
+  ".education-item",
+  ".experience-header",
+  ".custom-section",
+  ".skills-content",
+].join(", ");
+
 
           resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
             const top = getRelTop(el);
@@ -7555,27 +7589,40 @@ const TemplateEleven: React.FC<ResumeProps> = ({ alldata }) => {
             }
           });
 
-          // Section title + first item paired — prevents orphaned headings
-          resume.querySelectorAll<HTMLElement>(".section-title, .custom-section-title").forEach((title) => {
-            const titleTop = getRelTop(title);
-            let firstItem: HTMLElement | null = null;
-            let sib = title.nextElementSibling as HTMLElement | null;
-            while (sib) {
-              if (sib.getBoundingClientRect().height > 8) { firstItem = sib; break; }
-              sib = sib.nextElementSibling as HTMLElement | null;
-            }
-            if (firstItem) {
-              const deepChild = firstItem.querySelector<HTMLElement>(
-                ".experience-item, .education-item, .custom-section, .skills-content",
-              );
-              const anchor = deepChild || firstItem;
-              const anchorBottom = getRelBottom(anchor);
-              if (anchorBottom - titleTop > 8) {
-                const sectionId = (title.parentElement as HTMLElement)?.dataset?.blockId;
-                blocks.push({ top: titleTop, bottom: anchorBottom, id: sectionId });
+          // Section title + first item paired — same logic as T1
+          // REPLACE the entire section title forEach block with this:
+          resume
+            .querySelectorAll<HTMLElement>(
+              ".section-title, .custom-section-title",
+            )
+            .forEach((title) => {
+              const titleTop = getRelTop(title);
+              let firstItem: HTMLElement | null = null;
+              let sib = title.nextElementSibling as HTMLElement | null;
+              while (sib) {
+                if (sib.getBoundingClientRect().height > 8) {
+                  firstItem = sib;
+                  break;
+                }
+                sib = sib.nextElementSibling as HTMLElement | null;
               }
-            }
-          });
+              if (firstItem) {
+                const deepChild = firstItem.querySelector<HTMLElement>(
+                  ".experience-item, .education-item, .custom-section, .skills-content",
+                );
+                const anchor = deepChild || firstItem;
+                const anchorBottom = getRelBottom(anchor);
+                if (anchorBottom - titleTop > 8) {
+                  const sectionId = (title.parentElement as HTMLElement)
+                    ?.dataset?.blockId;
+                  blocks.push({
+                    top: titleTop,
+                    bottom: anchorBottom,
+                    id: sectionId,
+                  });
+                }
+              }
+            });
 
           blocks.sort((a, b) => a.top - b.top);
 
@@ -7585,7 +7632,7 @@ const TemplateEleven: React.FC<ResumeProps> = ({ alldata }) => {
 
           while (pageStarts.length < MAX_PAGES) {
             const currentStart = pageStarts[pageStarts.length - 1];
-            const naiveCut = currentStart + PAGE_CONTENT_H;
+const naiveCut = currentStart + PAGE_CONTENT_H;
             if (naiveCut >= totalH) break;
 
             let actualCut = naiveCut;
@@ -7641,9 +7688,8 @@ const TemplateEleven: React.FC<ResumeProps> = ({ alldata }) => {
     }
     .t11-resume {
       width: ${A4_W}px !important;
-      padding-left: ${MARGIN}px !important;
-      padding-right: ${MARGIN}px !important;
       padding-top: 0 !important; padding-bottom: 0 !important;
+      padding-left: ${MARGIN}px !important; padding-right: ${MARGIN}px !important;
       margin: 0 !important;
     }
   </style>
@@ -7683,7 +7729,9 @@ const TemplateEleven: React.FC<ResumeProps> = ({ alldata }) => {
 
   useEffect(() => {
     scheduleUpdate(generateHTML());
-    return () => { if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current); };
+    return () => {
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    };
   }, [generateHTML, scheduleUpdate]);
 
   useEffect(() => {
@@ -7734,20 +7782,42 @@ const TemplateEleven: React.FC<ResumeProps> = ({ alldata }) => {
       {alldata ? (
         <div
           style={{
-            width: `${A4_W}px`, height: `${A4_H}px`,
-            transform: "scale(0.36)", transformOrigin: "top left",
-            overflow: "hidden", pointerEvents: "none", flexShrink: 0,
+            width: `${A4_W}px`,
+            height: `${A4_H}px`,
+            transform: "scale(0.36)",
+            transformOrigin: "top left",
+            overflow: "hidden",
+            pointerEvents: "none",
+            flexShrink: 0,
           }}
         >
           {pages[0] ? (
             <iframe
               title="resume-thumb"
               srcDoc={pages[0]}
-              style={{ width: `${A4_W}px`, height: `${A4_H}px`, border: "none", display: "block", pointerEvents: "none" }}
+              style={{
+                width: `${A4_W}px`,
+                height: `${A4_H}px`,
+                border: "none",
+                display: "block",
+                pointerEvents: "none",
+              }}
               sandbox="allow-same-origin"
             />
           ) : (
-            <div style={{ width: `${A4_W}px`, height: `${A4_H}px`, background: "white", display: "flex", alignItems: "center", justifyContent: "center", color: "#ccc", fontSize: 14, fontFamily: "sans-serif" }}>
+            <div
+              style={{
+                width: `${A4_W}px`,
+                height: `${A4_H}px`,
+                background: "white",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#ccc",
+                fontSize: 14,
+                fontFamily: "sans-serif",
+              }}
+            >
               Loading…
             </div>
           )}
@@ -7756,18 +7826,61 @@ const TemplateEleven: React.FC<ResumeProps> = ({ alldata }) => {
         <div style={{ width: `${A4_W}px`, margin: "0 auto" }}>
           {(pages.length > 0 ? pages : [htmlContent]).map((pageHtml, idx) => (
             <div key={idx} style={{ marginBottom: "28px" }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", marginBottom: "10px" }}>
-                <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
-                <span style={{ fontSize: "11px", fontWeight: 600, color: "#6b7280", whiteSpace: "nowrap", padding: "3px 12px", background: "#f3f4f6", borderRadius: "999px", border: "1px solid #e5e7eb", letterSpacing: "0.05em", fontFamily: "system-ui, sans-serif" }}>
-                  Page {idx + 1}{pages.length > 1 ? ` of ${pages.length}` : ""}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "10px",
+                  marginBottom: "10px",
+                }}
+              >
+                <div
+                  style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+                />
+                <span
+                  style={{
+                    fontSize: "11px",
+                    fontWeight: 600,
+                    color: "#6b7280",
+                    whiteSpace: "nowrap",
+                    padding: "3px 12px",
+                    background: "#f3f4f6",
+                    borderRadius: "999px",
+                    border: "1px solid #e5e7eb",
+                    letterSpacing: "0.05em",
+                    fontFamily: "system-ui, sans-serif",
+                  }}
+                >
+                  Page {idx + 1}
+                  {pages.length > 1 ? ` of ${pages.length}` : ""}
                 </span>
-                <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
+                <div
+                  style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+                />
               </div>
-              <div style={{ width: `${A4_W}px`, height: `${A4_H}px`, overflow: "hidden", background: "white", boxShadow: "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)", borderRadius: "2px", flexShrink: 0 }}>
+              <div
+                style={{
+                  width: `${A4_W}px`,
+                  height: `${A4_H}px`,
+                  overflow: "hidden",
+                  background: "white",
+                  boxShadow:
+                    "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
+                  borderRadius: "2px",
+                  flexShrink: 0,
+                }}
+              >
                 <iframe
                   title={`resume-page-${idx + 1}`}
                   srcDoc={pageHtml}
-                  style={{ width: `${A4_W}px`, height: `${A4_H}px`, border: "none", display: "block", pointerEvents: "none" }}
+                  style={{
+                    width: `${A4_W}px`,
+                    height: `${A4_H}px`,
+                    border: "none",
+                    display: "block",
+                    pointerEvents: "none",
+                  }}
                   scrolling="no"
                   sandbox="allow-same-origin allow-scripts"
                 />
