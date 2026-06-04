@@ -4841,6 +4841,10 @@
 
 
 
+
+
+
+
 "use client";
 import React, {
   useContext,
@@ -4882,8 +4886,8 @@ const MARGIN = 57; // px — 15 mm at 96 dpi (Puppeteer outer margin)
 const PAGE_CONTENT_H = A4_H - MARGIN * 2; // 1009px
 
 // Extra inner padding to match T12's original 20mm/22mm design intent
-const INNER_PAD_X = 83; // px ≈ 22mm — left/right inside the resume div
-const INNER_PAD_TOP = 76; // px ≈ 20mm — top inside the resume div
+const INNER_PAD_X = 57;    // was 83 — match TemplateOne's MARGIN (15mm = 57px)
+const INNER_PAD_TOP = 40;  // was 76 — reduce top breathing room to match T1
 
 const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
   const context = useContext(CreateContext);
@@ -4928,16 +4932,15 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
     /* ── RESUME ROOT ── */
     /* Outer padding = 0 (Puppeteer margin handles the 15mm gutters).
        Inner padding reproduces T12's original 20mm/22mm design spacing. */
-    .t12-resume {
-      width: ${A4_W}px;
-      padding: ${INNER_PAD_TOP}px ${INNER_PAD_X}px 0 ${INNER_PAD_X}px;
-      background-color: #ffffff;
-      font-family: 'Source Sans 3', sans-serif;
-      color: #111111;
-      font-size: 14px;
-      line-height: 1.5;
-      box-sizing: border-box;
+   .t12-resume {
+      width: ${A4_W}px !important;
+      padding-left: ${INNER_PAD_X}px !important;
+      padding-right: ${INNER_PAD_X}px !important;
+      padding-top: ${INNER_PAD_TOP}px !important;
+      padding-bottom: 0 !important;
+      margin: 0 !important;
     }
+
 
     /* ── RICH TEXT ── */
     .t12-resume .entry-content ul,
@@ -5222,25 +5225,22 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
       padding: 0;
     }
 
-    @media print {
-      *, *::before, *::after {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-      }
-      html, body { overflow: visible; }
-      .t12-resume {
-        width: 100% !important;
-        padding-left: ${INNER_PAD_X}px !important;
-        padding-right: ${INNER_PAD_X}px !important;
-        padding-top: ${INNER_PAD_TOP}px !important;
-        box-shadow: none !important;
-      }
-      .t12-resume .project-link,
-      .t12-resume .header-meta-item a {
-        color: #000 !important;
-        text-decoration: underline !important;
-      }
-    }
+   /* TO */
+@media print {
+  *, *::before, *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  html, body { overflow: visible; }
+  .t12-resume {
+    width: 100% !important;
+    padding-left: ${INNER_PAD_X}px !important;
+    padding-right: ${INNER_PAD_X}px !important;
+    padding-top: ${INNER_PAD_TOP}px !important;
+    box-shadow: none !important;
+  }
+}
+
   `;
 
   // ── HTML builder ─────────────────────────────────────────────────────────
@@ -5425,15 +5425,16 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
         : "";
 
       const pdfStyle = forPDF
-        ? `<style>
-             .t12-resume {
-               width: 100% !important;
-               padding-left: ${INNER_PAD_X}px !important;
-               padding-right: ${INNER_PAD_X}px !important;
-               padding-top: ${INNER_PAD_TOP}px !important;
-             }
-           </style>`
-        : "";
+  ? `<style>
+      .t12-resume {
+        width: 100% !important;
+        padding-left: ${INNER_PAD_X}px !important;
+        padding-right: ${INNER_PAD_X}px !important;
+        padding-top: ${INNER_PAD_TOP}px !important;
+      }
+    </style>`
+  : "";
+
 
       let bodyContent = `
         ${header}
@@ -5537,7 +5538,7 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
 
         const measureDoc = iframe.contentDocument!;
         measureDoc.open();
-        measureDoc.write(`<!DOCTYPE html>
+       measureDoc.write(`<!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8"/>
@@ -5548,13 +5549,12 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
       width: ${A4_W}px !important; height: auto !important;
       overflow: visible !important; background: white !important;
     }
-    /* In the measurement iframe the resume fills full width;
-       the inner padding constants handle the visual indentation. */
     .t12-resume {
       width: ${A4_W}px !important;
       padding-left: ${INNER_PAD_X}px !important;
       padding-right: ${INNER_PAD_X}px !important;
       padding-top: ${INNER_PAD_TOP}px !important;
+      padding-bottom: 0 !important;
       margin: 0 !important;
       box-sizing: border-box !important;
     }
@@ -5600,50 +5600,57 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
           const blocks: Block[] = [];
 
           // Atomic units that must not be split across pages
-          const ITEM_SELECTORS = [
-            ".entry-block",
-            ".custom-wrapper",
-            ".header-block",
-            ".skills-wrapper",
-          ].join(", ");
+    const ITEM_SELECTORS = [
+  ".entry-block",
+  ".custom-wrapper",
+  ".header-block",
+  ".skills-wrapper",
+  ".section-block",
+].join(", ");
 
-          resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
-            const top = getRelTop(el);
-            const bottom = getRelBottom(el);
-            if (bottom - top > 8) {
-              blocks.push({ top, bottom, id: el.dataset.blockId });
-            }
-          });
+resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
+  const top = getRelTop(el);
+  const bottom = getRelBottom(el);
+  if (bottom - top > 8) {
+    blocks.push({ top, bottom, id: el.dataset.blockId });
+  }
+});
 
-          // Section-title + first item paired — prevents orphaned .section-title
-          resume
-            .querySelectorAll<HTMLElement>(".section-block")
-            .forEach((section) => {
-              const sectionTop = getRelTop(section);
-              const firstItem = section.querySelector<HTMLElement>(
-                ".entry-block, .custom-wrapper, .skills-wrapper",
-              );
-              if (firstItem) {
-                const anchorBottom = getRelBottom(firstItem);
-                if (anchorBottom - sectionTop > 8) {
-                  blocks.push({
-                    top: sectionTop,
-                    bottom: anchorBottom,
-                    id: section.dataset.blockId,
-                  });
-                }
-              } else {
-                // Summary and similar text-only sections — treat whole block atomically
-                const sectionBottom = getRelBottom(section);
-                if (sectionBottom - sectionTop > 8) {
-                  blocks.push({
-                    top: sectionTop,
-                    bottom: sectionBottom,
-                    id: section.dataset.blockId,
-                  });
-                }
-              }
-            });
+// Section title + first item paired — prevents orphaned .section-title rows
+resume
+  .querySelectorAll<HTMLElement>(".section-title")
+  .forEach((title) => {
+    const titleTop = getRelTop(title);
+    let firstItem: HTMLElement | null = null;
+    let sib = title.nextElementSibling as HTMLElement | null;
+    while (sib) {
+      if (sib.getBoundingClientRect().height > 8) {
+        firstItem = sib;
+        break;
+      }
+      sib = sib.nextElementSibling as HTMLElement | null;
+    }
+    if (firstItem) {
+      const deepChild = firstItem.querySelector<HTMLElement>(
+        ".entry-block, .custom-wrapper, .skills-wrapper",
+      );
+      const anchor = deepChild || firstItem;
+      const anchorBottom = getRelBottom(anchor);
+      if (anchorBottom - titleTop > 8) {
+        const sectionId = (title.parentElement as HTMLElement)
+          ?.dataset?.blockId;
+        blocks.push({
+          top: titleTop,
+          bottom: anchorBottom,
+          id: sectionId,
+        });
+      }
+    }
+  });
+
+blocks.sort((a, b) => a.top - b.top);
+
+
 
           blocks.sort((a, b) => a.top - b.top);
 

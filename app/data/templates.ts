@@ -118,14 +118,14 @@ export const templateData: Template[] = [
     temp: "paid",
     component: TemplateEleven,
   },
-  //  {
-  //   id: 12,
-  //   style: "The Analyst",
-  //   image: "/images/resume12.png",
-  //   description: "Creative design with eye-catching sections.",
-  //   temp: "paid",
-  //   component: TemplateTwelve,
-  // },
+   {
+    id: 12,
+    style: "The Analyst",
+    image: "/images/resume12.png",
+    description: "Creative design with eye-catching sections.",
+    temp: "paid",
+    component: TemplateTwelve,
+  },
   //  {
   //   id: 13,
   //   style: "The Analyst",
