@@ -2714,7 +2714,7 @@ export default function ChoosePlanPage() {
           </motion.div>
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 max-sm:hidden">
+        {/* <div className="absolute bottom-0 left-0 right-0 max-sm:hidden">
           <svg
             viewBox="0 0 1440 120"
             preserveAspectRatio="none"
@@ -2722,7 +2722,7 @@ export default function ChoosePlanPage() {
           >
             <path d="M0 120L1440 0V120H0Z" fill="white" />
           </svg>
-        </div>
+        </div> */}
       </div>
 
       {/* Plans Grid Section */}

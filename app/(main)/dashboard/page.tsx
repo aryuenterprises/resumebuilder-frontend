@@ -1223,6 +1223,15 @@
 
 // export default DashboardPage;
 
+
+
+
+
+
+
+
+
+
 "use client";
 
 import React, { useState, useEffect, useContext } from "react";
@@ -1252,6 +1261,7 @@ import {
   FiDollarSign,
   FiShoppingBag,
   FiStar,
+  FiLock,
 } from "react-icons/fi";
 import {
   HiOutlineTemplate,
@@ -1293,6 +1303,8 @@ interface BillingRecord {
 
 interface usersCurrentPlan {
   current_plan: string;
+  message?: string;
+  is_expired?: boolean;
   plan_details: {
     billing_type: string | null;
     days_remaining: string | null;
@@ -1555,12 +1567,15 @@ const DashboardPage = () => {
     return "grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
   };
 
+
+  console.log("usersCurrentPlan",usersCurrentPlan)
+
   return (
     <ProtectedRoute>
-      <Toaster position="top-right" />
+    <Toaster position="top-right" /> 
 
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50/30 via-white to-indigo-50/20">
-        <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-5 lg:px-6 py-4 sm:py-6 lg:py-8">
+       <div className="min-h-screen bg-gradient-to-br from-indigo-50/30 via-white to-indigo-50/20">
+         <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-5 lg:px-6 py-4 sm:py-6 lg:py-8">
           {/* Header Section */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -1627,7 +1642,7 @@ const DashboardPage = () => {
               },
               {
                 label: "Current Plan",
-                value: usersCurrentPlan?.current_plan || "Free",
+                value: usersCurrentPlan?.current_plan || "no plan",
                 icon: FiStar,
                 color: "amber",
                 delay: 0.2,
@@ -1745,479 +1760,602 @@ const DashboardPage = () => {
             </motion.div>
 
             {/* Plan Card */}
-            {usersCurrentPlan ? (
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5 }}
-                className="lg:col-span-2 order-1 lg:order-2"
-              >
-                <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-indigo-100 overflow-hidden hover:shadow-md transition-all duration-300">
-                  <div className="bg-gradient-to-r from-indigo-600 to-purple-500 p-4 sm:p-6">
-                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-                      <div>
-                        <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
-                          <motion.span
-                            className="px-1.5 sm:px-2 py-0.5 bg-white/20 text-white text-[10px] sm:text-xs font-semibold rounded-full"
-                            animate={{ scale: [1, 1.05, 1] }}
-                            transition={{ duration: 2, repeat: Infinity }}
-                          >
-                            ACTIVE
-                          </motion.span>
-                          <HiOutlineBadgeCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-200" />
-                        </div>
-                        <h3 className="text-lg sm:text-xl font-bold text-white mb-0.5 sm:mb-1">
-                          {usersCurrentPlan?.current_plan} Plan
-                        </h3>
-                        <p className="text-indigo-100 text-xs sm:text-sm">
-                          Your current subscription
-                        </p>
-                      </div>
-                      <div className="text-left sm:text-right">
-                        <p className="text-2xl sm:text-3xl font-bold text-white">
-                          ₹{usersCurrentPlan?.plan_details.price || "0"}
-                        </p>
-                        <p className="text-indigo-100 text-[10px] sm:text-xs mt-0.5 sm:mt-1">
-                          per{" "}
-                          {usersCurrentPlan?.current_plan === "Premium"
-                            ? "Lifetime"
-                            : usersCurrentPlan?.current_plan === "Pro Plus"
-                              ? "3 months"
-                              : "month"}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="p-4 sm:p-6">
-                    <h4 className="text-xs sm:text-sm font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center gap-1.5 sm:gap-2">
-                      <FiAward className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-600" />{" "}
-                      Plan Features
-                    </h4>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mb-4 sm:mb-6">
-                      {usersCurrentPlan?.plan_details?.description &&
-                        (() => {
-                          const parser = new DOMParser();
-                          const doc = parser.parseFromString(
-                            usersCurrentPlan.plan_details.description,
-                            "text/html",
-                          );
-                          const features = Array.from(
-                            doc.querySelectorAll("li"),
-                          ).map((li) => li.textContent?.trim() || "");
-                          return features.map((feature, idx) => (
-                            <motion.div
-                              key={idx}
-                              initial={{ opacity: 0, x: -10 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              transition={{ delay: idx * 0.05 }}
-                              className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-gray-700"
-                            >
-                              <FiCheckCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-emerald-500 mt-0.5 shrink-0" />
-                              <span className="line-clamp-2">{feature}</span>
-                            </motion.div>
-                          ));
-                        })()}
-                    </div>
-
-                    {/* Subscription Dates Section - Add this new section */}
-                    {/* Subscription Dates Section - Updated for Lifetime plans */}
-                    {(usersCurrentPlan?.plan_details.purchased_at ||
-                      usersCurrentPlan?.current_plan === "Premium") && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2 }}
-                        className="mb-4 sm:mb-6 p-3 sm:p-4 bg-gradient-to-r from-gray-50 to-indigo-50/30 rounded-lg sm:rounded-xl border border-gray-100"
-                      >
-                        <h4 className="text-xs sm:text-sm font-semibold text-gray-900 mb-2 sm:mb-3 flex items-center gap-1.5 sm:gap-2">
-                          <FiCalendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-600" />
-                          Subscription Info
-                        </h4>
-                        <div className="space-y-2 sm:space-y-2.5">
-                          {/* Purchase Date - Always show if available */}
-                          {usersCurrentPlan?.plan_details.purchased_at && (
-                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 text-xs sm:text-sm">
-                              <span className="text-gray-600 flex items-center gap-1.5">
-                                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
-                                Purchase Date:
-                              </span>
-                              <span className="font-medium text-gray-800">
-                                {new Date(
-                                  usersCurrentPlan.plan_details.purchased_at,
-                                ).toLocaleDateString("en-IN", {
-                                  day: "numeric",
-                                  month: "long",
-                                  year: "numeric",
-                                })}
-                              </span>
-                            </div>
-                          )}
-
-                          {/* Expiry/Validity Info - Conditional based on plan type */}
-                          {usersCurrentPlan?.current_plan === "premium" ? (
-                            // Lifetime plan - Show lifetime badge instead of expiry
-                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 text-xs sm:text-sm">
-                              <span className="text-gray-600 flex items-center gap-1.5">
-                                <span className="w-1.5 h-1.5 bg-purple-500 rounded-full"></span>
-                                Validity:
-                              </span>
-                              <span className="font-medium bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent flex items-center gap-1.5">
-                                <FiAward className="w-3.5 h-3.5 text-purple-500" />
-                                Lifetime Access
-                              </span>
-                            </div>
-                          ) : (
-                            // Non-premium plans - Show expiry date
-                            usersCurrentPlan?.plan_details.expires_at && (
-                              <>
-                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 text-xs sm:text-sm">
-                                  <span className="text-gray-600 flex items-center gap-1.5">
-                                    <span className="w-1.5 h-1.5 bg-amber-500 rounded-full"></span>
-                                    Expiry Date:
-                                  </span>
-                                  <span
-                                    className={`font-medium ${new Date(usersCurrentPlan.plan_details.expires_at) < new Date() ? "text-red-600" : "text-gray-800"}`}
-                                  >
-                                    {new Date(
-                                      usersCurrentPlan.plan_details.expires_at,
-                                    ).toLocaleDateString("en-IN", {
-                                      day: "numeric",
-                                      month: "long",
-                                      year: "numeric",
-                                    })}
-                                    {new Date(
-                                      usersCurrentPlan.plan_details.expires_at,
-                                    ) < new Date() && (
-                                      <span className="ml-2 text-red-500 text-[10px] sm:text-xs font-semibold">
-                                        (Expired)
-                                      </span>
-                                    )}
-                                  </span>
-                                </div>
-
-                                {/* Days remaining - Only for non-expired non-premium plans */}
-                                {new Date(
-                                  usersCurrentPlan.plan_details.expires_at,
-                                ) > new Date() && (
-                                  <div className="mt-2 pt-2 border-t border-gray-100">
-                                    <div className="flex items-center justify-between text-xs">
-                                      <span className="text-gray-600">
-                                        Days remaining:
-                                      </span>
-                                      <span className="font-semibold text-indigo-600">
-                                        {Math.ceil(
-                                          (new Date(
-                                            usersCurrentPlan.plan_details
-                                              .expires_at,
-                                          ).getTime() -
-                                            new Date().getTime()) /
-                                            (1000 * 60 * 60 * 24),
-                                        )}{" "}
-                                        days
-                                      </span>
-                                    </div>
-                                  </div>
-                                )}
-                              </>
-                            )
-                          )}
-
-                          {/* For Premium plans, show additional message */}
-                          {usersCurrentPlan?.current_plan === "Premium" && (
-                            <div className="mt-2 pt-2 border-t border-gray-100">
-                              <div className="flex items-center gap-2 text-xs text-gray-600">
-                                <HiOutlineBadgeCheck className="w-3.5 h-3.5 text-emerald-500" />
-                                <span>Enjoy all premium features forever!</span>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </motion.div>
-                    )}
-
-                    <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
-                      <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={() => router.push("/choose-plan")}
-                        className="flex-1 px-3 sm:px-4 py-2 sm:py-2.5 bg-indigo-600 text-white font-medium rounded-lg sm:rounded-xl hover:bg-indigo-700 transition-all duration-300 flex items-center justify-center gap-2 group cursor-pointer text-xs sm:text-sm"
-                      >
-                        <motion.div
-                          whileHover={{ rotate: 90 }}
-                          transition={{ duration: 0.3 }}
-                        >
-                          <MdOutlinePublishedWithChanges className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                        </motion.div>
-                        Upgrade Plan
-                      </motion.button>
-                      <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={() => setShowBillingHistory(true)}
-                        className="flex-1 px-3 sm:px-4 py-2 sm:py-2.5 bg-indigo-50 text-indigo-600 font-medium rounded-lg sm:rounded-xl hover:bg-indigo-100 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer text-xs sm:text-sm"
-                      >
-                        <FiCreditCard className="w-3.5 h-3.5 sm:w-4 sm:h-4" />{" "}
-                        Billing History
-                      </motion.button>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ) : (
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5 }}
-                className="lg:col-span-2 order-1 lg:order-2"
-              >
-                <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-indigo-100 overflow-hidden hover:shadow-md transition-all duration-300">
-                  <div className="bg-gradient-to-r from-indigo-600 to-indigo-500 p-6 sm:p-8 text-center">
-                    <motion.div
-                      className="inline-flex p-3 sm:p-4 bg-white/20 rounded-full mb-3 sm:mb-4"
-                      animate={{ scale: [1, 1.1, 1] }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                    >
-                      <FiAlertCircle className="w-8 h-8 sm:w-12 sm:h-12 text-white" />
-                    </motion.div>
-                    <h3 className="text-xl sm:text-2xl font-bold text-white mb-1 sm:mb-2">
-                      No Active Plan
-                    </h3>
-                    <p className="text-indigo-100 text-xs sm:text-sm">
-                      Choose a plan to unlock premium features and templates
-                    </p>
-                  </div>
-                  <div className="p-4 sm:p-6 text-center flex item-center justify-center gap-3 sm:gap-4">
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => router.push("/choose-plan")}
-                      className=" px-5 sm:px-6 py-2.5 sm:py-3 bg-indigo-600 text-white font-medium rounded-lg sm:rounded-xl hover:bg-indigo-700 transition-all duration-300 cursor-pointer text-xs sm:text-sm"
-                    >
-                      Choose a Plan
-                    </motion.button>
-                    {paymentRecords && paymentRecords?.length > 0 && (
-                      <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={() => setShowBillingHistory(true)}
-                        className=" px-3 sm:px-4 py-2 sm:py-2.5 bg-indigo-50 text-indigo-600 font-medium rounded-lg sm:rounded-xl hover:bg-indigo-100 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer text-xs sm:text-sm"
-                      >
-                        <FiCreditCard className="w-3.5 h-3.5 sm:w-4 sm:h-4" />{" "}
-                        Billing History
-                      </motion.button>
-                    )}
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </div>
-
-          {/* Resumes Section */}
-          <div>
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-5">
+            {/* // Plan Card Section - Updated to handle expired subscription */}
+{usersCurrentPlan ? (
+  <motion.div
+    initial={{ opacity: 0, x: 20 }}
+    animate={{ opacity: 1, x: 0 }}
+    transition={{ duration: 0.5 }}
+    className="lg:col-span-2 order-1 lg:order-2"
+  >
+    <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-indigo-100 overflow-hidden hover:shadow-md transition-all duration-300">
+      {/* Check if plan is expired (current_plan is null and message exists) */}
+      {usersCurrentPlan.current_plan === "" && usersCurrentPlan.message && usersCurrentPlan.is_expired===true ? (
+        // Expired Plan UI
+        <>
+          <div className="bg-gradient-to-r from-amber-500 to-orange-500 p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
               <div>
-                <h3 className="text-lg sm:text-xl font-bold text-gray-900 flex items-center gap-1.5 sm:gap-2">
-                  <FiFileText className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />{" "}
-                  Your Resumes
-                </h3>
-                <div className="flex items-center gap-1.5 sm:gap-2 mt-0.5 sm:mt-1">
-                  <p className="text-gray-500 text-[11px] sm:text-sm">
-                    Create, edit, and manage all your resumes
-                  </p>
-                  <motion.div
-                    className="px-1.5 sm:px-2 py-0.5 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full text-purple-600 text-[10px] sm:text-xs font-semibold"
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ type: "spring", stiffness: 300 }}
+                <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
+                  <motion.span
+                    className="px-1.5 sm:px-2 py-0.5 bg-red-500/20 text-red-100 text-[10px] sm:text-xs font-semibold rounded-full"
+                    animate={{ scale: [1, 1.05, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
                   >
-                    {totalResumes} {totalResumes === 1 ? "Resume" : "Resumes"}
-                  </motion.div>
+                    EXPIRED
+                  </motion.span>
+                  <FiAlertCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-200" />
+                </div>
+                <h3 className="text-lg sm:text-xl font-bold text-white mb-0.5 sm:mb-1">
+                  Subscription Expired
+                </h3>
+                <p className="text-amber-100 text-xs sm:text-sm">
+                  {usersCurrentPlan.message}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="p-4 sm:p-6">
+            <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-amber-50 rounded-lg sm:rounded-xl border border-amber-100">
+              <div className="flex items-start gap-2 sm:gap-3">
+                <div className="p-1.5 sm:p-2 bg-amber-100 rounded-lg shrink-0">
+                  <FiAlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600" />
+                </div>
+                <div>
+                  <h4 className="text-xs sm:text-sm font-semibold text-amber-800 mb-1">
+                    Your subscription has expired
+                  </h4>
+                  <p className="text-amber-700 text-[11px] sm:text-xs">
+                    To continue accessing premium features and templates, please subscribe to a new plan.
+                  </p>
                 </div>
               </div>
             </div>
-
-            {/* Resume Count Badge - Mobile */}
-            {isMobile && (
-              <motion.div
-                className="mb-3 px-2.5 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full inline-flex items-center gap-1.5 sm:gap-2"
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ type: "spring", stiffness: 300 }}
+            
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => router.push("/choose-plan")}
+                className="flex-1 px-3 sm:px-4 py-2 sm:py-2.5 bg-indigo-600 text-white font-medium rounded-lg sm:rounded-xl hover:bg-indigo-700 transition-all duration-300 flex items-center justify-center gap-2 group cursor-pointer text-xs sm:text-sm"
               >
-                <FiFileText className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-purple-600" />
-                <span className="text-[10px] sm:text-xs font-semibold text-purple-600">
-                  {totalResumes} {totalResumes === 1 ? "Resume" : "Resumes"}
-                </span>
-              </motion.div>
-            )}
-
-            {/* Responsive Grid View */}
-            <div
-              className={`grid ${getResumeGridCols()} gap-3 sm:gap-4 md:gap-5 lg:gap-6`}
-            >
-              {filteredOldResumeData.length > 0 ? (
-                filteredOldResumeData.map((item, index) => {
-                  const ComponentToRender = item.component;
-
-                  return (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: Math.min(index * 0.05, 0.5) }}
-                      whileHover={{ y: -4 }}
-                      className="relative group cursor-pointer"
-                      style={{
-                        height: isMobile
-                          ? "clamp(240px, 45vw, 280px)"
-                          : "clamp(280px, 30vw, 340px)",
-                        overflow: "hidden",
-                        borderRadius: "16px",
-                        backgroundColor: "white",
-                        boxShadow: "0 4px 12px -4px rgba(0, 0, 0, 0.05)",
-                        transition: "all 0.3s ease",
-                      }}
-                    >
-                      <div className="w-full h-full">
-                        <ComponentToRender alldata={item.resume_data} />
-                      </div>
-
-                      {/* Overlay with actions */}
-                      <motion.div
-                        className={`absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/50 to-transparent ${!isMobile ? "opacity-0 group-hover:opacity-100" : ""} transition-all duration-300`}
-                        initial={{ opacity: 0 }}
-                        whileHover={{ opacity: isMobile ? 0 : 1 }}
-                      >
-                        <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                          <div className="flex items-center justify-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                            <motion.button
-                              whileHover={{ scale: 1.1 }}
-                              whileTap={{ scale: 0.95 }}
-                              onClick={() => {
-                                setLocalStorage(
-                                  "chosenTemplate",
-                                  item.template,
-                                );
-
-                                setLocalStorage("editingResumeIdAndData", {
-                                  id: item.id,
-                                  resume_data: item.resume_data,
-                                });
-                                setSessionStorage(
-                                  "oldRouteNameDashboard",
-                                  true,
-                                );
-                                router.push(`/resume-details/contact`);
-
-                                setIsUploadMode(false);
-                              }}
-                              className="bg-white rounded-full p-1.5 sm:p-2.5 hover:bg-purple-50 transition-all duration-300 shadow-lg cursor-pointer group/btn"
-                            >
-                              <FiEdit2 className="h-3 w-3 sm:h-4 sm:w-4 text-purple-600 group-hover/btn:scale-110 transition-transform" />
-                            </motion.button>
-                            <motion.button
-                              whileHover={{ scale: 1.1 }}
-                              whileTap={{ scale: 0.95 }}
-                              onClick={() => handleDeleteResume(item.id)}
-                              className="bg-white rounded-full p-1.5 sm:p-2.5 hover:bg-rose-50 transition-all duration-300 shadow-lg cursor-pointer group/btn"
-                            >
-                              <FiTrash2 className="h-3 w-3 sm:h-4 sm:w-4 text-rose-600 group-hover/btn:scale-110 transition-transform" />
-                            </motion.button>
-                          </div>
-                          <p className="text-white text-[11px] sm:text-sm font-medium text-center truncate px-1 sm:px-2">
-                            {item.name || `Resume ${index + 1}`}
-                          </p>
-                          <p className="text-white/60 text-[10px] sm:text-xs text-center mt-0.5 sm:mt-1">
-                            Template: {item.template.id}
-                          </p>
-                        </div>
-                      </motion.div>
-
-                      {/* Mobile menu button */}
-                      {isMobile && (
-                        <>
-                          <button
-                            onClick={() =>
-                              setActiveMenuId(
-                                activeMenuId === item.contact?._id
-                                  ? null
-                                  : item.contact?._id,
-                              )
-                            }
-                            className="absolute top-2 right-2 p-1.5 bg-white rounded-lg shadow-md z-10 hover:bg-gray-50 transition"
-                          >
-                            <IoEllipsisVertical className="w-4 h-4 text-gray-700" />
-                          </button>
-                          {activeMenuId === item.contact?._id && (
-                            <>
-                              <div
-                                className="fixed inset-0 z-10"
-                                onClick={() => setActiveMenuId(null)}
-                              />
-                              <motion.div
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                className="absolute right-2 top-12 z-20 w-36 bg-white rounded-xl shadow-xl border border-gray-100 py-1.5"
-                              >
-                                <button
-                                  onClick={() => {
-                                    router.push(`/resume-details/contact`);
-                                    setLocalStorage("chosenTemplate", item);
-                                    setSessionStorage(
-                                      "oldRouteNameDashboard",
-                                      true,
-                                    );
-                                    setIsUploadMode(false);
-                                    setActiveMenuId(null);
-                                  }}
-                                  className="w-full px-3 py-2 text-left text-xs text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors flex items-center gap-2"
-                                >
-                                  <FiEdit2 className="w-3.5 h-3.5" /> Edit
-                                </button>
-                                <button
-                                  onClick={() => {
-                                    handleDeleteResume(item.id);
-                                    setActiveMenuId(null);
-                                  }}
-                                  className="w-full px-3 py-2 text-left text-xs text-gray-700 hover:bg-rose-50 hover:text-rose-600 transition-colors flex items-center gap-2"
-                                >
-                                  <FiTrash2 className="w-3.5 h-3.5" /> Delete
-                                </button>
-                              </motion.div>
-                            </>
-                          )}
-                        </>
-                      )}
-                    </motion.div>
-                  );
-                })
-              ) : (
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="col-span-full flex flex-col items-center justify-center py-12 sm:py-16 lg:py-20"
+                  whileHover={{ rotate: 90 }}
+                  transition={{ duration: 0.3 }}
                 >
-                  <div className="text-center">
-                    <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 mx-auto mb-4 sm:mb-6 bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl flex items-center justify-center">
-                      <FiFileText className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-purple-600" />
-                    </div>
-                    <h3 className="text-base sm:text-lg lg:text-xl font-semibold text-gray-900 mb-1 sm:mb-2">
-                      No Resumes Found
-                    </h3>
-                    <p className="text-gray-500 text-xs sm:text-sm mb-4 sm:mb-6">
-                      Create your first resume to get started
-                    </p>
-                    <button
-                      onClick={() => router.push("/choose-template")}
-                      className="px-5 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-purple-600 to-pink-500 text-white rounded-lg sm:rounded-xl font-medium hover:shadow-lg transition-all text-xs sm:text-sm cursor-pointer"
-                    >
-                      Create Resume
-                    </button>
-                  </div>
+                  <MdOutlinePublishedWithChanges className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </motion.div>
+                Subscribe Now
+              </motion.button>
+              {paymentRecords && paymentRecords?.length > 0 && (
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setShowBillingHistory(true)}
+                  className="flex-1 px-3 sm:px-4 py-2 sm:py-2.5 bg-indigo-50 text-indigo-600 font-medium rounded-lg sm:rounded-xl hover:bg-indigo-100 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer text-xs sm:text-sm"
+                >
+                  <FiCreditCard className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> 
+                  Billing History
+                </motion.button>
               )}
             </div>
           </div>
+        </>
+      ) : usersCurrentPlan.current_plan ? (
+        // Active Plan UI
+        <>
+          <div className="bg-gradient-to-r from-indigo-600 to-purple-500 p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+              <div>
+                <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
+                  <motion.span
+                    className="px-1.5 sm:px-2 py-0.5 bg-white/20 text-white text-[10px] sm:text-xs font-semibold rounded-full"
+                    animate={{ scale: [1, 1.05, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    ACTIVE
+                  </motion.span>
+                  <HiOutlineBadgeCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-200" />
+                </div>
+                <h3 className="text-lg sm:text-xl font-bold text-white mb-0.5 sm:mb-1">
+                  {usersCurrentPlan?.current_plan} Plan
+                </h3>
+                <p className="text-indigo-100 text-xs sm:text-sm">
+                  Your current subscription
+                </p>
+              </div>
+              <div className="text-left sm:text-right">
+                <p className="text-2xl sm:text-3xl font-bold text-white">
+                  ₹{usersCurrentPlan?.plan_details?.price || "0"}
+                </p>
+                <p className="text-indigo-100 text-[10px] sm:text-xs mt-0.5 sm:mt-1">
+                  per{" "}
+                  {usersCurrentPlan?.current_plan === "Premium"
+                    ? "Lifetime"
+                    : usersCurrentPlan?.current_plan === "Pro Plus"
+                      ? "3 months"
+                      : "month"}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="p-4 sm:p-6">
+            <h4 className="text-xs sm:text-sm font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center gap-1.5 sm:gap-2">
+              <FiAward className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-600" />{" "}
+              Plan Features
+            </h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mb-4 sm:mb-6">
+              {usersCurrentPlan?.plan_details?.description &&
+                (() => {
+                  const parser = new DOMParser();
+                  const doc = parser.parseFromString(
+                    usersCurrentPlan.plan_details.description,
+                    "text/html",
+                  );
+                  const features = Array.from(
+                    doc.querySelectorAll("li"),
+                  ).map((li) => li.textContent?.trim() || "");
+                  return features.map((feature, idx) => (
+                    <motion.div
+                      key={idx}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: idx * 0.05 }}
+                      className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-gray-700"
+                    >
+                      <FiCheckCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-emerald-500 mt-0.5 shrink-0" />
+                      <span className="line-clamp-2">{feature}</span>
+                    </motion.div>
+                  ));
+                })()}
+            </div>
+
+            {/* Subscription Dates Section */}
+            {(usersCurrentPlan?.plan_details?.purchased_at ||
+              usersCurrentPlan?.current_plan === "Premium") && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="mb-4 sm:mb-6 p-3 sm:p-4 bg-gradient-to-r from-gray-50 to-indigo-50/30 rounded-lg sm:rounded-xl border border-gray-100"
+              >
+                <h4 className="text-xs sm:text-sm font-semibold text-gray-900 mb-2 sm:mb-3 flex items-center gap-1.5 sm:gap-2">
+                  <FiCalendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-600" />
+                  Subscription Info
+                </h4>
+                <div className="space-y-2 sm:space-y-2.5">
+                  {/* Purchase Date */}
+                  {usersCurrentPlan?.plan_details.purchased_at && (
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 text-xs sm:text-sm">
+                      <span className="text-gray-600 flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
+                        Purchase Date:
+                      </span>
+                      <span className="font-medium text-gray-800">
+                        {new Date(
+                          usersCurrentPlan.plan_details.purchased_at,
+                        ).toLocaleDateString("en-IN", {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        })}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Expiry/Validity Info */}
+                  {usersCurrentPlan?.current_plan === "Premium" ? (
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 text-xs sm:text-sm">
+                      <span className="text-gray-600 flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 bg-purple-500 rounded-full"></span>
+                        Validity:
+                      </span>
+                      <span className="font-medium bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent flex items-center gap-1.5">
+                        <FiAward className="w-3.5 h-3.5 text-purple-500" />
+                        Lifetime Access
+                      </span>
+                    </div>
+                  ) : (
+                    usersCurrentPlan?.plan_details.expires_at && (
+                      <>
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 text-xs sm:text-sm">
+                          <span className="text-gray-600 flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 bg-amber-500 rounded-full"></span>
+                            Expiry Date:
+                          </span>
+                          <span
+                            className={`font-medium ${new Date(usersCurrentPlan.plan_details.expires_at) < new Date() ? "text-red-600" : "text-gray-800"}`}
+                          >
+                            {new Date(
+                              usersCurrentPlan.plan_details.expires_at,
+                            ).toLocaleDateString("en-IN", {
+                              day: "numeric",
+                              month: "long",
+                              year: "numeric",
+                            })}
+                            {new Date(
+                              usersCurrentPlan.plan_details.expires_at,
+                            ) < new Date() && (
+                              <span className="ml-2 text-red-500 text-[10px] sm:text-xs font-semibold">
+                                (Expired)
+                              </span>
+                            )}
+                          </span>
+                        </div>
+
+                        {/* Days remaining */}
+                        {new Date(
+                          usersCurrentPlan.plan_details.expires_at,
+                        ) > new Date() && (
+                          <div className="mt-2 pt-2 border-t border-gray-100">
+                            <div className="flex items-center justify-between text-xs">
+                              <span className="text-gray-600">
+                                Days remaining:
+                              </span>
+                              <span className="font-semibold text-indigo-600">
+                                {Math.ceil(
+                                  (new Date(
+                                    usersCurrentPlan.plan_details.expires_at,
+                                  ).getTime() -
+                                    new Date().getTime()) /
+                                    (1000 * 60 * 60 * 24),
+                                )}{" "}
+                                days
+                              </span>
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    )
+                  )}
+                </div>
+              </motion.div>
+            )}
+
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => router.push("/choose-plan")}
+                className="flex-1 px-3 sm:px-4 py-2 sm:py-2.5 bg-indigo-600 text-white font-medium rounded-lg sm:rounded-xl hover:bg-indigo-700 transition-all duration-300 flex items-center justify-center gap-2 group cursor-pointer text-xs sm:text-sm"
+              >
+                <motion.div
+                  whileHover={{ rotate: 90 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <MdOutlinePublishedWithChanges className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                </motion.div>
+                Upgrade Plan
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => setShowBillingHistory(true)}
+                className="flex-1 px-3 sm:px-4 py-2 sm:py-2.5 bg-indigo-50 text-indigo-600 font-medium rounded-lg sm:rounded-xl hover:bg-indigo-100 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer text-xs sm:text-sm"
+              >
+                <FiCreditCard className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> 
+                Billing History
+              </motion.button>
+            </div>
+          </div>
+        </>
+      ) : null}
+    </div>
+  </motion.div>
+) : (
+  // No Plan/Free Plan UI (existing code)
+  <motion.div
+    initial={{ opacity: 0, x: 20 }}
+    animate={{ opacity: 1, x: 0 }}
+    transition={{ duration: 0.5 }}
+    className="lg:col-span-2 order-1 lg:order-2"
+  >
+    <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-indigo-100 overflow-hidden hover:shadow-md transition-all duration-300">
+      <div className="bg-gradient-to-r from-indigo-600 to-indigo-500 p-6 sm:p-8 text-center">
+        <motion.div
+          className="inline-flex p-3 sm:p-4 bg-white/20 rounded-full mb-3 sm:mb-4"
+          animate={{ scale: [1, 1.1, 1] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        >
+          <FiAlertCircle className="w-8 h-8 sm:w-12 sm:h-12 text-white" />
+        </motion.div>
+        <h3 className="text-xl sm:text-2xl font-bold text-white mb-1 sm:mb-2">
+          No Active Plan
+        </h3>
+        <p className="text-indigo-100 text-xs sm:text-sm">
+          Choose a plan to unlock premium features and templates
+        </p>
+      </div>
+      <div className="p-4 sm:p-6 text-center flex item-center justify-center gap-3 sm:gap-4">
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={() => router.push("/choose-plan")}
+          className=" px-5 sm:px-6 py-2.5 sm:py-3 bg-indigo-600 text-white font-medium rounded-lg sm:rounded-xl hover:bg-indigo-700 transition-all duration-300 cursor-pointer text-xs sm:text-sm"
+        >
+          Choose a Plan
+        </motion.button>
+        {paymentRecords && paymentRecords?.length > 0 && (
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setShowBillingHistory(true)}
+            className=" px-3 sm:px-4 py-2 sm:py-2.5 bg-indigo-50 text-indigo-600 font-medium rounded-lg sm:rounded-xl hover:bg-indigo-100 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer text-xs sm:text-sm"
+          >
+            <FiCreditCard className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> 
+            Billing History
+          </motion.button>
+        )}
+      </div>
+    </div>
+  </motion.div>
+)}
+          </div>
+
+          {/* Resumes Section */}
+          {/* Resumes Section */}
+<div>
+  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-5">
+    <div>
+      <h3 className="text-lg sm:text-xl font-bold text-gray-900 flex items-center gap-1.5 sm:gap-2">
+        <FiFileText className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />{" "}
+        Your Resumes
+      </h3>
+      <div className="flex items-center gap-1.5 sm:gap-2 mt-0.5 sm:mt-1">
+        <p className="text-gray-500 text-[11px] sm:text-sm">
+          Create, edit, and manage all your resumes
+        </p>
+        <motion.div
+          className="px-1.5 sm:px-2 py-0.5 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full text-purple-600 text-[10px] sm:text-xs font-semibold"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: "spring", stiffness: 300 }}
+        >
+          {totalResumes} {totalResumes === 1 ? "Resume" : "Resumes"}
+        </motion.div>
+      </div>
+    </div>
+  </div>
+
+  {/* Show lock message if plan is expired */}
+
+        {usersCurrentPlan?.current_plan === "" && usersCurrentPlan?.message && usersCurrentPlan?.is_expired===true && (
+    
+    <motion.div
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="mb-4 p-3 sm:p-4 bg-amber-50 border border-amber-200 rounded-lg sm:rounded-xl flex items-start gap-2 sm:gap-3"
+    >
+      <div className="p-1.5 sm:p-2 bg-amber-100 rounded-lg shrink-0">
+        <FiLock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-600" />
+      </div>
+      <div className="flex-1">
+        <p className="text-xs sm:text-sm font-medium text-amber-800 mb-0.5">
+          Subscription Required
+        </p>
+        <p className="text-amber-700 text-[11px] sm:text-xs">
+          Your existing resumes are locked. Please renew your subscription to edit or create new resumes.
+        </p>
+      </div>
+      <motion.button
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        onClick={() => router.push("/choose-plan")}
+        className="px-3 sm:px-4 py-1.5 sm:py-2 bg-amber-600 text-white text-xs sm:text-sm font-medium rounded-lg hover:bg-amber-700 transition-colors whitespace-nowrap"
+      >
+        Renew Now
+      </motion.button>
+    </motion.div>
+  )}
+
+  {/* Responsive Grid View */}
+  <div
+    className={`grid ${getResumeGridCols()} gap-3 sm:gap-4 md:gap-5 lg:gap-6`}
+  >
+    {filteredOldResumeData.length > 0 ? (
+      filteredOldResumeData.map((item, index) => {
+        const ComponentToRender = item.component;
+        const isPlanExpired = usersCurrentPlan?.current_plan === "" && usersCurrentPlan?.message;
+
+        return (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: Math.min(index * 0.05, 0.5) }}
+            whileHover={{ y: isPlanExpired ? 0 : -4 }}
+            className={`relative group cursor-pointer ${isPlanExpired ? 'opacity-75' : ''}`}
+            style={{
+              height: isMobile
+                ? "clamp(240px, 45vw, 280px)"
+                : "clamp(280px, 30vw, 340px)",
+              overflow: "hidden",
+              borderRadius: "16px",
+              backgroundColor: "white",
+              boxShadow: "0 4px 12px -4px rgba(0, 0, 0, 0.05)",
+              transition: "all 0.3s ease",
+              filter: isPlanExpired ? "grayscale(0.3)" : "none",
+            }}
+          >
+            <div className="w-full h-full">
+              <ComponentToRender alldata={item.resume_data} />
+            </div>
+
+            {/* Lock Overlay for Expired Plan */}
+            {isPlanExpired && (
+              <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center z-10">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                  className="text-center p-3"
+                >
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-3">
+                    <FiLock className="w-5 h-5 sm:w-6 sm:h-6 text-amber-400" />
+                  </div>
+                  <p className="text-white text-xs sm:text-sm font-semibold mb-1">
+                    Subscription Expired
+                  </p>
+                  <p className="text-white/70 text-[10px] sm:text-xs mb-2 sm:mb-3">
+                    Renew to edit this resume
+                  </p>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => router.push("/choose-plan")}
+                    className="px-3 sm:px-4 py-1.5 sm:py-2 bg-amber-500 text-white text-[10px] sm:text-xs font-medium rounded-lg hover:bg-amber-600 transition-colors"
+                  >
+                    Renew Plan
+                  </motion.button>
+                </motion.div>
+              </div>
+            )}
+
+            {/* Overlay with actions - Only show when plan is active */}
+            {!isPlanExpired && (
+              <motion.div
+                className={`absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/50 to-transparent ${!isMobile ? "opacity-0 group-hover:opacity-100" : ""} transition-all duration-300`}
+                initial={{ opacity: 0 }}
+                whileHover={{ opacity: isMobile ? 0 : 1 }}
+              >
+                <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                  <div className="flex items-center justify-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => {
+                        setLocalStorage(
+                          "chosenTemplate",
+                          item.template,
+                        );
+
+                        setLocalStorage("editingResumeIdAndData", {
+                          id: item.id,
+                          resume_data: item.resume_data,
+                        });
+                        setSessionStorage(
+                          "oldRouteNameDashboard",
+                          true,
+                        );
+                        router.push(`/resume-details/contact`);
+
+                        setIsUploadMode(false);
+                      }}
+                      className="bg-white rounded-full p-1.5 sm:p-2.5 hover:bg-purple-50 transition-all duration-300 shadow-lg cursor-pointer group/btn"
+                    >
+                      <FiEdit2 className="h-3 w-3 sm:h-4 sm:w-4 text-purple-600 group-hover/btn:scale-110 transition-transform" />
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => handleDeleteResume(item.id)}
+                      className="bg-white rounded-full p-1.5 sm:p-2.5 hover:bg-rose-50 transition-all duration-300 shadow-lg cursor-pointer group/btn"
+                    >
+                      <FiTrash2 className="h-3 w-3 sm:h-4 sm:w-4 text-rose-600 group-hover/btn:scale-110 transition-transform" />
+                    </motion.button>
+                  </div>
+                  <p className="text-white text-[11px] sm:text-sm font-medium text-center truncate px-1 sm:px-2">
+                    {item.name || `Resume ${index + 1}`}
+                  </p>
+                  <p className="text-white/60 text-[10px] sm:text-xs text-center mt-0.5 sm:mt-1">
+                    Template: {item.template.id}
+                  </p>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Mobile menu button - Only show when plan is active */}
+            {isMobile && !isPlanExpired && (
+              <>
+                <button
+                  onClick={() =>
+                    setActiveMenuId(
+                      activeMenuId === item.contact?._id
+                        ? null
+                        : item.contact?._id,
+                    )
+                  }
+                  className="absolute top-2 right-2 p-1.5 bg-white rounded-lg shadow-md z-10 hover:bg-gray-50 transition"
+                >
+                  <IoEllipsisVertical className="w-4 h-4 text-gray-700" />
+                </button>
+                {activeMenuId === item.contact?._id && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-10"
+                      onClick={() => setActiveMenuId(null)}
+                    />
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="absolute right-2 top-12 z-20 w-36 bg-white rounded-xl shadow-xl border border-gray-100 py-1.5"
+                    >
+                      <button
+                        onClick={() => {
+                          router.push(`/resume-details/contact`);
+                          setLocalStorage("chosenTemplate", item);
+                          setSessionStorage(
+                            "oldRouteNameDashboard",
+                            true,
+                          );
+                          setIsUploadMode(false);
+                          setActiveMenuId(null);
+                        }}
+                        className="w-full px-3 py-2 text-left text-xs text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors flex items-center gap-2"
+                      >
+                        <FiEdit2 className="w-3.5 h-3.5" /> Edit
+                      </button>
+                      <button
+                        onClick={() => {
+                          handleDeleteResume(item.id);
+                          setActiveMenuId(null);
+                        }}
+                        className="w-full px-3 py-2 text-left text-xs text-gray-700 hover:bg-rose-50 hover:text-rose-600 transition-colors flex items-center gap-2"
+                      >
+                        <FiTrash2 className="w-3.5 h-3.5" /> Delete
+                      </button>
+                    </motion.div>
+                  </>
+                )}
+              </>
+            )}
+          </motion.div>
+        );
+      })
+    ) : (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="col-span-full flex flex-col items-center justify-center py-12 sm:py-16 lg:py-20"
+      >
+        <div className="text-center">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 mx-auto mb-4 sm:mb-6 bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl flex items-center justify-center">
+            <FiFileText className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-purple-600" />
+          </div>
+          <h3 className="text-base sm:text-lg lg:text-xl font-semibold text-gray-900 mb-1 sm:mb-2">
+            No Resumes Found
+          </h3>
+          <p className="text-gray-500 text-xs sm:text-sm mb-4 sm:mb-6">
+            {usersCurrentPlan?.current_plan === null && usersCurrentPlan?.message
+              ? "Subscribe to a plan to create your first resume"
+              : "Create your first resume to get started"}
+          </p>
+          <button
+            onClick={() => router.push("/choose-template")}
+            // disabled={usersCurrentPlan?.message}
+            className={`px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-medium transition-all text-xs sm:text-sm cursor-pointer ${
+              usersCurrentPlan?.current_plan === "" && usersCurrentPlan?.message
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-gradient-to-r from-purple-600 to-pink-500 text-white hover:shadow-lg"
+            }`}
+          >
+            Create Resume
+          </button>
+        </div>
+      </motion.div>
+    )}
+  </div>
+</div>
         </div>
       </div>
 
