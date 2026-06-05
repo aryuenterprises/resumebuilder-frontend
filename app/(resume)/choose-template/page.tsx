@@ -4623,9 +4623,9 @@ function Choose_template() {
     setShowUploadPopup(true);
   };
 
-  // FIXED: Handle unauthenticated users gracefully
   useEffect(() => {
     const fetchUserData = async () => {
+
       // Skip API call if user is not logged in
       const userDetails = getLocalStorage<User>("user_details");
       const accessToken = getLocalStorage<string>("access_token");
@@ -4640,8 +4640,7 @@ function Choose_template() {
         const res = await api.get("/dashboard");
         const { subscription } = res?.data;
         setUsersCurrentPlan(subscription.current_plan);
-                // setUsersCurrentPlan('premium');
-
+        // setUsersCurrentPlan('premium');
       } catch (err) {
         // Handle error gracefully - don't redirect
         console.error("Failed to fetch user data:", err);
