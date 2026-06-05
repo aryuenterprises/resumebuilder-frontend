@@ -4639,8 +4639,8 @@ function Choose_template() {
       try {
         const res = await api.get("/dashboard");
         const { subscription } = res?.data;
-        // setUsersCurrentPlan(subscription.current_plan);
-                setUsersCurrentPlan('premium');
+        setUsersCurrentPlan(subscription.current_plan);
+                // setUsersCurrentPlan('premium');
 
       } catch (err) {
         // Handle error gracefully - don't redirect
