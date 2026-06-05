@@ -2978,9 +2978,10 @@ export default function CoverLetterGenerator() {
       try {
         const res = await api.get("/dashboard");
         const { subscription } = res?.data;
-        // setUsersCurrentPlan(subscription.current_plan);
         const premium = subscription.current_plan === "premium";
         setIsPremium(premium);
+                // setIsPremium(true);
+
       } catch (err) {
         console.error(err);
       }
@@ -3433,7 +3434,7 @@ export default function CoverLetterGenerator() {
                 {/* Controls Row - Responsive Grid */}
                 <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 mb-6">
                   {/* Accent Color Picker */}
-                  <div className="w-full sm:flex-1 h-fit bg-white/80 backdrop-blur-sm rounded-xl md:rounded-2xl border border-indigo-100/60 p-3 sm:p-4 shadow-lg shadow-indigo-500/5 hover:shadow-indigo-500/10 transition-shadow">
+                  {/* <div className="w-full sm:flex-1 h-fit bg-white/80 backdrop-blur-sm rounded-xl md:rounded-2xl border border-indigo-100/60 p-3 sm:p-4 shadow-lg shadow-indigo-500/5 hover:shadow-indigo-500/10 transition-shadow">
                     <button
                       onClick={() => setShowColors((v) => !v)}
                       className="w-full flex items-center justify-between text-sm font-semibold text-slate-700 cursor-pointer"
@@ -3557,7 +3558,7 @@ export default function CoverLetterGenerator() {
                         </motion.div>
                       )}
                     </AnimatePresence>
-                  </div>
+                  </div> */}
 
                   {/* Font Picker */}
                   <div className="w-full sm:flex-1 h-fit bg-white/80 backdrop-blur-sm rounded-xl md:rounded-2xl border border-indigo-100/60 p-3 sm:p-4 shadow-lg shadow-indigo-500/5 hover:shadow-indigo-500/10 transition-shadow">
@@ -4115,7 +4116,12 @@ export default function CoverLetterGenerator() {
                         letterContent: e.htmlValue || "",
                       }))
                     }
-                    style={{ minHeight: "300px" }}
+                    // style={{ minHeight: "300px" }}
+                    style={{
+                                height: "200px",
+                                minHeight: "200px",
+                                background: "white",
+                              }}
                     placeholder="Start writing here… Keep it concise — 3 to 4 short paragraphs only."
                   />
                 </div>
@@ -4158,7 +4164,7 @@ export default function CoverLetterGenerator() {
                           {(
                             [
                               ["Template", tpl?.name, "template"],
-                              ["Accent Color", data.accentColor, "template"],
+                              // ["Accent Color", data.accentColor, "template"],
                               ["Font", data.fontFamily, "template"],
                             ] as [string, string, Step][]
                           ).map(([label, value, step]) => (
