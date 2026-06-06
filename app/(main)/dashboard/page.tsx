@@ -1558,7 +1558,6 @@ const DashboardPage = () => {
     return "grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
   };
 
-  console.log("usersCurrentPlan", usersCurrentPlan);
 
   return (
     <ProtectedRoute>

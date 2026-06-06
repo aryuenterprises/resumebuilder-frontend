@@ -11621,7 +11621,6 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
         { responseType: "blob" },
       );
 
-      console.log("res", res);
       const url = URL.createObjectURL(res.data);
       const a = document.createElement("a");
       a.href = url;

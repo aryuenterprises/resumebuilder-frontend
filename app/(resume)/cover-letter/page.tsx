@@ -2298,7 +2298,7 @@ export default function CoverLetterGenerator() {
         const { subscription } = res?.data;
         const premium = subscription.current_plan === "premium";
         setIsPremium(premium);
-        setIsPremium(true);
+        // setIsPremium(true);
       } catch (err) {
         console.error(err);
       }

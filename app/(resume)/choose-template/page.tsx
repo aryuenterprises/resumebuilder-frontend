@@ -4663,7 +4663,6 @@ function Choose_template() {
   }, []);
 
   const currentPlan = getCurrentPlan();
-  console.log("Current Plan:", currentPlan);
   const availableTemplates = getAvailableTemplatesCount();
   const totalTemplates = templateData.length;
   const isUpgradeNeeded =

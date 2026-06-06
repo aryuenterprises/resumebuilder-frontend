@@ -370,7 +370,6 @@ function VoiceResumeBuilder() {
     utterance.pitch = 1;
     utterance.onend = () => {
       // Do nothing - just ensure no text is added
-      console.log("Prompt finished speaking");
     };
     synth.speak(utterance);
   };

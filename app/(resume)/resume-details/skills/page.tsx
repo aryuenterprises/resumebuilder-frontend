@@ -52,7 +52,6 @@ const SkillsForm = () => {
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [lastSavedData, setLastSavedData] = useState<string>("");
 
-console.log("skills",skills)
 
   // Check if mobile
   useEffect(() => {
@@ -192,7 +191,6 @@ console.log("skills",skills)
     }
   };
 
-  console.log("UseContext", UseContext);
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-indigo-50/40">

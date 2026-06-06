@@ -1124,8 +1124,6 @@ const ContactForm = () => {
   );
   const isOldRouteNameDashboard = getSessionStorage("oldRouteNameDashboard");
 
-  console.log("editingResumeIdAndData",editingResumeIdAndData);
-    console.log("isOldRouteNameDashboard",isOldRouteNameDashboard);
 
 
   const blobUrlToFile = async (

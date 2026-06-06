@@ -637,7 +637,6 @@ const Footer = () => {
     const pathname = usePathname();
     const lastSegment = pathname.split("/").pop();
 
-    console.log(lastSegment)
   const [showButton, setShowButton] = useState(false);
 
   useEffect(() => {
