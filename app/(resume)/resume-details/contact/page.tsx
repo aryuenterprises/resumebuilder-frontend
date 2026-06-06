@@ -1124,6 +1124,10 @@ const ContactForm = () => {
   );
   const isOldRouteNameDashboard = getSessionStorage("oldRouteNameDashboard");
 
+  console.log("editingResumeIdAndData",editingResumeIdAndData);
+    console.log("isOldRouteNameDashboard",isOldRouteNameDashboard);
+
+
   const blobUrlToFile = async (
     blobUrl: string,
     fileName: string,
@@ -1145,7 +1149,6 @@ const ContactForm = () => {
     return new File([u8arr], fileName, { type: mime });
   };
 
- 
   const saveToAPI = async (contactData: typeof contact) => {
     if (!userId) {
       console.error("User ID is required");
