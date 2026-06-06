@@ -6718,35 +6718,35 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({ alldata, customization }) => 
   }, [htmlContent, splitIntoPages]);
 
   // ── Download event listener ──────────────────────────────────────────────
-  useEffect(() => {
-    const handler = async (e: Event) => {
-      try {
-        const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
-        const pdfHtml = generateHTML(true, pageBreakIds);
+  // useEffect(() => {
+  //   const handler = async (e: Event) => {
+  //     try {
+  //       const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
+  //       const pdfHtml = generateHTML(true, pageBreakIds);
 
-        const res: AxiosResponse<Blob> = await api.post(
-          `${API_URL}/candidates/generate-pdf`,
-          { html: pdfHtml },
-          { responseType: "blob" },
-        );
+  //       const res: AxiosResponse<Blob> = await api.post(
+  //         `${API_URL}/candidates/generate-pdf`,
+  //         { html: pdfHtml },
+  //         { responseType: "blob" },
+  //       );
 
-        const url = URL.createObjectURL(res.data);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      } catch (err) {
-        console.error("PDF error:", err);
-        alert("Failed to generate PDF. Please try again.");
-      }
-    };
+  //       const url = URL.createObjectURL(res.data);
+  //       const a = document.createElement("a");
+  //       a.href = url;
+  //       a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
+  //       document.body.appendChild(a);
+  //       a.click();
+  //       document.body.removeChild(a);
+  //       URL.revokeObjectURL(url);
+  //     } catch (err) {
+  //       console.error("PDF error:", err);
+  //       alert("Failed to generate PDF. Please try again.");
+  //     }
+  //   };
 
-    window.addEventListener("resume:download", handler);
-    return () => window.removeEventListener("resume:download", handler);
-  }, [generateHTML, contact]);
+  //   window.addEventListener("resume:download", handler);
+  //   return () => window.removeEventListener("resume:download", handler);
+  // }, [generateHTML, contact]);
 
     const handleDownload = async (): Promise<void> => {
     try {

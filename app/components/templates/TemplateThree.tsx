@@ -1948,28 +1948,6 @@
 
 // export default TemplateThree;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
 
 // import React, {
@@ -2049,10 +2027,6 @@
 //   // ── CSS (single source — used in both iframe & PDF) ───────
 //   const CSS = `
 //     @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap');
-
-    
-
-   
 
 //     /* PDF margins */
 //     @page {
@@ -2398,13 +2372,13 @@
 //         -webkit-print-color-adjust: exact;
 //         print-color-adjust: exact;
 //       }
-//       .t3-entry, .t3-project-item { 
-//         page-break-inside: avoid; 
-//         break-inside: avoid; 
+//       .t3-entry, .t3-project-item {
+//         page-break-inside: avoid;
+//         break-inside: avoid;
 //       }
-//       .t3-section-title { 
-//         page-break-after: avoid; 
-//         break-after: avoid; 
+//       .t3-section-title {
+//         page-break-after: avoid;
+//         break-after: avoid;
 //       }
 //     }
 //   `;
@@ -2536,7 +2510,7 @@
 
 //   <div class="t3-body">
 //     ${summary ? `<div class="t3-section-title">Summary</div><div class="t3-summary">${rich(summary)}</div>` : ""}
-    
+
 //     ${
 //       experiences.length
 //         ? `<div class="t3-section-title">Experience</div>
@@ -2741,20 +2715,6 @@
 // };
 
 // export default TemplateThree;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // "use client";
 // import React, {
@@ -3315,7 +3275,7 @@
 
 //   <div class="t3-body">
 //     ${summary ? `<div class="t3-section-title">Summary</div><div class="t3-summary">${rich(summary)}</div>` : ""}
-    
+
 //     ${
 //       experiences.length
 //         ? `<div class="t3-section-title">Experience</div>
@@ -3753,38 +3713,6 @@
 // };
 
 // export default TemplateThree;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // "use client";
 // import React, {
@@ -4329,7 +4257,7 @@
 
 //   <div class="t3-body">
 //     ${summary ? `<div class="t3-section-content" data-block-id="summary"><div class="t3-section-title">Summary</div><div class="t3-summary">${rich(summary)}</div></div>` : ""}
-    
+
 //     ${
 //       experiences.length
 //         ? `<div class="t3-section-content" data-block-id="exp-section"><div class="t3-section-title">Experience</div>
@@ -4879,17 +4807,6 @@
 
 // export default TemplateThree;
 
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
 // import React, {
 //   useContext,
@@ -5434,7 +5351,7 @@
 
 //   <div class="t3-body">
 //     ${summary ? `<div class="t3-section-content" data-block-id="summary"><div class="t3-section-title">Summary</div><div class="t3-summary">${rich(summary)}</div></div>` : ""}
-    
+
 //     ${
 //       experiences.length
 //         ? `<div class="t3-section-content" data-block-id="exp-section"><div class="t3-section-title">Experience</div>
@@ -5827,9 +5744,6 @@
 //       const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
 //       const pdfHtml = generateHTML(true, pageBreakIds);
 
-      
-
-
 //        const res: AxiosResponse<Blob> = await api.post(
 //         `${API_URL}/candidates/generate-pdf`,
 //         { html:pdfHtml },
@@ -5987,30 +5901,6 @@
 
 // export default TemplateThree;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 import React, {
   useContext,
@@ -6055,7 +5945,10 @@ interface TemplateThreeProps extends ResumeProps {
   customization?: ResumeCustomization;
 }
 
-const TemplateThree: React.FC<TemplateThreeProps> = ({ alldata, customization }) => {
+const TemplateThree: React.FC<TemplateThreeProps> = ({
+  alldata,
+  customization,
+}) => {
   const context = useContext(CreateContext);
   const pathname = usePathname();
   const lastSegment = pathname.split("/").pop();
@@ -6066,7 +5959,9 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({ alldata, customization })
 
   // ── Customization ─────────────────────────────────────────────────────────
   const activeFontFamily = customization?.fontFamily ?? "'Inter', sans-serif";
-  const activeSectionOrder: SectionKey[] = customization?.sectionOrder ?? [...DEFAULT_SECTION_ORDER];
+  const activeSectionOrder: SectionKey[] = customization?.sectionOrder ?? [
+    ...DEFAULT_SECTION_ORDER,
+  ];
 
   // ── Data ──────────────────────────────────────────────────────────────────
   const contact = alldata?.contact || context?.contact || ({} as Contact);
@@ -6087,7 +5982,9 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({ alldata, customization })
     contact?.city,
     contact?.postCode,
     contact?.country,
-  ].filter(Boolean).join(", ");
+  ]
+    .filter(Boolean)
+    .join(", ");
 
   const formattedDob = formatDateOfBirth(dateOfBirth ? dateOfBirth : "");
 
@@ -6098,30 +5995,48 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({ alldata, customization })
   // ── Complete Font import map ────────────────────────────────────────────────
   const getFontImport = (fontFamily: string): string => {
     const map: Record<string, string> = {
-      "'Inter', sans-serif": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap",
+      "'Inter', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap",
       "'-apple-system', 'BlinkMacSystemFont', sans-serif": "",
-      "'Poppins', sans-serif": "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap",
-      "'Lato', sans-serif": "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",
-      "'Nunito', sans-serif": "https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap",
-      "'Raleway', sans-serif": "https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap",
-      "'Montserrat', sans-serif": "https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap",
-      "'Open Sans', sans-serif": "https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap",
-      "'Roboto', sans-serif": "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap",
-      "'Merriweather', serif": "https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap",
-      "'Playfair Display', serif": "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap",
-      "'DM Serif Display', serif": "https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap",
-      "'Libre Baskerville', serif": "https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap",
-      "'EB Garamond', serif": "https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&display=swap",
-      "'Crimson Text', serif": "https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap",
-      "'Source Code Pro', monospace": "https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&display=swap",
-      "'JetBrains Mono', monospace": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap",
+      "'Poppins', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap",
+      "'Lato', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",
+      "'Nunito', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap",
+      "'Raleway', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap",
+      "'Montserrat', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap",
+      "'Open Sans', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap",
+      "'Roboto', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap",
+      "'Merriweather', serif":
+        "https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap",
+      "'Playfair Display', serif":
+        "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap",
+      "'DM Serif Display', serif":
+        "https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap",
+      "'Libre Baskerville', serif":
+        "https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap",
+      "'EB Garamond', serif":
+        "https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&display=swap",
+      "'Crimson Text', serif":
+        "https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap",
+      "'Source Code Pro', monospace":
+        "https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&display=swap",
+      "'JetBrains Mono', monospace":
+        "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap",
     };
     return map[fontFamily] || map["'Inter', sans-serif"];
   };
 
   const getSystemFallback = (fontFamily: string): string => {
-    if (fontFamily.includes('serif')) return 'Georgia, "Times New Roman", serif';
-    if (fontFamily.includes('monospace')) return '"Courier New", Courier, monospace';
+    if (fontFamily.includes("serif"))
+      return 'Georgia, "Times New Roman", serif';
+    if (fontFamily.includes("monospace"))
+      return '"Courier New", Courier, monospace';
     return '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
   };
 
@@ -6396,8 +6311,9 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({ alldata, customization })
   const CSS = buildCSS(activeFontFamily);
 
   // ── Helper functions ──────────────────────────────────────────────────────
-  const href = (url: string) => url.startsWith("http") ? url : `https://${url}`;
-  
+  const href = (url: string) =>
+    url.startsWith("http") ? url : `https://${url}`;
+
   const rich = (html: string) => {
     const c = cleanQuillHTML(html);
     return c && c !== "<p><br></p>" ? c : "";
@@ -6405,20 +6321,30 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({ alldata, customization })
 
   // ── Section builders ──────────────────────────────────────────────────────
   const sectionBuilders: Record<SectionKey, () => string> = {
-    summary: () => summary ? `
+    summary: () =>
+      summary
+        ? `
       <div class="t3-section-content" data-block-id="summary">
         <div class="t3-section-title">Summary</div>
         <div class="t3-summary">${rich(summary)}</div>
       </div>
-    ` : "",
+    `
+        : "",
 
-    experience: () => experiences.length ? `
+    experience: () =>
+      experiences.length
+        ? `
       <div class="t3-section-content" data-block-id="exp-section">
         <div class="t3-section-title">Experience</div>
-        ${experiences.map((exp, i: number) => {
-          const start = formatMonthYear(exp.startDate, false);
-          const end = exp.endDate ? formatMonthYear(exp.endDate, false) : (exp.startDate ? "Present" : "");
-          return `
+        ${experiences
+          .map((exp, i: number) => {
+            const start = formatMonthYear(exp.startDate, false);
+            const end = exp.endDate
+              ? formatMonthYear(exp.endDate, false)
+              : exp.startDate
+                ? "Present"
+                : "";
+            return `
             <div class="t3-entry" data-block-id="exp-${i}">
               <div class="t3-experience-header">
                 <div class="t3-experience-title">${exp.jobTitle || ""}</div>
@@ -6428,14 +6354,20 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({ alldata, customization })
               ${exp.text ? `<div class="t3-entry-content">${rich(exp.text)}</div>` : ""}
             </div>
           `;
-        }).join("")}
+          })
+          .join("")}
       </div>
-    ` : "",
+    `
+        : "",
 
-    projects: () => projects.length ? `
+    projects: () =>
+      projects.length
+        ? `
       <div class="t3-section-content" data-block-id="proj-section">
         <div class="t3-section-title">Projects</div>
-        ${projects.map((project: any, i: number) => `
+        ${projects
+          .map(
+            (project: any, i: number) => `
           <div class="t3-project-item" data-block-id="proj-${i}">
             <div class="t3-project-header">
               <div class="t3-project-title">${project.title || ""}</div>
@@ -6447,16 +6379,24 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({ alldata, customization })
             ${project.techStack?.length ? `<div class="t3-project-tech-stack"><strong>Tech:</strong> ${project.techStack.join(" • ")}</div>` : ""}
             ${project.description ? `<div class="t3-project-description">${rich(project.description)}</div>` : ""}
           </div>
-        `).join("")}
+        `,
+          )
+          .join("")}
       </div>
-    ` : "",
+    `
+        : "",
 
-    education: () => educations.length ? `
+    education: () =>
+      educations.length
+        ? `
       <div class="t3-section-content" data-block-id="edu-section">
         <div class="t3-section-title">Education</div>
-        ${educations.map((edu, i: number) => {
-          const formattedGrade = formatGradeToCgpdAndPercentage(edu.grade || "");
-          return `
+        ${educations
+          .map((edu, i: number) => {
+            const formattedGrade = formatGradeToCgpdAndPercentage(
+              edu.grade || "",
+            );
+            return `
             <div class="t3-entry" data-block-id="edu-${i}">
               <div class="t3-education-header">
                 <div class="t3-education-school">${edu.schoolname || ""}</div>
@@ -6467,13 +6407,16 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({ alldata, customization })
               ${edu.text ? `<div class="t3-entry-content">${rich(edu.text)}</div>` : ""}
             </div>
           `;
-        }).join("")}
+          })
+          .join("")}
       </div>
-    ` : "",
+    `
+        : "",
 
     skills: () => {
       const cleanedSkills = rich(skills);
-      if (!skills || !cleanedSkills || cleanedSkills === "<p><br></p>") return "";
+      if (!skills || !cleanedSkills || cleanedSkills === "<p><br></p>")
+        return "";
       return `
         <div class="t3-section-content" data-block-id="skills-section">
           <div class="t3-section-title">Skills</div>
@@ -6486,25 +6429,32 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({ alldata, customization })
 
     custom: () => {
       if (!customSection.length) return "";
-      const filteredCustom = customSection.filter((s) => s?.name?.trim() || s?.description?.trim());
+      const filteredCustom = customSection.filter(
+        (s) => s?.name?.trim() || s?.description?.trim(),
+      );
       if (!filteredCustom.length) return "";
-      return filteredCustom.map((s, i: number) => `
+      return filteredCustom
+        .map(
+          (s, i: number) => `
         <div class="t3-custom-section" data-block-id="custom-${i}">
           ${s.name ? `<div class="t3-custom-section-title">${s.name}</div>` : ""}
           ${s.description ? `<div class="t3-custom-section-content">${rich(s.description)}</div>` : ""}
         </div>
-      `).join("");
+      `,
+        )
+        .join("");
     },
   };
 
   // ── HTML builder with section ordering ───────────────────────────────────
   const generateHTML = useCallback(
     (forPDF = false, pageBreakIds: string[] = []): string => {
-      const fontPreloads = activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif" 
-        ? `<link rel="preconnect" href="https://fonts.googleapis.com">
+      const fontPreloads =
+        activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif"
+          ? `<link rel="preconnect" href="https://fonts.googleapis.com">
            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
            <link href="${getFontImport(activeFontFamily)}" rel="stylesheet">`
-        : '';
+          : "";
 
       const pdfOverrideStyle = forPDF
         ? `<style>.t3-resume { width: 100% !important; padding: 0 !important; }</style>`
@@ -6512,7 +6462,7 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({ alldata, customization })
 
       // Build sections in the order defined by customization
       const sectionsHTML = activeSectionOrder
-        .map(key => sectionBuilders[key]?.() ?? "")
+        .map((key) => sectionBuilders[key]?.() ?? "")
         .join("");
 
       let bodyContent = `
@@ -6651,21 +6601,29 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({ alldata, customization })
             return;
           }
 
-          measureDoc.documentElement.style.cssText = "height:auto!important;overflow:visible!important;";
-          measureDoc.body.style.cssText = "margin:0;padding:0;height:auto!important;overflow:visible!important;";
+          measureDoc.documentElement.style.cssText =
+            "height:auto!important;overflow:visible!important;";
+          measureDoc.body.style.cssText =
+            "margin:0;padding:0;height:auto!important;overflow:visible!important;";
           void resume.offsetHeight;
 
           const totalH = resume.scrollHeight;
           const resumeRect = resume.getBoundingClientRect();
-          const scrollY = measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
+          const scrollY =
+            measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
 
           const getRelTop = (el: HTMLElement): number => {
             const r = el.getBoundingClientRect();
             return r.top - resumeRect.top + scrollY;
           };
-          const getRelBottom = (el: HTMLElement): number => getRelTop(el) + el.getBoundingClientRect().height;
+          const getRelBottom = (el: HTMLElement): number =>
+            getRelTop(el) + el.getBoundingClientRect().height;
 
-          interface Block { top: number; bottom: number; id?: string; }
+          interface Block {
+            top: number;
+            bottom: number;
+            id?: string;
+          }
           const blocks: Block[] = [];
 
           const ITEM_SELECTORS = [
@@ -6684,27 +6642,36 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({ alldata, customization })
             }
           });
 
-          resume.querySelectorAll<HTMLElement>(".t3-section-title").forEach((title) => {
-            const titleTop = getRelTop(title);
-            let firstItem: HTMLElement | null = null;
-            let sib = title.nextElementSibling as HTMLElement | null;
-            while (sib) {
-              if (sib.getBoundingClientRect().height > 8) {
-                firstItem = sib;
-                break;
+          resume
+            .querySelectorAll<HTMLElement>(".t3-section-title")
+            .forEach((title) => {
+              const titleTop = getRelTop(title);
+              let firstItem: HTMLElement | null = null;
+              let sib = title.nextElementSibling as HTMLElement | null;
+              while (sib) {
+                if (sib.getBoundingClientRect().height > 8) {
+                  firstItem = sib;
+                  break;
+                }
+                sib = sib.nextElementSibling as HTMLElement | null;
               }
-              sib = sib.nextElementSibling as HTMLElement | null;
-            }
-            if (firstItem) {
-              const deepChild = firstItem.querySelector<HTMLElement>(".t3-entry, .t3-project-item, .t3-custom-section, .t3-skills-content");
-              const anchor = deepChild || firstItem;
-              const anchorBottom = getRelBottom(anchor);
-              if (anchorBottom - titleTop > 8) {
-                const sectionId = (title.parentElement as HTMLElement)?.dataset?.blockId;
-                blocks.push({ top: titleTop, bottom: anchorBottom, id: sectionId });
+              if (firstItem) {
+                const deepChild = firstItem.querySelector<HTMLElement>(
+                  ".t3-entry, .t3-project-item, .t3-custom-section, .t3-skills-content",
+                );
+                const anchor = deepChild || firstItem;
+                const anchorBottom = getRelBottom(anchor);
+                if (anchorBottom - titleTop > 8) {
+                  const sectionId = (title.parentElement as HTMLElement)
+                    ?.dataset?.blockId;
+                  blocks.push({
+                    top: titleTop,
+                    bottom: anchorBottom,
+                    id: sectionId,
+                  });
+                }
               }
-            }
-          });
+            });
 
           blocks.sort((a, b) => a.top - b.top);
 
@@ -6919,7 +6886,9 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({ alldata, customization })
                   marginBottom: "10px",
                 }}
               >
-                <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
+                <div
+                  style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+                />
                 <span
                   style={{
                     fontSize: "11px",
@@ -6937,7 +6906,9 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({ alldata, customization })
                   Page {idx + 1}
                   {pages.length > 1 ? ` of ${pages.length}` : ""}
                 </span>
-                <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
+                <div
+                  style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+                />
               </div>
 
               <div
@@ -6946,7 +6917,8 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({ alldata, customization })
                   height: `${A4_H}px`,
                   overflow: "hidden",
                   background: "white",
-                  boxShadow: "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
+                  boxShadow:
+                    "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
                   borderRadius: "2px",
                   flexShrink: 0,
                 }}
@@ -6974,12 +6946,3 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({ alldata, customization })
 };
 
 export default TemplateThree;
-
-
-
-
-
-
-
-
-
