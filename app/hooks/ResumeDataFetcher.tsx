@@ -818,14 +818,24 @@ export function ResumeDataFetcher({ children }: ResumeDataFetcherProps) {
         
         console.log("🔄 Fetching existing resume data...");
         
+        console.log("aa");   
+
         const response = await api.get(`${API_URL}/user-resumes`);
         
+                console.log("bb");   
+
         const resumeData = response.data?.[0]?.resume_data;
+
+                console.log("cc");   
+
         
         if (!resumeData) {
           console.log("ℹ️ No existing resume data found");
           return;
         }
+
+                        console.log("dd");   
+
         
         console.log("✅ Resume data fetched successfully", resumeData);
         
