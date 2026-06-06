@@ -4838,6 +4838,1108 @@
 
 
 
+// "use client";
+// import React, {
+//   useContext,
+//   useRef,
+//   useEffect,
+//   useState,
+//   useCallback,
+// } from "react";
+// import axios, { AxiosResponse } from "axios";
+// import { CreateContext } from "@/app/context/CreateContext";
+// import { API_URL } from "@/app/config/api";
+// import {
+//   cleanQuillHTML,
+//   formatDateOfBirth,
+//   formatGradeToCgpdAndPercentage,
+//   formatMonthYear,
+// } from "@/app/utils";
+// import { usePathname } from "next/navigation";
+// import { ResumeProps } from "@/app/types";
+// import { motion } from "framer-motion";
+// import api from "@/app/utils/api";
+
+// // ─────────────────────────────────────────────────────────────────────────────
+// // PIXEL-PERFECT A4 CONSTANTS
+// // At 96 dpi: 210mm→794px, 297mm→1123px, 15mm→57px
+// // PAGE_CONTENT_H = 1123 - 57*2 = 1009px (usable content per page)
+// //
+// // T12 original used 20mm top/bottom and 22mm left/right padding.
+// // For the page-splitter to work we must use the same MARGIN (57px = 15mm)
+// // that Puppeteer applies. The extra padding is reproduced *inside* the resume
+// // div via INNER_PAD_X / INNER_PAD_TOP so the visual appearance is preserved.
+// //
+// // Inner horizontal padding: 22mm → 83px  (instead of the 15mm outer margin)
+// // Inner top padding:        20mm → 76px  (decorative only — shown on page 1)
+// // ─────────────────────────────────────────────────────────────────────────────
+// const A4_W = 794; // px — A4 width at 96 dpi
+// const A4_H = 1123; // px — A4 height at 96 dpi
+// const MARGIN = 57; // px — 15 mm at 96 dpi (Puppeteer outer margin)
+// const PAGE_CONTENT_H = A4_H - MARGIN * 2; // 1009px
+
+// // Extra inner padding to match T12's original 20mm/22mm design intent
+// const INNER_PAD_X = 0;
+// const INNER_PAD_TOP = 0;
+
+// const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
+//   const context = useContext(CreateContext);
+//   const pathname = usePathname();
+//   const lastSegment = pathname.split("/").pop();
+//   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+//   const [htmlContent, setHtmlContent] = useState<string>("");
+//   const [pages, setPages] = useState<string[]>([]);
+
+//   // ── Data sources ─────────────────────────────────────────────────────────
+//   const contact = alldata?.contact || context.contact || {};
+//   const educations = alldata?.educations || context?.education || [];
+//   const experiences = alldata?.experiences || context?.experiences || [];
+//   const skills = alldata?.skills?.text || context?.skills?.text || "";
+//   const projects = alldata?.projects || context?.projects || [];
+//   const finalize = alldata?.finalize || context?.finalize || {};
+//   const summary = alldata?.summary || context?.summary || "";
+
+//   const addressParts = [
+//     contact?.address,
+//     contact?.city,
+//     contact?.postCode,
+//     contact?.country,
+//   ].filter(Boolean);
+
+//   const linkedinUrl = contact?.linkedIn;
+//   const portfolioUrl = contact?.portfolio;
+//   const githubUrl = contact?.github;
+//   const dateOfBirth = contact?.dob;
+
+//   // ── CSS ──────────────────────────────────────────────────────────────────
+//   const CSS = `
+//     @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Sans+3:wght@300;400;600&display=swap');
+
+//     @page { size: A4; margin: 15mm; }
+
+//     *, *::before, *::after { box-sizing: border-box; }
+
+//     html, body { margin: 0; padding: 0; background: white; }
+
+//     /* ── RESUME ROOT ── */
+//     /* Outer padding = 0 (Puppeteer margin handles the 15mm gutters).
+//        Inner padding reproduces T12's original 20mm/22mm design spacing. */
+//  .t12-resume {
+//   width: ${A4_W}px;
+//   padding: 0;
+//   margin: 0;
+//   background-color: #ffffff;
+//   font-family: 'Source Sans 3', sans-serif;
+//   color: #111111;
+//   font-size: 14px;
+//   line-height: 1.5;
+//   box-sizing: border-box;
+// }
+
+//     /* ── RICH TEXT ── */
+//     .t12-resume .entry-content ul,
+//     .t12-resume .entry-content ol,
+//     .t12-resume .skills-content ul,
+//     .t12-resume .skills-content ol,
+//     .t12-resume .edu-content ul,
+//     .t12-resume .edu-content ol,
+//     .t12-resume .custom-section-content ul,
+//     .t12-resume .custom-section-content ol {
+//       margin: 4px 0 4px 16px !important;
+//       padding-left: 0 !important;
+//     }
+
+//     .t12-resume .entry-content li,
+//     .t12-resume .skills-content li,
+//     .t12-resume .edu-content li,
+//     .t12-resume .custom-section-content li {
+//       margin-bottom: 2px !important;
+//       line-height: 1.6 !important;
+//     }
+
+//     .t12-resume .entry-content ul,
+//     .t12-resume .skills-content ul,
+//     .t12-resume .edu-content ul,
+//     .t12-resume .custom-section-content ul  { list-style-type: disc    !important; }
+
+//     .t12-resume .entry-content ol,
+//     .t12-resume .skills-content ol,
+//     .t12-resume .edu-content ol,
+//     .t12-resume .custom-section-content ol  { list-style-type: decimal !important; }
+
+//     .t12-resume .entry-content strong,
+//     .t12-resume .skills-content strong,
+//     .t12-resume .edu-content strong,
+//     .t12-resume .custom-section-content strong { font-weight: 600 !important; }
+
+//     .t12-resume .entry-content em,
+//     .t12-resume .skills-content em,
+//     .t12-resume .edu-content em,
+//     .t12-resume .custom-section-content em    { font-style: italic !important; }
+
+//     .t12-resume .entry-content u,
+//     .t12-resume .skills-content u,
+//     .t12-resume .edu-content u,
+//     .t12-resume .custom-section-content u     { text-decoration: underline !important; }
+
+//     .t12-resume .entry-content p,
+//     .t12-resume .skills-content p,
+//     .t12-resume .edu-content p,
+//     .t12-resume .custom-section-content p {
+//       white-space: pre-wrap !important;
+//       margin: 0 0 4px 0 !important;
+//     }
+
+//     /* ── HEADER ── */
+//     .t12-resume .header-block {
+//       margin-bottom: 28px;
+//     }
+
+//     .t12-resume .header-name {
+//       font-family: 'Playfair Display', serif;
+//       font-size: 44px;
+//       font-weight: 700;
+//       line-height: 1.05;
+//       letter-spacing: -1px;
+//       color: #000;
+//       margin-bottom: 6px;
+//     }
+
+//     .t12-resume .header-jobtitle {
+//       font-family: 'Source Sans 3', sans-serif;
+//       font-size: 12px;
+//       font-weight: 600;
+//       letter-spacing: 3.5px;
+//       text-transform: uppercase;
+//       color: #888;
+//       margin-bottom: 18px;
+//     }
+
+//     .t12-resume .header-divider {
+//       width: 100%;
+//       height: 1px;
+//       background: #111;
+//       margin-bottom: 12px;
+//     }
+
+//     .t12-resume .header-meta-row {
+//       display: flex;
+//       flex-wrap: wrap;
+//       gap: 0;
+//       font-size: 11.5px;
+//       color: #555;
+//       font-weight: 400;
+//     }
+
+//     .t12-resume .header-meta-item {
+//       display: flex;
+//       align-items: center;
+//     }
+
+//     .t12-resume .header-meta-item:not(:last-child)::after {
+//       content: '·';
+//       margin: 0 9px;
+//       color: #bbb;
+//     }
+
+//     .t12-resume .header-meta-item a {
+//       color: #111;
+//       text-decoration: none;
+//       border-bottom: 1px solid #bbb;
+//     }
+
+//     /* ── SECTION TITLE ── */
+//     .t12-resume .section-title {
+//       font-family: 'Source Sans 3', sans-serif;
+//       font-size: 9.5px;
+//       font-weight: 600;
+//       letter-spacing: 3px;
+//       text-transform: uppercase;
+//       color: #999;
+//       margin-bottom: 12px;
+//       padding-bottom: 6px;
+//       border-bottom: 1px solid #e5e5e5;
+//       page-break-after: avoid;
+//       break-after: avoid;
+//     }
+
+//     /* ── SECTION BLOCK ── */
+//     .t12-resume .section-block {
+//       margin-bottom: 22px;
+//     }
+
+//     /* ── SUMMARY ── */
+//     .t12-resume .summary-text {
+//       font-size: 14px;
+//       line-height: 1.85;
+//       color: #222;
+//       font-weight: 400;
+//     }
+
+//     /* ── ENTRY BLOCKS (Experience, Education, Projects) ── */
+//     .t12-resume .entry-block {
+//       display: grid;
+//       grid-template-columns: 110px 1fr;
+//       gap: 0 20px;
+//       margin-bottom: 16px;
+//       page-break-inside: avoid;
+//       break-inside: avoid;
+//     }
+
+//     .t12-resume .entry-block:last-child { margin-bottom: 0; }
+
+//     .t12-resume .entry-left { padding-top: 2px; }
+
+//     .t12-resume .entry-date {
+//       font-size: 10.5px;
+//       color: #999;
+//       font-weight: 400;
+//       line-height: 1.5;
+//       white-space: pre-line;
+//     }
+
+//     .t12-resume .entry-right {
+//       border-left: 1px solid #e5e5e5;
+//       padding-left: 20px;
+//     }
+
+//     .t12-resume .entry-title {
+//       font-family: 'Playfair Display', serif;
+//       font-size: 16px;
+//       font-weight: 700;
+//       color: #000;
+//       line-height: 1.2;
+//       margin-bottom: 2px;
+//     }
+
+//     .t12-resume .entry-subtitle {
+//       font-size: 11.5px;
+//       color: #777;
+//       font-weight: 400;
+//       margin-bottom: 7px;
+//       letter-spacing: 0.2px;
+//     }
+
+//     .t12-resume .entry-content {
+//       font-size: 12.5px;
+//       line-height: 1.7;
+//       color: #444;
+//       font-weight: 300;
+//     }
+
+//     /* ── EDUCATION GRADE ── */
+//     .t12-resume .education-grade {
+//       font-size: 10.5px;
+//       color: #888;
+//       margin-top: 2px;
+//       font-weight: 500;
+//     }
+
+//     /* ── SKILLS ── */
+//     .t12-resume .skills-wrapper {
+//       display: grid;
+//       grid-template-columns: 110px 1fr;
+//       gap: 0 20px;
+//     }
+
+//     .t12-resume .skills-right {
+//       border-left: 1px solid #e5e5e5;
+//       padding-left: 20px;
+//     }
+
+//     .t12-resume .skills-content {
+//       font-size: 12.5px;
+//       line-height: 1.7;
+//       color: #444;
+//       font-weight: 300;
+//     }
+
+//     /* ── PROJECTS ── */
+//     .t12-resume .project-header  { margin-bottom: 4px; }
+
+//     .t12-resume .project-links {
+//       display: flex;
+//       gap: 15px;
+//       margin-top: 4px;
+//     }
+
+//     .t12-resume .project-link {
+//       font-size: 10px;
+//       color: #888;
+//       text-decoration: underline;
+//     }
+
+//     .t12-resume .project-tech-stack {
+//       font-size: 10.5px;
+//       color: #777;
+//       margin: 4px 0 6px;
+//     }
+
+//     /* ── CUSTOM SECTIONS (name left, content right) ── */
+//     .t12-resume .custom-wrapper {
+//       display: grid;
+//       grid-template-columns: 110px 1fr;
+//       gap: 0 20px;
+//       margin-bottom: 16px;
+//       page-break-inside: avoid;
+//       break-inside: avoid;
+//     }
+
+//     .t12-resume .custom-wrapper:last-child { margin-bottom: 0; }
+
+//     .t12-resume .custom-left { padding-top: 2px; }
+
+//     .t12-resume .custom-section-name {
+//       font-family: 'Playfair Display', serif;
+//       font-size: 16px;
+//       font-weight: 700;
+//       color: #000;
+//       line-height: 1.2;
+//     }
+
+//     .t12-resume .custom-right {
+//       border-left: 1px solid #e5e5e5;
+//       padding-left: 20px;
+//     }
+
+//     .t12-resume .custom-section-content {
+//       font-size: 12.5px;
+//       line-height: 1.7;
+//       color: #444;
+//       font-weight: 300;
+//     }
+
+//     /* Page-break marker injected at cut points for PDF */
+//     .t12-page-break {
+//       page-break-before: always !important;
+//       break-before: page !important;
+//       display: block;
+//       height: 0;
+//       margin: 0;
+//       padding: 0;
+//     }
+
+//    /* TO */
+// @media print {
+//   *, *::before, *::after {
+//     -webkit-print-color-adjust: exact !important;
+//     print-color-adjust: exact !important;
+//   }
+//   html, body { overflow: visible; }
+//   .t12-resume {
+//     width: 100% !important;
+//     padding: 0 !important;
+//     box-shadow: none !important;
+//   }
+// }
+
+//   `;
+
+//   // ── HTML builder ─────────────────────────────────────────────────────────
+//   // pageBreakIds: array of element data-ids where page breaks should be injected.
+//   // Used when forPDF=true so Puppeteer breaks at the same points as the preview.
+//   const generateHTML = useCallback(
+//     (forPDF = false, pageBreakIds: string[] = []): string => {
+//       const formattedDob = formatDateOfBirth(dateOfBirth || "");
+//       const href = (url: string) =>
+//         url.startsWith("http") ? url : `https://${url}`;
+
+//       // ── Header ──────────────────────────────────────────────────────────
+//       const header = `
+//       <div class="header-block" data-block-id="t12-header">
+//         <div class="header-name">${contact?.firstName || ""} ${contact?.lastName || ""}</div>
+//         <div class="header-jobtitle">${
+//           contact?.jobTitle
+//             ? typeof contact.jobTitle === "string"
+//               ? contact.jobTitle
+//               : (contact.jobTitle as any)?.name || ""
+//             : ""
+//         }</div>
+//         <div class="header-divider"></div>
+//         <div class="header-meta-row">
+//           ${addressParts.length > 0 ? `<span class="header-meta-item">${addressParts.join(", ")}</span>` : ""}
+//           ${contact?.email ? `<span class="header-meta-item">${contact.email}</span>` : ""}
+//           ${contact?.phone ? `<span class="header-meta-item">${contact.phone}</span>` : ""}
+//           ${formattedDob ? `<span class="header-meta-item">${formattedDob}</span>` : ""}
+//           ${linkedinUrl ? `<span class="header-meta-item"><a href="${href(linkedinUrl)}"  target="_blank">LinkedIn</a></span>` : ""}
+//           ${githubUrl ? `<span class="header-meta-item"><a href="${href(githubUrl)}"    target="_blank">GitHub</a></span>` : ""}
+//           ${portfolioUrl ? `<span class="header-meta-item"><a href="${href(portfolioUrl)}" target="_blank">Portfolio</a></span>` : ""}
+//         </div>
+//       </div>`;
+
+//       // ── Summary ──────────────────────────────────────────────────────────
+//       const summaryBlock = summary
+//         ? `<div class="section-block" data-block-id="t12-summary">
+//              <div class="section-title">Profile</div>
+//              <div class="summary-text">${cleanQuillHTML(summary)}</div>
+//            </div>`
+//         : "";
+
+//       // ── Experience ───────────────────────────────────────────────────────
+//       const expBlock =
+//         experiences.length > 0
+//           ? `<div class="section-block" data-block-id="t12-exp-section">
+//                <div class="section-title">Experience</div>
+//                ${experiences
+//                  .map((exp: any, i: number) => {
+//                    const start = formatMonthYear(exp.startDate, false);
+//                    const end = exp.endDate
+//                      ? formatMonthYear(exp.endDate, false)
+//                      : "Present";
+//                    return `<div class="entry-block" data-block-id="t12-exp-${i}">
+//                      <div class="entry-left">
+//                        <div class="entry-date">${start}\n–\n${end}</div>
+//                      </div>
+//                      <div class="entry-right">
+//                        <div class="entry-title">${exp.jobTitle || ""}</div>
+//                        <div class="entry-subtitle">${exp.employer || ""}${exp.location ? `, ${exp.location}` : ""}</div>
+//                        ${exp.text ? `<div class="entry-content">${cleanQuillHTML(exp.text)}</div>` : ""}
+//                      </div>
+//                    </div>`;
+//                  })
+//                  .join("")}
+//              </div>`
+//           : "";
+
+//       // ── Projects ─────────────────────────────────────────────────────────
+//       const projBlock =
+//         projects.length > 0
+//           ? `<div class="section-block" data-block-id="t12-proj-section">
+//                <div class="section-title">Projects</div>
+//                ${projects
+//                  .map(
+//                    (p: any, i: number) => `
+//                  <div class="entry-block" data-block-id="t12-proj-${i}">
+//                    <div class="entry-left">
+//                      <div class="entry-date">${p.startDate ? formatMonthYear(p.startDate, true) : ""}${p.startDate && p.endDate ? "\n–\n" : ""}${p.endDate ? formatMonthYear(p.endDate, true) : ""}</div>
+//                    </div>
+//                    <div class="entry-right">
+//                      <div class="project-header">
+//                        <div class="entry-title">${p.title || ""}</div>
+//                        ${
+//                          p.liveUrl || p.githubUrl
+//                            ? `<div class="project-links">
+//                               ${p.liveUrl ? `<a href="${href(p.liveUrl)}"   class="project-link" target="_blank">Live Demo</a>` : ""}
+//                               ${p.githubUrl ? `<a href="${href(p.githubUrl)}" class="project-link" target="_blank">GitHub</a>` : ""}
+//                             </div>`
+//                            : ""
+//                        }
+//                      </div>
+//                      ${p.techStack?.length ? `<div class="project-tech-stack"><strong>Tech:</strong> ${p.techStack.join(" • ")}</div>` : ""}
+//                      ${p.description ? `<div class="entry-content">${cleanQuillHTML(p.description)}</div>` : ""}
+//                    </div>
+//                  </div>`,
+//                  )
+//                  .join("")}
+//              </div>`
+//           : "";
+
+//       // ── Education ────────────────────────────────────────────────────────
+//       const eduBlock =
+//         educations.length > 0
+//           ? `<div class="section-block" data-block-id="t12-edu-section">
+//                <div class="section-title">Education</div>
+//                ${educations
+//                  .map((edu: any, i: number) => {
+//                    const formattedGrade = formatGradeToCgpdAndPercentage(
+//                      edu.grade || "",
+//                    );
+//                    const dateStr = [
+//                      edu.startDate || "",
+//                      edu.startDate ? "\n–\n" : "",
+//                      edu.endDate || "Present",
+//                    ].join("");
+//                    return `<div class="entry-block" data-block-id="t12-edu-${i}">
+//                      <div class="entry-left">
+//                        <div class="entry-date">${dateStr}</div>
+//                      </div>
+//                      <div class="entry-right">
+//                        <div class="entry-title">${edu.schoolname || ""}</div>
+//                        ${
+//                          edu.degree || edu.location || formattedGrade
+//                            ? `<div class="entry-subtitle">
+//                               ${edu.degree || ""}${edu.degree && edu.location ? ", " : ""}${edu.location || ""}
+//                               ${formattedGrade ? `<div class="education-grade">${formattedGrade}</div>` : ""}
+//                             </div>`
+//                            : ""
+//                        }
+//                        ${edu.text ? `<div class="entry-content">${cleanQuillHTML(edu.text)}</div>` : ""}
+//                      </div>
+//                    </div>`;
+//                  })
+//                  .join("")}
+//              </div>`
+//           : "";
+
+//       // ── Skills ───────────────────────────────────────────────────────────
+//       const skillsClean = cleanQuillHTML(skills || "");
+//       const skillsBlock =
+//         skillsClean && skillsClean !== "<p><br></p>"
+//           ? `<div class="section-block" data-block-id="t12-skills-section">
+//                <div class="section-title">Skills</div>
+//                <div class="skills-wrapper">
+//                  <div class="skills-left"></div>
+//                  <div class="skills-right">
+//                    <div class="skills-content" data-block-id="t12-skills-content">${skillsClean}</div>
+//                  </div>
+//                </div>
+//              </div>`
+//           : "";
+
+//       // ── Custom sections ──────────────────────────────────────────────────
+//       // T12 custom sections use a two-column grid (name left, content right).
+//       // Each .custom-wrapper gets its own data-block-id for fine-grained breaks.
+//       const hasCustom =
+//         !Array.isArray(finalize) &&
+//         Array.isArray(finalize?.customSection) &&
+//         finalize.customSection.some(
+//           (s: any) => s?.name?.trim() || s?.description?.trim(),
+//         );
+
+//       const customBlock = hasCustom
+//         ? `<div class="section-block" data-block-id="t12-custom-section">
+//              <div class="section-title">Additional</div>
+//              ${(finalize as any).customSection
+//                .filter((s: any) => s?.name?.trim() || s?.description?.trim())
+//                .map(
+//                  (s: any, i: number) => `
+//                <div class="custom-wrapper" data-block-id="t12-custom-${i}">
+//                  <div class="custom-left">
+//                    <div class="custom-section-name">${s.name || ""}</div>
+//                  </div>
+//                  <div class="custom-right">
+//                    ${s.description ? `<div class="custom-section-content">${cleanQuillHTML(s.description)}</div>` : ""}
+//                  </div>
+//                </div>`,
+//                )
+//                .join("")}
+//            </div>`
+//         : "";
+
+//       const pdfStyle = forPDF
+//         ? `<style>
+//       .t12-resume {
+//         width: 100% !important;
+//         padding: 0 !important;
+//         margin: 0 !important;
+//       }
+//     </style>`
+//         : "";
+
+//       let bodyContent = `
+//         ${header}
+//         ${summaryBlock}
+//         ${expBlock}
+//         ${projBlock}
+//         ${eduBlock}
+//         ${skillsBlock}
+//         ${customBlock}
+//       `;
+
+//       // For PDF: inject <div class="t12-page-break"> before each element whose
+//       // data-block-id matches a cut-point ID — same positions as the preview
+//       if (forPDF && pageBreakIds.length > 0) {
+//         const tempDiv = document.createElement("div");
+//         tempDiv.innerHTML = bodyContent;
+//         pageBreakIds.forEach((id) => {
+//           const el = tempDiv.querySelector(`[data-block-id="${id}"]`);
+//           if (el) {
+//             const breakDiv = document.createElement("div");
+//             breakDiv.className = "t12-page-break";
+//             el.parentNode?.insertBefore(breakDiv, el);
+//           }
+//         });
+//         bodyContent = tempDiv.innerHTML;
+//       }
+
+//       return `<!DOCTYPE html>
+// <html lang="en">
+// <head>
+//   <meta charset="UTF-8"/>
+//   <meta name="viewport" content="width=device-width,initial-scale=1"/>
+//   <title>Resume - ${contact?.firstName || ""} ${contact?.lastName || ""}</title>
+//   <link rel="preconnect" href="https://fonts.googleapis.com"/>
+//   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+//   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet"/>
+//   <style>${CSS}</style>
+//   ${pdfStyle}
+// </head>
+// <body style="margin:0;padding:0;background:white;">
+//   <div class="t12-resume">
+//     ${bodyContent}
+//   </div>
+// </body>
+// </html>`;
+//     },
+//     [
+//       contact,
+//       educations,
+//       experiences,
+//       skills,
+//       projects,
+//       finalize,
+//       summary,
+//       addressParts,
+//       linkedinUrl,
+//       portfolioUrl,
+//       githubUrl,
+//       dateOfBirth,
+//       CSS,
+//     ],
+//   );
+
+//   // ─────────────────────────────────────────────────────────────────────────
+//   // PAGE SPLITTER — identical algorithm to TemplateOne
+//   //
+//   // T12-SPECIFIC NOTES:
+//   //   • Content has INNER_PAD_TOP (76px) at the top of .t12-resume.
+//   //     The splitter measures from .t12-resume top, so that padding is included
+//   //     naturally in element positions — no special handling needed.
+//   //   • Entry blocks (.entry-block, .custom-wrapper) are the atomic avoid-break units.
+//   //   • Section title + first entry are paired to prevent orphaned .section-title rows.
+//   //   • clipH = nextStart - thisStart prevents bleed at the bottom of each page card.
+//   // ─────────────────────────────────────────────────────────────────────────
+//   const splitIntoPages = useCallback(
+//     (fullHtml: string): Promise<string[]> => {
+//       return new Promise((resolve) => {
+//         const parser = new DOMParser();
+//         const parsed = parser.parseFromString(fullHtml, "text/html");
+//         const resumeEl = parsed.querySelector<HTMLElement>(".t12-resume");
+//         if (!resumeEl) {
+//           resolve([fullHtml]);
+//           return;
+//         }
+//         const resumeSnapshot = resumeEl.outerHTML;
+
+//         // Fresh hidden iframe — ensures fonts & layout always match render iframes
+//         const iframe = document.createElement("iframe");
+//         iframe.style.cssText = [
+//           "position:fixed",
+//           "top:0",
+//           "left:-9999px",
+//           `width:${A4_W}px`,
+//           "height:10000px",
+//           "border:none",
+//           "opacity:0",
+//           "pointer-events:none",
+//           "z-index:-1",
+//         ].join(";");
+//         document.body.appendChild(iframe);
+
+//         const measureDoc = iframe.contentDocument!;
+//         measureDoc.open();
+//         measureDoc.write(`<!DOCTYPE html>
+// <html>
+// <head>
+//   <meta charset="UTF-8"/>
+//   <style>
+//     ${CSS}
+//     html, body {
+//   margin: 0 !important; padding: 0 !important;
+//   width: ${A4_W - MARGIN * 2}px !important; height: auto !important;
+//   overflow: visible !important; background: white !important;
+// }
+// .t12-resume {
+//   width: ${A4_W - MARGIN * 2}px !important;
+//   padding: 0 !important;
+//   padding-bottom: 0 !important;
+//   margin: 0 !important;
+//   box-sizing: border-box !important;
+// }
+//   </style>
+// </head>
+// <body>${resumeSnapshot}</body>
+// </html>`);
+//         measureDoc.close();
+
+//         const doMeasure = () => {
+//           const resume = measureDoc.querySelector<HTMLElement>(".t12-resume");
+//           if (!resume) {
+//             document.body.removeChild(iframe);
+//             resolve([fullHtml]);
+//             return;
+//           }
+
+//           // Force unconstrained layout so scrollHeight is accurate
+//           measureDoc.documentElement.style.cssText =
+//             "height:auto!important;overflow:visible!important;";
+//           measureDoc.body.style.cssText =
+//             "margin:0;padding:0;height:auto!important;overflow:visible!important;";
+//           void resume.offsetHeight; // force reflow
+
+//           const totalH = resume.scrollHeight;
+//           const resumeRect = resume.getBoundingClientRect();
+//           const scrollY =
+//             measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
+
+//           const getRelTop = (el: HTMLElement): number => {
+//             const r = el.getBoundingClientRect();
+//             return r.top - resumeRect.top + scrollY;
+//           };
+//           const getRelBottom = (el: HTMLElement): number =>
+//             getRelTop(el) + el.getBoundingClientRect().height;
+
+//           // ── Collect avoid-break blocks ──────────────────────────────────
+//           interface Block {
+//             top: number;
+//             bottom: number;
+//             id?: string;
+//           }
+//           const blocks: Block[] = [];
+
+//           // Atomic units that must not be split across pages
+//           const ITEM_SELECTORS = [
+//             ".entry-block",
+//             ".custom-wrapper",
+//             ".header-block",
+//             ".skills-wrapper",
+//             ".section-block",
+//           ].join(", ");
+
+//           resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
+//             const top = getRelTop(el);
+//             const bottom = getRelBottom(el);
+//             if (bottom - top > 8) {
+//               blocks.push({ top, bottom, id: el.dataset.blockId });
+//             }
+//           });
+
+//           // Section title + first item paired — prevents orphaned .section-title rows
+//           resume
+//             .querySelectorAll<HTMLElement>(".section-title")
+//             .forEach((title) => {
+//               const titleTop = getRelTop(title);
+//               let firstItem: HTMLElement | null = null;
+//               let sib = title.nextElementSibling as HTMLElement | null;
+//               while (sib) {
+//                 if (sib.getBoundingClientRect().height > 8) {
+//                   firstItem = sib;
+//                   break;
+//                 }
+//                 sib = sib.nextElementSibling as HTMLElement | null;
+//               }
+//               if (firstItem) {
+//                 const deepChild = firstItem.querySelector<HTMLElement>(
+//                   ".entry-block, .custom-wrapper, .skills-wrapper",
+//                 );
+//                 const anchor = deepChild || firstItem;
+//                 const anchorBottom = getRelBottom(anchor);
+//                 if (anchorBottom - titleTop > 8) {
+//                   const sectionId = (title.parentElement as HTMLElement)
+//                     ?.dataset?.blockId;
+//                   blocks.push({
+//                     top: titleTop,
+//                     bottom: anchorBottom,
+//                     id: sectionId,
+//                   });
+//                 }
+//               }
+//             });
+
+//           blocks.sort((a, b) => a.top - b.top);
+
+//           blocks.sort((a, b) => a.top - b.top);
+
+//           blocks.sort((a, b) => a.top - b.top);
+
+//           // ── Calculate cut points ────────────────────────────────────────
+//           const pageStarts: number[] = [0];
+//           const pageBreakIds: string[] = [];
+//           const MAX_PAGES = 20;
+
+//           while (pageStarts.length < MAX_PAGES) {
+//             const currentStart = pageStarts[pageStarts.length - 1];
+//             const naiveCut = currentStart + PAGE_CONTENT_H;
+//             if (naiveCut >= totalH) break;
+
+//             let actualCut = naiveCut;
+//             let cutBlockId: string | undefined;
+
+//             for (const block of blocks) {
+//               if (block.top >= naiveCut) break;
+//               if (block.bottom <= currentStart) continue;
+//               if (block.top >= currentStart && block.bottom > naiveCut) {
+//                 if (block.top < actualCut) {
+//                   actualCut = block.top;
+//                   cutBlockId = block.id;
+//                 }
+//               }
+//             }
+
+//             if (actualCut <= currentStart) actualCut = naiveCut;
+//             pageStarts.push(actualCut);
+//             if (cutBlockId) pageBreakIds.push(cutBlockId);
+//           }
+
+//           document.body.removeChild(iframe);
+
+//           // Store for handleDownload
+//           (window as any).__resumePageBreakIds = pageBreakIds;
+
+//           // ── Build preview page HTMLs ──────────────────────────────────
+//           const pageHtmls: string[] = [];
+
+//           for (let i = 0; i < pageStarts.length; i++) {
+//             const contentOffsetY = pageStarts[i];
+//             const nextStart = pageStarts[i + 1] ?? totalH;
+//             // KEY: clip at actual cut point — prevents bleed into the next page card
+//             const clipH = nextStart - contentOffsetY;
+
+//             pageHtmls.push(`<!DOCTYPE html>
+// <html lang="en">
+// <head>
+//   <meta charset="UTF-8"/>
+//   <style>
+//     ${CSS}
+//     html, body {
+//       margin: 0 !important; padding: 0 !important;
+//       width: ${A4_W}px !important; height: ${A4_H}px !important;
+//       overflow: hidden !important; background: white !important;
+//     }
+//     .page-margin-box {
+//       position: relative; width: ${A4_W}px; height: ${A4_H}px;
+//       background: white; overflow: hidden;
+//     }
+//     .page-content-clip {
+//   position: absolute; top: ${MARGIN}px; left: ${MARGIN}px;
+//   width: ${A4_W - MARGIN * 2}px; height: ${clipH}px; overflow: hidden;
+// }
+//     .page-shift {
+//   position: absolute; top: ${-contentOffsetY}px; left: 0;
+//   width: ${A4_W - MARGIN * 2}px;
+// }
+//     /* Outer padding stripped — MARGIN (57px) is the outer gutter,
+//        INNER_PAD_X/TOP reproduce T12's original spacing inside. */
+//     .t12-resume {
+//       width: ${A4_W}px !important;
+//       padding-left: ${INNER_PAD_X}px !important;
+//       padding-right: ${INNER_PAD_X}px !important;
+//       padding-top: ${INNER_PAD_TOP}px !important;
+//       padding-bottom: 0 !important;
+//       margin: 0 !important;
+//     }
+//   </style>
+// </head>
+// <body>
+//   <div class="page-margin-box">
+//     <div class="page-content-clip">
+//       <div class="page-shift">
+//         ${resumeSnapshot}
+//       </div>
+//     </div>
+//   </div>
+// </body>
+// </html>`);
+//           }
+
+//           resolve(pageHtmls);
+//         };
+
+//         const win = iframe.contentWindow as any;
+//         if (win?.document?.fonts?.ready) {
+//           win.document.fonts.ready.then(() => {
+//             setTimeout(() => requestAnimationFrame(doMeasure), 100);
+//           });
+//         } else {
+//           setTimeout(doMeasure, 500);
+//         }
+//       });
+//     },
+//     [CSS],
+//   );
+
+//   // ── Debounced updates ────────────────────────────────────────────────────
+//   const scheduleUpdate = useCallback((html: string) => {
+//     if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+//     debounceTimerRef.current = setTimeout(() => setHtmlContent(html), 300);
+//   }, []);
+
+//   useEffect(() => {
+//     scheduleUpdate(generateHTML());
+//     return () => {
+//       if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+//     };
+//   }, [generateHTML, scheduleUpdate]);
+
+//   useEffect(() => {
+//     if (!htmlContent) return;
+//     splitIntoPages(htmlContent).then(setPages);
+//   }, [htmlContent, splitIntoPages]);
+
+//   // ── PDF download ─────────────────────────────────────────────────────────
+//   const handleDownload = async (): Promise<void> => {
+//     try {
+//       const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
+//       const pdfHtml = generateHTML(true, pageBreakIds);
+
+//       // const res: AxiosResponse<Blob> = await axios.post(
+//       //   `${API_URL}/api/candidates/generate-pdf`,
+//       //   { html: pdfHtml },
+//       //   { responseType: "blob" },
+//       // );
+
+//       const res: AxiosResponse<Blob> = await api.post(
+//         `${API_URL}/candidates/generate-pdf`,
+//         { html: pdfHtml },
+//         { responseType: "blob" },
+//       );
+
+//       const url = URL.createObjectURL(res.data);
+//       const a = document.createElement("a");
+//       a.href = url;
+//       a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
+//       document.body.appendChild(a);
+//       a.click();
+//       document.body.removeChild(a);
+//       URL.revokeObjectURL(url);
+//     } catch (err) {
+//       console.error("PDF error:", err);
+//       alert("Failed to generate PDF. Please try again.");
+//     }
+//   };
+
+//   // ── RENDER ───────────────────────────────────────────────────────────────
+//   return (
+//     <>
+//       {lastSegment === "download-resume" && (
+//         <div className="text-center my-5">
+//           <motion.button
+//             onClick={handleDownload}
+//             whileHover={{ scale: 1.05 }}
+//             whileTap={{ scale: 0.95 }}
+//             className="bg-emerald-500 text-2xl md:text-base hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 cursor-pointer shadow-md hover:shadow-lg"
+//           >
+//             Download Resume
+//           </motion.button>
+//         </div>
+//       )}
+
+//       {alldata ? (
+//         // ── THUMBNAIL mode: first page only, scaled 36% ──────────────────
+//         <div
+//           style={{
+//             width: `${A4_W}px`,
+//             height: `${A4_H}px`,
+//             transform: "scale(0.36)",
+//             transformOrigin: "top left",
+//             overflow: "hidden",
+//             pointerEvents: "none",
+//             flexShrink: 0,
+//           }}
+//         >
+//           {pages[0] ? (
+//             <iframe
+//               title="resume-thumb"
+//               srcDoc={pages[0]}
+//               style={{
+//                 width: `${A4_W}px`,
+//                 height: `${A4_H}px`,
+//                 border: "none",
+//                 display: "block",
+//                 pointerEvents: "none",
+//               }}
+//               sandbox="allow-same-origin"
+//             />
+//           ) : (
+//             <div
+//               style={{
+//                 width: `${A4_W}px`,
+//                 height: `${A4_H}px`,
+//                 background: "white",
+//                 display: "flex",
+//                 alignItems: "center",
+//                 justifyContent: "center",
+//                 color: "#ccc",
+//                 fontSize: 14,
+//                 fontFamily: "sans-serif",
+//               }}
+//             >
+//               Loading…
+//             </div>
+//           )}
+//         </div>
+//       ) : (
+//         // ── FULL PREVIEW mode: paginated A4 pages ────────────────────────
+//         <div style={{ width: `${A4_W}px`, margin: "0 auto" }}>
+//           {(pages.length > 0 ? pages : [htmlContent]).map((pageHtml, idx) => (
+//             <div key={idx} style={{ marginBottom: "28px" }}>
+//               <div
+//                 style={{
+//                   display: "flex",
+//                   alignItems: "center",
+//                   justifyContent: "center",
+//                   gap: "10px",
+//                   marginBottom: "10px",
+//                 }}
+//               >
+//                 <div
+//                   style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+//                 />
+//                 <span
+//                   style={{
+//                     fontSize: "11px",
+//                     fontWeight: 600,
+//                     color: "#6b7280",
+//                     whiteSpace: "nowrap",
+//                     padding: "3px 12px",
+//                     background: "#f3f4f6",
+//                     borderRadius: "999px",
+//                     border: "1px solid #e5e7eb",
+//                     letterSpacing: "0.05em",
+//                     fontFamily: "system-ui, sans-serif",
+//                   }}
+//                 >
+//                   Page {idx + 1}
+//                   {pages.length > 1 ? ` of ${pages.length}` : ""}
+//                 </span>
+//                 <div
+//                   style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+//                 />
+//               </div>
+
+//               <div
+//                 style={{
+//                   width: `${A4_W}px`,
+//                   height: `${A4_H}px`,
+//                   overflow: "hidden",
+//                   background: "white",
+//                   boxShadow:
+//                     "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
+//                   borderRadius: "2px",
+//                   flexShrink: 0,
+//                 }}
+//               >
+//                 <iframe
+//                   title={`resume-page-${idx + 1}`}
+//                   srcDoc={pageHtml}
+//                   style={{
+//                     width: `${A4_W}px`,
+//                     height: `${A4_H}px`,
+//                     border: "none",
+//                     display: "block",
+//                     pointerEvents: "none",
+//                   }}
+//                   scrolling="no"
+//                   sandbox="allow-same-origin allow-scripts"
+//                 />
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+//       )}
+//     </>
+//   );
+// };
+
+// export default TemplateTwelve;
+
+
+
+
+
+
+
 "use client";
 import React, {
   useContext,
@@ -4859,30 +5961,26 @@ import { usePathname } from "next/navigation";
 import { ResumeProps } from "@/app/types";
 import { motion } from "framer-motion";
 import api from "@/app/utils/api";
+import {
+  ResumeCustomization,
+  SectionKey,
+  DEFAULT_SECTION_ORDER,
+} from "@/app/(resume)/download-resume/page";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// PIXEL-PERFECT A4 CONSTANTS
-// At 96 dpi: 210mm→794px, 297mm→1123px, 15mm→57px
-// PAGE_CONTENT_H = 1123 - 57*2 = 1009px (usable content per page)
-//
-// T12 original used 20mm top/bottom and 22mm left/right padding.
-// For the page-splitter to work we must use the same MARGIN (57px = 15mm)
-// that Puppeteer applies. The extra padding is reproduced *inside* the resume
-// div via INNER_PAD_X / INNER_PAD_TOP so the visual appearance is preserved.
-//
-// Inner horizontal padding: 22mm → 83px  (instead of the 15mm outer margin)
-// Inner top padding:        20mm → 76px  (decorative only — shown on page 1)
-// ─────────────────────────────────────────────────────────────────────────────
-const A4_W = 794; // px — A4 width at 96 dpi
-const A4_H = 1123; // px — A4 height at 96 dpi
-const MARGIN = 57; // px — 15 mm at 96 dpi (Puppeteer outer margin)
-const PAGE_CONTENT_H = A4_H - MARGIN * 2; // 1009px
-
-// Extra inner padding to match T12's original 20mm/22mm design intent
+// A4 CONSTANTS
+const A4_W = 794;
+const A4_H = 1123;
+const MARGIN = 57;
+const PAGE_CONTENT_H = A4_H - MARGIN * 2;
 const INNER_PAD_X = 0;
 const INNER_PAD_TOP = 0;
 
-const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
+interface TemplateTwelveProps extends ResumeProps {
+  customization?: ResumeCustomization;
+}
+
+const TemplateTwelve: React.FC<TemplateTwelveProps> = ({ alldata, customization }) => {
   const context = useContext(CreateContext);
   const pathname = usePathname();
   const lastSegment = pathname.split("/").pop();
@@ -4890,6 +5988,10 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
 
   const [htmlContent, setHtmlContent] = useState<string>("");
   const [pages, setPages] = useState<string[]>([]);
+
+  // ── Customization ─────────────────────────────────────────────────────────
+  const activeFontFamily = customization?.fontFamily ?? "'Source Sans 3', sans-serif";
+  const activeSectionOrder: SectionKey[] = customization?.sectionOrder ?? [...DEFAULT_SECTION_ORDER];
 
   // ── Data sources ─────────────────────────────────────────────────────────
   const contact = alldata?.contact || context.contact || {};
@@ -4912,9 +6014,50 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
   const githubUrl = contact?.github;
   const dateOfBirth = contact?.dob;
 
-  // ── CSS ──────────────────────────────────────────────────────────────────
-  const CSS = `
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Sans+3:wght@300;400;600&display=swap');
+  // ── Complete Font import map ────────────────────────────────────────────────
+  const getFontImport = (fontFamily: string): string => {
+    const map: Record<string, string> = {
+      "'Inter', sans-serif": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap",
+      "'-apple-system', 'BlinkMacSystemFont', sans-serif": "",
+      "'Poppins', sans-serif": "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap",
+      "'Lato', sans-serif": "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",
+      "'Nunito', sans-serif": "https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap",
+      "'Raleway', sans-serif": "https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap",
+      "'Montserrat', sans-serif": "https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap",
+      "'Open Sans', sans-serif": "https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap",
+      "'Roboto', sans-serif": "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap",
+      "'Merriweather', serif": "https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap",
+      "'Playfair Display', serif": "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap",
+      "'DM Serif Display', serif": "https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap",
+      "'Libre Baskerville', serif": "https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap",
+      "'EB Garamond', serif": "https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&display=swap",
+      "'Crimson Text', serif": "https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap",
+      "'Source Code Pro', monospace": "https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&display=swap",
+      "'JetBrains Mono', monospace": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap",
+    };
+    return map[fontFamily] || map["'Source Sans 3', sans-serif"];
+  };
+
+  const getSystemFallback = (fontFamily: string): string => {
+    if (fontFamily.includes('serif')) return 'Georgia, "Times New Roman", serif';
+    if (fontFamily.includes('monospace')) return '"Courier New", Courier, monospace';
+    return '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+  };
+
+  // ── Get display font (Playfair Display for headings) ─────────────────────────
+  const getDisplayFont = (): string => {
+    return "'Playfair Display', serif";
+  };
+
+  // ── CSS builder with dynamic font ─────────────────────────────────────────
+  const buildCSS = useCallback(
+    (fontFamily: string) => {
+      const displayFont = getDisplayFont();
+      const displayFontImport = "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap";
+      
+      return `
+    @import url('${displayFontImport}');
+    @import url('${getFontImport(fontFamily)}');
 
     @page { size: A4; margin: 15mm; }
 
@@ -4922,22 +6065,23 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
 
     html, body { margin: 0; padding: 0; background: white; }
 
-    /* ── RESUME ROOT ── */
-    /* Outer padding = 0 (Puppeteer margin handles the 15mm gutters).
-       Inner padding reproduces T12's original 20mm/22mm design spacing. */
- .t12-resume {
-  width: ${A4_W}px;
-  padding: 0;
-  margin: 0;
-  background-color: #ffffff;
-  font-family: 'Source Sans 3', sans-serif;
-  color: #111111;
-  font-size: 14px;
-  line-height: 1.5;
-  box-sizing: border-box;
-}
+    .t12-resume {
+      width: ${A4_W}px;
+      padding: 0;
+      margin: 0;
+      background-color: #ffffff;
+      font-family: ${fontFamily}, ${getSystemFallback(fontFamily)};
+      color: #111111;
+      font-size: 14px;
+      line-height: 1.5;
+      box-sizing: border-box;
+    }
 
-    /* ── RICH TEXT ── */
+    .t12-resume p, .t12-resume div, .t12-resume span, .t12-resume li, .t12-resume a {
+      font-family: ${fontFamily}, ${getSystemFallback(fontFamily)};
+    }
+
+    /* Rich text */
     .t12-resume .entry-content ul,
     .t12-resume .entry-content ol,
     .t12-resume .skills-content ul,
@@ -4991,13 +6135,13 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
       margin: 0 0 4px 0 !important;
     }
 
-    /* ── HEADER ── */
+    /* Header */
     .t12-resume .header-block {
       margin-bottom: 28px;
     }
 
     .t12-resume .header-name {
-      font-family: 'Playfair Display', serif;
+      font-family: ${displayFont};
       font-size: 44px;
       font-weight: 700;
       line-height: 1.05;
@@ -5007,7 +6151,7 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
     }
 
     .t12-resume .header-jobtitle {
-      font-family: 'Source Sans 3', sans-serif;
+      font-family: ${fontFamily}, ${getSystemFallback(fontFamily)};
       font-size: 12px;
       font-weight: 600;
       letter-spacing: 3.5px;
@@ -5049,9 +6193,9 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
       border-bottom: 1px solid #bbb;
     }
 
-    /* ── SECTION TITLE ── */
+    /* Section title */
     .t12-resume .section-title {
-      font-family: 'Source Sans 3', sans-serif;
+      font-family: ${fontFamily}, ${getSystemFallback(fontFamily)};
       font-size: 9.5px;
       font-weight: 600;
       letter-spacing: 3px;
@@ -5064,12 +6208,12 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
       break-after: avoid;
     }
 
-    /* ── SECTION BLOCK ── */
+    /* Section block */
     .t12-resume .section-block {
       margin-bottom: 22px;
     }
 
-    /* ── SUMMARY ── */
+    /* Summary */
     .t12-resume .summary-text {
       font-size: 14px;
       line-height: 1.85;
@@ -5077,7 +6221,7 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
       font-weight: 400;
     }
 
-    /* ── ENTRY BLOCKS (Experience, Education, Projects) ── */
+    /* Entry blocks (Experience, Education, Projects) */
     .t12-resume .entry-block {
       display: grid;
       grid-template-columns: 110px 1fr;
@@ -5105,7 +6249,7 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
     }
 
     .t12-resume .entry-title {
-      font-family: 'Playfair Display', serif;
+      font-family: ${displayFont};
       font-size: 16px;
       font-weight: 700;
       color: #000;
@@ -5128,7 +6272,7 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
       font-weight: 300;
     }
 
-    /* ── EDUCATION GRADE ── */
+    /* Education grade */
     .t12-resume .education-grade {
       font-size: 10.5px;
       color: #888;
@@ -5136,7 +6280,7 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
       font-weight: 500;
     }
 
-    /* ── SKILLS ── */
+    /* Skills */
     .t12-resume .skills-wrapper {
       display: grid;
       grid-template-columns: 110px 1fr;
@@ -5155,8 +6299,8 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
       font-weight: 300;
     }
 
-    /* ── PROJECTS ── */
-    .t12-resume .project-header  { margin-bottom: 4px; }
+    /* Projects */
+    .t12-resume .project-header { margin-bottom: 4px; }
 
     .t12-resume .project-links {
       display: flex;
@@ -5176,7 +6320,7 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
       margin: 4px 0 6px;
     }
 
-    /* ── CUSTOM SECTIONS (name left, content right) ── */
+    /* Custom sections */
     .t12-resume .custom-wrapper {
       display: grid;
       grid-template-columns: 110px 1fr;
@@ -5191,7 +6335,7 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
     .t12-resume .custom-left { padding-top: 2px; }
 
     .t12-resume .custom-section-name {
-      font-family: 'Playfair Display', serif;
+      font-family: ${displayFont};
       font-size: 16px;
       font-weight: 700;
       color: #000;
@@ -5210,7 +6354,7 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
       font-weight: 300;
     }
 
-    /* Page-break marker injected at cut points for PDF */
+    /* Page-break marker */
     .t12-page-break {
       page-break-before: always !important;
       break-before: page !important;
@@ -5220,225 +6364,208 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
       padding: 0;
     }
 
-   /* TO */
-@media print {
-  *, *::before, *::after {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
-  html, body { overflow: visible; }
-  .t12-resume {
-    width: 100% !important;
-    padding: 0 !important;
-    box-shadow: none !important;
-  }
-}
-
-  `;
-
-  // ── HTML builder ─────────────────────────────────────────────────────────
-  // pageBreakIds: array of element data-ids where page breaks should be injected.
-  // Used when forPDF=true so Puppeteer breaks at the same points as the preview.
-  const generateHTML = useCallback(
-    (forPDF = false, pageBreakIds: string[] = []): string => {
-      const formattedDob = formatDateOfBirth(dateOfBirth || "");
-      const href = (url: string) =>
-        url.startsWith("http") ? url : `https://${url}`;
-
-      // ── Header ──────────────────────────────────────────────────────────
-      const header = `
-      <div class="header-block" data-block-id="t12-header">
-        <div class="header-name">${contact?.firstName || ""} ${contact?.lastName || ""}</div>
-        <div class="header-jobtitle">${
-          contact?.jobTitle
-            ? typeof contact.jobTitle === "string"
-              ? contact.jobTitle
-              : (contact.jobTitle as any)?.name || ""
-            : ""
-        }</div>
-        <div class="header-divider"></div>
-        <div class="header-meta-row">
-          ${addressParts.length > 0 ? `<span class="header-meta-item">${addressParts.join(", ")}</span>` : ""}
-          ${contact?.email ? `<span class="header-meta-item">${contact.email}</span>` : ""}
-          ${contact?.phone ? `<span class="header-meta-item">${contact.phone}</span>` : ""}
-          ${formattedDob ? `<span class="header-meta-item">${formattedDob}</span>` : ""}
-          ${linkedinUrl ? `<span class="header-meta-item"><a href="${href(linkedinUrl)}"  target="_blank">LinkedIn</a></span>` : ""}
-          ${githubUrl ? `<span class="header-meta-item"><a href="${href(githubUrl)}"    target="_blank">GitHub</a></span>` : ""}
-          ${portfolioUrl ? `<span class="header-meta-item"><a href="${href(portfolioUrl)}" target="_blank">Portfolio</a></span>` : ""}
-        </div>
-      </div>`;
-
-      // ── Summary ──────────────────────────────────────────────────────────
-      const summaryBlock = summary
-        ? `<div class="section-block" data-block-id="t12-summary">
-             <div class="section-title">Profile</div>
-             <div class="summary-text">${cleanQuillHTML(summary)}</div>
-           </div>`
-        : "";
-
-      // ── Experience ───────────────────────────────────────────────────────
-      const expBlock =
-        experiences.length > 0
-          ? `<div class="section-block" data-block-id="t12-exp-section">
-               <div class="section-title">Experience</div>
-               ${experiences
-                 .map((exp: any, i: number) => {
-                   const start = formatMonthYear(exp.startDate, false);
-                   const end = exp.endDate
-                     ? formatMonthYear(exp.endDate, false)
-                     : "Present";
-                   return `<div class="entry-block" data-block-id="t12-exp-${i}">
-                     <div class="entry-left">
-                       <div class="entry-date">${start}\n–\n${end}</div>
-                     </div>
-                     <div class="entry-right">
-                       <div class="entry-title">${exp.jobTitle || ""}</div>
-                       <div class="entry-subtitle">${exp.employer || ""}${exp.location ? `, ${exp.location}` : ""}</div>
-                       ${exp.text ? `<div class="entry-content">${cleanQuillHTML(exp.text)}</div>` : ""}
-                     </div>
-                   </div>`;
-                 })
-                 .join("")}
-             </div>`
-          : "";
-
-      // ── Projects ─────────────────────────────────────────────────────────
-      const projBlock =
-        projects.length > 0
-          ? `<div class="section-block" data-block-id="t12-proj-section">
-               <div class="section-title">Projects</div>
-               ${projects
-                 .map(
-                   (p: any, i: number) => `
-                 <div class="entry-block" data-block-id="t12-proj-${i}">
-                   <div class="entry-left">
-                     <div class="entry-date">${p.startDate ? formatMonthYear(p.startDate, true) : ""}${p.startDate && p.endDate ? "\n–\n" : ""}${p.endDate ? formatMonthYear(p.endDate, true) : ""}</div>
-                   </div>
-                   <div class="entry-right">
-                     <div class="project-header">
-                       <div class="entry-title">${p.title || ""}</div>
-                       ${
-                         p.liveUrl || p.githubUrl
-                           ? `<div class="project-links">
-                              ${p.liveUrl ? `<a href="${href(p.liveUrl)}"   class="project-link" target="_blank">Live Demo</a>` : ""}
-                              ${p.githubUrl ? `<a href="${href(p.githubUrl)}" class="project-link" target="_blank">GitHub</a>` : ""}
-                            </div>`
-                           : ""
-                       }
-                     </div>
-                     ${p.techStack?.length ? `<div class="project-tech-stack"><strong>Tech:</strong> ${p.techStack.join(" • ")}</div>` : ""}
-                     ${p.description ? `<div class="entry-content">${cleanQuillHTML(p.description)}</div>` : ""}
-                   </div>
-                 </div>`,
-                 )
-                 .join("")}
-             </div>`
-          : "";
-
-      // ── Education ────────────────────────────────────────────────────────
-      const eduBlock =
-        educations.length > 0
-          ? `<div class="section-block" data-block-id="t12-edu-section">
-               <div class="section-title">Education</div>
-               ${educations
-                 .map((edu: any, i: number) => {
-                   const formattedGrade = formatGradeToCgpdAndPercentage(
-                     edu.grade || "",
-                   );
-                   const dateStr = [
-                     edu.startDate || "",
-                     edu.startDate ? "\n–\n" : "",
-                     edu.endDate || "Present",
-                   ].join("");
-                   return `<div class="entry-block" data-block-id="t12-edu-${i}">
-                     <div class="entry-left">
-                       <div class="entry-date">${dateStr}</div>
-                     </div>
-                     <div class="entry-right">
-                       <div class="entry-title">${edu.schoolname || ""}</div>
-                       ${
-                         edu.degree || edu.location || formattedGrade
-                           ? `<div class="entry-subtitle">
-                              ${edu.degree || ""}${edu.degree && edu.location ? ", " : ""}${edu.location || ""}
-                              ${formattedGrade ? `<div class="education-grade">${formattedGrade}</div>` : ""}
-                            </div>`
-                           : ""
-                       }
-                       ${edu.text ? `<div class="entry-content">${cleanQuillHTML(edu.text)}</div>` : ""}
-                     </div>
-                   </div>`;
-                 })
-                 .join("")}
-             </div>`
-          : "";
-
-      // ── Skills ───────────────────────────────────────────────────────────
-      const skillsClean = cleanQuillHTML(skills || "");
-      const skillsBlock =
-        skillsClean && skillsClean !== "<p><br></p>"
-          ? `<div class="section-block" data-block-id="t12-skills-section">
-               <div class="section-title">Skills</div>
-               <div class="skills-wrapper">
-                 <div class="skills-left"></div>
-                 <div class="skills-right">
-                   <div class="skills-content" data-block-id="t12-skills-content">${skillsClean}</div>
-                 </div>
-               </div>
-             </div>`
-          : "";
-
-      // ── Custom sections ──────────────────────────────────────────────────
-      // T12 custom sections use a two-column grid (name left, content right).
-      // Each .custom-wrapper gets its own data-block-id for fine-grained breaks.
-      const hasCustom =
-        !Array.isArray(finalize) &&
-        Array.isArray(finalize?.customSection) &&
-        finalize.customSection.some(
-          (s: any) => s?.name?.trim() || s?.description?.trim(),
-        );
-
-      const customBlock = hasCustom
-        ? `<div class="section-block" data-block-id="t12-custom-section">
-             <div class="section-title">Additional</div>
-             ${(finalize as any).customSection
-               .filter((s: any) => s?.name?.trim() || s?.description?.trim())
-               .map(
-                 (s: any, i: number) => `
-               <div class="custom-wrapper" data-block-id="t12-custom-${i}">
-                 <div class="custom-left">
-                   <div class="custom-section-name">${s.name || ""}</div>
-                 </div>
-                 <div class="custom-right">
-                   ${s.description ? `<div class="custom-section-content">${cleanQuillHTML(s.description)}</div>` : ""}
-                 </div>
-               </div>`,
-               )
-               .join("")}
-           </div>`
-        : "";
-
-      const pdfStyle = forPDF
-        ? `<style>
+    @media print {
+      *, *::before, *::after {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      html, body { overflow: visible; }
       .t12-resume {
         width: 100% !important;
         padding: 0 !important;
-        margin: 0 !important;
+        box-shadow: none !important;
       }
-    </style>`
+    }
+  `;
+    },
+    [],
+  );
+
+  const CSS = buildCSS(activeFontFamily);
+
+  // ── Helper functions ──────────────────────────────────────────────────────
+  const href = (url: string) => url.startsWith("http") ? url : `https://${url}`;
+  
+  const rich = (html: string) => {
+    const c = cleanQuillHTML(html);
+    return c && c !== "<p><br></p>" ? c : "";
+  };
+
+  // ── Section builders ──────────────────────────────────────────────────────
+  const sectionBuilders: Record<SectionKey, () => string> = {
+    summary: () => summary ? `
+      <div class="section-block" data-block-id="t12-summary">
+        <div class="section-title">Profile</div>
+        <div class="summary-text">${rich(summary)}</div>
+      </div>
+    ` : "",
+
+    experience: () => experiences.length > 0 ? `
+      <div class="section-block" data-block-id="t12-exp-section">
+        <div class="section-title">Experience</div>
+        ${experiences.map((exp: any, i: number) => {
+          const start = formatMonthYear(exp.startDate, false);
+          const end = exp.endDate ? formatMonthYear(exp.endDate, false) : "Present";
+          return `
+            <div class="entry-block" data-block-id="t12-exp-${i}">
+              <div class="entry-left">
+                <div class="entry-date">${start}\n–\n${end}</div>
+              </div>
+              <div class="entry-right">
+                <div class="entry-title">${exp.jobTitle || ""}</div>
+                <div class="entry-subtitle">${exp.employer || ""}${exp.location ? `, ${exp.location}` : ""}</div>
+                ${exp.text ? `<div class="entry-content">${rich(exp.text)}</div>` : ""}
+              </div>
+            </div>
+          `;
+        }).join("")}
+      </div>
+    ` : "",
+
+    projects: () => projects.length > 0 ? `
+      <div class="section-block" data-block-id="t12-proj-section">
+        <div class="section-title">Projects</div>
+        ${projects.map((p: any, i: number) => `
+          <div class="entry-block" data-block-id="t12-proj-${i}">
+            <div class="entry-left">
+              <div class="entry-date">${p.startDate ? formatMonthYear(p.startDate, true) : ""}${p.startDate && p.endDate ? "\n–\n" : ""}${p.endDate ? formatMonthYear(p.endDate, true) : ""}</div>
+            </div>
+            <div class="entry-right">
+              <div class="project-header">
+                <div class="entry-title">${p.title || ""}</div>
+                ${p.liveUrl || p.githubUrl ? `
+                  <div class="project-links">
+                    ${p.liveUrl ? `<a href="${href(p.liveUrl)}" class="project-link" target="_blank">Live Demo</a>` : ""}
+                    ${p.githubUrl ? `<a href="${href(p.githubUrl)}" class="project-link" target="_blank">GitHub</a>` : ""}
+                  </div>
+                ` : ""}
+              </div>
+              ${p.techStack?.length ? `<div class="project-tech-stack"><strong>Tech:</strong> ${p.techStack.join(" • ")}</div>` : ""}
+              ${p.description ? `<div class="entry-content">${rich(p.description)}</div>` : ""}
+            </div>
+          </div>
+        `).join("")}
+      </div>
+    ` : "",
+
+    education: () => educations.length > 0 ? `
+      <div class="section-block" data-block-id="t12-edu-section">
+        <div class="section-title">Education</div>
+        ${educations.map((edu: any, i: number) => {
+          const formattedGrade = formatGradeToCgpdAndPercentage(edu.grade || "");
+          const dateStr = [edu.startDate || "", edu.startDate ? "\n–\n" : "", edu.endDate || "Present"].join("");
+          return `
+            <div class="entry-block" data-block-id="t12-edu-${i}">
+              <div class="entry-left">
+                <div class="entry-date">${dateStr}</div>
+              </div>
+              <div class="entry-right">
+                <div class="entry-title">${edu.schoolname || ""}</div>
+                ${edu.degree || edu.location || formattedGrade ? `
+                  <div class="entry-subtitle">
+                    ${edu.degree || ""}${edu.degree && edu.location ? ", " : ""}${edu.location || ""}
+                    ${formattedGrade ? `<div class="education-grade">${formattedGrade}</div>` : ""}
+                  </div>
+                ` : ""}
+                ${edu.text ? `<div class="entry-content">${rich(edu.text)}</div>` : ""}
+              </div>
+            </div>
+          `;
+        }).join("")}
+      </div>
+    ` : "",
+
+    skills: () => {
+      const skillsClean = rich(skills || "");
+      if (!skillsClean || skillsClean === "<p><br></p>") return "";
+      return `
+        <div class="section-block" data-block-id="t12-skills-section">
+          <div class="section-title">Skills</div>
+          <div class="skills-wrapper">
+            <div class="skills-left"></div>
+            <div class="skills-right">
+              <div class="skills-content" data-block-id="t12-skills-content">${skillsClean}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    },
+
+    custom: () => {
+      if (!Array.isArray(finalize?.customSection)) return "";
+      const hasCustom = finalize.customSection.some((s: any) => s?.name?.trim() || s?.description?.trim());
+      if (!hasCustom) return "";
+      return `
+        <div class="section-block" data-block-id="t12-custom-section">
+          <div class="section-title">Additional</div>
+          ${finalize.customSection
+            .filter((s: any) => s?.name?.trim() || s?.description?.trim())
+            .map((s: any, i: number) => `
+              <div class="custom-wrapper" data-block-id="t12-custom-${i}">
+                <div class="custom-left">
+                  <div class="custom-section-name">${s.name || ""}</div>
+                </div>
+                <div class="custom-right">
+                  ${s.description ? `<div class="custom-section-content">${rich(s.description)}</div>` : ""}
+                </div>
+              </div>
+            `).join("")}
+        </div>
+      `;
+    },
+  };
+
+  // ── HTML builder with section ordering ───────────────────────────────────
+  const generateHTML = useCallback(
+    (forPDF = false, pageBreakIds: string[] = []): string => {
+      const formattedDob = formatDateOfBirth(dateOfBirth || "");
+      const displayFontImport = "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap";
+
+      const fontPreloads = activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif" 
+        ? `<link href="${getFontImport(activeFontFamily)}" rel="stylesheet"/>`
+        : '';
+
+      // Header
+      const header = `
+        <div class="header-block" data-block-id="t12-header">
+          <div class="header-name">${contact?.firstName || ""} ${contact?.lastName || ""}</div>
+          <div class="header-jobtitle">${
+            contact?.jobTitle
+              ? typeof contact.jobTitle === "string"
+                ? contact.jobTitle
+                : (contact.jobTitle as any)?.name || ""
+              : ""
+          }</div>
+          <div class="header-divider"></div>
+          <div class="header-meta-row">
+            ${addressParts.length > 0 ? `<span class="header-meta-item">${addressParts.join(", ")}</span>` : ""}
+            ${contact?.email ? `<span class="header-meta-item">${contact.email}</span>` : ""}
+            ${contact?.phone ? `<span class="header-meta-item">${contact.phone}</span>` : ""}
+            ${formattedDob ? `<span class="header-meta-item">${formattedDob}</span>` : ""}
+            ${linkedinUrl ? `<span class="header-meta-item"><a href="${href(linkedinUrl)}" target="_blank">LinkedIn</a></span>` : ""}
+            ${githubUrl ? `<span class="header-meta-item"><a href="${href(githubUrl)}" target="_blank">GitHub</a></span>` : ""}
+            ${portfolioUrl ? `<span class="header-meta-item"><a href="${href(portfolioUrl)}" target="_blank">Portfolio</a></span>` : ""}
+          </div>
+        </div>`;
+
+      // Build sections in the order defined by customization
+      const sectionsHTML = activeSectionOrder
+        .map(key => sectionBuilders[key]?.() ?? "")
+        .join("");
+
+      const pdfStyle = forPDF
+        ? `<style>
+            .t12-resume {
+              width: 100% !important;
+              padding: 0 !important;
+              margin: 0 !important;
+            }
+          </style>`
         : "";
 
-      let bodyContent = `
-        ${header}
-        ${summaryBlock}
-        ${expBlock}
-        ${projBlock}
-        ${eduBlock}
-        ${skillsBlock}
-        ${customBlock}
-      `;
+      let bodyContent = `${header}${sectionsHTML}`;
 
-      // For PDF: inject <div class="t12-page-break"> before each element whose
-      // data-block-id matches a cut-point ID — same positions as the preview
+      // For PDF: inject page breaks
       if (forPDF && pageBreakIds.length > 0) {
         const tempDiv = document.createElement("div");
         tempDiv.innerHTML = bodyContent;
@@ -5461,7 +6588,8 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
   <title>Resume - ${contact?.firstName || ""} ${contact?.lastName || ""}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet"/>
+  <link href="${displayFontImport}" rel="stylesheet"/>
+  ${fontPreloads}
   <style>${CSS}</style>
   ${pdfStyle}
 </head>
@@ -5473,6 +6601,8 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
 </html>`;
     },
     [
+      activeFontFamily,
+      activeSectionOrder,
       contact,
       educations,
       experiences,
@@ -5486,20 +6616,11 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
       githubUrl,
       dateOfBirth,
       CSS,
+      sectionBuilders,
     ],
   );
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // PAGE SPLITTER — identical algorithm to TemplateOne
-  //
-  // T12-SPECIFIC NOTES:
-  //   • Content has INNER_PAD_TOP (76px) at the top of .t12-resume.
-  //     The splitter measures from .t12-resume top, so that padding is included
-  //     naturally in element positions — no special handling needed.
-  //   • Entry blocks (.entry-block, .custom-wrapper) are the atomic avoid-break units.
-  //   • Section title + first entry are paired to prevent orphaned .section-title rows.
-  //   • clipH = nextStart - thisStart prevents bleed at the bottom of each page card.
-  // ─────────────────────────────────────────────────────────────────────────
+  // ── PAGE SPLITTER ─────────────────────────────────────────────────────────
   const splitIntoPages = useCallback(
     (fullHtml: string): Promise<string[]> => {
       return new Promise((resolve) => {
@@ -5512,7 +6633,6 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
         }
         const resumeSnapshot = resumeEl.outerHTML;
 
-        // Fresh hidden iframe — ensures fonts & layout always match render iframes
         const iframe = document.createElement("iframe");
         iframe.style.cssText = [
           "position:fixed",
@@ -5536,17 +6656,17 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
   <style>
     ${CSS}
     html, body {
-  margin: 0 !important; padding: 0 !important;
-  width: ${A4_W - MARGIN * 2}px !important; height: auto !important;
-  overflow: visible !important; background: white !important;
-}
-.t12-resume {
-  width: ${A4_W - MARGIN * 2}px !important;
-  padding: 0 !important;
-  padding-bottom: 0 !important;
-  margin: 0 !important;
-  box-sizing: border-box !important;
-}
+      margin: 0 !important; padding: 0 !important;
+      width: ${A4_W - MARGIN * 2}px !important; height: auto !important;
+      overflow: visible !important; background: white !important;
+    }
+    .t12-resume {
+      width: ${A4_W - MARGIN * 2}px !important;
+      padding: 0 !important;
+      padding-bottom: 0 !important;
+      margin: 0 !important;
+      box-sizing: border-box !important;
+    }
   </style>
 </head>
 <body>${resumeSnapshot}</body>
@@ -5561,17 +6681,13 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
             return;
           }
 
-          // Force unconstrained layout so scrollHeight is accurate
-          measureDoc.documentElement.style.cssText =
-            "height:auto!important;overflow:visible!important;";
-          measureDoc.body.style.cssText =
-            "margin:0;padding:0;height:auto!important;overflow:visible!important;";
-          void resume.offsetHeight; // force reflow
+          measureDoc.documentElement.style.cssText = "height:auto!important;overflow:visible!important;";
+          measureDoc.body.style.cssText = "margin:0;padding:0;height:auto!important;overflow:visible!important;";
+          void resume.offsetHeight;
 
           const totalH = resume.scrollHeight;
           const resumeRect = resume.getBoundingClientRect();
-          const scrollY =
-            measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
+          const scrollY = measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
 
           const getRelTop = (el: HTMLElement): number => {
             const r = el.getBoundingClientRect();
@@ -5580,15 +6696,9 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
           const getRelBottom = (el: HTMLElement): number =>
             getRelTop(el) + el.getBoundingClientRect().height;
 
-          // ── Collect avoid-break blocks ──────────────────────────────────
-          interface Block {
-            top: number;
-            bottom: number;
-            id?: string;
-          }
+          interface Block { top: number; bottom: number; id?: string; }
           const blocks: Block[] = [];
 
-          // Atomic units that must not be split across pages
           const ITEM_SELECTORS = [
             ".entry-block",
             ".custom-wrapper",
@@ -5605,45 +6715,30 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
             }
           });
 
-          // Section title + first item paired — prevents orphaned .section-title rows
-          resume
-            .querySelectorAll<HTMLElement>(".section-title")
-            .forEach((title) => {
-              const titleTop = getRelTop(title);
-              let firstItem: HTMLElement | null = null;
-              let sib = title.nextElementSibling as HTMLElement | null;
-              while (sib) {
-                if (sib.getBoundingClientRect().height > 8) {
-                  firstItem = sib;
-                  break;
-                }
-                sib = sib.nextElementSibling as HTMLElement | null;
+          resume.querySelectorAll<HTMLElement>(".section-title").forEach((title) => {
+            const titleTop = getRelTop(title);
+            let firstItem: HTMLElement | null = null;
+            let sib = title.nextElementSibling as HTMLElement | null;
+            while (sib) {
+              if (sib.getBoundingClientRect().height > 8) {
+                firstItem = sib;
+                break;
               }
-              if (firstItem) {
-                const deepChild = firstItem.querySelector<HTMLElement>(
-                  ".entry-block, .custom-wrapper, .skills-wrapper",
-                );
-                const anchor = deepChild || firstItem;
-                const anchorBottom = getRelBottom(anchor);
-                if (anchorBottom - titleTop > 8) {
-                  const sectionId = (title.parentElement as HTMLElement)
-                    ?.dataset?.blockId;
-                  blocks.push({
-                    top: titleTop,
-                    bottom: anchorBottom,
-                    id: sectionId,
-                  });
-                }
+              sib = sib.nextElementSibling as HTMLElement | null;
+            }
+            if (firstItem) {
+              const deepChild = firstItem.querySelector<HTMLElement>(".entry-block, .custom-wrapper, .skills-wrapper");
+              const anchor = deepChild || firstItem;
+              const anchorBottom = getRelBottom(anchor);
+              if (anchorBottom - titleTop > 8) {
+                const sectionId = (title.parentElement as HTMLElement)?.dataset?.blockId;
+                blocks.push({ top: titleTop, bottom: anchorBottom, id: sectionId });
               }
-            });
+            }
+          });
 
           blocks.sort((a, b) => a.top - b.top);
 
-          blocks.sort((a, b) => a.top - b.top);
-
-          blocks.sort((a, b) => a.top - b.top);
-
-          // ── Calculate cut points ────────────────────────────────────────
           const pageStarts: number[] = [0];
           const pageBreakIds: string[] = [];
           const MAX_PAGES = 20;
@@ -5673,17 +6768,13 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
           }
 
           document.body.removeChild(iframe);
-
-          // Store for handleDownload
           (window as any).__resumePageBreakIds = pageBreakIds;
 
-          // ── Build preview page HTMLs ──────────────────────────────────
           const pageHtmls: string[] = [];
 
           for (let i = 0; i < pageStarts.length; i++) {
             const contentOffsetY = pageStarts[i];
             const nextStart = pageStarts[i + 1] ?? totalH;
-            // KEY: clip at actual cut point — prevents bleed into the next page card
             const clipH = nextStart - contentOffsetY;
 
             pageHtmls.push(`<!DOCTYPE html>
@@ -5702,15 +6793,13 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
       background: white; overflow: hidden;
     }
     .page-content-clip {
-  position: absolute; top: ${MARGIN}px; left: ${MARGIN}px;
-  width: ${A4_W - MARGIN * 2}px; height: ${clipH}px; overflow: hidden;
-}
+      position: absolute; top: ${MARGIN}px; left: ${MARGIN}px;
+      width: ${A4_W - MARGIN * 2}px; height: ${clipH}px; overflow: hidden;
+    }
     .page-shift {
-  position: absolute; top: ${-contentOffsetY}px; left: 0;
-  width: ${A4_W - MARGIN * 2}px;
-}
-    /* Outer padding stripped — MARGIN (57px) is the outer gutter,
-       INNER_PAD_X/TOP reproduce T12's original spacing inside. */
+      position: absolute; top: ${-contentOffsetY}px; left: 0;
+      width: ${A4_W - MARGIN * 2}px;
+    }
     .t12-resume {
       width: ${A4_W}px !important;
       padding-left: ${INNER_PAD_X}px !important;
@@ -5773,12 +6862,6 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
       const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
       const pdfHtml = generateHTML(true, pageBreakIds);
 
-      // const res: AxiosResponse<Blob> = await axios.post(
-      //   `${API_URL}/api/candidates/generate-pdf`,
-      //   { html: pdfHtml },
-      //   { responseType: "blob" },
-      // );
-
       const res: AxiosResponse<Blob> = await api.post(
         `${API_URL}/candidates/generate-pdf`,
         { html: pdfHtml },
@@ -5816,7 +6899,6 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
       )}
 
       {alldata ? (
-        // ── THUMBNAIL mode: first page only, scaled 36% ──────────────────
         <div
           style={{
             width: `${A4_W}px`,
@@ -5860,7 +6942,6 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
           )}
         </div>
       ) : (
-        // ── FULL PREVIEW mode: paginated A4 pages ────────────────────────
         <div style={{ width: `${A4_W}px`, margin: "0 auto" }}>
           {(pages.length > 0 ? pages : [htmlContent]).map((pageHtml, idx) => (
             <div key={idx} style={{ marginBottom: "28px" }}>
@@ -5873,9 +6954,7 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
                   marginBottom: "10px",
                 }}
               >
-                <div
-                  style={{ flex: 1, height: "1px", background: "#d1d5db" }}
-                />
+                <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
                 <span
                   style={{
                     fontSize: "11px",
@@ -5893,9 +6972,7 @@ const TemplateTwelve: React.FC<ResumeProps> = ({ alldata }) => {
                   Page {idx + 1}
                   {pages.length > 1 ? ` of ${pages.length}` : ""}
                 </span>
-                <div
-                  style={{ flex: 1, height: "1px", background: "#d1d5db" }}
-                />
+                <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
               </div>
 
               <div

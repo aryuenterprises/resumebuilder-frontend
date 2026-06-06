@@ -10,7 +10,7 @@ export function usePreventReload() {
   useEffect(() => {
     const isResumeDetailPage =
       pathname?.includes("/resume-details/") ||
-      pathname?.includes("/ats-checker");
+      pathname?.includes("/ats-checker") || pathname?.includes("/download-resume");
     if (!isResumeDetailPage) return;
 
     // This event triggers for:

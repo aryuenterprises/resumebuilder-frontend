@@ -227,1446 +227,6 @@ const COLOR_PALETTES = [
   { label: "Cobalt", value: "#0047ab" },
 ];
 
-// ============================================================
-// buildHTML — FULLY FIXED VERSION
-// ============================================================
-//
-// ROOT CAUSE OF THE BUG:
-// ──────────────────────
-// Every template was using:
-//   .pg { max-width: 860px; margin: 0 auto; }
-//
-// This causes two problems:
-//
-// 1. WIDTH GAP: The iframe / PDF canvas is wider than 860px in some
-//    renderers. margin:0 auto centres the content, leaving visible
-//    background on both sides — that's the grey/ivory gap you see.
-//
-// 2. HEIGHT NOT FILLED: Without an explicit min-height, the .pg div
-//    only grows as tall as its content. On a short letter the bottom
-//    half of the A4 sheet is empty white.
-//
-// THE FIX:
-// ────────
-// • html, body → width:860px; margin:0 auto; min-height:1122px
-//   This locks the document to exactly 860px and fills A4 height.
-//
-// • Every .pg → width:860px; min-height:1122px; margin:0;
-//   No max-width, no auto margins. The element fills the body exactly.
-//
-// • Full-bleed coloured headers (.hdr, .t2, .t3, .mast, etc.) keep
-//   width:100% (or have no width set) so they still span edge-to-edge.
-//
-// • Templates that use display:flex or a sidebar layout get
-//   min-height:1122px on .pg so the flex children stretch to A4.
-//
-// • The body itself gets display:flex; flex-direction:column so that
-//   a flex-child with flex:1 (the .body content area) will grow and
-//   push decorative footers to the bottom of the page.
-// ============================================================
-
-// export function buildHTML(id: string, d: CLData): string {
-//   // ── Font lookup ─────────────────────────────────────────────────
-//   const fontDef =
-//     FONT_FAMILIES.find((f) => f.id === d.fontFamily) || FONT_FAMILIES[0];
-//   const fontStack = `'${d.fontFamily}',${fontDef.style}`;
-
-//   // ── Shorthand data variables ─────────────────────────────────────
-//   const c = d.accentColor || "#1a1a2e";
-//   const sig = d.personal.signature || "Sincerely";
-//   const nm = d.personal.fullName || "Your Name";
-//   const ttl = d.personal.title || "Professional";
-//   const mgr = d.company.hiringManager || "Hiring Manager";
-//   const loc = [d.company.city, d.company.state, d.company.country]
-//     .filter(Boolean)
-//     .join(", ");
-
-//   const dt = d.letterDate
-//     ? new Date(d.letterDate + "T12:00:00").toLocaleDateString("en-US", {
-//         year: "numeric",
-//         month: "long",
-//         day: "numeric",
-//       })
-//     : new Date().toLocaleDateString("en-US", {
-//         year: "numeric",
-//         month: "long",
-//         day: "numeric",
-//       });
-
-//   const contactLine = [
-//     d.personal.email,
-//     d.personal.phone,
-//     d.personal.location,
-//     d.personal.linkedin,
-//     d.personal.website,
-//     d.personal.github,
-//   ]
-//     .filter(Boolean)
-//     .join("  ·  ");
-
-//   const bodyContent =
-//     d.letterContent || "<p>Your letter content will appear here.</p>";
-//   const referralNote = d.company.referral
-//     ? `<p style="font-size:12px;color:#6b7280;margin-bottom:12px">Referred by: <strong>${d.company.referral}</strong></p>`
-//     : "";
-
-//   const addrBlock = `<div style="margin-bottom:20px;font-size:13px;line-height:2;color:#374151">
-//     <strong>${mgr}${d.company.hiringManagerTitle ? `, ${d.company.hiringManagerTitle}` : ""}</strong><br>
-//     ${d.company.name}${loc ? `<br>${loc}` : ""}${d.company.department ? `<br>Department: ${d.company.department}` : ""}
-//   </div>`;
-
-//   const greet = `<p style="font-size:15px;font-weight:600;margin-bottom:20px;color:#111">Dear ${mgr},</p>`;
-
-//   const closing = `<div style="margin-top:32px;font-size:13.5px;line-height:2">
-//     ${sig},<br>
-//     <strong style="font-size:16px;letter-spacing:-0.3px">${nm}</strong>
-//     ${d.personal.title ? `<br><span style="font-size:12px;color:#6b7280">${d.personal.title}</span>` : ""}
-//     ${d.personal.email ? `<br><a href="mailto:${d.personal.email}" style="font-size:12px;color:${c};text-decoration:none">${d.personal.email}</a>` : ""}
-//     ${d.personal.phone ? `<br><span style="font-size:12px;color:#9ca3af">${d.personal.phone}</span>` : ""}
-//   </div>`;
-
-//   // ── BASE CSS HELPER ───────────────────────────────────────────────
-//   // KEY: html + body are locked to exactly 860px width and min 1122px
-//   // height (A4 at 96 dpi).  The body is a flex column so that a child
-//   // with flex:1 fills the remaining vertical space.
-//   // ─────────────────────────────────────────────────────────────────
-
-
-// const baseCSS = (extra = "") => `
-//   @import url('${fontDef.url}');
-  
-//   @page { 
-//     size: 860px 1122px; 
-//     margin: 0; 
-//   }
-  
-//   @media print {
-//     @page {
-//       size: A4;
-//       margin: 0;
-//     }
-//     html, body {
-//       width: 210mm;
-//       height: 297mm;
-//     }
-//   }
-  
-//   * { 
-//     margin: 0; 
-//     padding: 0; 
-//     box-sizing: border-box;
-//     /* Critical for print sharpness */
-//     -webkit-font-smoothing: antialiased;
-//     -moz-osx-font-smoothing: grayscale;
-//     text-rendering: optimizeLegibility;
-//     -webkit-print-color-adjust: exact !important;
-//     print-color-adjust: exact !important;
-//     color-adjust: exact !important;
-//   }
-  
-//   html {
-//     width: 860px;
-//     height: 1122px;
-//     background: #fff;
-//   }
-  
-//   body {
-//     font-family: ${fontStack};
-//     color: #374151;
-//     font-size: 13.5px;
-//     width: 860px;
-//     height: 1122px;
-//     margin: 0;
-//     background: #fff;
-//     display: flex;
-//     flex-direction: column;
-//     overflow: hidden;
-//   }
-  
-//   p { line-height: 1.9; }
-//   ${extra}
-// `;
-  
-
-//   // ── WRAP helper: builds a complete HTML document ─────────────────
-//   const wrap = (css: string, body: string) =>
-//     `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>${css}</style></head><body>${body}</body></html>`;
-
-//   // ════════════════════════════════════════════════════════════════
-//   // TEMPLATE BRANCHES
-//   //
-//   // Rules applied to EVERY template:
-//   //  • .pg  →  width:860px; min-height:1122px; margin:0;
-//   //            display:flex; flex-direction:column;
-//   //  • .body (the text content area) → flex:1  (grows to fill page)
-//   //  • Full-bleed headers keep their own background/padding; they
-//   //    are NOT given a max-width so they span the full 860px.
-//   //  • Sidebar layouts: min-height on .pg stretches both columns.
-//   // ════════════════════════════════════════════════════════════════
-
-//   // ── 1. CHANCELLOR ───────────────────────────────────────────────
-//   if (id === "chancellor")
-//     return wrap(
-//       baseCSS(`
-//       .pg   { width:860px; min-height:1122px; margin:0; display:flex; flex-direction:column; background:#fff; }
-//       .hdr  { background:${c}; padding:52px 64px 44px; color:white; flex-shrink:0; }
-//       .pre  { font-size:9px; letter-spacing:4px; text-transform:uppercase; color:rgba(255,255,255,.5); margin-bottom:10px; }
-//       .nm   { font-size:46px; font-weight:700; letter-spacing:-1.5px; color:#fff; margin-bottom:6px; }
-//       .ttl  { font-size:12px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,.65); }
-//       .gold { height:2px; background:linear-gradient(90deg,#c9a84c,#f5d78e,#c9a84c); margin:24px 0; }
-//       .contact { font-size:11.5px; color:rgba(255,255,255,.7); letter-spacing:.5px; }
-//       .body { padding:52px 64px; flex:1; }
-//     `),
-//       `<div class="pg">
-//        <div class="hdr">
-//          <div class="nm">${nm}</div>
-//          <div class="ttl">${ttl}</div>
-//          <div class="gold"></div>
-//          <div class="contact">${contactLine}</div>
-//        </div>
-//        <div class="body">
-//          <p style="font-size:11.5px;color:#9ca3af;margin-bottom:24px">${dt}</p>
-//          ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//        </div>
-//      </div>`,
-//     );
-
-//   // ── 2. NEWSPRINT ────────────────────────────────────────────────
-//   if (id === "newsprint")
-//     return wrap(
-//       baseCSS(`
-//       .pg   { width:860px; min-height:1122px; margin:0; padding:48px 64px; background:#fff; display:flex; flex-direction:column; }
-//       .mast { text-align:center; border-top:4px solid #111; border-bottom:4px solid #111; padding:16px 0; margin-bottom:6px; }
-//       .nm   { font-size:52px; font-weight:900; letter-spacing:-2px; color:#111; line-height:1; }
-//       .rule { display:flex; align-items:center; gap:12px; margin:10px 0; }
-//       .line { flex:1; height:1px; background:#111; }
-//       .tag  { font-size:9px; letter-spacing:3px; text-transform:uppercase; color:#555; white-space:nowrap; }
-//       .meta { display:flex; justify-contmin-height:1122px;ent:space-between; font-size:10.5px; color:#555; border-bottom:1px solid #ddd; padding-bottom:8px; margin-bottom:32px; }
-//     `),
-//       `<div class="pg">
-//        <div class="mast">
-//          <div class="nm">${nm}</div>
-//          <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#555;margin-top:4px">${ttl}</div>
-//        </div>
-//        <div class="rule"></div>
-//        <div class="meta"><span>${dt}</span><span>${contactLine}</span></div>
-//        ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//      </div>`,
-//     );
-
-//   // ── 3. ATELIER (sidebar) ────────────────────────────────────────
-//   if (id === "atelier")
-//     return wrap(
-//       baseCSS(`
-//       .pg      { width:860px; min-height:1122px; max-height:1122px; overflow:hidden; margin:0; display:flex; background:#fff; }
-//       .sidebar { width:220px; background:${c}; padding:48px 28px; display:flex; flex-direction:column; flex-shrink:0; }
-//       .si-nm   { font-size:28px; font-weight:700; color:#fff; line-height:1.15; margin-bottom:8px; }
-//       .si-ttl  { font-size:9px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,.5); margin-bottom:32px; padding-bottom:24px; border-bottom:1px solid rgba(255,255,255,.15); }
-//       .si-lbl  { font-size:8px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,.4); margin-bottom:4px; margin-top:20px; }
-//       .si-val  { font-size:10.5px; color:rgba(255,255,255,.8); line-height:1.7; word-break:break-all; }
-//       .si-val a{ color:rgba(255,255,255,.8); text-decoration:none; }
-//       .main    { flex:1; padding:52px 48px; }
-//     `),
-//       `<div class="pg">
-//        <div class="sidebar">
-//          <div class="si-nm">${nm}</div>
-//          <div class="si-ttl">${ttl}</div>
-//          ${d.personal.email ? `<div class="si-lbl">Email</div><div class="si-val"><a href="mailto:${d.personal.email}">${d.personal.email}</a></div>` : ""}
-//          ${d.personal.phone ? `<div class="si-lbl">Phone</div><div class="si-val">${d.personal.phone}</div>` : ""}
-//          ${d.personal.location ? `<div class="si-lbl">Location</div><div class="si-val">${d.personal.location}</div>` : ""}
-//          ${d.personal.linkedin ? `<div class="si-lbl">LinkedIn</div><div class="si-val"><a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}">${d.personal.linkedin}</a></div>` : ""}
-//        </div>
-//        <div class="main">
-//          <p style="font-size:11px;color:#9ca3af;margin-bottom:28px">${dt}</p>
-//          ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//        </div>
-//      </div>`,
-//     );
-
-//   // ── 4. PROTOCOL ─────────────────────────────────────────────────
-//   if (id === "protocol")
-//     return wrap(
-//       baseCSS(`
-//       @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
-//       .pg   { width:860px; min-height:1122px; margin:0; background:#0d1117; display:flex; flex-direction:column; }
-//       .hdr  { padding:44px 56px; border-bottom:1px solid #30363d; font-family:'JetBrains Mono',monospace; flex-shrink:0; }
-//       .nm   { font-size:36px; font-weight:700; color:#f0f6fc; letter-spacing:-1px; }
-//       .ttl  { font-size:12px; color:#8b949e; margin-top:4px; margin-bottom:20px; }
-//       .meta { display:flex; flex-wrap:wrap; gap:6px; }
-//       .chip { font-size:10px; color:#58a6ff; background:#161b22; border:1px solid #30363d; padding:3px 10px; border-radius:4px; font-family:'JetBrains Mono',monospace; }
-//       .body { padding:44px 56px; background:#fff; color:#24292f; flex:1; }
-//     `),
-//       `<div class="pg">
-//        <div class="hdr">
-//          <div class="nm">${nm}</div>
-//          <div class="ttl">${ttl}</div>
-//          <div class="meta">${[
-//            d.personal.email,
-//            d.personal.phone,
-//            d.personal.location,
-//          ]
-//            .filter(Boolean)
-//            .map((v) => `<span class="chip">${v}</span>`)
-//            .join("")}</div>
-//        </div>
-//        <div class="body">
-//          <p style="font-size:11px;color:#6b7280;margin-bottom:24px">${dt}</p>
-//          ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//        </div>
-//      </div>`,
-//     );
-
-//   // ── 5. LEDGER ───────────────────────────────────────────────────
-//   if (id === "ledger")
-//     return wrap(
-//       baseCSS(`
-//       .pg        { width:860px; min-height:1122px; margin:0; padding:56px 72px; background:#fff; display:flex; flex-direction:column; }
-//       .r1        { height:3px; background:${c}; }
-//       .r2        { height:1px; background:${c}; margin-top:3px; margin-bottom:28px; }
-//       .nm        { font-size:38px; font-weight:700; color:${c}; letter-spacing:-1px; text-transform:uppercase; margin-bottom:4px; }
-//       .ttl       { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#6b7280; margin-bottom:16px; }
-//       .info-row  { display:flex; flex-wrap:wrap; gap:0; margin-bottom:24px; border:1px solid #e5e7eb; }
-//       .info-cell { flex:1; min-width:140px; padding:10px 16px; border-right:1px solid #e5e7eb; font-size:11px; color:#374151; line-height:1.8; }
-//       .info-cell:last-child { border-right:none; }
-//       .info-cell strong { display:block; font-size:9px; text-transform:uppercase; letter-spacing:1.5px; color:#9ca3af; margin-bottom:2px; }
-//       .spacer    { flex:1; }
-//       .r3        { height:1px; background:${c}; margin-bottom:3px; }
-//       .r4        { height:3px; background:${c}; }
-//     `),
-//       `<div class="pg">
-//        <div class="r1"></div><div class="r2"></div>
-//        <div class="nm">${nm}</div>
-//        <div class="ttl">${ttl}</div>
-//        <div class="info-row">${[
-//          ["Date", dt],
-//          ["Email", d.personal.email || "—"],
-//          ["Phone", d.personal.phone || "—"],
-//          ["Location", d.personal.location || "—"],
-//        ]
-//          .map(
-//            ([l, v]) => `<div class="info-cell"><strong>${l}</strong>${v}</div>`,
-//          )
-//          .join("")}</div>
-//        ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//        <div class="spacer"></div>
-//        <div class="r3"></div><div class="r4"></div>
-//      </div>`,
-//     );
-
-//   // ── 6. PALISADE ─────────────────────────────────────────────────
-//   if (id === "palisade")
-//     return wrap(
-//       baseCSS(`
-//       .pg       { width:860px; min-height:1122px; margin:0; padding:64px 80px; background:#faf9f7; display:flex; flex-direction:column; }
-//       .top      { text-align:center; margin-bottom:36px; }
-//       .nm       { font-size:42px; font-weight:700; color:#1c1917; letter-spacing:-.5px; line-height:1.1; }
-//       .ttl      { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:#78716c; margin-top:8px; }
-//       .ornament { display:flex; align-items:center; gap:12px; margin:20px 0; }
-//       .orn-line { flex:1; height:.5px; background:#d6d3d1; }
-//       .orn-dot  { font-size:18px; color:#a8a29e; }
-//       .contact  { text-align:center; font-size:12px; color:#78716c; letter-spacing:.5px; margin-bottom:8px; }
-//     `),
-//       `<div class="pg">
-//        <div class="top">
-//          <div class="nm">${nm}</div>
-//          <div class="ttl">${ttl}</div>
-//          <div class="ornament"><div class="orn-line"></div><div class="orn-dot">✦</div><div class="orn-line"></div></div>
-//          <div class="contact">${contactLine}</div>
-//        </div>
-//        <p style="font-size:12px;color:#9ca3af;margin-bottom:28px">${dt}</p>
-//        ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//      </div>`,
-//     );
-
-//   // ── 7. SUNDIAL ──────────────────────────────────────────────────
-//   if (id === "sundial")
-//     return wrap(
-//       baseCSS(`
-//       .pg   { width:860px; min-height:1122px; margin:0; background:#fff; position:relative; overflow:hidden; display:flex; flex-direction:column; }
-//       .arc  { position:absolute; top:-80px; right:-80px; width:280px; height:280px; border-radius:50%; border:40px solid ${c}10; pointer-events:none; }
-//       .arc2 { position:absolute; top:-40px; right:-40px; width:180px; height:180px; border-radius:50%; border:20px solid ${c}18; pointer-events:none; }
-//       .hdr  { padding:52px 64px 36px; border-bottom:2px solid ${c}15; position:relative; flex-shrink:0; }
-//       .nm   { font-size:42px; font-weight:700; color:#111; letter-spacing:-1.5px; margin-bottom:6px; }
-//       .ttl  { font-size:13px; color:${c}; font-weight:600; margin-bottom:20px; }
-//       .ctrow{ display:flex; flex-wrap:wrap; gap:4px 20px; }
-//       .cv   { font-size:12px; color:#6b7280; }
-//       .body { padding:52px 64px; flex:1; }
-//     `),
-//       `<div class="pg">
-//        <div class="arc"></div><div class="arc2"></div>
-//        <div class="hdr">
-//          <div class="nm">${nm}</div>
-//          <div class="ttl">${ttl}</div>
-//          <div class="ctrow">${[
-//            d.personal.email,
-//            d.personal.phone,
-//            d.personal.location,
-//          ]
-//            .filter(Boolean)
-//            .map((v) => `<span class="cv">${v}</span>`)
-//            .join("")}</div>
-//        </div>
-//        <div class="body">
-//          <p style="font-size:11.5px;color:#9ca3af;margin-bottom:28px">${dt}</p>
-//          ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//        </div>
-//      </div>`,
-//     );
-
-//   // ── 8. MERIDIEM ─────────────────────────────────────────────────
-//   if (id === "meridiem")
-//     return wrap(
-//       baseCSS(`
-//       .pg     { width:860px; min-height:1122px; margin:0; background:#fff; display:flex; flex-direction:column; }
-//       .hdr    { padding:0 52px; background:${c}; display:grid; grid-template-columns:1fr auto; align-items:center; gap:24px; min-height:120px; flex-shrink:0; }
-//       .hl .nm { font-size:34px; font-weight:700; color:#fff; letter-spacing:-1.5px; }
-//       .hl .ttl{ font-size:10px; letter-spacing:2.5px; text-transform:uppercase; color:rgba(255,255,255,.55); margin-top:6px; }
-//       .badge  { background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2); border-radius:12px; padding:16px 22px; text-align:right; }
-//       .badge-l{ font-size:8.5px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,.5); margin-bottom:4px; }
-//       .badge-v{ font-size:13px; font-weight:700; color:#fff; line-height:1.4; }
-//       .stripe { height:4px; background:rgba(255,255,255,.25); }
-//       .ctbar  { background:${c}dd; padding:10px 52px; display:flex; flex-wrap:wrap; gap:0 28px; flex-shrink:0; }
-//       .cv     { font-size:11px; color:rgba(255,255,255,.6); padding:6px 0; }
-//       .body   { padding:44px 52px; flex:1; }
-//     `),
-//       `<div class="pg">
-//        <div class="hdr">
-//          <div class="hl"><div class="nm">${nm}</div><div class="ttl">${ttl}</div></div>
-//          ${d.company.name ? `<div class="badge"><div class="badge-l">Applying To</div><div class="badge-v">${d.company.jobTitle || "Open Role"}<br><span style="font-size:11px;font-weight:400;opacity:.75">${d.company.name}</span></div></div>` : ""}
-//        </div>
-//        <div class="stripe"></div>
-//        <div class="ctbar">${[
-//          d.personal.email,
-//          d.personal.phone,
-//          d.personal.location,
-//          d.personal.linkedin,
-//        ]
-//          .filter(Boolean)
-//          .map((v) => `<span class="cv">${v}</span>`)
-//          .join("")}</div>
-//        <div class="body">
-//          <p style="font-size:11.5px;color:#9ca3af;margin-bottom:28px">${dt}</p>
-//          ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//        </div>
-//      </div>`,
-//     );
-
-//   // ── 9. FOLIO ────────────────────────────────────────────────────
-//   // Folio wraps content in a card — we make the outer container fill
-//   // the page and the inner card fill the outer container.
-//   if (id === "folio")
-//     return wrap(
-//       baseCSS(`
-//       .pg        { width:860px; min-height:1122px; margin:0; padding:16px; background:#f1f5f9; display:flex; flex-direction:column; }
-//       .outer     { background:#fff; border-radius:16px; overflow:hidden; box-shadow:0 4px 24px rgba(0,0,0,.08); flex:1; display:flex; flex-direction:column; }
-//       .inner-hdr { background:${c}; padding:44px 52px; position:relative; overflow:hidden; flex-shrink:0; }
-//       .geo  { position:absolute; right:-30px; bottom:-30px; width:160px; height:160px; border-radius:50%; background:rgba(255,255,255,.06); }
-//       .geo2 { position:absolute; right:20px;  bottom:20px;  width:80px;  height:80px;  border-radius:50%; background:rgba(255,255,255,.06); }
-//       .nm   { font-size:40px; font-weight:700; color:#fff; letter-spacing:-1.5px; position:relative; }
-//       .ttl  { font-size:12px; color:rgba(255,255,255,.6); margin-top:6px; margin-bottom:20px; letter-spacing:1px; position:relative; }
-//       .chips{ display:flex; flex-wrap:wrap; gap:6px; position:relative; }
-//       .chip { font-size:11px; color:rgba(255,255,255,.8); background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.2); padding:4px 12px; border-radius:20px; }
-//       .body { padding:44px 52px; flex:1; }
-//     `),
-//       `<div class="pg">
-//        <div class="outer">
-//          <div class="inner-hdr">
-//            <div class="geo"></div><div class="geo2"></div>
-//            <div class="nm">${nm}</div>
-//            <div class="ttl">${ttl}</div>
-//            <div class="chips">${[
-//              d.personal.email,
-//              d.personal.phone,
-//              d.personal.location,
-//            ]
-//              .filter(Boolean)
-//              .map((v) => `<span class="chip">${v}</span>`)
-//              .join("")}</div>
-//          </div>
-//          <div class="body">
-//            <p style="font-size:11.5px;color:#9ca3af;margin-bottom:28px">${dt}</p>
-//            ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//          </div>
-//        </div>
-//      </div>`,
-//     );
-
-//   // ── 10. DISPATCH ────────────────────────────────────────────────
-//   if (id === "dispatch")
-//     return wrap(
-//       baseCSS(`
-//       .pg      { width:860px; min-height:1122px; margin:0; padding:60px 72px; background:#fff; display:flex; flex-direction:column; }
-//       .nm      { font-size:64px; font-weight:900; color:#111; letter-spacing:-4px; text-transform:uppercase; line-height:.9; margin-bottom:14px; }
-//       .ttl-pill{ font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:#fff; background:${c}; padding:5px 14px; border-radius:4px; display:inline-block; margin-bottom:20px; }
-//       .cv-row  { font-size:11.5px; color:#6b7280; display:flex; flex-wrap:wrap; gap:4px 16px; margin-bottom:40px; }
-//       .hr      { height:1.5px; background:#111; margin-bottom:32px; }
-//     `),
-//       `<div class="pg">
-//        <div class="nm">${nm}</div>
-//        <div class="ttl-pill">${ttl}</div>
-//        <div class="cv-row">${[
-//          d.personal.email,
-//          d.personal.phone,
-//          d.personal.location,
-//          d.personal.linkedin,
-//        ]
-//          .filter(Boolean)
-//          .map((v) => `<span>${v}</span>`)
-//          .join("")}</div>
-//        <div class="hr"></div>
-//        <p style="font-size:11.5px;color:#9ca3af;margin-bottom:24px">${dt}</p>
-//        ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//      </div>`,
-//     );
-
-//   // ── 11. VELLUM ──────────────────────────────────────────────────
-//   // FIX: previously had side border + padding but max-width caused gaps.
-//   // Now border is on .pg itself at full 860px width.
-//   if (id === "vellum")
-//     return wrap(
-//       baseCSS(`
-//       .pg     { width:860px; min-height:1122px; margin:0; padding:64px 80px; background:#fefce8; border-left:4px solid ${c}66; border-right:4px solid ${c}66; box-sizing:border-box; display:flex; flex-direction:column; }
-//       .nm     { font-size:38px; font-weight:700; color:#1c1917; letter-spacing:-.5px; margin-bottom:4px; }
-//       .ttl    { font-size:12px; color:#78716c; font-style:italic; margin-bottom:20px; }
-//       .hr1    { height:.5px; background:${c}66; margin-bottom:8px; }
-//       .hr2    { height:2px;  background:${c}66; margin-bottom:28px; }
-//       .cv-row { display:flex; flex-wrap:wrap; gap:4px 20px; margin-bottom:12px; font-size:12px; color:#78716c; }
-//     `),
-//       `<div class="pg">
-//        <div class="nm">${nm}</div>
-//        <div class="ttl">${ttl}</div>
-//        <div class="hr1"></div><div class="hr2"></div>
-//        <div class="cv-row">${[
-//          d.personal.email,
-//          d.personal.phone,
-//          d.personal.location,
-//        ]
-//          .filter(Boolean)
-//          .map((v) => `<span>${v}</span>`)
-//          .join("")}</div>
-//        <div style="height:.5px;background:${c}33;margin-bottom:32px"></div>
-//        <p style="font-size:12px;color:#9ca3af;margin-bottom:24px">${dt}</p>
-//        ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//      </div>`,
-//     );
-
-//   // ── 12. PAVILION ────────────────────────────────────────────────
-//   if (id === "pavilion")
-//     return wrap(
-//       baseCSS(`
-//       .pg      { width:860px; min-height:1122px; margin:0; background:#eff6ff; display:flex; flex-direction:column; }
-//       .hdr     { padding:48px 56px; background:#1e3a8a; position:relative; overflow:hidden; flex-shrink:0; }
-//       .grid-bg { position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px); background-size:24px 24px; }
-//       .nm      { position:relative; font-size:42px; font-weight:800; color:#fff; letter-spacing:-1.5px; margin-bottom:6px; }
-//       .ttl     { position:relative; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#93c5fd; margin-bottom:20px; }
-//       .cv-row  { position:relative; display:flex; flex-wrap:wrap; gap:4px 16px; font-size:11px; color:#bfdbfe; }
-//       .body    { padding:44px 56px; flex:1; background:#fff; }
-//     `),
-//       `<div class="pg">
-//        <div class="hdr">
-//          <div class="grid-bg"></div>
-//          <div class="nm">${nm}</div>
-//          <div class="ttl">${ttl}</div>
-//          <div class="cv-row">${[
-//            d.personal.email,
-//            d.personal.phone,
-//            d.personal.location,
-//          ]
-//            .filter(Boolean)
-//            .map((v) => `<span>${v}</span>`)
-//            .join("")}</div>
-//        </div>
-//        <div class="body">
-//          <p style="font-size:11.5px;color:#9ca3af;margin-bottom:28px">${dt}</p>
-//          ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//        </div>
-//      </div>`,
-//     );
-
-//   // ── 13. REVUE ───────────────────────────────────────────────────
-//   if (id === "revue")
-//     return wrap(
-//       baseCSS(`
-//       .pg         { width:860px; min-height:1122px; margin:0; background:#fff; display:flex; flex-direction:column; }
-//       .hdr        { display:flex; min-height:160px; flex-shrink:0; }
-//       .hdr-accent { width:12px; background:${c}; flex-shrink:0; }
-//       .hdr-body   { padding:44px 56px; flex:1; border-bottom:1px solid #f3f4f6; }
-//       .nm         { font-size:52px; font-weight:900; letter-spacing:-3px; color:#111; line-height:.9; font-style:italic; }
-//       .meta       { display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:16px; margin-top:12px; }
-//       .ttl        { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:${c}; font-style:normal; }
-//       .cv-row     { font-size:11.5px; color:#6b7280; display:flex; flex-wrap:wrap; gap:4px 16px; }
-//       .body       { padding:44px 56px; flex:1; }
-//     `),
-//       `<div class="pg">
-//        <div class="hdr">
-//          <div class="hdr-accent"></div>
-//          <div class="hdr-body">
-//            <div class="nm">${nm}</div>
-//            <div class="meta">
-//              <div class="ttl">${ttl}</div>
-//              <div class="cv-row">${[
-//                d.personal.email,
-//                d.personal.phone,
-//                d.personal.location,
-//              ]
-//                .filter(Boolean)
-//                .map((v) => `<span>${v}</span>`)
-//                .join("")}</div>
-//            </div>
-//          </div>
-//        </div>
-//        <div class="body">
-//          <p style="font-size:11.5px;color:#9ca3af;margin-bottom:28px">${dt}</p>
-//          ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//        </div>
-//      </div>`,
-//     );
-
-//   // ── 14. HELIX (sidebar) ─────────────────────────────────────────
-//   if (id === "helix")
-//     return wrap(
-//       baseCSS(`
-//       .pg     { width:860px; min-height:1122px; margin:0; display:flex; background:#fff; }
-//       .strand { width:8px; flex-shrink:0; background:repeating-linear-gradient(to bottom,${c} 0,${c} 20px,${c}33 20px,${c}33 30px); }
-//       .side   { width:200px; background:${c}06; padding:44px 24px; border-right:1px solid ${c}15; flex-shrink:0; }
-//       .si-nm  { font-size:22px; font-weight:700; color:${c}; line-height:1.2; margin-bottom:6px; }
-//       .si-ttl { font-size:9px; letter-spacing:2px; text-transform:uppercase; color:#9ca3af; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid ${c}15; }
-//       .si-lbl { font-size:8px; letter-spacing:1.5px; text-transform:uppercase; color:${c}88; margin-top:16px; margin-bottom:3px; }
-//       .si-val { font-size:11px; color:#374151; line-height:1.7; }
-//       .si-val a{ color:${c}; text-decoration:none; }
-//       .main   { flex:1; padding:48px 44px; }
-//     `),
-//       `<div class="pg">
-//        <div class="strand"></div>
-//        <div class="side">
-//          <div class="si-nm">${nm}</div>
-//          <div class="si-ttl">${ttl}</div>
-//          ${d.personal.email ? `<div class="si-lbl">Email</div><div class="si-val"><a href="mailto:${d.personal.email}">${d.personal.email}</a></div>` : ""}
-//          ${d.personal.phone ? `<div class="si-lbl">Phone</div><div class="si-val">${d.personal.phone}</div>` : ""}
-//          ${d.personal.location ? `<div class="si-lbl">Location</div><div class="si-val">${d.personal.location}</div>` : ""}
-//          ${d.personal.linkedin ? `<div class="si-lbl">LinkedIn</div><div class="si-val"><a href="https://${d.personal.linkedin.replace(/^https?:\/\//, "")}">${d.personal.linkedin}</a></div>` : ""}
-//        </div>
-//        <div class="main">
-//          <p style="font-size:11.5px;color:#9ca3af;margin-bottom:28px">${dt}</p>
-//          ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//        </div>
-//      </div>`,
-//     );
-
-//   // ── 15. EMBASSY ─────────────────────────────────────────────────
-//   if (id === "embassy")
-//     return wrap(
-//       baseCSS(`
-//       .pg          { width:860px; min-height:1122px; margin:0; padding:56px 72px; background:#fff; display:flex; flex-direction:column; }
-//       .seal-row    { display:flex; flex-direction:column; align-items:center; margin-bottom:32px; }
-//       .seal        { width:64px; height:64px; border-radius:50%; border:3px double ${c}; display:flex; align-items:center; justify-content:center; font-size:22px; color:${c}; margin-bottom:12px; }
-//       .nm          { text-align:center; font-size:40px; font-weight:700; letter-spacing:-1px; color:#111; margin-bottom:6px; }
-//       .ttl         { text-align:center; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#6b7280; }
-//       .rule-row    { display:flex; align-items:center; gap:8px; margin:20px 0; }
-//       .rule-line   { flex:1; height:1px; background:${c}55; }
-//       .rule-diamond{ font-size:10px; color:${c}; }
-//       .cv-row      { text-align:center; font-size:12px; color:#6b7280; margin-bottom:32px; display:flex; flex-wrap:wrap; justify-content:center; gap:4px 16px; }
-//     `),
-//       `<div class="pg">
-//        <div class="seal-row">
-//          <div class="seal">✦</div>
-//          <div class="nm">${nm}</div>
-//          <div class="ttl">${ttl}</div>
-//        </div>
-//        <div class="rule-row"><div class="rule-line"></div><div class="rule-diamond">◆</div><div class="rule-line"></div></div>
-//        <div class="cv-row">${[
-//          d.personal.email,
-//          d.personal.phone,
-//          d.personal.location,
-//        ]
-//          .filter(Boolean)
-//          .map((v) => `<span>${v}</span>`)
-//          .join("")}</div>
-//        <p style="font-size:12px;color:#9ca3af;margin-bottom:24px">${dt}</p>
-//        ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//      </div>`,
-//     );
-
-//   // ── 16. KODEX ───────────────────────────────────────────────────
-//   if (id === "kodex")
-//     return wrap(
-//       baseCSS(`
-//       @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
-//       .pg    { width:860px; min-height:1122px; margin:0; background:#fff; display:flex; flex-direction:column; }
-//       .hdr   { background:${c}; padding:36px 52px; flex-shrink:0; }
-//       .nm    { font-size:38px; font-weight:800; color:#fff; letter-spacing:-1.5px; margin-bottom:6px; }
-//       .ttl   { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,.55); margin-bottom:20px; }
-//       .table { width:100%; border-collapse:collapse; background:rgba(255,255,255,.08); }
-//       .table td { padding:8px 14px; font-size:11px; color:rgba(255,255,255,.8); border:1px solid rgba(255,255,255,.1); font-family:'JetBrains Mono',monospace; }
-//       .lbl   { color:rgba(255,255,255,.45); font-size:9px; text-transform:uppercase; letter-spacing:1px; }
-//       .body  { padding:44px 52px; flex:1; }
-//     `),
-//       `<div class="pg">
-//        <div class="hdr">
-//          <div class="nm">${nm}</div>
-//          <div class="ttl">${ttl}</div>
-//          <table class="table"><tr>${[
-//            ["EMAIL", d.personal.email || "—"],
-//            ["PHONE", d.personal.phone || "—"],
-//            ["LOCATION", d.personal.location || "—"],
-//            ["DATE", dt],
-//          ]
-//            .map(([l, v]) => `<td><div class="lbl">${l}</div>${v}</td>`)
-//            .join("")}</tr></table>
-//        </div>
-//        <div class="body">
-//          ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//        </div>
-//      </div>`,
-//     );
-
-//   // ── 17. BRUSHWORK ───────────────────────────────────────────────
-//   if (id === "brushwork")
-//     return wrap(
-//       baseCSS(`
-//       .pg        { width:860px; min-height:1122px; margin:0; background:#fff; display:flex; flex-direction:column; }
-//       .brush     { height:12px; background:linear-gradient(90deg,${c}cc,${c}44,${c}88,${c}66); flex-shrink:0; }
-//       .hdr       { padding:44px 60px 36px; border-bottom:1px dashed ${c}33; flex-shrink:0; }
-//       .nm        { font-size:44px; font-weight:700; color:#1c1917; letter-spacing:-1.5px; margin-bottom:6px; }
-//       .ttl       { font-size:12px; color:${c}; font-style:italic; margin-bottom:18px; }
-//       .cv-row    { display:flex; flex-wrap:wrap; gap:4px 18px; font-size:12px; color:#78716c; }
-//       .body      { padding:44px 60px; flex:1; }
-//       .foot-brush{ height:8px; background:linear-gradient(90deg,${c}44,${c}88,${c}22); flex-shrink:0; }
-//     `),
-//       `<div class="pg">
-//        <div class="brush"></div>
-//        <div class="hdr">
-//          <div class="nm">${nm}</div>
-//          <div class="ttl">${ttl}</div>
-//          <div class="cv-row">${[
-//            d.personal.email,
-//            d.personal.phone,
-//            d.personal.location,
-//          ]
-//            .filter(Boolean)
-//            .map((v) => `<span>${v}</span>`)
-//            .join("")}</div>
-//        </div>
-//        <div class="body">
-//          <p style="font-size:11.5px;color:#9ca3af;margin-bottom:28px">${dt}</p>
-//          ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//        </div>
-//        <div class="foot-brush"></div>
-//      </div>`,
-//     );
-
-//   // ── 18. TERRACE ─────────────────────────────────────────────────
-//   if (id === "terrace")
-//     return wrap(
-//       baseCSS(`
-//       .pg     { width:860px; min-height:1122px; margin:0; background:#fff; display:flex; flex-direction:column; }
-//       .t1     { height:8px; background:${c}; flex-shrink:0; }
-//       .t2     { background:${c}dd; padding:36px 52px; flex-shrink:0; }
-//       .t3     { background:${c}aa; padding:12px 52px; flex-shrink:0; }
-//       .nm     { font-size:40px; font-weight:700; color:#fff; letter-spacing:-1.5px; margin-bottom:4px; }
-//       .ttl    { font-size:11px; letter-spacing:2.5px; text-transform:uppercase; color:rgba(255,255,255,.6); }
-//       .cv-row { display:flex; flex-wrap:wrap; gap:4px 16px; font-size:11px; color:rgba(255,255,255,.7); }
-//       .body   { padding:44px 52px; flex:1; }
-//     `),
-//       `<div class="pg">
-//        <div class="t1"></div>
-//        <div class="t2"><div class="nm">${nm}</div><div class="ttl">${ttl}</div></div>
-//        <div class="t3"><div class="cv-row">${[
-//          d.personal.email,
-//          d.personal.phone,
-//          d.personal.location,
-//          d.personal.linkedin,
-//        ]
-//          .filter(Boolean)
-//          .map((v) => `<span>${v}</span>`)
-//          .join("")}</div></div>
-//        <div class="body">
-//          <p style="font-size:11.5px;color:#9ca3af;margin-bottom:28px">${dt}</p>
-//          ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//        </div>
-//      </div>`,
-//     );
-
-//   // ── 19. ALPINE ──────────────────────────────────────────────────
-//   if (id === "alpine")
-//     return wrap(
-//       baseCSS(`
-//       .pg      { width:860px; min-height:1122px; margin:0; background:#fff; overflow:hidden; display:flex; flex-direction:column; }
-//       .hdr     { position:relative; background:${c}; padding:52px 60px 48px; overflow:hidden; flex-shrink:0; }
-//       .slash   { position:absolute; right:0; top:0; bottom:0; width:45%; background:rgba(255,255,255,.07); clip-path:polygon(30% 0,100% 0,100% 100%,0 100%); }
-//       .slash2  { position:absolute; right:0; top:0; bottom:0; width:30%; background:rgba(255,255,255,.05); clip-path:polygon(40% 0,100% 0,100% 100%,0 100%); }
-//       .nm      { position:relative; font-size:46px; font-weight:800; color:#fff; letter-spacing:-2px; line-height:.95; margin-bottom:8px; }
-//       .ttl     { position:relative; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,.55); margin-bottom:20px; }
-//       .cv-row  { position:relative; display:flex; flex-wrap:wrap; gap:6px; }
-//       .cv-chip { font-size:11px; color:rgba(255,255,255,.8); background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2); padding:4px 12px; border-radius:3px; }
-//       .body    { padding:48px 60px; flex:1; }
-//     `),
-//       `<div class="pg">
-//        <div class="hdr">
-//          <div class="slash"></div><div class="slash2"></div>
-//          <div class="nm">${nm}</div>
-//          <div class="ttl">${ttl}</div>
-//          <div class="cv-row">${[
-//            d.personal.email,
-//            d.personal.phone,
-//            d.personal.location,
-//          ]
-//            .filter(Boolean)
-//            .map((v) => `<span class="cv-chip">${v}</span>`)
-//            .join("")}</div>
-//        </div>
-//        <div class="body">
-//          <p style="font-size:11.5px;color:#9ca3af;margin-bottom:28px">${dt}</p>
-//          ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//        </div>
-//      </div>`,
-//     );
-
-//   // ── 20. SIGNAL ──────────────────────────────────────────────────
-//   if (id === "signal")
-//     return wrap(
-//       baseCSS(`
-//       .pg           { width:860px; min-height:1122px; margin:0; background:#fff; display:flex; flex-direction:column; }
-//       .broadcast    { background:${c}; padding:10px 52px; display:flex; align-items:center; gap:12px; flex-shrink:0; }
-//       .dot          { width:8px; height:8px; border-radius:50%; background:#fff; flex-shrink:0; }
-//       .broadcast-txt{ font-size:9.5px; letter-spacing:2.5px; text-transform:uppercase; color:rgba(255,255,255,.8); }
-//       .hdr          { padding:40px 52px; border-bottom:2px solid #111; flex-shrink:0; }
-//       .nm           { font-size:48px; font-weight:900; color:#111; letter-spacing:-3px; text-transform:uppercase; line-height:.9; margin-bottom:10px; }
-//       .bottom-row   { display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:12px; }
-//       .ttl          { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:${c}; font-weight:700; }
-//       .cv-row       { font-size:11.5px; color:#6b7280; display:flex; flex-wrap:wrap; gap:4px 14px; }
-//       .body         { padding:44px 52px; flex:1; }
-//     `),
-//       `<div class="pg">
-//        <div class="broadcast"><div class="dot"></div><div class="broadcast-txt">Cover Letter · ${dt}</div></div>
-//        <div class="hdr">
-//          <div class="nm">${nm}</div>
-//          <div class="bottom-row">
-//            <div class="ttl">${ttl}</div>
-//            <div class="cv-row">${[
-//              d.personal.email,
-//              d.personal.phone,
-//              d.personal.location,
-//            ]
-//              .filter(Boolean)
-//              .map((v) => `<span>${v}</span>`)
-//              .join("")}</div>
-//          </div>
-//        </div>
-//        <div class="body">${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div>
-//      </div>`,
-//     );
-
-//   // ══════════════════════════════════════════════════════════════════
-//   // B&W TEMPLATES (21–30)
-//   // ══════════════════════════════════════════════════════════════════
-
-//   // ── 21. MONO ────────────────────────────────────────────────────
-//   if (id === "mono")
-//     return wrap(
-//       baseCSS(`
-//       .pg     { width:860px; min-height:1122px; margin:0; padding:72px 88px; background:#fff; display:flex; flex-direction:column; }
-//       .nm     { font-size:44px; font-weight:800; color:#000; letter-spacing:-2px; margin-bottom:2px; }
-//       .ttl    { font-size:11px; letter-spacing:4px; text-transform:uppercase; color:#000; margin-bottom:20px; }
-//       .rule   { height:1px; background:#000; margin-bottom:20px; }
-//       .cv-row { display:flex; flex-wrap:wrap; gap:4px 20px; font-size:11.5px; color:#333; margin-bottom:40px; }
-//     `),
-//       `<div class="pg">
-//        <div class="nm">${nm}</div>
-//        <div class="ttl">${ttl}</div>
-//        <div class="rule"></div>
-//        <div class="cv-row">${[
-//          d.personal.email,
-//          d.personal.phone,
-//          d.personal.location,
-//          d.personal.linkedin,
-//        ]
-//          .filter(Boolean)
-//          .map((v) => `<span>${v}</span>`)
-//          .join(" &nbsp;·&nbsp; ")}</div>
-//        <p style="font-size:11px;color:#888;margin-bottom:28px">${dt}</p>
-//        ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//      </div>`,
-//     );
-
-//   // ── 22. TYPEWRITER ──────────────────────────────────────────────
-//   if (id === "typewriter")
-//     return wrap(
-//       baseCSS(`
-//       @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap');
-//       .pg   { width:860px; min-height:1122px; margin:0; background:#fff; font-family:'Courier Prime','Courier New',monospace; display:flex; flex-direction:column; }
-//       .hdr  { background:#111; padding:32px 56px; flex-shrink:0; }
-//       .nm   { font-size:32px; font-weight:700; color:#fff; letter-spacing:2px; text-transform:uppercase; }
-//       .ttl  { font-size:10px; letter-spacing:4px; text-transform:uppercase; color:#aaa; margin-top:6px; }
-//       .sub  { background:#f5f5f0; padding:12px 56px; border-bottom:2px solid #111; display:flex; flex-wrap:wrap; gap:4px 20px; font-size:11px; color:#333; flex-shrink:0; }
-//       .body { padding:48px 56px; font-family:'Courier Prime','Courier New',monospace; font-size:13.5px; line-height:1.9; color:#111; flex:1; }
-//     `),
-//       `<div class="pg">
-//        <div class="hdr"><div class="nm">${nm}</div><div class="ttl">${ttl}</div></div>
-//        <div class="sub">${[
-//          dt,
-//          d.personal.email,
-//          d.personal.phone,
-//          d.personal.location,
-//        ]
-//          .filter(Boolean)
-//          .map((v) => `<span>${v}</span>`)
-//          .join(" &nbsp;|&nbsp; ")}</div>
-//        <div class="body">${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div>
-//      </div>`,
-//     );
-
-//   // ── 23. SPECIMEN ────────────────────────────────────────────────
-//   if (id === "specimen")
-//     return wrap(
-//       baseCSS(`
-//       .pg       { width:860px; min-height:1122px; margin:0; padding:64px 72px; background:#fff; display:flex; flex-direction:column; }
-//       .top-row  { display:flex; align-items:flex-end; gap:20px; padding-bottom:16px; border-bottom:3px solid #000; }
-//       .initial  { font-size:96px; font-weight:900; color:#000; line-height:1; margin-bottom:-12px; letter-spacing:-6px; flex-shrink:0; }
-//       .name-col .nm  { font-size:22px; font-weight:800; color:#000; letter-spacing:-.5px; text-transform:uppercase; }
-//       .name-col .ttl { font-size:9px; letter-spacing:3.5px; text-transform:uppercase; color:#555; margin-top:4px; margin-bottom:10px; }
-//       .cv-row   { display:flex; flex-wrap:wrap; gap:3px 14px; font-size:11px; color:#333; }
-//       .r2       { height:1px; background:#ddd; margin-top:16px; margin-bottom:32px; }
-//     `),
-//       `<div class="pg">
-//        <div class="top-row">
-//          <div class="initial">${nm.charAt(0) || "A"}</div>
-//          <div class="name-col">
-//            <div class="nm">${nm}</div>
-//            <div class="ttl">${ttl}</div>
-//            <div class="cv-row">${[
-//              d.personal.email,
-//              d.personal.phone,
-//              d.personal.location,
-//            ]
-//              .filter(Boolean)
-//              .map((v) => `<span>${v}</span>`)
-//              .join(" · ")}</div>
-//          </div>
-//        </div>
-//        <div class="r2"></div>
-//        <p style="font-size:11px;color:#888;margin-bottom:24px">${dt}</p>
-//        ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//      </div>`,
-//     );
-
-//   // ── 24. GRID ────────────────────────────────────────────────────
-//   if (id === "grid")
-//     return wrap(
-//       baseCSS(`
-//       .pg     { width:860px; min-height:1122px; margin:0; padding:64px 72px; background:#fff; background-image:repeating-linear-gradient(to bottom,transparent,transparent 27px,#e8e8e8 27px,#e8e8e8 28px); background-size:100% 28px; background-position:0 64px; display:flex; flex-direction:column; }
-//       .nm     { font-size:42px; font-weight:800; color:#000; letter-spacing:-1.5px; position:relative; z-index:1; }
-//       .ttl    { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:#444; margin-bottom:16px; position:relative; z-index:1; }
-//       .cv-row { display:flex; flex-wrap:wrap; gap:3px 16px; font-size:11.5px; color:#333; margin-bottom:56px; position:relative; z-index:1; }
-//       .rule   { height:2px; background:#000; margin-bottom:28px; position:relative; z-index:1; }
-//     `),
-//       `<div class="pg">
-//        <div class="nm">${nm}</div>
-//        <div class="ttl">${ttl}</div>
-//        <div class="cv-row">${[
-//          d.personal.email,
-//          d.personal.phone,
-//          d.personal.location,
-//        ]
-//          .filter(Boolean)
-//          .map((v) => `<span>${v}</span>`)
-//          .join(" · ")}</div>
-//        <div class="rule"></div>
-//        <p style="font-size:11px;color:#888;margin-bottom:28px;position:relative;z-index:1">${dt}</p>
-//        ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//      </div>`,
-//     );
-
-//   // ── 25. STENCIL ─────────────────────────────────────────────────
-//   if (id === "stencil")
-//     return wrap(
-//       baseCSS(`
-//       @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap');
-//       .pg     { width:860px; min-height:1122px; margin:0; padding:8px; background:#fff; display:flex; flex-direction:column; }
-//       .inner  { border:3px solid #000; padding:52px 60px; flex:1; display:flex; flex-direction:column; }
-//       .nm     { font-family:'Black Han Sans','Arial Black',sans-serif; font-size:48px; font-weight:900; color:#000; letter-spacing:4px; text-transform:uppercase; line-height:1; margin-bottom:8px; }
-//       .ttl    { font-size:9px; letter-spacing:6px; text-transform:uppercase; color:#000; border:1px solid #000; display:inline-block; padding:4px 12px; margin-bottom:20px; }
-//       .dbl    { height:3px; background:#000; margin-bottom:3px; }
-//       .dbl2   { height:1px; background:#000; margin-bottom:24px; }
-//       .cv-row { font-size:11px; color:#222; letter-spacing:1px; margin-bottom:8px; text-transform:uppercase; }
-//     `),
-//       `<div class="pg">
-//        <div class="inner">
-//          <div class="nm">${nm}</div>
-//          <div class="ttl">${ttl}</div>
-//          <div class="dbl"></div><div class="dbl2"></div>
-//          <div class="cv-row">${[d.personal.email, d.personal.phone, d.personal.location].filter(Boolean).join("  ·  ")}</div>
-//          <p style="font-size:11px;color:#777;margin:20px 0 24px">${dt}</p>
-//          ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//        </div>
-//      </div>`,
-//     );
-
-//   // ── 26. HAIRLINE ────────────────────────────────────────────────
-//   if (id === "hairline")
-//     return wrap(
-//       baseCSS(`
-//       .pg     { width:860px; min-height:1122px; margin:0; padding:80px 96px; background:#fff; display:flex; flex-direction:column; }
-//       .r0     { height:.5px; background:#ccc; margin-bottom:28px; }
-//       .nm     { font-size:38px; font-weight:300; color:#111; letter-spacing:-.5px; margin-bottom:6px; }
-//       .ttl    { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#888; font-weight:400; margin-bottom:20px; }
-//       .r1     { height:.5px; background:#bbb; margin-bottom:14px; }
-//       .cv-row { display:flex; flex-wrap:wrap; gap:3px 20px; font-size:11px; color:#666; margin-bottom:14px; }
-//       .r2     { height:.5px; background:#bbb; margin-bottom:36px; }
-//     `),
-//       `<div class="pg">
-//        <div class="r0"></div>
-//        <div class="nm">${nm}</div>
-//        <div class="ttl">${ttl}</div>
-//        <div class="r1"></div>
-//        <div class="cv-row">${[
-//          d.personal.email,
-//          d.personal.phone,
-//          d.personal.location,
-//          d.personal.linkedin,
-//        ]
-//          .filter(Boolean)
-//          .map((v) => `<span>${v}</span>`)
-//          .join("")}</div>
-//        <div class="r2"></div>
-//        <p style="font-size:11px;color:#aaa;margin-bottom:28px">${dt}</p>
-//        ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//      </div>`,
-//     );
-
-//   // ── 27. BROADSHEET ──────────────────────────────────────────────
-//   if (id === "broadsheet")
-//     return wrap(
-//       baseCSS(`
-//       .pg      { width:860px; min-height:1122px; margin:0; background:#fff; display:flex; flex-direction:column; }
-//       .mast    { background:#000; padding:0 56px; display:flex; align-items:center; justify-content:space-between; gap:24px; min-height:100px; flex-wrap:wrap; flex-shrink:0; }
-//       .nm      { font-size:48px; font-weight:900; color:#fff; letter-spacing:-2px; line-height:1; }
-//       .right   { text-align:right; }
-//       .ttl     { font-size:9px; letter-spacing:4px; text-transform:uppercase; color:#aaa; margin-bottom:6px; }
-//       .cv-sm   { font-size:10.5px; color:#ccc; line-height:1.8; }
-//       .stripe  { height:6px; background:repeating-linear-gradient(90deg,#fff 0,#fff 8px,#000 8px,#000 16px); flex-shrink:0; }
-//       .subbar  { background:#f0f0f0; padding:10px 56px; border-bottom:1px solid #ddd; font-size:10.5px; color:#444; display:flex; flex-wrap:wrap; gap:4px 20px; flex-shrink:0; }
-//       .body    { padding:48px 56px; flex:1; }
-//     `),
-//       `<div class="pg">
-//        <div class="mast">
-//          <div class="nm">${nm}</div>
-//          <div class="right">
-//            <div class="ttl">${ttl}</div>
-//            <div class="cv-sm">${[d.personal.email, d.personal.phone]
-//              .filter(Boolean)
-//              .map((v) => `<div>${v}</div>`)
-//              .join("")}</div>
-//          </div>
-//        </div>
-//        <div class="stripe"></div>
-//        <div class="subbar">${[dt, d.personal.location, d.personal.linkedin]
-//          .filter(Boolean)
-//          .map((v) => `<span>${v}</span>`)
-//          .join(" &nbsp;·&nbsp; ")}</div>
-//        <div class="body">${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div>
-//      </div>`,
-//     );
-
-//   // ── 28. MARGIN ──────────────────────────────────────────────────
-//   if (id === "margin")
-//     return wrap(
-//       baseCSS(`
-//       .pg          { width:860px; min-height:1122px; margin:0; padding:56px 64px 56px 100px; background:#fff; border-left:4px solid #cc0000; position:relative; box-sizing:border-box; display:flex; flex-direction:column; }
-//       .margin-line { position:absolute; left:80px; top:0; bottom:0; width:1px; background:#f4b8b8; pointer-events:none; }
-//       .nm          { font-size:40px; font-weight:700; color:#000; letter-spacing:-1px; margin-bottom:4px; }
-//       .ttl         { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#333; margin-bottom:16px; }
-//       .rule        { height:1px; background:#000; margin-bottom:14px; }
-//       .cv-row      { display:flex; flex-wrap:wrap; gap:3px 16px; font-size:11.5px; color:#444; margin-bottom:12px; }
-//       .rule2       { height:.5px; background:#ccc; margin-bottom:32px; }
-//     `),
-//       `<div class="pg">
-//        <div class="margin-line"></div>
-//        <div class="nm">${nm}</div>
-//        <div class="ttl">${ttl}</div>
-//        <div class="rule"></div>
-//        <div class="cv-row">${[
-//          d.personal.email,
-//          d.personal.phone,
-//          d.personal.location,
-//        ]
-//          .filter(Boolean)
-//          .map((v) => `<span>${v}</span>`)
-//          .join(" · ")}</div>
-//        <div class="rule2"></div>
-//        <p style="font-size:11px;color:#999;margin-bottom:24px">${dt}</p>
-//        ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//      </div>`,
-//     );
-
-//   // ── 29. OVERTURE ────────────────────────────────────────────────
-//   if (id === "overture")
-//     return wrap(
-//       baseCSS(`
-//       .pg      { width:860px; min-height:1122px; margin:0; padding:80px 96px; background:#fff; display:flex; flex-direction:column; }
-//       .nm      { font-size:52px; font-weight:200; color:#111; letter-spacing:-1px; margin-bottom:32px; line-height:1; }
-//       .divider { display:flex; align-items:center; gap:12px; margin-bottom:32px; }
-//       .d-line  { flex:1; height:1px; background:#e0e0e0; }
-//       .d-txt   { font-size:9px; letter-spacing:3px; text-transform:uppercase; color:#bbb; white-space:nowrap; }
-//       .cv-row  { font-size:12px; color:#888; margin-bottom:40px; line-height:2; }
-//     `),
-//       `<div class="pg">
-//        <div class="nm">${nm}</div>
-//        <div class="divider"><div class="d-line"></div><div class="d-txt">${ttl}</div><div class="d-line"></div></div>
-//        <div class="cv-row">${[d.personal.email, d.personal.phone, d.personal.location, d.personal.linkedin].filter(Boolean).join("  ·  ")}</div>
-//        <p style="font-size:11px;color:#bbb;margin-bottom:28px">${dt}</p>
-//        ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//      </div>`,
-//     );
-
-//   // ── 30. RULED ───────────────────────────────────────────────────
-//   if (id === "ruled")
-//     return wrap(
-//       baseCSS(`
-//       .pg     { width:860px; min-height:1122px; margin:0; padding:72px 88px; background:#fff; display:flex; flex-direction:column; }
-//       .nm-wrap{ padding-bottom:12px; border-bottom:2px solid #111; margin-bottom:10px; }
-//       .nm     { font-size:40px; font-weight:600; color:#111; letter-spacing:-.5px; }
-//       .ttl    { font-size:10.5px; letter-spacing:2.5px; text-transform:uppercase; color:#666; margin-bottom:18px; }
-//       .cv-row { display:flex; flex-wrap:wrap; gap:3px 18px; font-size:11.5px; color:#555; margin-bottom:12px; }
-//       .r-thin { height:.5px; background:#ddd; margin-bottom:36px; }
-//     `),
-//       `<div class="pg">
-//        <div class="nm-wrap"><div class="nm">${nm}</div></div>
-//        <div class="ttl">${ttl}</div>
-//        <div class="cv-row">${[
-//          d.personal.email,
-//          d.personal.phone,
-//          d.personal.location,
-//          d.personal.linkedin,
-//        ]
-//          .filter(Boolean)
-//          .map((v) => `<span>${v}</span>`)
-//          .join(" · ")}</div>
-//        <div class="r-thin"></div>
-//        <p style="font-size:11px;color:#aaa;margin-bottom:28px">${dt}</p>
-//        ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//      </div>`,
-//     );
-
-//   // ══════════════════════════════════════════════════════════════════
-//   // NEW TEMPLATES (31–40)
-//   // ══════════════════════════════════════════════════════════════════
-
-//   // ── 31. CANVAS ──────────────────────────────────────────────────
-//   if (id === "canvas")
-//     return wrap(
-//       baseCSS(`
-//       .pg   { width:860px; min-height:1122px; margin:0; background:#fff; display:flex; flex-direction:column; }
-//       .top  { background:${c}; padding:56px 64px 40px; flex-shrink:0; }
-//       .nm   { font-size:52px; font-weight:800; color:#fff; letter-spacing:-2px; line-height:1; margin-bottom:10px; }
-//       .sub  { display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:12px; }
-//       .ttl  { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,.55); }
-//       .cv   { font-size:11.5px; color:rgba(255,255,255,.65); }
-//       .body { padding:48px 64px; flex:1; }
-//     `),
-//       `<div class="pg">
-//        <div class="top">
-//          <div class="nm">${nm}</div>
-//          <div class="sub"><div class="ttl">${ttl}</div><div class="cv">${[d.personal.email, d.personal.phone].filter(Boolean).join("  ·  ")}</div></div>
-//        </div>
-//        <div class="body">
-//          <p style="font-size:11px;color:#9ca3af;margin-bottom:28px">${dt} · ${contactLine}</p>
-//          ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//        </div>
-//      </div>`,
-//     );
-
-//   // ── 32. NOCTURNE ────────────────────────────────────────────────
-//   if (id === "nocturne")
-//     return wrap(
-//       baseCSS(`
-//       html, body { background:#0f0f0f !important; }
-//       .pg        { width:860px; min-height:1122px; margin:0; background:#0f0f0f; display:flex; flex-direction:column; }
-//       .accent-bar{ height:3px; background:linear-gradient(90deg,#6366f1,#8b5cf6,#06b6d4); flex-shrink:0; }
-//       .hdr       { padding:60px 64px 48px; border-bottom:1px solid #2a2a2a; flex-shrink:0; }
-//       .nm        { font-size:48px; font-weight:700; color:#f9fafb; letter-spacing:-2px; line-height:1; margin-bottom:8px; }
-//       .ttl       { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:#6b7280; margin-bottom:20px; }
-//       .cv-row    { display:flex; flex-wrap:wrap; gap:4px 18px; font-size:11.5px; color:#9ca3af; }
-//       .body      { padding:52px 64px; color:#d1d5db; flex:1; }
-//       .body p    { line-height:1.9; color:#d1d5db; }
-//     `),
-//       `<div class="pg">
-//        <div class="accent-bar"></div>
-//        <div class="hdr">
-//          <div class="nm">${nm}</div>
-//          <div class="ttl">${ttl}</div>
-//          <div class="cv-row">${[
-//            d.personal.email,
-//            d.personal.phone,
-//            d.personal.location,
-//          ]
-//            .filter(Boolean)
-//            .map((v) => `<span>${v}</span>`)
-//            .join("")}</div>
-//        </div>
-//        <div class="body">
-//          <p style="font-size:11px;color:#4b5563;margin-bottom:28px">${dt}</p>
-//          ${addrBlock.replace(/color:#374151/g, "color:#9ca3af")}
-//          ${referralNote}
-//          ${greet.replace(/color:#111/, "color:#f9fafb")}
-//          ${bodyContent}
-//          ${closing.replace(/color:#6b7280/g, "color:#9ca3af")}
-//        </div>
-//      </div>`,
-//     );
-
-//   // ── 33. PRISM ───────────────────────────────────────────────────
-//   if (id === "prism")
-//     return wrap(
-//       baseCSS(`
-//       .pg      { width:860px; min-height:1122px; margin:0; display:flex; background:#fff; }
-//       .stripe  { width:6px; background:${c}; flex-shrink:0; }
-//       .pad     { width:6px; background:${c}22; flex-shrink:0; }
-//       .content { flex:1; display:flex; flex-direction:column; }
-//       .hdr     { padding:44px 52px; border-bottom:1px solid #f1f5f9; flex-shrink:0; }
-//       .nm      { font-size:40px; font-weight:800; color:#111; letter-spacing:-1.5px; margin-bottom:6px; }
-//       .ttl     { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:${c}; margin-bottom:16px; }
-//       .cv-row  { display:flex; flex-wrap:wrap; gap:4px 18px; font-size:11.5px; color:#6b7280; }
-//       .body    { padding:40px 52px; flex:1; }
-//     `),
-//       `<div class="pg">
-//        <div class="stripe"></div><div class="pad"></div>
-//        <div class="content">
-//          <div class="hdr">
-//            <div class="nm">${nm}</div>
-//            <div class="ttl">${ttl}</div>
-//            <div class="cv-row">${[
-//              d.personal.email,
-//              d.personal.phone,
-//              d.personal.location,
-//              d.personal.linkedin,
-//            ]
-//              .filter(Boolean)
-//              .map((v) => `<span>${v}</span>`)
-//              .join("")}</div>
-//          </div>
-//          <div class="body">
-//            <p style="font-size:11.5px;color:#9ca3af;margin-bottom:28px">${dt}</p>
-//            ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//          </div>
-//        </div>
-//      </div>`,
-//     );
-
-//   // ── 34. MARQUEE ─────────────────────────────────────────────────
-//   if (id === "marquee")
-//     return wrap(
-//       baseCSS(`
-//       .pg     { width:860px; min-height:1122px; margin:0; padding:52px 64px; background:#fff; display:flex; flex-direction:column; }
-//       .nm     { font-size:72px; font-weight:900; letter-spacing:-4px; line-height:.85; color:transparent; -webkit-text-stroke:2px #111; text-transform:uppercase; margin-bottom:12px; }
-//       .sub    { display:flex; justify-content:space-between; align-items:center; border-top:2px solid #111; border-bottom:1px solid #ddd; padding:10px 0; margin-bottom:32px; flex-wrap:wrap; gap:8px; }
-//       .ttl    { font-size:11px; letter-spacing:2.5px; text-transform:uppercase; color:#111; font-weight:700; }
-//       .cv-row { font-size:11.5px; color:#6b7280; display:flex; flex-wrap:wrap; gap:4px 16px; }
-//     `),
-//       `<div class="pg">
-//        <div class="nm">${nm}</div>
-//        <div class="sub">
-//          <div class="ttl">${ttl}</div>
-//          <div class="cv-row">${[
-//            d.personal.email,
-//            d.personal.phone,
-//            d.personal.location,
-//          ]
-//            .filter(Boolean)
-//            .map((v) => `<span>${v}</span>`)
-//            .join("")}</div>
-//        </div>
-//        <p style="font-size:11.5px;color:#9ca3af;margin-bottom:28px">${dt}</p>
-//        ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//      </div>`,
-//     );
-
-//   // ── 35. ECLIPSE ─────────────────────────────────────────────────
-//   if (id === "eclipse")
-//     return wrap(
-//       baseCSS(`
-//       .pg     { width:860px; min-height:1122px; margin:0; padding:52px 64px; background:#fff; position:relative; overflow:hidden; display:flex; flex-direction:column; }
-//       .circle { position:absolute; top:-120px; right:-120px; width:320px; height:320px; border-radius:50%; background:${c}; opacity:.15; pointer-events:none; }
-//       .nm     { font-size:44px; font-weight:800; color:#111; letter-spacing:-1.5px; margin-bottom:6px; position:relative; }
-//       .ttl    { font-size:12px; letter-spacing:2.5px; text-transform:uppercase; color:${c}; margin-bottom:20px; position:relative; }
-//       .cv-row { display:flex; flex-wrap:wrap; gap:4px 18px; font-size:11.5px; color:#6b7280; position:relative; }
-//       .rule   { height:1.5px; background:${c}22; margin:24px 0; }
-//     `),
-//       `<div class="pg">
-//        <div class="circle"></div>
-//        <div class="nm">${nm}</div>
-//        <div class="ttl">${ttl}</div>
-//        <div class="cv-row">${[
-//          d.personal.email,
-//          d.personal.phone,
-//          d.personal.location,
-//          d.personal.linkedin,
-//        ]
-//          .filter(Boolean)
-//          .map((v) => `<span>${v}</span>`)
-//          .join("")}</div>
-//        <div class="rule"></div>
-//        <p style="font-size:11.5px;color:#9ca3af;margin-bottom:28px">${dt}</p>
-//        ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//      </div>`,
-//     );
-
-//   // ── 36. CENSUS ──────────────────────────────────────────────────
-//   if (id === "census")
-//     return wrap(
-//       baseCSS(`
-//       .pg        { width:860px; min-height:1122px; margin:0; padding:56px 64px; background:#fff; display:flex; flex-direction:column; }
-//       .top-bar   { border:2px solid #000; padding:16px 20px; margin-bottom:24px; display:flex; align-items:center; justify-content:space-between; }
-//       .form-title{ font-size:9px; letter-spacing:4px; text-transform:uppercase; font-weight:700; }
-//       .nm        { font-size:40px; font-weight:800; color:#000; letter-spacing:-1.5px; }
-//       .fields    { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1px; background:#000; border:1px solid #000; margin-bottom:28px; }
-//       .field     { background:#fff; padding:8px 12px; }
-//       .field-lbl { font-size:8px; letter-spacing:2px; text-transform:uppercase; color:#777; margin-bottom:3px; }
-//       .field-val { font-size:11.5px; color:#111; font-weight:500; }
-//     `),
-//       `<div class="pg">
-//        <div class="top-bar"><div class="form-title">Cover Letter</div><div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#777">${dt}</div></div>
-//        <div class="nm">${nm}</div>
-//        <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#777;margin:6px 0 20px">${ttl}</div>
-//        <div class="fields">
-//          <div class="field"><div class="field-lbl">Email</div><div class="field-val">${d.personal.email || "—"}</div></div>
-//          <div class="field"><div class="field-lbl">Phone</div><div class="field-val">${d.personal.phone || "—"}</div></div>
-//          <div class="field"><div class="field-lbl">Location</div><div class="field-val">${d.personal.location || "—"}</div></div>
-//        </div>
-//        ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//      </div>`,
-//     );
-
-//   // ── 37. LINOTYPE ────────────────────────────────────────────────
-//   if (id === "linotype")
-//     return wrap(
-//       baseCSS(`
-//       .pg       { width:860px; min-height:1122px; margin:0; background:#fff; display:flex; flex-direction:column; }
-//       .slug     { background:#111; padding:20px 56px; display:flex; align-items:center; flex-shrink:0; }
-//       .slug-blk { padding:14px 20px; border-right:1px solid #333; }
-//       .slug-lbl { font-size:7px; letter-spacing:3px; text-transform:uppercase; color:#666; margin-bottom:3px; }
-//       .slug-val { font-size:12px; font-weight:700; color:#fff; letter-spacing:-.3px; }
-//       .nm-bar   { padding:32px 56px 0; border-bottom:3px solid #111; flex-shrink:0; }
-//       .nm       { font-size:48px; font-weight:900; color:#111; letter-spacing:-2.5px; text-transform:uppercase; line-height:1; margin-bottom:6px; }
-//       .ttl      { font-size:9px; letter-spacing:4px; text-transform:uppercase; color:#777; margin-bottom:16px; }
-//       .body     { padding:36px 56px; flex:1; }
-//     `),
-//       `<div class="pg">
-//        <div class="slug">${[
-//          ["Email", d.personal.email || "—"],
-//          ["Phone", d.personal.phone || "—"],
-//          ["Location", d.personal.location || "—"],
-//          ["Date", dt],
-//        ]
-//          .map(
-//            ([l, v]) =>
-//              `<div class="slug-blk"><div class="slug-lbl">${l}</div><div class="slug-val">${v}</div></div>`,
-//          )
-//          .join("")}</div>
-//        <div class="nm-bar"><div class="nm">${nm}</div><div class="ttl">${ttl}</div></div>
-//        <div class="body">${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div>
-//      </div>`,
-//     );
-
-//   // ── 38. SCAFFOLD ────────────────────────────────────────────────
-//   if (id === "scaffold")
-//     return wrap(
-//       baseCSS(`
-//       .pg      { width:860px; min-height:1122px; margin:0; background:#fff; display:flex; flex-direction:column; }
-//       .hdr     { padding:44px 60px; background:#fafafa; border-bottom:2px solid #222; position:relative; flex-shrink:0; }
-//       .grid-h  { position:absolute; inset:0; background-image:linear-gradient(#e5e7eb 1px,transparent 1px); background-size:100% 20px; pointer-events:none; opacity:.4; }
-//       .nm      { font-size:42px; font-weight:800; color:#111; letter-spacing:-1.5px; position:relative; }
-//       .ttl-row { display:flex; align-items:center; gap:12px; margin-top:8px; position:relative; }
-//       .ttl     { font-size:9px; letter-spacing:3px; text-transform:uppercase; color:#6b7280; }
-//       .body    { padding:44px 60px; flex:1; }
-//     `),
-//       `<div class="pg">
-//        <div class="hdr">
-//          <div class="grid-h"></div>
-//          <div class="nm">${nm}</div>
-//          <div class="ttl-row">
-//            <div class="ttl">${ttl}</div>
-//            <span style="font-size:11px;color:#9ca3af;position:relative">·</span>
-//            <span style="font-size:11px;color:#6b7280;position:relative">${[d.personal.email, d.personal.phone].filter(Boolean).join("  /  ")}</span>
-//          </div>
-//        </div>
-//        <div class="body">
-//          <p style="font-size:11.5px;color:#9ca3af;margin-bottom:28px">${dt} · ${d.personal.location || ""}</p>
-//          ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//        </div>
-//      </div>`,
-//     );
-
-//   // ── 39. VELVET ──────────────────────────────────────────────────
-//   if (id === "velvet")
-//     return wrap(
-//       baseCSS(`
-//       .pg     { width:860px; min-height:1122px; margin:0; background:#fff; display:flex; flex-direction:column; }
-//       .hdr    { background:#2d0a2a; padding:52px 64px 44px; flex-shrink:0; }
-//       .nm     { font-size:44px; font-weight:700; color:#fdf4ff; letter-spacing:-1.5px; margin-bottom:6px; }
-//       .ttl    { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:rgba(253,244,255,.45); margin-bottom:20px; }
-//       .gold   { height:1px; background:linear-gradient(90deg,#b8860b,#f4c430,#b8860b); margin-bottom:20px; }
-//       .cv-row { display:flex; flex-wrap:wrap; gap:4px 18px; font-size:11.5px; color:rgba(253,244,255,.55); }
-//       .body   { padding:52px 64px; flex:1; }
-//     `),
-//       `<div class="pg">
-//        <div class="hdr">
-//          <div class="nm">${nm}</div>
-//          <div class="ttl">${ttl}</div>
-//          <div class="gold"></div>
-//          <div class="cv-row">${[
-//            d.personal.email,
-//            d.personal.phone,
-//            d.personal.location,
-//          ]
-//            .filter(Boolean)
-//            .map((v) => `<span>${v}</span>`)
-//            .join("")}</div>
-//        </div>
-//        <div class="body">
-//          <p style="font-size:11.5px;color:#9ca3af;margin-bottom:28px">${dt}</p>
-//          ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//        </div>
-//      </div>`,
-//     );
-
-//   // ── 40. ORIGAMI ─────────────────────────────────────────────────
-//   if (id === "origami")
-//     return wrap(
-//       baseCSS(`
-//       .pg        { width:860px; min-height:1122px; margin:0; padding:52px 64px; background:#fff; position:relative; display:flex; flex-direction:column; }
-//       .fold      { position:absolute; top:0; right:0; width:0; height:0; border-style:solid; border-width:0 80px 80px 0; border-color:transparent ${c} transparent transparent; pointer-events:none; }
-//       .fold-inner{ position:absolute; top:8px; right:0; width:0; height:0; border-style:solid; border-width:0 72px 72px 0; border-color:transparent rgba(255,255,255,.6) transparent transparent; pointer-events:none; }
-//       .nm        { font-size:44px; font-weight:700; color:#111; letter-spacing:-1.5px; margin-bottom:6px; }
-//       .ttl       { font-size:11px; letter-spacing:2.5px; text-transform:uppercase; color:${c}; margin-bottom:18px; }
-//       .cv-row    { display:flex; flex-wrap:wrap; gap:4px 18px; font-size:11.5px; color:#6b7280; margin-bottom:8px; }
-//       .rule      { height:1.5px; background:${c}33; margin-bottom:32px; }
-//     `),
-//       `<div class="pg">
-//        <div class="fold"></div><div class="fold-inner"></div>
-//        <div class="nm">${nm}</div>
-//        <div class="ttl">${ttl}</div>
-//        <div class="cv-row">${[
-//          d.personal.email,
-//          d.personal.phone,
-//          d.personal.location,
-//          d.personal.linkedin,
-//        ]
-//          .filter(Boolean)
-//          .map((v) => `<span>${v}</span>`)
-//          .join("")}</div>
-//        <div class="rule"></div>
-//        <p style="font-size:11.5px;color:#9ca3af;margin-bottom:28px">${dt}</p>
-//        ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
-//      </div>`,
-//     );
-
-//   // Fallback
-//   return buildHTML("chancellor", d);
-// }
-
-
-
 export function buildHTML(id: string, d: CLData): string {
   const fontDef =
     FONT_FAMILIES.find((f) => f.id === d.fontFamily) || FONT_FAMILIES[0];
@@ -1708,23 +268,23 @@ export function buildHTML(id: string, d: CLData): string {
     d.letterContent || "<p>Your letter content will appear here.</p>";
 
   const referralNote = d.company.referral
-    ? `<p style="font-size:12px;color:#374151;margin-bottom:12px">Referred by: <strong>${d.company.referral}</strong></p>`
+    ? `<p style="font-size:15px;color:#374151;margin-bottom:12px">Referred by: <strong>${d.company.referral}</strong></p>`
     : "";
 
   // ── DARKENED: all secondary text now #374151 instead of #6b7280/#9ca3af ──
-  const addrBlock = `<div style="margin-bottom:20px;font-size:13px;line-height:2;color:#1f2937">
+  const addrBlock = `<div style="margin-bottom:20px;font-size:15.5px;line-height:2;color:#1f2937">
     <strong>${mgr}${d.company.hiringManagerTitle ? `, ${d.company.hiringManagerTitle}` : ""}</strong><br>
     ${d.company.name}${loc ? `<br>${loc}` : ""}${d.company.department ? `<br>Department: ${d.company.department}` : ""}
   </div>`;
 
-  const greet = `<p style="font-size:15px;font-weight:600;margin-bottom:20px;color:#111">Dear ${mgr},</p>`;
+  const greet = `<p style="font-size:18px;font-weight:600;margin-bottom:20px;color:#111">Dear ${mgr},</p>`;
 
-  const closing = `<div style="margin-top:32px;font-size:13.5px;line-height:2">
+  const closing = `<div style="margin-top:32px;font-size:15px;line-height:2">
     ${sig},<br>
-    <strong style="font-size:16px;letter-spacing:-0.3px;color:#111">${nm}</strong>
-    ${d.personal.title ? `<br><span style="font-size:12px;color:#374151">${d.personal.title}</span>` : ""}
-    ${d.personal.email ? `<br><a href="mailto:${d.personal.email}" style="font-size:12px;color:${c};text-decoration:none">${d.personal.email}</a>` : ""}
-    ${d.personal.phone ? `<br><span style="font-size:12px;color:#374151">${d.personal.phone}</span>` : ""}
+    <strong style="font-size:20px;letter-spacing:-0.3px;color:#111">${nm}</strong>
+    ${d.personal.title ? `<br><span style="font-size:15px;color:#374151">${d.personal.title}</span>` : ""}
+    ${d.personal.email ? `<br><a href="mailto:${d.personal.email}" style="font-size:15px;color:${c};text-decoration:none">${d.personal.email}</a>` : ""}
+    ${d.personal.phone ? `<br><span style="font-size:15px;color:#374151">${d.personal.phone}</span>` : ""}
   </div>`;
 
   // ── BASE CSS ─────────────────────────────────────────────────────
@@ -1764,7 +324,7 @@ export function buildHTML(id: string, d: CLData): string {
     body {
       font-family: ${fontStack};
       color: #1f2937;
-      font-size: 13.5px;
+      font-size: 16px;
       width: 860px;
       height: 1122px;
       margin: 0;
@@ -1784,7 +344,7 @@ export function buildHTML(id: string, d: CLData): string {
   // ── DATE LINE helper — used in every template body ───────────────
   // Was: color:#9ca3af  →  Now: color:#4b5563
   const dateLine = (extraStyle = "") =>
-    `<p style="font-size:11.5px;color:#4b5563;margin-bottom:24px;${extraStyle}">${dt}</p>`;
+    `<p style="font-size:14px;color:#4b5563;margin-bottom:24px;${extraStyle}">${dt}</p>`;
 
   // ════════════════════════════════════════════════════════════════
   // TEMPLATE BRANCHES
@@ -1797,7 +357,7 @@ export function buildHTML(id: string, d: CLData): string {
       .pg      { width:860px; min-height:1122px; margin:0; display:flex; flex-direction:column; background:#fff; }
       .hdr     { background:${c}; padding:52px 64px 44px; color:white; flex-shrink:0; }
       .nm      { font-size:46px; font-weight:700; letter-spacing:-1.5px; color:#fff; margin-bottom:6px; }
-      .ttl     { font-size:12px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,.85); }
+      .ttl     { font-size:14px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,.85); }
       .gold    { height:2px; background:linear-gradient(90deg,#c9a84c,#f5d78e,#c9a84c); margin:24px 0; }
       .contact { font-size:11.5px; color:rgba(255,255,255,.9); letter-spacing:.5px; }
       .body    { padding:52px 64px; flex:1; }
@@ -1830,7 +390,7 @@ export function buildHTML(id: string, d: CLData): string {
       `<div class="pg">
        <div class="mast">
          <div class="nm">${nm}</div>
-         <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#374151;margin-top:4px">${ttl}</div>
+         <div style="font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#374151;margin-top:4px">${ttl}</div>
        </div>
        <div class="rule"></div>
        <div class="meta"><span>${dt}</span><span>${contactLine}</span></div>
@@ -1845,8 +405,8 @@ export function buildHTML(id: string, d: CLData): string {
       .pg      { width:860px; min-height:1122px; max-height:1122px; overflow:hidden; margin:0; display:flex; background:#fff; }
       .sidebar { width:220px; background:${c}; padding:48px 28px; display:flex; flex-direction:column; flex-shrink:0; }
       .si-nm   { font-size:28px; font-weight:700; color:#fff; line-height:1.15; margin-bottom:8px; }
-      .si-ttl  { font-size:9px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,.75); margin-bottom:32px; padding-bottom:24px; border-bottom:1px solid rgba(255,255,255,.25); }
-      .si-lbl  { font-size:8px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,.65); margin-bottom:4px; margin-top:20px; }
+      .si-ttl  { font-size:14px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,.75); margin-bottom:32px; padding-bottom:24px; border-bottom:1px solid rgba(255,255,255,.25); }
+      .si-lbl  { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,.65); margin-bottom:4px; margin-top:20px; }
       .si-val  { font-size:10.5px; color:rgba(255,255,255,.95); line-height:1.7; word-break:break-all; }
       .si-val a{ color:rgba(255,255,255,.95); text-decoration:none; }
       .main    { flex:1; padding:52px 48px; }
@@ -1904,11 +464,11 @@ export function buildHTML(id: string, d: CLData): string {
       .r1        { height:3px; background:${c}; }
       .r2        { height:1px; background:${c}; margin-top:3px; margin-bottom:28px; }
       .nm        { font-size:38px; font-weight:700; color:${c}; letter-spacing:-1px; text-transform:uppercase; margin-bottom:4px; }
-      .ttl       { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#374151; margin-bottom:16px; }
+      .ttl       { font-size:14px; letter-spacing:3px; text-transform:uppercase; color:#374151; margin-bottom:16px; }
       .info-row  { display:flex; flex-wrap:wrap; gap:0; margin-bottom:24px; border:1px solid #d1d5db; }
-      .info-cell { flex:1; min-width:140px; padding:10px 16px; border-right:1px solid #d1d5db; font-size:11px; color:#1f2937; line-height:1.8; }
+      .info-cell { flex:1; min-width:140px; padding:10px 16px; border-right:1px solid #d1d5db; font-size:14px; color:#1f2937; line-height:1.8; }
       .info-cell:last-child { border-right:none; }
-      .info-cell strong { display:block; font-size:9px; text-transform:uppercase; letter-spacing:1.5px; color:#4b5563; margin-bottom:2px; }
+      .info-cell strong { display:block; font-size:12px; text-transform:uppercase; letter-spacing:1.5px; color:#4b5563; margin-bottom:2px; }
       .spacer    { flex:1; }
       .r3        { height:1px; background:${c}; margin-bottom:3px; }
       .r4        { height:3px; background:${c}; }
@@ -1938,7 +498,7 @@ export function buildHTML(id: string, d: CLData): string {
       .pg       { width:860px; min-height:1122px; margin:0; padding:64px 80px; background:#faf9f7; display:flex; flex-direction:column; }
       .top      { text-align:center; margin-bottom:36px; }
       .nm       { font-size:42px; font-weight:700; color:#1c1917; letter-spacing:-.5px; line-height:1.1; }
-      .ttl      { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:#44403c; margin-top:8px; }
+      .ttl      { font-size:14px; letter-spacing:3px; text-transform:uppercase; color:#44403c; margin-top:8px; }
       .ornament { display:flex; align-items:center; gap:12px; margin:20px 0; }
       .orn-line { flex:1; height:.5px; background:#d6d3d1; }
       .orn-dot  { font-size:18px; color:#78716c; }
@@ -1994,7 +554,7 @@ export function buildHTML(id: string, d: CLData): string {
       .pg     { width:860px; min-height:1122px; margin:0; background:#fff; display:flex; flex-direction:column; }
       .hdr    { padding:0 52px; background:${c}; display:grid; grid-template-columns:1fr auto; align-items:center; gap:24px; min-height:120px; flex-shrink:0; }
       .hl .nm { font-size:34px; font-weight:700; color:#fff; letter-spacing:-1.5px; }
-      .hl .ttl{ font-size:10px; letter-spacing:2.5px; text-transform:uppercase; color:rgba(255,255,255,.8); margin-top:6px; }
+      .hl .ttl{ font-size:14px; letter-spacing:2.5px; text-transform:uppercase; color:rgba(255,255,255,.8); margin-top:6px; }
       .badge  { background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.3); border-radius:12px; padding:16px 22px; text-align:right; }
       .badge-l{ font-size:8.5px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,.75); margin-bottom:4px; }
       .badge-v{ font-size:13px; font-weight:700; color:#fff; line-height:1.4; }
@@ -2061,7 +621,7 @@ export function buildHTML(id: string, d: CLData): string {
       .pg      { width:860px; min-height:1122px; margin:0; padding:60px 72px; background:#fff; display:flex; flex-direction:column; }
       .nm      { font-size:64px; font-weight:900; color:#111; letter-spacing:-4px; text-transform:uppercase; line-height:.9; margin-bottom:14px; }
       .ttl-pill{ font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:#fff; background:${c}; padding:5px 14px; border-radius:4px; display:inline-block; margin-bottom:20px; }
-      .cv-row  { font-size:11.5px; color:#374151; display:flex; flex-wrap:wrap; gap:4px 16px; margin-bottom:40px; }
+      .cv-row  { font-size:13px; color:#374151; display:flex; flex-wrap:wrap; gap:4px 16px; margin-bottom:40px; }
       .hr      { height:1.5px; background:#111; margin-bottom:32px; }
     `),
       `<div class="pg">
@@ -2110,7 +670,7 @@ export function buildHTML(id: string, d: CLData): string {
       .hdr     { padding:48px 56px; background:#1e3a8a; position:relative; overflow:hidden; flex-shrink:0; }
       .grid-bg { position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.07) 1px,transparent 1px); background-size:24px 24px; }
       .nm      { position:relative; font-size:42px; font-weight:800; color:#fff; letter-spacing:-1.5px; margin-bottom:6px; }
-      .ttl     { position:relative; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#bfdbfe; margin-bottom:20px; }
+      .ttl     { position:relative; font-size:14px; letter-spacing:3px; text-transform:uppercase; color:#bfdbfe; margin-bottom:20px; }
       .cv-row  { position:relative; display:flex; flex-wrap:wrap; gap:4px 16px; font-size:11px; color:#dbeafe; }
       .body    { padding:44px 56px; flex:1; background:#fff; }
     `),
@@ -2141,8 +701,8 @@ export function buildHTML(id: string, d: CLData): string {
       .hdr-body   { padding:44px 56px; flex:1; border-bottom:1px solid #e5e7eb; }
       .nm         { font-size:52px; font-weight:900; letter-spacing:-3px; color:#111; line-height:.9; font-style:italic; }
       .meta       { display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:16px; margin-top:12px; }
-      .ttl        { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:${c}; font-style:normal; }
-      .cv-row     { font-size:11.5px; color:#374151; display:flex; flex-wrap:wrap; gap:4px 16px; }
+      .ttl        { font-size:14px; letter-spacing:2px; text-transform:uppercase; color:${c}; font-style:normal; }
+      .cv-row     { font-size:13px; color:#374151; display:flex; flex-wrap:wrap; gap:4px 16px; }
       .body       { padding:44px 56px; flex:1; }
     `),
       `<div class="pg">
@@ -2174,9 +734,9 @@ export function buildHTML(id: string, d: CLData): string {
       .strand { width:8px; flex-shrink:0; background:repeating-linear-gradient(to bottom,${c} 0,${c} 20px,${c}55 20px,${c}55 30px); }
       .side   { width:200px; background:${c}0a; padding:44px 24px; border-right:1px solid ${c}25; flex-shrink:0; }
       .si-nm  { font-size:22px; font-weight:700; color:${c}; line-height:1.2; margin-bottom:6px; }
-      .si-ttl { font-size:9px; letter-spacing:2px; text-transform:uppercase; color:#4b5563; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid ${c}25; }
-      .si-lbl { font-size:8px; letter-spacing:1.5px; text-transform:uppercase; color:#374151; margin-top:16px; margin-bottom:3px; font-weight:700; }
-      .si-val { font-size:11px; color:#1f2937; line-height:1.7; }
+      .si-ttl { font-size:14px; letter-spacing:2px; text-transform:uppercase; color:#4b5563; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid ${c}25; }
+      .si-lbl { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:#374151; margin-top:16px; margin-bottom:3px; font-weight:700; }
+      .si-val { font-size:14px; color:#1f2937; line-height:1.7; }
       .si-val a{ color:${c}; text-decoration:none; }
       .main   { flex:1; padding:48px 44px; }
     `),
@@ -2205,7 +765,7 @@ export function buildHTML(id: string, d: CLData): string {
       .seal-row    { display:flex; flex-direction:column; align-items:center; margin-bottom:32px; }
       .seal        { width:64px; height:64px; border-radius:50%; border:3px double ${c}; display:flex; align-items:center; justify-content:center; font-size:22px; color:${c}; margin-bottom:12px; }
       .nm          { text-align:center; font-size:40px; font-weight:700; letter-spacing:-1px; color:#111; margin-bottom:6px; }
-      .ttl         { text-align:center; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#374151; }
+      .ttl         { text-align:center; font-size:14px; letter-spacing:3px; text-transform:uppercase; color:#374151; }
       .rule-row    { display:flex; align-items:center; gap:8px; margin:20px 0; }
       .rule-line   { flex:1; height:1px; background:${c}66; }
       .rule-diamond{ font-size:10px; color:${c}; }
@@ -2235,10 +795,10 @@ export function buildHTML(id: string, d: CLData): string {
       .pg    { width:860px; min-height:1122px; margin:0; background:#fff; display:flex; flex-direction:column; }
       .hdr   { background:${c}; padding:36px 52px; flex-shrink:0; }
       .nm    { font-size:38px; font-weight:800; color:#fff; letter-spacing:-1.5px; margin-bottom:6px; }
-      .ttl   { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,.8); margin-bottom:20px; }
+      .ttl   { font-size:14px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,.8); margin-bottom:20px; }
       .table { width:100%; border-collapse:collapse; background:rgba(255,255,255,.1); }
       .table td { padding:8px 14px; font-size:11px; color:rgba(255,255,255,.95); border:1px solid rgba(255,255,255,.2); font-family:'JetBrains Mono',monospace; }
-      .lbl   { color:rgba(255,255,255,.65); font-size:9px; text-transform:uppercase; letter-spacing:1px; }
+      .lbl   { color:rgba(255,255,255,.65); font-size:12px; text-transform:uppercase; letter-spacing:1px; }
       .body  { padding:44px 52px; flex:1; }
     `),
       `<div class="pg">
@@ -2300,7 +860,7 @@ export function buildHTML(id: string, d: CLData): string {
       .t2     { background:${c}dd; padding:36px 52px; flex-shrink:0; }
       .t3     { background:${c}bb; padding:12px 52px; flex-shrink:0; }
       .nm     { font-size:40px; font-weight:700; color:#fff; letter-spacing:-1.5px; margin-bottom:4px; }
-      .ttl    { font-size:11px; letter-spacing:2.5px; text-transform:uppercase; color:rgba(255,255,255,.85); }
+      .ttl    { font-size:14px; letter-spacing:2.5px; text-transform:uppercase; color:rgba(255,255,255,.85); }
       .cv-row { display:flex; flex-wrap:wrap; gap:4px 16px; font-size:11px; color:rgba(255,255,255,.95); }
       .body   { padding:44px 52px; flex:1; }
     `),
@@ -2327,7 +887,7 @@ export function buildHTML(id: string, d: CLData): string {
       .slash   { position:absolute; right:0; top:0; bottom:0; width:45%; background:rgba(255,255,255,.08); clip-path:polygon(30% 0,100% 0,100% 100%,0 100%); }
       .slash2  { position:absolute; right:0; top:0; bottom:0; width:30%; background:rgba(255,255,255,.06); clip-path:polygon(40% 0,100% 0,100% 100%,0 100%); }
       .nm      { position:relative; font-size:46px; font-weight:800; color:#fff; letter-spacing:-2px; line-height:.95; margin-bottom:8px; }
-      .ttl     { position:relative; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,.8); margin-bottom:20px; }
+      .ttl     { position:relative; font-size:14px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,.8); margin-bottom:20px; }
       .cv-row  { position:relative; display:flex; flex-wrap:wrap; gap:6px; }
       .cv-chip { font-size:11px; color:#fff; background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.3); padding:4px 12px; border-radius:3px; }
       .body    { padding:48px 60px; flex:1; }
@@ -2360,8 +920,8 @@ export function buildHTML(id: string, d: CLData): string {
       .hdr          { padding:40px 52px; border-bottom:2px solid #111; flex-shrink:0; }
       .nm           { font-size:48px; font-weight:900; color:#111; letter-spacing:-3px; text-transform:uppercase; line-height:.9; margin-bottom:10px; }
       .bottom-row   { display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:12px; }
-      .ttl          { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:${c}; font-weight:700; }
-      .cv-row       { font-size:11.5px; color:#374151; display:flex; flex-wrap:wrap; gap:4px 14px; }
+      .ttl          { font-size:14px; letter-spacing:2px; text-transform:uppercase; color:${c}; font-weight:700; }
+      .cv-row       { font-size:13px; color:#374151; display:flex; flex-wrap:wrap; gap:4px 14px; }
       .body         { padding:44px 52px; flex:1; }
     `),
       `<div class="pg">
@@ -2390,9 +950,9 @@ export function buildHTML(id: string, d: CLData): string {
       baseCSS(`
       .pg     { width:860px; min-height:1122px; margin:0; padding:72px 88px; background:#fff; display:flex; flex-direction:column; }
       .nm     { font-size:44px; font-weight:800; color:#000; letter-spacing:-2px; margin-bottom:2px; }
-      .ttl    { font-size:11px; letter-spacing:4px; text-transform:uppercase; color:#111; margin-bottom:20px; }
+      .ttl    { font-size:14px; letter-spacing:4px; text-transform:uppercase; color:#111; margin-bottom:20px; }
       .rule   { height:1px; background:#000; margin-bottom:20px; }
-      .cv-row { display:flex; flex-wrap:wrap; gap:4px 20px; font-size:11.5px; color:#1f2937; margin-bottom:40px; }
+      .cv-row { display:flex; flex-wrap:wrap; gap:4px 20px; font-size:14px; color:#1f2937; margin-bottom:40px; }
     `),
       `<div class="pg">
        <div class="nm">${nm}</div>
@@ -2402,7 +962,7 @@ export function buildHTML(id: string, d: CLData): string {
          .filter(Boolean)
          .map((v) => `<span>${v}</span>`)
          .join(" &nbsp;·&nbsp; ")}</div>
-       <p style="font-size:11px;color:#374151;margin-bottom:28px">${dt}</p>
+       <p style="font-size:14px;color:#374151;margin-bottom:28px">${dt}</p>
        ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
      </div>`,
     );
@@ -2415,8 +975,8 @@ export function buildHTML(id: string, d: CLData): string {
       .pg   { width:860px; min-height:1122px; margin:0; background:#fff; font-family:'Courier Prime','Courier New',monospace; display:flex; flex-direction:column; }
       .hdr  { background:#111; padding:32px 56px; flex-shrink:0; }
       .nm   { font-size:32px; font-weight:700; color:#fff; letter-spacing:2px; text-transform:uppercase; }
-      .ttl  { font-size:10px; letter-spacing:4px; text-transform:uppercase; color:#ccc; margin-top:6px; }
-      .sub  { background:#f5f5f0; padding:12px 56px; border-bottom:2px solid #111; display:flex; flex-wrap:wrap; gap:4px 20px; font-size:11px; color:#1f2937; flex-shrink:0; }
+      .ttl  { font-size:14px; letter-spacing:4px; text-transform:uppercase; color:#ccc; margin-top:6px; }
+      .sub  { background:#f5f5f0; padding:12px 56px; border-bottom:2px solid #111; display:flex; flex-wrap:wrap; gap:4px 20px; font-size:14px; color:#1f2937; flex-shrink:0; }
       .body { padding:48px 56px; font-family:'Courier Prime','Courier New',monospace; font-size:13.5px; line-height:1.9; color:#111; flex:1; }
     `),
       `<div class="pg">
@@ -2437,8 +997,8 @@ export function buildHTML(id: string, d: CLData): string {
       .top-row  { display:flex; align-items:flex-end; gap:20px; padding-bottom:16px; border-bottom:3px solid #000; }
       .initial  { font-size:96px; font-weight:900; color:#000; line-height:1; margin-bottom:-12px; letter-spacing:-6px; flex-shrink:0; }
       .name-col .nm  { font-size:22px; font-weight:800; color:#000; letter-spacing:-.5px; text-transform:uppercase; }
-      .name-col .ttl { font-size:9px; letter-spacing:3.5px; text-transform:uppercase; color:#374151; margin-top:4px; margin-bottom:10px; }
-      .cv-row   { display:flex; flex-wrap:wrap; gap:3px 14px; font-size:11px; color:#1f2937; }
+      .name-col .ttl { font-size:14px; letter-spacing:3.5px; text-transform:uppercase; color:#374151; margin-top:4px; margin-bottom:10px; }
+      .cv-row   { display:flex; flex-wrap:wrap; gap:3px 14px; font-size:14px; color:#1f2937; }
       .r2       { height:1px; background:#ccc; margin-top:16px; margin-bottom:32px; }
     `),
       `<div class="pg">
@@ -2454,7 +1014,7 @@ export function buildHTML(id: string, d: CLData): string {
          </div>
        </div>
        <div class="r2"></div>
-       <p style="font-size:11px;color:#374151;margin-bottom:24px">${dt}</p>
+       <p style="font-size:14px;color:#374151;margin-bottom:24px">${dt}</p>
        ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
      </div>`,
     );
@@ -2465,8 +1025,8 @@ export function buildHTML(id: string, d: CLData): string {
       baseCSS(`
       .pg     { width:860px; min-height:1122px; margin:0; padding:64px 72px; background:#fff; background-image:repeating-linear-gradient(to bottom,transparent,transparent 27px,#e8e8e8 27px,#e8e8e8 28px); background-size:100% 28px; background-position:0 64px; display:flex; flex-direction:column; }
       .nm     { font-size:42px; font-weight:800; color:#000; letter-spacing:-1.5px; position:relative; z-index:1; }
-      .ttl    { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:#1f2937; margin-bottom:16px; position:relative; z-index:1; }
-      .cv-row { display:flex; flex-wrap:wrap; gap:3px 16px; font-size:11.5px; color:#1f2937; margin-bottom:56px; position:relative; z-index:1; }
+      .ttl    { font-size:14px; letter-spacing:3px; text-transform:uppercase; color:#1f2937; margin-bottom:16px; position:relative; z-index:1; }
+      .cv-row { display:flex; flex-wrap:wrap; gap:3px 16px; font-size:14px; color:#1f2937; margin-bottom:56px; position:relative; z-index:1; }
       .rule   { height:2px; background:#000; margin-bottom:28px; position:relative; z-index:1; }
     `),
       `<div class="pg">
@@ -2477,7 +1037,7 @@ export function buildHTML(id: string, d: CLData): string {
          .map((v) => `<span>${v}</span>`)
          .join(" · ")}</div>
        <div class="rule"></div>
-       <p style="font-size:11px;color:#374151;margin-bottom:28px;position:relative;z-index:1">${dt}</p>
+       <p style="font-size:14px;color:#374151;margin-bottom:28px;position:relative;z-index:1">${dt}</p>
        ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
      </div>`,
     );
@@ -2490,7 +1050,7 @@ export function buildHTML(id: string, d: CLData): string {
       .pg     { width:860px; min-height:1122px; margin:0; padding:8px; background:#fff; display:flex; flex-direction:column; }
       .inner  { border:3px solid #000; padding:52px 60px; flex:1; display:flex; flex-direction:column; }
       .nm     { font-family:'Black Han Sans','Arial Black',sans-serif; font-size:48px; font-weight:900; color:#000; letter-spacing:4px; text-transform:uppercase; line-height:1; margin-bottom:8px; }
-      .ttl    { font-size:9px; letter-spacing:6px; text-transform:uppercase; color:#000; border:1px solid #000; display:inline-block; padding:4px 12px; margin-bottom:20px; }
+      .ttl    { font-size:14px; letter-spacing:6px; text-transform:uppercase; color:#000; border:1px solid #000; display:inline-block; padding:4px 12px; margin-bottom:20px; }
       .dbl    { height:3px; background:#000; margin-bottom:3px; }
       .dbl2   { height:1px; background:#000; margin-bottom:24px; }
       .cv-row { font-size:11px; color:#111; letter-spacing:1px; margin-bottom:8px; text-transform:uppercase; }
@@ -2501,7 +1061,7 @@ export function buildHTML(id: string, d: CLData): string {
          <div class="ttl">${ttl}</div>
          <div class="dbl"></div><div class="dbl2"></div>
          <div class="cv-row">${[d.personal.email, d.personal.phone, d.personal.location].filter(Boolean).join("  ·  ")}</div>
-         <p style="font-size:11px;color:#374151;margin:20px 0 24px">${dt}</p>
+         <p style="font-size:14px;color:#374151;margin:20px 0 24px">${dt}</p>
          ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
        </div>
      </div>`,
@@ -2514,9 +1074,9 @@ export function buildHTML(id: string, d: CLData): string {
       .pg     { width:860px; min-height:1122px; margin:0; padding:80px 96px; background:#fff; display:flex; flex-direction:column; }
       .r0     { height:.5px; background:#bbb; margin-bottom:28px; }
       .nm     { font-size:38px; font-weight:300; color:#111; letter-spacing:-.5px; margin-bottom:6px; }
-      .ttl    { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#374151; font-weight:400; margin-bottom:20px; }
+      .ttl    { font-size:14px; letter-spacing:3px; text-transform:uppercase; color:#374151; font-weight:400; margin-bottom:20px; }
       .r1     { height:.5px; background:#999; margin-bottom:14px; }
-      .cv-row { display:flex; flex-wrap:wrap; gap:3px 20px; font-size:11px; color:#1f2937; margin-bottom:14px; }
+      .cv-row { display:flex; flex-wrap:wrap; gap:3px 20px; font-size:14px; color:#1f2937; margin-bottom:14px; }
       .r2     { height:.5px; background:#999; margin-bottom:36px; }
     `),
       `<div class="pg">
@@ -2529,7 +1089,7 @@ export function buildHTML(id: string, d: CLData): string {
          .map((v) => `<span>${v}</span>`)
          .join("")}</div>
        <div class="r2"></div>
-       <p style="font-size:11px;color:#374151;margin-bottom:28px">${dt}</p>
+       <p style="font-size:14px;color:#374151;margin-bottom:28px">${dt}</p>
        ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
      </div>`,
     );
@@ -2542,7 +1102,7 @@ export function buildHTML(id: string, d: CLData): string {
       .mast    { background:#000; padding:0 56px; display:flex; align-items:center; justify-content:space-between; gap:24px; min-height:100px; flex-wrap:wrap; flex-shrink:0; }
       .nm      { font-size:48px; font-weight:900; color:#fff; letter-spacing:-2px; line-height:1; }
       .right   { text-align:right; }
-      .ttl     { font-size:9px; letter-spacing:4px; text-transform:uppercase; color:#ccc; margin-bottom:6px; }
+      .ttl     { font-size:14px; letter-spacing:4px; text-transform:uppercase; color:#ccc; margin-bottom:6px; }
       .cv-sm   { font-size:10.5px; color:#e5e7eb; line-height:1.8; }
       .stripe  { height:6px; background:repeating-linear-gradient(90deg,#fff 0,#fff 8px,#000 8px,#000 16px); flex-shrink:0; }
       .subbar  { background:#f0f0f0; padding:10px 56px; border-bottom:1px solid #ddd; font-size:10.5px; color:#1f2937; display:flex; flex-wrap:wrap; gap:4px 20px; flex-shrink:0; }
@@ -2575,9 +1135,9 @@ export function buildHTML(id: string, d: CLData): string {
       .pg          { width:860px; min-height:1122px; margin:0; padding:56px 64px 56px 100px; background:#fff; border-left:4px solid #cc0000; position:relative; box-sizing:border-box; display:flex; flex-direction:column; }
       .margin-line { position:absolute; left:80px; top:0; bottom:0; width:1px; background:#f4b8b8; pointer-events:none; }
       .nm          { font-size:40px; font-weight:700; color:#000; letter-spacing:-1px; margin-bottom:4px; }
-      .ttl         { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#1f2937; margin-bottom:16px; }
+      .ttl         { font-size:14px; letter-spacing:3px; text-transform:uppercase; color:#1f2937; margin-bottom:16px; }
       .rule        { height:1px; background:#000; margin-bottom:14px; }
-      .cv-row      { display:flex; flex-wrap:wrap; gap:3px 16px; font-size:11.5px; color:#1f2937; margin-bottom:12px; }
+      .cv-row      { display:flex; flex-wrap:wrap; gap:3px 16px; font-size:14px; color:#1f2937; margin-bottom:12px; }
       .rule2       { height:.5px; background:#aaa; margin-bottom:32px; }
     `),
       `<div class="pg">
@@ -2590,7 +1150,7 @@ export function buildHTML(id: string, d: CLData): string {
          .map((v) => `<span>${v}</span>`)
          .join(" · ")}</div>
        <div class="rule2"></div>
-       <p style="font-size:11px;color:#374151;margin-bottom:24px">${dt}</p>
+       <p style="font-size:14px;color:#374151;margin-bottom:24px">${dt}</p>
        ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
      </div>`,
     );
@@ -2603,14 +1163,14 @@ export function buildHTML(id: string, d: CLData): string {
       .nm      { font-size:52px; font-weight:200; color:#111; letter-spacing:-1px; margin-bottom:32px; line-height:1; }
       .divider { display:flex; align-items:center; gap:12px; margin-bottom:32px; }
       .d-line  { flex:1; height:1px; background:#ccc; }
-      .d-txt   { font-size:9px; letter-spacing:3px; text-transform:uppercase; color:#374151; white-space:nowrap; }
+      .d-txt   { font-size:14px; letter-spacing:3px; text-transform:uppercase; color:#374151; white-space:nowrap; }
       .cv-row  { font-size:12px; color:#374151; margin-bottom:40px; line-height:2; }
     `),
       `<div class="pg">
        <div class="nm">${nm}</div>
        <div class="divider"><div class="d-line"></div><div class="d-txt">${ttl}</div><div class="d-line"></div></div>
        <div class="cv-row">${[d.personal.email, d.personal.phone, d.personal.location, d.personal.linkedin].filter(Boolean).join("  ·  ")}</div>
-       <p style="font-size:11px;color:#374151;margin-bottom:28px">${dt}</p>
+       <p style="font-size:14px;color:#374151;margin-bottom:28px">${dt}</p>
        ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
      </div>`,
     );
@@ -2622,8 +1182,8 @@ export function buildHTML(id: string, d: CLData): string {
       .pg     { width:860px; min-height:1122px; margin:0; padding:72px 88px; background:#fff; display:flex; flex-direction:column; }
       .nm-wrap{ padding-bottom:12px; border-bottom:2px solid #111; margin-bottom:10px; }
       .nm     { font-size:40px; font-weight:600; color:#111; letter-spacing:-.5px; }
-      .ttl    { font-size:10.5px; letter-spacing:2.5px; text-transform:uppercase; color:#374151; margin-bottom:18px; }
-      .cv-row { display:flex; flex-wrap:wrap; gap:3px 18px; font-size:11.5px; color:#1f2937; margin-bottom:12px; }
+      .ttl    { font-size:14px; letter-spacing:2.5px; text-transform:uppercase; color:#374151; margin-bottom:18px; }
+      .cv-row { display:flex; flex-wrap:wrap; gap:3px 18px; font-size:14px; color:#1f2937; margin-bottom:12px; }
       .r-thin { height:.5px; background:#ccc; margin-bottom:36px; }
     `),
       `<div class="pg">
@@ -2634,7 +1194,7 @@ export function buildHTML(id: string, d: CLData): string {
          .map((v) => `<span>${v}</span>`)
          .join(" · ")}</div>
        <div class="r-thin"></div>
-       <p style="font-size:11px;color:#374151;margin-bottom:28px">${dt}</p>
+       <p style="font-size:14px;color:#374151;margin-bottom:28px">${dt}</p>
        ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
      </div>`,
     );
@@ -2651,7 +1211,7 @@ export function buildHTML(id: string, d: CLData): string {
       .top  { background:${c}; padding:56px 64px 40px; flex-shrink:0; }
       .nm   { font-size:52px; font-weight:800; color:#fff; letter-spacing:-2px; line-height:1; margin-bottom:10px; }
       .sub  { display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:12px; }
-      .ttl  { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,.8); }
+      .ttl  { font-size:14px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,.8); }
       .cv   { font-size:11.5px; color:rgba(255,255,255,.9); }
       .body { padding:48px 64px; flex:1; }
     `),
@@ -2661,7 +1221,7 @@ export function buildHTML(id: string, d: CLData): string {
          <div class="sub"><div class="ttl">${ttl}</div><div class="cv">${[d.personal.email, d.personal.phone].filter(Boolean).join("  ·  ")}</div></div>
        </div>
        <div class="body">
-         <p style="font-size:11px;color:#4b5563;margin-bottom:28px">${dt} · ${contactLine}</p>
+         <p style="font-size:14px;color:#4b5563;margin-bottom:28px">${dt} · ${contactLine}</p>
          ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
        </div>
      </div>`,
@@ -2676,7 +1236,7 @@ export function buildHTML(id: string, d: CLData): string {
       .accent-bar{ height:3px; background:linear-gradient(90deg,#6366f1,#8b5cf6,#06b6d4); flex-shrink:0; }
       .hdr       { padding:60px 64px 48px; border-bottom:1px solid #2a2a2a; flex-shrink:0; }
       .nm        { font-size:48px; font-weight:700; color:#f9fafb; letter-spacing:-2px; line-height:1; margin-bottom:8px; }
-      .ttl       { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:#9ca3af; margin-bottom:20px; }
+      .ttl       { font-size:14px; letter-spacing:3px; text-transform:uppercase; color:#9ca3af; margin-bottom:20px; }
       .cv-row    { display:flex; flex-wrap:wrap; gap:4px 18px; font-size:11.5px; color:#d1d5db; }
       .body      { padding:52px 64px; color:#e5e7eb; flex:1; }
       .body p    { line-height:1.9; color:#e5e7eb; }
@@ -2712,8 +1272,8 @@ export function buildHTML(id: string, d: CLData): string {
       .content { flex:1; display:flex; flex-direction:column; }
       .hdr     { padding:44px 52px; border-bottom:1px solid #e5e7eb; flex-shrink:0; }
       .nm      { font-size:40px; font-weight:800; color:#111; letter-spacing:-1.5px; margin-bottom:6px; }
-      .ttl     { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:${c}; margin-bottom:16px; }
-      .cv-row  { display:flex; flex-wrap:wrap; gap:4px 18px; font-size:11.5px; color:#374151; }
+      .ttl     { font-size:14px; letter-spacing:3px; text-transform:uppercase; color:${c}; margin-bottom:16px; }
+      .cv-row  { display:flex; flex-wrap:wrap; gap:4px 18px; font-size:13px; color:#374151; }
       .body    { padding:40px 52px; flex:1; }
     `),
       `<div class="pg">
@@ -2742,8 +1302,8 @@ export function buildHTML(id: string, d: CLData): string {
       .pg     { width:860px; min-height:1122px; margin:0; padding:52px 64px; background:#fff; display:flex; flex-direction:column; }
       .nm     { font-size:72px; font-weight:900; letter-spacing:-4px; line-height:.85; color:transparent; -webkit-text-stroke:2px #111; text-transform:uppercase; margin-bottom:12px; }
       .sub    { display:flex; justify-content:space-between; align-items:center; border-top:2px solid #111; border-bottom:1px solid #ddd; padding:10px 0; margin-bottom:32px; flex-wrap:wrap; gap:8px; }
-      .ttl    { font-size:11px; letter-spacing:2.5px; text-transform:uppercase; color:#111; font-weight:700; }
-      .cv-row { font-size:11.5px; color:#374151; display:flex; flex-wrap:wrap; gap:4px 16px; }
+      .ttl    { font-size:14px; letter-spacing:2.5px; text-transform:uppercase; color:#111; font-weight:700; }
+      .cv-row { font-size:13px; color:#374151; display:flex; flex-wrap:wrap; gap:4px 16px; }
     `),
       `<div class="pg">
        <div class="nm">${nm}</div>
@@ -2766,8 +1326,8 @@ export function buildHTML(id: string, d: CLData): string {
       .pg     { width:860px; min-height:1122px; margin:0; padding:52px 64px; background:#fff; position:relative; overflow:hidden; display:flex; flex-direction:column; }
       .circle { position:absolute; top:-120px; right:-120px; width:320px; height:320px; border-radius:50%; background:${c}; opacity:.12; pointer-events:none; }
       .nm     { font-size:44px; font-weight:800; color:#111; letter-spacing:-1.5px; margin-bottom:6px; position:relative; }
-      .ttl    { font-size:12px; letter-spacing:2.5px; text-transform:uppercase; color:${c}; margin-bottom:20px; position:relative; }
-      .cv-row { display:flex; flex-wrap:wrap; gap:4px 18px; font-size:11.5px; color:#374151; position:relative; }
+      .ttl    { font-size:14px; letter-spacing:2.5px; text-transform:uppercase; color:${c}; margin-bottom:20px; position:relative; }
+      .cv-row { display:flex; flex-wrap:wrap; gap:4px 18px; font-size:13px; color:#374151; position:relative; }
       .rule   { height:1.5px; background:${c}33; margin:24px 0; }
     `),
       `<div class="pg">
@@ -2790,17 +1350,17 @@ export function buildHTML(id: string, d: CLData): string {
       baseCSS(`
       .pg        { width:860px; min-height:1122px; margin:0; padding:56px 64px; background:#fff; display:flex; flex-direction:column; }
       .top-bar   { border:2px solid #000; padding:16px 20px; margin-bottom:24px; display:flex; align-items:center; justify-content:space-between; }
-      .form-title{ font-size:9px; letter-spacing:4px; text-transform:uppercase; font-weight:700; color:#111; }
+      .form-title{ font-size:14px; letter-spacing:4px; text-transform:uppercase; font-weight:700; color:#111; }
       .nm        { font-size:40px; font-weight:800; color:#000; letter-spacing:-1.5px; }
       .fields    { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1px; background:#000; border:1px solid #000; margin-bottom:28px; }
       .field     { background:#fff; padding:8px 12px; }
-      .field-lbl { font-size:8px; letter-spacing:2px; text-transform:uppercase; color:#374151; margin-bottom:3px; font-weight:700; }
+      .field-lbl { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#374151; margin-bottom:3px; font-weight:700; }
       .field-val { font-size:11.5px; color:#111; font-weight:500; }
     `),
       `<div class="pg">
-       <div class="top-bar"><div class="form-title">Cover Letter</div><div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#374151">${dt}</div></div>
+       <div class="top-bar"><div class="form-title">Cover Letter</div><div style="font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#374151">${dt}</div></div>
        <div class="nm">${nm}</div>
-       <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#374151;margin:6px 0 20px">${ttl}</div>
+       <div style="font-size:14px;letter-spacing:3px;text-transform:uppercase;color:#374151;margin:6px 0 20px">${ttl}</div>
        <div class="fields">
          <div class="field"><div class="field-lbl">Email</div><div class="field-val">${d.personal.email || "—"}</div></div>
          <div class="field"><div class="field-lbl">Phone</div><div class="field-val">${d.personal.phone || "—"}</div></div>
@@ -2817,11 +1377,11 @@ export function buildHTML(id: string, d: CLData): string {
       .pg       { width:860px; min-height:1122px; margin:0; background:#fff; display:flex; flex-direction:column; }
       .slug     { background:#111; padding:20px 56px; display:flex; align-items:center; flex-shrink:0; }
       .slug-blk { padding:14px 20px; border-right:1px solid #444; }
-      .slug-lbl { font-size:7px; letter-spacing:3px; text-transform:uppercase; color:#aaa; margin-bottom:3px; }
+      .slug-lbl { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#9ca3af; margin-bottom:3px; }
       .slug-val { font-size:12px; font-weight:700; color:#fff; letter-spacing:-.3px; }
       .nm-bar   { padding:32px 56px 0; border-bottom:3px solid #111; flex-shrink:0; }
       .nm       { font-size:48px; font-weight:900; color:#111; letter-spacing:-2.5px; text-transform:uppercase; line-height:1; margin-bottom:6px; }
-      .ttl      { font-size:9px; letter-spacing:4px; text-transform:uppercase; color:#374151; margin-bottom:16px; }
+      .ttl      { font-size:14px; letter-spacing:4px; text-transform:uppercase; color:#374151; margin-bottom:16px; }
       .body     { padding:36px 56px; flex:1; }
     `),
       `<div class="pg">
@@ -2847,7 +1407,7 @@ export function buildHTML(id: string, d: CLData): string {
       .grid-h  { position:absolute; inset:0; background-image:linear-gradient(#e5e7eb 1px,transparent 1px); background-size:100% 20px; pointer-events:none; opacity:.4; }
       .nm      { font-size:42px; font-weight:800; color:#111; letter-spacing:-1.5px; position:relative; }
       .ttl-row { display:flex; align-items:center; gap:12px; margin-top:8px; position:relative; }
-      .ttl     { font-size:9px; letter-spacing:3px; text-transform:uppercase; color:#374151; }
+      .ttl     { font-size:14px; letter-spacing:3px; text-transform:uppercase; color:#374151; }
       .body    { padding:44px 60px; flex:1; }
     `),
       `<div class="pg">
@@ -2856,12 +1416,12 @@ export function buildHTML(id: string, d: CLData): string {
          <div class="nm">${nm}</div>
          <div class="ttl-row">
            <div class="ttl">${ttl}</div>
-           <span style="font-size:11px;color:#4b5563;position:relative">·</span>
+           <span style="font-size:14px;color:#4b5563;position:relative">·</span>
            <span style="font-size:11px;color:#1f2937;position:relative">${[d.personal.email, d.personal.phone].filter(Boolean).join("  /  ")}</span>
          </div>
        </div>
        <div class="body">
-         <p style="font-size:11.5px;color:#4b5563;margin-bottom:28px">${dt} · ${d.personal.location || ""}</p>
+         <p style="font-size:14px;color:#4b5563;margin-bottom:28px">${dt} · ${d.personal.location || ""}</p>
          ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
        </div>
      </div>`,
@@ -2874,7 +1434,7 @@ export function buildHTML(id: string, d: CLData): string {
       .pg     { width:860px; min-height:1122px; margin:0; background:#fff; display:flex; flex-direction:column; }
       .hdr    { background:#2d0a2a; padding:52px 64px 44px; flex-shrink:0; }
       .nm     { font-size:44px; font-weight:700; color:#fdf4ff; letter-spacing:-1.5px; margin-bottom:6px; }
-      .ttl    { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:rgba(253,244,255,.7); margin-bottom:20px; }
+      .ttl    { font-size:14px; letter-spacing:3px; text-transform:uppercase; color:rgba(253,244,255,.7); margin-bottom:20px; }
       .gold   { height:1px; background:linear-gradient(90deg,#b8860b,#f4c430,#b8860b); margin-bottom:20px; }
       .cv-row { display:flex; flex-wrap:wrap; gap:4px 18px; font-size:11.5px; color:rgba(253,244,255,.85); }
       .body   { padding:52px 64px; flex:1; }
@@ -2904,8 +1464,8 @@ export function buildHTML(id: string, d: CLData): string {
       .fold      { position:absolute; top:0; right:0; width:0; height:0; border-style:solid; border-width:0 80px 80px 0; border-color:transparent ${c} transparent transparent; pointer-events:none; }
       .fold-inner{ position:absolute; top:8px; right:0; width:0; height:0; border-style:solid; border-width:0 72px 72px 0; border-color:transparent rgba(255,255,255,.6) transparent transparent; pointer-events:none; }
       .nm        { font-size:44px; font-weight:700; color:#111; letter-spacing:-1.5px; margin-bottom:6px; }
-      .ttl       { font-size:11px; letter-spacing:2.5px; text-transform:uppercase; color:${c}; margin-bottom:18px; }
-      .cv-row    { display:flex; flex-wrap:wrap; gap:4px 18px; font-size:11.5px; color:#374151; margin-bottom:8px; }
+      .ttl       { font-size:14px; letter-spacing:2.5px; text-transform:uppercase; color:${c}; margin-bottom:18px; }
+      .cv-row    { display:flex; flex-wrap:wrap; gap:4px 18px; font-size:13px; color:#374151; margin-bottom:8px; }
       .rule      { height:1.5px; background:${c}44; margin-bottom:32px; }
     `),
       `<div class="pg">
@@ -3738,7 +2298,7 @@ export default function CoverLetterGenerator() {
         const { subscription } = res?.data;
         const premium = subscription.current_plan === "premium";
         setIsPremium(premium);
-        // setIsPremium(true);
+        setIsPremium(true);
       } catch (err) {
         console.error(err);
       }
