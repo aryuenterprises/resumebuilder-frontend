@@ -62,7 +62,15 @@ export function SimpleCanvasPreview({ children }: SimpleCanvasPreviewProps) {
   useEffect(() => {
     const calc = () => {
       const w = window.innerWidth;
-      return w < 480 ? 0.38 : w < 768 ? 0.55 : w < 1024 ? 0.72 : w < 1280 ? 0.78 : 0.9;
+      return w < 480
+        ? 0.38
+        : w < 768
+          ? 0.55
+          : w < 1024
+            ? 0.72
+            : w < 1280
+              ? 0.78
+              : 0.9;
     };
     const s = calc();
     setScale(s);
@@ -82,42 +90,57 @@ export function SimpleCanvasPreview({ children }: SimpleCanvasPreviewProps) {
 
     const inContainer = (clientX: number, clientY: number): boolean => {
       const r = container.getBoundingClientRect();
-      return clientX >= r.left && clientX <= r.right && clientY >= r.top && clientY <= r.bottom;
+      return (
+        clientX >= r.left &&
+        clientX <= r.right &&
+        clientY >= r.top &&
+        clientY <= r.bottom
+      );
     };
 
     const isControl = (target: EventTarget | null): boolean => {
       const el = target as HTMLElement;
       return (
-        ["BUTTON", "INPUT", "A", "SELECT", "TEXTAREA"].includes(el?.tagName ?? "") ||
-        !!el?.closest?.("[data-no-drag]")
+        ["BUTTON", "INPUT", "A", "SELECT", "TEXTAREA"].includes(
+          el?.tagName ?? "",
+        ) || !!el?.closest?.("[data-no-drag]")
       );
     };
 
     // Mouse events
+    // Mouse events - FIXED
     const onMouseDown = (e: MouseEvent) => {
-      if (!inContainer(e.clientX, e.clientY)) return;
+      // Remove the inContainer check - we want to drag anywhere once started
       if (isControl(e.target)) return;
+
       e.preventDefault();
       downRef.current = { x: e.clientX, y: e.clientY };
       dragActive.current = false;
+
+      // Store initial position relative to current transform
+      startRef.current = {
+        x: posRef.current.x,
+        y: posRef.current.y,
+      };
     };
 
     const onMouseMove = (e: MouseEvent) => {
       if (!downRef.current) return;
+
       const dx = e.clientX - downRef.current.x;
       const dy = e.clientY - downRef.current.y;
+
       if (!dragActive.current && Math.hypot(dx, dy) > 4) {
         dragActive.current = true;
         setIsDragging(true);
-        startRef.current = {
-          x: downRef.current.x - posRef.current.x,
-          y: downRef.current.y - posRef.current.y,
-        };
       }
+
       if (dragActive.current) {
+        e.preventDefault();
+        // Apply drag movement directly to position
         const np = {
-          x: e.clientX - startRef.current.x,
-          y: e.clientY - startRef.current.y,
+          x: startRef.current.x + dx,
+          y: startRef.current.y + dy,
         };
         posRef.current = np;
         setPosition({ ...np });
@@ -132,25 +155,25 @@ export function SimpleCanvasPreview({ children }: SimpleCanvasPreviewProps) {
 
     // Touch events with pinch zoom support
     const onTouchStart = (e: TouchEvent) => {
-      // Handle pinch zoom (2 fingers)
+      console.log("Touch start, touches:", e.touches.length); // Debug
+
       if (e.touches.length === 2) {
+        console.log("Pinch detected!"); // Debug
         e.preventDefault();
         initialPinchDistance.current = getPinchDistance(e.touches);
         initialPinchScale.current = scaleRef.current;
         pinchCenterRef.current = getPinchCenter(e.touches);
         initialPinchPosition.current = { ...posRef.current };
-        
-        // Cancel any ongoing drag
         downRef.current = null;
         dragActive.current = false;
         return;
       }
-      
+
       // Single finger drag
       const t = e.touches[0];
       if (!inContainer(t.clientX, t.clientY)) return;
       if (isControl(e.target)) return;
-      
+
       e.preventDefault();
       downRef.current = { x: t.clientX, y: t.clientY };
       dragActive.current = false;
@@ -163,29 +186,39 @@ export function SimpleCanvasPreview({ children }: SimpleCanvasPreviewProps) {
         const newDistance = getPinchDistance(e.touches);
         const newScale = Math.max(
           0.2,
-          Math.min(3.0, initialPinchScale.current * (newDistance / initialPinchDistance.current))
+          Math.min(
+            3.0,
+            initialPinchScale.current *
+              (newDistance / initialPinchDistance.current),
+          ),
         );
-        
+
         // Calculate new position to zoom toward pinch center
         const scaleDelta = newScale / scaleRef.current;
         const newPos = {
-          x: pinchCenterRef.current.x - (pinchCenterRef.current.x - initialPinchPosition.current.x) * scaleDelta,
-          y: pinchCenterRef.current.y - (pinchCenterRef.current.y - initialPinchPosition.current.y) * scaleDelta,
+          x:
+            pinchCenterRef.current.x -
+            (pinchCenterRef.current.x - initialPinchPosition.current.x) *
+              scaleDelta,
+          y:
+            pinchCenterRef.current.y -
+            (pinchCenterRef.current.y - initialPinchPosition.current.y) *
+              scaleDelta,
         };
-        
+
         setScale(newScale);
         scaleRef.current = newScale;
         posRef.current = newPos;
         setPosition(newPos);
         return;
       }
-      
+
       // Single finger drag
       if (!downRef.current) return;
       const t = e.touches[0];
       const dx = t.clientX - downRef.current.x;
       const dy = t.clientY - downRef.current.y;
-      
+
       if (!dragActive.current && Math.hypot(dx, dy) > 4) {
         dragActive.current = true;
         setIsDragging(true);
@@ -194,7 +227,7 @@ export function SimpleCanvasPreview({ children }: SimpleCanvasPreviewProps) {
           y: downRef.current.y - posRef.current.y,
         };
       }
-      
+
       if (dragActive.current) {
         e.preventDefault();
         const np = {
@@ -211,7 +244,7 @@ export function SimpleCanvasPreview({ children }: SimpleCanvasPreviewProps) {
       if (e.touches.length < 2) {
         initialPinchDistance.current = 0;
       }
-      
+
       // Reset drag state
       downRef.current = null;
       dragActive.current = false;
@@ -222,7 +255,10 @@ export function SimpleCanvasPreview({ children }: SimpleCanvasPreviewProps) {
       if (!inContainer(e.clientX, e.clientY)) return;
       e.preventDefault();
       if (e.ctrlKey || e.metaKey) {
-        const next = Math.max(0.2, Math.min(3.0, scaleRef.current * Math.exp(-e.deltaY * 0.002)));
+        const next = Math.max(
+          0.2,
+          Math.min(3.0, scaleRef.current * Math.exp(-e.deltaY * 0.002)),
+        );
         setScale(next);
         scaleRef.current = next;
       } else {
@@ -245,7 +281,10 @@ export function SimpleCanvasPreview({ children }: SimpleCanvasPreviewProps) {
     container.addEventListener("touchmove", onTouchMove, { passive: false });
     container.addEventListener("touchend", onTouchEnd);
     container.addEventListener("touchcancel", onTouchEnd);
-    window.addEventListener("wheel", onWheel, { capture: true, passive: false });
+    window.addEventListener("wheel", onWheel, {
+      capture: true,
+      passive: false,
+    });
 
     return () => {
       window.removeEventListener("mousedown", onMouseDown, { capture: true });
@@ -276,20 +315,26 @@ export function SimpleCanvasPreview({ children }: SimpleCanvasPreviewProps) {
   };
 
   const handleZoomIn = () => smoothZoom(Math.min(scaleRef.current + 0.12, 3.0));
-  const handleZoomOut = () => smoothZoom(Math.max(scaleRef.current - 0.12, 0.2));
+  const handleZoomOut = () =>
+    smoothZoom(Math.max(scaleRef.current - 0.12, 0.2));
   const handleReset = () => {
     const w = window.innerWidth;
-    smoothZoom(w < 480 ? 0.38 : w < 768 ? 0.55 : w < 1024 ? 0.72 : w < 1280 ? 0.78 : 0.9);
+    smoothZoom(
+      w < 480 ? 0.38 : w < 768 ? 0.55 : w < 1024 ? 0.72 : w < 1280 ? 0.78 : 0.9,
+    );
     posRef.current = { x: 0, y: 0 };
     setPosition({ x: 0, y: 0 });
   };
 
-  useEffect(() => () => {
-    if (zoomAnimRef.current) cancelAnimationFrame(zoomAnimRef.current);
-  }, []);
+  useEffect(
+    () => () => {
+      if (zoomAnimRef.current) cancelAnimationFrame(zoomAnimRef.current);
+    },
+    [],
+  );
 
   return (
-    <div className="relative w-full h-full ">
+    <div className="relative w-full h-[85vh] lg:h-full ">
       <style>{`
         .cvs-preview-root iframe {
           pointer-events: none !important;
@@ -299,8 +344,11 @@ export function SimpleCanvasPreview({ children }: SimpleCanvasPreviewProps) {
 
       <div
         ref={containerRef}
-        className="cvs-preview-root absolute inset-3 lg:inset-4 overflow-hidden bg-[#e8e6f2] select-none"
-        style={{ cursor: isDragging ? "grabbing" : "grab" }}
+        className="cvs-preview-root absolute inset-0 xl:top-10 overflow-hidden bg-[#e8e6f2] select-none"
+        style={{
+          cursor: isDragging ? "grabbing" : "grab",
+          touchAction: "none", // Add this explicitly
+        }}
       >
         <div
           style={{
@@ -321,11 +369,31 @@ export function SimpleCanvasPreview({ children }: SimpleCanvasPreviewProps) {
       </div>
 
       {/* Zoom controls */}
-      <div data-no-drag className="absolute bottom-8 right-6 flex flex-col gap-2 z-30">
+      <div
+        data-no-drag
+        className="absolute bottom-8 right-6 flex flex-col gap-2 z-30"
+      >
         {[
-          { fn: handleZoomIn, icon: <FiZoomIn className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5" />, dark: false, title: "Zoom In" },
-          { fn: handleZoomOut, icon: <FiZoomOut className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5" />, dark: false, title: "Zoom Out" },
-          { fn: handleReset, icon: <FiRefreshCw className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5" />, dark: true, title: "Reset" },
+          {
+            fn: handleZoomIn,
+            icon: <FiZoomIn className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5" />,
+            dark: false,
+            title: "Zoom In",
+          },
+          {
+            fn: handleZoomOut,
+            icon: <FiZoomOut className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5" />,
+            dark: false,
+            title: "Zoom Out",
+          },
+          {
+            fn: handleReset,
+            icon: (
+              <FiRefreshCw className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5" />
+            ),
+            dark: true,
+            title: "Reset",
+          },
         ].map((b, i) => (
           <motion.button
             key={i}
@@ -336,17 +404,16 @@ export function SimpleCanvasPreview({ children }: SimpleCanvasPreviewProps) {
             whileTap={{ scale: 0.95 }}
             className={`w-7 h-7 md:w-8 md:h-8 lg:w-10 lg:h-10 flex items-center justify-center
               rounded-lg md:rounded-xl shadow-lg transition-all duration-300 cursor-pointer text-white
-              ${b.dark
-                ? "bg-gray-700 hover:bg-gray-800"
-                : "bg-gradient-to-r from-indigo-600 to-indigo-500 hover:shadow-xl"
+              ${
+                b.dark
+                  ? "bg-gray-700 hover:bg-gray-800"
+                  : "bg-gradient-to-r from-indigo-600 to-indigo-500 hover:shadow-xl"
               }`}
           >
             {b.icon}
           </motion.button>
         ))}
       </div>
-
-     
 
       {/* Hint */}
       <p className="absolute bottom-5 left-5 z-30 pointer-events-none text-[10px] font-semibold text-gray-400 select-none">

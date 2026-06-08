@@ -3845,7 +3845,7 @@ export default function CoverLetterGenerator() {
           rebuild();
           setModal(true);
         }}
-        className="lg:hidden fixed top-17.5 right-3 z-50 bg-linear-to-r from-indigo-600 to-violet-600 text-white p-2 md:p-2.5 rounded-full shadow-xl"
+        className="lg:hidden fixed top-15 right-3 z-50 bg-linear-to-r from-indigo-600 to-violet-600 text-white p-2 md:p-2.5 rounded-full shadow-xl"
       >
         <FiEye className="w-3 h-3 md:w-4 md:h-4" />
       </button>
@@ -3887,7 +3887,11 @@ export default function CoverLetterGenerator() {
                   </div>
                 </div>
                 <button
-                  onClick={() => setStep("template")}
+                  onClick={() => 
+                    {
+                      setStep("template");
+                       setModal(false)
+                    }}
                   className="flex items-center gap-1 px-2 py-1 bg-indigo-50 rounded-lg text-indigo-600 text-xs font-medium lg:hidden"
                 >
                   <FiLayout className="w-3 h-3" />

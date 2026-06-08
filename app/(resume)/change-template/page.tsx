@@ -54,13 +54,7 @@ const PLAN_CONFIG = {
     badgeColor: "bg-indigo-100 text-indigo-700",
     borderColor: "border-indigo-200",
   },
-  proplus: {
-    maxTemplates: 5,
-    label: "Pro Plus",
-    color: "from-amber-500 to-orange-500",
-    badgeColor: "bg-amber-100 text-amber-700",
-    borderColor: "border-amber-200",
-  },
+  
   premium: {
     maxTemplates: Infinity,
     label: "Premium",
@@ -76,7 +70,6 @@ const getRequiredPlanForTemplate = (
 ): keyof typeof PLAN_CONFIG => {
   if (index < PLAN_CONFIG.free.maxTemplates) return "free";
   if (index < PLAN_CONFIG.pro.maxTemplates) return "pro";
-  if (index < PLAN_CONFIG.proplus.maxTemplates) return "proplus";
   return "premium";
 };
 
@@ -114,7 +107,6 @@ export default function ChangeTemplate() {
   // Get current plan name (normalized)
   const getCurrentPlan = (): keyof typeof PLAN_CONFIG => {
     const plan = usersCurrentPlan;
-    if (plan?.includes("pro plus")) return "proplus";
     if (plan?.includes("pro")) return "pro";
     if (plan?.includes("premium")) return "premium";
     return "free";

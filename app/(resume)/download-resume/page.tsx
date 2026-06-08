@@ -1223,31 +1223,6 @@
 
 // export default Page;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
 // import React, {
 //   useState,
@@ -2364,26 +2339,6 @@
 
 // export default Page;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
 // import React, {
 //   useState,
@@ -3065,7 +3020,6 @@
 //               )}
 //             </div>
 //             <div className="flex-1 min-w-0">
-              
 
 //               {isLocked && (
 //                   <span className="text-[8px] font-medium bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded-full">
@@ -3077,7 +3031,7 @@
 //                 >
 //                   {t.style}
 //                 </p>
-                
+
 //               {t.description && (
 //                 <p className="text-[10px] text-gray-400 mt-0.5 line-clamp-2 leading-tight">
 //                   {t.description}
@@ -3616,41 +3570,6 @@
 // };
 
 // export default Page;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 "use client";
 import React, {
@@ -4239,7 +4158,7 @@ const FontPicker: React.FC<{
               <button
                 key={font.value}
                 onClick={() => onChange(font.value)}
-                className={`relative flex flex-col items-center justify-center py-2.5 px-2 rounded-lg border transition-all text-center
+                className={`relative flex flex-col items-center justify-center py-2.5 px-2 rounded-lg border transition-all text-center cursor-pointer
                   ${value === font.value ? "border-indigo-500 bg-indigo-50 shadow-sm" : "border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm"}`}
               >
                 {value === font.value && (
@@ -4333,22 +4252,22 @@ const TemplateSwitcher: React.FC<{
             </div>
             <div className="flex-1 min-w-0">
               {/* <div className="flex items-center gap-2"> */}
-               {isLocked && (
-                  <span className="text-[8px] font-medium bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded-full">
-                    {/* {userPlan === "free" && t.id > 1
+              {isLocked && (
+                <span className="text-[8px] font-medium bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded-full">
+                  {/* {userPlan === "free" && t.id > 1
                       ? "Upgrade to Pro"
                       : userPlan === "pro" && t.id > 3
                         ? "Upgrade to Premium"
                         : "Locked"} */}
-                     Upgrade Required
-                  </span>
-                )}
-                <p
-                  className={`text-xs font-semibold truncate ${isSelected && isAccessible ? "text-indigo-700" : "text-gray-800"}`}
-                >
-                  {t.style}
-                </p>
-               
+                  Upgrade Required
+                </span>
+              )}
+              <p
+                className={`text-xs font-semibold truncate ${isSelected && isAccessible ? "text-indigo-700" : "text-gray-800"}`}
+              >
+                {t.style}
+              </p>
+
               {/* </div> */}
               {t.description && (
                 <p className="text-[10px] text-gray-400 mt-0.5 line-clamp-2 leading-tight">
@@ -4587,9 +4506,12 @@ const Page = () => {
         const { subscription } = res?.data;
         const plan = subscription?.current_plan || "free";
         setUserPlan(plan.toLowerCase());
+        // setUserPlan("premium");
+        console.log("Aa");
       } catch (err) {
         console.error("Failed to fetch user plan:", err);
         setUserPlan("free");
+        console.log("bb");
       }
     };
 
@@ -4598,6 +4520,7 @@ const Page = () => {
       fetchUserData();
     } else {
       setUserPlan("free");
+      console.log("");
     }
   }, []);
 
@@ -4888,3 +4811,560 @@ const Page = () => {
 };
 
 export default Page;
+
+// "use client";
+// import React, {
+//   useState,
+//   useEffect,
+//   useRef,
+//   useCallback,
+// } from "react";
+// import Header from "../../components/layouts/Header";
+// import Footer from "../../components/layouts/Footer";
+// import { templateData } from "@/app/data";
+// import { getLocalStorage, setLocalStorage } from "@/app/utils";
+// import { Template } from "@/app/types";
+// import ProtectedRoute from "@/app/utils/ProtectedRoute";
+// import Link from "next/link";
+// import { usePreventReload } from "@/app/hooks";
+// import api from "@/app/utils/api";
+
+// // ─── Types ────────────────────────────────────────────────────────────────────
+// export interface ResumeCustomization {
+//   fontFamily: string;
+// }
+
+// // ─── 16 Professional Fonts ───────────────────────────────────────────────────
+// export const FONT_OPTIONS: {
+//   label: string;
+//   value: string;
+//   category: string;
+// }[] = [
+//   { label: "Inter",             value: "'Inter', sans-serif",           category: "Sans-serif" },
+//   { label: "Poppins",           value: "'Poppins', sans-serif",         category: "Sans-serif" },
+//   { label: "Lato",              value: "'Lato', sans-serif",            category: "Sans-serif" },
+//   { label: "Nunito",            value: "'Nunito', sans-serif",          category: "Sans-serif" },
+//   { label: "Raleway",           value: "'Raleway', sans-serif",         category: "Sans-serif" },
+//   { label: "Montserrat",        value: "'Montserrat', sans-serif",      category: "Sans-serif" },
+//   { label: "Open Sans",         value: "'Open Sans', sans-serif",       category: "Sans-serif" },
+//   { label: "Roboto",            value: "'Roboto', sans-serif",          category: "Sans-serif" },
+//   { label: "Merriweather",      value: "'Merriweather', serif",         category: "Serif" },
+//   { label: "Playfair Display",  value: "'Playfair Display', serif",     category: "Serif" },
+//   { label: "DM Serif Display",  value: "'DM Serif Display', serif",     category: "Serif" },
+//   { label: "Libre Baskerville", value: "'Libre Baskerville', serif",    category: "Serif" },
+//   { label: "EB Garamond",       value: "'EB Garamond', serif",          category: "Serif" },
+//   { label: "Crimson Text",      value: "'Crimson Text', serif",         category: "Serif" },
+//   { label: "Source Code Pro",   value: "'Source Code Pro', monospace",  category: "Mono" },
+//   { label: "JetBrains Mono",    value: "'JetBrains Mono', monospace",   category: "Mono" },
+// ];
+
+// const FONT_GOOGLE_URL =
+//   "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&family=Lato:wght@300;400;700&family=Nunito:wght@300;400;600;700&family=Raleway:wght@300;400;600;700&family=Montserrat:wght@300;400;500;600;700&family=Open+Sans:wght@300;400;600;700&family=Roboto:wght@300;400;500;700&family=Merriweather:wght@300;400;700&family=Playfair+Display:wght@400;600;700&family=DM+Serif+Display&family=Libre+Baskerville:wght@400;700&family=EB+Garamond:wght@400;600;700&family=Crimson+Text:wght@400;600;700&family=Source+Code+Pro:wght@400;600&family=JetBrains+Mono:wght@400;500;600&display=swap";
+
+// const DEFAULT_CUSTOMIZATION: ResumeCustomization = {
+//   fontFamily: "'Inter', sans-serif",
+// };
+
+// // ─── Get accessible templates based on plan ───────────────────────────────────
+// const getAccessibleTemplates = (plan: string): Template[] => {
+//   switch (plan?.toLowerCase()) {
+//     case "premium": return templateData;
+//     case "pro":     return templateData.slice(0, 3);
+//     case "free":
+//     default:        return templateData.slice(0, 1);
+//   }
+// };
+
+// // ─── Thumbnail (live resume at 22% scale) ─────────────────────────────────────
+// const ResumeThumbnail: React.FC<{
+//   component: React.ComponentType<any>;
+//   isSelected: boolean;
+// }> = ({ component, isSelected }) => {
+//   const A4_W = 794, A4_H = 1123, THUMB_SCALE = 0.22;
+//   return (
+//     <div
+//       style={{
+//         width: A4_W * THUMB_SCALE,
+//         height: A4_H * THUMB_SCALE,
+//         overflow: "hidden",
+//         position: "relative",
+//         flexShrink: 0,
+//         borderRadius: 4,
+//         border: isSelected ? "2px solid #6366f1" : "2px solid transparent",
+//       }}
+//     >
+//       <div
+//         style={{
+//           width: A4_W,
+//           height: A4_H,
+//           transform: `scale(${THUMB_SCALE})`,
+//           transformOrigin: "top left",
+//           pointerEvents: "none",
+//         }}
+//       >
+//         {React.createElement(component, { alldata: undefined })}
+//       </div>
+//     </div>
+//   );
+// };
+
+// // ─── Font Picker ──────────────────────────────────────────────────────────────
+// const FontPicker: React.FC<{
+//   value: string;
+//   onChange: (f: string) => void;
+// }> = ({ value, onChange }) => {
+//   useEffect(() => {
+//     const id = "resume-font-preload";
+//     if (!document.getElementById(id)) {
+//       const link = document.createElement("link");
+//       link.id = id; link.rel = "stylesheet"; link.href = FONT_GOOGLE_URL;
+//       document.head.appendChild(link);
+//     }
+//   }, []);
+
+//   const categories = [...new Set(FONT_OPTIONS.map((f) => f.category))];
+//   return (
+//     <div className="space-y-3">
+//       {categories.map((cat) => (
+//         <div key={cat}>
+//           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
+//             {cat}
+//           </p>
+//           <div className="grid grid-cols-2 gap-1.5">
+//             {FONT_OPTIONS.filter((f) => f.category === cat).map((font) => (
+//               <button
+//                 key={font.value}
+//                 onClick={() => onChange(font.value)}
+//                 className={`relative flex flex-col items-center justify-center py-2.5 px-2 rounded-lg border transition-all text-center
+//                   ${value === font.value
+//                     ? "border-indigo-500 bg-indigo-50 shadow-sm"
+//                     : "border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm"}`}
+//               >
+//                 {value === font.value && (
+//                   <span className="absolute top-1 right-1 w-3 h-3 bg-indigo-500 rounded-full flex items-center justify-center">
+//                     <svg className="w-1.5 h-1.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+//                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+//                     </svg>
+//                   </span>
+//                 )}
+//                 <span style={{ fontFamily: font.value }} className="text-lg font-bold text-gray-800 leading-none mb-0.5">
+//                   Aa
+//                 </span>
+//                 <span className="text-[9px] text-gray-500 font-medium leading-tight truncate w-full text-center">
+//                   {font.label}
+//                 </span>
+//               </button>
+//             ))}
+//           </div>
+//         </div>
+//       ))}
+//     </div>
+//   );
+// };
+
+// // ─── Template Switcher ────────────────────────────────────────────────────────
+// const TemplateSwitcher: React.FC<{
+//   currentId: number;
+//   onSwitch: (t: Template) => void;
+//   userPlan: string;
+// }> = ({ currentId, onSwitch, userPlan }) => {
+//   const accessibleTemplates = getAccessibleTemplates(userPlan);
+//   const isAccessible = (id: number) => accessibleTemplates.some((t) => t.id === id);
+
+//   return (
+//     <div className="space-y-2">
+//       {templateData.map((t) => {
+//         const isSelected = t.id === currentId;
+//         const accessible = isAccessible(t.id);
+
+//         return (
+//           <button
+//             key={t.id}
+//             onClick={() => accessible && onSwitch(t)}
+//             disabled={!accessible}
+//             className={`w-full p-2 rounded-xl border transition-all text-left
+//               ${isSelected && accessible  ? "border-indigo-500 bg-indigo-50 shadow-sm" : ""}
+//               ${!accessible               ? "border-gray-200 bg-gray-50 opacity-60 cursor-not-allowed" : "border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm"}
+//               ${isSelected && !accessible ? "border-red-300 bg-red-50" : ""}`}
+//           >
+//             <div
+//               className="flex-shrink-0 rounded-md overflow-hidden bg-gray-50 relative mb-2"
+//               style={{ width: 175, height: 247 }}
+//             >
+//               {t.component && <ResumeThumbnail component={t.component} isSelected={false} />}
+//               {!accessible && (
+//                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+//                   <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+//                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+//                       d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+//                   </svg>
+//                 </div>
+//               )}
+//             </div>
+//             <div className="flex-1 min-w-0">
+//               {!accessible && (
+//                 <span className="text-[8px] font-medium bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded-full">
+//                   Upgrade Required
+//                 </span>
+//               )}
+//               <p className={`text-xs font-semibold truncate ${isSelected && accessible ? "text-indigo-700" : "text-gray-800"}`}>
+//                 {t.style}
+//               </p>
+//               {t.description && (
+//                 <p className="text-[10px] text-gray-400 mt-0.5 line-clamp-2 leading-tight">
+//                   {t.description}
+//                 </p>
+//               )}
+//               {isSelected && accessible && (
+//                 <span className="inline-flex items-center gap-0.5 text-indigo-600 text-[10px] font-medium mt-1">
+//                   ✓ Selected
+//                 </span>
+//               )}
+//               {isSelected && !accessible && (
+//                 <span className="inline-flex items-center gap-0.5 text-red-500 text-[10px] font-medium mt-1">
+//                   ⚠ Not available on your plan
+//                 </span>
+//               )}
+//             </div>
+//           </button>
+//         );
+//       })}
+//     </div>
+//   );
+// };
+
+// // ─── Customization Panel ──────────────────────────────────────────────────────
+// const CustomizationPanel: React.FC<{
+//   customization: ResumeCustomization;
+//   onChange: (c: ResumeCustomization) => void;
+//   onReset: () => void;
+//   showDownload: boolean;
+//   onDownload: () => void;
+//   isDownloading: boolean;
+//   currentTemplateId: number;
+//   onSwitchTemplate: (t: Template) => void;
+//   userPlan: string;
+// }> = ({
+//   customization,
+//   onChange,
+//   onReset,
+//   showDownload,
+//   onDownload,
+//   isDownloading,
+//   currentTemplateId,
+//   onSwitchTemplate,
+//   userPlan,
+// }) => {
+//   const [activeTab, setActiveTab] = useState<"template" | "font">("template");
+
+//   const tabs = [
+//     { id: "template" as const, label: "Template" },
+//     { id: "font"     as const, label: "Font" },
+//   ];
+
+//   return (
+//     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col overflow-hidden">
+//       {/* Header */}
+//       <div className="px-4 pt-4 pb-3 border-b border-gray-100">
+//         <div className="flex items-center justify-between mb-0.5">
+//           <h2 className="text-xs font-bold text-gray-800 uppercase tracking-wide">Customize</h2>
+//           <button
+//             onClick={onReset}
+//             className="text-[10px] text-gray-400 hover:text-gray-600 underline-offset-2 hover:underline cursor-pointer transition-colors"
+//           >
+//             Reset
+//           </button>
+//         </div>
+//         <p className="text-[10px] text-gray-400">Personalize before download</p>
+//         <div className="mt-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-semibold bg-indigo-50 text-indigo-600 border border-indigo-100">
+//           Plan: {userPlan?.toUpperCase() || "FREE"}
+//         </div>
+//       </div>
+
+//       {/* Tabs */}
+//       <div className="flex border-b border-gray-100">
+//         {tabs.map((tab) => (
+//           <button
+//             key={tab.id}
+//             onClick={() => setActiveTab(tab.id)}
+//             className={`flex-1 py-2.5 text-[11px] cursor-pointer font-semibold transition-colors
+//               ${activeTab === tab.id
+//                 ? "text-indigo-600 border-b-2 border-indigo-500"
+//                 : "text-gray-400 hover:text-gray-600"}`}
+//           >
+//             {tab.label}
+//           </button>
+//         ))}
+//       </div>
+
+//       {/* Content */}
+//       <div className="overflow-y-auto px-3 py-3 max-h-[55vh] lg:max-h-[calc(100vh-320px)]">
+//         {activeTab === "template" && (
+//           <div>
+//             <p className="text-[10px] text-gray-400 mb-2">
+//               Switch template — live preview updates instantly
+//             </p>
+//             <TemplateSwitcher
+//               currentId={currentTemplateId}
+//               onSwitch={onSwitchTemplate}
+//               userPlan={userPlan}
+//             />
+//           </div>
+//         )}
+//         {activeTab === "font" && (
+//           <div>
+//             <p className="text-[10px] text-gray-400 mb-2">
+//               16 professional fonts across 3 categories
+//             </p>
+//             <FontPicker
+//               value={customization.fontFamily}
+//               onChange={(f) => onChange({ ...customization, fontFamily: f })}
+//             />
+//           </div>
+//         )}
+//       </div>
+
+//       {/* Download button (desktop) */}
+//       {showDownload && (
+//         <div className="px-4 py-3 border-t border-gray-100">
+//           <button
+//             onClick={onDownload}
+//             disabled={isDownloading}
+//             className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-300 text-white py-2.5 rounded-xl font-semibold text-sm transition-all shadow-sm hover:shadow-md active:scale-95"
+//           >
+//             {isDownloading ? (
+//               <>
+//                 <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+//                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+//                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+//                 </svg>
+//                 Generating PDF…
+//               </>
+//             ) : (
+//               <>
+//                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+//                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+//                     d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+//                 </svg>
+//                 Download Resume
+//               </>
+//             )}
+//           </button>
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// // ─── Main Page ────────────────────────────────────────────────────────────────
+// const Page = () => {
+//   usePreventReload();
+
+//   const [currentTemplate, setCurrentTemplate] = useState<Template | null>(null);
+//   const [selectedComponent, setSelectedComponent] = useState<React.ComponentType<any> | null>(null);
+//   const [isDownloading, setIsDownloading] = useState(false);
+//   const [customization, setCustomization] = useState<ResumeCustomization>({ ...DEFAULT_CUSTOMIZATION });
+//   const [userPlan, setUserPlan] = useState<string>("free");
+
+//   const containerRef = useRef<HTMLDivElement>(null);
+//   const [previewScale, setPreviewScale] = useState(1);
+
+//   // ── Fetch user plan ────────────────────────────────────────────────
+//   useEffect(() => {
+//     const fetchUserData = async () => {
+//       try {
+//         const res = await api.get("/dashboard");
+//         const { subscription } = res?.data;
+//         setUserPlan((subscription?.current_plan || "free").toLowerCase());
+//       } catch {
+//         setUserPlan("free");
+//       }
+//     };
+//     const userDetails = getLocalStorage<{ id: string }>("user_details");
+//     if (userDetails?.id) fetchUserData();
+//     else setUserPlan("free");
+//   }, []);
+
+//   // ── Check accessibility ────────────────────────────────────────────
+//   const isTemplateAccessible = useCallback(
+//     (templateId: number): boolean => {
+//       switch (userPlan) {
+//         case "premium": return true;
+//         case "pro":     return templateId <= 3;
+//         default:        return templateId === 1;
+//       }
+//     },
+//     [userPlan],
+//   );
+
+//   // ── Switch template ────────────────────────────────────────────────
+//   const applyTemplate = useCallback(
+//     (t: Template) => {
+//       if (!isTemplateAccessible(t.id)) return;
+//       setCurrentTemplate(t);
+//       setSelectedComponent(() => t.component ?? null);
+//       setLocalStorage("chosenTemplate", t);
+//       setCustomization((prev) => ({ ...prev, fontFamily: "'Inter', sans-serif" }));
+//     },
+//     [isTemplateAccessible],
+//   );
+
+//   // ── Load initial template ──────────────────────────────────────────
+//   useEffect(() => {
+//     if (!userPlan) return;
+//     const saved = getLocalStorage<Template>("chosenTemplate");
+//     let found = templateData.find(
+//       (r) => r.id == saved?.id || r.id == (saved as any)?.templateId,
+//     );
+//     if (!found || !isTemplateAccessible(found.id)) {
+//       found = templateData.filter((t) => isTemplateAccessible(t.id))[0] ?? templateData[0];
+//     }
+//     if (found) applyTemplate(found);
+//   }, [userPlan, isTemplateAccessible, applyTemplate]);
+
+//   // ── Responsive scale ───────────────────────────────────────────────
+//   useEffect(() => {
+//     const calc = () => {
+//       if (containerRef.current) {
+//         const w = containerRef.current.clientWidth;
+//         setPreviewScale(Math.max(0.25, Math.min(1, (w - 8) / 794)));
+//       }
+//     };
+//     setTimeout(calc, 100);
+//     window.addEventListener("resize", calc);
+//     return () => window.removeEventListener("resize", calc);
+//   }, [selectedComponent]);
+
+//   const handleReset = useCallback(() => {
+//     setCustomization({ fontFamily: "'Inter', sans-serif" });
+//   }, []);
+
+//   const handleDownload = useCallback(async () => {
+//     setIsDownloading(true);
+//     try {
+//       window.dispatchEvent(new CustomEvent("resume:download", { detail: { customization } }));
+//     } finally {
+//       setTimeout(() => setIsDownloading(false), 3500);
+//     }
+//   }, [customization]);
+
+//   if (!selectedComponent) {
+//     return (
+//       <ProtectedRoute>
+//         <Header />
+//         <div className="min-h-screen bg-gray-50 flex justify-center items-center">
+//           <div className="text-center">
+//             <p className="text-gray-500 mb-2">No resume template selected.</p>
+//             <Link href="/dashboard" className="text-indigo-500 hover:underline font-medium">
+//               ← Go to Dashboard
+//             </Link>
+//           </div>
+//         </div>
+//         <Footer />
+//       </ProtectedRoute>
+//     );
+//   }
+
+//   const panelProps = {
+//     customization,
+//     onChange: setCustomization,
+//     onReset: handleReset,
+//     onDownload: handleDownload,
+//     isDownloading,
+//     currentTemplateId: currentTemplate?.id ?? 0,
+//     onSwitchTemplate: applyTemplate,
+//     userPlan,
+//   };
+
+//   return (
+//     <ProtectedRoute>
+//       <Header />
+
+//       <div className="min-h-screen bg-gray-50 py-6 pb-28 lg:pb-8">
+//         <div className="max-w-[1400px] mx-auto px-3 sm:px-4 lg:px-6">
+//           <div className="mb-4 sm:mb-6">
+//             <h1 className="md:text-xl font-semibold text-gray-800">Finalize Your Resume</h1>
+//             <p className="text-xs sm:text-sm text-gray-500 mt-1">
+//               Switch templates, customize fonts, then download your PDF.
+//             </p>
+//           </div>
+
+//           <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 items-start">
+
+//             {/* Left panel */}
+//             <div className="w-full lg:w-72 xl:w-80 lg:flex-shrink-0 lg:sticky lg:top-6">
+//               <div className="block lg:hidden">
+//                 <CustomizationPanel {...panelProps} showDownload={false} />
+//               </div>
+//               <div className="hidden lg:block">
+//                 <CustomizationPanel {...panelProps} showDownload={true} />
+//               </div>
+//             </div>
+
+//             {/* Resume preview */}
+//             <div className="w-full lg:flex-1 min-w-0">
+//               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-3 sm:p-4">
+//                 <div className="flex items-center justify-between mb-3">
+//                   <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide">
+//                     Live Preview
+//                   </span>
+//                   <div className="flex items-center gap-2">
+//                     <span className="text-[10px] text-gray-400 bg-gray-50 px-2 py-1 rounded-full border">
+//                       {currentTemplate?.style}
+//                     </span>
+//                     <span className="text-[10px] text-gray-400 bg-gray-50 px-2 py-1 rounded-full border">
+//                       A4 · PDF ready
+//                     </span>
+//                   </div>
+//                 </div>
+//                 <div ref={containerRef} className="flex justify-center overflow-hidden">
+//                   <div
+//                     style={{
+//                       transform: `scale(${previewScale})`,
+//                       transformOrigin: "top center",
+//                       width: `${794 / previewScale}px`,
+//                     }}
+//                   >
+//                     {React.createElement(selectedComponent, { customization })}
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* Mobile download bar */}
+//       <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-white border-t border-gray-200 px-4 py-3 shadow-[0_-4px_16px_rgba(0,0,0,0.08)]">
+//         <button
+//           onClick={handleDownload}
+//           disabled={isDownloading}
+//           className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-300 text-white py-3 rounded-xl font-semibold text-sm transition-all active:scale-95"
+//         >
+//           {isDownloading ? (
+//             <>
+//               <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+//                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+//                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+//               </svg>
+//               Generating PDF…
+//             </>
+//           ) : (
+//             <>
+//               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+//                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+//                   d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+//               </svg>
+//               Download Resume
+//             </>
+//           )}
+//         </button>
+//       </div>
+
+//       <Footer />
+//     </ProtectedRoute>
+//   );
+// };
+
+// export default Page;

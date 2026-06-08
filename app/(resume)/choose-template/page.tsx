@@ -1621,7 +1621,7 @@ function Choose_template() {
   const [selectedTemplateForMobile, setSelectedTemplateForMobile] =
     useState<Template | null>(null);
   
-  // Subscription expiration states - more friendly approach
+  // Subscription expiration states
   const [subscriptionStatus, setSubscriptionStatus] = useState<{
     isExpired: boolean;
     message: string;
@@ -1780,12 +1780,15 @@ function Choose_template() {
         const res = await api.get("/dashboard");
         const { subscription } = res?.data;
         
+                  // setUsersCurrentPlan('premium');
+
+
         // Calculate days expired for friendly message
         let daysExpired = 0;
         if (subscription?.is_expired === true) {
           // Assuming you have an expiry date, calculate days
-          if (subscription.expiry_date) {
-            const expiryDate = new Date(subscription.expiry_date);
+          if (subscription.plan_details.expires_at) {
+            const expiryDate = new Date(subscription.plan_details.expires_at);
             const today = new Date();
             daysExpired = Math.floor((today.getTime() - expiryDate.getTime()) / (1000 * 3600 * 24));
           }
@@ -1795,7 +1798,6 @@ function Choose_template() {
             message: subscription.message || "Your premium access has ended",
             daysExpired: daysExpired
           });
-          setUsersCurrentPlan(subscription.current_plan || "premium"); // Keep showing their last plan
           
           // Show a subtle, friendly reminder after 2 seconds (not immediately)
           setTimeout(() => {
@@ -2097,7 +2099,7 @@ function Choose_template() {
               </div>
             </div>
 
-            <div className="px-5 pt-4 pb-6">
+            <div className="px-4 sm:px-5 pt-4 pb-6">
               <div className="text-center mb-5">
                 <div className="flex items-center justify-center gap-2 mb-2 flex-wrap">
                   <h3 className="text-xl font-bold text-gray-900">
@@ -2145,17 +2147,17 @@ function Choose_template() {
                 </div>
               </div>
 
-              <div className="flex gap-3">
+              <div className="flex gap-3 flex-wrap">
                 <button
                   onClick={handleFullPreview}
-                  className="flex-1 py-3.5 rounded-xl bg-gray-100 text-gray-700 font-semibold text-sm hover:bg-gray-200 transition flex items-center justify-center gap-2"
+                  className="flex-1 py-3 sm:py-3.5 rounded-xl bg-gray-100 text-gray-700 font-semibold px-2 text-xs sm:text-sm hover:bg-gray-200 transition flex items-center justify-center gap-2"
                 >
                   <Eye className="w-4 h-4" />
                   Full Preview
                 </button>
                 <button
                   onClick={handleUseTemplate}
-                  className={`flex-1 py-3.5 rounded-xl text-white font-semibold text-sm transition flex items-center justify-center gap-2 ${
+                  className={`flex-1 py-3 sm:py-3.5 rounded-xl text-white font-semibold px-2 text-xs sm:text-sm transition flex items-center justify-center gap-2 ${
                     isAccessible && !subscriptionStatus?.isExpired
                       ? "bg-indigo-600 hover:bg-indigo-700"
                       : "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
@@ -2198,7 +2200,7 @@ function Choose_template() {
       <Toaster position="top-right" />
       <Header />
 
-      {/* Friendly Renewal Reminder - Subtle, non-intrusive */}
+      {/*  Renewal Reminder - Subtle, non-intrusive */}
       <AnimatePresence>
         {showRenewalReminder && subscriptionStatus?.isExpired && !dismissedReminder && (
           <motion.div
@@ -2971,6 +2973,7 @@ function Choose_template() {
                           <span className="hidden xs:inline">
                             {subscriptionStatus?.isExpired ? "Locked" : requiredPlanLabel}
                           </span>
+                          
                           <span className="xs:hidden">
                             {subscriptionStatus?.isExpired ? "Locked" : (requiredPlanLabel === "Pro Plus"
                               ? "Pro+"
@@ -2978,6 +2981,7 @@ function Choose_template() {
                                 ? "Prem"
                                 : requiredPlanLabel.substring(0, 3))}
                           </span>
+                          
                         </div>
                       )}
 
@@ -2986,23 +2990,21 @@ function Choose_template() {
                           src={template.image}
                           alt={template?.style || "Template"}
                           fill
-                          className={`object-contain object-top transition-transform duration-500 group-hover:scale-105 ${
-                            subscriptionStatus?.isExpired && isPremium ? "opacity-50" : ""
-                          }`}
+                          className={`object-contain object-top transition-transform duration-500 group-hover:scale-105 `}
                           sizes="(max-width: 640px) 90vw, (max-width: 768px) 45vw, (max-width: 1024px) 33vw, 25vw"
                         />
-                        {subscriptionStatus?.isExpired && isPremium && (
+                        {/* {subscriptionStatus?.isExpired && isPremium && (
                           <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm">
                             <div className="bg-white/90 rounded-lg px-3 py-1.5 flex items-center gap-2">
                               <Lock className="w-3.5 h-3.5 text-amber-600" />
                               <span className="text-xs font-semibold text-amber-600">Renew to Unlock</span>
                             </div>
                           </div>
-                        )}
+                        )} */}
                       </div>
 
                       <div className="mt-3 sm:mt-4 pt-2 sm:pt-3 border-t border-gray-100">
-                        <div className="flex gap-3 items-center justify-between">
+                        <div className="flex gap-3 items-center justify-between flex-wrap xl:flex-nowrap">
                           <div>
                             <h4 className="text-sm sm:text-base font-semibold text-gray-900">
                               {template.style || "Template"}
@@ -3097,12 +3099,10 @@ function Choose_template() {
             >
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6">
                 <div className="flex items-center gap-3 sm:gap-4">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                  </div>
+                 
                   <div>
                     <h3 className="font-bold text-gray-900 text-base sm:text-lg">
-                      🚀 Ready to accelerate your job search?
+                      Ready to accelerate your job search?
                     </h3>
                     <p className="text-xs sm:text-sm text-gray-700 mt-0.5">
                       {subscriptionStatus.daysExpired 

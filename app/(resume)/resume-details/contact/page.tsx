@@ -1190,8 +1190,8 @@ const ContactForm = () => {
           contact: {
             firstName: contactData.firstName || "",
             lastName: contactData.lastName || "",
-            job_title: contactData.jobTitle || "",
-            location_city: contactData.city || "",
+            jobTitle: contactData.jobTitle || "",
+            city: contactData.city || "",
             email: contactData.email || "",
             phone: contactData.phone || "",
             dob: contactData.dob || "",
@@ -1702,7 +1702,7 @@ const ContactForm = () => {
                                 Portfolio / Website
                               </label>
                               <input
-                                type="text"
+                                type="url"
                                 value={contact.portfolio || ""}
                                 onChange={(e) =>
                                   handleContactChange(

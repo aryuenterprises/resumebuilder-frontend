@@ -5530,6 +5530,7 @@ const TemplateSix: React.FC<TemplateSixProps> = ({ alldata, customization }) => 
 
     html, body { margin: 0; padding: 0; background: white; }
 
+
     .t6-resume {
       width: ${A4_W}px;
       padding: 0 ${MARGIN}px;
@@ -5540,8 +5541,20 @@ const TemplateSix: React.FC<TemplateSixProps> = ({ alldata, customization }) => 
       color: #374151;
       display: flex;
       align-items: stretch;
-      min-height: ${PAGE_CONTENT_H}px;
+        min-height: 100vh !important;
+      
       box-sizing: border-box;
+    }
+
+    .t6-resume .t6-left {
+      width: ${LEFT_COL_W}px;
+      flex-shrink: 0;
+      flex-grow: 0;
+      padding: 20px;
+      background-color: #f3f4f6;
+      border-radius: 16px 0 0 0;
+        min-height: 100vh !important;
+      align-self: stretch;
     }
 
     .t6-resume * { box-sizing: border-box; }
@@ -5591,17 +5604,7 @@ const TemplateSix: React.FC<TemplateSixProps> = ({ alldata, customization }) => 
     .t6-resume .t6-skills-content { margin-top: 8px; }
     .t6-resume .t6-skills-content p { margin: 0 0 6px 0 !important; }
 
-    /* Left Column */
-    .t6-resume .t6-left {
-      width: ${LEFT_COL_W}px;
-      flex-shrink: 0;
-      flex-grow: 0;
-      padding: 20px;
-      background-color: #f3f4f6;
-      border-radius: 16px 0 0 0;
-      align-self: stretch;
-      min-height: ${PAGE_CONTENT_H}px;
-    }
+   
 
     .t6-resume .t6-name {
       font-size: 28px;
@@ -5832,7 +5835,7 @@ const TemplateSix: React.FC<TemplateSixProps> = ({ alldata, customization }) => 
       padding: 0;
     }
 
-    @media print {
+   @media print {
       *, *::before, *::after {
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
@@ -5842,11 +5845,13 @@ const TemplateSix: React.FC<TemplateSixProps> = ({ alldata, customization }) => 
         width: ${A4_W - MARGIN * 2}px !important;
         padding: 0 !important;
         align-items: stretch !important;
+        min-height: 100vh !important;
       }
       .t6-resume .t6-left {
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
         align-self: stretch !important;
+        min-height: 100vh !important;
       }
     }
   `,
@@ -5998,20 +6003,31 @@ const TemplateSix: React.FC<TemplateSixProps> = ({ alldata, customization }) => 
            <link href="${getFontImport(activeFontFamily)}" rel="stylesheet"/>`
         : '';
 
-      const pdfStyle = forPDF
+     const pdfStyle = forPDF
         ? `<style>
             *, *::before, *::after {
               -webkit-print-color-adjust: exact !important;
               print-color-adjust: exact !important;
             }
             @page { size: A4; margin: ${MARGIN}px !important; }
-            html, body { margin: 0 !important; padding: 0 !important; width: ${A4_W}px !important; }
-            .t6-resume { width: ${A4_W - MARGIN * 2}px !important; padding: 0 !important; align-items: stretch !important; }
-            .t6-resume .t6-left { width: ${LEFT_COL_W}px !important; align-self: stretch !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            html, body { margin: 0 !important; padding: 0 !important; }
+            .t6-resume {
+              width: ${A4_W - MARGIN * 2}px !important;
+              padding: 0 !important;
+              display: flex !important;
+              align-items: stretch !important;
+              min-height: 100vh !important;
+            }
+            .t6-resume .t6-left {
+              width: ${LEFT_COL_W}px !important;
+              align-self: stretch !important;
+              min-height: 100vh !important;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
             .t6-resume .t6-right { align-self: stretch !important; }
           </style>`
         : "";
-
       let rightColFinal = rightColContent;
 
       if (forPDF && pageBreakIds.length > 0) {
@@ -6232,7 +6248,7 @@ const TemplateSix: React.FC<TemplateSixProps> = ({ alldata, customization }) => 
       position: absolute; top: ${-contentOffsetY}px; left: 0;
       width: ${A4_W}px;
     }
-    .t6-resume {
+   .t6-resume {
       width: ${A4_W}px !important;
       padding-left: ${MARGIN}px !important;
       padding-right: ${MARGIN}px !important;
@@ -6241,14 +6257,16 @@ const TemplateSix: React.FC<TemplateSixProps> = ({ alldata, customization }) => 
       margin: 0 !important;
       display: flex !important;
       align-items: stretch !important;
-      min-height: ${PAGE_CONTENT_H}px !important;
+      height: ${A4_H + contentOffsetY}px !important;
+      min-height: ${A4_H + contentOffsetY}px !important;
       box-sizing: border-box !important;
     }
     .t6-resume .t6-left {
       width: ${LEFT_COL_W}px !important;
       flex-shrink: 0 !important;
       flex-grow: 0 !important;
-      min-height: ${PAGE_CONTENT_H}px !important;
+      height: ${A4_H + contentOffsetY}px !important;
+      min-height: ${A4_H + contentOffsetY}px !important;
       align-self: stretch !important;
     }
   </style>
@@ -6328,7 +6346,7 @@ const TemplateSix: React.FC<TemplateSixProps> = ({ alldata, customization }) => 
   // ── RENDER ───────────────────────────────────────────────────────────────
   return (
     <>
-      {lastSegment === "download-resume" && (
+      {/* {lastSegment === "download-resume" && ( */}
         <div className="text-center my-5">
           <motion.button
             onClick={handleDownload}
@@ -6339,7 +6357,7 @@ const TemplateSix: React.FC<TemplateSixProps> = ({ alldata, customization }) => 
             Download Resume
           </motion.button>
         </div>
-      )}
+      {/* )} */}
 
       {alldata ? (
         <div

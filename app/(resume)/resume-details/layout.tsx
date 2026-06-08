@@ -174,7 +174,7 @@ export default function RootLayout({
 
               {/* Drawer Content - Resume Preview */}
               <div className="h-full pt-24 pb-6 overflow-y-auto">
-                <div className="px-3">
+                <div className="">
                   <SimpleCanvasPreview>
                     <SelectedComponent />
                   </SimpleCanvasPreview>

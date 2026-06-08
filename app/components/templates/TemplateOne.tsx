@@ -10765,6 +10765,17 @@
 
 // export default TemplateOne;
 
+
+
+
+
+
+
+
+
+
+
+
 "use client";
 import React, {
   useContext,
@@ -10786,22 +10797,16 @@ import { usePathname } from "next/navigation";
 import { ResumeProps } from "@/app/types";
 import { motion } from "framer-motion";
 import api from "@/app/utils/api";
-import {
-  ResumeCustomization,
-  SectionKey,
-  DEFAULT_SECTION_ORDER,
-  FONT_OPTIONS, // Add this import
-} from "@/app/(resume)/download-resume/page";
+import { ResumeCustomization } from "@/app/(resume)/download-resume/page";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// PIXEL-PERFECT A4 CONSTANTS
+// A4 CONSTANTS
 // ─────────────────────────────────────────────────────────────────────────────
 const A4_W = 794;
 const A4_H = 1123;
 const MARGIN = 57;
-const PAGE_CONTENT_H = A4_H - MARGIN * 2; // 1009px
+const PAGE_CONTENT_H = A4_H - MARGIN * 2;
 
-// Extend ResumeProps to accept optional customization
 interface TemplateOneProps extends ResumeProps {
   customization?: ResumeCustomization;
 }
@@ -10818,13 +10823,9 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
   const [htmlContent, setHtmlContent] = useState<string>("");
   const [pages, setPages] = useState<string[]>([]);
 
-  // ── Customization defaults ─────────────────────────────────────────────
   const activeFontFamily = customization?.fontFamily ?? "'Poppins', sans-serif";
-  const activeSectionOrder: SectionKey[] = customization?.sectionOrder ?? [
-    ...DEFAULT_SECTION_ORDER,
-  ];
 
-  // ── Data sources ─────────────────────────────────────────────────────────
+  // ── Data ──────────────────────────────────────────────────────────────────
   const contact = alldata?.contact || context.contact || {};
   const educations = alldata?.educations || context?.education || [];
   const experiences = alldata?.experiences || context?.experiences || [];
@@ -10844,14 +10845,11 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
   const githubUrl = contact?.github;
   const dateOfBirth = contact?.dob;
 
-  // ── CSS ──────────────────────────────────────────────────────────────────
-  // Font family is dynamically injected from customization
+  // ── Font map ───────────────────────────────────────────────────────────────
   const getFontImport = (fontFamily: string): string => {
     const fontMap: Record<string, string> = {
-      // Sans-serif fonts
       "'Inter', sans-serif":
         "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap",
-      "'-apple-system', 'BlinkMacSystemFont', sans-serif": "", // System font - no import needed
       "'Poppins', sans-serif":
         "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap",
       "'Lato', sans-serif":
@@ -10866,8 +10864,6 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
         "https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap",
       "'Roboto', sans-serif":
         "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap",
-
-      // Serif fonts
       "'Merriweather', serif":
         "https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap",
       "'Playfair Display', serif":
@@ -10880,15 +10876,12 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
         "https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;600;700&display=swap",
       "'Crimson Text', serif":
         "https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap",
-
-      // Monospace fonts
       "'Source Code Pro', monospace":
         "https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600&display=swap",
       "'JetBrains Mono', monospace":
         "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap",
     };
-
-    return fontMap[fontFamily] || fontMap["'Inter', sans-serif"];
+    return fontMap[fontFamily] || fontMap["'Poppins', sans-serif"];
   };
 
   const getSystemFallback = (fontFamily: string): string => {
@@ -10899,40 +10892,13 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
     return '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
   };
 
-  const getFontFaceDefinitions = (fontFamily: string): string => {
-    // For system fonts, no @font-face needed
-    if (
-      fontFamily.includes("-apple-system") ||
-      fontFamily.includes("BlinkMacSystemFont")
-    ) {
-      return "";
-    }
-
-    // Extract font name from the CSS value
-    const fontMatch = fontFamily.match(/'([^']+)'/);
-    const fontName = fontMatch ? fontMatch[1] : "Inter";
-
-    return `
-    @font-face {
-      font-family: '${fontName}';
-      font-style: normal;
-      font-weight: 300 700;
-      src: local('${fontName}'), local('${fontName.toLowerCase()}');
-      font-display: swap;
-    }
-  `;
-  };
-
+  // ── CSS builder ────────────────────────────────────────────────────────────
   const buildCSS = useCallback(
     (fontFamily: string) => `
     @import url('${getFontImport(fontFamily)}');
-    
-    ${getFontFaceDefinitions(fontFamily)}
 
     @page { size: A4; margin: 15mm; }
-
     *, *::before, *::after { box-sizing: border-box; }
-
     html, body { margin: 0; padding: 0; background: white; }
 
     .t1-resume {
@@ -10943,18 +10909,11 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
       font-size: 14px;
       line-height: 1.5;
     }
-
-    .t1-resume p {
-      margin: 0 0 0 0 !important;
-      padding: 0 !important;
-      line-height: 1.5 !important;
-    }
+    .t1-resume p { margin: 0 !important; padding: 0 !important; line-height: 1.5 !important; }
 
     .t1-contact-info {
-      text-align: center;
-      margin-bottom: 20px;
-      padding-bottom: 15px;
-      border-bottom: 1px solid #eee;
+      text-align: center; margin-bottom: 20px;
+      padding-bottom: 15px; border-bottom: 1px solid #eee;
     }
     .t1-name      { font-size: 24px; font-weight: 700; margin-bottom: 4px; line-height: 1.2; }
     .t1-job-title { font-size: 16px; color: #333; margin-bottom: 8px; }
@@ -10964,14 +10923,8 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
       display: flex; justify-content: center; flex-wrap: wrap; gap: 12px;
     }
     .t1-contact-details span { padding: 2px 8px; }
-    .t1-links {
-      margin-top: 5px; text-align: center;
-      display: flex; justify-content: center; flex-wrap: nowrap; gap: 0;
-    }
-    .t1-link-item {
-      color: #0077b5 !important; text-decoration: none !important; font-size: 14px; padding: 2px 8px;
-      white-space: nowrap; display: inline-block;
-    }
+    .t1-links { margin-top: 5px; text-align: center; display: flex; justify-content: center; flex-wrap: nowrap; gap: 0; }
+    .t1-link-item { color: #374151 !important; text-decoration: none !important; font-size: 14px; padding: 2px 8px; white-space: nowrap; display: inline-block; }
 
     .t1-section-content { margin-bottom: 16px; }
     .t1-section-title {
@@ -10979,7 +10932,6 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
       margin: 12px 0 8px; font-size: 16px; border-left: 3px solid #333;
       page-break-after: avoid; break-after: avoid;
     }
-
     .t1-item-header {
       display: flex; justify-content: space-between; align-items: flex-start;
       margin-bottom: 6px; flex-wrap: wrap; gap: 10px;
@@ -10997,7 +10949,6 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
       font-size: 12px; color: #666; font-weight: 500;
       background: #f0f0f0; padding: 2px 8px; border-radius: 3px;
     }
-
     .t1-item-content, .t1-summary-text, .t1-experience-description,
     .t1-education-description, .t1-project-description,
     .t1-custom-section-content, .t1-skills-content {
@@ -11008,68 +10959,43 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
     .t1-experience-description, .t1-education-description { margin-top: 5px; }
 
     .t1-experience-description ul, .t1-experience-description ol,
-    .t1-education-description ul,  .t1-education-description ol,
-    .t1-project-description ul,    .t1-project-description ol,
+    .t1-education-description ul, .t1-education-description ol,
+    .t1-project-description ul, .t1-project-description ol,
     .t1-custom-section-content ul, .t1-custom-section-content ol,
-    .t1-summary-text ul,           .t1-summary-text ol,
-    .t1-skills-content ul,         .t1-skills-content ol {
+    .t1-summary-text ul, .t1-summary-text ol,
+    .t1-skills-content ul, .t1-skills-content ol {
       margin: 8px 0 8px 20px !important; padding-left: 0 !important;
     }
     .t1-experience-description ul, .t1-summary-text ul, .t1-skills-content ul { list-style-type: disc !important; }
     .t1-experience-description ol, .t1-summary-text ol, .t1-skills-content ol { list-style-type: decimal !important; }
     .t1-experience-description li, .t1-education-description li,
-    .t1-project-description li,    .t1-custom-section-content li,
-    .t1-summary-text li,           .t1-skills-content li {
-      margin-bottom: 4px !important; line-height: 1.5 !important;
-      font-size: 13px !important;
+    .t1-project-description li, .t1-custom-section-content li,
+    .t1-summary-text li, .t1-skills-content li {
+      margin-bottom: 4px !important; line-height: 1.5 !important; font-size: 13px !important;
     }
 
     .t1-project-item { margin-bottom: 16px; }
-    .t1-project-header {
-      display: flex; justify-content: space-between; align-items: center;
-      flex-wrap: nowrap; gap: 8px; margin-bottom: 4px;
-    }
-    .t1-project-title      { font-weight: 700; font-size: 15px; color: #222; flex: 1; min-width: 0; }
-    .t1-project-links      { display: inline-flex; gap: 10px; flex-shrink: 0; align-items: center; }
-    .t1-project-link       {
-      font-size: 11px; color: #0077b5 !important; text-decoration: none !important;
-      white-space: nowrap; display: inline-block;
-    }
+    .t1-project-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: nowrap; gap: 8px; margin-bottom: 4px; }
+    .t1-project-title  { font-weight: 700; font-size: 15px; color: #222; flex: 1; min-width: 0; }
+    .t1-project-links  { display: inline-flex; gap: 10px; flex-shrink: 0; align-items: center; }
+    .t1-project-link   { font-size: 11px; color: #374151 !important; text-decoration: none !important; white-space: nowrap; display: inline-block; }
     .t1-project-tech-stack { font-size: 12px; color: #666; margin: 4px 0 6px; }
 
-    .t1-page-break {
-      page-break-before: always !important;
-      break-before: page !important;
-      display: block;
-      height: 0;
-      margin: 0;
-      padding: 0;
-    }
+    .t1-page-break { page-break-before: always !important; break-before: page !important; display: block; height: 0; margin: 0; padding: 0; }
 
     @media print {
-      *, *::before, *::after {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-      }
+      *, *::before, *::after { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
       html, body { overflow: visible; }
       .t1-resume { width: 100% !important; padding: 0 !important; }
-      .t1-project-link, .t1-link-item {
-        color: #0077b5 !important;
-        text-decoration: none !important;
-      }
-      a, a:visited {
-        color: inherit !important;
-        text-decoration: none !important;
-      }
-      .t1-link-item, .t1-project-link {
-        color: #0077b5 !important;
-      }
+      .t1-project-link, .t1-link-item { color: #374151 !important; text-decoration: none !important; }
+      a, a:visited { color: inherit !important; text-decoration: none !important; }
+      .t1-link-item, .t1-project-link { color: #374151 !important; }
     }
   `,
     [],
   );
 
-  // ── HTML builder ─────────────────────────────────────────────────────────
+  // ── HTML builder ───────────────────────────────────────────────────────────
   const generateHTML = useCallback(
     (forPDF = false, pageBreakIds: string[] = []): string => {
       const CSS = buildCSS(activeFontFamily);
@@ -11080,19 +11006,25 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
         if (!clean || clean === "<p><br></p>") return "";
         return `<div class="t1-item-content ${cls}">${clean}</div>`;
       };
+
+      // ── Skills check — strips HTML tags to check if any real text exists ──
+      const hasSkillsContent = (): boolean => {
+        if (!skills?.trim()) return false;
+        const cleaned = cleanQuillHTML(skills);
+        if (!cleaned || cleaned === "<p><br></p>") return false;
+        // Strip all HTML tags and check if any text remains
+        const textOnly = cleaned.replace(/<[^>]*>/g, "").trim();
+        return textOnly.length > 0;
+      };
+
       const href = (url: string) =>
         url.startsWith("http") ? url : `https://${url}`;
       const formattedDob = formatDateOfBirth(dateOfBirth || "");
 
-      // ── Header (always first, always rendered) ───────────────────────
       const header = `
       <div class="t1-contact-info">
         <div class="t1-name">${contact?.firstName || ""} ${contact?.lastName || ""}</div>
-        <div class="t1-job-title">${
-          typeof contact?.jobTitle === "string"
-            ? contact.jobTitle
-            : (contact?.jobTitle as any)?.name || ""
-        }</div>
+        <div class="t1-job-title">${typeof contact?.jobTitle === "string" ? contact.jobTitle : (contact?.jobTitle as any)?.name || ""}</div>
         ${addressParts.length ? `<div class="t1-address">${addressParts.join(", ")}</div>` : ""}
         <div class="t1-contact-details">
           ${contact?.email ? `<span>${contact.email}</span>` : ""}
@@ -11100,153 +11032,133 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
           ${formattedDob ? `<span>${formattedDob}</span>` : ""}
         </div>
         <div class="t1-links">
-          ${linkedinUrl ? `<a href="${href(linkedinUrl)}" class="t1-link-item" target="_blank">LinkedIn</a>` : ""}
-          ${githubUrl ? `<a href="${href(githubUrl)}" class="t1-link-item" target="_blank">GitHub</a>` : ""}
-          ${portfolioUrl ? `<a href="${href(portfolioUrl)}" class="t1-link-item" target="_blank">Portfolio</a>` : ""}
+          ${linkedinUrl ? `<a href="${href(linkedinUrl)}" class="t1-link-item" target="_blank">${linkedinUrl}</a>` : ""}
+          ${githubUrl ? `<a href="${href(githubUrl)}"   class="t1-link-item" target="_blank">${githubUrl}</a>` : ""}
+          ${portfolioUrl ? `<a href="${href(portfolioUrl)}"class="t1-link-item" target="_blank">${portfolioUrl}</a>` : ""}
         </div>
       </div>`;
 
-      // ── Section builders (keyed) ─────────────────────────────────────
-      const sectionBuilders: Record<SectionKey, () => string> = {
-        summary: () =>
-          summary
-            ? `
-          <div class="t1-section-content" data-block-id="summary">
-            <div class="t1-section-title">Summary</div>
-            ${richText(summary.replace(/\n/g, "<br>"), "t1-summary-text")}
-          </div>`
-            : "",
+      const summaryBlock = summary?.trim()
+        ? `<div class="t1-section-content" data-block-id="summary">
+             <div class="t1-section-title">Summary</div>
+             ${richText(summary.replace(/\n/g, "<br>"), "t1-summary-text")}
+           </div>`
+        : "";
 
-        experience: () =>
-          experiences.length
-            ? `
-          <div class="t1-section-content" data-block-id="exp-section">
-            <div class="t1-section-title">Experience</div>
-            ${experiences
-              .map((exp: any, i: number) => {
-                const s = formatMonthYear(exp.startDate, false);
-                const e = exp.endDate
-                  ? formatMonthYear(exp.endDate, false)
-                  : "Present";
-                return `<div class="t1-experience-item" data-block-id="exp-${i}" style="margin-bottom:16px">
-                <div class="t1-item-header">
-                  <div class="t1-item-title-container">
-                    <div class="t1-item-title">${exp.jobTitle || ""}</div>
-                    <div class="t1-item-subtitle">${exp.employer || ""}${exp.location ? ` — ${exp.location}` : ""}</div>
-                  </div>
-                  <div class="t1-item-date t1-experience-date">${s} - ${e}</div>
-                </div>
-                ${exp.text ? richText(exp.text, "t1-experience-description") : ""}
-              </div>`;
-              })
-              .join("")}
-          </div>`
-            : "",
+      const expBlock = experiences.length
+        ? `<div class="t1-section-content" data-block-id="exp-section">
+             <div class="t1-section-title">Experience</div>
+             ${experiences
+               .map((exp: any, i: number) => {
+                 const s = formatMonthYear(exp.startDate, false);
+                 const e = exp.endDate
+                   ? formatMonthYear(exp.endDate, false)
+                   : "Present";
+                 return `<div class="t1-experience-item" data-block-id="exp-${i}" style="margin-bottom:16px">
+                 <div class="t1-item-header">
+                   <div class="t1-item-title-container">
+                     <div class="t1-item-title">${exp.jobTitle || ""}</div>
+                     <div class="t1-item-subtitle">${exp.employer || ""}${exp.location ? ` — ${exp.location}` : ""}</div>
+                   </div>
+                   <div class="t1-item-date t1-experience-date">${s} - ${e}</div>
+                 </div>
+                 ${exp.text ? richText(exp.text, "t1-experience-description") : ""}
+               </div>`;
+               })
+               .join("")}
+           </div>`
+        : "";
 
-        projects: () =>
-          projects.length
-            ? `
-          <div class="t1-section-content" data-block-id="proj-section">
-            <div class="t1-section-title">Projects</div>
-            ${projects
-              .map(
-                (p: any, i: number) => `
-              <div class="t1-project-item" data-block-id="proj-${i}">
-                <div class="t1-project-header">
-                  <div class="t1-project-title">${p.title || ""}</div>
-                  ${
-                    p.liveUrl || p.githubUrl
-                      ? `
-                    <div class="t1-project-links">
-                      ${p.liveUrl ? `<a href="${href(p.liveUrl)}" class="t1-project-link" target="_blank">Live Demo</a>` : ""}
-                      ${p.githubUrl ? `<a href="${href(p.githubUrl)}" class="t1-project-link" target="_blank">GitHub</a>` : ""}
-                    </div>`
-                      : ""
-                  }
-                </div>
-                ${p.techStack?.length ? `<div class="t1-project-tech-stack"><strong>Tech:</strong> ${p.techStack.join(" , ")}</div>` : ""}
-                ${p.description ? richText(p.description, "t1-project-description") : ""}
-              </div>`,
-              )
-              .join("")}
-          </div>`
-            : "",
+      const projBlock = projects.length
+        ? `<div class="t1-section-content" data-block-id="proj-section">
+             <div class="t1-section-title">Projects</div>
+             ${projects
+               .map(
+                 (p: any, i: number) => `
+               <div class="t1-project-item" data-block-id="proj-${i}">
+                 <div class="t1-project-header">
+                   <div class="t1-project-title">${p.title || ""}</div>
+                   ${
+                     p.liveUrl || p.githubUrl
+                       ? `
+                     <div class="t1-project-links">
+                       ${p.liveUrl ? `<a href="${href(p.liveUrl)}"   class="t1-project-link" target="_blank">Live Demo</a>` : ""}
+                       ${p.githubUrl ? `<a href="${href(p.githubUrl)}" class="t1-project-link" target="_blank">GitHub</a>` : ""}
+                     </div>`
+                       : ""
+                   }
+                 </div>
+                 ${p.techStack?.length ? `<div class="t1-project-tech-stack"><strong>Tech:</strong> ${p.techStack.join(" , ")}</div>` : ""}
+                 ${p.description ? richText(p.description, "t1-project-description") : ""}
+               </div>`,
+               )
+               .join("")}
+           </div>`
+        : "";
 
-        education: () =>
-          educations.length
-            ? `
-          <div class="t1-section-content" data-block-id="edu-section">
-            <div class="t1-section-title">Education</div>
-            ${educations
-              .map((edu: any, i: number) => {
-                const grade = formatGradeToCgpdAndPercentage(edu.grade || "");
-                const dateStr =
-                  edu.startDate || edu.endDate
-                    ? `${edu.startDate || ""} - ${edu.endDate || "Present"}`
-                    : "";
-                return `<div class="t1-education-item" data-block-id="edu-${i}" style="margin-bottom:16px">
-                <div class="t1-item-header">
-                  <div class="t1-item-title-container">
-                    <div class="t1-item-title">${edu.degree || ""}</div>
-                    <div class="t1-item-subtitle">
-                      ${edu.schoolname ? `<span>${edu.schoolname}</span>` : ""}
-                      ${edu.schoolname && edu.location ? " — " : ""}
-                      ${edu.location ? `<span>${edu.location}</span>` : ""}
-                      ${(edu.schoolname || edu.location) && grade ? " • " : ""}
-                      ${grade ? `<span class="t1-education-grade">${grade}</span>` : ""}
-                    </div>
-                  </div>
-                  ${dateStr ? `<div class="t1-item-date t1-education-date">${dateStr}</div>` : ""}
-                </div>
-                ${edu.text ? richText(edu.text, "t1-education-description") : ""}
-              </div>`;
-              })
-              .join("")}
-          </div>`
-            : "",
+      const eduBlock = educations.length
+        ? `<div class="t1-section-content" data-block-id="edu-section">
+             <div class="t1-section-title">Education</div>
+             ${educations
+               .map((edu: any, i: number) => {
+                 const grade = formatGradeToCgpdAndPercentage(edu.grade || "");
+                 const dateStr =
+                   edu.startDate || edu.endDate
+                     ? `${edu.startDate || ""} - ${edu.endDate || "Present"}`
+                     : "";
+                 return `<div class="t1-education-item" data-block-id="edu-${i}" style="margin-bottom:16px">
+                 <div class="t1-item-header">
+                   <div class="t1-item-title-container">
+                     <div class="t1-item-title">${edu.degree || ""}</div>
+                     <div class="t1-item-subtitle">
+                       ${edu.schoolname ? `<span>${edu.schoolname}</span>` : ""}
+                       ${edu.schoolname && edu.location ? " — " : ""}
+                       ${edu.location ? `<span>${edu.location}</span>` : ""}
+                       ${(edu.schoolname || edu.location) && grade ? " • " : ""}
+                       ${grade ? `<span class="t1-education-grade">${grade}</span>` : ""}
+                     </div>
+                   </div>
+                   ${dateStr ? `<div class="t1-item-date t1-education-date">${dateStr}</div>` : ""}
+                 </div>
+                 ${edu.text ? richText(edu.text, "t1-education-description") : ""}
+               </div>`;
+               })
+               .join("")}
+           </div>`
+        : "";
 
-        skills: () => {
-          const skillsClean = cleanQuillHTML(skills || "");
-          return skillsClean && skillsClean !== "<p><br></p>"
-            ? `
-            <div class="t1-section-content" data-block-id="skills-section">
-              <div class="t1-section-title">Skills</div>
-              <div class="t1-skills-content" data-block-id="skills-content">${skillsClean}</div>
-            </div>`
-            : "";
-        },
+      const skillsBlock = hasSkillsContent()
+        ? `<div class="t1-section-content" data-block-id="skills-section">
+             <div class="t1-section-title">Skills</div>
+             <div class="t1-skills-content" data-block-id="skills-content">${cleanQuillHTML(skills)}</div>
+           </div>`
+        : "";
 
-        custom: () =>
-          !Array.isArray(finalize) &&
-          Array.isArray(finalize?.customSection) &&
-          finalize.customSection.some(
-            (s: any) => s?.name?.trim() || s?.description?.trim(),
-          )
-            ? `<div class="t1-section-content">
-              ${finalize.customSection
-                .filter((s: any) => s?.name?.trim() || s?.description?.trim())
-                .map(
-                  (s: any, i: number) => `
-                  <div class="t1-custom-section" data-block-id="custom-${i}">
-                    ${s.name ? `<div class="t1-section-title">${s.name}</div>` : ""}
-                    ${s.description ? richText(s.description, "t1-custom-section-content") : ""}
-                  </div>`,
-                )
-                .join("")}
-            </div>`
-            : "",
-      };
-
-      // ── Render sections in customized order ──────────────────────────
-      const sectionsHTML = activeSectionOrder
-        .map((key) => sectionBuilders[key]?.() ?? "")
-        .join("");
+      const customBlock =
+        !Array.isArray(finalize) &&
+        Array.isArray(finalize?.customSection) &&
+        finalize.customSection.some(
+          (s: any) => s?.name?.trim() || s?.description?.trim(),
+        )
+          ? `<div class="t1-section-content">
+               ${finalize.customSection
+                 .filter((s: any) => s?.name?.trim() || s?.description?.trim())
+                 .map(
+                   (s: any, i: number) => `
+                   <div class="t1-custom-section" data-block-id="custom-${i}">
+                     ${s.name ? `<div class="t1-section-title">${s.name}</div>` : ""}
+                     ${s.description ? richText(s.description, "t1-custom-section-content") : ""}
+                   </div>`,
+                 )
+                 .join("")}
+             </div>`
+          : "";
 
       const pdfStyle = forPDF
         ? `<style>.t1-resume { width: 100% !important; padding: 0 !important; }</style>`
         : "";
 
-      let bodyContent = `${header}${sectionsHTML}`;
+      let bodyContent = `${header}${summaryBlock}${expBlock}${projBlock}${eduBlock}${skillsBlock}${customBlock}`;
 
       if (forPDF && pageBreakIds.length > 0) {
         const tempDiv = document.createElement("div");
@@ -11272,15 +11184,12 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
   ${pdfStyle}
 </head>
 <body style="margin:0;padding:0;background:white;">
-  <div class="t1-resume">
-    ${bodyContent}
-  </div>
+  <div class="t1-resume">${bodyContent}</div>
 </body>
 </html>`;
     },
     [
       activeFontFamily,
-      activeSectionOrder,
       contact,
       educations,
       experiences,
@@ -11297,7 +11206,7 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
     ],
   );
 
-  // ── Page splitter (unchanged from original) ───────────────────────────────
+  // ── Page splitter ──────────────────────────────────────────────────────────
   const CSS_FOR_MEASURE = buildCSS(activeFontFamily);
 
   const splitIntoPages = useCallback(
@@ -11329,27 +11238,13 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
         const measureDoc = iframe.contentDocument!;
         measureDoc.open();
         measureDoc.write(`<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8"/>
-  <style>
-    ${CSS_FOR_MEASURE}
-    html, body {
-      margin: 0 !important; padding: 0 !important;
-      width: ${A4_W}px !important; height: auto !important;
-      overflow: visible !important; background: white !important;
-    }
-    .t1-resume {
-      width: ${A4_W}px !important;
-      padding-left: ${MARGIN}px !important;
-      padding-right: ${MARGIN}px !important;
-      padding-top: 0 !important; padding-bottom: 0 !important;
-      margin: 0 !important; box-sizing: border-box !important;
-    }
-  </style>
-</head>
-<body>${resumeSnapshot}</body>
-</html>`);
+<html><head><meta charset="UTF-8"/>
+<style>
+  ${CSS_FOR_MEASURE}
+  html, body { margin: 0 !important; padding: 0 !important; width: ${A4_W}px !important; height: auto !important; overflow: visible !important; background: white !important; }
+  .t1-resume { width: ${A4_W}px !important; padding-left: ${MARGIN}px !important; padding-right: ${MARGIN}px !important; padding-top: 0 !important; padding-bottom: 0 !important; margin: 0 !important; box-sizing: border-box !important; }
+</style></head>
+<body>${resumeSnapshot}</body></html>`);
         measureDoc.close();
 
         const doMeasure = () => {
@@ -11370,12 +11265,9 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
           const resumeRect = resume.getBoundingClientRect();
           const scrollY =
             measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
-
-          const getRelTop = (el: HTMLElement): number => {
-            const r = el.getBoundingClientRect();
-            return r.top - resumeRect.top + scrollY;
-          };
-          const getRelBottom = (el: HTMLElement): number =>
+          const getRelTop = (el: HTMLElement) =>
+            el.getBoundingClientRect().top - resumeRect.top + scrollY;
+          const getRelBottom = (el: HTMLElement) =>
             getRelTop(el) + el.getBoundingClientRect().height;
 
           interface Block {
@@ -11393,13 +11285,11 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
             ".t1-custom-section",
             ".t1-skills-content",
           ].join(", ");
-
           resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
-            const top = getRelTop(el);
-            const bottom = getRelBottom(el);
-            if (bottom - top > 8) {
+            const top = getRelTop(el),
+              bottom = getRelBottom(el);
+            if (bottom - top > 8)
               blocks.push({ top, bottom, id: el.dataset.blockId });
-            }
           });
 
           resume
@@ -11443,21 +11333,20 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
             const currentStart = pageStarts[pageStarts.length - 1];
             const naiveCut = currentStart + PAGE_CONTENT_H;
             if (naiveCut >= totalH) break;
-
-            let actualCut = naiveCut;
-            let cutBlockId: string | undefined;
-
+            let actualCut = naiveCut,
+              cutBlockId: string | undefined;
             for (const block of blocks) {
               if (block.top >= naiveCut) break;
               if (block.bottom <= currentStart) continue;
-              if (block.top >= currentStart && block.bottom > naiveCut) {
-                if (block.top < actualCut) {
-                  actualCut = block.top;
-                  cutBlockId = block.id;
-                }
+              if (
+                block.top >= currentStart &&
+                block.bottom > naiveCut &&
+                block.top < actualCut
+              ) {
+                actualCut = block.top;
+                cutBlockId = block.id;
               }
             }
-
             if (actualCut <= currentStart) actualCut = naiveCut;
             pageStarts.push(actualCut);
             if (cutBlockId) pageBreakIds.push(cutBlockId);
@@ -11467,54 +11356,24 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
           (window as any).__resumePageBreakIds = pageBreakIds;
 
           const pageHtmls: string[] = [];
-
           for (let i = 0; i < pageStarts.length; i++) {
             const contentOffsetY = pageStarts[i];
             const nextStart = pageStarts[i + 1] ?? totalH;
             const clipH = nextStart - contentOffsetY;
-
             pageHtmls.push(`<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <style>
-    ${CSS_FOR_MEASURE}
-    html, body {
-      margin: 0 !important; padding: 0 !important;
-      width: ${A4_W}px !important; height: ${A4_H}px !important;
-      overflow: hidden !important; background: white !important;
-    }
-    .page-margin-box {
-      position: relative; width: ${A4_W}px; height: ${A4_H}px;
-      background: white; overflow: hidden;
-    }
-    .page-content-clip {
-      position: absolute; top: ${MARGIN}px; left: 0;
-      width: ${A4_W}px; height: ${clipH}px; overflow: hidden;
-    }
-    .page-shift {
-      position: absolute; top: ${-contentOffsetY}px; left: 0; width: ${A4_W}px;
-    }
-    .t1-resume {
-      width: ${A4_W}px !important;
-      padding-top: 0 !important; padding-bottom: 0 !important;
-      padding-left: ${MARGIN}px !important; padding-right: ${MARGIN}px !important;
-      margin: 0 !important;
-    }
-  </style>
-</head>
+<html lang="en"><head><meta charset="UTF-8"/>
+<style>
+  ${CSS_FOR_MEASURE}
+  html, body { margin: 0 !important; padding: 0 !important; width: ${A4_W}px !important; height: ${A4_H}px !important; overflow: hidden !important; background: white !important; }
+  .page-margin-box { position: relative; width: ${A4_W}px; height: ${A4_H}px; background: white; overflow: hidden; }
+  .page-content-clip { position: absolute; top: ${MARGIN}px; left: 0; width: ${A4_W}px; height: ${clipH}px; overflow: hidden; }
+  .page-shift { position: absolute; top: ${-contentOffsetY}px; left: 0; width: ${A4_W}px; }
+  .t1-resume { width: ${A4_W}px !important; padding-top: 0 !important; padding-bottom: 0 !important; padding-left: ${MARGIN}px !important; padding-right: ${MARGIN}px !important; margin: 0 !important; }
+</style></head>
 <body>
-  <div class="page-margin-box">
-    <div class="page-content-clip">
-      <div class="page-shift">
-        ${resumeSnapshot}
-      </div>
-    </div>
-  </div>
-</body>
-</html>`);
+  <div class="page-margin-box"><div class="page-content-clip"><div class="page-shift">${resumeSnapshot}</div></div></div>
+</body></html>`);
           }
-
           resolve(pageHtmls);
         };
 
@@ -11531,33 +11390,7 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
     [CSS_FOR_MEASURE],
   );
 
-  // Preload all fonts when component mounts
-  useEffect(() => {
-    // Load all Google Fonts for better performance
-    const loadAllFonts = () => {
-      const fontLinks = new Set<string>();
-
-      FONT_OPTIONS.forEach((font) => {
-        const importUrl = getFontImport(font.value);
-        if (importUrl) {
-          fontLinks.add(importUrl);
-        }
-      });
-
-      fontLinks.forEach((url) => {
-        if (!document.querySelector(`link[href="${url}"]`)) {
-          const link = document.createElement("link");
-          link.rel = "stylesheet";
-          link.href = url;
-          document.head.appendChild(link);
-        }
-      });
-    };
-
-    loadAllFonts();
-  }, []);
-
-  // ── Debounced updates ────────────────────────────────────────────────────
+  // ── Debounced updates ──────────────────────────────────────────────────────
   const scheduleUpdate = useCallback((html: string) => {
     if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
     debounceTimerRef.current = setTimeout(() => setHtmlContent(html), 300);
@@ -11575,52 +11408,16 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
     splitIntoPages(htmlContent).then(setPages);
   }, [htmlContent, splitIntoPages]);
 
-  // ── Listen for download event from parent page ───────────────────────────
-//   useEffect(() => {
-//     const handler = async (e: Event) => {
-//       const customEvent = e as CustomEvent<{
-//         customization: ResumeCustomization;
-//       }>;
-//       try {
-//         const pageBreakIds: string[] =
-//           (window as any).__resumePageBreakIds || [];
-//         const pdfHtml = generateHTML(true, pageBreakIds);
-
-//         const res: AxiosResponse<Blob> = await api.post(
-//           `${API_URL}/candidates/generate-pdf`,
-//           { html: pdfHtml },
-//           { responseType: "blob" },
-//         );
-
-//         const url = URL.createObjectURL(res.data);
-//         const a = document.createElement("a");
-//         a.href = url;
-//         a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
-//         document.body.appendChild(a);
-//         a.click();
-//         document.body.removeChild(a);
-//         URL.revokeObjectURL(url);
-//       } catch (err) {
-//         console.error("PDF error:", err);
-//         alert("Failed to generate PDF. Please try again.");
-//       }
-//     };
-
-//     window.addEventListener("resume:download", handler);
-//     return () => window.removeEventListener("resume:download", handler);
-//   }, [generateHTML, contact]);
-
-    const handleDownload = async (): Promise<void> => {
+  // ── Download handler ───────────────────────────────────────────────────────
+  const handleDownload = async (): Promise<void> => {
     try {
       const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
       const pdfHtml = generateHTML(true, pageBreakIds);
-
       const res: AxiosResponse<Blob> = await api.post(
         `${API_URL}/candidates/generate-pdf`,
         { html: pdfHtml },
         { responseType: "blob" },
       );
-
       const url = URL.createObjectURL(res.data);
       const a = document.createElement("a");
       a.href = url;
@@ -11635,10 +11432,9 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
     }
   };
 
-  // ── RENDER ───────────────────────────────────────────────────────────────
+  // ── RENDER ─────────────────────────────────────────────────────────────────
   return (
     <>
-      {/* Download button */}
       {lastSegment === "download-resume" && (
         <div className="text-center my-5">
           <motion.button
@@ -11653,7 +11449,6 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
       )}
 
       {alldata ? (
-        // Thumbnail mode (used in template selection grid)
         <div
           style={{
             width: `${A4_W}px`,
@@ -11697,7 +11492,6 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
           )}
         </div>
       ) : (
-        // Full preview mode (used in download page)
         <div style={{ width: `${A4_W}px`, margin: "0 auto" }}>
           {(pages.length > 0 ? pages : [htmlContent]).map((pageHtml, idx) => (
             <div key={idx} style={{ marginBottom: "28px" }}>
@@ -11734,7 +11528,6 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
                   style={{ flex: 1, height: "1px", background: "#d1d5db" }}
                 />
               </div>
-
               <div
                 style={{
                   width: `${A4_W}px`,

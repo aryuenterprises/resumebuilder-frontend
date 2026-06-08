@@ -712,7 +712,6 @@ export function ResumeDataFetcher({ children }: ResumeDataFetcherProps) {
   } = useContext(CreateContext);
 
 
-  console.log("isUploadMode",isUploadMode)
 
   const chosenTemplate = getLocalStorage<Template>("chosenTemplate");
   const editingResumeIdAndData = getLocalStorage<EditingResumeData>("editingResumeIdAndData");
@@ -823,6 +822,7 @@ export function ResumeDataFetcher({ children }: ResumeDataFetcherProps) {
         const response = await api.get(`${API_URL}/user-resumes`);
         
                 console.log("bb");   
+                console.log("response",response)
 
         const resumeData = response.data?.[0]?.resume_data;
 
