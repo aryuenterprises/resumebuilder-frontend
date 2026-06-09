@@ -1,4 +1,3 @@
-
 // "use client";
 // import React, { useContext } from "react";
 // import axios from "axios";
@@ -34,7 +33,6 @@
 //      CSS — SINGLE COLUMN | SLATE GRAY | SOFT & ELEGANT
 //   ====================================================== */
 //   const styles = `
- 
 
 //   body {
 //     margin: 0;
@@ -1059,56 +1057,6 @@
 
 // export default TemplateSixteen;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
 // import React, { useContext } from "react";
 // import axios from "axios";
@@ -1231,8 +1179,6 @@
 //   ====================================================== */
 //   const styles = `
 //   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap');
-
- 
 
 //   .t16-resume-container {
 //     width: 210mm;
@@ -1663,10 +1609,10 @@
 //     // Generate skills HTML for PDF
 //     const generateSkillsHTML = () => {
 //       if (!skills || (typeof skills === "string" && !skills.trim())) return "";
-      
+
 //       const cleanedSkills = cleanQuillHTML(skills);
 //       if (!cleanedSkills || cleanedSkills === "<p><br></p>" || cleanedSkills === "") return "";
-      
+
 //       return `
 //         <div class="t16-section-block">
 //           <div class="t16-section-header">
@@ -1682,7 +1628,7 @@
 //     // Generate projects HTML for PDF
 //     const generateProjectsHTML = () => {
 //       if (!projects || projects.length === 0) return "";
-      
+
 //       return `
 //         <div class="t16-section-block">
 //           <div class="t16-section-header">
@@ -2075,29 +2021,6 @@
 
 // export default TemplateSixteen;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 import React, {
   useContext,
@@ -2232,7 +2155,6 @@ const TemplateSixteen: React.FC<TemplateSixteenProps> = ({
 
     .t16-resume {
       width: ${A4_W}px;
-      background-color: #fafafa;
       font-family: ${fontFamily}, ${getSystemFallback(fontFamily)};
       color: #2c2c2c;
       box-sizing: border-box;
@@ -2433,7 +2355,6 @@ const TemplateSixteen: React.FC<TemplateSixteenProps> = ({
       html, body { margin: 0 !important; padding: 0 !important; overflow: visible; }
       .t16-resume {
         width: ${A4_W}px !important;
-        background-color: #fafafa !important;
         box-shadow: none !important;
       }
       .t16-resume .t16-header-block,
@@ -2504,8 +2425,12 @@ const TemplateSixteen: React.FC<TemplateSixteenProps> = ({
             ${experiences
               .map((exp: any, i: number) => {
                 const s = formatMonthYear(exp.startDate, false);
-                const e = exp.endDate ? formatMonthYear(exp.endDate, false) : "Present";
-                const companyLocation = [exp.employer, exp.location].filter(Boolean).join("  ·  ");
+                const e = exp.endDate
+                  ? formatMonthYear(exp.endDate, false)
+                  : "Present";
+                const companyLocation = [exp.employer, exp.location]
+                  .filter(Boolean)
+                  .join("  ·  ");
                 return `<div class="t16-entry-block" data-block-id="exp-${i}">
                   <div class="t16-entry-top-row">
                     <div class="t16-entry-title">${exp.jobTitle || ""}</div>
@@ -2562,13 +2487,17 @@ const TemplateSixteen: React.FC<TemplateSixteenProps> = ({
                     <div class="t16-entry-title">${edu.schoolname || ""}</div>
                     ${dateStr ? `<div class="t16-entry-date">${dateStr}</div>` : ""}
                   </div>
-                  ${edu.degree || edu.location || grade ? `
+                  ${
+                    edu.degree || edu.location || grade
+                      ? `
                     <div class="t16-entry-subtitle">
                       ${edu.degree || ""}
                       ${edu.degree && edu.location ? "  ·  " : ""}
                       ${edu.location || ""}
                       ${grade ? `<div class="t16-education-grade">${grade}</div>` : ""}
-                    </div>` : ""}
+                    </div>`
+                      : ""
+                  }
                   ${eduText ? `<div class="t16-edu-content">${eduText}</div>` : ""}
                 </div>`;
               })
@@ -2608,19 +2537,20 @@ const TemplateSixteen: React.FC<TemplateSixteenProps> = ({
       // PDF style — only print-color-adjust, never changes layout
       const pdfStyle = forPDF
         ? `<style>
-            *, *::before, *::after {
-              -webkit-print-color-adjust: exact !important;
-              print-color-adjust: exact !important;
-            }
-            @page { size: A4; margin: ${MARGIN}px !important; }
-            .t16-resume .t16-header-block,
-            .t16-resume .t16-skills-content,
-            .t16-resume .t16-summary-text,
-            .t16-resume .t16-custom-section-content {
-              -webkit-print-color-adjust: exact !important;
-              print-color-adjust: exact !important;
-            }
-          </style>`
+      *, *::before, *::after {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      @page { size: A4; margin: ${MARGIN}px !important; }
+      .t16-resume { width: ${A4_W - MARGIN * 2}px !important; }
+      .t16-resume .t16-header-block,
+      .t16-resume .t16-skills-content,
+      .t16-resume .t16-summary-text,
+      .t16-resume .t16-custom-section-content {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    </style>`
         : "";
 
       let bodyContent = `${headerBlock}
@@ -2690,14 +2620,23 @@ const TemplateSixteen: React.FC<TemplateSixteenProps> = ({
         const parser = new DOMParser();
         const parsed = parser.parseFromString(fullHtml, "text/html");
         const resumeEl = parsed.querySelector<HTMLElement>(".t16-resume");
-        if (!resumeEl) { resolve([fullHtml]); return; }
+        if (!resumeEl) {
+          resolve([fullHtml]);
+          return;
+        }
         const resumeSnapshot = resumeEl.outerHTML;
 
         const iframe = document.createElement("iframe");
         iframe.style.cssText = [
-          "position:fixed", "top:0", "left:-9999px",
-          `width:${A4_W}px`, "height:10000px", "border:none",
-          "opacity:0", "pointer-events:none", "z-index:-1",
+          "position:fixed",
+          "top:0",
+          "left:-9999px",
+          `width:${A4_W}px`,
+          "height:10000px",
+          "border:none",
+          "opacity:0",
+          "pointer-events:none",
+          "z-index:-1",
         ].join(";");
         document.body.appendChild(iframe);
 
@@ -2708,8 +2647,11 @@ const TemplateSixteen: React.FC<TemplateSixteenProps> = ({
 <style>
   ${CSS_FOR_MEASURE}
   html, body { margin: 0 !important; padding: 0 !important; width: ${A4_W}px !important; height: auto !important; overflow: visible !important; background: white !important; }
-  .t16-resume { width: ${A4_W}px !important; margin: 0 !important; box-sizing: border-box !important; }
-</style></head>
+.t16-resume {
+  width: ${A4_W - MARGIN * 2}px !important;
+  margin: 0 !important; box-sizing: border-box !important;
+}
+  </style></head>
 <body>${resumeSnapshot}</body></html>`);
         measureDoc.close();
 
@@ -2721,20 +2663,27 @@ const TemplateSixteen: React.FC<TemplateSixteenProps> = ({
             return;
           }
 
-          measureDoc.documentElement.style.cssText = "height:auto!important;overflow:visible!important;";
-          measureDoc.body.style.cssText = "margin:0;padding:0;height:auto!important;overflow:visible!important;";
+          measureDoc.documentElement.style.cssText =
+            "height:auto!important;overflow:visible!important;";
+          measureDoc.body.style.cssText =
+            "margin:0;padding:0;height:auto!important;overflow:visible!important;";
           void resume.offsetHeight;
 
           const totalH = resume.scrollHeight;
           const resumeRect = resume.getBoundingClientRect();
-          const scrollY = measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
+          const scrollY =
+            measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
 
           const getRelTop = (el: HTMLElement) =>
             el.getBoundingClientRect().top - resumeRect.top + scrollY;
           const getRelBottom = (el: HTMLElement) =>
             getRelTop(el) + el.getBoundingClientRect().height;
 
-          interface Block { top: number; bottom: number; id?: string; }
+          interface Block {
+            top: number;
+            bottom: number;
+            id?: string;
+          }
           const blocks: Block[] = [];
 
           // Individual items only — NOT section containers
@@ -2746,31 +2695,43 @@ const TemplateSixteen: React.FC<TemplateSixteenProps> = ({
           ].join(", ");
 
           resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
-            const top = getRelTop(el), bottom = getRelBottom(el);
-            if (bottom - top > 8) blocks.push({ top, bottom, id: el.dataset.blockId });
+            const top = getRelTop(el),
+              bottom = getRelBottom(el);
+            if (bottom - top > 8)
+              blocks.push({ top, bottom, id: el.dataset.blockId });
           });
 
           // Section header + first item paired — prevents orphaned headings
-          resume.querySelectorAll<HTMLElement>(".t16-section-header").forEach((header) => {
-            const headerTop = getRelTop(header);
-            let firstItem: HTMLElement | null = null;
-            let sib = header.nextElementSibling as HTMLElement | null;
-            while (sib) {
-              if (sib.getBoundingClientRect().height > 8) { firstItem = sib; break; }
-              sib = sib.nextElementSibling as HTMLElement | null;
-            }
-            if (firstItem) {
-              const deepChild = firstItem.querySelector<HTMLElement>(
-                ".t16-entry-block, .t16-skills-content, .t16-summary-text, .t16-custom-section-content",
-              );
-              const anchor = deepChild || firstItem;
-              const anchorBottom = getRelBottom(anchor);
-              if (anchorBottom - headerTop > 8) {
-                const sectionId = (header.parentElement as HTMLElement)?.dataset?.blockId;
-                blocks.push({ top: headerTop, bottom: anchorBottom, id: sectionId });
+          resume
+            .querySelectorAll<HTMLElement>(".t16-section-header")
+            .forEach((header) => {
+              const headerTop = getRelTop(header);
+              let firstItem: HTMLElement | null = null;
+              let sib = header.nextElementSibling as HTMLElement | null;
+              while (sib) {
+                if (sib.getBoundingClientRect().height > 8) {
+                  firstItem = sib;
+                  break;
+                }
+                sib = sib.nextElementSibling as HTMLElement | null;
               }
-            }
-          });
+              if (firstItem) {
+                const deepChild = firstItem.querySelector<HTMLElement>(
+                  ".t16-entry-block, .t16-skills-content, .t16-summary-text, .t16-custom-section-content",
+                );
+                const anchor = deepChild || firstItem;
+                const anchorBottom = getRelBottom(anchor);
+                if (anchorBottom - headerTop > 8) {
+                  const sectionId = (header.parentElement as HTMLElement)
+                    ?.dataset?.blockId;
+                  blocks.push({
+                    top: headerTop,
+                    bottom: anchorBottom,
+                    id: sectionId,
+                  });
+                }
+              }
+            });
 
           blocks.sort((a, b) => a.top - b.top);
 
@@ -2782,11 +2743,16 @@ const TemplateSixteen: React.FC<TemplateSixteenProps> = ({
             const currentStart = pageStarts[pageStarts.length - 1];
             const naiveCut = currentStart + PAGE_CONTENT_H;
             if (naiveCut >= totalH) break;
-            let actualCut = naiveCut, cutBlockId: string | undefined;
+            let actualCut = naiveCut,
+              cutBlockId: string | undefined;
             for (const block of blocks) {
               if (block.top >= naiveCut) break;
               if (block.bottom <= currentStart) continue;
-              if (block.top >= currentStart && block.bottom > naiveCut && block.top < actualCut) {
+              if (
+                block.top >= currentStart &&
+                block.bottom > naiveCut &&
+                block.top < actualCut
+              ) {
                 actualCut = block.top;
                 cutBlockId = block.id;
               }
@@ -2811,9 +2777,18 @@ const TemplateSixteen: React.FC<TemplateSixteenProps> = ({
   ${CSS_FOR_MEASURE}
   html, body { margin: 0 !important; padding: 0 !important; width: ${A4_W}px !important; height: ${A4_H}px !important; overflow: hidden !important; background: white !important; }
   .page-margin-box { position: relative; width: ${A4_W}px; height: ${A4_H}px; background: white; overflow: hidden; }
-  .page-content-clip { position: absolute; top: ${MARGIN}px; left: 0; width: ${A4_W}px; height: ${clipH}px; overflow: hidden; }
-  .page-shift { position: absolute; top: ${-contentOffsetY}px; left: 0; width: ${A4_W}px; }
-  .t16-resume { width: ${A4_W}px !important; margin: 0 !important; }
+ .page-content-clip {
+  position: absolute; top: ${MARGIN}px; left: ${MARGIN}px;
+  width: ${A4_W - MARGIN * 2}px; height: ${clipH}px; overflow: hidden;
+}
+.page-shift {
+  position: absolute; top: ${-contentOffsetY}px; left: 0;
+  width: ${A4_W - MARGIN * 2}px;
+}
+.t16-resume {
+  width: ${A4_W - MARGIN * 2}px !important;
+  margin: 0 !important;
+}
 </style></head>
 <body>
   <div class="page-margin-box"><div class="page-content-clip"><div class="page-shift">${resumeSnapshot}</div></div></div>
@@ -2843,7 +2818,9 @@ const TemplateSixteen: React.FC<TemplateSixteenProps> = ({
 
   useEffect(() => {
     scheduleUpdate(generateHTML());
-    return () => { if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current); };
+    return () => {
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    };
   }, [generateHTML, scheduleUpdate]);
 
   useEffect(() => {
@@ -2879,36 +2856,58 @@ const TemplateSixteen: React.FC<TemplateSixteenProps> = ({
   return (
     <>
       {/* {lastSegment === "download-resume" && ( */}
-        <div className="text-center my-5">
-          <motion.button
-            onClick={handleDownload}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-emerald-500 text-2xl md:text-base hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 cursor-pointer shadow-md hover:shadow-lg"
-          >
-            Download Resume
-          </motion.button>
-        </div>
+      <div className="text-center my-5">
+        <motion.button
+          onClick={handleDownload}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="bg-emerald-500 text-2xl md:text-base hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 cursor-pointer shadow-md hover:shadow-lg"
+        >
+          Download Resume
+        </motion.button>
+      </div>
       {/* )} */}
 
       {alldata ? (
         // THUMBNAIL mode
         <div
           style={{
-            width: `${A4_W}px`, height: `${A4_H}px`,
-            transform: "scale(0.36)", transformOrigin: "top left",
-            overflow: "hidden", pointerEvents: "none", flexShrink: 0,
+            width: `${A4_W}px`,
+            height: `${A4_H}px`,
+            transform: "scale(0.36)",
+            transformOrigin: "top left",
+            overflow: "hidden",
+            pointerEvents: "none",
+            flexShrink: 0,
           }}
         >
           {pages[0] ? (
             <iframe
               title="resume-thumb"
               srcDoc={pages[0]}
-              style={{ width: `${A4_W}px`, height: `${A4_H}px`, border: "none", display: "block", pointerEvents: "none" }}
+              style={{
+                width: `${A4_W}px`,
+                height: `${A4_H}px`,
+                border: "none",
+                display: "block",
+                pointerEvents: "none",
+              }}
               sandbox="allow-same-origin"
             />
           ) : (
-            <div style={{ width: `${A4_W}px`, height: `${A4_H}px`, background: "white", display: "flex", alignItems: "center", justifyContent: "center", color: "#ccc", fontSize: 14, fontFamily: "sans-serif" }}>
+            <div
+              style={{
+                width: `${A4_W}px`,
+                height: `${A4_H}px`,
+                background: "white",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#ccc",
+                fontSize: 14,
+                fontFamily: "sans-serif",
+              }}
+            >
               Loading…
             </div>
           )}
@@ -2918,18 +2917,61 @@ const TemplateSixteen: React.FC<TemplateSixteenProps> = ({
         <div style={{ width: `${A4_W}px`, margin: "0 auto" }}>
           {(pages.length > 0 ? pages : [htmlContent]).map((pageHtml, idx) => (
             <div key={idx} style={{ marginBottom: "28px" }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", marginBottom: "10px" }}>
-                <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
-                <span style={{ fontSize: "11px", fontWeight: 600, color: "#6b7280", whiteSpace: "nowrap", padding: "3px 12px", background: "#f3f4f6", borderRadius: "999px", border: "1px solid #e5e7eb", letterSpacing: "0.05em", fontFamily: "system-ui, sans-serif" }}>
-                  Page {idx + 1}{pages.length > 1 ? ` of ${pages.length}` : ""}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "10px",
+                  marginBottom: "10px",
+                }}
+              >
+                <div
+                  style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+                />
+                <span
+                  style={{
+                    fontSize: "11px",
+                    fontWeight: 600,
+                    color: "#6b7280",
+                    whiteSpace: "nowrap",
+                    padding: "3px 12px",
+                    background: "#f3f4f6",
+                    borderRadius: "999px",
+                    border: "1px solid #e5e7eb",
+                    letterSpacing: "0.05em",
+                    fontFamily: "system-ui, sans-serif",
+                  }}
+                >
+                  Page {idx + 1}
+                  {pages.length > 1 ? ` of ${pages.length}` : ""}
                 </span>
-                <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
+                <div
+                  style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+                />
               </div>
-              <div style={{ width: `${A4_W}px`, height: `${A4_H}px`, overflow: "hidden", background: "white", boxShadow: "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)", borderRadius: "2px", flexShrink: 0 }}>
+              <div
+                style={{
+                  width: `${A4_W}px`,
+                  height: `${A4_H}px`,
+                  overflow: "hidden",
+                  background: "white",
+                  boxShadow:
+                    "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
+                  borderRadius: "2px",
+                  flexShrink: 0,
+                }}
+              >
                 <iframe
                   title={`resume-page-${idx + 1}`}
                   srcDoc={pageHtml}
-                  style={{ width: `${A4_W}px`, height: `${A4_H}px`, border: "none", display: "block", pointerEvents: "none" }}
+                  style={{
+                    width: `${A4_W}px`,
+                    height: `${A4_H}px`,
+                    border: "none",
+                    display: "block",
+                    pointerEvents: "none",
+                  }}
                   scrolling="no"
                   sandbox="allow-same-origin allow-scripts"
                 />
