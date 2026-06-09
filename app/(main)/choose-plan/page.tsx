@@ -2178,7 +2178,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
       });
 
       const options = {
-        key: RAZORPAY_KEY_ID,
+        key: res.data.key,
         amount: res.data.amount,
         currency: res.data.currency,
         name: "Resume Builder",
