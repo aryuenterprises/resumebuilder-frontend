@@ -2433,9 +2433,9 @@ const comparisonFeatures = [
   },
   {
     name: "AI Suggestions",
-    free: "✗",
-    pro: "Content",
-    premium: "Advanced",
+    free: "✓",
+    pro: "✓",
+    premium: "✓",
   },
   {
     name: "Cover Letter",
