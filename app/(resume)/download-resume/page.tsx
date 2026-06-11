@@ -4515,7 +4515,6 @@ const Page = () => {
         const { subscription } = res?.data;
         const plan = subscription?.current_plan || "free";
         setUserPlan(plan.toLowerCase());
-        console.log("Aa");
       } catch (err) {
         console.error("Failed to fetch user plan:", err);
         setUserPlan("free");
@@ -4613,24 +4612,47 @@ const Page = () => {
   );
 
   // ── Load initial template ──────────────────────────────────────────
-  useEffect(() => {
-    if (!userPlan) return;
+  // useEffect(() => {
+  //   if (!userPlan) return;
 
-    const saved = getLocalStorage<Template>("chosenTemplate");
-    let found = templateData.find(
-      (r) => r.id == saved?.id || r.id == (saved as any)?.templateId,
+  //   const saved = getLocalStorage<Template>("chosenTemplate");
+  //   let found = templateData.find(
+  //     (r) => r.id == saved?.id || r.id == (saved as any)?.templateId,
+  //   );
+
+  //   // Check if saved template is accessible, if not, fallback to first accessible
+  //   if (!found || !isTemplateAccessible(found.id)) {
+  //     const accessibleTemplates = templateData.filter((t) =>
+  //       isTemplateAccessible(t.id),
+  //     );
+  //     found = accessibleTemplates[0] || templateData[0];
+  //   }
+
+  //   if (found) applyTemplate(found);
+  // }, [userPlan, isTemplateAccessible, applyTemplate]);
+
+  // ── Load initial template ──────────────────────────────────────────
+useEffect(() => {
+  if (!userPlan) return;
+
+  const saved = getLocalStorage<Template>("chosenTemplate");
+  let found = templateData.find(
+    (r) => r.id == saved?.id || r.id == (saved as any)?.templateId,
+  );
+
+  // If we have a saved template, use it for preview even if not accessible
+  // But we'll show upgrade prompts in the UI
+  if (found) {
+    applyTemplate(found);
+  } else {
+    // Only fallback to first accessible if no saved template exists
+    const accessibleTemplates = templateData.filter((t) =>
+      isTemplateAccessible(t.id),
     );
-
-    // Check if saved template is accessible, if not, fallback to first accessible
-    if (!found || !isTemplateAccessible(found.id)) {
-      const accessibleTemplates = templateData.filter((t) =>
-        isTemplateAccessible(t.id),
-      );
-      found = accessibleTemplates[0] || templateData[0];
-    }
-
+    found = accessibleTemplates[0] || templateData[0];
     if (found) applyTemplate(found);
-  }, [userPlan, isTemplateAccessible, applyTemplate]);
+  }
+}, [userPlan, isTemplateAccessible, applyTemplate]);
 
   // ── Responsive scale ───────────────────────────────────────────────
   useEffect(() => {
