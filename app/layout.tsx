@@ -57,6 +57,7 @@ import { Poppins } from "next/font/google";
 import Script from "next/script";
 import { CreateProvider } from "./context/CreateContext";
 import { removeSessionStorage } from "./utils";
+import FacebookPixel from "./components/FacebookPixels";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -174,6 +175,7 @@ export default function RootLayout({
       <body
         className={` ${poppins.variable} antialiased font-poppins overflow-x-hidden`}
       >
+        <FacebookPixel/>
         <CreateProvider>{children}</CreateProvider>
       </body>
     </html>
