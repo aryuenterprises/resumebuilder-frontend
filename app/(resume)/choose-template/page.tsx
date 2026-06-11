@@ -1809,7 +1809,7 @@ function Choose_template() {
           }, 2000);
         } else {
           setSubscriptionStatus({ isExpired: false, message: "" });
-          setUsersCurrentPlan(subscription.current_plan);
+          setUsersCurrentPlan(subscription.current_plan.toLowerCase());
         }
       } catch (err) {
         console.error("Failed to fetch user data:", err);

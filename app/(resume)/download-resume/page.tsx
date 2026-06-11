@@ -3571,6 +3571,15 @@
 
 // export default Page;
 
+
+
+
+
+
+
+
+
+
 "use client";
 import React, {
   useState,
@@ -4506,7 +4515,6 @@ const Page = () => {
         const { subscription } = res?.data;
         const plan = subscription?.current_plan || "free";
         setUserPlan(plan.toLowerCase());
-        // setUserPlan("premium");
         console.log("Aa");
       } catch (err) {
         console.error("Failed to fetch user plan:", err);

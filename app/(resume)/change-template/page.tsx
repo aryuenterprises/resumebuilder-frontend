@@ -269,7 +269,9 @@ export default function ChangeTemplate() {
       try {
         const res = await api.get("/dashboard");
         const { subscription } = res?.data;
-        setUsersCurrentPlan(subscription.current_plan);
+        setUsersCurrentPlan(subscription.current_plan.toLowerCase());
+
+        
                 // setUsersCurrentPlan('premium'); // Hardcoded to premium for testing
 
 
