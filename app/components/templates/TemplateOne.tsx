@@ -11031,11 +11031,13 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
           ${contact?.phone ? `<span>${contact.phone}</span>` : ""}
           ${formattedDob ? `<span>${formattedDob}</span>` : ""}
         </div>
-        <div class="t1-links">
-          ${linkedinUrl ? `<a href="${href(linkedinUrl)}" class="t1-link-item" target="_blank">${linkedinUrl}</a>` : ""}
-          ${githubUrl ? `<a href="${href(githubUrl)}"   class="t1-link-item" target="_blank">${githubUrl}</a>` : ""}
-          ${portfolioUrl ? `<a href="${href(portfolioUrl)}"class="t1-link-item" target="_blank">${portfolioUrl}</a>` : ""}
-        </div>
+      
+
+         <div class="t1-links">
+           ${linkedinUrl ? `<a href="${href(linkedinUrl)}"  class="t1-link-item" target="_blank">LinkedIn</a>` : ""}
+           ${githubUrl ? `<a href="${href(githubUrl)}"    class="t1-link-item" target="_blank">GitHub</a>` : ""}
+           ${portfolioUrl ? `<a href="${href(portfolioUrl)}" class="t1-link-item" target="_blank">Portfolio</a>` : ""}
+         </div>
       </div>`;
 
       const summaryBlock = summary?.trim()
