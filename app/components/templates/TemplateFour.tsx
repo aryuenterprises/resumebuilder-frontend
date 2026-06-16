@@ -4430,98 +4430,10 @@ const TemplateFour: React.FC<TemplateFourProps> = ({ alldata, customization }) =
     return c && c !== "<p><br></p>" ? c : "";
   };
 
-  // ── Section builders ──────────────────────────────────────────────────────
-  const sectionBuilders: Record<SectionKey, () => string> = {
-    summary: () => summary ? `
-      <div class="t4-section-content" data-block-id="summary">
-        <div class="section-title">Summary</div>
-        <div class="extra-content">${rich(summary)}</div>
-      </div>
-    ` : "",
 
-    experience: () => experiences?.length > 0 ? `
-      <div class="t4-section-content" data-block-id="exp-section">
-        <div class="section-title">Experience</div>
-        ${experiences.map((exp, i: number) => {
-          const start = formatMonthYear(exp.startDate, false);
-          const end = exp.endDate ? formatMonthYear(exp.endDate, false) : (exp.startDate ? "Present" : "");
-          return `
-            <div class="entry-block" data-block-id="exp-${i}">
-              <div class="experience-header">
-                <div class="experience-title">${exp.jobTitle || ""}</div>
-                <div class="experience-date">${start}${start && end ? " - " : ""}${end}</div>
-              </div>
-              <div class="experience-subtitle">${[exp.employer, exp.location].filter(Boolean).join(" — ")}</div>
-              ${exp.text ? `<div class="entry-content">${rich(exp.text)}</div>` : ""}
-            </div>
-          `;
-        }).join("")}
-      </div>
-    ` : "",
-
-    projects: () => projects?.length > 0 ? `
-      <div class="t4-section-content" data-block-id="proj-section">
-        <div class="section-title">Projects</div>
-        ${projects.map((project: any, i: number) => `
-          <div class="entry-block" data-block-id="proj-${i}">
-            <div class="project-header">
-              <div class="entry-heading">${project.title || ""}</div>
-              <div class="project-links">
-                ${project.liveUrl ? `<a href="${href(project.liveUrl)}" class="project-link" target="_blank">Live Demo</a>` : ""}
-                ${project.githubUrl ? `<a href="${href(project.githubUrl)}" class="project-link" target="_blank">GitHub</a>` : ""}
-              </div>
-            </div>
-            ${project.techStack?.length ? `<div class="project-tech-stack"><strong>Tech:</strong> ${project.techStack.join(" , ")}</div>` : ""}
-            ${project.description ? `<div class="entry-content">${rich(project.description)}</div>` : ""}
-          </div>
-        `).join("")}
-      </div>
-    ` : "",
-
-    education: () => educations?.length > 0 ? `
-      <div class="t4-section-content" data-block-id="edu-section">
-        <div class="section-title">Education</div>
-        ${educations.map((edu, i: number) => {
-          const formattedGrade = formatGradeToCgpdAndPercentage(edu.grade || "");
-          return `
-            <div class="entry-block" data-block-id="edu-${i}">
-              <div class="education-header">
-                <div class="education-school">${edu.schoolname || ""}</div>
-                <div class="education-date">${[edu.startDate, edu.endDate || "Present"].filter(Boolean).join(" — ")}</div>
-              </div>
-              <div class="education-subtitle">${[edu.degree, edu.location].filter(Boolean).join(" — ")}</div>
-              ${formattedGrade ? `<div class="education-grade">${formattedGrade}</div>` : ""}
-              ${edu.text ? `<div class="entry-content">${rich(edu.text)}</div>` : ""}
-            </div>
-          `;
-        }).join("")}
-      </div>
-    ` : "",
-
-    skills: () => {
-      if (!skills || (typeof skills === 'string' && !skills.trim())) return "";
-      const cleanedSkills = rich(skills);
-      if (!cleanedSkills || cleanedSkills === "<p><br></p>") return "";
-      return `
-        <div class="t4-section-content" data-block-id="skills-section">
-          <div class="section-title">Skills</div>
-          <div class="skills-content" data-block-id="skills-content">${cleanedSkills}</div>
-        </div>
-      `;
-    },
-
-    custom: () => fin.customSection
-      .filter((s) => s?.name?.trim() || s?.description?.trim())
-      .map((s, i: number) => `
-        <div class="custom-section-wrapper" data-block-id="custom-${i}">
-          ${s.name ? `<div class="section-title">${s.name}</div>` : ""}
-          ${s.description ? `<div class="extra-content">${rich(s.description)}</div>` : ""}
-        </div>
-      `).join(""),
-  };
 
   // ── HTML generation with section ordering ─────────────────────────────────
-  const generateHTML = useCallback((forPDF = false, pageBreakIds: string[] = []): string => {
+const generateHTML = useCallback((forPDF = false, pageBreakIds: string[] = [], skillsCutIndex = -1): string => {
     const addressStr = [
       contact?.address,
       contact?.city,
@@ -4540,6 +4452,107 @@ const TemplateFour: React.FC<TemplateFourProps> = ({ alldata, customization }) =
     const pdfOverrideStyle = forPDF
       ? `<style>.t4-resume { width: 100% !important; padding: 0 !important; }</style>`
       : "";
+
+      const sectionBuilders: Record<SectionKey, () => string> = {
+  summary: () => summary ? `
+    <div class="t4-section-content" data-block-id="summary">
+      <div class="section-title">Summary</div>
+      <div class="extra-content">${rich(summary)}</div>
+    </div>
+  ` : "",
+
+  experience: () => experiences?.length > 0 ? `
+    <div class="t4-section-content" data-block-id="exp-section">
+      <div class="section-title">Experience</div>
+      ${experiences.map((exp, i: number) => {
+        const start = formatMonthYear(exp.startDate, false);
+        const end = exp.endDate ? formatMonthYear(exp.endDate, false) : (exp.startDate ? "Present" : "");
+        return `<div class="entry-block" data-block-id="exp-${i}">
+          <div class="experience-header">
+            <div class="experience-title">${exp.jobTitle || ""}</div>
+            <div class="experience-date">${start}${start && end ? " - " : ""}${end}</div>
+          </div>
+          <div class="experience-subtitle">${[exp.employer, exp.location].filter(Boolean).join(" — ")}</div>
+          ${exp.text ? `<div class="entry-content">${rich(exp.text)}</div>` : ""}
+        </div>`;
+      }).join("")}
+    </div>
+  ` : "",
+
+  projects: () => projects?.length > 0 ? `
+    <div class="t4-section-content" data-block-id="proj-section">
+      <div class="section-title">Projects</div>
+      ${projects.map((project: any, i: number) => `
+        <div class="entry-block" data-block-id="proj-${i}">
+          <div class="project-header">
+            <div class="entry-heading">${project.title || ""}</div>
+            <div class="project-links">
+              ${project.liveUrl ? `<a href="${href(project.liveUrl)}" class="project-link" target="_blank">Live Demo</a>` : ""}
+              ${project.githubUrl ? `<a href="${href(project.githubUrl)}" class="project-link" target="_blank">GitHub</a>` : ""}
+            </div>
+          </div>
+          ${project.techStack?.length ? `<div class="project-tech-stack"><strong>Tech:</strong> ${project.techStack.join(" , ")}</div>` : ""}
+          ${project.description ? `<div class="entry-content">${rich(project.description)}</div>` : ""}
+        </div>
+      `).join("")}
+    </div>
+  ` : "",
+
+  education: () => educations?.length > 0 ? `
+    <div class="t4-section-content" data-block-id="edu-section">
+      <div class="section-title">Education</div>
+      ${educations.map((edu, i: number) => {
+        const formattedGrade = formatGradeToCgpdAndPercentage(edu.grade || "");
+        return `<div class="entry-block" data-block-id="edu-${i}">
+          <div class="education-header">
+            <div class="education-school">${edu.schoolname || ""}</div>
+            <div class="education-date">${[edu.startDate, edu.endDate || "Present"].filter(Boolean).join(" — ")}</div>
+          </div>
+          <div class="education-subtitle">${[edu.degree, edu.location].filter(Boolean).join(" — ")}</div>
+          ${formattedGrade ? `<div class="education-grade">${formattedGrade}</div>` : ""}
+          ${edu.text ? `<div class="entry-content">${rich(edu.text)}</div>` : ""}
+        </div>`;
+      }).join("")}
+    </div>
+  ` : "",
+
+  skills: () => {
+    if (!skills || (typeof skills === "string" && !skills.trim())) return "";
+    const cleanedSkills = rich(skills);
+    if (!cleanedSkills || cleanedSkills === "<p><br></p>") return "";
+
+    if (forPDF && skillsCutIndex >= 0) {
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = cleanedSkills;
+      const allLis = Array.from(tempDiv.querySelectorAll("li"));
+      if (skillsCutIndex < allLis.length) {
+        const beforeLis = allLis.slice(0, skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
+        const afterLis = allLis.slice(skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
+        return `<div class="t4-section-content" data-block-id="skills-section">
+          <div class="section-title">Skills</div>
+          <div class="skills-content"><ul>${beforeLis}</ul></div>
+          <div class="t4-page-break"></div>
+          <div class="section-title">Skills (continued)</div>
+          <div class="skills-content"><ul>${afterLis}</ul></div>
+        </div>`;
+      }
+    }
+
+    return `<div class="t4-section-content" data-block-id="skills-section">
+      <div class="section-title">Skills</div>
+      <div class="skills-content" data-block-id="skills-content">${cleanedSkills}</div>
+    </div>`;
+  },
+
+  custom: () => fin.customSection
+    .filter((s) => s?.name?.trim() || s?.description?.trim())
+    .map((s, i: number) => `
+      <div class="custom-section-wrapper" data-block-id="custom-${i}">
+        ${s.name ? `<div class="section-title">${s.name}</div>` : ""}
+        ${s.description ? `<div class="extra-content">${rich(s.description)}</div>` : ""}
+      </div>
+    `).join(""),
+};
 
     // Build sections in the order defined by customization
     const sectionsHTML = activeSectionOrder
@@ -4619,7 +4632,7 @@ const TemplateFour: React.FC<TemplateFourProps> = ({ alldata, customization }) =
     githubUrl,
     dateOfBirth,
     CSS,
-    sectionBuilders,
+
   ]);
 
   // ── Page splitter ─────────────────────────────────────────────────────────
@@ -4705,7 +4718,6 @@ const TemplateFour: React.FC<TemplateFourProps> = ({ alldata, customization }) =
             ".entry-block",
             ".section-title",
             ".custom-section-wrapper",
-            ".skills-content",
           ].join(", ");
 
           resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
@@ -4727,15 +4739,19 @@ const TemplateFour: React.FC<TemplateFourProps> = ({ alldata, customization }) =
               }
               sib = sib.nextElementSibling as HTMLElement | null;
             }
-            if (firstItem) {
-              const deepChild = firstItem.querySelector<HTMLElement>(".entry-block, .custom-section-wrapper, .skills-content");
-              const anchor = deepChild || firstItem;
-              const anchorBottom = getRelBottom(anchor);
-              if (anchorBottom - titleTop > 8) {
-                const sectionId = (title.parentElement as HTMLElement)?.dataset?.blockId;
-                blocks.push({ top: titleTop, bottom: anchorBottom, id: sectionId });
-              }
-            }
+            // AFTER
+if (firstItem) {
+  // Skip anchor logic for skills — allow it to split across pages
+  if (firstItem.classList.contains("skills-content")) return;
+
+  const deepChild = firstItem.querySelector<HTMLElement>(".entry-block, .custom-section-wrapper");
+  const anchor = deepChild || firstItem;
+  const anchorBottom = getRelBottom(anchor);
+  if (anchorBottom - titleTop > 8) {
+    const sectionId = (title.parentElement as HTMLElement)?.dataset?.blockId;
+    blocks.push({ top: titleTop, bottom: anchorBottom, id: sectionId });
+  }
+}
           });
 
           blocks.sort((a, b) => a.top - b.top);
@@ -4768,8 +4784,62 @@ const TemplateFour: React.FC<TemplateFourProps> = ({ alldata, customization }) =
             if (cutBlockId) pageBreakIds.push(cutBlockId);
           }
 
-          document.body.removeChild(iframe);
-          (window as any).__resumePageBreakIds = pageBreakIds;
+          // AFTER
+const skillsLis = Array.from(resume.querySelectorAll<HTMLElement>(".skills-content li"));
+skillsLis.forEach((li) => {
+  const top = getRelTop(li);
+  const bottom = getRelBottom(li);
+  if (bottom - top > 2) blocks.push({ top, bottom });
+});
+
+blocks.sort((a, b) => a.top - b.top);
+pageStarts.length = 1;
+pageBreakIds.length = 0;
+
+while (pageStarts.length < MAX_PAGES) {
+  const currentStart = pageStarts[pageStarts.length - 1];
+  const naiveCut = currentStart + PAGE_CONTENT_H;
+  if (naiveCut >= totalH) break;
+
+  let actualCut = naiveCut;
+  let cutBlockId: string | undefined;
+
+  for (const block of blocks) {
+    if (block.top >= naiveCut) break;
+    if (block.bottom <= currentStart) continue;
+    if (block.top >= currentStart && block.bottom > naiveCut) {
+      if (block.top < actualCut) {
+        actualCut = block.top;
+        cutBlockId = block.id;
+      }
+    }
+  }
+
+  if (actualCut <= currentStart) actualCut = naiveCut;
+  pageStarts.push(actualCut);
+  if (cutBlockId) pageBreakIds.push(cutBlockId);
+}
+
+(window as any).__resumeSkillsCutIndex = -1;
+for (let p = 0; p < pageStarts.length - 1; p++) {
+  const cutY = pageStarts[p + 1];
+  for (let li = 0; li < skillsLis.length; li++) {
+    const liTop = getRelTop(skillsLis[li]);
+    const liBottom = getRelBottom(skillsLis[li]);
+    if (liTop < cutY && liBottom > cutY) {
+      (window as any).__resumeSkillsCutIndex = li;
+      break;
+    }
+    if (liTop >= cutY) {
+      (window as any).__resumeSkillsCutIndex = li;
+      break;
+    }
+  }
+  if ((window as any).__resumeSkillsCutIndex >= 0) break;
+}
+
+document.body.removeChild(iframe);
+(window as any).__resumePageBreakIds = pageBreakIds;
 
           const pageHtmls: string[] = [];
 
@@ -4857,8 +4927,15 @@ const TemplateFour: React.FC<TemplateFourProps> = ({ alldata, customization }) =
   // ── PDF download ─────────────────────────────────────────────────────────
   const handleDownload = async () => {
     try {
-      const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
-      const pdfHtml = generateHTML(true, pageBreakIds);
+      // const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
+      // const pdfHtml = generateHTML(true, pageBreakIds);
+
+      // AFTER
+const pageBreakIds: string[] = ((window as any).__resumePageBreakIds || []).filter(
+  (id: string) => id !== "skills-section"
+);
+const skillsCutIndex: number = (window as any).__resumeSkillsCutIndex ?? -1;
+const pdfHtml = generateHTML(true, pageBreakIds, skillsCutIndex);
 
       const res: AxiosResponse<Blob> = await api.post(
         `${API_URL}/candidates/generate-pdf`,

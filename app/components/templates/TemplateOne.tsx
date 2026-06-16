@@ -10765,17 +10765,6 @@
 
 // export default TemplateOne;
 
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 import React, {
   useContext,
@@ -10996,8 +10985,9 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
   );
 
   // ── HTML builder ───────────────────────────────────────────────────────────
-  const generateHTML = useCallback(
-    (forPDF = false, pageBreakIds: string[] = []): string => {
+  // AFTER
+const generateHTML = useCallback(
+  (forPDF = false, pageBreakIds: string[] = [], skillsCutIndex = -1): string => {
       const CSS = buildCSS(activeFontFamily);
 
       const richText = (html: string, cls: string) => {
@@ -11129,12 +11119,34 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
            </div>`
         : "";
 
-      const skillsBlock = hasSkillsContent()
-        ? `<div class="t1-section-content" data-block-id="skills-section">
-             <div class="t1-section-title">Skills</div>
-             <div class="t1-skills-content" data-block-id="skills-content">${cleanQuillHTML(skills)}</div>
-           </div>`
-        : "";
+     // BEFORE
+// AFTER
+const skillsBlock = (() => {
+  if (!hasSkillsContent()) return "";
+  const cleanedSkills = cleanQuillHTML(skills);
+
+  if (forPDF && skillsCutIndex >= 0) {
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = cleanedSkills;
+    const allLis = Array.from(tempDiv.querySelectorAll("li"));
+    if (skillsCutIndex < allLis.length) {
+      // Split into two ul blocks at the cut index
+      const beforeLis = allLis.slice(0, skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
+      const afterLis = allLis.slice(skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
+      return `<div class="t1-section-content" data-block-id="skills-section">
+        <div class="t1-section-title">Skills</div>
+        <div class="t1-skills-content"><ul>${beforeLis}</ul></div>
+        <div class="t1-page-break"></div>
+        <div class="t1-skills-content"><ul>${afterLis}</ul></div>
+      </div>`;
+    }
+  }
+
+  return `<div class="t1-section-content" data-block-id="skills-section">
+    <div class="t1-section-title">Skills</div>
+    <div class="t1-skills-content" data-block-id="skills-content">${cleanedSkills}</div>
+  </div>`;
+})();
 
       const customBlock =
         !Array.isArray(finalize) &&
@@ -11285,15 +11297,26 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
             ".t1-project-item",
             ".t1-item-header",
             ".t1-custom-section",
-            ".t1-skills-content",
           ].join(", ");
-          resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
-            const top = getRelTop(el),
-              bottom = getRelBottom(el);
-            if (bottom - top > 8)
-              blocks.push({ top, bottom, id: el.dataset.blockId });
-          });
+        // AFTER
+resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
+  const top = getRelTop(el),
+    bottom = getRelBottom(el);
+  if (bottom - top > 8)
+    blocks.push({ top, bottom, id: el.dataset.blockId });
+});
 
+// Treat each li inside skills as a breakable boundary
+// AFTER
+// Treat each li inside skills as a breakable boundary, store index for PDF use
+const skillsLis = Array.from(resume.querySelectorAll<HTMLElement>(".t1-skills-content li"));
+skillsLis.forEach((li) => {
+  const top = getRelTop(li);
+  const bottom = getRelBottom(li);
+  if (bottom - top > 2) blocks.push({ top, bottom });
+});
+
+          // AFTER
           resume
             .querySelectorAll<HTMLElement>(".t1-section-title")
             .forEach((title) => {
@@ -11308,8 +11331,11 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
                 sib = sib.nextElementSibling as HTMLElement | null;
               }
               if (firstItem) {
+                // Skip anchor logic for skills — allow it to split across pages
+                if (firstItem.classList.contains("t1-skills-content")) return;
+
                 const deepChild = firstItem.querySelector<HTMLElement>(
-                  ".t1-experience-item, .t1-education-item, .t1-project-item, .t1-custom-section, .t1-skills-content",
+                  ".t1-experience-item, .t1-education-item, .t1-project-item, .t1-custom-section",
                 );
                 const anchor = deepChild || firstItem;
                 const anchorBottom = getRelBottom(anchor);
@@ -11353,6 +11379,25 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
             pageStarts.push(actualCut);
             if (cutBlockId) pageBreakIds.push(cutBlockId);
           }
+
+          (window as any).__resumeSkillsCutIndex = -1;
+for (let p = 0; p < pageStarts.length - 1; p++) {
+  const cutY = pageStarts[p + 1];
+  for (let li = 0; li < skillsLis.length; li++) {
+    const liTop = getRelTop(skillsLis[li]);
+    const liBottom = getRelBottom(skillsLis[li]);
+    if (liTop < cutY && liBottom > cutY) {
+      // Cut falls inside this li — break before it
+      (window as any).__resumeSkillsCutIndex = li;
+      break;
+    }
+    if (liTop >= cutY) {
+      // Cut falls between lis — break at this li
+      (window as any).__resumeSkillsCutIndex = li;
+      break;
+    }
+  }
+}
 
           document.body.removeChild(iframe);
           (window as any).__resumePageBreakIds = pageBreakIds;
@@ -11411,10 +11456,14 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
   }, [htmlContent, splitIntoPages]);
 
   // ── Download handler ───────────────────────────────────────────────────────
-  const handleDownload = async (): Promise<void> => {
-    try {
-      const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
-      const pdfHtml = generateHTML(true, pageBreakIds);
+ // AFTER
+const handleDownload = async (): Promise<void> => {
+  try {
+    const pageBreakIds: string[] = ((window as any).__resumePageBreakIds || []).filter(
+      (id: string) => id !== "skills-section"
+    );
+    const skillsCutIndex: number = (window as any).__resumeSkillsCutIndex ?? -1;
+    const pdfHtml = generateHTML(true, pageBreakIds, skillsCutIndex);
       const res: AxiosResponse<Blob> = await api.post(
         `${API_URL}/candidates/generate-pdf`,
         { html: pdfHtml },

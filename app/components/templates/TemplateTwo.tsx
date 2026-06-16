@@ -6313,7 +6313,7 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({ alldata, customization }) => 
 
   // ── HTML builder with proper section ordering ─────────────────────────────
   const generateHTML = useCallback(
-    (forPDF = false, pageBreakIds: string[] = []): string => {
+(forPDF = false, pageBreakIds: string[] = [], skillsCutIndex = -1): string => {
       const CSS = buildCSS(activeFontFamily);
       
       const fontPreloads = activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif" 
@@ -6354,13 +6354,32 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({ alldata, customization }) => 
           <div class="summary-text">${rich(summary)}</div>
         </div>` : "",
 
-        skills: () => {
-          const skillsClean = rich(skills || "");
-          return skillsClean ? `<div class="skills-block" data-block-id="skills-section">
-            <div class="section-title">Skills</div>
-            <div class="skills-content" data-block-id="skills-content">${skillsClean}</div>
-          </div>` : "";
-        },
+      
+skills: () => {
+  const skillsClean = rich(skills || "");
+  if (!skillsClean) return "";
+
+  if (forPDF && skillsCutIndex >= 0) {
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = skillsClean;
+    const allLis = Array.from(tempDiv.querySelectorAll("li"));
+    if (skillsCutIndex < allLis.length) {
+      const beforeLis = allLis.slice(0, skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
+      const afterLis = allLis.slice(skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
+      return `<div class="skills-block" data-block-id="skills-section">
+        <div class="section-title">Skills</div>
+        <div class="skills-content"><ul>${beforeLis}</ul></div>
+        <div class="t2-page-break"></div>
+        <div class="skills-content"><ul>${afterLis}</ul></div>
+      </div>`;
+    }
+  }
+
+  return `<div class="skills-block" data-block-id="skills-section">
+    <div class="section-title">Skills</div>
+    <div class="skills-content" data-block-id="skills-content">${skillsClean}</div>
+  </div>`;
+},
 
         custom: () => !Array.isArray(finalize) && Array.isArray(finalize?.customSection) && finalize.customSection.some((s: any) => s?.name?.trim() || s?.description?.trim())
           ? `<div class="custom-section-block" data-block-id="custom-section">
@@ -6576,7 +6595,7 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({ alldata, customization }) => 
           interface Block { top: number; bottom: number; id?: string; }
           const blocks: Block[] = [];
 
-          const ITEM_SELECTORS = [".entry-block", ".summary-block", ".skills-block", ".custom-section-block"].join(", ");
+          const ITEM_SELECTORS = [".entry-block", ".summary-block",  ".custom-section-block"].join(", ");
 
           resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
             const top = getRelTop(el);
@@ -6592,15 +6611,19 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({ alldata, customization }) => 
               if (sib.getBoundingClientRect().height > 8) { firstItem = sib; break; }
               sib = sib.nextElementSibling as HTMLElement | null;
             }
-            if (firstItem) {
-              const deepChild = firstItem.querySelector<HTMLElement>(".entry-block, .skills-content, .custom-section-block");
-              const anchor = deepChild || firstItem;
-              const anchorBottom = getRelBottom(anchor);
-              if (anchorBottom - titleTop > 8) {
-                const sectionId = (title.parentElement as HTMLElement)?.dataset?.blockId;
-                blocks.push({ top: titleTop, bottom: anchorBottom, id: sectionId });
-              }
-            }
+           // AFTER
+if (firstItem) {
+  // Skip anchor logic for skills — allow it to split across pages
+  if (firstItem.classList.contains("skills-content")) return;
+
+  const deepChild = firstItem.querySelector<HTMLElement>(".entry-block, .custom-section-block");
+  const anchor = deepChild || firstItem;
+  const anchorBottom = getRelBottom(anchor);
+  if (anchorBottom - titleTop > 8) {
+    const sectionId = (title.parentElement as HTMLElement)?.dataset?.blockId;
+    blocks.push({ top: titleTop, bottom: anchorBottom, id: sectionId });
+  }
+}
           });
 
           blocks.sort((a, b) => a.top - b.top);
@@ -6633,8 +6656,65 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({ alldata, customization }) => 
             if (cutBlockId) pageBreakIds.push(cutBlockId);
           }
 
-          document.body.removeChild(iframe);
-          (window as any).__resumePageBreakIds = pageBreakIds;
+         // AFTER
+// Treat each li inside skills as a breakable boundary
+const skillsLis = Array.from(resume.querySelectorAll<HTMLElement>(".skills-content li"));
+skillsLis.forEach((li) => {
+  const top = getRelTop(li);
+  const bottom = getRelBottom(li);
+  if (bottom - top > 2) blocks.push({ top, bottom });
+});
+
+// Re-sort after adding li blocks, then recompute page cuts
+blocks.sort((a, b) => a.top - b.top);
+pageStarts.length = 1;
+pageBreakIds.length = 0;
+
+while (pageStarts.length < MAX_PAGES) {
+  const currentStart = pageStarts[pageStarts.length - 1];
+  const naiveCut = currentStart + PAGE_CONTENT_H;
+  if (naiveCut >= totalH) break;
+
+  let actualCut = naiveCut;
+  let cutBlockId: string | undefined;
+
+  for (const block of blocks) {
+    if (block.top >= naiveCut) break;
+    if (block.bottom <= currentStart) continue;
+    if (block.top >= currentStart && block.bottom > naiveCut) {
+      if (block.top < actualCut) {
+        actualCut = block.top;
+        cutBlockId = block.id;
+      }
+    }
+  }
+
+  if (actualCut <= currentStart) actualCut = naiveCut;
+  pageStarts.push(actualCut);
+  if (cutBlockId) pageBreakIds.push(cutBlockId);
+}
+
+// Detect which li index the cut falls inside skills
+(window as any).__resumeSkillsCutIndex = -1;
+for (let p = 0; p < pageStarts.length - 1; p++) {
+  const cutY = pageStarts[p + 1];
+  for (let li = 0; li < skillsLis.length; li++) {
+    const liTop = getRelTop(skillsLis[li]);
+    const liBottom = getRelBottom(skillsLis[li]);
+    if (liTop < cutY && liBottom > cutY) {
+      (window as any).__resumeSkillsCutIndex = li;
+      break;
+    }
+    if (liTop >= cutY) {
+      (window as any).__resumeSkillsCutIndex = li;
+      break;
+    }
+  }
+  if ((window as any).__resumeSkillsCutIndex >= 0) break;
+}
+
+document.body.removeChild(iframe);
+(window as any).__resumePageBreakIds = pageBreakIds;
 
           const pageHtmls: string[] = [];
 
@@ -6750,13 +6830,16 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({ alldata, customization }) => 
 
     const handleDownload = async (): Promise<void> => {
     try {
-      const pageBreakIds: string[] = (window as any).__resumeT2PageBreakIds || [];
-     
-       const res: AxiosResponse<Blob> = await api.post(
-        `${API_URL}/candidates/generate-pdf`,
-        { html:generateHTML(true, pageBreakIds)  },
-        { responseType: "blob" },
-      );
+     // AFTER
+const pageBreakIds: string[] = ((window as any).__resumePageBreakIds || []).filter(
+  (id: string) => id !== "skills-section"
+);
+const skillsCutIndex: number = (window as any).__resumeSkillsCutIndex ?? -1;
+const res: AxiosResponse<Blob> = await api.post(
+  `${API_URL}/candidates/generate-pdf`,
+  { html: generateHTML(true, pageBreakIds, skillsCutIndex) },
+  { responseType: "blob" },
+);
      
       // const res: AxiosResponse<Blob> = await axios.post(
       //   `${API_URL}/api/candidates/generate-pdf`,

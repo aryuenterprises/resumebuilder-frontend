@@ -117,7 +117,7 @@ export const ResumePreviewModal = ({
 
             {/* Main Content */}
             <div
-              className={`relative flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar bg-gradient-to-br from-gray-50 via-white to-gray-50 ${isFullscreen ? "" : "p-4 sm:p-6 lg:p-8"}`}
+              className={`relative   overflow-x-hidden custom-scrollbar bg-gradient-to-br from-gray-50 via-white to-gray-50 ${isFullscreen ? "" : "p-4 sm:p-6 lg:p-8"}`}
             >
               <div
                 className={`mx-auto ${isFullscreen ? "w-full" : "max-w-6xl"}`}
@@ -200,12 +200,13 @@ export const ResumePreviewModal = ({
                           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                             {(
                               template.features || [
-                                "✨ Modern & Professional Design",
-                                "🎯 ATS-Friendly Layout",
-                                "📝 Fully Customizable Sections",
-                                "📱 Mobile Responsive Design",
-                                "🎨 Clean & Organized Layout",
-                                "⚡ Easy to Edit & Update",
+                                "Modern & Professional Design",
+                                "ATS-Friendly Layout",
+                                "Fully Customizable Sections",
+                                "Clean & Organized Layout",
+                                "Easy to Edit & Update",
+                                    "Font Customization",
+
                               ]
                             ).map((feature, index) => (
                               <motion.div

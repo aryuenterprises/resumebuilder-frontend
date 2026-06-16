@@ -5901,6 +5901,21 @@
 
 // export default TemplateThree;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 "use client";
 import React, {
   useContext,
@@ -6320,141 +6335,142 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({
   };
 
   // ── Section builders ──────────────────────────────────────────────────────
-  const sectionBuilders: Record<SectionKey, () => string> = {
-    summary: () =>
-      summary
-        ? `
-      <div class="t3-section-content" data-block-id="summary">
-        <div class="t3-section-title">Summary</div>
-        <div class="t3-summary">${rich(summary)}</div>
-      </div>
-    `
-        : "",
-
-    experience: () =>
-      experiences.length
-        ? `
-      <div class="t3-section-content" data-block-id="exp-section">
-        <div class="t3-section-title">Experience</div>
-        ${experiences
-          .map((exp, i: number) => {
-            const start = formatMonthYear(exp.startDate, false);
-            const end = exp.endDate
-              ? formatMonthYear(exp.endDate, false)
-              : exp.startDate
-                ? "Present"
-                : "";
-            return `
-            <div class="t3-entry" data-block-id="exp-${i}">
-              <div class="t3-experience-header">
-                <div class="t3-experience-title">${exp.jobTitle || ""}</div>
-                <div class="t3-experience-date">${start}${start && end ? " - " : ""}${end}</div>
-              </div>
-              <div class="t3-experience-subtitle">${[exp.employer, exp.location].filter(Boolean).join(" — ")}</div>
-              ${exp.text ? `<div class="t3-entry-content">${rich(exp.text)}</div>` : ""}
-            </div>
-          `;
-          })
-          .join("")}
-      </div>
-    `
-        : "",
-
-    projects: () =>
-      projects.length
-        ? `
-      <div class="t3-section-content" data-block-id="proj-section">
-        <div class="t3-section-title">Projects</div>
-        ${projects
-          .map(
-            (project: any, i: number) => `
-          <div class="t3-project-item" data-block-id="proj-${i}">
-            <div class="t3-project-header">
-              <div class="t3-project-title">${project.title || ""}</div>
-              <div class="t3-project-links">
-                ${project.liveUrl ? `<a href="${href(project.liveUrl)}" class="t3-project-link" target="_blank">Live Demo</a>` : ""}
-                ${project.githubUrl ? `<a href="${href(project.githubUrl)}" class="t3-project-link" target="_blank">GitHub</a>` : ""}
-              </div>
-            </div>
-            ${project.techStack?.length ? `<div class="t3-project-tech-stack"><strong>Tech:</strong> ${project.techStack.join(" • ")}</div>` : ""}
-            ${project.description ? `<div class="t3-project-description">${rich(project.description)}</div>` : ""}
-          </div>
-        `,
-          )
-          .join("")}
-      </div>
-    `
-        : "",
-
-    education: () =>
-      educations.length
-        ? `
-      <div class="t3-section-content" data-block-id="edu-section">
-        <div class="t3-section-title">Education</div>
-        ${educations
-          .map((edu, i: number) => {
-            const formattedGrade = formatGradeToCgpdAndPercentage(
-              edu.grade || "",
-            );
-            return `
-            <div class="t3-entry" data-block-id="edu-${i}">
-              <div class="t3-education-header">
-                <div class="t3-education-school">${edu.schoolname || ""}</div>
-                <div class="t3-education-date">${[edu.startDate, edu.endDate || "Present"].filter(Boolean).join(" — ")}</div>
-              </div>
-              <div class="t3-education-subtitle">${[edu.degree, edu.location].filter(Boolean).join(" — ")}</div>
-              ${formattedGrade ? `<div class="t3-education-grade">${formattedGrade}</div>` : ""}
-              ${edu.text ? `<div class="t3-entry-content">${rich(edu.text)}</div>` : ""}
-            </div>
-          `;
-          })
-          .join("")}
-      </div>
-    `
-        : "",
-
-    skills: () => {
-      const cleanedSkills = rich(skills);
-      if (!skills || !cleanedSkills || cleanedSkills === "<p><br></p>")
-        return "";
-      return `
-        <div class="t3-section-content" data-block-id="skills-section">
-          <div class="t3-section-title">Skills</div>
-          <div class="t3-skills-block">
-            <div class="t3-skills-content" data-block-id="skills-content">${cleanedSkills}</div>
-          </div>
-        </div>
-      `;
-    },
-
-    custom: () => {
-      if (!customSection.length) return "";
-      const filteredCustom = customSection.filter(
-        (s) => s?.name?.trim() || s?.description?.trim(),
-      );
-      if (!filteredCustom.length) return "";
-      return filteredCustom
-        .map(
-          (s, i: number) => `
-        <div class="t3-custom-section" data-block-id="custom-${i}">
-          ${s.name ? `<div class="t3-custom-section-title">${s.name}</div>` : ""}
-          ${s.description ? `<div class="t3-custom-section-content">${rich(s.description)}</div>` : ""}
-        </div>
-      `,
-        )
-        .join("");
-    },
-  };
+ 
 
   // ── HTML builder with section ordering ───────────────────────────────────
   const generateHTML = useCallback(
-    (forPDF = false, pageBreakIds: string[] = []): string => {
+    (
+      forPDF = false,
+      pageBreakIds: string[] = [],
+      skillsCutIndex = -1,
+    ): string => {
       const fontPreloads =
         activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif"
           ? `<link rel="preconnect" href="https://fonts.googleapis.com">
            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
            <link href="${getFontImport(activeFontFamily)}" rel="stylesheet">`
           : "";
+
+              // ── Section builders (inside generateHTML so forPDF & skillsCutIndex are in scope)
+  // AFTER (full real implementation inside generateHTML)
+const sectionBuilders: Record<SectionKey, () => string> = {
+  summary: () =>
+    summary
+      ? `<div class="t3-section-content" data-block-id="summary">
+           <div class="t3-section-title">Summary</div>
+           <div class="t3-summary">${rich(summary)}</div>
+         </div>`
+      : "",
+
+  experience: () =>
+    experiences.length
+      ? `<div class="t3-section-content" data-block-id="exp-section">
+           <div class="t3-section-title">Experience</div>
+           ${experiences.map((exp, i: number) => {
+             const start = formatMonthYear(exp.startDate, false);
+             const end = exp.endDate
+               ? formatMonthYear(exp.endDate, false)
+               : exp.startDate ? "Present" : "";
+             return `<div class="t3-entry" data-block-id="exp-${i}">
+               <div class="t3-experience-header">
+                 <div class="t3-experience-title">${exp.jobTitle || ""}</div>
+                 <div class="t3-experience-date">${start}${start && end ? " - " : ""}${end}</div>
+               </div>
+               <div class="t3-experience-subtitle">${[exp.employer, exp.location].filter(Boolean).join(" — ")}</div>
+               ${exp.text ? `<div class="t3-entry-content">${rich(exp.text)}</div>` : ""}
+             </div>`;
+           }).join("")}
+         </div>`
+      : "",
+
+  projects: () =>
+    projects.length
+      ? `<div class="t3-section-content" data-block-id="proj-section">
+           <div class="t3-section-title">Projects</div>
+           ${projects.map((project: any, i: number) =>
+             `<div class="t3-project-item" data-block-id="proj-${i}">
+               <div class="t3-project-header">
+                 <div class="t3-project-title">${project.title || ""}</div>
+                 <div class="t3-project-links">
+                   ${project.liveUrl ? `<a href="${href(project.liveUrl)}" class="t3-project-link" target="_blank">Live Demo</a>` : ""}
+                   ${project.githubUrl ? `<a href="${href(project.githubUrl)}" class="t3-project-link" target="_blank">GitHub</a>` : ""}
+                 </div>
+               </div>
+               ${project.techStack?.length ? `<div class="t3-project-tech-stack"><strong>Tech:</strong> ${project.techStack.join(" • ")}</div>` : ""}
+               ${project.description ? `<div class="t3-project-description">${rich(project.description)}</div>` : ""}
+             </div>`
+           ).join("")}
+         </div>`
+      : "",
+
+  education: () =>
+    educations.length
+      ? `<div class="t3-section-content" data-block-id="edu-section">
+           <div class="t3-section-title">Education</div>
+           ${educations.map((edu, i: number) => {
+             const formattedGrade = formatGradeToCgpdAndPercentage(edu.grade || "");
+             return `<div class="t3-entry" data-block-id="edu-${i}">
+               <div class="t3-education-header">
+                 <div class="t3-education-school">${edu.schoolname || ""}</div>
+                 <div class="t3-education-date">${[edu.startDate, edu.endDate || "Present"].filter(Boolean).join(" — ")}</div>
+               </div>
+               <div class="t3-education-subtitle">${[edu.degree, edu.location].filter(Boolean).join(" — ")}</div>
+               ${formattedGrade ? `<div class="t3-education-grade">${formattedGrade}</div>` : ""}
+               ${edu.text ? `<div class="t3-entry-content">${rich(edu.text)}</div>` : ""}
+             </div>`;
+           }).join("")}
+         </div>`
+      : "",
+
+  skills: () => {
+    const cleanedSkills = rich(skills);
+    if (!skills || !cleanedSkills || cleanedSkills === "<p><br></p>") return "";
+
+    if (forPDF && skillsCutIndex >= 0) {
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = cleanedSkills;
+      const allLis = Array.from(tempDiv.querySelectorAll("li"));
+      if (skillsCutIndex < allLis.length) {
+        const beforeLis = allLis.slice(0, skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
+        const afterLis = allLis.slice(skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
+        return `<div class="t3-section-content" data-block-id="skills-section">
+          <div class="t3-section-title">Skills</div>
+          <div class="t3-skills-block">
+            <div class="t3-skills-content"><ul>${beforeLis}</ul></div>
+          </div>
+          <div class="t3-page-break"></div>
+          <div class="t3-skills-block">
+            <div class="t3-skills-content"><ul>${afterLis}</ul></div>
+          </div>
+        </div>`;
+      }
+    }
+
+    return `<div class="t3-section-content" data-block-id="skills-section">
+      <div class="t3-section-title">Skills</div>
+      <div class="t3-skills-block">
+        <div class="t3-skills-content" data-block-id="skills-content">${cleanedSkills}</div>
+      </div>
+    </div>`;
+  },
+
+  custom: () => {
+    if (!customSection.length) return "";
+    const filteredCustom = customSection.filter(
+      (s) => s?.name?.trim() || s?.description?.trim(),
+    );
+    if (!filteredCustom.length) return "";
+    return filteredCustom
+      .map((s, i: number) =>
+        `<div class="t3-custom-section" data-block-id="custom-${i}">
+          ${s.name ? `<div class="t3-custom-section-title">${s.name}</div>` : ""}
+          ${s.description ? `<div class="t3-custom-section-content">${rich(s.description)}</div>` : ""}
+        </div>`
+      )
+      .join("");
+  },
+};
+
 
       const pdfOverrideStyle = forPDF
         ? `<style>.t3-resume { width: 100% !important; padding: 0 !important; }</style>`
@@ -6536,7 +6552,6 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({
       addressParts,
       formattedDob,
       CSS,
-      sectionBuilders,
     ],
   );
 
@@ -6631,7 +6646,6 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({
             ".t3-entry",
             ".t3-project-item",
             ".t3-custom-section",
-            ".t3-skills-content",
           ].join(", ");
 
           resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
@@ -6655,9 +6669,13 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({
                 }
                 sib = sib.nextElementSibling as HTMLElement | null;
               }
+              // AFTER
               if (firstItem) {
+                // Skip anchor logic for skills — allow it to split across pages
+                if (firstItem.classList.contains("t3-skills-block")) return;
+
                 const deepChild = firstItem.querySelector<HTMLElement>(
-                  ".t3-entry, .t3-project-item, .t3-custom-section, .t3-skills-content",
+                  ".t3-entry, .t3-project-item, .t3-custom-section",
                 );
                 const anchor = deepChild || firstItem;
                 const anchorBottom = getRelBottom(anchor);
@@ -6701,6 +6719,64 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({
             if (actualCut <= currentStart) actualCut = naiveCut;
             pageStarts.push(actualCut);
             if (cutBlockId) pageBreakIds.push(cutBlockId);
+          }
+
+          // AFTER
+          // Add li-level blocks for skills and recompute cuts
+          const skillsLis = Array.from(
+            resume.querySelectorAll<HTMLElement>(".t3-skills-content li"),
+          );
+          skillsLis.forEach((li) => {
+            const top = getRelTop(li);
+            const bottom = getRelBottom(li);
+            if (bottom - top > 2) blocks.push({ top, bottom });
+          });
+
+          blocks.sort((a, b) => a.top - b.top);
+          pageStarts.length = 1;
+          pageBreakIds.length = 0;
+
+          while (pageStarts.length < MAX_PAGES) {
+            const currentStart = pageStarts[pageStarts.length - 1];
+            const naiveCut = currentStart + PAGE_CONTENT_H;
+            if (naiveCut >= totalH) break;
+
+            let actualCut = naiveCut;
+            let cutBlockId: string | undefined;
+
+            for (const block of blocks) {
+              if (block.top >= naiveCut) break;
+              if (block.bottom <= currentStart) continue;
+              if (block.top >= currentStart && block.bottom > naiveCut) {
+                if (block.top < actualCut) {
+                  actualCut = block.top;
+                  cutBlockId = block.id;
+                }
+              }
+            }
+
+            if (actualCut <= currentStart) actualCut = naiveCut;
+            pageStarts.push(actualCut);
+            if (cutBlockId) pageBreakIds.push(cutBlockId);
+          }
+
+          // Detect which li index the cut falls on for skills
+          (window as any).__resumeSkillsCutIndex = -1;
+          for (let p = 0; p < pageStarts.length - 1; p++) {
+            const cutY = pageStarts[p + 1];
+            for (let li = 0; li < skillsLis.length; li++) {
+              const liTop = getRelTop(skillsLis[li]);
+              const liBottom = getRelBottom(skillsLis[li]);
+              if (liTop < cutY && liBottom > cutY) {
+                (window as any).__resumeSkillsCutIndex = li;
+                break;
+              }
+              if (liTop >= cutY) {
+                (window as any).__resumeSkillsCutIndex = li;
+                break;
+              }
+            }
+            if ((window as any).__resumeSkillsCutIndex >= 0) break;
           }
 
           document.body.removeChild(iframe);
@@ -6792,8 +6868,15 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({
   // ── PDF download ─────────────────────────────────────────────────────────
   const handleDownload = async (): Promise<void> => {
     try {
-      const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
-      const pdfHtml = generateHTML(true, pageBreakIds);
+      // const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
+      // const pdfHtml = generateHTML(true, pageBreakIds);
+
+      // AFTER
+const pageBreakIds: string[] = ((window as any).__resumePageBreakIds || []).filter(
+  (id: string) => id !== "skills-section"
+);
+const skillsCutIndex: number = (window as any).__resumeSkillsCutIndex ?? -1;
+const pdfHtml = generateHTML(true, pageBreakIds, skillsCutIndex);
 
       const res: AxiosResponse<Blob> = await api.post(
         `${API_URL}/candidates/generate-pdf`,
@@ -6817,7 +6900,7 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({
   // ── RENDER ────────────────────────────────────────────────────────────────
   return (
     <>
-      {lastSegment === "download-resume" && (
+      {/* {lastSegment === "download-resume" && ( */}
         <div className="text-center my-5">
           <motion.button
             onClick={handleDownload}
@@ -6828,7 +6911,7 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({
             Download Resume
           </motion.button>
         </div>
-      )}
+      {/* )} */}
 
       {alldata ? (
         <div
