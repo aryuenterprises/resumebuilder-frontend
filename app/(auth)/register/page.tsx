@@ -1665,7 +1665,7 @@ export default function RegisterForm() {
                     ref={turnstileRef}
                     siteKey="0x4AAAAAADk4XwG1znS-2CHx"
                     // siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
-                    options={{ theme: "light" }} // 👈 Pass theme inside options object
+                    options={{ theme: "light" }} 
                     onSuccess={(token) => {
                       console.log("Turnstile verified for registration");
                       setTurnstileToken(token);

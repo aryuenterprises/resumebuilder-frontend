@@ -70,7 +70,7 @@ const Education_form = () => {
   const { fullResumeData, setFullResumeData } = UseContext || {};
   // const latestResumeId = localStorage.getItem("latest_resume_id");
   removeSessionStorage("oldRouteNameDashboard");
-          removeSessionStorage("editingResumeIdAndData");
+  removeSessionStorage("editingResumeIdAndData");
 
   const latestResumeId = getLocalStorage("latest_resume_id");
 
@@ -816,7 +816,6 @@ const Education_form = () => {
       </div>
 
       {/* Sticky Footer Buttons */}
-
       <div className="sticky bottom-0 z-20 bg-white/75 backdrop-blur-md border-t border-gray-100 shadow-lg shadow-gray-200/50">
         <div className="mx-auto px-2 sm:px-6 lg:px-8 py-3 sm:py-4">
           <div className="flex justify-between items-center gap-3 sm:gap-4">
