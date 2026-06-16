@@ -272,7 +272,7 @@ export default function TermsAndConditions() {
 passats@aryuacademy.com
               </a>
               <Link
-                href="/contact"
+                href="/contact-us"
                 className="inline-flex items-center justify-center gap-2 px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 md:py-3 bg-white/10 border border-white/30 text-white font-semibold rounded-lg sm:rounded-xl hover:bg-white/20 transition-all text-xs sm:text-sm md:text-base"
               >
                 Contact Support

@@ -76,16 +76,13 @@
 //         password,
 //       };
 
-//       const response = await axios.post(`${API_URL}/api/users/login`, formData, {
-//         withCredentials: true,
-//       });
-
-
-//       if (response.data && response.data.token) {
-//         const { user, token } = response.data;
+//       const response = await axios.post(`${API_URL}/auth/login/`, formData);
+//       if (response.data && response.data.access_token) {
+//         const { user, access_token, refresh_token } = response.data;
 
 //         setLocalStorage("user_details", user);
-//         setLocalStorage("user_token", token);
+//         setLocalStorage("access_token", access_token);
+//         setLocalStorage("refresh_token", refresh_token);
 
 //         // Show success modal instead of SweetAlert
 //         setShowSuccessModal(true);
@@ -543,18 +540,9 @@
 
 
 
-
-
-
-
-
-
-
-
-
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useRef } from "react";
 import {
   FiArrowRight,
   FiEye,
@@ -566,6 +554,7 @@ import {
   FiX,
   FiThumbsUp,
   FiAlertCircle,
+  FiCheck,
 } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import axios from "axios";
@@ -574,6 +563,8 @@ import Link from "next/link";
 import { setLocalStorage } from "@/app/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles } from "lucide-react";
+import { Turnstile } from "@marsidev/react-turnstile";
+import type { TurnstileInstance } from "@marsidev/react-turnstile";
 
 // Define TypeScript interfaces
 interface LoginErrors {
@@ -590,6 +581,10 @@ const Login = () => {
   const [errors, setErrors] = useState<LoginErrors>({});
   const [isLoading, setIsLoading] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
+
+  // Turnstile State
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const turnstileRef = useRef<TurnstileInstance | null>(null);
 
   // Custom Modal States
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -618,6 +613,13 @@ const Login = () => {
   const handlesubmit = async (e: FormEvent) => {
     e.preventDefault();
 
+    // Turnstile check - MUST be verified
+    if (!turnstileToken) {
+      setErrorMessage("Security verification required. Please complete the verification check.");
+      setShowErrorModal(true);
+      return;
+    }
+
     if (!validateForm()) {
       return;
     }
@@ -628,27 +630,29 @@ const Login = () => {
       const formData = {
         email,
         password,
+        turnstileToken: turnstileToken, // 👈 ADD THIS - send token to backend
       };
-
-     
 
       const response = await axios.post(`${API_URL}/auth/login/`, formData);
       if (response.data && response.data.access_token) {
-        const { user, access_token,refresh_token } = response.data;
+        const { user, access_token, refresh_token } = response.data;
 
         setLocalStorage("user_details", user);
         setLocalStorage("access_token", access_token);
         setLocalStorage("refresh_token", refresh_token);
 
-        // Show success modal instead of SweetAlert
+        // Show success modal
         setShowSuccessModal(true);
 
         setEmail("");
         setPassword("");
         setErrors({});
+        
+        // Reset Turnstile after successful login
+        setTurnstileToken(null);
+        turnstileRef.current?.reset();
+        
         setIsLoading(false);
-
-        // Redirect after modal is closed (will be handled in modal)
       } else {
         setErrorMessage("Invalid response from server.");
         setShowErrorModal(true);
@@ -660,7 +664,13 @@ const Login = () => {
 
       let errorText = "Something went wrong. Please try again.";
 
-      if (err.response?.data?.message) {
+      // Check if error is from Turnstile verification (403)
+      if (err.response?.status === 403) {
+        errorText = err.response?.data?.message || "Security check failed. Please refresh and try again.";
+        // Reset Turnstile for retry
+        setTurnstileToken(null);
+        turnstileRef.current?.reset();
+      } else if (err.response?.data?.message) {
         errorText = err.response.data.message;
       } else if (err.response?.data?.error) {
         errorText = err.response.data.error;
@@ -792,6 +802,32 @@ const Login = () => {
                   )}
                 </div>
 
+                {/* CLOUDFLARE TURNSTILE WIDGET - LIGHT THEME */}
+                <div className="flex justify-center py-3 sm:py-4">
+                  <Turnstile
+                    ref={turnstileRef}
+                    // siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+                    siteKey="0x4AAAAAADk4XwG1znS-2CHx"
+                    options={{ 
+                      theme: "light"
+                    }}
+                    onSuccess={(token) => {
+                      console.log("Turnstile verified for login");
+                      setTurnstileToken(token);
+                    }}
+                    onError={() => {
+                      console.log("Turnstile error");
+                      setTurnstileToken(null);
+                    }}
+                    onExpire={() => {
+                      console.log("Turnstile token expired");
+                      setTurnstileToken(null);
+                    }}
+                  />
+                </div>
+
+                
+
                 {/* General error message */}
                 {errors.general && (
                   <div className="mb-4 p-2.5 sm:p-3 bg-red-50 border border-red-100 rounded-lg">
@@ -801,11 +837,15 @@ const Login = () => {
                   </div>
                 )}
 
-                {/* Login Button */}
+                {/* Login Button - Disabled until Turnstile verified */}
                 <button
                   type="submit"
-                  disabled={isLoading}
-                  className="w-full py-2.5 sm:py-3 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-semibold rounded-lg sm:rounded-xl hover:from-indigo-700 hover:to-indigo-600 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/25 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer text-[11px] sm:text-xs md:text-sm"
+                  disabled={isLoading || !turnstileToken}
+                  className={`w-full py-2.5 sm:py-3 font-semibold rounded-lg sm:rounded-xl flex items-center justify-center gap-2 text-[11px] sm:text-xs md:text-sm transition-all duration-300 ${
+                    !turnstileToken
+                      ? "bg-gray-300 cursor-not-allowed text-gray-500"
+                      : "bg-gradient-to-r from-indigo-600 to-indigo-500 text-white hover:from-indigo-700 hover:to-indigo-600 hover:shadow-lg hover:shadow-indigo-500/25"
+                  }`}
                 >
                   {isLoading ? (
                     <>
@@ -1048,7 +1088,6 @@ const Login = () => {
                     <button
                       onClick={() => {
                         setShowErrorModal(false);
-                        // Focus on email field
                         const emailInput = document.querySelector(
                           'input[type="email"]',
                         );

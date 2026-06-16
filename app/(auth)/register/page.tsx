@@ -18,7 +18,6 @@
 //   FiX,
 //   FiAlertTriangle,
 //   FiWifiOff,
-//   FiCheckCircle,
 // } from "react-icons/fi";
 // import { useRouter } from "next/navigation";
 // import axios from "axios";
@@ -57,13 +56,6 @@
 //   label: string;
 //   color: string;
 //   percentage: number;
-// }
-
-// interface CustomAlert {
-//   show: boolean;
-//   type: "success" | "error" | "info";
-//   title: string;
-//   message: string;
 // }
 
 // type InputFieldName = keyof FormValues;
@@ -137,109 +129,6 @@
 //   );
 // };
 
-// // Custom Toast/Alert Component
-// const CustomAlert = ({ alert, onClose }: { alert: CustomAlert; onClose: () => void }) => {
-//   useEffect(() => {
-//     if (alert.show) {
-//       const timer = setTimeout(() => {
-//         onClose();
-//       }, 5000);
-//       return () => clearTimeout(timer);
-//     }
-//   }, [alert.show, onClose]);
-
-//   if (!alert.show) return null;
-
-//   const getIcon = () => {
-//     switch (alert.type) {
-//       case "success":
-//         return <FiCheckCircle className="w-5 h-5 text-green-600" />;
-//       case "error":
-//         return <FiAlertCircle className="w-5 h-5 text-red-600" />;
-//       default:
-//         return <FiCheckCircle className="w-5 h-5 text-blue-600" />;
-//     }
-//   };
-
-//   const getBgColor = () => {
-//     switch (alert.type) {
-//       case "success":
-//         return "bg-green-50 border-green-500";
-//       case "error":
-//         return "bg-red-50 border-red-500";
-//       default:
-//         return "bg-blue-50 border-blue-500";
-//     }
-//   };
-
-//   const getTitleColor = () => {
-//     switch (alert.type) {
-//       case "success":
-//         return "text-green-800";
-//       case "error":
-//         return "text-red-800";
-//       default:
-//         return "text-blue-800";
-//     }
-//   };
-
-//   const getMessageColor = () => {
-//     switch (alert.type) {
-//       case "success":
-//         return "text-green-700";
-//       case "error":
-//         return "text-red-700";
-//       default:
-//         return "text-blue-700";
-//     }
-//   };
-
-//   return (
-//     <motion.div
-//       initial={{ opacity: 0, y: -50, scale: 0.9 }}
-//       animate={{ opacity: 1, y: 0, scale: 1 }}
-//       exit={{ opacity: 0, y: -50, scale: 0.9 }}
-//       className="fixed top-4 left-1/2 -translate-x-1/2 z-[60] w-[90%] max-w-md"
-//     >
-//       <div className={`rounded-xl border-l-4 ${getBgColor()} bg-white shadow-2xl overflow-hidden`}>
-//         <div className="p-4">
-//           <div className="flex items-start gap-3">
-//             <div className="flex-shrink-0">{getIcon()}</div>
-//             <div className="flex-1">
-//               <h3 className={`font-semibold text-sm ${getTitleColor()}`}>
-//                 {alert.title}
-//               </h3>
-//               <p className={`text-sm mt-1 ${getMessageColor()}`}>
-//                 {alert.message}
-//               </p>
-//             </div>
-//             <button
-//               onClick={onClose}
-//               className="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
-//             >
-//               <FiX className="w-4 h-4" />
-//             </button>
-//           </div>
-//         </div>
-//         <div className="h-1 bg-gradient-to-r from-transparent via-current to-transparent opacity-20">
-//           <motion.div
-//             initial={{ width: "100%" }}
-//             animate={{ width: "0%" }}
-//             transition={{ duration: 5, ease: "linear" }}
-//             className={`h-full ${
-//               alert.type === "success"
-//                 ? "bg-green-500"
-//                 : alert.type === "error"
-//                 ? "bg-red-500"
-//                 : "bg-blue-500"
-//             }`}
-//           />
-//         </div>
-//       </div>
-//     </motion.div>
-//   );
-// };
-
 // export default function RegisterForm() {
 //   const router = useRouter();
 
@@ -271,15 +160,7 @@
 //   const [errorMessage, setErrorMessage] = useState("");
 //   const [resendEmail, setResendEmail] = useState("");
 //   const [resendEmailLoading, setResendEmailLoading] = useState(false);
-//   const [resendCooldown, setResendCooldown] = useState(0);
-
-//   // Custom Alert State
-//   const [customAlert, setCustomAlert] = useState<CustomAlert>({
-//     show: false,
-//     type: "success",
-//     title: "",
-//     message: "",
-//   });
+//   const [resendEmailSuccess, setResendEmailSuccess] = useState("");
 
 //   useBodyScrollLock(showSuccessModal || showErrorModal);
 
@@ -362,48 +243,70 @@
 //     setPasswordStrength(calculatePasswordStrength(values.password));
 //   }, [values.password]);
 
-//   // Cooldown timer effect
-//   useEffect(() => {
-//     if (resendCooldown > 0) {
-//       const timer = setTimeout(() => {
-//         setResendCooldown(prev => prev - 1);
-//       }, 1000);
-//       return () => clearTimeout(timer);
-//     }
-//   }, [resendCooldown]);
-
-//   const showAlert = (type: "success" | "error" | "info", title: string, message: string) => {
-//     setCustomAlert({
-//       show: true,
-//       type,
-//       title,
-//       message,
-//     });
-//   };
-
 //   const generatePassword = () => {
 //     const newPassword = passwordGenerator();
 //     handleChange("password", newPassword);
 //   };
 
+//   // const validateForm = (): boolean => {
+//   //   const newErrors: FormErrors = {};
+
+//   //   if (!values.firstName.trim())
+//   //     newErrors.firstName = "First name is required";
+//   //   if (!values.lastName.trim()) newErrors.lastName = "Last name is required";
+//   //   if (!values.email.trim()) newErrors.email = "Email is required";
+//   //   else if (!/\S+@\S+\.\S+/.test(values.email))
+//   //     newErrors.email = "Invalid email format";
+//   //   if (!values.phone.trim()) newErrors.phone = "Phone number is required";
+//   //   if (!values.password.trim()) newErrors.password = "Password is required";
+//   //   else if (values.password.length < 8)
+//   //     newErrors.password = "Password must be at least 8 characters";
+//   //   else if (passwordStrength.score < 3)
+//   //     newErrors.password = "Please choose a stronger password ";
+//   //   if (!values.city.trim()) newErrors.city = "City is required";
+//   //   if (!values.state.trim()) newErrors.state = "State is required";
+//   //   if (!values.country.trim()) newErrors.country = "Country is required";
+
+//   //   setErrors(newErrors);
+//   //   return Object.keys(newErrors).length === 0;
+//   // };
+
 //   const validateForm = (): boolean => {
 //     const newErrors: FormErrors = {};
 
+//     // Basic Field Validations
 //     if (!values.firstName.trim())
 //       newErrors.firstName = "First name is required";
 //     if (!values.lastName.trim()) newErrors.lastName = "Last name is required";
-//     if (!values.email.trim()) newErrors.email = "Email is required";
-//     else if (!/\S+@\S+\.\S+/.test(values.email))
+
+//     if (!values.email.trim()) {
+//       newErrors.email = "Email is required";
+//     } else if (!/\S+@\S+\.\S+/.test(values.email)) {
 //       newErrors.email = "Invalid email format";
+//     }
+
 //     if (!values.phone.trim()) newErrors.phone = "Phone number is required";
-//     if (!values.password.trim()) newErrors.password = "Password is required";
-//     else if (values.password.length < 8)
-//       newErrors.password = "Password must be at least 8 characters";
-//     else if (passwordStrength.score < 3)
-//       newErrors.password = "Please choose a stronger password (at least Fair)";
 //     if (!values.city.trim()) newErrors.city = "City is required";
 //     if (!values.state.trim()) newErrors.state = "State is required";
 //     if (!values.country.trim()) newErrors.country = "Country is required";
+
+//     // --- Password Validation Logic ---
+//     if (!values.password.trim()) {
+//       newErrors.password = "Password is required";
+//     } else {
+//       // 1. Check the baseline mandatory rules (e.g., length, casing, numbers, symbols)
+//       // We exclude the 12-character "extra strength" rule from being a hard blocker
+
+//       const allMandatoryMet = passwordRequirements.every((req) => req.met);
+
+//       if (!allMandatoryMet) {
+//         newErrors.password = "Password does not meet all required criteria";
+//       }
+//       // 2. Fallback to your passwordStrength score check if mandatory rules pass
+//       else if (passwordStrength.score < 3) {
+//         newErrors.password = "Please choose a stronger password";
+//       }
+//     }
 
 //     setErrors(newErrors);
 //     return Object.keys(newErrors).length === 0;
@@ -415,6 +318,10 @@
 //     setLoading(true);
 
 //     try {
+//       // const response = await axios.post(
+//       //   `${API_URL}/api/users/create`,
+//       //   values,
+//       // );
 //       const response = await axios.post(`${API_URL}/auth/signup/`, {
 //         first_name: values.firstName,
 //         last_name: values.lastName,
@@ -443,7 +350,6 @@
 //         country: "",
 //       });
 //       setErrors({});
-
 //     } catch (err: any) {
 //       console.error("Registration Error:", err);
 //       setLoading(false);
@@ -489,37 +395,21 @@
 //   ];
 
 //   const resendVerificationEmail = async () => {
-//     if (resendEmailLoading || resendCooldown > 0) return;
-
 //     setResendEmailLoading(true);
+//     setResendEmailSuccess("");
 //     try {
 //       const response = await axios.post(
 //         `${API_URL}/auth/resend-verification-email/`,
 //         {
 //           email: resendEmail,
-//         }
+//         },
 //       );
 
-//       showAlert("success", "Email Sent!", "Verification link has been resent to your email.");
-
-//       // Start cooldown (30 seconds)
-//       setResendCooldown(30);
-
-//     } catch (err: any) {
-//       console.error("Resend error:", err);
-
-//       let errorMsg = "Failed to resend verification email. ";
-//       if (err.response?.data?.message) {
-//         errorMsg = err.response.data.message;
-//       } else if (err.response?.data?.error) {
-//         errorMsg = err.response.data.error;
-//       } else if (err.response?.status === 429) {
-//         errorMsg = "Too many requests. Please wait a moment before trying again.";
-//       } else {
-//         errorMsg = "Please try again later.";
-//       }
-
-//       showAlert("error", "Resend Failed", errorMsg);
+//       setResendEmailSuccess(
+//         response.data.message || "Verification email resent successfully",
+//       );
+//     } catch (err) {
+//       console.log(err);
 //     } finally {
 //       setResendEmailLoading(false);
 //     }
@@ -527,13 +417,6 @@
 
 //   return (
 //     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 flex flex-col">
-//       {/* Custom Alert */}
-//       <AnimatePresence>
-//         {customAlert.show && (
-//           <CustomAlert alert={customAlert} onClose={() => setCustomAlert(prev => ({ ...prev, show: false }))} />
-//         )}
-//       </AnimatePresence>
-
 //       <div className="relative flex-1 flex items-center justify-center py-16! p-3 sm:p-4 md:p-6">
 //         <motion.div
 //           initial={{ opacity: 0, y: 30 }}
@@ -880,11 +763,11 @@
 //                     initial={{ scale: 0 }}
 //                     animate={{ scale: 1 }}
 //                     transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
-//                     className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 mx-auto bg-white rounded-full flex items-center justify-center shadow-lg mb-4"
+//                     className="w-20 h-20 mx-auto bg-white rounded-full flex items-center justify-center shadow-lg mb-4"
 //                   >
-//                     <FiThumbsUp className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 text-indigo-600" />
+//                     <FiThumbsUp className="w-10 h-10 text-indigo-600" />
 //                   </motion.div>
-//                   <h3 className="text-xl md:text-2xl font-bold text-white">
+//                   <h3 className="text-2xl font-bold text-white">
 //                     Registration Successful!
 //                   </h3>
 //                 </div>
@@ -903,7 +786,7 @@
 //                     initial={{ opacity: 0, x: -20 }}
 //                     animate={{ opacity: 1, x: 0 }}
 //                     transition={{ delay: 0.3 }}
-//                     className="bg-indigo-50 rounded-xl p-4 mb-4 border-l-4 border-indigo-500"
+//                     className="bg-indigo-50 rounded-xl p-4 mb-6 border-l-4 border-indigo-500"
 //                   >
 //                     <div className="flex gap-3">
 //                       <div className="flex-shrink-0">
@@ -926,34 +809,34 @@
 //                     </div>
 //                   </motion.div>
 
-//                   {/* Improved Resend Section */}
 //                   <motion.div
 //                     initial={{ opacity: 0, y: 10 }}
 //                     animate={{ opacity: 1, y: 0 }}
 //                     transition={{ delay: 0.4 }}
 //                     className="text-center mb-6"
 //                   >
-//                     {resendEmailLoading ? (
-//                       <div className="flex items-center justify-center gap-2">
-//                         <div className="w-4 h-4 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-//                         <span className="text-indigo-600 text-sm">
-//                           Sending verification email...
+//                     <p className="text-gray-500 text-sm">
+//                       Didn't receive the verification link?{" "}
+//                       {resendEmailLoading ? (
+//                         <span className="text-indigo-600 text-xs mt-2">
+//                           Sending...
 //                         </span>
-//                       </div>
-//                     ) : (
-//                       <p className="text-gray-500 text-sm">
-//                         Didn't receive the verification link?{" "}
+//                       ) : (
 //                         <button
-//                           onClick={resendVerificationEmail}
-//                           disabled={resendCooldown > 0}
-//                           className={`text-indigo-600 hover:text-indigo-700 font-medium transition-colors cursor-pointer hover:underline ${
-//                             resendCooldown > 0 ? "opacity-50 cursor-not-allowed" : ""
-//                           }`}
+//                           onClick={() => {
+//                             resendVerificationEmail();
+//                           }}
+//                           className="text-indigo-600 hover:text-indigo-700 font-medium transition-colors cursor-pointer hover:underline"
 //                         >
-//                           {resendCooldown > 0 ? `Resend it (${resendCooldown}s)` : "Resend it"}
+//                           Resend it
 //                         </button>
-//                       </p>
-//                     )}
+//                       )}
+//                       {resendEmailSuccess && (
+//                         <p className="text-indigo-600 text-xs mt-2">
+//                           {resendEmailSuccess}
+//                         </p>
+//                       )}
+//                     </p>
 //                   </motion.div>
 
 //                   <motion.div
@@ -1112,47 +995,14 @@
 //   );
 // }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
-import { useState, FormEvent, useEffect } from "react";
+import { useState, FormEvent, useEffect, useRef } from "react";
 import {
   FiEye,
   FiEyeOff,
   FiArrowLeft,
   FiCheck,
   FiAlertCircle,
-  FiChevronDown,
-  FiChevronUp,
   FiRefreshCw,
   FiUser,
   FiMail,
@@ -1162,7 +1012,6 @@ import {
   FiThumbsUp,
   FiX,
   FiAlertTriangle,
-  FiWifiOff,
 } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import axios from "axios";
@@ -1172,6 +1021,8 @@ import { passwordGenerator, sanitizeNumber } from "@/app/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { HiSparkles } from "react-icons/hi";
 import { useBodyScrollLock } from "@/app/hooks";
+import { Turnstile } from "@marsidev/react-turnstile";
+import type { TurnstileInstance } from "@marsidev/react-turnstile";
 
 interface FormValues {
   firstName: string;
@@ -1299,6 +1150,10 @@ export default function RegisterForm() {
     percentage: 0,
   });
 
+  // Turnstile State
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const turnstileRef = useRef<TurnstileInstance | null>(null);
+
   // Custom Modal States
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
@@ -1309,7 +1164,7 @@ export default function RegisterForm() {
 
   useBodyScrollLock(showSuccessModal || showErrorModal);
 
-  // Fixed password strength calculation
+  // Password strength calculation
   useEffect(() => {
     const calculatePasswordStrength = (password: string): PasswordStrength => {
       if (!password) {
@@ -1321,7 +1176,6 @@ export default function RegisterForm() {
         };
       }
 
-      // Track which requirements are met
       const hasLength = password.length >= 8;
       const hasLowercase = /[a-z]/.test(password);
       const hasUppercase = /[A-Z]/.test(password);
@@ -1329,7 +1183,6 @@ export default function RegisterForm() {
       const hasSpecial = /[^A-Za-z0-9]/.test(password);
       const hasLongLength = password.length >= 12;
 
-      // Count how many requirements are met (max 6)
       let score = 0;
       if (hasLength) score++;
       if (hasLowercase) score++;
@@ -1338,7 +1191,6 @@ export default function RegisterForm() {
       if (hasSpecial) score++;
       if (hasLongLength) score++;
 
-      // Determine label, color, and percentage
       let label, color, percentage;
       switch (score) {
         case 0:
@@ -1393,82 +1245,65 @@ export default function RegisterForm() {
     handleChange("password", newPassword);
   };
 
-  // const validateForm = (): boolean => {
-  //   const newErrors: FormErrors = {};
-
-  //   if (!values.firstName.trim())
-  //     newErrors.firstName = "First name is required";
-  //   if (!values.lastName.trim()) newErrors.lastName = "Last name is required";
-  //   if (!values.email.trim()) newErrors.email = "Email is required";
-  //   else if (!/\S+@\S+\.\S+/.test(values.email))
-  //     newErrors.email = "Invalid email format";
-  //   if (!values.phone.trim()) newErrors.phone = "Phone number is required";
-  //   if (!values.password.trim()) newErrors.password = "Password is required";
-  //   else if (values.password.length < 8)
-  //     newErrors.password = "Password must be at least 8 characters";
-  //   else if (passwordStrength.score < 3)
-  //     newErrors.password = "Please choose a stronger password ";
-  //   if (!values.city.trim()) newErrors.city = "City is required";
-  //   if (!values.state.trim()) newErrors.state = "State is required";
-  //   if (!values.country.trim()) newErrors.country = "Country is required";
-
-  //   setErrors(newErrors);
-  //   return Object.keys(newErrors).length === 0;
-  // };
-
-
-
   const validateForm = (): boolean => {
-  const newErrors: FormErrors = {};
+    const newErrors: FormErrors = {};
 
-  // Basic Field Validations
-  if (!values.firstName.trim()) newErrors.firstName = "First name is required";
-  if (!values.lastName.trim()) newErrors.lastName = "Last name is required";
-  
-  if (!values.email.trim()) {
-    newErrors.email = "Email is required";
-  } else if (!/\S+@\S+\.\S+/.test(values.email)) {
-    newErrors.email = "Invalid email format";
-  }
-  
-  if (!values.phone.trim()) newErrors.phone = "Phone number is required";
-  if (!values.city.trim()) newErrors.city = "City is required";
-  if (!values.state.trim()) newErrors.state = "State is required";
-  if (!values.country.trim()) newErrors.country = "Country is required";
+    if (!values.firstName.trim())
+      newErrors.firstName = "First name is required";
+    if (!values.lastName.trim()) newErrors.lastName = "Last name is required";
 
-  // --- Password Validation Logic ---
-  if (!values.password.trim()) {
-    newErrors.password = "Password is required";
-  } else {
-    // 1. Check the baseline mandatory rules (e.g., length, casing, numbers, symbols)
-    // We exclude the 12-character "extra strength" rule from being a hard blocker
-  
-
-    const allMandatoryMet = passwordRequirements.every((req) => req.met);
-
-    if (!allMandatoryMet) {
-      newErrors.password = "Password does not meet all required criteria";
-    } 
-    // 2. Fallback to your passwordStrength score check if mandatory rules pass
-    else if (passwordStrength.score < 3) {
-      newErrors.password = "Please choose a stronger password";
+    if (!values.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(values.email)) {
+      newErrors.email = "Invalid email format";
     }
-  }
 
-  setErrors(newErrors);
-  return Object.keys(newErrors).length === 0;
-};
+    if (!values.phone.trim()) newErrors.phone = "Phone number is required";
+    if (!values.city.trim()) newErrors.city = "City is required";
+    if (!values.state.trim()) newErrors.state = "State is required";
+    if (!values.country.trim()) newErrors.country = "Country is required";
+
+    if (!values.password.trim()) {
+      newErrors.password = "Password is required";
+    } else {
+      const passwordRequirementsChecks = [
+        values.password.length >= 8,
+        /[a-z]/.test(values.password),
+        /[A-Z]/.test(values.password),
+        /[0-9]/.test(values.password),
+        /[^A-Za-z0-9]/.test(values.password),
+      ];
+      const allMandatoryMet = passwordRequirementsChecks.every(
+        (req) => req === true,
+      );
+
+      if (!allMandatoryMet) {
+        newErrors.password = "Password does not meet all required criteria";
+      } else if (passwordStrength.score < 3) {
+        newErrors.password = "Please choose a stronger password";
+      }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+
+    // Turnstile check - MUST be verified
+    if (!turnstileToken) {
+      setErrorMessage(
+        "Security verification required. Please complete the verification check.",
+      );
+      setShowErrorModal(true);
+      return;
+    }
+
     if (!validateForm()) return;
     setLoading(true);
 
     try {
-      // const response = await axios.post(
-      //   `${API_URL}/api/users/create`,
-      //   values,
-      // );
       const response = await axios.post(`${API_URL}/auth/signup/`, {
         first_name: values.firstName,
         last_name: values.lastName,
@@ -1478,14 +1313,14 @@ export default function RegisterForm() {
         city: values.city,
         state: values.state,
         country: values.country,
+        turnstileToken: turnstileToken,
       });
-      setLoading(false);
 
+      setLoading(false);
       setResendEmail(values.email);
-      // Show success modal
       setShowSuccessModal(true);
 
-      // Clear form after successful registration
+      // Reset form
       setValues({
         firstName: "",
         lastName: "",
@@ -1497,14 +1332,23 @@ export default function RegisterForm() {
         country: "",
       });
       setErrors({});
+
+      // Reset Turnstile
+      setTurnstileToken(null);
+      turnstileRef.current?.reset();
     } catch (err: any) {
       console.error("Registration Error:", err);
       setLoading(false);
 
-      // Extract error message
       let errorText = "Something went wrong. Please try again.";
 
-      if (err.response?.data?.message) {
+      if (err.response?.status === 403) {
+        errorText =
+          err.response?.data?.message ||
+          "Security check failed. Please refresh and try again.";
+        setTurnstileToken(null);
+        turnstileRef.current?.reset();
+      } else if (err.response?.data?.message) {
         errorText = err.response.data.message;
       } else if (err.response?.data?.error) {
         errorText = err.response.data.error;
@@ -1551,8 +1395,9 @@ export default function RegisterForm() {
           email: resendEmail,
         },
       );
-
-      setResendEmailSuccess(response.data.message || "Verification email resent successfully");
+      setResendEmailSuccess(
+        response.data.message || "Verification email resent successfully",
+      );
     } catch (err) {
       console.log(err);
     } finally {
@@ -1647,7 +1492,7 @@ export default function RegisterForm() {
                   />
                 </div>
 
-                {/* Password Field - IMPROVED */}
+                {/* Password Field */}
                 <div className="mb-3 sm:mb-4">
                   <div className="flex flex-wrap justify-between items-center gap-2 mb-1 sm:mb-1.5">
                     <label className="text-[11px] sm:text-xs md:text-sm font-semibold text-gray-700">
@@ -1714,14 +1559,12 @@ export default function RegisterForm() {
                       </button>
                     </div>
 
-                    {/* Improved Generate Button with Tooltip */}
                     <div className="relative group">
                       <button
-                        id="generate-password-btn"
                         type="button"
                         onClick={generatePassword}
                         className="px-3 sm:px-4 py-2 sm:py-2.5 md:py-3 bg-gradient-to-r from-indigo-50 to-indigo-100 text-indigo-600 rounded-lg sm:rounded-xl hover:from-indigo-100 hover:to-indigo-200 transition-all duration-200 cursor-pointer flex items-center gap-1.5 sm:gap-2 group shadow-sm hover:shadow transform active:scale-95 h-full"
-                        aria-label="Generate strong password "
+                        aria-label="Generate strong password"
                       >
                         <FiRefreshCw className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:rotate-180 transition-transform duration-500" />
                         <span className="hidden sm:inline text-[11px] sm:text-xs font-medium">
@@ -1741,7 +1584,7 @@ export default function RegisterForm() {
                         transition={{ duration: 0.2 }}
                         className="mt-2 sm:mt-3 p-2.5 sm:p-3 bg-gray-50 rounded-lg sm:rounded-xl border border-gray-100 overflow-hidden"
                       >
-                        <h4 className="text-xs  font-semibold text-gray-700 mb-1.5 sm:mb-2">
+                        <h4 className="text-xs font-semibold text-gray-700 mb-1.5 sm:mb-2">
                           Password Requirements:
                         </h4>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2">
@@ -1816,6 +1659,28 @@ export default function RegisterForm() {
                   />
                 </div>
 
+                {/* CLOUDFLARE TURNSTILE WIDGET */}
+                <div className="flex justify-center py-3 sm:py-4">
+                  <Turnstile
+                    ref={turnstileRef}
+                    siteKey="0x4AAAAAADk4XwG1znS-2CHx"
+                    // siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+                    options={{ theme: "light" }} // 👈 Pass theme inside options object
+                    onSuccess={(token) => {
+                      console.log("Turnstile verified for registration");
+                      setTurnstileToken(token);
+                    }}
+                    onError={() => {
+                      console.log("Turnstile error");
+                      setTurnstileToken(null);
+                    }}
+                    onExpire={() => {
+                      console.log("Turnstile token expired");
+                      setTurnstileToken(null);
+                    }}
+                  />
+                </div>
+
                 {errors.general && (
                   <div className="mt-3 sm:mt-4 p-2.5 sm:p-3 bg-red-50 border border-red-100 rounded-lg sm:rounded-xl">
                     <p className="text-red-600 text-[11px] sm:text-xs">
@@ -1824,11 +1689,15 @@ export default function RegisterForm() {
                   </div>
                 )}
 
-                {/* Submit Button */}
+                {/* Submit Button - Disabled until Turnstile verified */}
                 <button
                   type="submit"
-                  disabled={loading}
-                  className="w-full mt-5 sm:mt-6 py-2.5 sm:py-3 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-semibold rounded-lg sm:rounded-xl hover:from-indigo-700 hover:to-indigo-600 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/25 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer text-[11px] sm:text-xs md:text-sm"
+                  disabled={loading || !turnstileToken}
+                  className={`w-full mt-5 sm:mt-6 py-2.5 sm:py-3 font-semibold rounded-lg sm:rounded-xl flex items-center justify-center gap-2 text-[11px] sm:text-xs md:text-sm transition-all duration-300 ${
+                    !turnstileToken
+                      ? "bg-gray-300 cursor-not-allowed text-gray-500"
+                      : "bg-gradient-to-r from-indigo-600 to-indigo-500 text-white hover:from-indigo-700 hover:to-indigo-600 hover:shadow-lg hover:shadow-indigo-500/25 cursor-pointer"
+                  }`}
                 >
                   {loading ? (
                     <>
@@ -1978,8 +1847,7 @@ export default function RegisterForm() {
                       )}
                       {resendEmailSuccess && (
                         <p className="text-indigo-600 text-xs mt-2">
-
-{resendEmailSuccess}
+                          {resendEmailSuccess}
                         </p>
                       )}
                     </p>
@@ -2088,7 +1956,6 @@ export default function RegisterForm() {
                     <button
                       onClick={() => {
                         setShowErrorModal(false);
-                        // Focus on first invalid field
                         const firstError = Object.keys(errors)[0];
                         if (firstError) {
                           const element = document.querySelector(
@@ -2106,7 +1973,6 @@ export default function RegisterForm() {
                     <button
                       onClick={() => {
                         setShowErrorModal(false);
-                        // Retry logic - scroll to form
                         window.scrollTo({ top: 0, behavior: "smooth" });
                       }}
                       className="flex-1 px-4 py-2.5 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-xl font-medium hover:from-red-700 hover:to-red-600 transition-all duration-200 transform hover:scale-[1.02] shadow-md cursor-pointer text-sm"
@@ -2120,48 +1986,6 @@ export default function RegisterForm() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Add custom CSS for animations */}
-      <style jsx>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .animate-fade-in-up {
-          animation: fadeInUp 0.3s ease-out;
-        }
-      `}</style>
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

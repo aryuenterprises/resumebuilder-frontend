@@ -58,8 +58,7 @@ const ExperienceForm = () => {
   const UseContext = useContext(CreateContext);
   const contactId = UseContext?.contact.contactId || UseContext?.contact._id;
   const chosenResumeDetails = getLocalStorage<Template>("chosenTemplate");
-        setSessionStorage("resume_upload_mode", false);
-  
+  setSessionStorage("resume_upload_mode", false);
 
   const [isExperienced, setIsExperienced] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -159,99 +158,10 @@ const ExperienceForm = () => {
 
   const latestResumeId = getLocalStorage("latest_resume_id");
 
-  const fetchExp = async () => {
-    try {
-      const response = await axios.get(
-        `${API_URL}/api/experience/get-experience/${contactId}`,
-      );
-
-      const experienceList = response.data?.[0]?.experiences || [];
-
-      if (experienceList.length > 0) {
-        const formattedData = experienceList.map((item: any) => ({
-          id: item.id || Date.now(),
-          jobTitle: item?.jobTitle || "",
-          employer: item?.employer || "",
-          location: item?.location || "",
-          startDate: item?.startDate ? item?.startDate.slice(0, 7) : "",
-          endDate: item?.endDate ? item?.endDate.split("T")[0] : "",
-          text: item?.text || "",
-          isOpen: true,
-          touched: {},
-          showPicker: false,
-          year: item.startDate
-            ? new Date(item.startDate).getFullYear()
-            : new Date().getFullYear(),
-          isCurrentlyWorking: item?.isCurrentlyWorking || false,
-        }));
-
-        setExperiences(formattedData);
-      } else {
-        console.error("No experience data found for user");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  // const saveToAPI = async (experiencesData: typeof experiences) => {
-  //   if (!contactId) {
-  //     console.error("Contact ID is required");
-  //     return false;
-  //   }
-
-  //   try {
-  //     const formData = {
-  //       experiences: experiencesData,
-  //     };
-
-  //     const response = await axios.post(
-  //       `${API_URL}/api/experience/update`,
-  //       formData,
-  //       { params: { contactId: contactId } },
-  //     );
-
-  //     return true;
-  //   } catch (err: any) {
-  //     console.error("Error saving experience:", err);
-  //     toast.error("Failed to save experience!");
-  //     return false;
-  //   } finally {
-  //     setIsSaving(false);
-  //   }
-  // };
-
   const saveToAPI = async (experiencesData: typeof experiences) => {
-    // if (!userId) {
-    //   console.error("User ID is required");
-    //   return false;
-    // }
-
     setIsSaving(true);
 
     try {
-      //     {
-      //   "section_name": "Work Experience",
-      //   "is_completed": false,
-      //   "section_payload": [
-      //     {
-      //       "company": "TechCorp Systems",
-      //       "role": "Staff Engineer",
-      //       "start_date": "2024-01",
-      //       "end_date": "Present",
-      //       "description": "Designed microservices using Django REST framework and handling 10k requests per second."
-      //     },
-      //     {
-      //       "company": "Startup Labs",
-      //       "role": "Python Developer",
-      //       "start_date": "2022-03",
-      //       "end_date": "2023-12",
-      //       "description": "Built data pipelines and automated onboarding configurations."
-      //     }
-      //   ]
-      // }
-
-      // 2. Build your exact single JSON payload schema
       const singlePayload = {
         section_name: "experiences",
         section_payload: experiencesData,
