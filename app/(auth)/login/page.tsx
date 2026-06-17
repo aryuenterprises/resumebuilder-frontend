@@ -807,9 +807,9 @@ const Login = () => {
                     ref={turnstileRef}
                     // siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
                     siteKey="0x4AAAAAADk4XwG1znS-2CHx"
-                    
+                    // siteKey="1x00000000000000000000AA"
                     options={{ 
-                      theme: "light"
+                      theme: "light",
                     }}
                     onSuccess={(token) => {
                       console.log("Turnstile verified for login");

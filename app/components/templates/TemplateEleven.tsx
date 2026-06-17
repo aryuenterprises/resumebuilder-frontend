@@ -8185,7 +8185,7 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({ alldata, customization 
     }
 
     .t11-resume .name {
-      font-size: 42px;
+      font-size: 32px;
       font-weight: 300;
       letter-spacing: 1px;
       margin-bottom: 12px;

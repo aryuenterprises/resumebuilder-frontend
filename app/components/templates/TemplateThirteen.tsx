@@ -6337,6 +6337,16 @@
 // export default TemplateThirteen;
 
 
+
+
+
+
+
+
+
+
+
+
 "use client";
 import React, {
   useContext,
@@ -6626,7 +6636,18 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({ alldata, customizat
   };
 
   // ── Section builders ──────────────────────────────────────────────────────
-  const sectionBuilders: Record<SectionKey, () => string> = {
+  
+
+  // ── HTML builder with section ordering ───────────────────────────────────
+ // AFTER
+const generateHTML = useCallback(
+  (forPDF = false, pageBreakIds: string[] = [], skillsCutIndex = -1): string => {
+      const fontPreloads = activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif"
+        ? `<link href="${getFontImport(activeFontFamily)}" rel="stylesheet"/>`
+        : "";
+
+
+        const sectionBuilders: Record<SectionKey, () => string> = {
     summary: () => summary ? `
       <div class="section" data-block-id="summary">
         <h2 class="section-title">Profile</h2>
@@ -6702,18 +6723,40 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({ alldata, customizat
       </div>
     ` : "",
 
-    skills: () => {
-      const skillsClean = rich(skills);
-      if (!skillsClean || skillsClean === "<p><br></p>") return "";
-      return `
-        <div class="section" data-block-id="skills-section">
-          <h2 class="section-title">Skills</h2>
-          <div class="skills-container">
-            <div class="skills-content" data-block-id="skills-content">${skillsClean}</div>
-          </div>
+  skills: () => {
+  const skillsClean = rich(skills);
+  if (!skillsClean || skillsClean === "<p><br></p>") return "";
+
+  if (forPDF && skillsCutIndex >= 0) {
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = skillsClean;
+    const allLis = Array.from(tempDiv.querySelectorAll("li"));
+    if (skillsCutIndex < allLis.length) {
+      const beforeLis = allLis.slice(0, skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
+      const afterLis = allLis.slice(skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
+      return `<div class="section" data-block-id="skills-section">
+        <h2 class="section-title">Skills</h2>
+        <div class="skills-container">
+          <div class="skills-content"><ul>${beforeLis}</ul></div>
         </div>
-      `;
-    },
+      </div>
+      <div class="t13-page-break"></div>
+      <div class="section" data-block-id="skills-section-continued">
+        <h2 class="section-title">Skills (continued)</h2>
+        <div class="skills-container">
+          <div class="skills-content"><ul>${afterLis}</ul></div>
+        </div>
+      </div>`;
+    }
+  }
+
+  return `<div class="section" data-block-id="skills-section">
+    <h2 class="section-title">Skills</h2>
+    <div class="skills-container">
+      <div class="skills-content" data-block-id="skills-content">${skillsClean}</div>
+    </div>
+  </div>`;
+},
 
     custom: () => {
       if (!Array.isArray(finalize?.customSection)) return "";
@@ -6733,13 +6776,6 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({ alldata, customizat
       `;
     },
   };
-
-  // ── HTML builder with section ordering ───────────────────────────────────
-  const generateHTML = useCallback(
-    (forPDF = false, pageBreakIds: string[] = []): string => {
-      const fontPreloads = activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif"
-        ? `<link href="${getFontImport(activeFontFamily)}" rel="stylesheet"/>`
-        : "";
 
       // Build sections in the order defined by customization
       const sectionsHTML = activeSectionOrder
@@ -6827,7 +6863,6 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({ alldata, customizat
       formattedDob,
       addressParts,
       styles,
-      sectionBuilders,
     ],
   );
 
@@ -6914,14 +6949,14 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({ alldata, customizat
           interface Block { top: number; bottom: number; id?: string; }
           const blocks: Block[] = [];
 
-          const ITEM_SELECTORS = [
-            ".experience-item",
-            ".education-item",
-            ".custom-section",
-            ".resume-header",
-            ".summary-text",
-            ".skills-container",
-          ].join(", ");
+          // AFTER
+const ITEM_SELECTORS = [
+  ".experience-item",
+  ".education-item",
+  ".custom-section",
+  ".resume-header",
+  ".summary-text",
+].join(", ");
 
           resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
             const top = getRelTop(el);
@@ -6940,17 +6975,22 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({ alldata, customizat
               }
               sib = sib.nextElementSibling as HTMLElement | null;
             }
-            if (firstItem) {
-              const deepChild = firstItem.querySelector<HTMLElement>(
-                ".experience-item, .education-item, .custom-section, .skills-container, .summary-text",
-              );
-              const anchor = deepChild || firstItem;
-              const anchorBottom = getRelBottom(anchor);
-              if (anchorBottom - titleTop > 8) {
-                const sectionId = (title.parentElement as HTMLElement)?.dataset?.blockId;
-                blocks.push({ top: titleTop, bottom: anchorBottom, id: sectionId });
-              }
-            }
+           // AFTER
+// AFTER
+if (firstItem) {
+  // Skip anchor logic for skills — allow it to split across pages
+  if (firstItem.classList.contains("skills-container")) return;
+
+  const deepChild = firstItem.querySelector<HTMLElement>(
+    ".experience-item, .education-item, .custom-section, .summary-text",
+  );
+  const anchor = deepChild || firstItem;
+  const anchorBottom = getRelBottom(anchor);
+  if (anchorBottom - titleTop > 8) {
+    const sectionId = (title.parentElement as HTMLElement)?.dataset?.blockId;
+    blocks.push({ top: titleTop, bottom: anchorBottom, id: sectionId });
+  }
+}
           });
 
           blocks.sort((a, b) => a.top - b.top);
@@ -6978,8 +7018,56 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({ alldata, customizat
             if (cutBlockId) pageBreakIds.push(cutBlockId);
           }
 
-          (window as any).__resumeT13PageBreakIds = pageBreakIds;
-          document.body.removeChild(iframe);
+          const skillsLis = Array.from(resume.querySelectorAll<HTMLElement>(".skills-content li"));
+skillsLis.forEach((li) => {
+  const top = getRelTop(li);
+  const bottom = getRelBottom(li);
+  if (bottom - top > 2) blocks.push({ top, bottom });
+});
+
+blocks.sort((a, b) => a.top - b.top);
+pageStarts.length = 1;
+pageBreakIds.length = 0;
+
+while (pageStarts.length < MAX_PAGES) {
+  const currentStart = pageStarts[pageStarts.length - 1];
+  const naiveCut = currentStart + PAGE_CONTENT_H;
+  if (naiveCut >= totalH) break;
+  let actualCut = naiveCut;
+  let cutBlockId: string | undefined;
+  for (const block of blocks) {
+    if (block.top >= naiveCut) break;
+    if (block.bottom <= currentStart) continue;
+    if (block.top >= currentStart && block.bottom > naiveCut && block.top < actualCut) {
+      actualCut = block.top;
+      cutBlockId = block.id;
+    }
+  }
+  if (actualCut <= currentStart) actualCut = naiveCut;
+  pageStarts.push(actualCut);
+  if (cutBlockId) pageBreakIds.push(cutBlockId);
+}
+
+(window as any).__resumeSkillsCutIndex = -1;
+for (let p = 0; p < pageStarts.length - 1; p++) {
+  const cutY = pageStarts[p + 1];
+  for (let li = 0; li < skillsLis.length; li++) {
+    const liTop = getRelTop(skillsLis[li]);
+    const liBottom = getRelBottom(skillsLis[li]);
+    if (liTop < cutY && liBottom > cutY) {
+      (window as any).__resumeSkillsCutIndex = li;
+      break;
+    }
+    if (liTop >= cutY) {
+      (window as any).__resumeSkillsCutIndex = li;
+      break;
+    }
+  }
+  if ((window as any).__resumeSkillsCutIndex >= 0) break;
+}
+
+document.body.removeChild(iframe);
+(window as any).__resumePageBreakIds = pageBreakIds;
 
           const pageHtmls: string[] = [];
           for (let i = 0; i < pageStarts.length; i++) {
@@ -7072,13 +7160,24 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({ alldata, customizat
   // ── PDF download ─────────────────────────────────────────
   const handleDownload = async () => {
     try {
-      const pageBreakIds: string[] = (window as any).__resumeT13PageBreakIds || [];
+      // const pageBreakIds: string[] = (window as any).__resumeT13PageBreakIds || [];
 
-      const res: AxiosResponse<Blob> = await api.post(
-        `${API_URL}/candidates/generate-pdf`,
-        { html: generateHTML(true, pageBreakIds) },
-        { responseType: "blob" },
-      );
+      // const res: AxiosResponse<Blob> = await api.post(
+      //   `${API_URL}/candidates/generate-pdf`,
+      //   { html: generateHTML(true, pageBreakIds) },
+      //   { responseType: "blob" },
+      // );
+
+      // AFTER
+const pageBreakIds: string[] = ((window as any).__resumePageBreakIds || []).filter(
+  (id: string) => id !== "skills-section"
+);
+const skillsCutIndex: number = (window as any).__resumeSkillsCutIndex ?? -1;
+const res: AxiosResponse<Blob> = await api.post(
+  `${API_URL}/candidates/generate-pdf`,
+  { html: generateHTML(true, pageBreakIds, skillsCutIndex) },
+  { responseType: "blob" },
+);
 
       const url = URL.createObjectURL(res.data);
       const a = document.createElement("a");

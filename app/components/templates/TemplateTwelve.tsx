@@ -6392,7 +6392,44 @@ const TemplateTwelve: React.FC<TemplateTwelveProps> = ({ alldata, customization 
   };
 
   // ── Section builders ──────────────────────────────────────────────────────
-  const sectionBuilders: Record<SectionKey, () => string> = {
+  
+
+  // ── HTML builder with section ordering ───────────────────────────────────
+  // AFTER
+const generateHTML = useCallback(
+  (forPDF = false, pageBreakIds: string[] = [], skillsCutIndex = -1): string => {
+      const formattedDob = formatDateOfBirth(dateOfBirth || "");
+      const displayFontImport = "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap";
+
+      const fontPreloads = activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif" 
+        ? `<link href="${getFontImport(activeFontFamily)}" rel="stylesheet"/>`
+        : '';
+
+      // Header
+      const header = `
+        <div class="header-block" data-block-id="t12-header">
+          <div class="header-name">${contact?.firstName || ""} ${contact?.lastName || ""}</div>
+          <div class="header-jobtitle">${
+            contact?.jobTitle
+              ? typeof contact.jobTitle === "string"
+                ? contact.jobTitle
+                : (contact.jobTitle as any)?.name || ""
+              : ""
+          }</div>
+          <div class="header-divider"></div>
+          <div class="header-meta-row">
+            ${addressParts.length > 0 ? `<span class="header-meta-item">${addressParts.join(", ")}</span>` : ""}
+            ${contact?.email ? `<span class="header-meta-item">${contact.email}</span>` : ""}
+            ${contact?.phone ? `<span class="header-meta-item">${contact.phone}</span>` : ""}
+            ${formattedDob ? `<span class="header-meta-item">${formattedDob}</span>` : ""}
+            ${linkedinUrl ? `<span class="header-meta-item"><a href="${href(linkedinUrl)}" target="_blank">LinkedIn</a></span>` : ""}
+            ${githubUrl ? `<span class="header-meta-item"><a href="${href(githubUrl)}" target="_blank">GitHub</a></span>` : ""}
+            ${portfolioUrl ? `<span class="header-meta-item"><a href="${href(portfolioUrl)}" target="_blank">Portfolio</a></span>` : ""}
+          </div>
+        </div>`;
+
+
+        const sectionBuilders: Record<SectionKey, () => string> = {
     summary: () => summary ? `
       <div class="section-block" data-block-id="t12-summary">
         <div class="section-title">Profile</div>
@@ -6476,20 +6513,48 @@ const TemplateTwelve: React.FC<TemplateTwelveProps> = ({ alldata, customization 
     ` : "",
 
     skills: () => {
-      const skillsClean = rich(skills || "");
-      if (!skillsClean || skillsClean === "<p><br></p>") return "";
-      return `
-        <div class="section-block" data-block-id="t12-skills-section">
-          <div class="section-title">Skills</div>
-          <div class="skills-wrapper">
-            <div class="skills-left"></div>
-            <div class="skills-right">
-              <div class="skills-content" data-block-id="t12-skills-content">${skillsClean}</div>
-            </div>
+  const skillsClean = rich(skills || "");
+  if (!skillsClean || skillsClean === "<p><br></p>") return "";
+
+  if (forPDF && skillsCutIndex >= 0) {
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = skillsClean;
+    const allLis = Array.from(tempDiv.querySelectorAll("li"));
+    if (skillsCutIndex < allLis.length) {
+      const beforeLis = allLis.slice(0, skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
+      const afterLis = allLis.slice(skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
+      return `<div class="section-block" data-block-id="t12-skills-section">
+        <div class="section-title">Skills</div>
+        <div class="skills-wrapper">
+          <div class="skills-left"></div>
+          <div class="skills-right">
+            <div class="skills-content"><ul>${beforeLis}</ul></div>
           </div>
         </div>
-      `;
-    },
+      </div>
+      <div class="t12-page-break"></div>
+      <div class="section-block" data-block-id="t12-skills-section-continued">
+        <div class="section-title">Skills (continued)</div>
+        <div class="skills-wrapper">
+          <div class="skills-left"></div>
+          <div class="skills-right">
+            <div class="skills-content"><ul>${afterLis}</ul></div>
+          </div>
+        </div>
+      </div>`;
+    }
+  }
+
+  return `<div class="section-block" data-block-id="t12-skills-section">
+    <div class="section-title">Skills</div>
+    <div class="skills-wrapper">
+      <div class="skills-left"></div>
+      <div class="skills-right">
+        <div class="skills-content" data-block-id="t12-skills-content">${skillsClean}</div>
+      </div>
+    </div>
+  </div>`;
+},
 
     custom: () => {
       if (!Array.isArray(finalize?.customSection)) return "";
@@ -6514,39 +6579,6 @@ const TemplateTwelve: React.FC<TemplateTwelveProps> = ({ alldata, customization 
       `;
     },
   };
-
-  // ── HTML builder with section ordering ───────────────────────────────────
-  const generateHTML = useCallback(
-    (forPDF = false, pageBreakIds: string[] = []): string => {
-      const formattedDob = formatDateOfBirth(dateOfBirth || "");
-      const displayFontImport = "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap";
-
-      const fontPreloads = activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif" 
-        ? `<link href="${getFontImport(activeFontFamily)}" rel="stylesheet"/>`
-        : '';
-
-      // Header
-      const header = `
-        <div class="header-block" data-block-id="t12-header">
-          <div class="header-name">${contact?.firstName || ""} ${contact?.lastName || ""}</div>
-          <div class="header-jobtitle">${
-            contact?.jobTitle
-              ? typeof contact.jobTitle === "string"
-                ? contact.jobTitle
-                : (contact.jobTitle as any)?.name || ""
-              : ""
-          }</div>
-          <div class="header-divider"></div>
-          <div class="header-meta-row">
-            ${addressParts.length > 0 ? `<span class="header-meta-item">${addressParts.join(", ")}</span>` : ""}
-            ${contact?.email ? `<span class="header-meta-item">${contact.email}</span>` : ""}
-            ${contact?.phone ? `<span class="header-meta-item">${contact.phone}</span>` : ""}
-            ${formattedDob ? `<span class="header-meta-item">${formattedDob}</span>` : ""}
-            ${linkedinUrl ? `<span class="header-meta-item"><a href="${href(linkedinUrl)}" target="_blank">LinkedIn</a></span>` : ""}
-            ${githubUrl ? `<span class="header-meta-item"><a href="${href(githubUrl)}" target="_blank">GitHub</a></span>` : ""}
-            ${portfolioUrl ? `<span class="header-meta-item"><a href="${href(portfolioUrl)}" target="_blank">Portfolio</a></span>` : ""}
-          </div>
-        </div>`;
 
       // Build sections in the order defined by customization
       const sectionsHTML = activeSectionOrder
@@ -6616,7 +6648,6 @@ const TemplateTwelve: React.FC<TemplateTwelveProps> = ({ alldata, customization 
       githubUrl,
       dateOfBirth,
       CSS,
-      sectionBuilders,
     ],
   );
 
@@ -6699,13 +6730,12 @@ const TemplateTwelve: React.FC<TemplateTwelveProps> = ({ alldata, customization 
           interface Block { top: number; bottom: number; id?: string; }
           const blocks: Block[] = [];
 
-          const ITEM_SELECTORS = [
-            ".entry-block",
-            ".custom-wrapper",
-            ".header-block",
-            ".skills-wrapper",
-            ".section-block",
-          ].join(", ");
+          // AFTER
+const ITEM_SELECTORS = [
+  ".entry-block",
+  ".custom-wrapper",
+  ".header-block",
+].join(", ");
 
           resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
             const top = getRelTop(el);
@@ -6726,15 +6756,19 @@ const TemplateTwelve: React.FC<TemplateTwelveProps> = ({ alldata, customization 
               }
               sib = sib.nextElementSibling as HTMLElement | null;
             }
-            if (firstItem) {
-              const deepChild = firstItem.querySelector<HTMLElement>(".entry-block, .custom-wrapper, .skills-wrapper");
-              const anchor = deepChild || firstItem;
-              const anchorBottom = getRelBottom(anchor);
-              if (anchorBottom - titleTop > 8) {
-                const sectionId = (title.parentElement as HTMLElement)?.dataset?.blockId;
-                blocks.push({ top: titleTop, bottom: anchorBottom, id: sectionId });
-              }
-            }
+            // AFTER
+if (firstItem) {
+  // Skip anchor logic for skills — allow it to split across pages
+  if (firstItem.classList.contains("skills-wrapper")) return;
+
+  const deepChild = firstItem.querySelector<HTMLElement>(".entry-block, .custom-wrapper");
+  const anchor = deepChild || firstItem;
+  const anchorBottom = getRelBottom(anchor);
+  if (anchorBottom - titleTop > 8) {
+    const sectionId = (title.parentElement as HTMLElement)?.dataset?.blockId;
+    blocks.push({ top: titleTop, bottom: anchorBottom, id: sectionId });
+  }
+}
           });
 
           blocks.sort((a, b) => a.top - b.top);
@@ -6767,8 +6801,61 @@ const TemplateTwelve: React.FC<TemplateTwelveProps> = ({ alldata, customization 
             if (cutBlockId) pageBreakIds.push(cutBlockId);
           }
 
-          document.body.removeChild(iframe);
-          (window as any).__resumePageBreakIds = pageBreakIds;
+         const skillsLis = Array.from(resume.querySelectorAll<HTMLElement>(".skills-content li"));
+skillsLis.forEach((li) => {
+  const top = getRelTop(li);
+  const bottom = getRelBottom(li);
+  if (bottom - top > 2) blocks.push({ top, bottom });
+});
+
+blocks.sort((a, b) => a.top - b.top);
+pageStarts.length = 1;
+pageBreakIds.length = 0;
+
+while (pageStarts.length < MAX_PAGES) {
+  const currentStart = pageStarts[pageStarts.length - 1];
+  const naiveCut = currentStart + PAGE_CONTENT_H;
+  if (naiveCut >= totalH) break;
+
+  let actualCut = naiveCut;
+  let cutBlockId: string | undefined;
+
+  for (const block of blocks) {
+    if (block.top >= naiveCut) break;
+    if (block.bottom <= currentStart) continue;
+    if (block.top >= currentStart && block.bottom > naiveCut) {
+      if (block.top < actualCut) {
+        actualCut = block.top;
+        cutBlockId = block.id;
+      }
+    }
+  }
+
+  if (actualCut <= currentStart) actualCut = naiveCut;
+  pageStarts.push(actualCut);
+  if (cutBlockId) pageBreakIds.push(cutBlockId);
+}
+
+(window as any).__resumeSkillsCutIndex = -1;
+for (let p = 0; p < pageStarts.length - 1; p++) {
+  const cutY = pageStarts[p + 1];
+  for (let li = 0; li < skillsLis.length; li++) {
+    const liTop = getRelTop(skillsLis[li]);
+    const liBottom = getRelBottom(skillsLis[li]);
+    if (liTop < cutY && liBottom > cutY) {
+      (window as any).__resumeSkillsCutIndex = li;
+      break;
+    }
+    if (liTop >= cutY) {
+      (window as any).__resumeSkillsCutIndex = li;
+      break;
+    }
+  }
+  if ((window as any).__resumeSkillsCutIndex >= 0) break;
+}
+
+document.body.removeChild(iframe);
+(window as any).__resumePageBreakIds = pageBreakIds;
 
           const pageHtmls: string[] = [];
 
@@ -6859,8 +6946,15 @@ const TemplateTwelve: React.FC<TemplateTwelveProps> = ({ alldata, customization 
   // ── PDF download ─────────────────────────────────────────────────────────
   const handleDownload = async (): Promise<void> => {
     try {
-      const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
-      const pdfHtml = generateHTML(true, pageBreakIds);
+      // const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
+      // const pdfHtml = generateHTML(true, pageBreakIds);
+
+      // AFTER
+const pageBreakIds: string[] = ((window as any).__resumePageBreakIds || []).filter(
+  (id: string) => id !== "t12-skills-section"
+);
+const skillsCutIndex: number = (window as any).__resumeSkillsCutIndex ?? -1;
+const pdfHtml = generateHTML(true, pageBreakIds, skillsCutIndex);
 
       const res: AxiosResponse<Blob> = await api.post(
         `${API_URL}/candidates/generate-pdf`,
@@ -6885,7 +6979,7 @@ const TemplateTwelve: React.FC<TemplateTwelveProps> = ({ alldata, customization 
   // ── RENDER ───────────────────────────────────────────────────────────────
   return (
     <>
-      {lastSegment === "download-resume" && (
+      {/* {lastSegment === "download-resume" && ( */}
         <div className="text-center my-5">
           <motion.button
             onClick={handleDownload}
@@ -6896,7 +6990,7 @@ const TemplateTwelve: React.FC<TemplateTwelveProps> = ({ alldata, customization 
             Download Resume
           </motion.button>
         </div>
-      )}
+      {/* )} */}
 
       {alldata ? (
         <div

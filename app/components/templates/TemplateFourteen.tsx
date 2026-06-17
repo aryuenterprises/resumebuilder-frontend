@@ -6040,7 +6040,37 @@ const TemplateFourteen: React.FC<TemplateFourteenProps> = ({ alldata, customizat
      </div>`;
 
   // ── Section builders ──────────────────────────────────────────────────────
-  const sectionBuilders: Record<SectionKey, () => string> = {
+  
+
+  // ── HTML builder with section ordering ───────────────────────────────────
+// AFTER
+const generateHTML = useCallback(
+  (forPDF = false, pageBreakIds: string[] = [], skillsCutIndex = -1): string => {
+      const formattedDob = formatDateOfBirth(dateOfBirth || "");
+      const displayFontImport = "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&display=swap";
+
+      const fontPreloads = activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif"
+        ? `<link href="${getFontImport(activeFontFamily)}" rel="stylesheet"/>`
+        : "";
+
+      // Header
+      const header = `
+        <div class="header-block">
+          <div class="header-name">${contact?.firstName || ""} ${contact?.lastName || ""}</div>
+          <div class="header-jobtitle">${contact?.jobTitle ? (typeof contact.jobTitle === "string" ? contact.jobTitle : (contact.jobTitle as any)?.name || "") : ""}</div>
+          <div class="header-meta-grid">
+            ${addressParts.length > 0 ? `<span class="header-meta-item">${addressParts.join(", ")}</span>` : ""}
+            ${contact?.email ? `<span class="header-meta-item">${contact.email}</span>` : ""}
+            ${contact?.phone ? `<span class="header-meta-item">${contact.phone}</span>` : ""}
+            ${formattedDob ? `<span class="header-meta-item">${formattedDob}</span>` : ""}
+            ${linkedinUrl ? `<span class="header-meta-item"><a href="${href(linkedinUrl)}" target="_blank">LinkedIn</a></span>` : ""}
+            ${githubUrl ? `<span class="header-meta-item"><a href="${href(githubUrl)}" target="_blank">GitHub</a></span>` : ""}
+            ${portfolioUrl ? `<span class="header-meta-item"><a href="${href(portfolioUrl)}" target="_blank">Portfolio</a></span>` : ""}
+          </div>
+        </div>`;
+
+
+        const sectionBuilders: Record<SectionKey, () => string> = {
     summary: () => summary ? `
       <div class="section-block" data-block-id="t14-summary">
         ${sectionHeaderHTML("Profile")}
@@ -6117,16 +6147,34 @@ const TemplateFourteen: React.FC<TemplateFourteenProps> = ({ alldata, customizat
       </div>
     ` : "",
 
-    skills: () => {
-      const skillsClean = rich(skills || "");
-      if (!skillsClean || skillsClean === "<p><br></p>") return "";
-      return `
-        <div class="section-block" data-block-id="t14-skills-section">
-          ${sectionHeaderHTML("Skills")}
-          <div class="skills-content" data-block-id="t14-skills-content">${skillsClean}</div>
-        </div>
-      `;
-    },
+   skills: () => {
+  const skillsClean = rich(skills || "");
+  if (!skillsClean || skillsClean === "<p><br></p>") return "";
+
+  if (forPDF && skillsCutIndex >= 0) {
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = skillsClean;
+    const allLis = Array.from(tempDiv.querySelectorAll("li"));
+    if (skillsCutIndex < allLis.length) {
+      const beforeLis = allLis.slice(0, skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
+      const afterLis = allLis.slice(skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
+      return `<div class="section-block" data-block-id="t14-skills-section">
+        ${sectionHeaderHTML("Skills")}
+        <div class="skills-content"><ul>${beforeLis}</ul></div>
+      </div>
+      <div class="t14-page-break"></div>
+      <div class="section-block" data-block-id="t14-skills-section-continued">
+        ${sectionHeaderHTML("Skills (continued)")}
+        <div class="skills-content"><ul>${afterLis}</ul></div>
+      </div>`;
+    }
+  }
+
+  return `<div class="section-block" data-block-id="t14-skills-section">
+    ${sectionHeaderHTML("Skills")}
+    <div class="skills-content" data-block-id="t14-skills-content">${skillsClean}</div>
+  </div>`;
+},
 
     custom: () => {
       if (!Array.isArray(finalize?.customSection)) return "";
@@ -6146,32 +6194,6 @@ const TemplateFourteen: React.FC<TemplateFourteenProps> = ({ alldata, customizat
       `;
     },
   };
-
-  // ── HTML builder with section ordering ───────────────────────────────────
-  const generateHTML = useCallback(
-    (forPDF = false, pageBreakIds: string[] = []): string => {
-      const formattedDob = formatDateOfBirth(dateOfBirth || "");
-      const displayFontImport = "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&display=swap";
-
-      const fontPreloads = activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif"
-        ? `<link href="${getFontImport(activeFontFamily)}" rel="stylesheet"/>`
-        : "";
-
-      // Header
-      const header = `
-        <div class="header-block">
-          <div class="header-name">${contact?.firstName || ""} ${contact?.lastName || ""}</div>
-          <div class="header-jobtitle">${contact?.jobTitle ? (typeof contact.jobTitle === "string" ? contact.jobTitle : (contact.jobTitle as any)?.name || "") : ""}</div>
-          <div class="header-meta-grid">
-            ${addressParts.length > 0 ? `<span class="header-meta-item">${addressParts.join(", ")}</span>` : ""}
-            ${contact?.email ? `<span class="header-meta-item">${contact.email}</span>` : ""}
-            ${contact?.phone ? `<span class="header-meta-item">${contact.phone}</span>` : ""}
-            ${formattedDob ? `<span class="header-meta-item">${formattedDob}</span>` : ""}
-            ${linkedinUrl ? `<span class="header-meta-item"><a href="${href(linkedinUrl)}" target="_blank">LinkedIn</a></span>` : ""}
-            ${githubUrl ? `<span class="header-meta-item"><a href="${href(githubUrl)}" target="_blank">GitHub</a></span>` : ""}
-            ${portfolioUrl ? `<span class="header-meta-item"><a href="${href(portfolioUrl)}" target="_blank">Portfolio</a></span>` : ""}
-          </div>
-        </div>`;
 
       // Build sections in the order defined by customization
       const sectionsHTML = activeSectionOrder
@@ -6241,7 +6263,7 @@ const TemplateFourteen: React.FC<TemplateFourteenProps> = ({ alldata, customizat
       githubUrl,
       dateOfBirth,
       CSS,
-      sectionBuilders,
+
     ],
   );
 
@@ -6305,24 +6327,30 @@ const TemplateFourteen: React.FC<TemplateFourteenProps> = ({ alldata, customizat
           if (headerEl)
             blocks.push({ top: getRelTop(headerEl), bottom: getRelBottom(headerEl) });
 
-          resume.querySelectorAll<HTMLElement>(".entry-block, .skills-content").forEach((el) => {
-            const top = getRelTop(el), bottom = getRelBottom(el);
-            if (bottom - top > 8) blocks.push({ top, bottom, id: el.dataset.blockId });
-          });
+         // AFTER
+resume.querySelectorAll<HTMLElement>(".entry-block").forEach((el) => {
+  const top = getRelTop(el), bottom = getRelBottom(el);
+  if (bottom - top > 8) blocks.push({ top, bottom, id: el.dataset.blockId });
+});
 
-          resume.querySelectorAll<HTMLElement>(".section-block").forEach((section) => {
-            const sectionTop = getRelTop(section);
-            const firstItem = section.querySelector<HTMLElement>(".entry-block, .skills-content");
-            if (firstItem) {
-              const anchorBottom = getRelBottom(firstItem);
-              if (anchorBottom - sectionTop > 8)
-                blocks.push({ top: sectionTop, bottom: anchorBottom, id: section.dataset.blockId });
-            } else {
-              const sectionBottom = getRelBottom(section);
-              if (sectionBottom - sectionTop > 8)
-                blocks.push({ top: sectionTop, bottom: sectionBottom, id: section.dataset.blockId });
-            }
-          });
+          // AFTER
+resume.querySelectorAll<HTMLElement>(".section-block").forEach((section) => {
+  const sectionTop = getRelTop(section);
+  const firstItem = section.querySelector<HTMLElement>(".entry-block, .skills-content");
+
+  // Skip atomic treatment for skills — allow it to split across pages
+  if (firstItem?.classList.contains("skills-content")) return;
+
+  if (firstItem) {
+    const anchorBottom = getRelBottom(firstItem);
+    if (anchorBottom - sectionTop > 8)
+      blocks.push({ top: sectionTop, bottom: anchorBottom, id: section.dataset.blockId });
+  } else {
+    const sectionBottom = getRelBottom(section);
+    if (sectionBottom - sectionTop > 8)
+      blocks.push({ top: sectionTop, bottom: sectionBottom, id: section.dataset.blockId });
+  }
+});
 
           blocks.sort((a, b) => a.top - b.top);
 
@@ -6350,8 +6378,58 @@ const TemplateFourteen: React.FC<TemplateFourteenProps> = ({ alldata, customizat
             if (cutBlockId) pageBreakIds.push(cutBlockId);
           }
 
-          document.body.removeChild(iframe);
-          (window as any).__resumePageBreakIds = pageBreakIds;
+        const skillsLis = Array.from(resume.querySelectorAll<HTMLElement>(".skills-content li"));
+skillsLis.forEach((li) => {
+  const top = getRelTop(li);
+  const bottom = getRelBottom(li);
+  if (bottom - top > 2) blocks.push({ top, bottom });
+});
+
+blocks.sort((a, b) => a.top - b.top);
+pageStarts.length = 1;
+pageBreakIds.length = 0;
+
+while (pageStarts.length < 20) {
+  const currentStart = pageStarts[pageStarts.length - 1];
+  const naiveCut = currentStart + PAGE_CONTENT_H;
+  if (naiveCut >= totalH) break;
+
+  let actualCut = naiveCut, cutBlockId: string | undefined;
+
+  for (const block of blocks) {
+    if (block.top >= naiveCut) break;
+    if (block.bottom <= currentStart) continue;
+    if (block.top >= currentStart && block.bottom > naiveCut && block.top < actualCut) {
+      actualCut = block.top;
+      cutBlockId = block.id;
+    }
+  }
+
+  if (actualCut <= currentStart) actualCut = naiveCut;
+  pageStarts.push(actualCut);
+  if (cutBlockId) pageBreakIds.push(cutBlockId);
+}
+
+(window as any).__resumeSkillsCutIndex = -1;
+for (let p = 0; p < pageStarts.length - 1; p++) {
+  const cutY = pageStarts[p + 1];
+  for (let li = 0; li < skillsLis.length; li++) {
+    const liTop = getRelTop(skillsLis[li]);
+    const liBottom = getRelBottom(skillsLis[li]);
+    if (liTop < cutY && liBottom > cutY) {
+      (window as any).__resumeSkillsCutIndex = li;
+      break;
+    }
+    if (liTop >= cutY) {
+      (window as any).__resumeSkillsCutIndex = li;
+      break;
+    }
+  }
+  if ((window as any).__resumeSkillsCutIndex >= 0) break;
+}
+
+document.body.removeChild(iframe);
+(window as any).__resumePageBreakIds = pageBreakIds;
 
           const pageHtmls: string[] = [];
 
@@ -6414,8 +6492,15 @@ const TemplateFourteen: React.FC<TemplateFourteenProps> = ({ alldata, customizat
 
   const handleDownload = async (): Promise<void> => {
     try {
-      const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
-      const pdfHtml = generateHTML(true, pageBreakIds);
+      // const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
+      // const pdfHtml = generateHTML(true, pageBreakIds);
+
+      // AFTER
+const pageBreakIds: string[] = ((window as any).__resumePageBreakIds || []).filter(
+  (id: string) => id !== "t14-skills-section"
+);
+const skillsCutIndex: number = (window as any).__resumeSkillsCutIndex ?? -1;
+const pdfHtml = generateHTML(true, pageBreakIds, skillsCutIndex);
 
       const res: AxiosResponse<Blob> = await api.post(
         `${API_URL}/candidates/generate-pdf`,

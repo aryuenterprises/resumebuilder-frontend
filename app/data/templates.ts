@@ -84,7 +84,7 @@ export const templateData: Template[] = [
   {
     id: 7,
     style: "Modern Executive",
-    image: "/images/resume7.png",
+    image: "/images/resume7.jpg",
     description: "Bold name header with inline contact details.",
     temp: "paid",
     component: TemplateSeven,
@@ -92,7 +92,7 @@ export const templateData: Template[] = [
   {
     id: 8,
     style:"Clean Corporate",
-    image: "/images/resume8.png",
+    image: "/images/resume8.jpg",
     description: "Neat one-column format with bold section headers.",
     temp: "paid",
     component: TemplateEight,
@@ -100,7 +100,7 @@ export const templateData: Template[] = [
    {
     id: 9,
     style: "Black & White",
-    image: "/images/resume9.png",
+    image: "/images/resume9.jpg",
     description: "Minimalist monochrome layout with clean structured sections.",
     temp: "paid",
     component: TemplateNine,
@@ -108,7 +108,7 @@ export const templateData: Template[] = [
    {
     id: 10,
     style: "High Contrast Black",
-    image: "/images/resume10.png",
+    image: "/images/resume10.jpg",
     description: "Dark-friendly design with bold all-caps section titles.",
     temp: "paid",
     component: TemplateTen,
@@ -116,7 +116,7 @@ export const templateData: Template[] = [
    {
     id: 11,
     style: "Bold Minimalist",
-    image: "/images/resume11.png",
+    image: "/images/resume11.jpg",
     description: "Clean layout with bold accents.",
     temp: "paid",
     component: TemplateEleven,

@@ -11975,7 +11975,7 @@ const TemplateEight: React.FC<TemplateEightProps> = ({
     .t8-resume .summary-text { font-size: 13.5px; line-height: 1.75; color: #222; }
 
     .t8-resume .entry-block {
-      margin-bottom: 16px; padding-bottom: 14px;
+      margin-bottom: 16px; 
       border-bottom: 1px solid #e8e8e8;
       page-break-inside: avoid; break-inside: avoid;
     }
