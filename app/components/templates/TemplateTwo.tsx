@@ -6316,8 +6316,9 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({ alldata, customization }) => 
 // (forPDF = false, pageBreakIds: string[] = [], skillsCutIndex = -1): string => {
 
 
-  const generateHTML = useCallback(
-(forPDF = false, pageBreakIds: string[] = []): string => {
+const generateHTML = useCallback(
+(forPDF = false): string => {
+
       const CSS = buildCSS(activeFontFamily);
       
       const fontPreloads = activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif" 
@@ -6478,23 +6479,23 @@ skills: () => {
       let leftCol = orderedLeft;
       let rightCol = orderedRight;
 
-      if (forPDF && pageBreakIds.length > 0) {
-        const injectBreaks = (html: string): string => {
-          const tempDiv = document.createElement("div");
-          tempDiv.innerHTML = html;
-          pageBreakIds.forEach((id) => {
-            const el = tempDiv.querySelector(`[data-block-id="${id}"]`);
-            if (el) {
-              const breakDiv = document.createElement("div");
-              breakDiv.className = "t2-page-break";
-              el.parentNode?.insertBefore(breakDiv, el);
-            }
-          });
-          return tempDiv.innerHTML;
-        };
-        leftCol = injectBreaks(leftCol);
-        rightCol = injectBreaks(rightCol);
-      }
+      // if (forPDF && pageBreakIds.length > 0) {
+      //   const injectBreaks = (html: string): string => {
+      //     const tempDiv = document.createElement("div");
+      //     tempDiv.innerHTML = html;
+      //     pageBreakIds.forEach((id) => {
+      //       const el = tempDiv.querySelector(`[data-block-id="${id}"]`);
+      //       if (el) {
+      //         const breakDiv = document.createElement("div");
+      //         breakDiv.className = "t2-page-break";
+      //         el.parentNode?.insertBefore(breakDiv, el);
+      //       }
+      //     });
+      //     return tempDiv.innerHTML;
+      //   };
+      //   leftCol = injectBreaks(leftCol);
+      //   rightCol = injectBreaks(rightCol);
+      // }
 
       return `<!DOCTYPE html>
 <html lang="en">
@@ -6858,18 +6859,18 @@ for (let i = 0; i < pageStarts.length; i++) {
 //   { responseType: "blob" },
 // );
 
-const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
-const res: AxiosResponse<Blob> = await api.post(
+// const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
+// const res: AxiosResponse<Blob> = await api.post(
+//   `${API_URL}/candidates/generate-pdf`,
+//   { html: generateHTML(true, pageBreakIds) },
+//   { responseType: "blob" },
+// );
+     
+      const res: AxiosResponse<Blob> = await api.post(
   `${API_URL}/candidates/generate-pdf`,
-  { html: generateHTML(true, pageBreakIds) },
+  { html: generateHTML(true) },
   { responseType: "blob" },
 );
-     
-      // const res: AxiosResponse<Blob> = await axios.post(
-      //   `${API_URL}/api/candidates/generate-pdf`,
-      //   { html: generateHTML(true, pageBreakIds) },
-      //   { responseType: "blob" },
-      // );
       const url = URL.createObjectURL(res.data);
       const a = document.createElement("a");
       a.href = url;
