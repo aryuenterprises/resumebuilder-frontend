@@ -3571,15 +3571,6 @@
 
 // export default Page;
 
-
-
-
-
-
-
-
-
-
 "use client";
 import React, {
   useState,
@@ -4632,27 +4623,27 @@ const Page = () => {
   // }, [userPlan, isTemplateAccessible, applyTemplate]);
 
   // ── Load initial template ──────────────────────────────────────────
-useEffect(() => {
-  if (!userPlan) return;
+  useEffect(() => {
+    if (!userPlan) return;
 
-  const saved = getLocalStorage<Template>("chosenTemplate");
-  let found = templateData.find(
-    (r) => r.id == saved?.id || r.id == (saved as any)?.templateId,
-  );
-
-  // If we have a saved template, use it for preview even if not accessible
-  // But we'll show upgrade prompts in the UI
-  if (found) {
-    applyTemplate(found);
-  } else {
-    // Only fallback to first accessible if no saved template exists
-    const accessibleTemplates = templateData.filter((t) =>
-      isTemplateAccessible(t.id),
+    const saved = getLocalStorage<Template>("chosenTemplate");
+    let found = templateData.find(
+      (r) => r.id == saved?.id || r.id == (saved as any)?.templateId,
     );
-    found = accessibleTemplates[0] || templateData[0];
-    if (found) applyTemplate(found);
-  }
-}, [userPlan, isTemplateAccessible, applyTemplate]);
+
+    // If we have a saved template, use it for preview even if not accessible
+    // But we'll show upgrade prompts in the UI
+    if (found) {
+      applyTemplate(found);
+    } else {
+      // Only fallback to first accessible if no saved template exists
+      const accessibleTemplates = templateData.filter((t) =>
+        isTemplateAccessible(t.id),
+      );
+      found = accessibleTemplates[0] || templateData[0];
+      if (found) applyTemplate(found);
+    }
+  }, [userPlan, isTemplateAccessible, applyTemplate]);
 
   // ── Responsive scale ───────────────────────────────────────────────
   useEffect(() => {

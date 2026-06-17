@@ -6312,8 +6312,12 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({ alldata, customization }) => 
   };
 
   // ── HTML builder with proper section ordering ─────────────────────────────
+  // const generateHTML = useCallback(
+// (forPDF = false, pageBreakIds: string[] = [], skillsCutIndex = -1): string => {
+
+
   const generateHTML = useCallback(
-(forPDF = false, pageBreakIds: string[] = [], skillsCutIndex = -1): string => {
+(forPDF = false, pageBreakIds: string[] = []): string => {
       const CSS = buildCSS(activeFontFamily);
       
       const fontPreloads = activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif" 
@@ -6355,26 +6359,36 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({ alldata, customization }) => 
         </div>` : "",
 
       
+// skills: () => {
+//   const skillsClean = rich(skills || "");
+//   if (!skillsClean) return "";
+
+//   if (forPDF && skillsCutIndex >= 0) {
+//     const tempDiv = document.createElement("div");
+//     tempDiv.innerHTML = skillsClean;
+//     const allLis = Array.from(tempDiv.querySelectorAll("li"));
+//     if (skillsCutIndex < allLis.length) {
+//       const beforeLis = allLis.slice(0, skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
+//       const afterLis = allLis.slice(skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
+//       return `<div class="skills-block" data-block-id="skills-section">
+//         <div class="section-title">Skills</div>
+//         <div class="skills-content"><ul>${beforeLis}</ul></div>
+//         <div class="t2-page-break"></div>
+//         <div class="skills-content"><ul>${afterLis}</ul></div>
+//       </div>`;
+//     }
+//   }
+
+//   return `<div class="skills-block" data-block-id="skills-section">
+//     <div class="section-title">Skills</div>
+//     <div class="skills-content" data-block-id="skills-content">${skillsClean}</div>
+//   </div>`;
+// },
+
+
 skills: () => {
   const skillsClean = rich(skills || "");
   if (!skillsClean) return "";
-
-  if (forPDF && skillsCutIndex >= 0) {
-    const tempDiv = document.createElement("div");
-    tempDiv.innerHTML = skillsClean;
-    const allLis = Array.from(tempDiv.querySelectorAll("li"));
-    if (skillsCutIndex < allLis.length) {
-      const beforeLis = allLis.slice(0, skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
-      const afterLis = allLis.slice(skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
-      return `<div class="skills-block" data-block-id="skills-section">
-        <div class="section-title">Skills</div>
-        <div class="skills-content"><ul>${beforeLis}</ul></div>
-        <div class="t2-page-break"></div>
-        <div class="skills-content"><ul>${afterLis}</ul></div>
-      </div>`;
-    }
-  }
-
   return `<div class="skills-block" data-block-id="skills-section">
     <div class="section-title">Skills</div>
     <div class="skills-content" data-block-id="skills-content">${skillsClean}</div>
@@ -6527,26 +6541,27 @@ skills: () => {
   // ── Page splitter ─────────────────────────────────────────────────────────
   const CSS_FOR_MEASURE = buildCSS(activeFontFamily);
 
-  const splitIntoPages = useCallback(
-    (fullHtml: string): Promise<string[]> => {
-      return new Promise((resolve) => {
-        const parser = new DOMParser();
-        const parsed = parser.parseFromString(fullHtml, "text/html");
-        const resumeEl = parsed.querySelector<HTMLElement>(".t2-resume");
-        if (!resumeEl) { resolve([fullHtml]); return; }
-        const resumeSnapshot = resumeEl.outerHTML;
+  // REPLACE the entire splitIntoPages useCallback with this:
+const splitIntoPages = useCallback(
+  (fullHtml: string): Promise<string[]> => {
+    return new Promise((resolve) => {
+      const parser = new DOMParser();
+      const parsed = parser.parseFromString(fullHtml, "text/html");
+      const resumeEl = parsed.querySelector<HTMLElement>(".t2-resume");
+      if (!resumeEl) { resolve([fullHtml]); return; }
+      const resumeSnapshot = resumeEl.outerHTML;
 
-        const iframe = document.createElement("iframe");
-        iframe.style.cssText = [
-          "position:fixed", "top:0", "left:-9999px",
-          `width:${A4_W}px`, "height:10000px", "border:none",
-          "opacity:0", "pointer-events:none", "z-index:-1",
-        ].join(";");
-        document.body.appendChild(iframe);
+      const iframe = document.createElement("iframe");
+      iframe.style.cssText = [
+        "position:fixed", "top:0", "left:-9999px",
+        `width:${A4_W}px`, "height:10000px", "border:none",
+        "opacity:0", "pointer-events:none", "z-index:-1",
+      ].join(";");
+      document.body.appendChild(iframe);
 
-        const measureDoc = iframe.contentDocument!;
-        measureDoc.open();
-        measureDoc.write(`<!DOCTYPE html>
+      const measureDoc = iframe.contentDocument!;
+      measureDoc.open();
+      measureDoc.write(`<!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8"/>
@@ -6568,162 +6583,164 @@ skills: () => {
 </head>
 <body>${resumeSnapshot}</body>
 </html>`);
-        measureDoc.close();
+      measureDoc.close();
 
-        const doMeasure = () => {
-          const resume = measureDoc.querySelector<HTMLElement>(".t2-resume");
-          if (!resume) {
-            document.body.removeChild(iframe);
-            resolve([fullHtml]);
-            return;
-          }
+      // REPLACE everything inside doMeasure() from the "const resumeRect..." line
+// down to "resolve(pageHtmls);" with this:
 
-          measureDoc.documentElement.style.cssText = "height:auto!important;overflow:visible!important;";
-          measureDoc.body.style.cssText = "margin:0;padding:0;height:auto!important;overflow:visible!important;";
-          void resume.offsetHeight;
-
-          const totalH = resume.scrollHeight;
-          const resumeRect = resume.getBoundingClientRect();
-          const scrollY = measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
-
-          const getRelTop = (el: HTMLElement): number => {
-            const r = el.getBoundingClientRect();
-            return r.top - resumeRect.top + scrollY;
-          };
-          const getRelBottom = (el: HTMLElement): number => getRelTop(el) + el.getBoundingClientRect().height;
-
-          interface Block { top: number; bottom: number; id?: string; }
-          const blocks: Block[] = [];
-
-          const ITEM_SELECTORS = [".entry-block", ".summary-block",  ".custom-section-block"].join(", ");
-
-          resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
-            const top = getRelTop(el);
-            const bottom = getRelBottom(el);
-            if (bottom - top > 8) blocks.push({ top, bottom, id: el.dataset.blockId });
-          });
-
-          resume.querySelectorAll<HTMLElement>(".section-title").forEach((title) => {
-            const titleTop = getRelTop(title);
-            let firstItem: HTMLElement | null = null;
-            let sib = title.nextElementSibling as HTMLElement | null;
-            while (sib) {
-              if (sib.getBoundingClientRect().height > 8) { firstItem = sib; break; }
-              sib = sib.nextElementSibling as HTMLElement | null;
-            }
-           // AFTER
-if (firstItem) {
-  // Skip anchor logic for skills — allow it to split across pages
-  if (firstItem.classList.contains("skills-content")) return;
-
-  const deepChild = firstItem.querySelector<HTMLElement>(".entry-block, .custom-section-block");
-  const anchor = deepChild || firstItem;
-  const anchorBottom = getRelBottom(anchor);
-  if (anchorBottom - titleTop > 8) {
-    const sectionId = (title.parentElement as HTMLElement)?.dataset?.blockId;
-    blocks.push({ top: titleTop, bottom: anchorBottom, id: sectionId });
+const doMeasure = () => {
+  const resume = measureDoc.querySelector<HTMLElement>(".t2-resume");
+  if (!resume) {
+    document.body.removeChild(iframe);
+    resolve([fullHtml]);
+    return;
   }
-}
-          });
 
-          blocks.sort((a, b) => a.top - b.top);
+  measureDoc.documentElement.style.cssText = "height:auto!important;overflow:visible!important;";
+  measureDoc.body.style.cssText = "margin:0;padding:0;height:auto!important;overflow:visible!important;";
+  void resume.offsetHeight;
 
-          const pageStarts: number[] = [0];
-          const pageBreakIds: string[] = [];
-          const MAX_PAGES = 20;
+  // Use the full resume scrollHeight as totalH — most reliable
+  const totalH = resume.scrollHeight;
 
-          while (pageStarts.length < MAX_PAGES) {
-            const currentStart = pageStarts[pageStarts.length - 1];
-            const naiveCut = currentStart + PAGE_CONTENT_H;
-            if (naiveCut >= totalH) break;
+  // All positions relative to top of .t2-resume
+  const resumeTop = resume.getBoundingClientRect().top +
+    (measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop);
 
-            let actualCut = naiveCut;
-            let cutBlockId: string | undefined;
+  const getRelTop = (el: HTMLElement): number => {
+    const r = el.getBoundingClientRect();
+    const docScrollY = measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
+    return r.top + docScrollY - resumeTop;
+  };
+  const getRelBottom = (el: HTMLElement): number =>
+    getRelTop(el) + el.getBoundingClientRect().height;
 
-            for (const block of blocks) {
-              if (block.top >= naiveCut) break;
-              if (block.bottom <= currentStart) continue;
-              if (block.top >= currentStart && block.bottom > naiveCut) {
-                if (block.top < actualCut) {
-                  actualCut = block.top;
-                  cutBlockId = block.id;
-                }
-              }
-            }
+  const leftCol = resume.querySelector<HTMLElement>(".left-col");
+  const rightCol = resume.querySelector<HTMLElement>(".right-col");
 
-            if (actualCut <= currentStart) actualCut = naiveCut;
-            pageStarts.push(actualCut);
-            if (cutBlockId) pageBreakIds.push(cutBlockId);
-          }
+  interface Block { top: number; bottom: number; id?: string; }
+  const leftBlocks: Block[] = [];
+  const rightBlocks: Block[] = [];
 
-         // AFTER
-// Treat each li inside skills as a breakable boundary
-const skillsLis = Array.from(resume.querySelectorAll<HTMLElement>(".skills-content li"));
-skillsLis.forEach((li) => {
-  const top = getRelTop(li);
-  const bottom = getRelBottom(li);
-  if (bottom - top > 2) blocks.push({ top, bottom });
-});
+  // REPLACE the entire collectBlocks function:
+const collectBlocks = (col: HTMLElement, blocks: Block[]) => {
+  const ITEM_SELECTORS = [
+    ".entry-block",
+    ".summary-block",
+    ".skills-block",
+    ".custom-section-block",
+  ].join(", ");
 
-// Re-sort after adding li blocks, then recompute page cuts
-blocks.sort((a, b) => a.top - b.top);
-pageStarts.length = 1;
-pageBreakIds.length = 0;
+  col.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
+    const top = getRelTop(el);
+    const bottom = getRelBottom(el);
+    if (bottom - top > 8) blocks.push({ top, bottom, id: el.dataset.blockId });
+  });
 
-while (pageStarts.length < MAX_PAGES) {
-  const currentStart = pageStarts[pageStarts.length - 1];
-  const naiveCut = currentStart + PAGE_CONTENT_H;
-  if (naiveCut >= totalH) break;
+  // Section-title anchor: only keep title+firstItem together
+  // if the combined height fits within a reasonable fraction of the page
+  col.querySelectorAll<HTMLElement>(".section-title").forEach((title) => {
+    const titleTop = getRelTop(title);
+    let firstItem: HTMLElement | null = null;
+    let sib = title.nextElementSibling as HTMLElement | null;
+    while (sib) {
+      if (sib.getBoundingClientRect().height > 8) { firstItem = sib; break; }
+      sib = sib.nextElementSibling as HTMLElement | null;
+    }
+    if (firstItem) {
+      const deepChild = firstItem.querySelector<HTMLElement>(
+        ".entry-block, .custom-section-block"
+      );
+      const anchor = deepChild || firstItem;
+      const anchorBottom = getRelBottom(anchor);
+      const combinedHeight = anchorBottom - titleTop;
+      // Only add anchor block if it fits on a single page
+      // (prevents pushing giant blocks to next page unnecessarily)
+      if (combinedHeight > 8 && combinedHeight <= PAGE_CONTENT_H * 0.9) {
+        const sectionId = (title.parentElement as HTMLElement)?.dataset?.blockId;
+        blocks.push({ top: titleTop, bottom: anchorBottom, id: sectionId });
+      }
+    }
+  });
 
+  blocks.sort((a, b) => a.top - b.top);
+};
+
+  if (leftCol) collectBlocks(leftCol, leftBlocks);
+  if (rightCol) collectBlocks(rightCol, rightBlocks);
+
+  // Find the earliest safe cut point considering BOTH columns
+  // REPLACE the entire findBestCut function:
+// REPLACE findBestCut:
+const findBestCut = (
+  blocks: Block[],
+  currentStart: number,
+  naiveCut: number
+): { cut: number; id?: string } => {
   let actualCut = naiveCut;
-  let cutBlockId: string | undefined;
+  let cutId: string | undefined;
+
+  const pageHeight = naiveCut - currentStart; // = PAGE_CONTENT_H
+  // Only push cut back if we'd still fill at least 80% of the page
+  const minFill = currentStart + pageHeight * 0.80;
 
   for (const block of blocks) {
     if (block.top >= naiveCut) break;
     if (block.bottom <= currentStart) continue;
-    if (block.top >= currentStart && block.bottom > naiveCut) {
-      if (block.top < actualCut) {
+
+    // Block straddles the cut line
+    if (block.bottom > naiveCut) {
+      const blockHeight = block.bottom - block.top;
+
+      if (
+        block.top >= minFill &&           // pushing back still fills 80% of page
+        blockHeight <= PAGE_CONTENT_H &&  // block fits on a single page
+        block.top < actualCut             // this is earlier than current best cut
+      ) {
         actualCut = block.top;
-        cutBlockId = block.id;
+        cutId = block.id;
       }
+      // else: let naive cut stand — either block is too tall or would waste too much space
     }
   }
 
   if (actualCut <= currentStart) actualCut = naiveCut;
-  pageStarts.push(actualCut);
-  if (cutBlockId) pageBreakIds.push(cutBlockId);
-}
+  return { cut: actualCut, id: cutId };
+};
 
-// Detect which li index the cut falls inside skills
-(window as any).__resumeSkillsCutIndex = -1;
-for (let p = 0; p < pageStarts.length - 1; p++) {
-  const cutY = pageStarts[p + 1];
-  for (let li = 0; li < skillsLis.length; li++) {
-    const liTop = getRelTop(skillsLis[li]);
-    const liBottom = getRelBottom(skillsLis[li]);
-    if (liTop < cutY && liBottom > cutY) {
-      (window as any).__resumeSkillsCutIndex = li;
-      break;
-    }
-    if (liTop >= cutY) {
-      (window as any).__resumeSkillsCutIndex = li;
-      break;
-    }
+  const pageStarts: number[] = [0];
+  const pageBreakIds: string[] = [];
+  const MAX_PAGES = 20;
+
+  while (pageStarts.length < MAX_PAGES) {
+    const currentStart = pageStarts[pageStarts.length - 1];
+    const naiveCut = currentStart + PAGE_CONTENT_H;
+    if (naiveCut >= totalH) break;
+
+    const leftResult = findBestCut(leftBlocks, currentStart, naiveCut);
+    const rightResult = findBestCut(rightBlocks, currentStart, naiveCut);
+
+    // Take the EARLIER cut — whichever column needs the break sooner
+    const earlier =
+      leftResult.cut <= rightResult.cut ? leftResult : rightResult;
+
+    pageStarts.push(earlier.cut);
+    if (earlier.id) pageBreakIds.push(earlier.id);
   }
-  if ((window as any).__resumeSkillsCutIndex >= 0) break;
-}
 
-document.body.removeChild(iframe);
-(window as any).__resumePageBreakIds = pageBreakIds;
+  document.body.removeChild(iframe);
+  (window as any).__resumePageBreakIds = pageBreakIds;
 
-          const pageHtmls: string[] = [];
+  // REPLACE the pageHtmls.push(...) section (the for loop that builds pageHtmls):
+const pageHtmls: string[] = [];
+for (let i = 0; i < pageStarts.length; i++) {
+  const contentOffsetY = pageStarts[i];
+  const nextStart = pageStarts[i + 1] ?? totalH;
+  const clipH = nextStart - contentOffsetY;
+  // Show full PAGE_CONTENT_H in preview, but never more than actual content
+  const previewClipH = Math.max(clipH, Math.min(PAGE_CONTENT_H, totalH - contentOffsetY));
 
-          for (let i = 0; i < pageStarts.length; i++) {
-            const contentOffsetY = pageStarts[i];
-            const nextStart = pageStarts[i + 1] ?? totalH;
-            const clipH = nextStart - contentOffsetY;
-
-            pageHtmls.push(`<!DOCTYPE html>
+  pageHtmls.push(`<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
@@ -6740,7 +6757,7 @@ document.body.removeChild(iframe);
     }
     .page-content-clip {
       position: absolute; top: ${MARGIN}px; left: 0;
-      width: ${A4_W}px; height: ${clipH}px; overflow: hidden;
+      width: ${A4_W}px; height: ${previewClipH}px; overflow: hidden;
     }
     .page-shift {
       position: absolute; top: ${-contentOffsetY}px; left: 0; width: ${A4_W}px;
@@ -6763,23 +6780,23 @@ document.body.removeChild(iframe);
   </div>
 </body>
 </html>`);
-          }
+}
 
-          resolve(pageHtmls);
-        };
+  resolve(pageHtmls);
+};
 
-        const win = iframe.contentWindow as any;
-        if (win?.document?.fonts?.ready) {
-          win.document.fonts.ready.then(() => {
-            setTimeout(() => requestAnimationFrame(doMeasure), 100);
-          });
-        } else {
-          setTimeout(doMeasure, 500);
-        }
-      });
-    },
-    [CSS_FOR_MEASURE],
-  );
+      const win = iframe.contentWindow as any;
+      if (win?.document?.fonts?.ready) {
+        win.document.fonts.ready.then(() => {
+          setTimeout(() => requestAnimationFrame(doMeasure), 100);
+        });
+      } else {
+        setTimeout(doMeasure, 500);
+      }
+    });
+  },
+  [CSS_FOR_MEASURE],
+);
 
   // ── Debounced updates ─────────────────────────────────────────────────────
   const scheduleUpdate = useCallback((html: string) => {
@@ -6831,13 +6848,20 @@ document.body.removeChild(iframe);
     const handleDownload = async (): Promise<void> => {
     try {
      // AFTER
-const pageBreakIds: string[] = ((window as any).__resumePageBreakIds || []).filter(
-  (id: string) => id !== "skills-section"
-);
-const skillsCutIndex: number = (window as any).__resumeSkillsCutIndex ?? -1;
+// const pageBreakIds: string[] = ((window as any).__resumePageBreakIds || []).filter(
+//   (id: string) => id !== "skills-section"
+// );
+// const skillsCutIndex: number = (window as any).__resumeSkillsCutIndex ?? -1;
+// const res: AxiosResponse<Blob> = await api.post(
+//   `${API_URL}/candidates/generate-pdf`,
+//   { html: generateHTML(true, pageBreakIds, skillsCutIndex) },
+//   { responseType: "blob" },
+// );
+
+const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
 const res: AxiosResponse<Blob> = await api.post(
   `${API_URL}/candidates/generate-pdf`,
-  { html: generateHTML(true, pageBreakIds, skillsCutIndex) },
+  { html: generateHTML(true, pageBreakIds) },
   { responseType: "blob" },
 );
      
@@ -6864,7 +6888,7 @@ const res: AxiosResponse<Blob> = await api.post(
   return (
     <>
     {/* Download button */}
-      {lastSegment === "download-resume" && (
+      {/* {lastSegment === "download-resume" && ( */}
         <div className="text-center my-5">
           <motion.button
             onClick={handleDownload}
@@ -6875,7 +6899,7 @@ const res: AxiosResponse<Blob> = await api.post(
             Download Resume
           </motion.button>
         </div>
-      )}
+      {/* )} */}
       {alldata ? (
         <div
           style={{

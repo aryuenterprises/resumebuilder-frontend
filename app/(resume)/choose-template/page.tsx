@@ -2335,13 +2335,6 @@ function Choose_template() {
   };
 
   const handleCreateNew = () => {
-    const userDetails = getLocalStorage<User>("user_details");
-
-    if (!userDetails?.id) {
-      setShowLoginPrompt(true);
-      return;
-    }
-
     setShowInitialPopup(false);
   };
 

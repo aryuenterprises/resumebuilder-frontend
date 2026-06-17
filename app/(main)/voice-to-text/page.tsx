@@ -478,29 +478,7 @@ function VoiceResumeBuilder() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
       {/* Navigation */}
-      <nav className="border-b border-slate-200 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center">
-                <Mic className="w-4 h-4 text-white" />
-              </div>
-              <span className="font-bold text-xl bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                VoxResume
-              </span>
-            </div>
-            <div className="flex items-center gap-3">
-              <button
-                onClick={exportResume}
-                className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all flex items-center gap-2"
-              >
-                <Download className="w-4 h-4" />
-                Export Resume
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav>
+  
 
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Hero Section */}

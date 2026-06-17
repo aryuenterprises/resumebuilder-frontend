@@ -5888,8 +5888,11 @@ const TemplateFourteen: React.FC<TemplateFourteenProps> = ({ alldata, customizat
 
     .t14-resume p { margin: 0 0 4px 0 !important; padding: 0 !important; line-height: 1.6 !important; }
     .t14-resume p:last-child { margin-bottom: 0 !important; }
+.t14-resume .resume-body > .section-block:last-child { margin-bottom: 0 !important; }
+
 
     .t14-resume .entry-content ul,
+
     .t14-resume .entry-content ol,
     .t14-resume .skills-content ul,
     .t14-resume .skills-content ol,
@@ -6200,13 +6203,13 @@ const generateHTML = useCallback(
         .map((key) => sectionBuilders[key]?.() ?? "")
         .join("");
 
-      const pdfStyle = forPDF
-        ? `<style>
-            html, body { margin: 0 !important; padding: 0 !important; }
-            .t14-resume { width: 100% !important; margin: 0 !important; }
-            @page { size: A4; margin: ${MARGIN}px !important; }
-          </style>`
-        : "";
+     const pdfStyle = forPDF
+  ? `<style>
+      html, body { margin: 0 !important; padding: 0 !important; }
+      .t14-resume { width: ${CONTENT_W}px !important; margin: 0 !important; }
+      @page { size: A4; margin: ${MARGIN}px !important; }
+    </style>`
+  : "";
 
       let bodyContent = sectionsHTML;
 

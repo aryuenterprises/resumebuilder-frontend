@@ -11005,8 +11005,12 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
 
   // ── HTML builder ───────────────────────────────────────────────────────────
   // AFTER
-const generateHTML = useCallback(
-  (forPDF = false, pageBreakIds: string[] = [], skillsCutIndex = -1): string => {
+// const generateHTML = useCallback(
+//   (forPDF = false, pageBreakIds: string[] = [], skillsCutIndex = -1): string => {
+
+    const generateHTML = useCallback(
+  (forPDF = false, pageBreakIds: string[] = []): string => {
+
       const CSS = buildCSS(activeFontFamily);
 
       const richText = (html: string, cls: string) => {
@@ -11140,27 +11144,36 @@ const generateHTML = useCallback(
 
      // BEFORE
 // AFTER
+// const skillsBlock = (() => {
+//   if (!hasSkillsContent()) return "";
+//   const cleanedSkills = cleanQuillHTML(skills);
+
+//   if (forPDF && skillsCutIndex >= 0) {
+//     const tempDiv = document.createElement("div");
+//     tempDiv.innerHTML = cleanedSkills;
+//     const allLis = Array.from(tempDiv.querySelectorAll("li"));
+//     if (skillsCutIndex < allLis.length) {
+//       // Split into two ul blocks at the cut index
+//       const beforeLis = allLis.slice(0, skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
+//       const afterLis = allLis.slice(skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
+//       return `<div class="t1-section-content" data-block-id="skills-section">
+//         <div class="t1-section-title">Skills</div>
+//         <div class="t1-skills-content"><ul>${beforeLis}</ul></div>
+//         <div class="t1-page-break"></div>
+//         <div class="t1-skills-content"><ul>${afterLis}</ul></div>
+//       </div>`;
+//     }
+//   }
+
+//   return `<div class="t1-section-content" data-block-id="skills-section">
+//     <div class="t1-section-title">Skills</div>
+//     <div class="t1-skills-content" data-block-id="skills-content">${cleanedSkills}</div>
+//   </div>`;
+// })();
+
 const skillsBlock = (() => {
   if (!hasSkillsContent()) return "";
   const cleanedSkills = cleanQuillHTML(skills);
-
-  if (forPDF && skillsCutIndex >= 0) {
-    const tempDiv = document.createElement("div");
-    tempDiv.innerHTML = cleanedSkills;
-    const allLis = Array.from(tempDiv.querySelectorAll("li"));
-    if (skillsCutIndex < allLis.length) {
-      // Split into two ul blocks at the cut index
-      const beforeLis = allLis.slice(0, skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
-      const afterLis = allLis.slice(skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
-      return `<div class="t1-section-content" data-block-id="skills-section">
-        <div class="t1-section-title">Skills</div>
-        <div class="t1-skills-content"><ul>${beforeLis}</ul></div>
-        <div class="t1-page-break"></div>
-        <div class="t1-skills-content"><ul>${afterLis}</ul></div>
-      </div>`;
-    }
-  }
-
   return `<div class="t1-section-content" data-block-id="skills-section">
     <div class="t1-section-title">Skills</div>
     <div class="t1-skills-content" data-block-id="skills-content">${cleanedSkills}</div>
@@ -11399,24 +11412,24 @@ skillsLis.forEach((li) => {
             if (cutBlockId) pageBreakIds.push(cutBlockId);
           }
 
-          (window as any).__resumeSkillsCutIndex = -1;
-for (let p = 0; p < pageStarts.length - 1; p++) {
-  const cutY = pageStarts[p + 1];
-  for (let li = 0; li < skillsLis.length; li++) {
-    const liTop = getRelTop(skillsLis[li]);
-    const liBottom = getRelBottom(skillsLis[li]);
-    if (liTop < cutY && liBottom > cutY) {
-      // Cut falls inside this li — break before it
-      (window as any).__resumeSkillsCutIndex = li;
-      break;
-    }
-    if (liTop >= cutY) {
-      // Cut falls between lis — break at this li
-      (window as any).__resumeSkillsCutIndex = li;
-      break;
-    }
-  }
-}
+//           (window as any).__resumeSkillsCutIndex = -1;
+// for (let p = 0; p < pageStarts.length - 1; p++) {
+//   const cutY = pageStarts[p + 1];
+//   for (let li = 0; li < skillsLis.length; li++) {
+//     const liTop = getRelTop(skillsLis[li]);
+//     const liBottom = getRelBottom(skillsLis[li]);
+//     if (liTop < cutY && liBottom > cutY) {
+//       // Cut falls inside this li — break before it
+//       (window as any).__resumeSkillsCutIndex = li;
+//       break;
+//     }
+//     if (liTop >= cutY) {
+//       // Cut falls between lis — break at this li
+//       (window as any).__resumeSkillsCutIndex = li;
+//       break;
+//     }
+//   }
+// }
 
           document.body.removeChild(iframe);
           (window as any).__resumePageBreakIds = pageBreakIds;
@@ -11478,11 +11491,15 @@ for (let p = 0; p < pageStarts.length - 1; p++) {
  // AFTER
 const handleDownload = async (): Promise<void> => {
   try {
-    const pageBreakIds: string[] = ((window as any).__resumePageBreakIds || []).filter(
-      (id: string) => id !== "skills-section"
-    );
-    const skillsCutIndex: number = (window as any).__resumeSkillsCutIndex ?? -1;
-    const pdfHtml = generateHTML(true, pageBreakIds, skillsCutIndex);
+    // const pageBreakIds: string[] = ((window as any).__resumePageBreakIds || []).filter(
+    //   (id: string) => id !== "skills-section"
+    // );
+    // const skillsCutIndex: number = (window as any).__resumeSkillsCutIndex ?? -1;
+    // const pdfHtml = generateHTML(true, pageBreakIds, skillsCutIndex);
+
+
+    const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
+const pdfHtml = generateHTML(true, pageBreakIds);
       const res: AxiosResponse<Blob> = await api.post(
         `${API_URL}/candidates/generate-pdf`,
         { html: pdfHtml },
@@ -11505,7 +11522,7 @@ const handleDownload = async (): Promise<void> => {
   // ── RENDER ─────────────────────────────────────────────────────────────────
   return (
     <>
-      {lastSegment === "download-resume" && (
+      {/* {lastSegment === "download-resume" && ( */}
         <div className="text-center my-5">
           <motion.button
             onClick={handleDownload}
@@ -11516,7 +11533,7 @@ const handleDownload = async (): Promise<void> => {
             Download Resume
           </motion.button>
         </div>
-      )}
+      {/* )} */}
 
       {alldata ? (
         <div

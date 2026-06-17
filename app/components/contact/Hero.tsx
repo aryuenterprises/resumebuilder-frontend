@@ -153,9 +153,9 @@ const ContactPage = () => {
   },
   {
     icon: FaMapMarkerAlt,
-    title: "Office",
-    value: "Remote First",
-    description: "Global team",
+    title: "Head Office",
+    value: "Aryu Enterprises",
+    description: "Chennai, India",
     isLink: false,
   },
 ];
@@ -193,11 +193,11 @@ const ContactPage = () => {
 
             <p className="mt-3 sm:mt-4 text-sm sm:text-base md:text-lg text-gray-500 max-w-xl leading-relaxed">
               Need help with PassATS? Our support team is ready to assist you.
-              Send us a message and we'll respond within 24 hours.
+              Send us a message and we will respond within 24 hours.
             </p>
 
             {/* Contact Info Cards */}
-            <div className="mt-6 sm:mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+            <div className="mt-6 sm:mt-8 grid grid-cols-1 sm:grid-cols-2  md:grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-4">
               {contactInfo.map((info, idx) => (
   <motion.div
     key={idx}
@@ -208,7 +208,7 @@ const ContactPage = () => {
     className="flex items-start gap-2.5 sm:gap-3 p-3 sm:p-4 rounded-xl bg-gray-50 border border-gray-100 hover:shadow-md transition-all duration-300"
   >
     <div className="p-1.5 sm:p-2 bg-indigo-100 rounded-lg">
-      <info.icon className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 rotate-90 text-indigo-600" />
+      <info.icon className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4  text-indigo-600" />
     </div>
     <div>
       <p className="text-[10px] sm:text-xs text-gray-500">{info.title}</p>
@@ -231,7 +231,7 @@ const ContactPage = () => {
           {info.value}
         </p>
       )}
-      <p className="text-[9px] sm:text-[10px] text-gray-400 mt-0.5">
+      <p className="text-[9px] sm:text-[10px] text-gray-500 mt-0.5">
         {info.description}
       </p>
     </div>
@@ -273,7 +273,7 @@ const ContactPage = () => {
                       type="text"
                       value={name}
                       onChange={(e) => setName(sanitizeText(e.target.value))}
-                      placeholder="Your name"
+                      placeholder="Enter Your Full Name"
                       className={`w-full pl-9 sm:pl-10 pr-3 sm:pr-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl border transition-all outline-none text-sm sm:text-base ${
                         errors.name
                           ? "border-red-500 focus:border-red-500 focus:ring-red-100"
@@ -327,7 +327,7 @@ const ContactPage = () => {
                       inputMode="numeric"
                       value={mobileNum}
                       onChange={(e) => setMobileNum(e.target.value)}
-                      placeholder="1234567890"
+                      placeholder="+91 123 45 78912"
                       className={`w-full pl-9 sm:pl-10 pr-3 sm:pr-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl border transition-all outline-none text-sm sm:text-base ${
                         errors.mobileNum
                           ? "border-red-500 focus:border-red-500 focus:ring-red-100"
