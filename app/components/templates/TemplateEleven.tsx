@@ -8483,7 +8483,19 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({ alldata, customization 
   };
 
   // ── Section builders ──────────────────────────────────────────────────────
-  const sectionBuilders: Record<SectionKey, () => string> = {
+  
+
+  // ── HTML builder with section ordering ───────────────────────────────────
+  const generateHTML = useCallback((forPDF = false, pageBreakIds: string[] = [], skillsCutIndex = -1): string => {
+
+      const addressStr = addressParts.join(" | ");
+
+      const fontPreloads = activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif" 
+        ? `<link href="${getFontImport(activeFontFamily)}" rel="stylesheet"/>`
+        : '';
+
+
+        const sectionBuilders: Record<SectionKey, () => string> = {
     summary: () => summary ? `
       <div class="section" data-block-id="summary">
         <h2 class="section-title">About</h2>
@@ -8574,6 +8586,12 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({ alldata, customization 
       `;
     },
 
+
+    
+
+
+    
+
     custom: () => {
       const filteredSections = getFilteredCustomSections();
       if (filteredSections.length === 0) return "";
@@ -8587,15 +8605,6 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({ alldata, customization 
       `).join("");
     },
   };
-
-  // ── HTML builder with section ordering ───────────────────────────────────
-  const generateHTML = useCallback(
-    (forPDF = false, pageBreakIds: string[] = []): string => {
-      const addressStr = addressParts.join(" | ");
-
-      const fontPreloads = activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif" 
-        ? `<link href="${getFontImport(activeFontFamily)}" rel="stylesheet"/>`
-        : '';
 
       // Build sections in the order defined by customization
       const sectionsHTML = activeSectionOrder
@@ -8693,7 +8702,6 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({ alldata, customization 
       formattedDob,
       addressParts,
       styles,
-      sectionBuilders,
     ],
   );
 
@@ -8781,7 +8789,6 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({ alldata, customization 
             ".education-item",
             ".experience-header",
             ".custom-section",
-            ".skills-content",
           ].join(", ");
 
           resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
@@ -8803,15 +8810,29 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({ alldata, customization 
               }
               sib = sib.nextElementSibling as HTMLElement | null;
             }
-            if (firstItem) {
-              const deepChild = firstItem.querySelector<HTMLElement>(".experience-item, .education-item, .custom-section, .skills-content");
-              const anchor = deepChild || firstItem;
-              const anchorBottom = getRelBottom(anchor);
-              if (anchorBottom - titleTop > 8) {
-                const sectionId = (title.parentElement as HTMLElement)?.dataset?.blockId;
-                blocks.push({ top: titleTop, bottom: anchorBottom, id: sectionId });
-              }
-            }
+            // if (firstItem) {
+            //   const deepChild = firstItem.querySelector<HTMLElement>(".experience-item, .education-item, .custom-section, .skills-content");
+            //   const anchor = deepChild || firstItem;
+            //   const anchorBottom = getRelBottom(anchor);
+            //   if (anchorBottom - titleTop > 8) {
+            //     const sectionId = (title.parentElement as HTMLElement)?.dataset?.blockId;
+            //     blocks.push({ top: titleTop, bottom: anchorBottom, id: sectionId });
+            //   }
+            // }
+
+            // AFTER
+if (firstItem) {
+  // Skip anchor logic for skills — allow it to split across pages
+  if (firstItem.classList.contains("skills-content")) return;
+
+  const deepChild = firstItem.querySelector<HTMLElement>(".entry-block, .summary-text");
+  const anchor = deepChild || firstItem;
+  const anchorBottom = getRelBottom(anchor);
+  if (anchorBottom - titleTop > 8) {
+    const sectionId = (title.parentElement as HTMLElement)?.dataset?.blockId;
+    blocks.push({ top: titleTop, bottom: anchorBottom, id: sectionId });
+  }
+}
           });
 
           blocks.sort((a, b) => a.top - b.top);
@@ -8844,8 +8865,65 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({ alldata, customization 
             if (cutBlockId) pageBreakIds.push(cutBlockId);
           }
 
-          document.body.removeChild(iframe);
-          (window as any).__resumePageBreakIds = pageBreakIds;
+          // document.body.removeChild(iframe);
+          // (window as any).__resumePageBreakIds = pageBreakIds;
+
+
+          const skillsLis = Array.from(resume.querySelectorAll<HTMLElement>(".skills-content li"));
+skillsLis.forEach((li) => {
+  const top = getRelTop(li);
+  const bottom = getRelBottom(li);
+  if (bottom - top > 2) blocks.push({ top, bottom });
+});
+
+blocks.sort((a, b) => a.top - b.top);
+pageStarts.length = 1;
+pageBreakIds.length = 0;
+
+while (pageStarts.length < MAX_PAGES) {
+  const currentStart = pageStarts[pageStarts.length - 1];
+  const naiveCut = currentStart + PAGE_CONTENT_H;
+  if (naiveCut >= totalH) break;
+
+  let actualCut = naiveCut;
+  let cutBlockId: string | undefined;
+
+  for (const block of blocks) {
+    if (block.top >= naiveCut) break;
+    if (block.bottom <= currentStart) continue;
+    if (block.top >= currentStart && block.bottom > naiveCut) {
+      if (block.top < actualCut) {
+        actualCut = block.top;
+        cutBlockId = block.id;
+      }
+    }
+  }
+
+  if (actualCut <= currentStart) actualCut = naiveCut;
+  pageStarts.push(actualCut);
+  if (cutBlockId) pageBreakIds.push(cutBlockId);
+}
+
+(window as any).__resumeSkillsCutIndex = -1;
+for (let p = 0; p < pageStarts.length - 1; p++) {
+  const cutY = pageStarts[p + 1];
+  for (let li = 0; li < skillsLis.length; li++) {
+    const liTop = getRelTop(skillsLis[li]);
+    const liBottom = getRelBottom(skillsLis[li]);
+    if (liTop < cutY && liBottom > cutY) {
+      (window as any).__resumeSkillsCutIndex = li;
+      break;
+    }
+    if (liTop >= cutY) {
+      (window as any).__resumeSkillsCutIndex = li;
+      break;
+    }
+  }
+  if ((window as any).__resumeSkillsCutIndex >= 0) break;
+}
+
+document.body.removeChild(iframe);
+(window as any).__resumePageBreakIds = pageBreakIds;
 
           const pageHtmls: string[] = [];
 
@@ -8931,14 +9009,26 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({ alldata, customization 
 
   const handleDownload = async () => {
     try {
-      const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
-      const pdfHtml = generateHTML(true, pageBreakIds);
+      // const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
+      // const pdfHtml = generateHTML(true, pageBreakIds);
 
-      const res: AxiosResponse<Blob> = await api.post(
-        `${API_URL}/candidates/generate-pdf`,
-        { html: pdfHtml },
-        { responseType: "blob" },
-      );
+      // const res: AxiosResponse<Blob> = await api.post(
+      //   `${API_URL}/candidates/generate-pdf`,
+      //   { html: pdfHtml },
+      //   { responseType: "blob" },
+      // );
+
+
+      // AFTER
+const pageBreakIds: string[] = ((window as any).__resumePageBreakIds || []).filter(
+  (id: string) => id !== "skills-section"
+);
+const skillsCutIndex: number = (window as any).__resumeSkillsCutIndex ?? -1;
+const res: AxiosResponse<Blob> = await api.post(
+  `${API_URL}/candidates/generate-pdf`,
+  { html: generateHTML(true, pageBreakIds, skillsCutIndex) },
+  { responseType: "blob" },
+);
 
       const url = URL.createObjectURL(res.data);
       const a = document.createElement("a");
@@ -8956,7 +9046,7 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({ alldata, customization 
 
   return (
     <div style={{ textAlign: "left", marginTop: 0 }}>
-      {lastSegment === "download-resume" && (
+      {/* {lastSegment === "download-resume" && ( */}
         <div className="text-center my-5">
           <motion.button
             onClick={handleDownload}
@@ -8967,7 +9057,7 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({ alldata, customization 
             Download Resume
           </motion.button>
         </div>
-      )}
+      {/* )} */}
 
       {alldata ? (
         <div

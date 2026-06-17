@@ -4571,108 +4571,13 @@ const TemplateSeven: React.FC<TemplateSevenProps> = ({ alldata, customization })
   };
 
   // ── Section builders ──────────────────────────────────────────────────────
-  const sectionBuilders: Record<SectionKey, () => string> = {
-    summary: () => summary ? `
-      <div class="section" data-block-id="t7-summary">
-        <h2 class="section-title">Professional Summary</h2>
-        <div class="summary-text">${rich(summary)}</div>
-      </div>
-    ` : "",
 
-    experience: () => experiences.length > 0 ? `
-      <div class="section" data-block-id="t7-exp-section">
-        <h2 class="section-title">Experience</h2>
-        ${experiences.map((exp: any, i: number) => {
-          const startFormatted = formatMonthYear(exp.startDate, false);
-          const endFormatted = exp.endDate ? formatMonthYear(exp.endDate, false) : "Present";
-          return `
-            <div class="experience-item" data-block-id="t7-exp-${i}">
-              <div class="experience-header">
-                <div>
-                  <div class="experience-title">${exp.jobTitle || ""}</div>
-                  <div class="experience-subtitle">${[exp.employer, exp.location].filter(Boolean).join(" — ")}</div>
-                </div>
-                <div class="experience-date">${startFormatted} — ${endFormatted}</div>
-              </div>
-              ${exp.text ? `<div class="experience-description">${rich(exp.text)}</div>` : ""}
-            </div>
-          `;
-        }).join("")}
-      </div>
-    ` : "",
-
-    projects: () => projects.length > 0 ? `
-      <div class="section" data-block-id="t7-proj-section">
-        <h2 class="section-title">Projects</h2>
-        ${projects.map((p: any, i: number) => `
-          <div class="project-item" data-block-id="t7-proj-${i}">
-            <div class="project-header">
-              <div class="project-title">${p.title || ""}</div>
-              ${p.liveUrl || p.githubUrl ? `
-                <div class="project-links">
-                  ${p.liveUrl ? `<a href="${href(p.liveUrl)}" class="project-link" target="_blank">Live Demo</a>` : ""}
-                  ${p.githubUrl ? `<a href="${href(p.githubUrl)}" class="project-link" target="_blank">GitHub</a>` : ""}
-                </div>
-              ` : ""}
-            </div>
-            ${p.techStack?.length ? `<div class="project-tech-stack"><strong>Tech:</strong> ${p.techStack.join(", ")}</div>` : ""}
-            ${p.description ? `<div class="project-description">${rich(p.description)}</div>` : ""}
-          </div>
-        `).join("")}
-      </div>
-    ` : "",
-
-    education: () => educations.length > 0 ? `
-      <div class="section" data-block-id="t7-edu-section">
-        <h2 class="section-title">Education</h2>
-        ${educations.map((edu: any, i: number) => {
-          const formattedGrade = formatGradeToCgpdAndPercentage(edu.grade || "");
-          return `
-            <div class="education-item" data-block-id="t7-edu-${i}">
-              <div class="education-header">
-                <div>
-                  <div class="education-school">${edu.schoolname || ""}</div>
-                  <div class="education-subtitle">${[edu.degree, edu.location].filter(Boolean).join(" — ")}</div>
-                  ${formattedGrade ? `<div class="education-grade">${formattedGrade}</div>` : ""}
-                </div>
-                <div class="education-date">${[edu.startDate, edu.endDate || "Present"].filter(Boolean).join(" — ")}</div>
-              </div>
-              ${edu.text ? `<div class="education-description">${rich(edu.text)}</div>` : ""}
-            </div>
-          `;
-        }).join("")}
-      </div>
-    ` : "",
-
-    skills: () => {
-      const skillsClean = rich(skills || "");
-      if (!skillsClean || skillsClean === "<p><br></p>") return "";
-      return `
-        <div class="section" data-block-id="t7-skills-section">
-          <h2 class="section-title">Skills</h2>
-          <div class="skills-content" data-block-id="t7-skills-content">${skillsClean}</div>
-        </div>
-      `;
-    },
-
-    custom: () => {
-      if (!Array.isArray(finalize?.customSection)) return "";
-      const filteredCustom = finalize.customSection.filter((s: any) => s?.name?.trim() || s?.description?.trim());
-      if (filteredCustom.length === 0) return "";
-      return filteredCustom.map((s: any, i: number) => `
-        <div class="section" data-block-id="t7-custom-${i}">
-          <div class="custom-section">
-            ${s.name ? `<h2 class="custom-section-title">${s.name}</h2>` : ""}
-            ${s.description ? `<div class="custom-section-content">${rich(s.description)}</div>` : ""}
-          </div>
-        </div>
-      `).join("");
-    },
-  };
+  
 
   // ── HTML builder with section ordering ───────────────────────────────────
-  const generateHTML = useCallback(
-    (forPDF = false, pageBreakIds: string[] = []): string => {
+ // AFTER
+const generateHTML = useCallback(
+(forPDF = false, pageBreakIds: string[] = []): string => {
       const formattedDob = formatDateOfBirth(dateOfBirth || "");
 
       // Header
@@ -4702,6 +4607,101 @@ const TemplateSeven: React.FC<TemplateSevenProps> = ({ alldata, customization })
       const pdfStyle = forPDF
         ? `<style>.t7-resume { width: 100% !important; padding: 0 !important; }</style>`
         : "";
+
+
+        const sectionBuilders: Record<SectionKey, () => string> = {
+  summary: () => summary ? `
+    <div class="section" data-block-id="t7-summary">
+      <h2 class="section-title">Professional Summary</h2>
+      <div class="summary-text">${rich(summary)}</div>
+    </div>
+  ` : "",
+
+  experience: () => experiences.length > 0 ? `
+    <div class="section" data-block-id="t7-exp-section">
+      <h2 class="section-title">Experience</h2>
+      ${experiences.map((exp: any, i: number) => {
+        const startFormatted = formatMonthYear(exp.startDate, false);
+        const endFormatted = exp.endDate ? formatMonthYear(exp.endDate, false) : "Present";
+        return `<div class="experience-item" data-block-id="t7-exp-${i}">
+          <div class="experience-header">
+            <div>
+              <div class="experience-title">${exp.jobTitle || ""}</div>
+              <div class="experience-subtitle">${[exp.employer, exp.location].filter(Boolean).join(" — ")}</div>
+            </div>
+            <div class="experience-date">${startFormatted} — ${endFormatted}</div>
+          </div>
+          ${exp.text ? `<div class="experience-description">${rich(exp.text)}</div>` : ""}
+        </div>`;
+      }).join("")}
+    </div>
+  ` : "",
+
+  projects: () => projects.length > 0 ? `
+    <div class="section" data-block-id="t7-proj-section">
+      <h2 class="section-title">Projects</h2>
+      ${projects.map((p: any, i: number) => `
+        <div class="project-item" data-block-id="t7-proj-${i}">
+          <div class="project-header">
+            <div class="project-title">${p.title || ""}</div>
+            ${p.liveUrl || p.githubUrl ? `
+              <div class="project-links">
+                ${p.liveUrl ? `<a href="${href(p.liveUrl)}" class="project-link" target="_blank">Live Demo</a>` : ""}
+                ${p.githubUrl ? `<a href="${href(p.githubUrl)}" class="project-link" target="_blank">GitHub</a>` : ""}
+              </div>
+            ` : ""}
+          </div>
+          ${p.techStack?.length ? `<div class="project-tech-stack"><strong>Tech:</strong> ${p.techStack.join(", ")}</div>` : ""}
+          ${p.description ? `<div class="project-description">${rich(p.description)}</div>` : ""}
+        </div>
+      `).join("")}
+    </div>
+  ` : "",
+
+  education: () => educations.length > 0 ? `
+    <div class="section" data-block-id="t7-edu-section">
+      <h2 class="section-title">Education</h2>
+      ${educations.map((edu: any, i: number) => {
+        const formattedGrade = formatGradeToCgpdAndPercentage(edu.grade || "");
+        return `<div class="education-item" data-block-id="t7-edu-${i}">
+          <div class="education-header">
+            <div>
+              <div class="education-school">${edu.schoolname || ""}</div>
+              <div class="education-subtitle">${[edu.degree, edu.location].filter(Boolean).join(" — ")}</div>
+              ${formattedGrade ? `<div class="education-grade">${formattedGrade}</div>` : ""}
+            </div>
+            <div class="education-date">${[edu.startDate, edu.endDate || "Present"].filter(Boolean).join(" — ")}</div>
+          </div>
+          ${edu.text ? `<div class="education-description">${rich(edu.text)}</div>` : ""}
+        </div>`;
+      }).join("")}
+    </div>
+  ` : "",
+
+ // AFTER
+skills: () => {
+  const skillsClean = rich(skills || "");
+  if (!skillsClean || skillsClean === "<p><br></p>") return "";
+  return `<div class="section" data-block-id="t7-skills-section">
+    <h2 class="section-title">Skills</h2>
+    <div class="skills-content" data-block-id="t7-skills-content">${skillsClean}</div>
+  </div>`;
+},
+
+  custom: () => {
+    if (!Array.isArray(finalize?.customSection)) return "";
+    const filteredCustom = finalize.customSection.filter((s: any) => s?.name?.trim() || s?.description?.trim());
+    if (filteredCustom.length === 0) return "";
+    return filteredCustom.map((s: any, i: number) => `
+      <div class="section" data-block-id="t7-custom-${i}">
+        <div class="custom-section">
+          ${s.name ? `<h2 class="custom-section-title">${s.name}</h2>` : ""}
+          ${s.description ? `<div class="custom-section-content">${rich(s.description)}</div>` : ""}
+        </div>
+      </div>
+    `).join("");
+  },
+};
 
       // Build sections in the order defined by customization
       const sectionsHTML = activeSectionOrder
@@ -4758,7 +4758,6 @@ const TemplateSeven: React.FC<TemplateSevenProps> = ({ alldata, customization })
       githubUrl,
       dateOfBirth,
       CSS,
-      sectionBuilders,
     ],
   );
 
@@ -4843,7 +4842,6 @@ const TemplateSeven: React.FC<TemplateSevenProps> = ({ alldata, customization })
             ".project-item",
             ".resume-header",
             ".custom-section",
-            ".skills-content",
           ].join(", ");
 
           resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
@@ -4854,23 +4852,28 @@ const TemplateSeven: React.FC<TemplateSevenProps> = ({ alldata, customization })
             }
           });
 
-          resume.querySelectorAll<HTMLElement>(".section").forEach((section) => {
-            const sectionTop = getRelTop(section);
-            const firstItem = section.querySelector<HTMLElement>(
-              ".experience-item, .education-item, .project-item, .custom-section, .skills-content",
-            );
-            if (firstItem) {
-              const anchorBottom = getRelBottom(firstItem);
-              if (anchorBottom - sectionTop > 8) {
-                blocks.push({ top: sectionTop, bottom: anchorBottom, id: section.dataset.blockId });
-              }
-            } else {
-              const sectionBottom = getRelBottom(section);
-              if (sectionBottom - sectionTop > 8) {
-                blocks.push({ top: sectionTop, bottom: sectionBottom, id: section.dataset.blockId });
-              }
-            }
-          });
+          // AFTER
+resume.querySelectorAll<HTMLElement>(".section").forEach((section) => {
+  const sectionTop = getRelTop(section);
+  const firstItem = section.querySelector<HTMLElement>(
+    ".experience-item, .education-item, .project-item, .custom-section, .skills-content",
+  );
+
+  // Skip anchor logic for skills — allow it to split across pages
+  if (firstItem?.classList.contains("skills-content")) return;
+
+  if (firstItem) {
+    const anchorBottom = getRelBottom(firstItem);
+    if (anchorBottom - sectionTop > 8) {
+      blocks.push({ top: sectionTop, bottom: anchorBottom, id: section.dataset.blockId });
+    }
+  } else {
+    const sectionBottom = getRelBottom(section);
+    if (sectionBottom - sectionTop > 8) {
+      blocks.push({ top: sectionTop, bottom: sectionBottom, id: section.dataset.blockId });
+    }
+  }
+});
 
           blocks.sort((a, b) => a.top - b.top);
 
@@ -4902,8 +4905,10 @@ const TemplateSeven: React.FC<TemplateSevenProps> = ({ alldata, customization })
             if (cutBlockId) pageBreakIds.push(cutBlockId);
           }
 
-          document.body.removeChild(iframe);
-          (window as any).__resumePageBreakIds = pageBreakIds;
+      
+
+document.body.removeChild(iframe);
+(window as any).__resumePageBreakIds = pageBreakIds;
 
           const pageHtmls: string[] = [];
 
@@ -4991,8 +4996,10 @@ const TemplateSeven: React.FC<TemplateSevenProps> = ({ alldata, customization })
   // ── PDF download ─────────────────────────────────────────────────────────
   const handleDownload = async (): Promise<void> => {
     try {
-      const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
-      const pdfHtml = generateHTML(true, pageBreakIds);
+      // AFTER
+// AFTER
+const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
+const pdfHtml = generateHTML(true, pageBreakIds);
 
       const res: AxiosResponse<Blob> = await api.post(
         `${API_URL}/candidates/generate-pdf`,
@@ -5017,7 +5024,7 @@ const TemplateSeven: React.FC<TemplateSevenProps> = ({ alldata, customization })
   // ── RENDER ───────────────────────────────────────────────────────────────
   return (
     <>
-      {lastSegment === "download-resume" && (
+      {/* {lastSegment === "download-resume" && ( */}
         <div className="text-center my-5">
           <motion.button
             onClick={handleDownload}
@@ -5028,7 +5035,7 @@ const TemplateSeven: React.FC<TemplateSevenProps> = ({ alldata, customization })
             Download Resume
           </motion.button>
         </div>
-      )}
+      {/* )} */}
 
       {alldata ? (
         <div

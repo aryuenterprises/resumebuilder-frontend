@@ -215,7 +215,7 @@ export const BeforeAfterSection = () => {
             <p className="mt-3 sm:mt-5 md:mt-6 text-xs sm:text-base md:text-lg text-gray-500 leading-relaxed px-2 sm:px-0">
               PassATS analyzes your experience, suggests powerful industry
               specific skills, and rewrites your achievements as measurable
-              impact statements - the kind that Pass ATS filters and get
+              impact statements - the kind that PassATS filters and get
               callbacks
             </p>
 

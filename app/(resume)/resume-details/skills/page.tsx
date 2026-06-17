@@ -463,7 +463,7 @@ const SkillsForm = () => {
           },
           {
             tip: "Use keywords from job descriptions",
-            example: "Helps pass ATS filters",
+            example: "Helps PassATS filters",
           },
           {
             tip: "Keep it concise — 4-6 strongest skills",

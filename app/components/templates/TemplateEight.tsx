@@ -6313,29 +6313,6 @@
 
 // export default TemplateEight;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
 // import React, { useContext } from "react";
 // import axios from "axios";
@@ -6372,9 +6349,6 @@
 //   const githubUrl = contact?.github;
 //   const dateOfBirth = contact?.dob;
 //     const formattedDob = formatDateOfBirth(dateOfBirth ? dateOfBirth : "");
-
-
- 
 
 //   // Helper function to render skills
 //   const renderSkills = () => {
@@ -6489,7 +6463,7 @@
 //   .t8-resume.is-preview {
 //     transform: scale(0.36);
 //     transform-origin: top left;
-//     width: 210mm; 
+//     width: 210mm;
 //     height: auto;
 //     max-height: none;
 //     min-height: auto;
@@ -6775,7 +6749,6 @@
 //     font-family: 'Barlow', sans-serif;
 //   }
 
-
 //     /* Rich text content styles - FIXED for preview */
 //   .t8-resume .entry-content ul,
 //   .t8-resume .entry-content ol,
@@ -6870,7 +6843,6 @@
 //     }
 //   }
 
- 
 // `;
 
 //   /* ======================================================
@@ -7299,7 +7271,6 @@
 //     }
 //   };
 
-
 //   /* ======================================================
 //      JSX PREVIEW
 //   ====================================================== */
@@ -7725,35 +7696,6 @@
 
 // export default TemplateEight;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
 // import React, { useContext } from "react";
 // import axios from "axios";
@@ -7903,7 +7845,7 @@
 //   .t8-resume.is-preview {
 //     transform: scale(0.36);
 //     transform-origin: top left;
-//     width: 210mm; 
+//     width: 210mm;
 //     height: auto;
 //     max-height: none;
 //     min-height: auto;
@@ -8252,7 +8194,7 @@
 //     .t8-resume .entry-date {
 //       white-space: nowrap;
 //     }
-    
+
 //     /* Ensure lists print correctly */
 //     .t8-resume .entry-content ul,
 //     .t8-resume .skills-content ul,
@@ -8261,7 +8203,7 @@
 //       list-style-type: disc !important;
 //       padding-left: 20px !important;
 //     }
-    
+
 //     .t8-resume .entry-content ol,
 //     .t8-resume .skills-content ol,
 //     .t8-resume .edu-content ol,
@@ -8853,7 +8795,6 @@
 //             <div className="section-title">Education</div>
 //             {educations.map((edu, index) => {
 //               const formattedGrade = formatGradeToCgpdAndPercentage(edu.grade || "");
-             
 
 //               return (
 //                 <div key={edu.id || index} className="entry-block">
@@ -9080,34 +9021,6 @@
 
 // export default TemplateEight;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
 // import React, { useContext } from "react";
 // import axios from "axios";
@@ -9232,10 +9145,6 @@
 //     );
 //   };
 
-
-
-
-
 // const styles = `
 // @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Barlow:wght@300;400;500;600&display=swap');
 
@@ -9258,7 +9167,7 @@
 // .t8-resume.is-preview {
 //   transform: scale(0.36);
 //   transform-origin: top left;
-//   width: 210mm; 
+//   width: 210mm;
 //   height: auto;
 //   max-height: none;
 //   min-height: auto;
@@ -9598,7 +9507,7 @@
 //   .t8-resume .entry-date {
 //     white-space: nowrap;
 //   }
-  
+
 //   .t8-resume .entry-content ul,
 //   .t8-resume .skills-content ul,
 //   .t8-resume .edu-content ul,
@@ -9606,7 +9515,7 @@
 //     list-style-type: disc !important;
 //     padding-left: 20px !important;
 //   }
-  
+
 //   .t8-resume .entry-content ol,
 //   .t8-resume .skills-content ol,
 //   .t8-resume .edu-content ol,
@@ -9617,12 +9526,11 @@
 // }
 // `;
 
-
 //   /* ======================================================
 //      HTML GENERATION (for PDF download)
 //   ====================================================== */
 //   const generateHTML = () => {
-   
+
 //     const renderEntryText = (text: string, className: string) => {
 //       if (!text) return "";
 //       if (text.includes("<") && text.includes(">")) {
@@ -10047,7 +9955,6 @@
 //             <div className="section-title">Education</div>
 //             {educations.map((edu, index) => {
 //               const formattedGrade = formatGradeToCgpdAndPercentage(edu.grade || "");
-             
 
 //               return (
 //                 <div key={edu.id || index} className="entry-block">
@@ -10114,28 +10021,6 @@
 
 // export default TemplateEight;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
 // import React, { useContext, useState, useEffect, useRef, useCallback } from "react";
 // import axios, { AxiosResponse } from "axios";
@@ -10190,7 +10075,7 @@
 //   const lastSegment = pathname.split("/").pop();
 //   const measureRef = useRef<HTMLIFrameElement>(null);
 //   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
-  
+
 //   const [htmlContent, setHtmlContent] = useState<string>("");
 //   const [pages, setPages] = useState<string[]>([]);
 
@@ -10517,7 +10402,7 @@
 //       .t8-resume .entry-date {
 //         white-space: nowrap;
 //       }
-      
+
 //       .t8-resume .entry-content ul,
 //       .t8-resume .skills-content ul,
 //       .t8-resume .edu-content ul,
@@ -10525,7 +10410,7 @@
 //         list-style-type: disc !important;
 //         padding-left: 20px !important;
 //       }
-      
+
 //       .t8-resume .entry-content ol,
 //       .t8-resume .skills-content ol,
 //       .t8-resume .edu-content ol,
@@ -11167,32 +11052,6 @@
 
 // export default TemplateEight;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
 // import React, { useContext, useState, useEffect, useRef, useCallback } from "react";
 // import axios, { AxiosResponse } from "axios";
@@ -11805,14 +11664,12 @@
 //     //     { responseType: "blob" },
 //     //   );
 
-
 //       const res: AxiosResponse<Blob> = await api.post(
 //               `${API_URL}/candidates/generate-pdf`,
 //               { html:generateHTML(true, pageBreakIds)   },
 //               { responseType: "blob" },
 //             );
 
-      
 //       const url = URL.createObjectURL(res.data);
 //       const a = document.createElement("a");
 //       a.href = url;
@@ -11888,12 +11745,25 @@
 
 
 
+
 "use client";
-import React, { useContext, useState, useEffect, useRef, useCallback } from "react";
+
+import React, {
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+} from "react";
 import axios, { AxiosResponse } from "axios";
 import { CreateContext } from "@/app/context/CreateContext";
 import { API_URL } from "@/app/config/api";
-import { formatMonthYear, cleanQuillHTML, formatDateOfBirth, formatGradeToCgpdAndPercentage } from "@/app/utils";
+import {
+  formatMonthYear,
+  cleanQuillHTML,
+  formatDateOfBirth,
+  formatGradeToCgpdAndPercentage,
+} from "@/app/utils";
 import { usePathname } from "next/navigation";
 import { ResumeProps } from "@/app/types";
 import { motion } from "framer-motion";
@@ -11913,7 +11783,10 @@ interface TemplateEightProps extends ResumeProps {
   customization?: ResumeCustomization;
 }
 
-const TemplateEight: React.FC<TemplateEightProps> = ({ alldata, customization }) => {
+const TemplateEight: React.FC<TemplateEightProps> = ({
+  alldata,
+  customization,
+}) => {
   const context = useContext(CreateContext);
   const pathname = usePathname();
   const lastSegment = pathname.split("/").pop();
@@ -11924,7 +11797,9 @@ const TemplateEight: React.FC<TemplateEightProps> = ({ alldata, customization })
 
   // ── Customization ─────────────────────────────────────────────────────────
   const activeFontFamily = customization?.fontFamily ?? "'EB Garamond', serif";
-  const activeSectionOrder: SectionKey[] = customization?.sectionOrder ?? [...DEFAULT_SECTION_ORDER];
+  const activeSectionOrder: SectionKey[] = customization?.sectionOrder ?? [
+    ...DEFAULT_SECTION_ORDER,
+  ];
 
   // ── Data sources ─────────────────────────────────────────────────────────
   const contact = alldata?.contact || context.contact || {};
@@ -11936,7 +11811,10 @@ const TemplateEight: React.FC<TemplateEightProps> = ({ alldata, customization })
   const summary = alldata?.summary || context?.summary || "";
 
   const addressParts = [
-    contact?.address, contact?.city, contact?.postCode, contact?.country,
+    contact?.address,
+    contact?.city,
+    contact?.postCode,
+    contact?.country,
   ].filter(Boolean);
 
   const linkedinUrl = contact?.linkedIn;
@@ -11947,46 +11825,65 @@ const TemplateEight: React.FC<TemplateEightProps> = ({ alldata, customization })
   // ── Complete Font import map ────────────────────────────────────────────────
   const getFontImport = (fontFamily: string): string => {
     const map: Record<string, string> = {
-      "'Inter', sans-serif": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap",
+      "'Inter', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap",
       "'-apple-system', 'BlinkMacSystemFont', sans-serif": "",
-      "'Poppins', sans-serif": "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap",
-      "'Lato', sans-serif": "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",
-      "'Nunito', sans-serif": "https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap",
-      "'Raleway', sans-serif": "https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap",
-      "'Montserrat', sans-serif": "https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap",
-      "'Open Sans', sans-serif": "https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap",
-      "'Roboto', sans-serif": "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap",
-      "'Merriweather', serif": "https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap",
-      "'Playfair Display', serif": "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap",
-      "'DM Serif Display', serif": "https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap",
-      "'Libre Baskerville', serif": "https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap",
-      "'EB Garamond', serif": "https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&display=swap",
-      "'Crimson Text', serif": "https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap",
-      "'Source Code Pro', monospace": "https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&display=swap",
-      "'JetBrains Mono', monospace": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap",
+      "'Poppins', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap",
+      "'Lato', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",
+      "'Nunito', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap",
+      "'Raleway', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap",
+      "'Montserrat', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap",
+      "'Open Sans', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap",
+      "'Roboto', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap",
+      "'Merriweather', serif":
+        "https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap",
+      "'Playfair Display', serif":
+        "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap",
+      "'DM Serif Display', serif":
+        "https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap",
+      "'Libre Baskerville', serif":
+        "https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap",
+      "'EB Garamond', serif":
+        "https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&display=swap",
+      "'Crimson Text', serif":
+        "https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap",
+      "'Source Code Pro', monospace":
+        "https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&display=swap",
+      "'JetBrains Mono', monospace":
+        "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap",
     };
     return map[fontFamily] || map["'EB Garamond', serif"];
   };
 
   const getSystemFallback = (fontFamily: string): string => {
-    if (fontFamily.includes('serif')) return 'Georgia, "Times New Roman", serif';
-    if (fontFamily.includes('monospace')) return '"Courier New", Courier, monospace';
+    if (fontFamily.includes("serif"))
+      return 'Georgia, "Times New Roman", serif';
+    if (fontFamily.includes("monospace"))
+      return '"Courier New", Courier, monospace';
     return '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
   };
 
   // ── Get complementary sans font ────────────────────────────────────────────
   const getComplementaryFont = (fontFamily: string): string => {
-    if (fontFamily.includes('serif')) return "'Barlow', sans-serif";
+    if (fontFamily.includes("serif")) return "'Barlow', sans-serif";
     return fontFamily;
   };
 
   // ── CSS builder with dynamic font ─────────────────────────────────────────
-  const buildCSS = useCallback(
-    (fontFamily: string) => {
-      const complementaryFont = getComplementaryFont(fontFamily);
-      const serifFont = fontFamily.includes('serif') ? fontFamily : "'EB Garamond', serif";
-      
-      return `
+  const buildCSS = useCallback((fontFamily: string) => {
+    const complementaryFont = getComplementaryFont(fontFamily);
+    const serifFont = fontFamily.includes("serif")
+      ? fontFamily
+      : "'EB Garamond', serif";
+
+    return `
     @import url('${getFontImport(fontFamily)}');
     @import url('https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600&display=swap');
 
@@ -12142,15 +12039,14 @@ const TemplateEight: React.FC<TemplateEightProps> = ({ alldata, customization })
       }
     }
   `;
-    },
-    [],
-  );
+  }, []);
 
   const styles = buildCSS(activeFontFamily);
 
   // ── Helper functions ──────────────────────────────────────────────────────
-  const href = (url: string) => url.startsWith("http") ? url : `https://${url}`;
-  
+  const href = (url: string) =>
+    url.startsWith("http") ? url : `https://${url}`;
+
   const rich = (html: string) => {
     const c = cleanQuillHTML(html);
     return c && c !== "<p><br></p>" ? c : "";
@@ -12162,33 +12058,63 @@ const TemplateEight: React.FC<TemplateEightProps> = ({ alldata, customization })
       return `<div class="entry-content ${className}">${rich(text)}</div>`;
     }
     const lines = text.split("\n").filter((l) => l.trim() !== "");
-    if (lines.some((l) => l.trim().startsWith("-") || l.trim().startsWith("•"))) {
+    if (
+      lines.some((l) => l.trim().startsWith("-") || l.trim().startsWith("•"))
+    ) {
       return `<div class="entry-content ${className}"><ul style="list-style-type:disc!important;padding-left:18px;margin:4px 0;">${lines
         .map((l) => {
           const t = l.trim();
-          const content = t.startsWith("-") || t.startsWith("•") ? t.substring(1).trim() : t;
-          return content ? `<li style="margin-bottom:3px;line-height:1.6;list-style-type:disc!important;">${content}</li>` : "";
-        }).join("")}</ul></div>`;
+          const content =
+            t.startsWith("-") || t.startsWith("•") ? t.substring(1).trim() : t;
+          return content
+            ? `<li style="margin-bottom:3px;line-height:1.6;list-style-type:disc!important;">${content}</li>`
+            : "";
+        })
+        .join("")}</ul></div>`;
     }
     return `<div class="entry-content ${className}" style="white-space:pre-wrap">${rich(text)}</div>`;
   };
 
-  // ── Section builders ──────────────────────────────────────────────────────
-  const sectionBuilders: Record<SectionKey, () => string> = {
-    summary: () => summary ? `
+  // ── HTML builder with section ordering ───────────────────────────────────
+  // AFTER
+  const generateHTML = useCallback(
+    (
+      forPDF = false,
+      pageBreakIds: string[] = [],
+      skillsCutIndex = -1,
+    ): string => {
+      const formattedDob = formatDateOfBirth(dateOfBirth ? dateOfBirth : "");
+      const addressStr = addressParts.join(", ");
+
+      const fontPreloads =
+        activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif"
+          ? `<link href="${getFontImport(activeFontFamily)}" rel="stylesheet"/>`
+          : "";
+
+      // ── Section builders ──────────────────────────────────────────────────────
+      const sectionBuilders: Record<SectionKey, () => string> = {
+        summary: () =>
+          summary
+            ? `
       <div class="section-block" data-block-id="summary">
         <div class="section-title">Profile</div>
         <div class="summary-text">${rich(summary)}</div>
       </div>
-    ` : "",
+    `
+            : "",
 
-    experience: () => experiences.length ? `
+        experience: () =>
+          experiences.length
+            ? `
       <div class="section-block" data-block-id="exp-section">
         <div class="section-title">Experience</div>
-        ${experiences.map((exp: any, i: number) => {
-          const startFormatted = formatMonthYear(exp.startDate, false);
-          const endFormatted = exp.endDate ? formatMonthYear(exp.endDate, false) : "Present";
-          return `
+        ${experiences
+          .map((exp: any, i: number) => {
+            const startFormatted = formatMonthYear(exp.startDate, false);
+            const endFormatted = exp.endDate
+              ? formatMonthYear(exp.endDate, false)
+              : "Present";
+            return `
             <div class="entry-block" data-block-id="exp-${i}">
               <div class="entry-top-row">
                 <div class="entry-title">${exp.jobTitle || ""}</div>
@@ -12198,14 +12124,20 @@ const TemplateEight: React.FC<TemplateEightProps> = ({ alldata, customization })
               ${exp.text ? renderEntryText(exp.text, "entry-content-description") : ""}
             </div>
           `;
-        }).join("")}
+          })
+          .join("")}
       </div>
-    ` : "",
+    `
+            : "",
 
-    projects: () => projects.length ? `
+        projects: () =>
+          projects.length
+            ? `
       <div class="section-block" data-block-id="proj-section">
         <div class="section-title">Projects</div>
-        ${projects.map((p: any, i: number) => `
+        ${projects
+          .map(
+            (p: any, i: number) => `
           <div class="entry-block" data-block-id="proj-${i}">
             <div class="project-header">
               <div class="entry-title">${p.title || ""}</div>
@@ -12217,30 +12149,47 @@ const TemplateEight: React.FC<TemplateEightProps> = ({ alldata, customization })
             ${p.techStack?.length ? `<div class="project-tech-stack"><strong>Tech:</strong> ${p.techStack.join(", ")}</div>` : ""}
             ${p.description ? `<div class="entry-content">${rich(p.description)}</div>` : ""}
           </div>
-        `).join("")}
+        `,
+          )
+          .join("")}
       </div>
-    ` : "",
+    `
+            : "",
 
-    education: () => educations.length ? `
+        education: () =>
+          educations.length
+            ? `
       <div class="section-block" data-block-id="edu-section">
         <div class="section-title">Education</div>
-        ${educations.map((edu: any, i: number) => {
-          const formattedGrade = formatGradeToCgpdAndPercentage(edu.grade || "");
-          let textHtml = "";
-          if (edu.text) {
-            if (edu.text.includes("<") && edu.text.includes(">")) {
-              textHtml = `<div class="edu-content">${rich(edu.text)}</div>`;
-            } else {
-              const lines = edu.text.split("\n").filter((l: string) => l.trim() !== "");
-              if (lines.some((l: string) => l.trim().startsWith("-"))) {
-                textHtml = `<ul class="edu-content" style="list-style-type:disc!important;padding-left:18px;margin:4px 0;">${lines
-                  .map((l: string) => { const t = l.trim(); const c = t.startsWith("-") ? t.substring(1).trim() : t; return c ? `<li style="margin-bottom:3px;">${c}</li>` : ""; }).join("")}</ul>`;
+        ${educations
+          .map((edu: any, i: number) => {
+            const formattedGrade = formatGradeToCgpdAndPercentage(
+              edu.grade || "",
+            );
+            let textHtml = "";
+            if (edu.text) {
+              if (edu.text.includes("<") && edu.text.includes(">")) {
+                textHtml = `<div class="edu-content">${rich(edu.text)}</div>`;
               } else {
-                textHtml = `<div class="edu-content" style="white-space:pre-wrap">${rich(edu.text)}</div>`;
+                const lines = edu.text
+                  .split("\n")
+                  .filter((l: string) => l.trim() !== "");
+                if (lines.some((l: string) => l.trim().startsWith("-"))) {
+                  textHtml = `<ul class="edu-content" style="list-style-type:disc!important;padding-left:18px;margin:4px 0;">${lines
+                    .map((l: string) => {
+                      const t = l.trim();
+                      const c = t.startsWith("-") ? t.substring(1).trim() : t;
+                      return c
+                        ? `<li style="margin-bottom:3px;">${c}</li>`
+                        : "";
+                    })
+                    .join("")}</ul>`;
+                } else {
+                  textHtml = `<div class="edu-content" style="white-space:pre-wrap">${rich(edu.text)}</div>`;
+                }
               }
             }
-          }
-          return `
+            return `
             <div class="entry-block" data-block-id="edu-${i}">
               <div class="entry-top-row">
                 <div class="entry-title">${edu.schoolname || ""}</div>
@@ -12253,58 +12202,81 @@ const TemplateEight: React.FC<TemplateEightProps> = ({ alldata, customization })
               ${textHtml}
             </div>
           `;
-        }).join("")}
+          })
+          .join("")}
       </div>
-    ` : "",
+    `
+            : "",
 
-    skills: () => {
-      const skillsClean = rich(skills);
-      if (!skillsClean || skillsClean === "<p><br></p>") return "";
-      return `
-        <div class="section-block" data-block-id="skills-section">
-          <div class="section-title">Skills</div>
-          <div class="skills-content" data-block-id="skills-content">${skillsClean}</div>
-        </div>
-      `;
-    },
+        skills: () => {
+          const skillsClean = rich(skills);
+          if (!skillsClean || skillsClean === "<p><br></p>") return "";
 
-    custom: () => {
-      if (!Array.isArray(finalize?.customSection)) return "";
-      const filteredCustom = finalize.customSection.filter((s: any) => s?.name?.trim() || s?.description?.trim());
-      if (filteredCustom.length === 0) return "";
-      return filteredCustom.map((s: any, i: number) => `
+          if (forPDF && skillsCutIndex >= 0) {
+            const tempDiv = document.createElement("div");
+            tempDiv.innerHTML = skillsClean;
+            const allLis = Array.from(tempDiv.querySelectorAll("li"));
+            if (skillsCutIndex < allLis.length) {
+              const beforeLis = allLis
+                .slice(0, skillsCutIndex)
+                .map((li) => `<li>${li.innerHTML}</li>`)
+                .join("");
+              const afterLis = allLis
+                .slice(skillsCutIndex)
+                .map((li) => `<li>${li.innerHTML}</li>`)
+                .join("");
+              return `<div class="section-block" data-block-id="skills-section">
+        <div class="section-title">Skills</div>
+        <div class="skills-content"><ul>${beforeLis}</ul></div>
+      </div>
+      <div class="t8-page-break"></div>
+      <div class="section-block" data-block-id="skills-section-continued">
+        <div class="skills-content"><ul>${afterLis}</ul></div>
+      </div>`;
+            }
+          }
+
+          return `<div class="section-block" data-block-id="skills-section">
+    <div class="section-title">Skills</div>
+    <div class="skills-content" data-block-id="skills-content">${skillsClean}</div>
+  </div>`;
+        },
+        custom: () => {
+          if (!Array.isArray(finalize?.customSection)) return "";
+          const filteredCustom = finalize.customSection.filter(
+            (s: any) => s?.name?.trim() || s?.description?.trim(),
+          );
+          if (filteredCustom.length === 0) return "";
+          return filteredCustom
+            .map(
+              (s: any, i: number) => `
         <div class="section-block" data-block-id="custom-${i}">
           ${s.name ? `<div class="section-title">${s.name}</div>` : ""}
           ${s.description ? `<div class="custom-section-content">${rich(s.description)}</div>` : ""}
         </div>
-      `).join("");
-    },
-  };
+      `,
+            )
+            .join("");
+        },
+      };
 
-  // ── HTML builder with section ordering ───────────────────────────────────
-  const generateHTML = useCallback((forPDF = false, pageBreakIds: string[] = []): string => {
-    const formattedDob = formatDateOfBirth(dateOfBirth ? dateOfBirth : "");
-    const addressStr = addressParts.join(", ");
+      // Build sections in the order defined by customization
+      const sectionsHTML = activeSectionOrder
+        .map((key) => sectionBuilders[key]?.() ?? "")
+        .join("");
 
-    const fontPreloads = activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif" 
-      ? `<link href="${getFontImport(activeFontFamily)}" rel="stylesheet"/>`
-      : '';
+      const pdfStyle = forPDF
+        ? `<style>.t8-resume { width: 100% !important; padding: 0 !important; }</style>`
+        : "";
 
-    // Build sections in the order defined by customization
-    const sectionsHTML = activeSectionOrder
-      .map(key => sectionBuilders[key]?.() ?? "")
-      .join("");
-
-    const pdfStyle = forPDF
-      ? `<style>.t8-resume { width: 100% !important; padding: 0 !important; }</style>`
-      : "";
-
-    let bodyContent = `
+      let bodyContent = `
       <div class="header-block" data-block-id="header">
         <div class="header-name">${contact?.firstName || ""} ${contact?.lastName || ""}</div>
         <div class="header-jobtitle">${
           contact?.jobTitle
-            ? typeof contact.jobTitle === "string" ? contact.jobTitle : (contact.jobTitle as any)?.name || ""
+            ? typeof contact.jobTitle === "string"
+              ? contact.jobTitle
+              : (contact.jobTitle as any)?.name || ""
             : ""
         }</div>
         <div class="header-meta">
@@ -12320,21 +12292,21 @@ const TemplateEight: React.FC<TemplateEightProps> = ({ alldata, customization })
       ${sectionsHTML}
     `;
 
-    if (forPDF && pageBreakIds.length > 0) {
-      const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = bodyContent;
-      pageBreakIds.forEach((id) => {
-        const el = tempDiv.querySelector(`[data-block-id="${id}"]`);
-        if (el) {
-          const breakDiv = document.createElement("div");
-          breakDiv.className = "t8-page-break";
-          el.parentNode?.insertBefore(breakDiv, el);
-        }
-      });
-      bodyContent = tempDiv.innerHTML;
-    }
+      if (forPDF && pageBreakIds.length > 0) {
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = bodyContent;
+        pageBreakIds.forEach((id) => {
+          const el = tempDiv.querySelector(`[data-block-id="${id}"]`);
+          if (el) {
+            const breakDiv = document.createElement("div");
+            breakDiv.className = "t8-page-break";
+            el.parentNode?.insertBefore(breakDiv, el);
+          }
+        });
+        bodyContent = tempDiv.innerHTML;
+      }
 
-    return `<!DOCTYPE html>
+      return `<!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8"/>
@@ -12351,24 +12323,25 @@ const TemplateEight: React.FC<TemplateEightProps> = ({ alldata, customization })
   </div>
 </body>
 </html>`;
-  }, [
-    activeFontFamily,
-    activeSectionOrder,
-    contact,
-    educations,
-    experiences,
-    skills,
-    projects,
-    finalize,
-    summary,
-    linkedinUrl,
-    portfolioUrl,
-    githubUrl,
-    dateOfBirth,
-    addressParts,
-    styles,
-    sectionBuilders,
-  ]);
+    },
+    [
+      activeFontFamily,
+      activeSectionOrder,
+      contact,
+      educations,
+      experiences,
+      skills,
+      projects,
+      finalize,
+      summary,
+      linkedinUrl,
+      portfolioUrl,
+      githubUrl,
+      dateOfBirth,
+      addressParts,
+      styles,
+    ],
+  );
 
   // ── PAGE SPLITTER ─────────────────────────────────────────────────────────
   const splitIntoPages = useCallback(
@@ -12377,14 +12350,23 @@ const TemplateEight: React.FC<TemplateEightProps> = ({ alldata, customization })
         const parser = new DOMParser();
         const parsed = parser.parseFromString(fullHtml, "text/html");
         const resumeEl = parsed.querySelector<HTMLElement>(".t8-resume");
-        if (!resumeEl) { resolve([fullHtml]); return; }
+        if (!resumeEl) {
+          resolve([fullHtml]);
+          return;
+        }
         const resumeSnapshot = resumeEl.outerHTML;
 
         const iframe = document.createElement("iframe");
         iframe.style.cssText = [
-          "position:fixed", "top:0", "left:-9999px",
-          `width:${A4_W}px`, "height:10000px", "border:none",
-          "opacity:0", "pointer-events:none", "z-index:-1",
+          "position:fixed",
+          "top:0",
+          "left:-9999px",
+          `width:${A4_W}px`,
+          "height:10000px",
+          "border:none",
+          "opacity:0",
+          "pointer-events:none",
+          "z-index:-1",
         ].join(";");
         document.body.appendChild(iframe);
 
@@ -12422,13 +12404,16 @@ const TemplateEight: React.FC<TemplateEightProps> = ({ alldata, customization })
             return;
           }
 
-          measureDoc.documentElement.style.cssText = "height:auto!important;overflow:visible!important;";
-          measureDoc.body.style.cssText = "margin:0;padding:0;height:auto!important;overflow:visible!important;";
+          measureDoc.documentElement.style.cssText =
+            "height:auto!important;overflow:visible!important;";
+          measureDoc.body.style.cssText =
+            "margin:0;padding:0;height:auto!important;overflow:visible!important;";
           void resume.offsetHeight;
 
           const totalH = resume.scrollHeight;
           const resumeRect = resume.getBoundingClientRect();
-          const scrollY = measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
+          const scrollY =
+            measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
 
           const getRelTop = (el: HTMLElement): number => {
             const r = el.getBoundingClientRect();
@@ -12437,7 +12422,11 @@ const TemplateEight: React.FC<TemplateEightProps> = ({ alldata, customization })
           const getRelBottom = (el: HTMLElement): number =>
             getRelTop(el) + el.getBoundingClientRect().height;
 
-          interface Block { top: number; bottom: number; id?: string; }
+          interface Block {
+            top: number;
+            bottom: number;
+            id?: string;
+          }
           const blocks: Block[] = [];
 
           const ITEM_SELECTORS = [
@@ -12449,27 +12438,43 @@ const TemplateEight: React.FC<TemplateEightProps> = ({ alldata, customization })
           resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
             const top = getRelTop(el);
             const bottom = getRelBottom(el);
-            if (bottom - top > 8) blocks.push({ top, bottom, id: el.dataset.blockId });
+            if (bottom - top > 8)
+              blocks.push({ top, bottom, id: el.dataset.blockId });
           });
 
-          resume.querySelectorAll<HTMLElement>(".section-title").forEach((title) => {
-            const titleTop = getRelTop(title);
-            let firstItem: HTMLElement | null = null;
-            let sib = title.nextElementSibling as HTMLElement | null;
-            while (sib) {
-              if (sib.getBoundingClientRect().height > 8) { firstItem = sib; break; }
-              sib = sib.nextElementSibling as HTMLElement | null;
-            }
-            if (firstItem) {
-              const deepChild = firstItem.querySelector<HTMLElement>(".entry-block, .skills-content");
-              const anchor = deepChild || firstItem;
-              const anchorBottom = getRelBottom(anchor);
-              if (anchorBottom - titleTop > 8) {
-                const sectionId = (title.parentElement as HTMLElement)?.dataset?.blockId;
-                blocks.push({ top: titleTop, bottom: anchorBottom, id: sectionId });
+          resume
+            .querySelectorAll<HTMLElement>(".section-title")
+            .forEach((title) => {
+              const titleTop = getRelTop(title);
+              let firstItem: HTMLElement | null = null;
+              let sib = title.nextElementSibling as HTMLElement | null;
+              while (sib) {
+                if (sib.getBoundingClientRect().height > 8) {
+                  firstItem = sib;
+                  break;
+                }
+                sib = sib.nextElementSibling as HTMLElement | null;
               }
-            }
-          });
+              // AFTER
+              if (firstItem) {
+                // Skip anchor logic for skills — allow it to split across pages
+                if (firstItem.classList.contains("skills-content")) return;
+
+                const deepChild =
+                  firstItem.querySelector<HTMLElement>(".entry-block");
+                const anchor = deepChild || firstItem;
+                const anchorBottom = getRelBottom(anchor);
+                if (anchorBottom - titleTop > 8) {
+                  const sectionId = (title.parentElement as HTMLElement)
+                    ?.dataset?.blockId;
+                  blocks.push({
+                    top: titleTop,
+                    bottom: anchorBottom,
+                    id: sectionId,
+                  });
+                }
+              }
+            });
 
           blocks.sort((a, b) => a.top - b.top);
 
@@ -12501,9 +12506,63 @@ const TemplateEight: React.FC<TemplateEightProps> = ({ alldata, customization })
             if (cutBlockId) pageBreakIds.push(cutBlockId);
           }
 
-          (window as any).__resumeT8PageBreakIds = pageBreakIds;
+          const skillsLis = Array.from(
+            resume.querySelectorAll<HTMLElement>(".skills-content li"),
+          );
+          skillsLis.forEach((li) => {
+            const top = getRelTop(li);
+            const bottom = getRelBottom(li);
+            if (bottom - top > 2) blocks.push({ top, bottom });
+          });
+
+          blocks.sort((a, b) => a.top - b.top);
+          pageStarts.length = 1;
+          pageBreakIds.length = 0;
+
+          while (pageStarts.length < MAX_PAGES) {
+            const currentStart = pageStarts[pageStarts.length - 1];
+            const naiveCut = currentStart + PAGE_CONTENT_H;
+            if (naiveCut >= totalH) break;
+
+            let actualCut = naiveCut;
+            let cutBlockId: string | undefined;
+
+            for (const block of blocks) {
+              if (block.top >= naiveCut) break;
+              if (block.bottom <= currentStart) continue;
+              if (block.top >= currentStart && block.bottom > naiveCut) {
+                if (block.top < actualCut) {
+                  actualCut = block.top;
+                  cutBlockId = block.id;
+                }
+              }
+            }
+
+            if (actualCut <= currentStart) actualCut = naiveCut;
+            pageStarts.push(actualCut);
+            if (cutBlockId) pageBreakIds.push(cutBlockId);
+          }
+
+          (window as any).__resumeSkillsCutIndex = -1;
+          for (let p = 0; p < pageStarts.length - 1; p++) {
+            const cutY = pageStarts[p + 1];
+            for (let li = 0; li < skillsLis.length; li++) {
+              const liTop = getRelTop(skillsLis[li]);
+              const liBottom = getRelBottom(skillsLis[li]);
+              if (liTop < cutY && liBottom > cutY) {
+                (window as any).__resumeSkillsCutIndex = li;
+                break;
+              }
+              if (liTop >= cutY) {
+                (window as any).__resumeSkillsCutIndex = li;
+                break;
+              }
+            }
+            if ((window as any).__resumeSkillsCutIndex >= 0) break;
+          }
 
           document.body.removeChild(iframe);
+          (window as any).__resumePageBreakIds = pageBreakIds;
 
           const pageHtmls: string[] = [];
 
@@ -12579,7 +12638,9 @@ const TemplateEight: React.FC<TemplateEightProps> = ({ alldata, customization })
 
   useEffect(() => {
     scheduleUpdate(generateHTML());
-    return () => { if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current); };
+    return () => {
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    };
   }, [generateHTML, scheduleUpdate]);
 
   useEffect(() => {
@@ -12590,12 +12651,31 @@ const TemplateEight: React.FC<TemplateEightProps> = ({ alldata, customization })
   // ── PDF download ─────────────────────────────────────────
   const handleDownload = async () => {
     try {
-      const pageBreakIds: string[] = (window as any).__resumeT8PageBreakIds || [];
-      const res: AxiosResponse<Blob> = await api.post(
-        `${API_URL}/candidates/generate-pdf`,
-        { html: generateHTML(true, pageBreakIds) },
-        { responseType: "blob" },
-      );
+      //   // AFTER
+      //   const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
+      //   const res: AxiosResponse<Blob> = await api.post(
+      //     `${API_URL}/candidates/generate-pdf`,
+      //     { html: generateHTML(true, pageBreakIds) },
+      //     { responseType: "blob" },
+      //   );
+
+      // AFTER
+      const pageBreakIds: string[] = (
+        (window as any).__resumePageBreakIds || []
+      ).filter((id: string) => id !== "skills-section");
+      const skillsCutIndex: number =
+        (window as any).__resumeSkillsCutIndex ?? -1;
+    //   const res: AxiosResponse<Blob> = await api.post(
+    //     `${API_URL}/candidates/generate-pdf`,
+    //     { html: generateHTML(true, pageBreakIds, skillsCutIndex) },
+    //   );
+
+      // AFTER
+const res: AxiosResponse<Blob> = await api.post(
+  `${API_URL}/candidates/generate-pdf`,
+  { html: generateHTML(true, pageBreakIds, skillsCutIndex) },
+  { responseType: "blob" },
+);
 
       const url = URL.createObjectURL(res.data);
       const a = document.createElement("a");
@@ -12613,27 +12693,58 @@ const TemplateEight: React.FC<TemplateEightProps> = ({ alldata, customization })
 
   return (
     <>
-      {lastSegment === "download-resume" && (
-        <div className="text-center my-5">
-          <motion.button
-            onClick={handleDownload}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-emerald-500 text-2xl md:text-base hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 cursor-pointer shadow-md hover:shadow-lg"
-          >
-            Download Resume
-          </motion.button>
-        </div>
-      )}
+      {/* {lastSegment === "download-resume" && ( */}
+      <div className="text-center my-5">
+        <motion.button
+          onClick={handleDownload}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="bg-emerald-500 text-2xl md:text-base hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 cursor-pointer shadow-md hover:shadow-lg"
+        >
+          Download Resume
+        </motion.button>
+      </div>
+      {/* )} */}
 
       {alldata ? (
-        <div style={{ width: `${A4_W}px`, height: `${A4_H}px`, transform: "scale(0.36)", transformOrigin: "top left", overflow: "hidden", pointerEvents: "none", flexShrink: 0 }}>
+        <div
+          style={{
+            width: `${A4_W}px`,
+            height: `${A4_H}px`,
+            transform: "scale(0.36)",
+            transformOrigin: "top left",
+            overflow: "hidden",
+            pointerEvents: "none",
+            flexShrink: 0,
+          }}
+        >
           {pages[0] ? (
-            <iframe title="resume-thumb" srcDoc={pages[0]}
-              style={{ width: `${A4_W}px`, height: `${A4_H}px`, border: "none", display: "block", pointerEvents: "none" }}
-              sandbox="allow-same-origin" />
+            <iframe
+              title="resume-thumb"
+              srcDoc={pages[0]}
+              style={{
+                width: `${A4_W}px`,
+                height: `${A4_H}px`,
+                border: "none",
+                display: "block",
+                pointerEvents: "none",
+              }}
+              sandbox="allow-same-origin"
+            />
           ) : (
-            <div style={{ width: `${A4_W}px`, height: `${A4_H}px`, background: "white", display: "flex", alignItems: "center", justifyContent: "center", color: "#ccc", fontSize: 14, fontFamily: "sans-serif" }}>
+            <div
+              style={{
+                width: `${A4_W}px`,
+                height: `${A4_H}px`,
+                background: "white",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#ccc",
+                fontSize: 14,
+                fontFamily: "sans-serif",
+              }}
+            >
               Loading…
             </div>
           )}
@@ -12642,18 +12753,61 @@ const TemplateEight: React.FC<TemplateEightProps> = ({ alldata, customization })
         <div style={{ width: `${A4_W}px`, margin: "0 auto" }}>
           {(pages.length > 0 ? pages : [htmlContent]).map((pageHtml, idx) => (
             <div key={idx} style={{ marginBottom: "28px" }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", marginBottom: "10px" }}>
-                <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
-                <span style={{ fontSize: "11px", fontWeight: 600, color: "#6b7280", whiteSpace: "nowrap", padding: "3px 12px", background: "#f3f4f6", borderRadius: "999px", border: "1px solid #e5e7eb", letterSpacing: "0.05em", fontFamily: "system-ui, sans-serif" }}>
-                  Page {idx + 1}{pages.length > 1 ? ` of ${pages.length}` : ""}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "10px",
+                  marginBottom: "10px",
+                }}
+              >
+                <div
+                  style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+                />
+                <span
+                  style={{
+                    fontSize: "11px",
+                    fontWeight: 600,
+                    color: "#6b7280",
+                    whiteSpace: "nowrap",
+                    padding: "3px 12px",
+                    background: "#f3f4f6",
+                    borderRadius: "999px",
+                    border: "1px solid #e5e7eb",
+                    letterSpacing: "0.05em",
+                    fontFamily: "system-ui, sans-serif",
+                  }}
+                >
+                  Page {idx + 1}
+                  {pages.length > 1 ? ` of ${pages.length}` : ""}
                 </span>
-                <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
+                <div
+                  style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+                />
               </div>
-              <div style={{ width: `${A4_W}px`, height: `${A4_H}px`, overflow: "hidden", background: "white", boxShadow: "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)", borderRadius: "2px", flexShrink: 0 }}>
+              <div
+                style={{
+                  width: `${A4_W}px`,
+                  height: `${A4_H}px`,
+                  overflow: "hidden",
+                  background: "white",
+                  boxShadow:
+                    "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
+                  borderRadius: "2px",
+                  flexShrink: 0,
+                }}
+              >
                 <iframe
                   title={`resume-page-${idx + 1}`}
                   srcDoc={pageHtml}
-                  style={{ width: `${A4_W}px`, height: `${A4_H}px`, border: "none", display: "block", pointerEvents: "none" }}
+                  style={{
+                    width: `${A4_W}px`,
+                    height: `${A4_H}px`,
+                    border: "none",
+                    display: "block",
+                    pointerEvents: "none",
+                  }}
                   scrolling="no"
                   sandbox="allow-same-origin allow-scripts"
                 />

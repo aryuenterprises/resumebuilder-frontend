@@ -200,9 +200,9 @@ const faqs: FAQItem[] = [
       "Yes. This tool is built for freshers. The AI automatically creates projects, skills, and experience-style content so your resume doesn't look empty",
   },
   {
-    question: "Will my resume pass ATS (Applicant Tracking Systems)?",
+    question: "Will my resume PassATS (Applicant Tracking Systems)?",
     answer:
-      "Yes. Every resume is optimized with the right format and keywords to pass ATS and get shortlisted by recruiters",
+      "Yes. Every resume is optimized with the right format and keywords to PassATS and get shortlisted by recruiters",
   },
   {
     question: "How long does it take to build a resume?",

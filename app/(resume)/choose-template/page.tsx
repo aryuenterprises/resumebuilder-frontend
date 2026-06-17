@@ -2229,38 +2229,38 @@ function Choose_template() {
         const res = await api.get("/dashboard");
         const { subscription } = res?.data;
 
-        // setUsersCurrentPlan("premium");  //for testing 
+        setUsersCurrentPlan("premium");  //for testing 
 
         // Calculate days expired for friendly message
         let daysExpired = 0;
-        if (subscription?.is_expired === true) {
-          // Assuming you have an expiry date, calculate days
-          if (subscription.plan_details.expires_at) {
-            const expiryDate = new Date(subscription.plan_details.expires_at);
-            const today = new Date();
-            daysExpired = Math.floor(
-              (today.getTime() - expiryDate.getTime()) / (1000 * 3600 * 24),
-            );
-          }
+          // if (subscription?.is_expired === true) {
+          //   // Assuming you have an expiry date, calculate days
+          //   if (subscription.plan_details.expires_at) {
+          //     const expiryDate = new Date(subscription.plan_details.expires_at);
+          //     const today = new Date();
+          //     daysExpired = Math.floor(
+          //       (today.getTime() - expiryDate.getTime()) / (1000 * 3600 * 24),
+          //     );
+          //   }
 
-          setSubscriptionStatus({
-            isExpired: true,
-            message: subscription.message || "Your premium access has ended",
-            daysExpired: daysExpired,
-          });
+          //   setSubscriptionStatus({
+          //     isExpired: true,
+          //     message: subscription.message || "Your premium access has ended",
+          //     daysExpired: daysExpired,
+          //   });
 
-          // Show a subtle, friendly reminder after 2 seconds (not immediately)
-          setTimeout(() => {
-            if (!dismissedReminder) {
-              setShowRenewalReminder(true);
-              // Auto-hide after 8 seconds
-              setTimeout(() => setShowRenewalReminder(false), 8000);
-            }
-          }, 2000);
-        } else {
-          setSubscriptionStatus({ isExpired: false, message: "" });
-          setUsersCurrentPlan(subscription.current_plan.toLowerCase());
-        }
+          //   // Show a subtle, friendly reminder after 2 seconds (not immediately)
+          //   setTimeout(() => {
+          //     if (!dismissedReminder) {
+          //       setShowRenewalReminder(true);
+          //       // Auto-hide after 8 seconds
+          //       setTimeout(() => setShowRenewalReminder(false), 8000);
+          //     }
+          //   }, 2000);
+          // } else {
+          //   setSubscriptionStatus({ isExpired: false, message: "" });
+          //   setUsersCurrentPlan(subscription.current_plan.toLowerCase());
+          // }
       } catch (err) {
         console.error("Failed to fetch user data:", err);
         setUsersCurrentPlan(null);

@@ -7362,7 +7362,16 @@ const TemplateTen: React.FC<TemplateTenProps> = ({ alldata, customization }) => 
   };
 
   // ── Section builders ──────────────────────────────────────────────────────
-  const sectionBuilders: Record<SectionKey, () => string> = {
+  
+
+  // ── HTML builder with section ordering ───────────────────────────────────
+const generateHTML = useCallback((forPDF = false, pageBreakIds: string[] = [], skillsCutIndex = -1): string => {
+    const fontPreloads = activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif" 
+      ? `<link href="${getFontImport(activeFontFamily)}" rel="stylesheet"/>`
+      : '';
+
+
+      const sectionBuilders: Record<SectionKey, () => string> = {
     summary: () => summary ? `
       <div class="section-block" data-block-id="summary">
         <div class="section-header">
@@ -7446,19 +7455,43 @@ const TemplateTen: React.FC<TemplateTenProps> = ({ alldata, customization }) => 
       </div>
     ` : "",
 
-    skills: () => {
-      const skillsClean = rich(skills);
-      if (!skillsClean || skillsClean === "<p><br></p>") return "";
-      return `
-        <div class="section-block" data-block-id="skills-section">
-          <div class="section-header">
-            <span class="section-title">Skills</span>
-            <div class="section-title-bar"></div>
-          </div>
-          <div class="skills-content" data-block-id="skills-content">${skillsClean}</div>
+  skills: () => {
+  const skillsClean = rich(skills);
+  if (!skillsClean || skillsClean === "<p><br></p>") return "";
+
+  if (forPDF && skillsCutIndex >= 0) {
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = skillsClean;
+    const allLis = Array.from(tempDiv.querySelectorAll("li"));
+    if (skillsCutIndex < allLis.length) {
+      const beforeLis = allLis.slice(0, skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
+      const afterLis = allLis.slice(skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
+      return `<div class="section-block" data-block-id="skills-section">
+        <div class="section-header">
+          <span class="section-title">Skills</span>
+          <div class="section-title-bar"></div>
         </div>
-      `;
-    },
+        <div class="skills-content"><ul>${beforeLis}</ul></div>
+      </div>
+      <div class="t10-page-break"></div>
+      <div class="section-block" data-block-id="skills-section-continued">
+        <div class="section-header">
+          <span class="section-title">Skills (continued)</span>
+          <div class="section-title-bar"></div>
+        </div>
+        <div class="skills-content"><ul>${afterLis}</ul></div>
+      </div>`;
+    }
+  }
+
+  return `<div class="section-block" data-block-id="skills-section">
+    <div class="section-header">
+      <span class="section-title">Skills</span>
+      <div class="section-title-bar"></div>
+    </div>
+    <div class="skills-content" data-block-id="skills-content">${skillsClean}</div>
+  </div>`;
+},
 
     custom: () => {
       const filteredCustomSections = getFilteredCustomSections();
@@ -7471,12 +7504,6 @@ const TemplateTen: React.FC<TemplateTenProps> = ({ alldata, customization }) => 
       `).join("");
     },
   };
-
-  // ── HTML builder with section ordering ───────────────────────────────────
-  const generateHTML = useCallback((forPDF = false, pageBreakIds: string[] = []): string => {
-    const fontPreloads = activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif" 
-      ? `<link href="${getFontImport(activeFontFamily)}" rel="stylesheet"/>`
-      : '';
 
     // Build sections in the order defined by customization
     const sectionsHTML = activeSectionOrder
@@ -7559,7 +7586,6 @@ const TemplateTen: React.FC<TemplateTenProps> = ({ alldata, customization }) => 
     formattedDob,
     addressStr,
     styles,
-    sectionBuilders,
   ]);
 
   // ── PAGE SPLITTER ─────────────────────────────────────────────────────────
@@ -7636,7 +7662,6 @@ const TemplateTen: React.FC<TemplateTenProps> = ({ alldata, customization }) => 
             ".entry-block",
             ".header-block",
             ".summary-text",
-            ".skills-content",
           ].join(", ");
 
           resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
@@ -7645,7 +7670,11 @@ const TemplateTen: React.FC<TemplateTenProps> = ({ alldata, customization }) => 
             if (bottom - top > 8) blocks.push({ top, bottom, id: el.dataset.blockId });
           });
 
-          resume.querySelectorAll<HTMLElement>(".section-header").forEach((header) => {
+          // resume.querySelectorAll<HTMLElement>(".section-header").forEach((header) => {
+
+            resume.querySelectorAll<HTMLElement>(".section-header").forEach((header) => {
+  const parentId = (header.parentElement as HTMLElement)?.dataset?.blockId;
+  if (parentId === "skills-section") return; // allow skills to split freely
             const headerTop = getRelTop(header);
             let firstItem: HTMLElement | null = null;
             let sib = header.nextElementSibling as HTMLElement | null;
@@ -7653,15 +7682,19 @@ const TemplateTen: React.FC<TemplateTenProps> = ({ alldata, customization }) => 
               if (sib.getBoundingClientRect().height > 8) { firstItem = sib; break; }
               sib = sib.nextElementSibling as HTMLElement | null;
             }
-            if (firstItem) {
-              const deepChild = firstItem.querySelector<HTMLElement>(".entry-block, .skills-content, .summary-text");
-              const anchor = deepChild || firstItem;
-              const anchorBottom = getRelBottom(anchor);
-              if (anchorBottom - headerTop > 8) {
-                const sectionId = (header.parentElement as HTMLElement)?.dataset?.blockId;
-                blocks.push({ top: headerTop, bottom: anchorBottom, id: sectionId });
-              }
-            }
+            // AFTER
+if (firstItem) {
+  // Skip anchor logic for skills — allow it to split across pages
+  if (firstItem.classList.contains("skills-content")) return;
+
+  const deepChild = firstItem.querySelector<HTMLElement>(".entry-block, .summary-text");
+  const anchor = deepChild || firstItem;
+  const anchorBottom = getRelBottom(anchor);
+  if (anchorBottom - headerTop > 8) {
+    const sectionId = (header.parentElement as HTMLElement)?.dataset?.blockId;
+    blocks.push({ top: headerTop, bottom: anchorBottom, id: sectionId });
+  }
+}
           });
 
           blocks.sort((a, b) => a.top - b.top);
@@ -7694,9 +7727,61 @@ const TemplateTen: React.FC<TemplateTenProps> = ({ alldata, customization }) => 
             if (cutBlockId) pageBreakIds.push(cutBlockId);
           }
 
-          (window as any).__resumeT10PageBreakIds = pageBreakIds;
+          const skillsLis = Array.from(resume.querySelectorAll<HTMLElement>(".skills-content li"));
+skillsLis.forEach((li) => {
+  const top = getRelTop(li);
+  const bottom = getRelBottom(li);
+  if (bottom - top > 2) blocks.push({ top, bottom });
+});
 
-          document.body.removeChild(iframe);
+blocks.sort((a, b) => a.top - b.top);
+pageStarts.length = 1;
+pageBreakIds.length = 0;
+
+while (pageStarts.length < MAX_PAGES) {
+  const currentStart = pageStarts[pageStarts.length - 1];
+  const naiveCut = currentStart + PAGE_CONTENT_H;
+  if (naiveCut >= totalH) break;
+
+  let actualCut = naiveCut;
+  let cutBlockId: string | undefined;
+
+  for (const block of blocks) {
+    if (block.top >= naiveCut) break;
+    if (block.bottom <= currentStart) continue;
+    if (block.top >= currentStart && block.bottom > naiveCut) {
+      if (block.top < actualCut) {
+        actualCut = block.top;
+        cutBlockId = block.id;
+      }
+    }
+  }
+
+  if (actualCut <= currentStart) actualCut = naiveCut;
+  pageStarts.push(actualCut);
+  if (cutBlockId) pageBreakIds.push(cutBlockId);
+}
+
+(window as any).__resumeSkillsCutIndex = -1;
+for (let p = 0; p < pageStarts.length - 1; p++) {
+  const cutY = pageStarts[p + 1];
+  for (let li = 0; li < skillsLis.length; li++) {
+    const liTop = getRelTop(skillsLis[li]);
+    const liBottom = getRelBottom(skillsLis[li]);
+    if (liTop < cutY && liBottom > cutY) {
+      (window as any).__resumeSkillsCutIndex = li;
+      break;
+    }
+    if (liTop >= cutY) {
+      (window as any).__resumeSkillsCutIndex = li;
+      break;
+    }
+  }
+  if ((window as any).__resumeSkillsCutIndex >= 0) break;
+}
+
+document.body.removeChild(iframe);
+(window as any).__resumePageBreakIds = pageBreakIds;
 
           const pageHtmls: string[] = [];
 
@@ -7783,13 +7868,16 @@ const TemplateTen: React.FC<TemplateTenProps> = ({ alldata, customization }) => 
   // ── PDF download ─────────────────────────────────────────
   const handleDownload = async () => {
     try {
-      const pageBreakIds: string[] = (window as any).__resumeT10PageBreakIds || [];
-     
-      const res: AxiosResponse<Blob> = await api.post(
-        `${API_URL}/candidates/generate-pdf`,
-        { html: generateHTML(true, pageBreakIds) },
-        { responseType: "blob" },
-      );
+      // AFTER
+const pageBreakIds: string[] = ((window as any).__resumePageBreakIds || []).filter(
+  (id: string) => id !== "skills-section"
+);
+const skillsCutIndex: number = (window as any).__resumeSkillsCutIndex ?? -1;
+const res: AxiosResponse<Blob> = await api.post(
+  `${API_URL}/candidates/generate-pdf`,
+  { html: generateHTML(true, pageBreakIds, skillsCutIndex) },
+  { responseType: "blob" },
+);
 
       const url = URL.createObjectURL(res.data);
       const a = document.createElement("a");
@@ -7807,7 +7895,7 @@ const TemplateTen: React.FC<TemplateTenProps> = ({ alldata, customization }) => 
 
   return (
     <>
-      {lastSegment === "download-resume" && (
+      {/* {lastSegment === "download-resume" && ( */}
         <div className="text-center my-5">
           <motion.button
             onClick={handleDownload}
@@ -7818,7 +7906,7 @@ const TemplateTen: React.FC<TemplateTenProps> = ({ alldata, customization }) => 
             Download Resume
           </motion.button>
         </div>
-      )}
+      {/* )} */}
 
       {alldata ? (
         <div style={{ width: `${A4_W}px`, height: `${A4_H}px`, transform: "scale(0.36)", transformOrigin: "top left", overflow: "hidden", pointerEvents: "none", flexShrink: 0 }}>

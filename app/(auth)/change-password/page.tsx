@@ -1398,6 +1398,7 @@ const ChangePassword = () => {
                         type="text"
                         placeholder="Enter 6-digit code"
                         value={otp}
+                        maxLength={6}
                         onChange={(e) => setOtp(e.target.value)}
                         onFocus={() => setFocusedField("otp")}
                         onBlur={() => setFocusedField(null)}

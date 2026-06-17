@@ -5870,64 +5870,71 @@ const TemplateSix: React.FC<TemplateSixProps> = ({ alldata, customization }) => 
 
   // ── Section builders ──────────────────────────────────────────────────────
   // Note: For this template, sections are arranged in a specific order on the right column
-  const sectionBuilders: Record<SectionKey, () => string> = {
-    summary: () => summary ? `
-      <div class="t6-right-section" data-block-id="t6-summary">
-        <div class="t6-rsection">Summary</div>
-        <hr class="t6-divider-md"/>
-        <div class="t6-summary">${rich(summary)}</div>
-      </div>
-    ` : "",
+ 
+  // ── HTML builder with section ordering ───────────────────────────────────
+ 
 
-    experience: () => experiences.length > 0 ? `
-      <div class="t6-right-section" data-block-id="t6-exp-section">
-        <div class="t6-rsection">Experience</div>
-        <hr class="t6-divider-md"/>
-        ${experiences.map((exp: any, i: number) => {
-          const start = formatMonthYear(exp.startDate, false);
-          const end = exp.endDate ? formatMonthYear(exp.endDate, false) : (exp.startDate ? "Present" : "");
-          return `
-            <div class="t6-entry" data-block-id="t6-exp-${i}">
+
+      const generateHTML = useCallback(
+  (forPDF = false, pageBreakIds: string[] = []): string => {
+    const formattedDob = formatDateOfBirth(dateOfBirth || "");
+
+    // ── Section builders inside generateHTML ──────────────────────────────
+    const sectionBuilders: Record<SectionKey, () => string> = {
+      summary: () => summary ? `
+        <div class="t6-right-section" data-block-id="t6-summary">
+          <div class="t6-rsection">Summary</div>
+          <hr class="t6-divider-md"/>
+          <div class="t6-summary">${rich(summary)}</div>
+        </div>
+      ` : "",
+
+      experience: () => experiences.length > 0 ? `
+        <div class="t6-right-section" data-block-id="t6-exp-section">
+          <div class="t6-rsection">Experience</div>
+          <hr class="t6-divider-md"/>
+          ${experiences.map((exp: any, i: number) => {
+            const start = formatMonthYear(exp.startDate, false);
+            const end = exp.endDate ? formatMonthYear(exp.endDate, false) : (exp.startDate ? "Present" : "");
+            return `<div class="t6-entry" data-block-id="t6-exp-${i}">
               <div class="t6-experience-header">
                 <div class="t6-experience-title">${exp.jobTitle || ""}</div>
                 <div class="t6-experience-date">${start}${start && end ? " - " : ""}${end}</div>
               </div>
               <div class="t6-experience-subtitle">${[exp.employer, exp.location].filter(Boolean).join(" — ")}</div>
               ${exp.text ? `<div class="t6-entry-content">${rich(exp.text)}</div>` : ""}
-            </div>
-          `;
-        }).join("")}
-      </div>
-    ` : "",
+            </div>`;
+          }).join("")}
+        </div>
+      ` : "",
 
-    projects: () => projects.length > 0 ? `
-      <div class="t6-right-section" data-block-id="t6-proj-section">
-        <div class="t6-rsection">Projects</div>
-        <hr class="t6-divider-md"/>
-        ${projects.map((p: any, i: number) => `
-          <div class="t6-project-item" data-block-id="t6-proj-${i}">
-            <div class="t6-project-header">
-              <div class="t6-entry-title">${p.title || ""}</div>
-              <div class="t6-project-links">
-                ${p.liveUrl ? `<a href="${href(p.liveUrl)}" class="t6-project-link" target="_blank">Live Demo</a>` : ""}
-                ${p.githubUrl ? `<a href="${href(p.githubUrl)}" class="t6-project-link" target="_blank">GitHub</a>` : ""}
+      projects: () => projects.length > 0 ? `
+        <div class="t6-right-section" data-block-id="t6-proj-section">
+          <div class="t6-rsection">Projects</div>
+          <hr class="t6-divider-md"/>
+          ${projects.map((p: any, i: number) => `
+            <div class="t6-project-item" data-block-id="t6-proj-${i}">
+              <div class="t6-project-header">
+                <div class="t6-entry-title">${p.title || ""}</div>
+                <div class="t6-project-links">
+                  ${p.liveUrl ? `<a href="${href(p.liveUrl)}" class="t6-project-link" target="_blank">Live Demo</a>` : ""}
+                  ${p.githubUrl ? `<a href="${href(p.githubUrl)}" class="t6-project-link" target="_blank">GitHub</a>` : ""}
+                </div>
               </div>
+              ${p.techStack?.length ? `<div class="t6-project-tech"><strong>Tech:</strong> ${p.techStack.join(" • ")}</div>` : ""}
+              ${p.description ? `<div class="t6-entry-content">${rich(p.description)}</div>` : ""}
             </div>
-            ${p.techStack?.length ? `<div class="t6-project-tech"><strong>Tech:</strong> ${p.techStack.join(" • ")}</div>` : ""}
-            ${p.description ? `<div class="t6-entry-content">${rich(p.description)}</div>` : ""}
-          </div>
-        `).join("")}
-      </div>
-    ` : "",
+          `).join("")}
+        </div>
+      ` : "",
 
-    education: () => educations.length > 0 ? `
-      <div class="t6-right-section" data-block-id="t6-edu-section">
-        <div class="t6-rsection">Education</div>
-        <hr class="t6-divider-md"/>
-        ${educations.map((edu: any, i: number) => {
-          const grade = formatGradeToCgpdAndPercentage(edu.grade || "");
-          return `
-            <div class="t6-entry" data-block-id="t6-edu-${i}">
+      education: () => educations.length > 0 ? `
+        <div class="t6-right-section" data-block-id="t6-edu-section">
+          <div class="t6-rsection">Education</div>
+          <hr class="t6-divider-md"/>
+          ${educations.map((edu: any, i: number) => {
+            const grade = formatGradeToCgpdAndPercentage(edu.grade || "");
+            return `<div class="t6-entry" data-block-id="t6-edu-${i}">
               <div class="t6-education-header">
                 <div class="t6-education-school">${edu.schoolname || ""}</div>
                 <div class="t6-education-date">${[edu.startDate, edu.endDate || "Present"].filter(Boolean).join(" — ")}</div>
@@ -5935,34 +5942,24 @@ const TemplateSix: React.FC<TemplateSixProps> = ({ alldata, customization }) => 
               <div class="t6-education-subtitle">${[edu.degree, edu.location].filter(Boolean).join(" — ")}</div>
               ${grade ? `<div class="t6-education-grade">${grade}</div>` : ""}
               ${edu.text ? `<div class="t6-entry-content">${rich(edu.text)}</div>` : ""}
-            </div>
-          `;
-        }).join("")}
-      </div>
-    ` : "",
-
-    skills: () => {
-      const skillsClean = rich(skills || "");
-      if (!skillsClean || skillsClean === "<p><br></p>") return "";
-      return `<div class="t6-lsection">Skills</div>
-              <hr class="t6-divider-sm"/>
-              <div class="t6-skills-content">${skillsClean}</div>`;
-    },
-
-    custom: () => customSection
-      .filter((s: any) => s?.name?.trim() || s?.description?.trim())
-      .map((s: any, i: number) => `
-        <div class="t6-right-section custom-section-wrapper" data-block-id="t6-custom-${i}">
-          ${s.name ? `<div class="t6-rsection">${s.name}</div><hr class="t6-divider-md"/>` : ""}
-          ${s.description ? `<div class="t6-extra">${rich(s.description)}</div>` : ""}
+            </div>`;
+          }).join("")}
         </div>
-      `).join(""),
-  };
+      ` : "",
 
-  // ── HTML builder with section ordering ───────────────────────────────────
-  const generateHTML = useCallback(
-    (forPDF = false, pageBreakIds: string[] = []): string => {
-      const formattedDob = formatDateOfBirth(dateOfBirth || "");
+      // Skills are always rendered in the left column — this builder is unused
+      skills: () => "",
+
+      custom: () => customSection
+        .filter((s: any) => s?.name?.trim() || s?.description?.trim())
+        .map((s: any, i: number) => `
+          <div class="t6-right-section custom-section-wrapper" data-block-id="t6-custom-${i}">
+            ${s.name ? `<div class="t6-rsection">${s.name}</div><hr class="t6-divider-md"/>` : ""}
+            ${s.description ? `<div class="t6-extra">${rich(s.description)}</div>` : ""}
+          </div>
+        `).join(""),
+    };
+
 
       // Build left column (skills always appear here, not in right column)
       const skillsClean = rich(skills || "");
@@ -6080,7 +6077,6 @@ const TemplateSix: React.FC<TemplateSixProps> = ({ alldata, customization }) => 
       dateOfBirth,
       addressParts,
       CSS,
-      sectionBuilders,
     ],
   );
 

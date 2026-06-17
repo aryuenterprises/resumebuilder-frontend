@@ -464,7 +464,7 @@ const IssuesDisplay: React.FC<IssuesDisplayProps> = ({ issues }) => {
       bg: "bg-red-50",
       border: "border-red-200",
       label: "Critical Issues",
-      description: "Must fix to pass ATS filters",
+      description: "Must fix to PassATS filters",
     },
     high: {
       icon: FiAlertCircle,

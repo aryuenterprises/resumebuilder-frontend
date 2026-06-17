@@ -5866,14 +5866,22 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({ alldata, customization }) =
     }
 
     /* Skills */
-    .resume-t5 .t5-skills-content {
-      font-size: 13px;
-      color: #334155;
-      line-height: 1.6;
-      padding: 4px 0;
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-    }
+    // AFTER
+.resume-t5 .t5-skills-content {
+  font-size: 13px;
+  color: #334155;
+  line-height: 1.6;
+  padding: 4px 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  page-break-inside: auto !important;
+  break-inside: auto !important;
+}
+
+.resume-t5 .t5-skills-content li {
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+}
 
     .resume-t5 .t5-skills-content p {
       margin-bottom: 4px !important;
@@ -5939,97 +5947,12 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({ alldata, customization }) =
   };
 
   // ── Section builders ──────────────────────────────────────────────────────
-  const sectionBuilders: Record<SectionKey, () => string> = {
-    summary: () => summary ? `
-      <div class="t5-section" data-block-id="t5-summary">
-        <div class="t5-section-title">Professional Summary</div>
-        <div class="t5-extra">${rich(summary)}</div>
-      </div>
-    ` : "",
 
-    experience: () => experiences?.length > 0 ? `
-      <div class="t5-section" data-block-id="t5-exp-section">
-        <div class="t5-section-title">Experience</div>
-        ${experiences.map((exp: any, i: number) => {
-          const start = formatMonthYear(exp.startDate, false);
-          const end = exp.endDate ? formatMonthYear(exp.endDate, false) : (exp.startDate ? "Present" : "");
-          return `
-            <div class="t5-entry" data-block-id="t5-exp-${i}">
-              <div class="t5-experience-header">
-                <div class="t5-experience-title">${exp.jobTitle || ""}</div>
-                <div class="t5-experience-date">${start}${start && end ? " — " : ""}${end}</div>
-              </div>
-              <div class="t5-experience-subtitle">${[exp.employer, exp.location].filter(Boolean).join(" • ")}</div>
-              ${exp.text ? `<div class="t5-entry-content">${rich(exp.text)}</div>` : ""}
-            </div>
-          `;
-        }).join("")}
-      </div>
-    ` : "",
-
-    projects: () => projects?.length > 0 ? `
-      <div class="t5-section" data-block-id="t5-proj-section">
-        <div class="t5-section-title">Projects</div>
-        ${projects.map((p: any, i: number) => `
-          <div class="t5-entry" data-block-id="t5-proj-${i}">
-            <div class="t5-project-header">
-              <div class="t5-entry-heading">${p.title || ""}</div>
-              <div class="t5-project-links">
-                ${p.liveUrl ? `<a href="${href(p.liveUrl)}" class="t5-project-link" target="_blank">Live Demo</a>` : ""}
-                ${p.githubUrl ? `<a href="${href(p.githubUrl)}" class="t5-project-link" target="_blank">GitHub</a>` : ""}
-              </div>
-            </div>
-            ${p.techStack?.length ? `<div class="t5-project-tech">Tech Stack: ${p.techStack.join(" • ")}</div>` : ""}
-            ${p.description ? `<div class="t5-entry-content">${rich(p.description)}</div>` : ""}
-          </div>
-        `).join("")}
-      </div>
-    ` : "",
-
-    education: () => educations?.length > 0 ? `
-      <div class="t5-section" data-block-id="t5-edu-section">
-        <div class="t5-section-title">Education</div>
-        ${educations.map((edu: any, i: number) => {
-          const formattedGrade = formatGradeToCgpdAndPercentage(edu.grade || "");
-          return `
-            <div class="t5-entry" data-block-id="t5-edu-${i}">
-              <div class="t5-education-header">
-                <div class="t5-education-school">${edu.schoolname || ""}</div>
-                <div class="t5-education-date">${[edu.startDate, edu.endDate || "Present"].filter(Boolean).join(" — ")}</div>
-              </div>
-              <div class="t5-education-subtitle">${[edu.degree, edu.location].filter(Boolean).join(" • ")}</div>
-              ${formattedGrade ? `<div class="t5-education-grade">${formattedGrade}</div>` : ""}
-              ${edu.text ? `<div class="t5-entry-content">${rich(edu.text)}</div>` : ""}
-            </div>
-          `;
-        }).join("")}
-      </div>
-    ` : "",
-
-    skills: () => {
-      const skillsClean = rich(skills || "");
-      if (!skillsClean || skillsClean === "<p><br></p>") return "";
-      return `
-        <div class="t5-section" data-block-id="t5-skills-section">
-          <div class="t5-section-title">Skills</div>
-          <div class="t5-skills-content" data-block-id="t5-skills-content">${skillsClean}</div>
-        </div>
-      `;
-    },
-
-    custom: () => customSections
-      .filter((s: any) => s?.name?.trim() || s?.description?.trim())
-      .map((s: any, i: number) => `
-        <div class="t5-section custom-section-wrapper" data-block-id="t5-custom-${i}">
-          <div class="t5-section-title">${s.name}</div>
-          <div class="t5-extra">${rich(s.description)}</div>
-        </div>
-      `).join(""),
-  };
 
   // ── HTML builder with section ordering ───────────────────────────────────
-  const generateHTML = useCallback(
-    (forPDF = false, pageBreakIds: string[] = []): string => {
+ // AFTER
+const generateHTML = useCallback(
+  (forPDF = false, pageBreakIds: string[] = [], skillsCutIndex = -1): string => {
       const addressStr = [
         contact?.address,
         contact?.city,
@@ -6075,6 +5998,91 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({ alldata, customization }) =
             </div>
           ` : ""}
         </div>`;
+
+
+        const sectionBuilders: Record<SectionKey, () => string> = {
+  summary: () => summary ? `
+    <div class="t5-section" data-block-id="t5-summary">
+      <div class="t5-section-title">Professional Summary</div>
+      <div class="t5-extra">${rich(summary)}</div>
+    </div>
+  ` : "",
+
+  experience: () => experiences?.length > 0 ? `
+    <div class="t5-section" data-block-id="t5-exp-section">
+      <div class="t5-section-title">Experience</div>
+      ${experiences.map((exp: any, i: number) => {
+        const start = formatMonthYear(exp.startDate, false);
+        const end = exp.endDate ? formatMonthYear(exp.endDate, false) : (exp.startDate ? "Present" : "");
+        return `<div class="t5-entry" data-block-id="t5-exp-${i}">
+          <div class="t5-experience-header">
+            <div class="t5-experience-title">${exp.jobTitle || ""}</div>
+            <div class="t5-experience-date">${start}${start && end ? " — " : ""}${end}</div>
+          </div>
+          <div class="t5-experience-subtitle">${[exp.employer, exp.location].filter(Boolean).join(" • ")}</div>
+          ${exp.text ? `<div class="t5-entry-content">${rich(exp.text)}</div>` : ""}
+        </div>`;
+      }).join("")}
+    </div>
+  ` : "",
+
+  projects: () => projects?.length > 0 ? `
+    <div class="t5-section" data-block-id="t5-proj-section">
+      <div class="t5-section-title">Projects</div>
+      ${projects.map((p: any, i: number) => `
+        <div class="t5-entry" data-block-id="t5-proj-${i}">
+          <div class="t5-project-header">
+            <div class="t5-entry-heading">${p.title || ""}</div>
+            <div class="t5-project-links">
+              ${p.liveUrl ? `<a href="${href(p.liveUrl)}" class="t5-project-link" target="_blank">Live Demo</a>` : ""}
+              ${p.githubUrl ? `<a href="${href(p.githubUrl)}" class="t5-project-link" target="_blank">GitHub</a>` : ""}
+            </div>
+          </div>
+          ${p.techStack?.length ? `<div class="t5-project-tech">Tech Stack: ${p.techStack.join(" • ")}</div>` : ""}
+          ${p.description ? `<div class="t5-entry-content">${rich(p.description)}</div>` : ""}
+        </div>
+      `).join("")}
+    </div>
+  ` : "",
+
+  education: () => educations?.length > 0 ? `
+    <div class="t5-section" data-block-id="t5-edu-section">
+      <div class="t5-section-title">Education</div>
+      ${educations.map((edu: any, i: number) => {
+        const formattedGrade = formatGradeToCgpdAndPercentage(edu.grade || "");
+        return `<div class="t5-entry" data-block-id="t5-edu-${i}">
+          <div class="t5-education-header">
+            <div class="t5-education-school">${edu.schoolname || ""}</div>
+            <div class="t5-education-date">${[edu.startDate, edu.endDate || "Present"].filter(Boolean).join(" — ")}</div>
+          </div>
+          <div class="t5-education-subtitle">${[edu.degree, edu.location].filter(Boolean).join(" • ")}</div>
+          ${formattedGrade ? `<div class="t5-education-grade">${formattedGrade}</div>` : ""}
+          ${edu.text ? `<div class="t5-entry-content">${rich(edu.text)}</div>` : ""}
+        </div>`;
+      }).join("")}
+    </div>
+  ` : "",
+
+  // AFTER
+skills: () => {
+  const skillsClean = rich(skills || "");
+  if (!skillsClean || skillsClean === "<p><br></p>") return "";
+
+  return `<div class="t5-section" data-block-id="t5-skills-section">
+    <div class="t5-section-title">Skills</div>
+    <div class="t5-skills-content" data-block-id="t5-skills-content">${skillsClean}</div>
+  </div>`;
+},
+
+  custom: () => customSections
+    .filter((s: any) => s?.name?.trim() || s?.description?.trim())
+    .map((s: any, i: number) => `
+      <div class="t5-section custom-section-wrapper" data-block-id="t5-custom-${i}">
+        <div class="t5-section-title">${s.name}</div>
+        <div class="t5-extra">${rich(s.description)}</div>
+      </div>
+    `).join(""),
+};
 
       // Build sections in the order defined by customization
       const sectionsHTML = activeSectionOrder
@@ -6134,7 +6142,6 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({ alldata, customization }) =
       dateOfBirth,
       base64Image,
       CSS,
-      sectionBuilders,
     ],
   );
 
@@ -6220,7 +6227,6 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({ alldata, customization }) =
             ".t5-entry",
             ".t5-header",
             ".custom-section-wrapper",
-            ".t5-skills-content",
           ].join(", ");
 
           resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
@@ -6242,15 +6248,19 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({ alldata, customization }) =
               }
               sib = sib.nextElementSibling as HTMLElement | null;
             }
-            if (firstItem) {
-              const deepChild = firstItem.querySelector<HTMLElement>(".t5-entry, .custom-section-wrapper, .t5-skills-content");
-              const anchor = deepChild || firstItem;
-              const anchorBottom = getRelBottom(anchor);
-              if (anchorBottom - titleTop > 8) {
-                const sectionId = (title.parentElement as HTMLElement)?.dataset?.blockId;
-                blocks.push({ top: titleTop, bottom: anchorBottom, id: sectionId });
-              }
-            }
+            // AFTER
+if (firstItem) {
+  // Skip anchor logic for skills — allow it to split across pages
+  if (firstItem.classList.contains("t5-skills-content")) return;
+
+  const deepChild = firstItem.querySelector<HTMLElement>(".t5-entry, .custom-section-wrapper");
+  const anchor = deepChild || firstItem;
+  const anchorBottom = getRelBottom(anchor);
+  if (anchorBottom - titleTop > 8) {
+    const sectionId = (title.parentElement as HTMLElement)?.dataset?.blockId;
+    blocks.push({ top: titleTop, bottom: anchorBottom, id: sectionId });
+  }
+}
           });
 
           blocks.sort((a, b) => a.top - b.top);
@@ -6283,8 +6293,62 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({ alldata, customization }) =
             if (cutBlockId) pageBreakIds.push(cutBlockId);
           }
 
-          document.body.removeChild(iframe);
-          (window as any).__resumePageBreakIds = pageBreakIds;
+          // AFTER
+const skillsLis = Array.from(resume.querySelectorAll<HTMLElement>(".t5-skills-content li"));
+skillsLis.forEach((li) => {
+  const top = getRelTop(li);
+  const bottom = getRelBottom(li);
+  if (bottom - top > 2) blocks.push({ top, bottom });
+});
+
+blocks.sort((a, b) => a.top - b.top);
+pageStarts.length = 1;
+pageBreakIds.length = 0;
+
+while (pageStarts.length < MAX_PAGES) {
+  const currentStart = pageStarts[pageStarts.length - 1];
+  const naiveCut = currentStart + PAGE_CONTENT_H;
+  if (naiveCut >= totalH) break;
+
+  let actualCut = naiveCut;
+  let cutBlockId: string | undefined;
+
+  for (const block of blocks) {
+    if (block.top >= naiveCut) break;
+    if (block.bottom <= currentStart) continue;
+    if (block.top >= currentStart && block.bottom > naiveCut) {
+      if (block.top < actualCut) {
+        actualCut = block.top;
+        cutBlockId = block.id;
+      }
+    }
+  }
+
+  if (actualCut <= currentStart) actualCut = naiveCut;
+  pageStarts.push(actualCut);
+  if (cutBlockId) pageBreakIds.push(cutBlockId);
+}
+
+(window as any).__resumeSkillsCutIndex = -1;
+for (let p = 0; p < pageStarts.length - 1; p++) {
+  const cutY = pageStarts[p + 1];
+  for (let li = 0; li < skillsLis.length; li++) {
+    const liTop = getRelTop(skillsLis[li]);
+    const liBottom = getRelBottom(skillsLis[li]);
+    if (liTop < cutY && liBottom > cutY) {
+      (window as any).__resumeSkillsCutIndex = li;
+      break;
+    }
+    if (liTop >= cutY) {
+      (window as any).__resumeSkillsCutIndex = li;
+      break;
+    }
+  }
+  if ((window as any).__resumeSkillsCutIndex >= 0) break;
+}
+
+document.body.removeChild(iframe);
+(window as any).__resumePageBreakIds = pageBreakIds;
 
           const pageHtmls: string[] = [];
 
@@ -6372,8 +6436,13 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({ alldata, customization }) =
   // ── PDF download ─────────────────────────────────────────────────────────
   const handleDownload = async (): Promise<void> => {
     try {
-      const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
-      const pdfHtml = generateHTML(true, pageBreakIds);
+      // const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
+      // const pdfHtml = generateHTML(true, pageBreakIds);
+
+      // AFTER
+// AFTER
+const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
+const pdfHtml = generateHTML(true, pageBreakIds, -1);
 
       const res: AxiosResponse<Blob> = await api.post(
         `${API_URL}/candidates/generate-pdf`,
@@ -6398,7 +6467,7 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({ alldata, customization }) =
   // ── RENDER ───────────────────────────────────────────────────────────────
   return (
     <>
-      {lastSegment === "download-resume" && (
+      {/* {lastSegment === "download-resume" && (/ */}
         <div className="text-center my-5">
           <motion.button
             onClick={handleDownload}
@@ -6409,7 +6478,7 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({ alldata, customization }) =
             Download Resume
           </motion.button>
         </div>
-      )}
+      {/* )} */}
 
       {alldata ? (
         <div

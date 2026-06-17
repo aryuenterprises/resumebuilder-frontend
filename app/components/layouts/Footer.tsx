@@ -559,6 +559,7 @@ import {
 import { useEffect, useState } from "react";
 import { BsWhatsapp } from "react-icons/bs";
 import Link from "next/link";
+import { LuLetterText } from "react-icons/lu";
 
 const Footer = () => {
   const router = useRouter();
@@ -578,23 +579,30 @@ const Footer = () => {
       { name: "Aryu Enterprises", url: "https://aryuenterprises.com/" },
     ],
     quickLinks: [
-      {
-        name: "ATS Checker",
-        path: "/ats-checker",
-        icon: FiCheckCircle,
-        color: "text-emerald-500",
-      },
+      
       {
         name: "Build Resume",
         path: "/choose-template",
         icon: FiFileText,
         color: "text-indigo-500",
       },
+       {
+        name: "Cover Letter",
+        path: "/cover-letter",
+        icon: LuLetterText,
+        color: "text-pink-500",
+      },
       {
         name: "Plans",
         path: "/choose-plan",
         icon: FiCreditCard,
         color: "text-purple-500",
+      },
+      {
+        name: "ATS Checker",
+        path: "/ats-checker",
+        icon: FiCheckCircle,
+        color: "text-emerald-500",
       },
     ],
   };
