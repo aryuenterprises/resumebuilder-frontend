@@ -2043,6 +2043,7 @@ import { ResumeProps } from "@/app/types";
 import { motion } from "framer-motion";
 import api from "@/app/utils/api";
 import { ResumeCustomization } from "@/app/(resume)/download-resume/page";
+import { FaDownload, FaSpinner } from "react-icons/fa";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // A4 CONSTANTS
@@ -2067,6 +2068,8 @@ const TemplateSixteen: React.FC<TemplateSixteenProps> = ({
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const [htmlContent, setHtmlContent] = useState<string>("");
   const [pages, setPages] = useState<string[]>([]);
+        const [isDownloading, setIsDownloading] = useState<boolean>(false);
+  
 
   const activeFontFamily = customization?.fontFamily ?? "'Jost', sans-serif";
 
@@ -2370,9 +2373,13 @@ const TemplateSixteen: React.FC<TemplateSixteenProps> = ({
   );
 
   // ── HTML builder ───────────────────────────────────────────────────────────
- // AFTER
-const generateHTML = useCallback(
-  (forPDF = false, pageBreakIds: string[] = [], skillsCutIndex = -1): string => {
+  // AFTER
+  const generateHTML = useCallback(
+    (
+      forPDF = false,
+      pageBreakIds: string[] = [],
+      skillsCutIndex = -1,
+    ): string => {
       const CSS = buildCSS(activeFontFamily);
       const formattedDob = formatDateOfBirth(dateOfBirth || "");
 
@@ -2507,19 +2514,25 @@ const generateHTML = useCallback(
         : "";
 
       // Skills
-     // AFTER
-// Skills
-const skillsClean = cleanQuillHTML(skills || "");
-let skillsBlock = "";
-if (skillsClean && skillsClean !== "<p><br></p>") {
-  if (forPDF && skillsCutIndex >= 0) {
-    const tempDiv = document.createElement("div");
-    tempDiv.innerHTML = skillsClean;
-    const allLis = Array.from(tempDiv.querySelectorAll("li"));
-    if (skillsCutIndex < allLis.length) {
-      const beforeLis = allLis.slice(0, skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
-      const afterLis = allLis.slice(skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
-      skillsBlock = `<div class="t16-section-block" data-block-id="skills-section">
+      // AFTER
+      // Skills
+      const skillsClean = cleanQuillHTML(skills || "");
+      let skillsBlock = "";
+      if (skillsClean && skillsClean !== "<p><br></p>") {
+        if (forPDF && skillsCutIndex >= 0) {
+          const tempDiv = document.createElement("div");
+          tempDiv.innerHTML = skillsClean;
+          const allLis = Array.from(tempDiv.querySelectorAll("li"));
+          if (skillsCutIndex < allLis.length) {
+            const beforeLis = allLis
+              .slice(0, skillsCutIndex)
+              .map((li) => `<li>${li.innerHTML}</li>`)
+              .join("");
+            const afterLis = allLis
+              .slice(skillsCutIndex)
+              .map((li) => `<li>${li.innerHTML}</li>`)
+              .join("");
+            skillsBlock = `<div class="t16-section-block" data-block-id="skills-section">
           ${sectionHeader("Skills")}
           <div class="t16-skills-content"><ul>${beforeLis}</ul></div>
          </div>
@@ -2528,15 +2541,15 @@ if (skillsClean && skillsClean !== "<p><br></p>") {
           ${sectionHeader("Skills (continued)")}
           <div class="t16-skills-content"><ul>${afterLis}</ul></div>
          </div>`;
-    }
-  }
-  if (!skillsBlock) {
-    skillsBlock = `<div class="t16-section-block" data-block-id="skills-section">
+          }
+        }
+        if (!skillsBlock) {
+          skillsBlock = `<div class="t16-section-block" data-block-id="skills-section">
         ${sectionHeader("Skills")}
         <div class="t16-skills-content" data-block-id="skills-content">${skillsClean}</div>
        </div>`;
-  }
-}
+        }
+      }
 
       // Custom sections
       const customBlock =
@@ -2738,25 +2751,26 @@ if (skillsClean && skillsClean !== "<p><br></p>") {
                 }
                 sib = sib.nextElementSibling as HTMLElement | null;
               }
-             // AFTER
-if (firstItem) {
-  // Skip anchor logic for skills — allow it to split across pages
-  if (firstItem.classList.contains("t16-skills-content")) return;
+              // AFTER
+              if (firstItem) {
+                // Skip anchor logic for skills — allow it to split across pages
+                if (firstItem.classList.contains("t16-skills-content")) return;
 
-  const deepChild = firstItem.querySelector<HTMLElement>(
-    ".t16-entry-block, .t16-summary-text, .t16-custom-section-content",
-  );
-  const anchor = deepChild || firstItem;
-  const anchorBottom = getRelBottom(anchor);
-  if (anchorBottom - headerTop > 8) {
-    const sectionId = (header.parentElement as HTMLElement)?.dataset?.blockId;
-    blocks.push({
-      top: headerTop,
-      bottom: anchorBottom,
-      id: sectionId,
-    });
-  }
-}
+                const deepChild = firstItem.querySelector<HTMLElement>(
+                  ".t16-entry-block, .t16-summary-text, .t16-custom-section-content",
+                );
+                const anchor = deepChild || firstItem;
+                const anchorBottom = getRelBottom(anchor);
+                if (anchorBottom - headerTop > 8) {
+                  const sectionId = (header.parentElement as HTMLElement)
+                    ?.dataset?.blockId;
+                  blocks.push({
+                    top: headerTop,
+                    bottom: anchorBottom,
+                    id: sectionId,
+                  });
+                }
+              }
             });
 
           blocks.sort((a, b) => a.top - b.top);
@@ -2788,55 +2802,62 @@ if (firstItem) {
             if (cutBlockId) pageBreakIds.push(cutBlockId);
           }
 
-          const skillsLis = Array.from(resume.querySelectorAll<HTMLElement>(".t16-skills-content li"));
-skillsLis.forEach((li) => {
-  const top = getRelTop(li);
-  const bottom = getRelBottom(li);
-  if (bottom - top > 2) blocks.push({ top, bottom });
-});
+          const skillsLis = Array.from(
+            resume.querySelectorAll<HTMLElement>(".t16-skills-content li"),
+          );
+          skillsLis.forEach((li) => {
+            const top = getRelTop(li);
+            const bottom = getRelBottom(li);
+            if (bottom - top > 2) blocks.push({ top, bottom });
+          });
 
-blocks.sort((a, b) => a.top - b.top);
-pageStarts.length = 1;
-pageBreakIds.length = 0;
+          blocks.sort((a, b) => a.top - b.top);
+          pageStarts.length = 1;
+          pageBreakIds.length = 0;
 
-while (pageStarts.length < MAX_PAGES) {
-  const currentStart = pageStarts[pageStarts.length - 1];
-  const naiveCut = currentStart + PAGE_CONTENT_H;
-  if (naiveCut >= totalH) break;
-  let actualCut = naiveCut, cutBlockId: string | undefined;
-  for (const block of blocks) {
-    if (block.top >= naiveCut) break;
-    if (block.bottom <= currentStart) continue;
-    if (block.top >= currentStart && block.bottom > naiveCut && block.top < actualCut) {
-      actualCut = block.top;
-      cutBlockId = block.id;
-    }
-  }
-  if (actualCut <= currentStart) actualCut = naiveCut;
-  pageStarts.push(actualCut);
-  if (cutBlockId) pageBreakIds.push(cutBlockId);
-}
+          while (pageStarts.length < MAX_PAGES) {
+            const currentStart = pageStarts[pageStarts.length - 1];
+            const naiveCut = currentStart + PAGE_CONTENT_H;
+            if (naiveCut >= totalH) break;
+            let actualCut = naiveCut,
+              cutBlockId: string | undefined;
+            for (const block of blocks) {
+              if (block.top >= naiveCut) break;
+              if (block.bottom <= currentStart) continue;
+              if (
+                block.top >= currentStart &&
+                block.bottom > naiveCut &&
+                block.top < actualCut
+              ) {
+                actualCut = block.top;
+                cutBlockId = block.id;
+              }
+            }
+            if (actualCut <= currentStart) actualCut = naiveCut;
+            pageStarts.push(actualCut);
+            if (cutBlockId) pageBreakIds.push(cutBlockId);
+          }
 
-(window as any).__resumeSkillsCutIndex = -1;
-for (let p = 0; p < pageStarts.length - 1; p++) {
-  const cutY = pageStarts[p + 1];
-  for (let li = 0; li < skillsLis.length; li++) {
-    const liTop = getRelTop(skillsLis[li]);
-    const liBottom = getRelBottom(skillsLis[li]);
-    if (liTop < cutY && liBottom > cutY) {
-      (window as any).__resumeSkillsCutIndex = li;
-      break;
-    }
-    if (liTop >= cutY) {
-      (window as any).__resumeSkillsCutIndex = li;
-      break;
-    }
-  }
-  if ((window as any).__resumeSkillsCutIndex >= 0) break;
-}
+          (window as any).__resumeSkillsCutIndex = -1;
+          for (let p = 0; p < pageStarts.length - 1; p++) {
+            const cutY = pageStarts[p + 1];
+            for (let li = 0; li < skillsLis.length; li++) {
+              const liTop = getRelTop(skillsLis[li]);
+              const liBottom = getRelBottom(skillsLis[li]);
+              if (liTop < cutY && liBottom > cutY) {
+                (window as any).__resumeSkillsCutIndex = li;
+                break;
+              }
+              if (liTop >= cutY) {
+                (window as any).__resumeSkillsCutIndex = li;
+                break;
+              }
+            }
+            if ((window as any).__resumeSkillsCutIndex >= 0) break;
+          }
 
-document.body.removeChild(iframe);
-(window as any).__resumePageBreakIds = pageBreakIds;
+          document.body.removeChild(iframe);
+          (window as any).__resumePageBreakIds = pageBreakIds;
 
           const pageHtmls: string[] = [];
           for (let i = 0; i < pageStarts.length; i++) {
@@ -2903,13 +2924,15 @@ document.body.removeChild(iframe);
 
   // ── Download ───────────────────────────────────────────────────────────────
   const handleDownload = async (): Promise<void> => {
+    setIsDownloading(true)
     try {
       // AFTER
-const pageBreakIds: string[] = ((window as any).__resumePageBreakIds || []).filter(
-  (id: string) => id !== "skills-section"
-);
-const skillsCutIndex: number = (window as any).__resumeSkillsCutIndex ?? -1;
-const pdfHtml = generateHTML(true, pageBreakIds, skillsCutIndex);
+      const pageBreakIds: string[] = (
+        (window as any).__resumePageBreakIds || []
+      ).filter((id: string) => id !== "skills-section");
+      const skillsCutIndex: number =
+        (window as any).__resumeSkillsCutIndex ?? -1;
+      const pdfHtml = generateHTML(true, pageBreakIds, skillsCutIndex);
       const res: AxiosResponse<Blob> = await api.post(
         `${API_URL}/candidates/generate-pdf`,
         { html: pdfHtml },
@@ -2927,23 +2950,57 @@ const pdfHtml = generateHTML(true, pageBreakIds, skillsCutIndex);
       console.error("PDF error:", err);
       alert("Failed to generate PDF. Please try again.");
     }
+    finally{
+          setIsDownloading(false)
+
+    }
   };
 
   // ── RENDER ─────────────────────────────────────────────────────────────────
   return (
     <>
-      {/* {lastSegment === "download-resume" && ( */}
-      <div className="text-center my-5">
-        <motion.button
-          onClick={handleDownload}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="bg-emerald-500 text-2xl md:text-base hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 cursor-pointer shadow-md hover:shadow-lg"
-        >
-          Download Resume
-        </motion.button>
-      </div>
-      {/* )} */}
+      
+       {lastSegment === "download-resume" && (
+                    <div className="text-center my-8">
+                      <motion.button
+                        onClick={handleDownload}
+                        disabled={isDownloading}
+                        whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
+                        whileTap={!isDownloading ? { scale: 0.98 } : {}}
+                        className={`
+                                                                            relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
+                                                                            text-white transition-all duration-300 shadow-lg
+                                                                            ${
+                                                                              isDownloading
+                                                                                ? "bg-gray-400 cursor-not-allowed opacity-80"
+                                                                                : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600"
+                                                                            }
+                                                                          `}
+                      >
+                        {/* Animated background gradient for premium feel */}
+                        {!isDownloading && (
+                          <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+                        )}
+            
+                        <div className="relative flex items-center justify-center gap-3 text-lg">
+                          {isDownloading ? (
+                            <>
+                              <FaSpinner className="animate-spin text-xl" />
+                              <span>Generating PDF ...</span>
+                            </>
+                          ) : (
+                            <>
+                              <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
+                              <span>Download Resume</span>
+                              <span className="text-sm opacity-75 font-light ml-1">
+                                PDF
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      </motion.button>
+                    </div>
+                  )}
 
       {alldata ? (
         // THUMBNAIL mode

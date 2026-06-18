@@ -4253,17 +4253,6 @@
 
 // export default TemplateSix;
 
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
 // import React, {
 //   useContext,
@@ -5369,34 +5358,6 @@
 
 // export default TemplateSix;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 import React, {
   useContext,
@@ -5423,6 +5384,7 @@ import {
   SectionKey,
   DEFAULT_SECTION_ORDER,
 } from "@/app/(resume)/download-resume/page";
+import { FaDownload, FaSpinner } from "react-icons/fa";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // A4 CONSTANTS
@@ -5451,18 +5413,24 @@ const getIconHTML = (type: "email" | "phone" | "location" | "calendar") => {
   }
 };
 
-const TemplateSix: React.FC<TemplateSixProps> = ({ alldata, customization }) => {
+const TemplateSix: React.FC<TemplateSixProps> = ({
+  alldata,
+  customization,
+}) => {
   const context = useContext(CreateContext);
   const pathname = usePathname();
   const lastSegment = pathname.split("/").pop();
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const [isDownloading, setIsDownloading] = useState<boolean>(false);
 
   const [htmlContent, setHtmlContent] = useState<string>("");
   const [pages, setPages] = useState<string[]>([]);
 
   // ── Customization ─────────────────────────────────────────────────────────
   const activeFontFamily = customization?.fontFamily ?? "'Nunito', sans-serif";
-  const activeSectionOrder: SectionKey[] = customization?.sectionOrder ?? [...DEFAULT_SECTION_ORDER];
+  const activeSectionOrder: SectionKey[] = customization?.sectionOrder ?? [
+    ...DEFAULT_SECTION_ORDER,
+  ];
 
   // ── Data sources ─────────────────────────────────────────────────────────
   const contact = alldata?.contact || context?.contact || ({} as Contact);
@@ -5487,35 +5455,55 @@ const TemplateSix: React.FC<TemplateSixProps> = ({ alldata, customization }) => 
     contact?.city,
     contact?.postCode,
     contact?.country,
-  ].filter(Boolean).join(", ");
+  ]
+    .filter(Boolean)
+    .join(", ");
 
   // ── Complete Font import map ────────────────────────────────────────────────
   const getFontImport = (fontFamily: string): string => {
     const map: Record<string, string> = {
-      "'Inter', sans-serif": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap",
+      "'Inter', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap",
       "'-apple-system', 'BlinkMacSystemFont', sans-serif": "",
-      "'Poppins', sans-serif": "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap",
-      "'Lato', sans-serif": "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",
-      "'Nunito', sans-serif": "https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap",
-      "'Raleway', sans-serif": "https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap",
-      "'Montserrat', sans-serif": "https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap",
-      "'Open Sans', sans-serif": "https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap",
-      "'Roboto', sans-serif": "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap",
-      "'Merriweather', serif": "https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap",
-      "'Playfair Display', serif": "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap",
-      "'DM Serif Display', serif": "https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap",
-      "'Libre Baskerville', serif": "https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap",
-      "'EB Garamond', serif": "https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&display=swap",
-      "'Crimson Text', serif": "https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap",
-      "'Source Code Pro', monospace": "https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&display=swap",
-      "'JetBrains Mono', monospace": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap",
+      "'Poppins', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap",
+      "'Lato', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",
+      "'Nunito', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap",
+      "'Raleway', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap",
+      "'Montserrat', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap",
+      "'Open Sans', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap",
+      "'Roboto', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap",
+      "'Merriweather', serif":
+        "https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap",
+      "'Playfair Display', serif":
+        "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap",
+      "'DM Serif Display', serif":
+        "https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap",
+      "'Libre Baskerville', serif":
+        "https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap",
+      "'EB Garamond', serif":
+        "https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&display=swap",
+      "'Crimson Text', serif":
+        "https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap",
+      "'Source Code Pro', monospace":
+        "https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&display=swap",
+      "'JetBrains Mono', monospace":
+        "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap",
     };
     return map[fontFamily] || map["'Nunito', sans-serif"];
   };
 
   const getSystemFallback = (fontFamily: string): string => {
-    if (fontFamily.includes('serif')) return 'Georgia, "Times New Roman", serif';
-    if (fontFamily.includes('monospace')) return '"Courier New", Courier, monospace';
+    if (fontFamily.includes("serif"))
+      return 'Georgia, "Times New Roman", serif';
+    if (fontFamily.includes("monospace"))
+      return '"Courier New", Courier, monospace';
     return '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
   };
 
@@ -5861,8 +5849,9 @@ const TemplateSix: React.FC<TemplateSixProps> = ({ alldata, customization }) => 
   const CSS = buildCSS(activeFontFamily);
 
   // ── Helper functions ──────────────────────────────────────────────────────
-  const href = (url: string) => url.startsWith("http") ? url : `https://${url}`;
-  
+  const href = (url: string) =>
+    url.startsWith("http") ? url : `https://${url}`;
+
   const rich = (html: string) => {
     const c = cleanQuillHTML(html);
     return c && c !== "<p><br></p>" ? c : "";
@@ -5870,33 +5859,41 @@ const TemplateSix: React.FC<TemplateSixProps> = ({ alldata, customization }) => 
 
   // ── Section builders ──────────────────────────────────────────────────────
   // Note: For this template, sections are arranged in a specific order on the right column
- 
+
   // ── HTML builder with section ordering ───────────────────────────────────
- 
 
+  const generateHTML = useCallback(
+    (forPDF = false, pageBreakIds: string[] = []): string => {
+      const formattedDob = formatDateOfBirth(dateOfBirth || "");
 
-      const generateHTML = useCallback(
-  (forPDF = false, pageBreakIds: string[] = []): string => {
-    const formattedDob = formatDateOfBirth(dateOfBirth || "");
-
-    // ── Section builders inside generateHTML ──────────────────────────────
-    const sectionBuilders: Record<SectionKey, () => string> = {
-      summary: () => summary ? `
+      // ── Section builders inside generateHTML ──────────────────────────────
+      const sectionBuilders: Record<SectionKey, () => string> = {
+        summary: () =>
+          summary
+            ? `
         <div class="t6-right-section" data-block-id="t6-summary">
           <div class="t6-rsection">Summary</div>
           <hr class="t6-divider-md"/>
           <div class="t6-summary">${rich(summary)}</div>
         </div>
-      ` : "",
+      `
+            : "",
 
-      experience: () => experiences.length > 0 ? `
+        experience: () =>
+          experiences.length > 0
+            ? `
         <div class="t6-right-section" data-block-id="t6-exp-section">
           <div class="t6-rsection">Experience</div>
           <hr class="t6-divider-md"/>
-          ${experiences.map((exp: any, i: number) => {
-            const start = formatMonthYear(exp.startDate, false);
-            const end = exp.endDate ? formatMonthYear(exp.endDate, false) : (exp.startDate ? "Present" : "");
-            return `<div class="t6-entry" data-block-id="t6-exp-${i}">
+          ${experiences
+            .map((exp: any, i: number) => {
+              const start = formatMonthYear(exp.startDate, false);
+              const end = exp.endDate
+                ? formatMonthYear(exp.endDate, false)
+                : exp.startDate
+                  ? "Present"
+                  : "";
+              return `<div class="t6-entry" data-block-id="t6-exp-${i}">
               <div class="t6-experience-header">
                 <div class="t6-experience-title">${exp.jobTitle || ""}</div>
                 <div class="t6-experience-date">${start}${start && end ? " - " : ""}${end}</div>
@@ -5904,15 +5901,21 @@ const TemplateSix: React.FC<TemplateSixProps> = ({ alldata, customization }) => 
               <div class="t6-experience-subtitle">${[exp.employer, exp.location].filter(Boolean).join(" — ")}</div>
               ${exp.text ? `<div class="t6-entry-content">${rich(exp.text)}</div>` : ""}
             </div>`;
-          }).join("")}
+            })
+            .join("")}
         </div>
-      ` : "",
+      `
+            : "",
 
-      projects: () => projects.length > 0 ? `
+        projects: () =>
+          projects.length > 0
+            ? `
         <div class="t6-right-section" data-block-id="t6-proj-section">
           <div class="t6-rsection">Projects</div>
           <hr class="t6-divider-md"/>
-          ${projects.map((p: any, i: number) => `
+          ${projects
+            .map(
+              (p: any, i: number) => `
             <div class="t6-project-item" data-block-id="t6-proj-${i}">
               <div class="t6-project-header">
                 <div class="t6-entry-title">${p.title || ""}</div>
@@ -5924,17 +5927,23 @@ const TemplateSix: React.FC<TemplateSixProps> = ({ alldata, customization }) => 
               ${p.techStack?.length ? `<div class="t6-project-tech"><strong>Tech:</strong> ${p.techStack.join(" • ")}</div>` : ""}
               ${p.description ? `<div class="t6-entry-content">${rich(p.description)}</div>` : ""}
             </div>
-          `).join("")}
+          `,
+            )
+            .join("")}
         </div>
-      ` : "",
+      `
+            : "",
 
-      education: () => educations.length > 0 ? `
+        education: () =>
+          educations.length > 0
+            ? `
         <div class="t6-right-section" data-block-id="t6-edu-section">
           <div class="t6-rsection">Education</div>
           <hr class="t6-divider-md"/>
-          ${educations.map((edu: any, i: number) => {
-            const grade = formatGradeToCgpdAndPercentage(edu.grade || "");
-            return `<div class="t6-entry" data-block-id="t6-edu-${i}">
+          ${educations
+            .map((edu: any, i: number) => {
+              const grade = formatGradeToCgpdAndPercentage(edu.grade || "");
+              return `<div class="t6-entry" data-block-id="t6-edu-${i}">
               <div class="t6-education-header">
                 <div class="t6-education-school">${edu.schoolname || ""}</div>
                 <div class="t6-education-date">${[edu.startDate, edu.endDate || "Present"].filter(Boolean).join(" — ")}</div>
@@ -5943,31 +5952,37 @@ const TemplateSix: React.FC<TemplateSixProps> = ({ alldata, customization }) => 
               ${grade ? `<div class="t6-education-grade">${grade}</div>` : ""}
               ${edu.text ? `<div class="t6-entry-content">${rich(edu.text)}</div>` : ""}
             </div>`;
-          }).join("")}
+            })
+            .join("")}
         </div>
-      ` : "",
+      `
+            : "",
 
-      // Skills are always rendered in the left column — this builder is unused
-      skills: () => "",
+        // Skills are always rendered in the left column — this builder is unused
+        skills: () => "",
 
-      custom: () => customSection
-        .filter((s: any) => s?.name?.trim() || s?.description?.trim())
-        .map((s: any, i: number) => `
+        custom: () =>
+          customSection
+            .filter((s: any) => s?.name?.trim() || s?.description?.trim())
+            .map(
+              (s: any, i: number) => `
           <div class="t6-right-section custom-section-wrapper" data-block-id="t6-custom-${i}">
             ${s.name ? `<div class="t6-rsection">${s.name}</div><hr class="t6-divider-md"/>` : ""}
             ${s.description ? `<div class="t6-extra">${rich(s.description)}</div>` : ""}
           </div>
-        `).join(""),
-    };
-
+        `,
+            )
+            .join(""),
+      };
 
       // Build left column (skills always appear here, not in right column)
       const skillsClean = rich(skills || "");
-      const skillsHTML = skillsClean && skillsClean !== "<p><br></p>"
-        ? `<div class="t6-lsection">Skills</div>
+      const skillsHTML =
+        skillsClean && skillsClean !== "<p><br></p>"
+          ? `<div class="t6-lsection">Skills</div>
            <hr class="t6-divider-sm"/>
            <div class="t6-skills-content">${skillsClean}</div>`
-        : "";
+          : "";
 
       const leftCol = `
         <div class="t6-left">
@@ -5989,18 +6004,21 @@ const TemplateSix: React.FC<TemplateSixProps> = ({ alldata, customization }) => 
 
       // Build right column sections in the order defined by customization
       // Filter out "skills" since it's in left column
-      const rightSections = activeSectionOrder.filter(key => key !== "skills");
+      const rightSections = activeSectionOrder.filter(
+        (key) => key !== "skills",
+      );
       const rightColContent = rightSections
-        .map(key => sectionBuilders[key]?.() ?? "")
+        .map((key) => sectionBuilders[key]?.() ?? "")
         .join("");
 
-      const fontPreloads = activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif" 
-        ? `<link rel="preconnect" href="https://fonts.googleapis.com"/>
+      const fontPreloads =
+        activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif"
+          ? `<link rel="preconnect" href="https://fonts.googleapis.com"/>
            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
            <link href="${getFontImport(activeFontFamily)}" rel="stylesheet"/>`
-        : '';
+          : "";
 
-     const pdfStyle = forPDF
+      const pdfStyle = forPDF
         ? `<style>
             *, *::before, *::after {
               -webkit-print-color-adjust: exact !important;
@@ -6143,43 +6161,65 @@ const TemplateSix: React.FC<TemplateSixProps> = ({ alldata, customization }) => 
             return;
           }
 
-          measureDoc.documentElement.style.cssText = "height:auto!important;overflow:visible!important;";
-          measureDoc.body.style.cssText = "margin:0;padding:0;height:auto!important;overflow:visible!important;";
+          measureDoc.documentElement.style.cssText =
+            "height:auto!important;overflow:visible!important;";
+          measureDoc.body.style.cssText =
+            "margin:0;padding:0;height:auto!important;overflow:visible!important;";
           void rightCol.offsetHeight;
 
           const totalH = rightCol.scrollHeight;
           const rightRect = rightCol.getBoundingClientRect();
-          const scrollY = measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
+          const scrollY =
+            measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
 
           const getRelTop = (el: HTMLElement): number => {
             const r = el.getBoundingClientRect();
             return r.top - rightRect.top + scrollY;
           };
-          const getRelBottom = (el: HTMLElement): number => getRelTop(el) + el.getBoundingClientRect().height;
+          const getRelBottom = (el: HTMLElement): number =>
+            getRelTop(el) + el.getBoundingClientRect().height;
 
-          interface Block { top: number; bottom: number; id?: string; }
+          interface Block {
+            top: number;
+            bottom: number;
+            id?: string;
+          }
           const blocks: Block[] = [];
 
-          const ITEM_SELECTORS = [".t6-entry", ".t6-project-item", ".custom-section-wrapper"].join(", ");
+          const ITEM_SELECTORS = [
+            ".t6-entry",
+            ".t6-project-item",
+            ".custom-section-wrapper",
+          ].join(", ");
 
-          rightCol.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
-            const top = getRelTop(el);
-            const bottom = getRelBottom(el);
-            if (bottom - top > 8) {
-              blocks.push({ top, bottom, id: el.dataset.blockId });
-            }
-          });
-
-          rightCol.querySelectorAll<HTMLElement>(".t6-right-section").forEach((section) => {
-            const sectionTop = getRelTop(section);
-            const firstItem = section.querySelector<HTMLElement>(".t6-entry, .t6-project-item");
-            if (firstItem) {
-              const anchorBottom = getRelBottom(firstItem);
-              if (anchorBottom - sectionTop > 8) {
-                blocks.push({ top: sectionTop, bottom: anchorBottom, id: section.dataset.blockId });
+          rightCol
+            .querySelectorAll<HTMLElement>(ITEM_SELECTORS)
+            .forEach((el) => {
+              const top = getRelTop(el);
+              const bottom = getRelBottom(el);
+              if (bottom - top > 8) {
+                blocks.push({ top, bottom, id: el.dataset.blockId });
               }
-            }
-          });
+            });
+
+          rightCol
+            .querySelectorAll<HTMLElement>(".t6-right-section")
+            .forEach((section) => {
+              const sectionTop = getRelTop(section);
+              const firstItem = section.querySelector<HTMLElement>(
+                ".t6-entry, .t6-project-item",
+              );
+              if (firstItem) {
+                const anchorBottom = getRelBottom(firstItem);
+                if (anchorBottom - sectionTop > 8) {
+                  blocks.push({
+                    top: sectionTop,
+                    bottom: anchorBottom,
+                    id: section.dataset.blockId,
+                  });
+                }
+              }
+            });
 
           blocks.sort((a, b) => a.top - b.top);
 
@@ -6315,6 +6355,7 @@ const TemplateSix: React.FC<TemplateSixProps> = ({ alldata, customization }) => 
 
   // ── PDF download ─────────────────────────────────────────────────────────
   const handleDownload = async (): Promise<void> => {
+    setIsDownloading(true);
     try {
       const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
       const pdfHtml = generateHTML(true, pageBreakIds);
@@ -6336,24 +6377,55 @@ const TemplateSix: React.FC<TemplateSixProps> = ({ alldata, customization }) => 
     } catch (err) {
       console.error("PDF error:", err);
       alert("Failed to generate PDF. Please try again.");
+    } finally {
+      setIsDownloading(true);
     }
   };
 
   // ── RENDER ───────────────────────────────────────────────────────────────
   return (
     <>
-      {/* {lastSegment === "download-resume" && ( */}
-        <div className="text-center my-5">
+      {lastSegment === "download-resume" && (
+        <div className="text-center my-8">
           <motion.button
             onClick={handleDownload}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-emerald-500 text-2xl md:text-base hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 cursor-pointer shadow-md hover:shadow-lg"
+            disabled={isDownloading}
+            whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
+            whileTap={!isDownloading ? { scale: 0.98 } : {}}
+            className={`
+                                  relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
+                                  text-white transition-all duration-300 shadow-lg
+                                  ${
+                                    isDownloading
+                                      ? "bg-gray-400 cursor-not-allowed opacity-80"
+                                      : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600"
+                                  }
+                                `}
           >
-            Download Resume
+            {/* Animated background gradient for premium feel */}
+            {!isDownloading && (
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+            )}
+
+            <div className="relative flex items-center justify-center gap-3 text-lg">
+              {isDownloading ? (
+                <>
+                  <FaSpinner className="animate-spin text-xl" />
+                  <span>Generating PDF ...</span>
+                </>
+              ) : (
+                <>
+                  <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
+                  <span>Download Resume</span>
+                  <span className="text-sm opacity-75 font-light ml-1">
+                    PDF
+                  </span>
+                </>
+              )}
+            </div>
           </motion.button>
         </div>
-      {/* )} */}
+      )}
 
       {alldata ? (
         <div
@@ -6412,7 +6484,9 @@ const TemplateSix: React.FC<TemplateSixProps> = ({ alldata, customization }) => 
                     marginBottom: "10px",
                   }}
                 >
-                  <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
+                  <div
+                    style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+                  />
                   <span
                     style={{
                       fontSize: "11px",
@@ -6429,7 +6503,9 @@ const TemplateSix: React.FC<TemplateSixProps> = ({ alldata, customization }) => 
                   >
                     Page {idx + 1} of {pages.length}
                   </span>
-                  <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
+                  <div
+                    style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+                  />
                 </div>
               )}
               <div
@@ -6438,7 +6514,8 @@ const TemplateSix: React.FC<TemplateSixProps> = ({ alldata, customization }) => 
                   height: `${A4_H}px`,
                   overflow: "hidden",
                   background: "white",
-                  boxShadow: "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
+                  boxShadow:
+                    "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
                   borderRadius: "2px",
                   flexShrink: 0,
                   position: "relative",

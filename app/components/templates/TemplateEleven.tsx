@@ -6752,15 +6752,6 @@
 
 // export default TemplateEleven;
 
-
-
-
-
-
-
-
-
-
 // "use client";
 // import React, {
 //   useContext,
@@ -7580,7 +7571,6 @@
 //   ".skills-content",
 // ].join(", ");
 
-
 //           resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
 //             const top = getRelTop(el);
 //             const bottom = getRelBottom(el);
@@ -7895,48 +7885,6 @@
 
 // export default TemplateEleven;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 import React, {
   useContext,
@@ -7963,6 +7911,7 @@ import {
   SectionKey,
   DEFAULT_SECTION_ORDER,
 } from "@/app/(resume)/download-resume/page";
+import { FaDownload, FaSpinner } from "react-icons/fa";
 
 const A4_W = 794;
 const A4_H = 1123;
@@ -7973,7 +7922,10 @@ interface TemplateElevenProps extends ResumeProps {
   customization?: ResumeCustomization;
 }
 
-const TemplateEleven: React.FC<TemplateElevenProps> = ({ alldata, customization }) => {
+const TemplateEleven: React.FC<TemplateElevenProps> = ({
+  alldata,
+  customization,
+}) => {
   const context = useContext(CreateContext);
   const pathname = usePathname();
   const lastSegment = pathname.split("/").pop();
@@ -7981,10 +7933,13 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({ alldata, customization 
 
   const [htmlContent, setHtmlContent] = useState<string>("");
   const [pages, setPages] = useState<string[]>([]);
+  const [isDownloading, setIsDownloading] = useState<boolean>(false);
 
   // ── Customization ─────────────────────────────────────────────────────────
   const activeFontFamily = customization?.fontFamily ?? "'Lato', sans-serif";
-  const activeSectionOrder: SectionKey[] = customization?.sectionOrder ?? [...DEFAULT_SECTION_ORDER];
+  const activeSectionOrder: SectionKey[] = customization?.sectionOrder ?? [
+    ...DEFAULT_SECTION_ORDER,
+  ];
 
   // ── Data sources ─────────────────────────────────────────────────────────
   const contact = alldata?.contact || context.contact || {};
@@ -8043,30 +7998,48 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({ alldata, customization 
   // ── Complete Font import map ────────────────────────────────────────────────
   const getFontImport = (fontFamily: string): string => {
     const map: Record<string, string> = {
-      "'Inter', sans-serif": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap",
+      "'Inter', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap",
       "'-apple-system', 'BlinkMacSystemFont', sans-serif": "",
-      "'Poppins', sans-serif": "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap",
-      "'Lato', sans-serif": "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;600;700&display=swap",
-      "'Nunito', sans-serif": "https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap",
-      "'Raleway', sans-serif": "https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap",
-      "'Montserrat', sans-serif": "https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap",
-      "'Open Sans', sans-serif": "https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap",
-      "'Roboto', sans-serif": "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap",
-      "'Merriweather', serif": "https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap",
-      "'Playfair Display', serif": "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap",
-      "'DM Serif Display', serif": "https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap",
-      "'Libre Baskerville', serif": "https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap",
-      "'EB Garamond', serif": "https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&display=swap",
-      "'Crimson Text', serif": "https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap",
-      "'Source Code Pro', monospace": "https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&display=swap",
-      "'JetBrains Mono', monospace": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap",
+      "'Poppins', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap",
+      "'Lato', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;600;700&display=swap",
+      "'Nunito', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap",
+      "'Raleway', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap",
+      "'Montserrat', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap",
+      "'Open Sans', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap",
+      "'Roboto', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap",
+      "'Merriweather', serif":
+        "https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap",
+      "'Playfair Display', serif":
+        "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap",
+      "'DM Serif Display', serif":
+        "https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap",
+      "'Libre Baskerville', serif":
+        "https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap",
+      "'EB Garamond', serif":
+        "https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&display=swap",
+      "'Crimson Text', serif":
+        "https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap",
+      "'Source Code Pro', monospace":
+        "https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&display=swap",
+      "'JetBrains Mono', monospace":
+        "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap",
     };
     return map[fontFamily] || map["'Lato', sans-serif"];
   };
 
   const getSystemFallback = (fontFamily: string): string => {
-    if (fontFamily.includes('serif')) return 'Georgia, "Times New Roman", serif';
-    if (fontFamily.includes('monospace')) return '"Courier New", Courier, monospace';
+    if (fontFamily.includes("serif"))
+      return 'Georgia, "Times New Roman", serif';
+    if (fontFamily.includes("monospace"))
+      return '"Courier New", Courier, monospace';
     return '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
   };
 
@@ -8470,8 +8443,9 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({ alldata, customization 
   const styles = buildCSS(activeFontFamily);
 
   // ── Helper functions ──────────────────────────────────────────────────────
-  const href = (url: string) => url.startsWith("http") ? url : `https://${url}`;
-  
+  const href = (url: string) =>
+    url.startsWith("http") ? url : `https://${url}`;
+
   const rich = (html: string) => {
     const c = cleanQuillHTML(html);
     return c && c !== "<p><br></p>" ? c : "";
@@ -8483,34 +8457,47 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({ alldata, customization 
   };
 
   // ── Section builders ──────────────────────────────────────────────────────
-  
 
   // ── HTML builder with section ordering ───────────────────────────────────
-  const generateHTML = useCallback((forPDF = false, pageBreakIds: string[] = [], skillsCutIndex = -1): string => {
-
+  const generateHTML = useCallback(
+    (
+      forPDF = false,
+      pageBreakIds: string[] = [],
+      skillsCutIndex = -1,
+    ): string => {
       const addressStr = addressParts.join(" | ");
 
-      const fontPreloads = activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif" 
-        ? `<link href="${getFontImport(activeFontFamily)}" rel="stylesheet"/>`
-        : '';
+      const fontPreloads =
+        activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif"
+          ? `<link href="${getFontImport(activeFontFamily)}" rel="stylesheet"/>`
+          : "";
 
-
-        const sectionBuilders: Record<SectionKey, () => string> = {
-    summary: () => summary ? `
+      const sectionBuilders: Record<SectionKey, () => string> = {
+        summary: () =>
+          summary
+            ? `
       <div class="section" data-block-id="summary">
         <h2 class="section-title">About</h2>
         <div class="summary-text">${rich(summary)}</div>
       </div>
-    ` : "",
+    `
+            : "",
 
-    experience: () => experiences.length > 0 ? `
+        experience: () =>
+          experiences.length > 0
+            ? `
       <div class="section" data-block-id="exp-section">
         <h2 class="section-title">Experience</h2>
-        ${experiences.map((exp, i: number) => {
-          const startFormatted = formatMonthYear(exp.startDate, false);
-          const endFormatted = exp.endDate ? formatMonthYear(exp.endDate, false) : "Present";
-          const companyLocation = [exp.employer, exp.location].filter(Boolean).join(" • ");
-          return `
+        ${experiences
+          .map((exp, i: number) => {
+            const startFormatted = formatMonthYear(exp.startDate, false);
+            const endFormatted = exp.endDate
+              ? formatMonthYear(exp.endDate, false)
+              : "Present";
+            const companyLocation = [exp.employer, exp.location]
+              .filter(Boolean)
+              .join(" • ");
+            return `
             <div class="experience-item" data-block-id="exp-${i}">
               <div class="experience-header">
                 <div class="experience-title-row">
@@ -8522,14 +8509,20 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({ alldata, customization 
               ${exp.text ? renderDescription(exp.text) : ""}
             </div>
           `;
-        }).join("")}
+          })
+          .join("")}
       </div>
-    ` : "",
+    `
+            : "",
 
-    projects: () => projects.length > 0 ? `
+        projects: () =>
+          projects.length > 0
+            ? `
       <div class="section" data-block-id="proj-section">
         <h2 class="section-title">Projects</h2>
-        ${projects.map((project: any, i: number) => `
+        ${projects
+          .map(
+            (project: any, i: number) => `
           <div class="experience-item" data-block-id="proj-${i}">
             <div class="project-header">
               <div class="experience-title-row">
@@ -8543,19 +8536,32 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({ alldata, customization 
             ${project.techStack && project.techStack.length > 0 ? `<div class="project-tech-stack"><strong>Tech:</strong> ${project.techStack.join(" • ")}</div>` : ""}
             ${project.description ? `<div class="experience-description">${rich(project.description)}</div>` : ""}
           </div>
-        `).join("")}
+        `,
+          )
+          .join("")}
       </div>
-    ` : "",
+    `
+            : "",
 
-    education: () => educations.length > 0 ? `
+        education: () =>
+          educations.length > 0
+            ? `
       <div class="section" data-block-id="edu-section">
         <h2 class="section-title">Education</h2>
-        ${educations.map((edu, i: number) => {
-          const dateStr = edu.startDate || edu.endDate ? `${edu.startDate || ""}${edu.startDate ? " — " : ""}${edu.endDate || "Present"}` : "";
-          const formattedGrade = formatGradeToCgpdAndPercentage(edu.grade || "");
-          const eduTextHtml = edu.text ? rich(edu.text) : "";
-          const schoolLocation = [edu.schoolname, edu.location].filter(Boolean).join(" • ");
-          return `
+        ${educations
+          .map((edu, i: number) => {
+            const dateStr =
+              edu.startDate || edu.endDate
+                ? `${edu.startDate || ""}${edu.startDate ? " — " : ""}${edu.endDate || "Present"}`
+                : "";
+            const formattedGrade = formatGradeToCgpdAndPercentage(
+              edu.grade || "",
+            );
+            const eduTextHtml = edu.text ? rich(edu.text) : "";
+            const schoolLocation = [edu.schoolname, edu.location]
+              .filter(Boolean)
+              .join(" • ");
+            return `
             <div class="education-item" data-block-id="edu-${i}">
               <div class="education-header">
                 <div class="education-title-row">
@@ -8570,45 +8576,51 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({ alldata, customization 
               ${eduTextHtml ? `<div class="education-description">${eduTextHtml}</div>` : ""}
             </div>
           `;
-        }).join("")}
+          })
+          .join("")}
       </div>
-    ` : "",
+    `
+            : "",
 
-    skills: () => {
-      if (!skills || (typeof skills === "string" && !skills.trim())) return "";
-      const cleanedSkills = rich(skills);
-      if (!cleanedSkills || cleanedSkills === "<p><br></p>" || cleanedSkills === "") return "";
-      return `
+        skills: () => {
+          if (!skills || (typeof skills === "string" && !skills.trim()))
+            return "";
+          const cleanedSkills = rich(skills);
+          if (
+            !cleanedSkills ||
+            cleanedSkills === "<p><br></p>" ||
+            cleanedSkills === ""
+          )
+            return "";
+          return `
         <div class="section" data-block-id="skills-section">
           <h2 class="section-title">Skills</h2>
           <div class="skills-content" data-block-id="skills-content">${cleanedSkills}</div>
         </div>
       `;
-    },
+        },
 
-
-    
-
-
-    
-
-    custom: () => {
-      const filteredSections = getFilteredCustomSections();
-      if (filteredSections.length === 0) return "";
-      return filteredSections.map((s: any, i: number) => `
+        custom: () => {
+          const filteredSections = getFilteredCustomSections();
+          if (filteredSections.length === 0) return "";
+          return filteredSections
+            .map(
+              (s: any, i: number) => `
         <div class="section" data-block-id="custom-${i}">
           <div class="custom-section">
             ${s.name ? `<h2 class="custom-section-title">${s.name}</h2>` : ""}
             ${s.description ? `<div class="custom-section-content">${rich(s.description)}</div>` : ""}
           </div>
         </div>
-      `).join("");
-    },
-  };
+      `,
+            )
+            .join("");
+        },
+      };
 
       // Build sections in the order defined by customization
       const sectionsHTML = activeSectionOrder
-        .map(key => sectionBuilders[key]?.() ?? "")
+        .map((key) => sectionBuilders[key]?.() ?? "")
         .join("");
 
       const pdfOverrideStyle = forPDF
@@ -8766,13 +8778,16 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({ alldata, customization 
             return;
           }
 
-          measureDoc.documentElement.style.cssText = "height:auto!important;overflow:visible!important;";
-          measureDoc.body.style.cssText = "margin:0;padding:0;height:auto!important;overflow:visible!important;";
+          measureDoc.documentElement.style.cssText =
+            "height:auto!important;overflow:visible!important;";
+          measureDoc.body.style.cssText =
+            "margin:0;padding:0;height:auto!important;overflow:visible!important;";
           void resume.offsetHeight;
 
           const totalH = resume.scrollHeight;
           const resumeRect = resume.getBoundingClientRect();
-          const scrollY = measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
+          const scrollY =
+            measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
 
           const getRelTop = (el: HTMLElement): number => {
             const r = el.getBoundingClientRect();
@@ -8781,7 +8796,11 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({ alldata, customization 
           const getRelBottom = (el: HTMLElement): number =>
             getRelTop(el) + el.getBoundingClientRect().height;
 
-          interface Block { top: number; bottom: number; id?: string; }
+          interface Block {
+            top: number;
+            bottom: number;
+            id?: string;
+          }
           const blocks: Block[] = [];
 
           const ITEM_SELECTORS = [
@@ -8799,41 +8818,52 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({ alldata, customization 
             }
           });
 
-          resume.querySelectorAll<HTMLElement>(".section-title, .custom-section-title").forEach((title) => {
-            const titleTop = getRelTop(title);
-            let firstItem: HTMLElement | null = null;
-            let sib = title.nextElementSibling as HTMLElement | null;
-            while (sib) {
-              if (sib.getBoundingClientRect().height > 8) {
-                firstItem = sib;
-                break;
+          resume
+            .querySelectorAll<HTMLElement>(
+              ".section-title, .custom-section-title",
+            )
+            .forEach((title) => {
+              const titleTop = getRelTop(title);
+              let firstItem: HTMLElement | null = null;
+              let sib = title.nextElementSibling as HTMLElement | null;
+              while (sib) {
+                if (sib.getBoundingClientRect().height > 8) {
+                  firstItem = sib;
+                  break;
+                }
+                sib = sib.nextElementSibling as HTMLElement | null;
               }
-              sib = sib.nextElementSibling as HTMLElement | null;
-            }
-            // if (firstItem) {
-            //   const deepChild = firstItem.querySelector<HTMLElement>(".experience-item, .education-item, .custom-section, .skills-content");
-            //   const anchor = deepChild || firstItem;
-            //   const anchorBottom = getRelBottom(anchor);
-            //   if (anchorBottom - titleTop > 8) {
-            //     const sectionId = (title.parentElement as HTMLElement)?.dataset?.blockId;
-            //     blocks.push({ top: titleTop, bottom: anchorBottom, id: sectionId });
-            //   }
-            // }
+              // if (firstItem) {
+              //   const deepChild = firstItem.querySelector<HTMLElement>(".experience-item, .education-item, .custom-section, .skills-content");
+              //   const anchor = deepChild || firstItem;
+              //   const anchorBottom = getRelBottom(anchor);
+              //   if (anchorBottom - titleTop > 8) {
+              //     const sectionId = (title.parentElement as HTMLElement)?.dataset?.blockId;
+              //     blocks.push({ top: titleTop, bottom: anchorBottom, id: sectionId });
+              //   }
+              // }
 
-            // AFTER
-if (firstItem) {
-  // Skip anchor logic for skills — allow it to split across pages
-  if (firstItem.classList.contains("skills-content")) return;
+              // AFTER
+              if (firstItem) {
+                // Skip anchor logic for skills — allow it to split across pages
+                if (firstItem.classList.contains("skills-content")) return;
 
-  const deepChild = firstItem.querySelector<HTMLElement>(".entry-block, .summary-text");
-  const anchor = deepChild || firstItem;
-  const anchorBottom = getRelBottom(anchor);
-  if (anchorBottom - titleTop > 8) {
-    const sectionId = (title.parentElement as HTMLElement)?.dataset?.blockId;
-    blocks.push({ top: titleTop, bottom: anchorBottom, id: sectionId });
-  }
-}
-          });
+                const deepChild = firstItem.querySelector<HTMLElement>(
+                  ".entry-block, .summary-text",
+                );
+                const anchor = deepChild || firstItem;
+                const anchorBottom = getRelBottom(anchor);
+                if (anchorBottom - titleTop > 8) {
+                  const sectionId = (title.parentElement as HTMLElement)
+                    ?.dataset?.blockId;
+                  blocks.push({
+                    top: titleTop,
+                    bottom: anchorBottom,
+                    id: sectionId,
+                  });
+                }
+              }
+            });
 
           blocks.sort((a, b) => a.top - b.top);
 
@@ -8868,62 +8898,63 @@ if (firstItem) {
           // document.body.removeChild(iframe);
           // (window as any).__resumePageBreakIds = pageBreakIds;
 
+          const skillsLis = Array.from(
+            resume.querySelectorAll<HTMLElement>(".skills-content li"),
+          );
+          skillsLis.forEach((li) => {
+            const top = getRelTop(li);
+            const bottom = getRelBottom(li);
+            if (bottom - top > 2) blocks.push({ top, bottom });
+          });
 
-          const skillsLis = Array.from(resume.querySelectorAll<HTMLElement>(".skills-content li"));
-skillsLis.forEach((li) => {
-  const top = getRelTop(li);
-  const bottom = getRelBottom(li);
-  if (bottom - top > 2) blocks.push({ top, bottom });
-});
+          blocks.sort((a, b) => a.top - b.top);
+          pageStarts.length = 1;
+          pageBreakIds.length = 0;
 
-blocks.sort((a, b) => a.top - b.top);
-pageStarts.length = 1;
-pageBreakIds.length = 0;
+          while (pageStarts.length < MAX_PAGES) {
+            const currentStart = pageStarts[pageStarts.length - 1];
+            const naiveCut = currentStart + PAGE_CONTENT_H;
+            if (naiveCut >= totalH) break;
 
-while (pageStarts.length < MAX_PAGES) {
-  const currentStart = pageStarts[pageStarts.length - 1];
-  const naiveCut = currentStart + PAGE_CONTENT_H;
-  if (naiveCut >= totalH) break;
+            let actualCut = naiveCut;
+            let cutBlockId: string | undefined;
 
-  let actualCut = naiveCut;
-  let cutBlockId: string | undefined;
+            for (const block of blocks) {
+              if (block.top >= naiveCut) break;
+              if (block.bottom <= currentStart) continue;
+              if (block.top >= currentStart && block.bottom > naiveCut) {
+                if (block.top < actualCut) {
+                  actualCut = block.top;
+                  cutBlockId = block.id;
+                }
+              }
+            }
 
-  for (const block of blocks) {
-    if (block.top >= naiveCut) break;
-    if (block.bottom <= currentStart) continue;
-    if (block.top >= currentStart && block.bottom > naiveCut) {
-      if (block.top < actualCut) {
-        actualCut = block.top;
-        cutBlockId = block.id;
-      }
-    }
-  }
+            if (actualCut <= currentStart) actualCut = naiveCut;
+            pageStarts.push(actualCut);
+            if (cutBlockId) pageBreakIds.push(cutBlockId);
+          }
 
-  if (actualCut <= currentStart) actualCut = naiveCut;
-  pageStarts.push(actualCut);
-  if (cutBlockId) pageBreakIds.push(cutBlockId);
-}
+          (window as any).__resumeSkillsCutIndex = -1;
+          for (let p = 0; p < pageStarts.length - 1; p++) {
+            const cutY = pageStarts[p + 1];
+            for (let li = 0; li < skillsLis.length; li++) {
+              const liTop = getRelTop(skillsLis[li]);
+              const liBottom = getRelBottom(skillsLis[li]);
+              if (liTop < cutY && liBottom > cutY) {
+                (window as any).__resumeSkillsCutIndex = li;
+                break;
+              }
+              if (liTop >= cutY) {
+                (window as any).__resumeSkillsCutIndex = li;
+                break;
+              }
+            }
+            if ((window as any).__resumeSkillsCutIndex >= 0) break;
+          }
 
-(window as any).__resumeSkillsCutIndex = -1;
-for (let p = 0; p < pageStarts.length - 1; p++) {
-  const cutY = pageStarts[p + 1];
-  for (let li = 0; li < skillsLis.length; li++) {
-    const liTop = getRelTop(skillsLis[li]);
-    const liBottom = getRelBottom(skillsLis[li]);
-    if (liTop < cutY && liBottom > cutY) {
-      (window as any).__resumeSkillsCutIndex = li;
-      break;
-    }
-    if (liTop >= cutY) {
-      (window as any).__resumeSkillsCutIndex = li;
-      break;
-    }
-  }
-  if ((window as any).__resumeSkillsCutIndex >= 0) break;
-}
-
-document.body.removeChild(iframe);
-(window as any).__resumePageBreakIds = pageBreakIds;
+          document.body.removeChild(iframe);
+          (window as any).__resumePageBreakIds = pageBreakIds;
 
           const pageHtmls: string[] = [];
 
@@ -9008,6 +9039,7 @@ document.body.removeChild(iframe);
   }, [htmlContent, splitIntoPages]);
 
   const handleDownload = async () => {
+    setIsDownloading(true);
     try {
       // const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
       // const pdfHtml = generateHTML(true, pageBreakIds);
@@ -9018,17 +9050,17 @@ document.body.removeChild(iframe);
       //   { responseType: "blob" },
       // );
 
-
       // AFTER
-const pageBreakIds: string[] = ((window as any).__resumePageBreakIds || []).filter(
-  (id: string) => id !== "skills-section"
-);
-const skillsCutIndex: number = (window as any).__resumeSkillsCutIndex ?? -1;
-const res: AxiosResponse<Blob> = await api.post(
-  `${API_URL}/candidates/generate-pdf`,
-  { html: generateHTML(true, pageBreakIds, skillsCutIndex) },
-  { responseType: "blob" },
-);
+      const pageBreakIds: string[] = (
+        (window as any).__resumePageBreakIds || []
+      ).filter((id: string) => id !== "skills-section");
+      const skillsCutIndex: number =
+        (window as any).__resumeSkillsCutIndex ?? -1;
+      const res: AxiosResponse<Blob> = await api.post(
+        `${API_URL}/candidates/generate-pdf`,
+        { html: generateHTML(true, pageBreakIds, skillsCutIndex) },
+        { responseType: "blob" },
+      );
 
       const url = URL.createObjectURL(res.data);
       const a = document.createElement("a");
@@ -9041,23 +9073,54 @@ const res: AxiosResponse<Blob> = await api.post(
     } catch (error) {
       console.error("Error generating PDF:", error);
       alert("Failed to generate PDF. Please try again.");
+    } finally {
+      setIsDownloading(false);
     }
   };
 
   return (
     <div style={{ textAlign: "left", marginTop: 0 }}>
-      {/* {lastSegment === "download-resume" && ( */}
-        <div className="text-center my-5">
+      {lastSegment === "download-resume" && (
+        <div className="text-center my-8">
           <motion.button
             onClick={handleDownload}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-emerald-500 text-2xl md:text-base hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 cursor-pointer shadow-md hover:shadow-lg"
+            disabled={isDownloading}
+            whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
+            whileTap={!isDownloading ? { scale: 0.98 } : {}}
+            className={`
+                                                                relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
+                                                                text-white transition-all duration-300 shadow-lg
+                                                                ${
+                                                                  isDownloading
+                                                                    ? "bg-gray-400 cursor-not-allowed opacity-80"
+                                                                    : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600"
+                                                                }
+                                                              `}
           >
-            Download Resume
+            {/* Animated background gradient for premium feel */}
+            {!isDownloading && (
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+            )}
+
+            <div className="relative flex items-center justify-center gap-3 text-lg">
+              {isDownloading ? (
+                <>
+                  <FaSpinner className="animate-spin text-xl" />
+                  <span>Generating PDF ...</span>
+                </>
+              ) : (
+                <>
+                  <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
+                  <span>Download Resume</span>
+                  <span className="text-sm opacity-75 font-light ml-1">
+                    PDF
+                  </span>
+                </>
+              )}
+            </div>
           </motion.button>
         </div>
-      {/* )} */}
+      )}
 
       {alldata ? (
         <div

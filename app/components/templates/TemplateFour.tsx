@@ -3959,8 +3959,1158 @@
 
 
 
+// "use client";
+// import React, { useContext, useState, useEffect, useRef, useCallback } from "react";
+// import axios, { AxiosResponse } from "axios";
+// import { CreateContext } from "@/app/context/CreateContext";
+// import { API_URL } from "@/app/config/api";
+// import {
+//   formatMonthYear,
+//   cleanQuillHTML,
+//   formatDateOfBirth,
+//   formatGradeToCgpdAndPercentage,
+// } from "@/app/utils";
+// import { Finalize, ResumeProps } from "@/app/types/context.types";
+// import { usePathname } from "next/navigation";
+// import { motion } from "framer-motion";
+// import api from "@/app/utils/api";
+// import {
+//   ResumeCustomization,
+//   SectionKey,
+//   DEFAULT_SECTION_ORDER,
+// } from "@/app/(resume)/download-resume/page";
+
+// // ─────────────────────────────────────────────────────────────────────────────
+// // A4 CONSTANTS
+// const A4_W = 794;
+// const A4_H = 1123;
+// const MARGIN = 57;
+// const PAGE_CONTENT_H = A4_H - MARGIN * 2;
+
+// interface TemplateFourProps extends ResumeProps {
+//   customization?: ResumeCustomization;
+// }
+
+// const TemplateFour: React.FC<TemplateFourProps> = ({ alldata, customization }) => {
+//   const context = useContext(CreateContext);
+//   const pathname = usePathname();
+//   const lastSegment = pathname.split("/").pop();
+//   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  
+//   const [htmlContent, setHtmlContent] = useState<string>("");
+//   const [pages, setPages] = useState<string[]>([]);
+
+//   // ── Customization ─────────────────────────────────────────────────────────
+//   const activeFontFamily = customization?.fontFamily ?? "'Nunito', sans-serif";
+//   const activeSectionOrder: SectionKey[] = customization?.sectionOrder ?? [...DEFAULT_SECTION_ORDER];
+
+//   // ── Data ──────────────────────────────────────────────────────────────────
+//   const contact = alldata?.contact || context.contact || {};
+//   const educations = alldata?.educations || context?.education || [];
+//   const experiences = alldata?.experiences || context?.experiences || [];
+//   const skills = alldata?.skills?.text || context?.skills?.text || "";
+//   const projects = alldata?.projects || context?.projects || [];
+//   const finalize = alldata?.finalize || context?.finalize || {};
+//   const summary = alldata?.summary || context?.summary || "";
+//   const linkedinUrl = contact?.linkedIn;
+//   const portfolioUrl = contact?.portfolio;
+//   const githubUrl = contact?.github;
+//   const dateOfBirth = contact?.dob;
+
+//   const isFinalizeData = (data: any): data is Finalize =>
+//     data && typeof data === "object" && !Array.isArray(data);
+
+//   const fin = {
+//     customSection:
+//       isFinalizeData(finalize) && Array.isArray(finalize.customSection)
+//         ? finalize.customSection
+//         : [],
+//   };
+
+//   // ── Complete Font import map ────────────────────────────────────────────────
+//   const getFontImport = (fontFamily: string): string => {
+//     const map: Record<string, string> = {
+//       "'Inter', sans-serif": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap",
+//       "'-apple-system', 'BlinkMacSystemFont', sans-serif": "",
+//       "'Poppins', sans-serif": "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap",
+//       "'Lato', sans-serif": "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",
+//       "'Nunito', sans-serif": "https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap",
+//       "'Raleway', sans-serif": "https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap",
+//       "'Montserrat', sans-serif": "https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap",
+//       "'Open Sans', sans-serif": "https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap",
+//       "'Roboto', sans-serif": "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap",
+//       "'Merriweather', serif": "https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap",
+//       "'Playfair Display', serif": "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap",
+//       "'DM Serif Display', serif": "https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap",
+//       "'Libre Baskerville', serif": "https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap",
+//       "'EB Garamond', serif": "https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&display=swap",
+//       "'Crimson Text', serif": "https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap",
+//       "'Source Code Pro', monospace": "https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&display=swap",
+//       "'JetBrains Mono', monospace": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap",
+//     };
+//     return map[fontFamily] || map["'Nunito', sans-serif"];
+//   };
+
+//   const getSystemFallback = (fontFamily: string): string => {
+//     if (fontFamily.includes('serif')) return 'Georgia, "Times New Roman", serif';
+//     if (fontFamily.includes('monospace')) return '"Courier New", Courier, monospace';
+//     return '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+//   };
+
+//   // ── CSS builder with dynamic font ─────────────────────────────────────────
+//   const buildCSS = useCallback(
+//     (fontFamily: string) => `
+//     @import url('${getFontImport(fontFamily)}');
+
+//     @page {
+//       size: A4;
+//       margin: 15mm;
+//     }
+
+//     *, *::before, *::after { box-sizing: border-box; }
+
+//     html, body { margin: 0; padding: 0; background: white; }
+
+//     .t4-resume {
+//       width: ${A4_W}px;
+//       padding: 0 ${MARGIN}px;
+//       background-color: white;
+//       font-family: ${fontFamily}, ${getSystemFallback(fontFamily)};
+//       font-size: 14px;
+//       line-height: 1.5;
+//       text-align: left;
+//     }
+
+//     .t4-resume * {
+//       box-sizing: border-box;
+//     }
+
+//     .t4-resume p,
+//     .t4-resume div,
+//     .t4-resume span,
+//     .t4-resume h2,
+//     .t4-resume h3,
+//     .t4-resume i,
+//     .t4-resume a,
+//     .t4-resume li {
+//       font-family: ${fontFamily}, ${getSystemFallback(fontFamily)};
+//       line-height: 1.5;
+//     }
+
+//     .t4-resume p {
+//       margin: 0 !important;
+//       padding: 0 !important;
+//     }
+
+//     .t4-resume ul {
+//       list-style-type: disc !important;
+//       padding-left: 20px !important;
+//       margin: 0 !important;
+//     }
+
+//     .t4-resume ol {
+//       list-style-type: decimal !important;
+//       padding-left: 20px !important;
+//       margin: 0 !important;
+//     }
+
+//     .t4-resume li {
+//       margin-top: 0 !important;
+//       margin-bottom: 1px !important;
+//       padding: 0 !important;
+//       line-height: 1.5 !important;
+//       font-size: 14px !important;
+//       font-family: ${fontFamily}, ${getSystemFallback(fontFamily)} !important;
+//       page-break-inside: avoid;
+//       break-inside: avoid;
+//     }
+
+//     /* Rich text content styles */
+//     .t4-resume .entry-content ul,
+//     .t4-resume .entry-content ol,
+//     .t4-resume .extra-content ul,
+//     .t4-resume .extra-content ol,
+//     .t4-resume .skills-content ul,
+//     .t4-resume .skills-content ol {
+//       margin: 8px 0 8px 20px !important;
+//       padding-left: 0 !important;
+//     }
+
+//     .t4-resume .entry-content li,
+//     .t4-resume .extra-content li,
+//     .t4-resume .skills-content li {
+//       margin-bottom: 4px !important;
+//     }
+
+//     .t4-resume .entry-content strong,
+//     .t4-resume .extra-content strong,
+//     .t4-resume .skills-content strong {
+//       font-weight: 700 !important;
+//     }
+
+//     .t4-resume .entry-content em,
+//     .t4-resume .extra-content em,
+//     .t4-resume .skills-content em {
+//       font-style: italic !important;
+//     }
+
+//     .t4-resume .entry-content u,
+//     .t4-resume .extra-content u,
+//     .t4-resume .skills-content u {
+//       text-decoration: underline !important;
+//     }
+
+//     .t4-resume .entry-content p,
+//     .t4-resume .extra-content p,
+//     .t4-resume .skills-content p {
+//       white-space: pre-wrap !important;
+//     }
+
+//     /* Header */
+//     .t4-resume .header-block {
+//       text-align: center;
+//       margin-bottom: 6px;
+//       page-break-inside: avoid;
+//       break-inside: avoid;
+//     }
+
+//     .t4-resume .header-name {
+//       font-size: 27px;
+//       font-weight: 700;
+//       text-transform: uppercase;
+//       letter-spacing: 0.02em;
+//       color: #111827;
+//       font-family: ${fontFamily}, ${getSystemFallback(fontFamily)};
+//       line-height: 1.2;
+//       margin-bottom: 3px;
+//     }
+
+//     .t4-resume .header-jobtitle {
+//       font-size: 12px;
+//       font-weight: 400;
+//       color: #374151;
+//       font-family: ${fontFamily}, ${getSystemFallback(fontFamily)};
+//       line-height: 1.5;
+//       margin-bottom: 4px;
+//     }
+
+//     .t4-resume .header-links {
+//       display: flex;
+//       justify-content: center;
+//       align-items: center;
+//       gap: 16px;
+//       margin-bottom: 4px;
+//       flex-wrap: wrap;
+//     }
+
+//     .t4-resume .header-link {
+//       font-size: 13px;
+//       font-weight: 600;
+//       color: #000;
+//       text-decoration: underline;
+//       text-underline-offset: 2px;
+//       font-family: ${fontFamily}, ${getSystemFallback(fontFamily)};
+//       line-height: 1.5;
+//     }
+
+//     .t4-resume .header-divider {
+//       border: none;
+//       border-top: 2px solid #000;
+//       margin: 4px 0;
+//     }
+
+//     .t4-resume .header-contact-row {
+//       display: flex;
+//       justify-content: center;
+//       align-items: center;
+//       gap: 6px;
+//       font-size: 13px;
+//       color: #111827;
+//       font-family: ${fontFamily}, ${getSystemFallback(fontFamily)};
+//       line-height: 1.5;
+//       flex-wrap: wrap;
+//       padding: 3px 0;
+//     }
+
+//     /* Section title */
+//     .t4-resume .section-title {
+//       font-size: 17px;
+//       font-weight: 700;
+//       color: #111827;
+//       font-family: ${fontFamily}, ${getSystemFallback(fontFamily)};
+//       line-height: 1.4;
+//       margin-bottom: 4px;
+//       margin-top: 10px;
+//       page-break-after: avoid;
+//       break-after: avoid;
+//     }
+
+//     /* Skills content */
+//     .t4-resume .skills-content {
+//       font-size: 14px;
+//       color: #374151;
+//       font-family: ${fontFamily}, ${getSystemFallback(fontFamily)};
+//       line-height: 1.5;
+//       padding-bottom: 4px;
+//       word-wrap: break-word;
+//       overflow-wrap: break-word;
+//     }
+
+//     .t4-resume .skills-content p {
+//       margin: 0 0 6px 0 !important;
+//       padding: 0 !important;
+//     }
+
+//     /* Experience header */
+//     .t4-resume .experience-header {
+//       display: flex;
+//       justify-content: space-between;
+//       align-items: baseline;
+//       flex-wrap: wrap;
+//       gap: 8px;
+//       margin-bottom: 4px;
+//     }
+
+//     .t4-resume .experience-title {
+//       font-size: 15px;
+//       font-weight: 600;
+//       color: #111827;
+//     }
+
+//     .t4-resume .experience-date {
+//       font-size: 13px;
+//       color: #4b5563;
+//     }
+
+//     .t4-resume .experience-subtitle {
+//       font-size: 14px;
+//       color: #6b7280;
+//       font-weight: 500;
+//     }
+
+//     /* Education header */
+//     .t4-resume .education-header {
+//       display: flex;
+//       justify-content: space-between;
+//       align-items: baseline;
+//       flex-wrap: wrap;
+//       gap: 8px;
+//       margin-bottom: 4px;
+//     }
+
+//     .t4-resume .education-school {
+//       font-size: 15px;
+//       font-weight: 600;
+//       color: #111827;
+//     }
+
+//     .t4-resume .education-date {
+//       font-size: 13px;
+//       color: #4b5563;
+//     }
+
+//     .t4-resume .education-subtitle {
+//       font-size: 14px;
+//       color: #6b7280;
+//       font-weight: 500;
+//     }
+
+//     /* Entry */
+//     .t4-resume .entry-block {
+//       margin-bottom: 12px;
+//       page-break-inside: avoid;
+//       break-inside: avoid;
+//     }
+
+//     .t4-resume .entry-content {
+//       font-size: 14px;
+//       color: #374151;
+//       font-family: ${fontFamily}, ${getSystemFallback(fontFamily)};
+//       line-height: 1.5;
+//       padding-bottom: 4px;
+//       word-wrap: break-word;
+//       overflow-wrap: break-word;
+//     }
+
+//     /* Education grade */
+//     .t4-resume .education-grade {
+//       font-size: 13px;
+//       color: #6b7280;
+//       font-weight: 500;
+//     }
+
+//     /* Projects */
+//     .t4-resume .project-header {
+//       display: flex;
+//       justify-content: space-between;
+//       align-items: baseline;
+//       flex-wrap: wrap;
+//       gap: 8px;
+//       margin-bottom: 4px;
+//     }
+
+//     .t4-resume .project-links {
+//       display: flex;
+//       gap: 12px;
+//     }
+
+//     .t4-resume .project-link {
+//       font-size: 12px;
+//       color: #4b5563;
+//       text-decoration: underline;
+//     }
+
+//     .t4-resume .project-tech-stack {
+//       font-size: 12px;
+//       color: #6b7280;
+//     }
+
+//     /* Extra content */
+//     .t4-resume .extra-content {
+//       font-size: 14px;
+//       color: #374151;
+//       font-family: ${fontFamily}, ${getSystemFallback(fontFamily)};
+//       line-height: 1.5;
+//       padding: 4px 0;
+//       word-wrap: break-word;
+//       overflow-wrap: break-word;
+//     }
+
+//     .t4-resume .extra-content p {
+//       margin: 0 !important;
+//       padding: 0 !important;
+//       line-height: 1.5 !important;
+//     }
+
+//     .t4-resume .extra-content div {
+//       margin: 0 !important;
+//       padding: 0 !important;
+//       line-height: 1.5 !important;
+//     }
+
+//     /* Custom Section Wrapper */
+//     .t4-resume .custom-section-wrapper {
+//       margin-top: 0;
+//       page-break-inside: avoid;
+//       break-inside: avoid;
+//     }
+
+//     .t4-resume .custom-section-wrapper .section-title {
+//       margin-top: 10px;
+//     }
+
+//     /* Page break marker */
+//     .t4-page-break {
+//       page-break-before: always !important;
+//       break-before: page !important;
+//       display: block;
+//       height: 0;
+//       margin: 0;
+//       padding: 0;
+//     }
+
+//     /* Print */
+//     @media print {
+//       * {
+//         -webkit-print-color-adjust: exact !important;
+//         print-color-adjust: exact !important;
+//       }
+//     }
+//   `,
+//     [],
+//   );
+
+//   const CSS = buildCSS(activeFontFamily);
+
+//   // ── Helper functions ──────────────────────────────────────────────────────
+//   const href = (url: string) => url.startsWith("http") ? url : `https://${url}`;
+
+//   const rich = (html: string) => {
+//     const c = cleanQuillHTML(html);
+//     return c && c !== "<p><br></p>" ? c : "";
+//   };
+
+
+
+//   // ── HTML generation with section ordering ─────────────────────────────────
+// const generateHTML = useCallback((forPDF = false, pageBreakIds: string[] = [], skillsCutIndex = -1): string => {
+//     const addressStr = [
+//       contact?.address,
+//       contact?.city,
+//       contact?.postCode,
+//       contact?.country,
+//     ].filter(Boolean).join(", ");
+
+//     const formattedDobHtml = formatDateOfBirth(dateOfBirth ? dateOfBirth : "");
+
+//     const fontPreloads = activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif" 
+//       ? `<link rel="preconnect" href="https://fonts.googleapis.com"/>
+//          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+//          <link href="${getFontImport(activeFontFamily)}" rel="stylesheet"/>`
+//       : '';
+
+//     const pdfOverrideStyle = forPDF
+//       ? `<style>.t4-resume { width: 100% !important; padding: 0 !important; }</style>`
+//       : "";
+
+//       const sectionBuilders: Record<SectionKey, () => string> = {
+//   summary: () => summary ? `
+//     <div class="t4-section-content" data-block-id="summary">
+//       <div class="section-title">Summary</div>
+//       <div class="extra-content">${rich(summary)}</div>
+//     </div>
+//   ` : "",
+
+//   experience: () => experiences?.length > 0 ? `
+//     <div class="t4-section-content" data-block-id="exp-section">
+//       <div class="section-title">Experience</div>
+//       ${experiences.map((exp, i: number) => {
+//         const start = formatMonthYear(exp.startDate, false);
+//         const end = exp.endDate ? formatMonthYear(exp.endDate, false) : (exp.startDate ? "Present" : "");
+//         return `<div class="entry-block" data-block-id="exp-${i}">
+//           <div class="experience-header">
+//             <div class="experience-title">${exp.jobTitle || ""}</div>
+//             <div class="experience-date">${start}${start && end ? " - " : ""}${end}</div>
+//           </div>
+//           <div class="experience-subtitle">${[exp.employer, exp.location].filter(Boolean).join(" — ")}</div>
+//           ${exp.text ? `<div class="entry-content">${rich(exp.text)}</div>` : ""}
+//         </div>`;
+//       }).join("")}
+//     </div>
+//   ` : "",
+
+//   projects: () => projects?.length > 0 ? `
+//     <div class="t4-section-content" data-block-id="proj-section">
+//       <div class="section-title">Projects</div>
+//       ${projects.map((project: any, i: number) => `
+//         <div class="entry-block" data-block-id="proj-${i}">
+//           <div class="project-header">
+//             <div class="entry-heading">${project.title || ""}</div>
+//             <div class="project-links">
+//               ${project.liveUrl ? `<a href="${href(project.liveUrl)}" class="project-link" target="_blank">Live Demo</a>` : ""}
+//               ${project.githubUrl ? `<a href="${href(project.githubUrl)}" class="project-link" target="_blank">GitHub</a>` : ""}
+//             </div>
+//           </div>
+//           ${project.techStack?.length ? `<div class="project-tech-stack"><strong>Tech:</strong> ${project.techStack.join(" , ")}</div>` : ""}
+//           ${project.description ? `<div class="entry-content">${rich(project.description)}</div>` : ""}
+//         </div>
+//       `).join("")}
+//     </div>
+//   ` : "",
+
+//   education: () => educations?.length > 0 ? `
+//     <div class="t4-section-content" data-block-id="edu-section">
+//       <div class="section-title">Education</div>
+//       ${educations.map((edu, i: number) => {
+//         const formattedGrade = formatGradeToCgpdAndPercentage(edu.grade || "");
+//         return `<div class="entry-block" data-block-id="edu-${i}">
+//           <div class="education-header">
+//             <div class="education-school">${edu.schoolname || ""}</div>
+//             <div class="education-date">${[edu.startDate, edu.endDate || "Present"].filter(Boolean).join(" — ")}</div>
+//           </div>
+//           <div class="education-subtitle">${[edu.degree, edu.location].filter(Boolean).join(" — ")}</div>
+//           ${formattedGrade ? `<div class="education-grade">${formattedGrade}</div>` : ""}
+//           ${edu.text ? `<div class="entry-content">${rich(edu.text)}</div>` : ""}
+//         </div>`;
+//       }).join("")}
+//     </div>
+//   ` : "",
+
+//   skills: () => {
+//     if (!skills || (typeof skills === "string" && !skills.trim())) return "";
+//     const cleanedSkills = rich(skills);
+//     if (!cleanedSkills || cleanedSkills === "<p><br></p>") return "";
+
+//     if (forPDF && skillsCutIndex >= 0) {
+//       const tempDiv = document.createElement("div");
+//       tempDiv.innerHTML = cleanedSkills;
+//       const allLis = Array.from(tempDiv.querySelectorAll("li"));
+//       if (skillsCutIndex < allLis.length) {
+//         const beforeLis = allLis.slice(0, skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
+//         const afterLis = allLis.slice(skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
+//         return `<div class="t4-section-content" data-block-id="skills-section">
+//           <div class="section-title">Skills</div>
+//           <div class="skills-content"><ul>${beforeLis}</ul></div>
+//           <div class="t4-page-break"></div>
+//           <div class="section-title">Skills (continued)</div>
+//           <div class="skills-content"><ul>${afterLis}</ul></div>
+//         </div>`;
+//       }
+//     }
+
+//     return `<div class="t4-section-content" data-block-id="skills-section">
+//       <div class="section-title">Skills</div>
+//       <div class="skills-content" data-block-id="skills-content">${cleanedSkills}</div>
+//     </div>`;
+//   },
+
+//   custom: () => fin.customSection
+//     .filter((s) => s?.name?.trim() || s?.description?.trim())
+//     .map((s, i: number) => `
+//       <div class="custom-section-wrapper" data-block-id="custom-${i}">
+//         ${s.name ? `<div class="section-title">${s.name}</div>` : ""}
+//         ${s.description ? `<div class="extra-content">${rich(s.description)}</div>` : ""}
+//       </div>
+//     `).join(""),
+// };
+
+//     // Build sections in the order defined by customization
+//     const sectionsHTML = activeSectionOrder
+//       .map(key => sectionBuilders[key]?.() ?? "")
+//       .join("");
+
+//     let bodyContent = `
+//       <!-- HEADER -->
+//       <div class="header-block" data-block-id="header">
+//         <div class="header-name">${contact?.firstName || ""} ${contact?.lastName || ""}</div>
+//         ${contact?.jobTitle ? `<div class="header-jobtitle">${typeof contact.jobTitle === "string" ? contact.jobTitle : (contact.jobTitle as any)?.name || ""}</div>` : ""}
+//         ${linkedinUrl?.trim() || githubUrl?.trim() || portfolioUrl?.trim() ? `
+//           <div class="header-links">
+//             ${linkedinUrl?.trim() ? `<a href="${href(linkedinUrl)}" class="header-link" target="_blank">LinkedIn</a>` : ""}
+//             ${githubUrl?.trim() ? `<a href="${href(githubUrl)}" class="header-link" target="_blank">GitHub</a>` : ""}
+//             ${portfolioUrl?.trim() ? `<a href="${href(portfolioUrl)}" class="header-link" target="_blank">Portfolio</a>` : ""}
+//           </div>
+//         ` : ""}
+//       </div>
+
+//       <hr class="header-divider"/>
+
+//       <div class="header-contact-row">
+//         ${addressStr ? `<span>${addressStr}</span>` : ""}
+//         ${contact?.phone ? `<span>${addressStr ? " • " : ""}${contact.phone}</span>` : ""}
+//         ${contact?.email ? `<span>${(addressStr || contact?.phone) ? " • " : ""}${contact.email}</span>` : ""}
+//         ${formattedDobHtml ? `<span>${(addressStr || contact?.phone || contact?.email) ? " • " : ""}${formattedDobHtml}</span>` : ""}
+//       </div>
+
+//       <!-- SECTIONS (ordered by customization) -->
+//       ${sectionsHTML}
+//     `;
+
+//     // For PDF: inject page breaks
+//     if (forPDF && pageBreakIds.length > 0) {
+//       const tempDiv = document.createElement("div");
+//       tempDiv.innerHTML = bodyContent;
+//       pageBreakIds.forEach((id) => {
+//         const el = tempDiv.querySelector(`[data-block-id="${id}"]`);
+//         if (el) {
+//           const breakDiv = document.createElement("div");
+//           breakDiv.className = "t4-page-break";
+//           el.parentNode?.insertBefore(breakDiv, el);
+//         }
+//       });
+//       bodyContent = tempDiv.innerHTML;
+//     }
+
+//     return `<!DOCTYPE html>
+// <html>
+// <head>
+//   <meta charset="UTF-8"/>
+//   <meta name="viewport" content="width=device-width, initial-scale=1"/>
+//   <title>Resume - ${contact?.firstName || ""} ${contact?.lastName || ""}</title>
+//   ${fontPreloads}
+//   <style>${CSS}</style>
+//   ${pdfOverrideStyle}
+// </head>
+// <body style="margin:0;padding:0;background:white;">
+// <div class="t4-resume">
+//   ${bodyContent}
+// </div>
+// </body>
+// </html>`;
+//   }, [
+//     activeFontFamily,
+//     activeSectionOrder,
+//     contact,
+//     educations,
+//     experiences,
+//     skills,
+//     projects,
+//     fin.customSection,
+//     summary,
+//     linkedinUrl,
+//     portfolioUrl,
+//     githubUrl,
+//     dateOfBirth,
+//     CSS,
+
+//   ]);
+
+//   // ── Page splitter ─────────────────────────────────────────────────────────
+//   const splitIntoPages = useCallback(
+//     (fullHtml: string): Promise<string[]> => {
+//       return new Promise((resolve) => {
+//         const parser = new DOMParser();
+//         const parsed = parser.parseFromString(fullHtml, "text/html");
+//         const resumeEl = parsed.querySelector<HTMLElement>(".t4-resume");
+//         if (!resumeEl) {
+//           resolve([fullHtml]);
+//           return;
+//         }
+//         const resumeSnapshot = resumeEl.outerHTML;
+
+//         const iframe = document.createElement("iframe");
+//         iframe.style.cssText = [
+//           "position:fixed",
+//           "top:0",
+//           "left:-9999px",
+//           `width:${A4_W}px`,
+//           "height:10000px",
+//           "border:none",
+//           "opacity:0",
+//           "pointer-events:none",
+//           "z-index:-1",
+//         ].join(";");
+//         document.body.appendChild(iframe);
+
+//         const measureDoc = iframe.contentDocument!;
+//         measureDoc.open();
+//         measureDoc.write(`<!DOCTYPE html>
+// <html>
+// <head>
+//   <meta charset="UTF-8"/>
+//   <style>
+//     ${CSS}
+//     html, body {
+//       margin: 0 !important; padding: 0 !important;
+//       width: ${A4_W}px !important; height: auto !important;
+//       overflow: visible !important; background: white !important;
+//     }
+//     .t4-resume {
+//       width: ${A4_W}px !important;
+//       padding-left: ${MARGIN}px !important;
+//       padding-right: ${MARGIN}px !important;
+//       padding-top: 0 !important; padding-bottom: 0 !important;
+//       margin: 0 !important; box-sizing: border-box !important;
+//     }
+//   </style>
+// </head>
+// <body>${resumeSnapshot}</body>
+// </html>`);
+//         measureDoc.close();
+
+//         const doMeasure = () => {
+//           const resume = measureDoc.querySelector<HTMLElement>(".t4-resume");
+//           if (!resume) {
+//             document.body.removeChild(iframe);
+//             resolve([fullHtml]);
+//             return;
+//           }
+
+//           measureDoc.documentElement.style.cssText = "height:auto!important;overflow:visible!important;";
+//           measureDoc.body.style.cssText = "margin:0;padding:0;height:auto!important;overflow:visible!important;";
+//           void resume.offsetHeight;
+
+//           const totalH = resume.scrollHeight;
+//           const resumeRect = resume.getBoundingClientRect();
+//           const scrollY = measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
+
+//           const getRelTop = (el: HTMLElement): number => {
+//             const r = el.getBoundingClientRect();
+//             return r.top - resumeRect.top + scrollY;
+//           };
+//           const getRelBottom = (el: HTMLElement): number => getRelTop(el) + el.getBoundingClientRect().height;
+
+//           interface Block { top: number; bottom: number; id?: string; }
+//           const blocks: Block[] = [];
+
+//           const ITEM_SELECTORS = [
+//             ".header-block",
+//             ".entry-block",
+//             ".section-title",
+//             ".custom-section-wrapper",
+//           ].join(", ");
+
+//           resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
+//             const top = getRelTop(el);
+//             const bottom = getRelBottom(el);
+//             if (bottom - top > 8) {
+//               blocks.push({ top, bottom, id: el.dataset.blockId });
+//             }
+//           });
+
+//           resume.querySelectorAll<HTMLElement>(".section-title").forEach((title) => {
+//             const titleTop = getRelTop(title);
+//             let firstItem: HTMLElement | null = null;
+//             let sib = title.nextElementSibling as HTMLElement | null;
+//             while (sib) {
+//               if (sib.getBoundingClientRect().height > 8) {
+//                 firstItem = sib;
+//                 break;
+//               }
+//               sib = sib.nextElementSibling as HTMLElement | null;
+//             }
+//             // AFTER
+// if (firstItem) {
+//   // Skip anchor logic for skills — allow it to split across pages
+//   if (firstItem.classList.contains("skills-content")) return;
+
+//   const deepChild = firstItem.querySelector<HTMLElement>(".entry-block, .custom-section-wrapper");
+//   const anchor = deepChild || firstItem;
+//   const anchorBottom = getRelBottom(anchor);
+//   if (anchorBottom - titleTop > 8) {
+//     const sectionId = (title.parentElement as HTMLElement)?.dataset?.blockId;
+//     blocks.push({ top: titleTop, bottom: anchorBottom, id: sectionId });
+//   }
+// }
+//           });
+
+//           blocks.sort((a, b) => a.top - b.top);
+
+//           const pageStarts: number[] = [0];
+//           const pageBreakIds: string[] = [];
+//           const MAX_PAGES = 20;
+
+//           while (pageStarts.length < MAX_PAGES) {
+//             const currentStart = pageStarts[pageStarts.length - 1];
+//             const naiveCut = currentStart + PAGE_CONTENT_H;
+//             if (naiveCut >= totalH) break;
+
+//             let actualCut = naiveCut;
+//             let cutBlockId: string | undefined;
+
+//             for (const block of blocks) {
+//               if (block.top >= naiveCut) break;
+//               if (block.bottom <= currentStart) continue;
+//               if (block.top >= currentStart && block.bottom > naiveCut) {
+//                 if (block.top < actualCut) {
+//                   actualCut = block.top;
+//                   cutBlockId = block.id;
+//                 }
+//               }
+//             }
+
+//             if (actualCut <= currentStart) actualCut = naiveCut;
+//             pageStarts.push(actualCut);
+//             if (cutBlockId) pageBreakIds.push(cutBlockId);
+//           }
+
+//           // AFTER
+// const skillsLis = Array.from(resume.querySelectorAll<HTMLElement>(".skills-content li"));
+// skillsLis.forEach((li) => {
+//   const top = getRelTop(li);
+//   const bottom = getRelBottom(li);
+//   if (bottom - top > 2) blocks.push({ top, bottom });
+// });
+
+// blocks.sort((a, b) => a.top - b.top);
+// pageStarts.length = 1;
+// pageBreakIds.length = 0;
+
+// while (pageStarts.length < MAX_PAGES) {
+//   const currentStart = pageStarts[pageStarts.length - 1];
+//   const naiveCut = currentStart + PAGE_CONTENT_H;
+//   if (naiveCut >= totalH) break;
+
+//   let actualCut = naiveCut;
+//   let cutBlockId: string | undefined;
+
+//   for (const block of blocks) {
+//     if (block.top >= naiveCut) break;
+//     if (block.bottom <= currentStart) continue;
+//     if (block.top >= currentStart && block.bottom > naiveCut) {
+//       if (block.top < actualCut) {
+//         actualCut = block.top;
+//         cutBlockId = block.id;
+//       }
+//     }
+//   }
+
+//   if (actualCut <= currentStart) actualCut = naiveCut;
+//   pageStarts.push(actualCut);
+//   if (cutBlockId) pageBreakIds.push(cutBlockId);
+// }
+
+// (window as any).__resumeSkillsCutIndex = -1;
+// for (let p = 0; p < pageStarts.length - 1; p++) {
+//   const cutY = pageStarts[p + 1];
+//   for (let li = 0; li < skillsLis.length; li++) {
+//     const liTop = getRelTop(skillsLis[li]);
+//     const liBottom = getRelBottom(skillsLis[li]);
+//     if (liTop < cutY && liBottom > cutY) {
+//       (window as any).__resumeSkillsCutIndex = li;
+//       break;
+//     }
+//     if (liTop >= cutY) {
+//       (window as any).__resumeSkillsCutIndex = li;
+//       break;
+//     }
+//   }
+//   if ((window as any).__resumeSkillsCutIndex >= 0) break;
+// }
+
+// document.body.removeChild(iframe);
+// (window as any).__resumePageBreakIds = pageBreakIds;
+
+//           const pageHtmls: string[] = [];
+
+//           for (let i = 0; i < pageStarts.length; i++) {
+//             const contentOffsetY = pageStarts[i];
+//             const nextStart = pageStarts[i + 1] ?? totalH;
+//             const clipH = nextStart - contentOffsetY;
+
+//             pageHtmls.push(`<!DOCTYPE html>
+// <html lang="en">
+// <head>
+//   <meta charset="UTF-8"/>
+//   <style>
+//     ${CSS}
+//     html, body {
+//       margin: 0 !important; padding: 0 !important;
+//       width: ${A4_W}px !important; height: ${A4_H}px !important;
+//       overflow: hidden !important; background: white !important;
+//     }
+//     .page-margin-box {
+//       position: relative; width: ${A4_W}px; height: ${A4_H}px;
+//       background: white; overflow: hidden;
+//     }
+//     .page-content-clip {
+//       position: absolute; top: ${MARGIN}px; left: 0;
+//       width: ${A4_W}px; height: ${clipH}px; overflow: hidden;
+//     }
+//     .page-shift {
+//       position: absolute; top: ${-contentOffsetY}px; left: 0; width: ${A4_W}px;
+//     }
+//     .t4-resume {
+//       width: ${A4_W}px !important;
+//       padding-top: 0 !important; padding-bottom: 0 !important;
+//       padding-left: ${MARGIN}px !important; padding-right: ${MARGIN}px !important;
+//       margin: 0 !important;
+//     }
+//   </style>
+// </head>
+// <body>
+//   <div class="page-margin-box">
+//     <div class="page-content-clip">
+//       <div class="page-shift">
+//         ${resumeSnapshot}
+//       </div>
+//     </div>
+//   </div>
+// </body>
+// </html>`);
+//           }
+
+//           resolve(pageHtmls);
+//         };
+
+//         const win = iframe.contentWindow as any;
+//         if (win?.document?.fonts?.ready) {
+//           win.document.fonts.ready.then(() => {
+//             setTimeout(() => requestAnimationFrame(doMeasure), 100);
+//           });
+//         } else {
+//           setTimeout(doMeasure, 500);
+//         }
+//       });
+//     },
+//     [CSS],
+//   );
+
+//   // ── Debounced updates ────────────────────────────────────────────────────
+//   const scheduleUpdate = useCallback((html: string) => {
+//     if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+//     debounceTimerRef.current = setTimeout(() => setHtmlContent(html), 300);
+//   }, []);
+
+//   useEffect(() => {
+//     scheduleUpdate(generateHTML());
+//     return () => {
+//       if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+//     };
+//   }, [generateHTML, scheduleUpdate]);
+
+//   useEffect(() => {
+//     if (!htmlContent) return;
+//     splitIntoPages(htmlContent).then(setPages);
+//   }, [htmlContent, splitIntoPages]);
+
+//   // ── PDF download ─────────────────────────────────────────────────────────
+//   const handleDownload = async () => {
+//     try {
+//       // const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
+//       // const pdfHtml = generateHTML(true, pageBreakIds);
+
+//       // AFTER
+// const pageBreakIds: string[] = ((window as any).__resumePageBreakIds || []).filter(
+//   (id: string) => id !== "skills-section"
+// );
+// const skillsCutIndex: number = (window as any).__resumeSkillsCutIndex ?? -1;
+// const pdfHtml = generateHTML(true, pageBreakIds, skillsCutIndex);
+
+//       const res: AxiosResponse<Blob> = await api.post(
+//         `${API_URL}/candidates/generate-pdf`,
+//         { html: pdfHtml },
+//         { responseType: "blob" },
+//       );
+
+//       const url = window.URL.createObjectURL(res.data);
+//       const a = document.createElement("a");
+//       a.href = url;
+//       a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
+//       document.body.appendChild(a);
+//       a.click();
+//       document.body.removeChild(a);
+//       window.URL.revokeObjectURL(url);
+//     } catch (error) {
+//       console.error("Error generating PDF:", error);
+//       alert("Failed to generate PDF. Please try again.");
+//     }
+//   };
+
+//   // ── RENDER ────────────────────────────────────────────────────────────────
+//   return (
+//     <>
+//       {lastSegment === "download-resume" && (
+//         <div className="text-center my-5">
+//           <motion.button
+//             onClick={handleDownload}
+//             whileHover={{ scale: 1.05 }}
+//             whileTap={{ scale: 0.95 }}
+//             className="bg-emerald-500 text-2xl md:text-base hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 cursor-pointer shadow-md hover:shadow-lg"
+//           >
+//             Download Resume
+//           </motion.button>
+//         </div>
+//       )}
+
+//       {alldata ? (
+//         <div
+//           style={{
+//             width: `${A4_W}px`,
+//             height: `${A4_H}px`,
+//             transform: "scale(0.36)",
+//             transformOrigin: "top left",
+//             overflow: "hidden",
+//             pointerEvents: "none",
+//             flexShrink: 0,
+//           }}
+//         >
+//           {pages[0] ? (
+//             <iframe
+//               title="resume-thumb"
+//               srcDoc={pages[0]}
+//               style={{
+//                 width: `${A4_W}px`,
+//                 height: `${A4_H}px`,
+//                 border: "none",
+//                 display: "block",
+//                 pointerEvents: "none",
+//               }}
+//               sandbox="allow-same-origin"
+//             />
+//           ) : (
+//             <div
+//               style={{
+//                 width: `${A4_W}px`,
+//                 height: `${A4_H}px`,
+//                 background: "white",
+//                 display: "flex",
+//                 alignItems: "center",
+//                 justifyContent: "center",
+//                 color: "#ccc",
+//                 fontSize: 14,
+//                 fontFamily: "sans-serif",
+//               }}
+//             >
+//               Loading…
+//             </div>
+//           )}
+//         </div>
+//       ) : (
+//         <div style={{ width: `${A4_W}px`, margin: "0 auto" }}>
+//           {(pages.length > 0 ? pages : [htmlContent]).map((pageHtml, idx) => (
+//             <div key={idx} style={{ marginBottom: "28px" }}>
+//               <div
+//                 style={{
+//                   display: "flex",
+//                   alignItems: "center",
+//                   justifyContent: "center",
+//                   gap: "10px",
+//                   marginBottom: "10px",
+//                 }}
+//               >
+//                 <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
+//                 <span
+//                   style={{
+//                     fontSize: "11px",
+//                     fontWeight: 600,
+//                     color: "#6b7280",
+//                     whiteSpace: "nowrap",
+//                     padding: "3px 12px",
+//                     background: "#f3f4f6",
+//                     borderRadius: "999px",
+//                     border: "1px solid #e5e7eb",
+//                     letterSpacing: "0.05em",
+//                     fontFamily: "system-ui, sans-serif",
+//                   }}
+//                 >
+//                   Page {idx + 1}
+//                   {pages.length > 1 ? ` of ${pages.length}` : ""}
+//                 </span>
+//                 <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
+//               </div>
+
+//               <div
+//                 style={{
+//                   width: `${A4_W}px`,
+//                   height: `${A4_H}px`,
+//                   overflow: "hidden",
+//                   background: "white",
+//                   boxShadow: "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
+//                   borderRadius: "2px",
+//                   flexShrink: 0,
+//                 }}
+//               >
+//                 <iframe
+//                   title={`resume-page-${idx + 1}`}
+//                   srcDoc={pageHtml}
+//                   style={{
+//                     width: `${A4_W}px`,
+//                     height: `${A4_H}px`,
+//                     border: "none",
+//                     display: "block",
+//                     pointerEvents: "none",
+//                   }}
+//                   scrolling="no"
+//                   sandbox="allow-same-origin allow-scripts"
+//                 />
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+//       )}
+//     </>
+//   );
+// };
+
+// export default TemplateFour;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 "use client";
-import React, { useContext, useState, useEffect, useRef, useCallback } from "react";
+import React, {
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+} from "react";
 import axios, { AxiosResponse } from "axios";
 import { CreateContext } from "@/app/context/CreateContext";
 import { API_URL } from "@/app/config/api";
@@ -3979,6 +5129,7 @@ import {
   SectionKey,
   DEFAULT_SECTION_ORDER,
 } from "@/app/(resume)/download-resume/page";
+import { FaDownload, FaSpinner } from "react-icons/fa";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // A4 CONSTANTS
@@ -3991,18 +5142,25 @@ interface TemplateFourProps extends ResumeProps {
   customization?: ResumeCustomization;
 }
 
-const TemplateFour: React.FC<TemplateFourProps> = ({ alldata, customization }) => {
+const TemplateFour: React.FC<TemplateFourProps> = ({
+  alldata,
+  customization,
+}) => {
   const context = useContext(CreateContext);
   const pathname = usePathname();
   const lastSegment = pathname.split("/").pop();
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+          const [isDownloading, setIsDownloading] = useState<boolean>(false);
   
+
   const [htmlContent, setHtmlContent] = useState<string>("");
   const [pages, setPages] = useState<string[]>([]);
 
   // ── Customization ─────────────────────────────────────────────────────────
   const activeFontFamily = customization?.fontFamily ?? "'Nunito', sans-serif";
-  const activeSectionOrder: SectionKey[] = customization?.sectionOrder ?? [...DEFAULT_SECTION_ORDER];
+  const activeSectionOrder: SectionKey[] = customization?.sectionOrder ?? [
+    ...DEFAULT_SECTION_ORDER,
+  ];
 
   // ── Data ──────────────────────────────────────────────────────────────────
   const contact = alldata?.contact || context.contact || {};
@@ -4030,30 +5188,48 @@ const TemplateFour: React.FC<TemplateFourProps> = ({ alldata, customization }) =
   // ── Complete Font import map ────────────────────────────────────────────────
   const getFontImport = (fontFamily: string): string => {
     const map: Record<string, string> = {
-      "'Inter', sans-serif": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap",
+      "'Inter', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap",
       "'-apple-system', 'BlinkMacSystemFont', sans-serif": "",
-      "'Poppins', sans-serif": "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap",
-      "'Lato', sans-serif": "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",
-      "'Nunito', sans-serif": "https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap",
-      "'Raleway', sans-serif": "https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap",
-      "'Montserrat', sans-serif": "https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap",
-      "'Open Sans', sans-serif": "https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap",
-      "'Roboto', sans-serif": "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap",
-      "'Merriweather', serif": "https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap",
-      "'Playfair Display', serif": "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap",
-      "'DM Serif Display', serif": "https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap",
-      "'Libre Baskerville', serif": "https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap",
-      "'EB Garamond', serif": "https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&display=swap",
-      "'Crimson Text', serif": "https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap",
-      "'Source Code Pro', monospace": "https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&display=swap",
-      "'JetBrains Mono', monospace": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap",
+      "'Poppins', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap",
+      "'Lato', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",
+      "'Nunito', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap",
+      "'Raleway', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap",
+      "'Montserrat', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap",
+      "'Open Sans', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap",
+      "'Roboto', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap",
+      "'Merriweather', serif":
+        "https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap",
+      "'Playfair Display', serif":
+        "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap",
+      "'DM Serif Display', serif":
+        "https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap",
+      "'Libre Baskerville', serif":
+        "https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap",
+      "'EB Garamond', serif":
+        "https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&display=swap",
+      "'Crimson Text', serif":
+        "https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap",
+      "'Source Code Pro', monospace":
+        "https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&display=swap",
+      "'JetBrains Mono', monospace":
+        "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap",
     };
     return map[fontFamily] || map["'Nunito', sans-serif"];
   };
 
   const getSystemFallback = (fontFamily: string): string => {
-    if (fontFamily.includes('serif')) return 'Georgia, "Times New Roman", serif';
-    if (fontFamily.includes('monospace')) return '"Courier New", Courier, monospace';
+    if (fontFamily.includes("serif"))
+      return 'Georgia, "Times New Roman", serif';
+    if (fontFamily.includes("monospace"))
+      return '"Courier New", Courier, monospace';
     return '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
   };
 
@@ -4423,51 +5599,66 @@ const TemplateFour: React.FC<TemplateFourProps> = ({ alldata, customization }) =
   const CSS = buildCSS(activeFontFamily);
 
   // ── Helper functions ──────────────────────────────────────────────────────
-  const href = (url: string) => url.startsWith("http") ? url : `https://${url}`;
+  const href = (url: string) =>
+    url.startsWith("http") ? url : `https://${url}`;
 
   const rich = (html: string) => {
     const c = cleanQuillHTML(html);
     return c && c !== "<p><br></p>" ? c : "";
   };
 
-
-
   // ── HTML generation with section ordering ─────────────────────────────────
-const generateHTML = useCallback((forPDF = false, pageBreakIds: string[] = [], skillsCutIndex = -1): string => {
-    const addressStr = [
-      contact?.address,
-      contact?.city,
-      contact?.postCode,
-      contact?.country,
-    ].filter(Boolean).join(", ");
+ const generateHTML = useCallback(
+  (forPDF = false): string => {
+      const addressStr = [
+        contact?.address,
+        contact?.city,
+        contact?.postCode,
+        contact?.country,
+      ]
+        .filter(Boolean)
+        .join(", ");
 
-    const formattedDobHtml = formatDateOfBirth(dateOfBirth ? dateOfBirth : "");
+      const formattedDobHtml = formatDateOfBirth(
+        dateOfBirth ? dateOfBirth : "",
+      );
 
-    const fontPreloads = activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif" 
-      ? `<link rel="preconnect" href="https://fonts.googleapis.com"/>
+      const fontPreloads =
+        activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif"
+          ? `<link rel="preconnect" href="https://fonts.googleapis.com"/>
          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
          <link href="${getFontImport(activeFontFamily)}" rel="stylesheet"/>`
-      : '';
+          : "";
 
-    const pdfOverrideStyle = forPDF
-      ? `<style>.t4-resume { width: 100% !important; padding: 0 !important; }</style>`
-      : "";
+      const pdfOverrideStyle = forPDF
+        ? `<style>.t4-resume { width: 100% !important; padding: 0 !important; }</style>`
+        : "";
 
       const sectionBuilders: Record<SectionKey, () => string> = {
-  summary: () => summary ? `
+        summary: () =>
+          summary
+            ? `
     <div class="t4-section-content" data-block-id="summary">
       <div class="section-title">Summary</div>
       <div class="extra-content">${rich(summary)}</div>
     </div>
-  ` : "",
+  `
+            : "",
 
-  experience: () => experiences?.length > 0 ? `
+        experience: () =>
+          experiences?.length > 0
+            ? `
     <div class="t4-section-content" data-block-id="exp-section">
       <div class="section-title">Experience</div>
-      ${experiences.map((exp, i: number) => {
-        const start = formatMonthYear(exp.startDate, false);
-        const end = exp.endDate ? formatMonthYear(exp.endDate, false) : (exp.startDate ? "Present" : "");
-        return `<div class="entry-block" data-block-id="exp-${i}">
+      ${experiences
+        .map((exp, i: number) => {
+          const start = formatMonthYear(exp.startDate, false);
+          const end = exp.endDate
+            ? formatMonthYear(exp.endDate, false)
+            : exp.startDate
+              ? "Present"
+              : "";
+          return `<div class="entry-block" data-block-id="exp-${i}">
           <div class="experience-header">
             <div class="experience-title">${exp.jobTitle || ""}</div>
             <div class="experience-date">${start}${start && end ? " - " : ""}${end}</div>
@@ -4475,14 +5666,20 @@ const generateHTML = useCallback((forPDF = false, pageBreakIds: string[] = [], s
           <div class="experience-subtitle">${[exp.employer, exp.location].filter(Boolean).join(" — ")}</div>
           ${exp.text ? `<div class="entry-content">${rich(exp.text)}</div>` : ""}
         </div>`;
-      }).join("")}
+        })
+        .join("")}
     </div>
-  ` : "",
+  `
+            : "",
 
-  projects: () => projects?.length > 0 ? `
+        projects: () =>
+          projects?.length > 0
+            ? `
     <div class="t4-section-content" data-block-id="proj-section">
       <div class="section-title">Projects</div>
-      ${projects.map((project: any, i: number) => `
+      ${projects
+        .map(
+          (project: any, i: number) => `
         <div class="entry-block" data-block-id="proj-${i}">
           <div class="project-header">
             <div class="entry-heading">${project.title || ""}</div>
@@ -4494,16 +5691,24 @@ const generateHTML = useCallback((forPDF = false, pageBreakIds: string[] = [], s
           ${project.techStack?.length ? `<div class="project-tech-stack"><strong>Tech:</strong> ${project.techStack.join(" , ")}</div>` : ""}
           ${project.description ? `<div class="entry-content">${rich(project.description)}</div>` : ""}
         </div>
-      `).join("")}
+      `,
+        )
+        .join("")}
     </div>
-  ` : "",
+  `
+            : "",
 
-  education: () => educations?.length > 0 ? `
+        education: () =>
+          educations?.length > 0
+            ? `
     <div class="t4-section-content" data-block-id="edu-section">
       <div class="section-title">Education</div>
-      ${educations.map((edu, i: number) => {
-        const formattedGrade = formatGradeToCgpdAndPercentage(edu.grade || "");
-        return `<div class="entry-block" data-block-id="edu-${i}">
+      ${educations
+        .map((edu, i: number) => {
+          const formattedGrade = formatGradeToCgpdAndPercentage(
+            edu.grade || "",
+          );
+          return `<div class="entry-block" data-block-id="edu-${i}">
           <div class="education-header">
             <div class="education-school">${edu.schoolname || ""}</div>
             <div class="education-date">${[edu.startDate, edu.endDate || "Present"].filter(Boolean).join(" — ")}</div>
@@ -4512,65 +5717,56 @@ const generateHTML = useCallback((forPDF = false, pageBreakIds: string[] = [], s
           ${formattedGrade ? `<div class="education-grade">${formattedGrade}</div>` : ""}
           ${edu.text ? `<div class="entry-content">${rich(edu.text)}</div>` : ""}
         </div>`;
-      }).join("")}
+        })
+        .join("")}
     </div>
-  ` : "",
+  `
+            : "",
 
-  skills: () => {
-    if (!skills || (typeof skills === "string" && !skills.trim())) return "";
-    const cleanedSkills = rich(skills);
-    if (!cleanedSkills || cleanedSkills === "<p><br></p>") return "";
-
-    if (forPDF && skillsCutIndex >= 0) {
-      const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = cleanedSkills;
-      const allLis = Array.from(tempDiv.querySelectorAll("li"));
-      if (skillsCutIndex < allLis.length) {
-        const beforeLis = allLis.slice(0, skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
-        const afterLis = allLis.slice(skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
-        return `<div class="t4-section-content" data-block-id="skills-section">
-          <div class="section-title">Skills</div>
-          <div class="skills-content"><ul>${beforeLis}</ul></div>
-          <div class="t4-page-break"></div>
-          <div class="section-title">Skills (continued)</div>
-          <div class="skills-content"><ul>${afterLis}</ul></div>
-        </div>`;
-      }
-    }
-
-    return `<div class="t4-section-content" data-block-id="skills-section">
-      <div class="section-title">Skills</div>
-      <div class="skills-content" data-block-id="skills-content">${cleanedSkills}</div>
-    </div>`;
-  },
-
-  custom: () => fin.customSection
-    .filter((s) => s?.name?.trim() || s?.description?.trim())
-    .map((s, i: number) => `
+       skills: () => {
+  if (!skills || (typeof skills === "string" && !skills.trim())) return "";
+  const cleanedSkills = rich(skills);
+  if (!cleanedSkills || cleanedSkills === "<p><br></p>") return "";
+  return `<div class="t4-section-content" data-block-id="skills-section">
+    <div class="section-title">Skills</div>
+    <div class="skills-content">${cleanedSkills}</div>
+  </div>`;
+},
+        custom: () =>
+          fin.customSection
+            .filter((s) => s?.name?.trim() || s?.description?.trim())
+            .map(
+              (s, i: number) => `
       <div class="custom-section-wrapper" data-block-id="custom-${i}">
         ${s.name ? `<div class="section-title">${s.name}</div>` : ""}
         ${s.description ? `<div class="extra-content">${rich(s.description)}</div>` : ""}
       </div>
-    `).join(""),
-};
+    `,
+            )
+            .join(""),
+      };
 
-    // Build sections in the order defined by customization
-    const sectionsHTML = activeSectionOrder
-      .map(key => sectionBuilders[key]?.() ?? "")
-      .join("");
+      // Build sections in the order defined by customization
+      const sectionsHTML = activeSectionOrder
+        .map((key) => sectionBuilders[key]?.() ?? "")
+        .join("");
 
-    let bodyContent = `
+      let bodyContent = `
       <!-- HEADER -->
       <div class="header-block" data-block-id="header">
         <div class="header-name">${contact?.firstName || ""} ${contact?.lastName || ""}</div>
         ${contact?.jobTitle ? `<div class="header-jobtitle">${typeof contact.jobTitle === "string" ? contact.jobTitle : (contact.jobTitle as any)?.name || ""}</div>` : ""}
-        ${linkedinUrl?.trim() || githubUrl?.trim() || portfolioUrl?.trim() ? `
+        ${
+          linkedinUrl?.trim() || githubUrl?.trim() || portfolioUrl?.trim()
+            ? `
           <div class="header-links">
             ${linkedinUrl?.trim() ? `<a href="${href(linkedinUrl)}" class="header-link" target="_blank">LinkedIn</a>` : ""}
             ${githubUrl?.trim() ? `<a href="${href(githubUrl)}" class="header-link" target="_blank">GitHub</a>` : ""}
             ${portfolioUrl?.trim() ? `<a href="${href(portfolioUrl)}" class="header-link" target="_blank">Portfolio</a>` : ""}
           </div>
-        ` : ""}
+        `
+            : ""
+        }
       </div>
 
       <hr class="header-divider"/>
@@ -4578,30 +5774,18 @@ const generateHTML = useCallback((forPDF = false, pageBreakIds: string[] = [], s
       <div class="header-contact-row">
         ${addressStr ? `<span>${addressStr}</span>` : ""}
         ${contact?.phone ? `<span>${addressStr ? " • " : ""}${contact.phone}</span>` : ""}
-        ${contact?.email ? `<span>${(addressStr || contact?.phone) ? " • " : ""}${contact.email}</span>` : ""}
-        ${formattedDobHtml ? `<span>${(addressStr || contact?.phone || contact?.email) ? " • " : ""}${formattedDobHtml}</span>` : ""}
+        ${contact?.email ? `<span>${addressStr || contact?.phone ? " • " : ""}${contact.email}</span>` : ""}
+        ${formattedDobHtml ? `<span>${addressStr || contact?.phone || contact?.email ? " • " : ""}${formattedDobHtml}</span>` : ""}
       </div>
 
       <!-- SECTIONS (ordered by customization) -->
       ${sectionsHTML}
     `;
 
-    // For PDF: inject page breaks
-    if (forPDF && pageBreakIds.length > 0) {
-      const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = bodyContent;
-      pageBreakIds.forEach((id) => {
-        const el = tempDiv.querySelector(`[data-block-id="${id}"]`);
-        if (el) {
-          const breakDiv = document.createElement("div");
-          breakDiv.className = "t4-page-break";
-          el.parentNode?.insertBefore(breakDiv, el);
-        }
-      });
-      bodyContent = tempDiv.innerHTML;
-    }
+      // For PDF: inject page breaks
+     
 
-    return `<!DOCTYPE html>
+      return `<!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8"/>
@@ -4617,23 +5801,24 @@ const generateHTML = useCallback((forPDF = false, pageBreakIds: string[] = [], s
 </div>
 </body>
 </html>`;
-  }, [
-    activeFontFamily,
-    activeSectionOrder,
-    contact,
-    educations,
-    experiences,
-    skills,
-    projects,
-    fin.customSection,
-    summary,
-    linkedinUrl,
-    portfolioUrl,
-    githubUrl,
-    dateOfBirth,
-    CSS,
-
-  ]);
+    },
+    [
+      activeFontFamily,
+      activeSectionOrder,
+      contact,
+      educations,
+      experiences,
+      skills,
+      projects,
+      fin.customSection,
+      summary,
+      linkedinUrl,
+      portfolioUrl,
+      githubUrl,
+      dateOfBirth,
+      CSS,
+    ],
+  );
 
   // ── Page splitter ─────────────────────────────────────────────────────────
   const splitIntoPages = useCallback(
@@ -4689,166 +5874,114 @@ const generateHTML = useCallback((forPDF = false, pageBreakIds: string[] = [], s
         measureDoc.close();
 
         const doMeasure = () => {
-          const resume = measureDoc.querySelector<HTMLElement>(".t4-resume");
-          if (!resume) {
-            document.body.removeChild(iframe);
-            resolve([fullHtml]);
-            return;
-          }
-
-          measureDoc.documentElement.style.cssText = "height:auto!important;overflow:visible!important;";
-          measureDoc.body.style.cssText = "margin:0;padding:0;height:auto!important;overflow:visible!important;";
-          void resume.offsetHeight;
-
-          const totalH = resume.scrollHeight;
-          const resumeRect = resume.getBoundingClientRect();
-          const scrollY = measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
-
-          const getRelTop = (el: HTMLElement): number => {
-            const r = el.getBoundingClientRect();
-            return r.top - resumeRect.top + scrollY;
-          };
-          const getRelBottom = (el: HTMLElement): number => getRelTop(el) + el.getBoundingClientRect().height;
-
-          interface Block { top: number; bottom: number; id?: string; }
-          const blocks: Block[] = [];
-
-          const ITEM_SELECTORS = [
-            ".header-block",
-            ".entry-block",
-            ".section-title",
-            ".custom-section-wrapper",
-          ].join(", ");
-
-          resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
-            const top = getRelTop(el);
-            const bottom = getRelBottom(el);
-            if (bottom - top > 8) {
-              blocks.push({ top, bottom, id: el.dataset.blockId });
-            }
-          });
-
-          resume.querySelectorAll<HTMLElement>(".section-title").forEach((title) => {
-            const titleTop = getRelTop(title);
-            let firstItem: HTMLElement | null = null;
-            let sib = title.nextElementSibling as HTMLElement | null;
-            while (sib) {
-              if (sib.getBoundingClientRect().height > 8) {
-                firstItem = sib;
-                break;
-              }
-              sib = sib.nextElementSibling as HTMLElement | null;
-            }
-            // AFTER
-if (firstItem) {
-  // Skip anchor logic for skills — allow it to split across pages
-  if (firstItem.classList.contains("skills-content")) return;
-
-  const deepChild = firstItem.querySelector<HTMLElement>(".entry-block, .custom-section-wrapper");
-  const anchor = deepChild || firstItem;
-  const anchorBottom = getRelBottom(anchor);
-  if (anchorBottom - titleTop > 8) {
-    const sectionId = (title.parentElement as HTMLElement)?.dataset?.blockId;
-    blocks.push({ top: titleTop, bottom: anchorBottom, id: sectionId });
+  const resume = measureDoc.querySelector<HTMLElement>(".t4-resume");
+  if (!resume) {
+    document.body.removeChild(iframe);
+    resolve([fullHtml]);
+    return;
   }
-}
-          });
 
-          blocks.sort((a, b) => a.top - b.top);
+  measureDoc.documentElement.style.cssText = "height:auto!important;overflow:visible!important;";
+  measureDoc.body.style.cssText = "margin:0;padding:0;height:auto!important;overflow:visible!important;";
+  void resume.offsetHeight;
 
-          const pageStarts: number[] = [0];
-          const pageBreakIds: string[] = [];
-          const MAX_PAGES = 20;
+  const totalH = resume.scrollHeight;
+  const resumeTop = resume.getBoundingClientRect().top +
+    (measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop);
 
-          while (pageStarts.length < MAX_PAGES) {
-            const currentStart = pageStarts[pageStarts.length - 1];
-            const naiveCut = currentStart + PAGE_CONTENT_H;
-            if (naiveCut >= totalH) break;
+  const getRelTop = (el: HTMLElement): number => {
+    const docScrollY = measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
+    return el.getBoundingClientRect().top + docScrollY - resumeTop;
+  };
+  const getRelBottom = (el: HTMLElement): number =>
+    getRelTop(el) + el.getBoundingClientRect().height;
 
-            let actualCut = naiveCut;
-            let cutBlockId: string | undefined;
+  interface Block { top: number; bottom: number; id?: string; }
+  const blocks: Block[] = [];
 
-            for (const block of blocks) {
-              if (block.top >= naiveCut) break;
-              if (block.bottom <= currentStart) continue;
-              if (block.top >= currentStart && block.bottom > naiveCut) {
-                if (block.top < actualCut) {
-                  actualCut = block.top;
-                  cutBlockId = block.id;
-                }
-              }
-            }
+  const ITEM_SELECTORS = [".entry-block", ".custom-section-wrapper"].join(", ");
 
-            if (actualCut <= currentStart) actualCut = naiveCut;
-            pageStarts.push(actualCut);
-            if (cutBlockId) pageBreakIds.push(cutBlockId);
-          }
+  resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
+    const top = getRelTop(el);
+    const bottom = getRelBottom(el);
+    if (bottom - top > 8) blocks.push({ top, bottom, id: el.dataset.blockId });
+  });
 
-          // AFTER
-const skillsLis = Array.from(resume.querySelectorAll<HTMLElement>(".skills-content li"));
-skillsLis.forEach((li) => {
-  const top = getRelTop(li);
-  const bottom = getRelBottom(li);
-  if (bottom - top > 2) blocks.push({ top, bottom });
-});
-
-blocks.sort((a, b) => a.top - b.top);
-pageStarts.length = 1;
-pageBreakIds.length = 0;
-
-while (pageStarts.length < MAX_PAGES) {
-  const currentStart = pageStarts[pageStarts.length - 1];
-  const naiveCut = currentStart + PAGE_CONTENT_H;
-  if (naiveCut >= totalH) break;
-
-  let actualCut = naiveCut;
-  let cutBlockId: string | undefined;
-
-  for (const block of blocks) {
-    if (block.top >= naiveCut) break;
-    if (block.bottom <= currentStart) continue;
-    if (block.top >= currentStart && block.bottom > naiveCut) {
-      if (block.top < actualCut) {
-        actualCut = block.top;
-        cutBlockId = block.id;
+  resume.querySelectorAll<HTMLElement>(".section-title").forEach((title) => {
+    const titleTop = getRelTop(title);
+    let firstItem: HTMLElement | null = null;
+    let sib = title.nextElementSibling as HTMLElement | null;
+    while (sib) {
+      if (sib.getBoundingClientRect().height > 8) { firstItem = sib; break; }
+      sib = sib.nextElementSibling as HTMLElement | null;
+    }
+    if (firstItem) {
+      const deepChild = firstItem.querySelector<HTMLElement>(
+        ".entry-block, .custom-section-wrapper"
+      );
+      const anchor = deepChild || firstItem;
+      const anchorBottom = getRelBottom(anchor);
+      const combinedHeight = anchorBottom - titleTop;
+      if (combinedHeight > 8 && combinedHeight <= PAGE_CONTENT_H * 0.9) {
+        const sectionId = (title.parentElement as HTMLElement)?.dataset?.blockId;
+        blocks.push({ top: titleTop, bottom: anchorBottom, id: sectionId });
       }
     }
+  });
+
+  blocks.sort((a, b) => a.top - b.top);
+
+  const findBestCut = (
+    currentStart: number,
+    naiveCut: number
+  ): { cut: number; id?: string } => {
+    let actualCut = naiveCut;
+    let cutId: string | undefined;
+    const pageHeight = naiveCut - currentStart;
+    const minFill = currentStart + pageHeight * 0.92;
+
+    for (const block of blocks) {
+      if (block.top >= naiveCut) break;
+      if (block.bottom <= currentStart) continue;
+      if (block.bottom > naiveCut) {
+        const blockHeight = block.bottom - block.top;
+        if (
+          block.top >= minFill &&
+          blockHeight <= PAGE_CONTENT_H &&
+          block.top < actualCut
+        ) {
+          actualCut = block.top;
+          cutId = block.id;
+        }
+      }
+    }
+    if (actualCut <= currentStart) actualCut = naiveCut;
+    return { cut: actualCut, id: cutId };
+  };
+
+  const pageStarts: number[] = [0];
+  const pageBreakIds: string[] = [];
+  const MAX_PAGES = 20;
+
+  while (pageStarts.length < MAX_PAGES) {
+    const currentStart = pageStarts[pageStarts.length - 1];
+    const naiveCut = currentStart + PAGE_CONTENT_H;
+    if (naiveCut >= totalH) break;
+    const { cut, id } = findBestCut(currentStart, naiveCut);
+    pageStarts.push(cut);
+    if (id) pageBreakIds.push(id);
   }
 
-  if (actualCut <= currentStart) actualCut = naiveCut;
-  pageStarts.push(actualCut);
-  if (cutBlockId) pageBreakIds.push(cutBlockId);
-}
+  document.body.removeChild(iframe);
+  (window as any).__resumePageBreakIds = pageBreakIds;
 
-(window as any).__resumeSkillsCutIndex = -1;
-for (let p = 0; p < pageStarts.length - 1; p++) {
-  const cutY = pageStarts[p + 1];
-  for (let li = 0; li < skillsLis.length; li++) {
-    const liTop = getRelTop(skillsLis[li]);
-    const liBottom = getRelBottom(skillsLis[li]);
-    if (liTop < cutY && liBottom > cutY) {
-      (window as any).__resumeSkillsCutIndex = li;
-      break;
-    }
-    if (liTop >= cutY) {
-      (window as any).__resumeSkillsCutIndex = li;
-      break;
-    }
-  }
-  if ((window as any).__resumeSkillsCutIndex >= 0) break;
-}
+  const pageHtmls: string[] = [];
+  for (let i = 0; i < pageStarts.length; i++) {
+    const contentOffsetY = pageStarts[i];
+    const nextStart = pageStarts[i + 1] ?? totalH;
+    const clipH = nextStart - contentOffsetY;
 
-document.body.removeChild(iframe);
-(window as any).__resumePageBreakIds = pageBreakIds;
-
-          const pageHtmls: string[] = [];
-
-          for (let i = 0; i < pageStarts.length; i++) {
-            const contentOffsetY = pageStarts[i];
-            const nextStart = pageStarts[i + 1] ?? totalH;
-            const clipH = nextStart - contentOffsetY;
-
-            pageHtmls.push(`<!DOCTYPE html>
+    pageHtmls.push(`<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
@@ -4888,10 +6021,10 @@ document.body.removeChild(iframe);
   </div>
 </body>
 </html>`);
-          }
+  }
 
-          resolve(pageHtmls);
-        };
+  resolve(pageHtmls);
+};
 
         const win = iframe.contentWindow as any;
         if (win?.document?.fonts?.ready) {
@@ -4926,16 +6059,14 @@ document.body.removeChild(iframe);
 
   // ── PDF download ─────────────────────────────────────────────────────────
   const handleDownload = async () => {
+      setIsDownloading(true)
+
     try {
       // const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
       // const pdfHtml = generateHTML(true, pageBreakIds);
 
       // AFTER
-const pageBreakIds: string[] = ((window as any).__resumePageBreakIds || []).filter(
-  (id: string) => id !== "skills-section"
-);
-const skillsCutIndex: number = (window as any).__resumeSkillsCutIndex ?? -1;
-const pdfHtml = generateHTML(true, pageBreakIds, skillsCutIndex);
+      const pdfHtml = generateHTML(true);
 
       const res: AxiosResponse<Blob> = await api.post(
         `${API_URL}/candidates/generate-pdf`,
@@ -4955,23 +6086,58 @@ const pdfHtml = generateHTML(true, pageBreakIds, skillsCutIndex);
       console.error("Error generating PDF:", error);
       alert("Failed to generate PDF. Please try again.");
     }
+    finally{
+        setIsDownloading(false)
+
+    }
   };
 
   // ── RENDER ────────────────────────────────────────────────────────────────
   return (
     <>
-      {lastSegment === "download-resume" && (
-        <div className="text-center my-5">
-          <motion.button
-            onClick={handleDownload}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-emerald-500 text-2xl md:text-base hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 cursor-pointer shadow-md hover:shadow-lg"
-          >
-            Download Resume
-          </motion.button>
-        </div>
-      )}
+     
+       {lastSegment === "download-resume" && (
+                        <div className="text-center my-8">
+                          <motion.button
+                            onClick={handleDownload}
+                            disabled={isDownloading}
+                            whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
+                            whileTap={!isDownloading ? { scale: 0.98 } : {}}
+                            className={`
+                      relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
+                      text-white transition-all duration-300 shadow-lg
+                      ${
+                        isDownloading
+                          ? "bg-gray-400 cursor-not-allowed opacity-80"
+                          : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600"
+                      }
+                    `}
+                          >
+                            {/* Animated background gradient for premium feel */}
+                            {!isDownloading && (
+                              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+                            )}
+                
+                            <div className="relative flex items-center justify-center gap-3 text-lg">
+                              {isDownloading ? (
+                                <>
+                                  <FaSpinner className="animate-spin text-xl" />
+                                  <span>Generating PDF ...</span>
+                                </>
+                              ) : (
+                                <>
+                                  <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
+                                  <span>Download Resume</span>
+                                  <span className="text-sm opacity-75 font-light ml-1">
+                                    PDF
+                                  </span>
+                                </>
+                              )}
+                            </div>
+                          </motion.button>
+                        </div>
+                      )}
+
 
       {alldata ? (
         <div
@@ -5029,7 +6195,9 @@ const pdfHtml = generateHTML(true, pageBreakIds, skillsCutIndex);
                   marginBottom: "10px",
                 }}
               >
-                <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
+                <div
+                  style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+                />
                 <span
                   style={{
                     fontSize: "11px",
@@ -5047,7 +6215,9 @@ const pdfHtml = generateHTML(true, pageBreakIds, skillsCutIndex);
                   Page {idx + 1}
                   {pages.length > 1 ? ` of ${pages.length}` : ""}
                 </span>
-                <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
+                <div
+                  style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+                />
               </div>
 
               <div
@@ -5056,7 +6226,8 @@ const pdfHtml = generateHTML(true, pageBreakIds, skillsCutIndex);
                   height: `${A4_H}px`,
                   overflow: "hidden",
                   background: "white",
-                  boxShadow: "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
+                  boxShadow:
+                    "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
                   borderRadius: "2px",
                   flexShrink: 0,
                 }}

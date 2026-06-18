@@ -5966,6 +5966,7 @@ import {
   SectionKey,
   DEFAULT_SECTION_ORDER,
 } from "@/app/(resume)/download-resume/page";
+import { FaDownload, FaSpinner } from "react-icons/fa";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // A4 CONSTANTS
@@ -5988,6 +5989,8 @@ const TemplateTwelve: React.FC<TemplateTwelveProps> = ({ alldata, customization 
 
   const [htmlContent, setHtmlContent] = useState<string>("");
   const [pages, setPages] = useState<string[]>([]);
+  const [isDownloading, setIsDownloading] = useState<boolean>(false);
+
 
   // ── Customization ─────────────────────────────────────────────────────────
   const activeFontFamily = customization?.fontFamily ?? "'Source Sans 3', sans-serif";
@@ -6945,6 +6948,7 @@ document.body.removeChild(iframe);
 
   // ── PDF download ─────────────────────────────────────────────────────────
   const handleDownload = async (): Promise<void> => {
+    setIsDownloading(true)
     try {
       // const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
       // const pdfHtml = generateHTML(true, pageBreakIds);
@@ -6974,23 +6978,59 @@ const pdfHtml = generateHTML(true, pageBreakIds, skillsCutIndex);
       console.error("PDF error:", err);
       alert("Failed to generate PDF. Please try again.");
     }
+    finally{
+          setIsDownloading(true)
+
+    }
   };
 
   // ── RENDER ───────────────────────────────────────────────────────────────
   return (
     <>
-      {/* {lastSegment === "download-resume" && ( */}
-        <div className="text-center my-5">
+      
+
+{lastSegment === "download-resume" && (
+        <div className="text-center my-8">
           <motion.button
             onClick={handleDownload}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-emerald-500 text-2xl md:text-base hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 cursor-pointer shadow-md hover:shadow-lg"
+            disabled={isDownloading}
+            whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
+            whileTap={!isDownloading ? { scale: 0.98 } : {}}
+            className={`
+                                                                relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
+                                                                text-white transition-all duration-300 shadow-lg
+                                                                ${
+                                                                  isDownloading
+                                                                    ? "bg-gray-400 cursor-not-allowed opacity-80"
+                                                                    : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600"
+                                                                }
+                                                              `}
           >
-            Download Resume
+            {/* Animated background gradient for premium feel */}
+            {!isDownloading && (
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+            )}
+
+            <div className="relative flex items-center justify-center gap-3 text-lg">
+              {isDownloading ? (
+                <>
+                  <FaSpinner className="animate-spin text-xl" />
+                  <span>Generating PDF ...</span>
+                </>
+              ) : (
+                <>
+                  <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
+                  <span>Download Resume</span>
+                  <span className="text-sm opacity-75 font-light ml-1">
+                    PDF
+                  </span>
+                </>
+              )}
+            </div>
           </motion.button>
         </div>
-      {/* )} */}
+      )}
+
 
       {alldata ? (
         <div

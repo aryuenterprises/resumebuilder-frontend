@@ -10765,25 +10765,6 @@
 
 // export default TemplateOne;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 import React, {
   useContext,
@@ -10806,6 +10787,7 @@ import { ResumeProps } from "@/app/types";
 import { motion } from "framer-motion";
 import api from "@/app/utils/api";
 import { ResumeCustomization } from "@/app/(resume)/download-resume/page";
+import { FaDownload, FaSpinner } from "react-icons/fa";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // A4 CONSTANTS
@@ -10826,6 +10808,7 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
   const context = useContext(CreateContext);
   const pathname = usePathname();
   const lastSegment = pathname.split("/").pop();
+  const [isDownloading, setIsDownloading] = useState<boolean>(false);
 
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const [htmlContent, setHtmlContent] = useState<string>("");
@@ -11005,12 +10988,11 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
 
   // ── HTML builder ───────────────────────────────────────────────────────────
   // AFTER
-// const generateHTML = useCallback(
-//   (forPDF = false, pageBreakIds: string[] = [], skillsCutIndex = -1): string => {
+  // const generateHTML = useCallback(
+  //   (forPDF = false, pageBreakIds: string[] = [], skillsCutIndex = -1): string => {
 
-    const generateHTML = useCallback(
-  (forPDF = false, pageBreakIds: string[] = []): string => {
-
+  const generateHTML = useCallback(
+    (forPDF = false, pageBreakIds: string[] = []): string => {
       const CSS = buildCSS(activeFontFamily);
 
       const richText = (html: string, cls: string) => {
@@ -11142,43 +11124,43 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
            </div>`
         : "";
 
-     // BEFORE
-// AFTER
-// const skillsBlock = (() => {
-//   if (!hasSkillsContent()) return "";
-//   const cleanedSkills = cleanQuillHTML(skills);
+      // BEFORE
+      // AFTER
+      // const skillsBlock = (() => {
+      //   if (!hasSkillsContent()) return "";
+      //   const cleanedSkills = cleanQuillHTML(skills);
 
-//   if (forPDF && skillsCutIndex >= 0) {
-//     const tempDiv = document.createElement("div");
-//     tempDiv.innerHTML = cleanedSkills;
-//     const allLis = Array.from(tempDiv.querySelectorAll("li"));
-//     if (skillsCutIndex < allLis.length) {
-//       // Split into two ul blocks at the cut index
-//       const beforeLis = allLis.slice(0, skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
-//       const afterLis = allLis.slice(skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
-//       return `<div class="t1-section-content" data-block-id="skills-section">
-//         <div class="t1-section-title">Skills</div>
-//         <div class="t1-skills-content"><ul>${beforeLis}</ul></div>
-//         <div class="t1-page-break"></div>
-//         <div class="t1-skills-content"><ul>${afterLis}</ul></div>
-//       </div>`;
-//     }
-//   }
+      //   if (forPDF && skillsCutIndex >= 0) {
+      //     const tempDiv = document.createElement("div");
+      //     tempDiv.innerHTML = cleanedSkills;
+      //     const allLis = Array.from(tempDiv.querySelectorAll("li"));
+      //     if (skillsCutIndex < allLis.length) {
+      //       // Split into two ul blocks at the cut index
+      //       const beforeLis = allLis.slice(0, skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
+      //       const afterLis = allLis.slice(skillsCutIndex).map(li => `<li>${li.innerHTML}</li>`).join("");
+      //       return `<div class="t1-section-content" data-block-id="skills-section">
+      //         <div class="t1-section-title">Skills</div>
+      //         <div class="t1-skills-content"><ul>${beforeLis}</ul></div>
+      //         <div class="t1-page-break"></div>
+      //         <div class="t1-skills-content"><ul>${afterLis}</ul></div>
+      //       </div>`;
+      //     }
+      //   }
 
-//   return `<div class="t1-section-content" data-block-id="skills-section">
-//     <div class="t1-section-title">Skills</div>
-//     <div class="t1-skills-content" data-block-id="skills-content">${cleanedSkills}</div>
-//   </div>`;
-// })();
+      //   return `<div class="t1-section-content" data-block-id="skills-section">
+      //     <div class="t1-section-title">Skills</div>
+      //     <div class="t1-skills-content" data-block-id="skills-content">${cleanedSkills}</div>
+      //   </div>`;
+      // })();
 
-const skillsBlock = (() => {
-  if (!hasSkillsContent()) return "";
-  const cleanedSkills = cleanQuillHTML(skills);
-  return `<div class="t1-section-content" data-block-id="skills-section">
+      const skillsBlock = (() => {
+        if (!hasSkillsContent()) return "";
+        const cleanedSkills = cleanQuillHTML(skills);
+        return `<div class="t1-section-content" data-block-id="skills-section">
     <div class="t1-section-title">Skills</div>
     <div class="t1-skills-content" data-block-id="skills-content">${cleanedSkills}</div>
   </div>`;
-})();
+      })();
 
       const customBlock =
         !Array.isArray(finalize) &&
@@ -11330,23 +11312,25 @@ const skillsBlock = (() => {
             ".t1-item-header",
             ".t1-custom-section",
           ].join(", ");
-        // AFTER
-resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
-  const top = getRelTop(el),
-    bottom = getRelBottom(el);
-  if (bottom - top > 8)
-    blocks.push({ top, bottom, id: el.dataset.blockId });
-});
+          // AFTER
+          resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
+            const top = getRelTop(el),
+              bottom = getRelBottom(el);
+            if (bottom - top > 8)
+              blocks.push({ top, bottom, id: el.dataset.blockId });
+          });
 
-// Treat each li inside skills as a breakable boundary
-// AFTER
-// Treat each li inside skills as a breakable boundary, store index for PDF use
-const skillsLis = Array.from(resume.querySelectorAll<HTMLElement>(".t1-skills-content li"));
-skillsLis.forEach((li) => {
-  const top = getRelTop(li);
-  const bottom = getRelBottom(li);
-  if (bottom - top > 2) blocks.push({ top, bottom });
-});
+          // Treat each li inside skills as a breakable boundary
+          // AFTER
+          // Treat each li inside skills as a breakable boundary, store index for PDF use
+          const skillsLis = Array.from(
+            resume.querySelectorAll<HTMLElement>(".t1-skills-content li"),
+          );
+          skillsLis.forEach((li) => {
+            const top = getRelTop(li);
+            const bottom = getRelBottom(li);
+            if (bottom - top > 2) blocks.push({ top, bottom });
+          });
 
           // AFTER
           resume
@@ -11412,24 +11396,24 @@ skillsLis.forEach((li) => {
             if (cutBlockId) pageBreakIds.push(cutBlockId);
           }
 
-//           (window as any).__resumeSkillsCutIndex = -1;
-// for (let p = 0; p < pageStarts.length - 1; p++) {
-//   const cutY = pageStarts[p + 1];
-//   for (let li = 0; li < skillsLis.length; li++) {
-//     const liTop = getRelTop(skillsLis[li]);
-//     const liBottom = getRelBottom(skillsLis[li]);
-//     if (liTop < cutY && liBottom > cutY) {
-//       // Cut falls inside this li — break before it
-//       (window as any).__resumeSkillsCutIndex = li;
-//       break;
-//     }
-//     if (liTop >= cutY) {
-//       // Cut falls between lis — break at this li
-//       (window as any).__resumeSkillsCutIndex = li;
-//       break;
-//     }
-//   }
-// }
+          //           (window as any).__resumeSkillsCutIndex = -1;
+          // for (let p = 0; p < pageStarts.length - 1; p++) {
+          //   const cutY = pageStarts[p + 1];
+          //   for (let li = 0; li < skillsLis.length; li++) {
+          //     const liTop = getRelTop(skillsLis[li]);
+          //     const liBottom = getRelBottom(skillsLis[li]);
+          //     if (liTop < cutY && liBottom > cutY) {
+          //       // Cut falls inside this li — break before it
+          //       (window as any).__resumeSkillsCutIndex = li;
+          //       break;
+          //     }
+          //     if (liTop >= cutY) {
+          //       // Cut falls between lis — break at this li
+          //       (window as any).__resumeSkillsCutIndex = li;
+          //       break;
+          //     }
+          //   }
+          // }￼
 
           document.body.removeChild(iframe);
           (window as any).__resumePageBreakIds = pageBreakIds;
@@ -11488,18 +11472,19 @@ skillsLis.forEach((li) => {
   }, [htmlContent, splitIntoPages]);
 
   // ── Download handler ───────────────────────────────────────────────────────
- // AFTER
-const handleDownload = async (): Promise<void> => {
-  try {
-    // const pageBreakIds: string[] = ((window as any).__resumePageBreakIds || []).filter(
-    //   (id: string) => id !== "skills-section"
-    // );
-    // const skillsCutIndex: number = (window as any).__resumeSkillsCutIndex ?? -1;
-    // const pdfHtml = generateHTML(true, pageBreakIds, skillsCutIndex);
+  // AFTER
+  const handleDownload = async (): Promise<void> => {
+    setIsDownloading(true);
 
+    try {
+      // const pageBreakIds: string[] = ((window as any).__resumePageBreakIds || []).filter(
+      //   (id: string) => id !== "skills-section"
+      // );
+      // const skillsCutIndex: number = (window as any).__resumeSkillsCutIndex ?? -1;
+      // const pdfHtml = generateHTML(true, pageBreakIds, skillsCutIndex);
 
-    const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
-const pdfHtml = generateHTML(true, pageBreakIds);
+      const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
+      const pdfHtml = generateHTML(true, pageBreakIds);
       const res: AxiosResponse<Blob> = await api.post(
         `${API_URL}/candidates/generate-pdf`,
         { html: pdfHtml },
@@ -11516,6 +11501,8 @@ const pdfHtml = generateHTML(true, pageBreakIds);
     } catch (err) {
       console.error("PDF error:", err);
       alert("Failed to generate PDF. Please try again.");
+    } finally {
+      setIsDownloading(false);
     }
   };
 
@@ -11523,17 +11510,59 @@ const pdfHtml = generateHTML(true, pageBreakIds);
   return (
     <>
       {/* {lastSegment === "download-resume" && ( */}
-        <div className="text-center my-5">
+      {/* <div className="text-center my-5">
+        <motion.button
+          onClick={handleDownload}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors shadow-md hover:shadow-lg cursor-pointer"
+        >
+          Download Resume
+        </motion.button>
+      </div> */}
+      {/* )} */}
+
+      {lastSegment === "download-resume" && (
+        <div className="text-center my-8">
           <motion.button
             onClick={handleDownload}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors shadow-md hover:shadow-lg cursor-pointer"
+            disabled={isDownloading}
+            whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
+            whileTap={!isDownloading ? { scale: 0.98 } : {}}
+            className={`
+      relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
+      text-white transition-all duration-300 shadow-lg
+      ${
+        isDownloading
+          ? "bg-gray-400 cursor-not-allowed opacity-80"
+          : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600"
+      }
+    `}
           >
-            Download Resume
+            {/* Animated background gradient for premium feel */}
+            {!isDownloading && (
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+            )}
+
+            <div className="relative flex items-center justify-center gap-3 text-lg">
+              {isDownloading ? (
+                <>
+                  <FaSpinner className="animate-spin text-xl" />
+                  <span>Generating PDF ...</span>
+                </>
+              ) : (
+                <>
+                  <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
+                  <span>Download Resume</span>
+                  <span className="text-sm opacity-75 font-light ml-1">
+                    PDF
+                  </span>
+                </>
+              )}
+            </div>
           </motion.button>
         </div>
-      {/* )} */}
+      )}
 
       {alldata ? (
         <div

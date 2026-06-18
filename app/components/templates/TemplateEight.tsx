@@ -11773,6 +11773,7 @@ import {
   SectionKey,
   DEFAULT_SECTION_ORDER,
 } from "@/app/(resume)/download-resume/page";
+import { FaDownload, FaSpinner } from "react-icons/fa";
 
 const A4_W = 794;
 const A4_H = 1123;
@@ -11791,6 +11792,8 @@ const TemplateEight: React.FC<TemplateEightProps> = ({
   const pathname = usePathname();
   const lastSegment = pathname.split("/").pop();
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+      const [isDownloading, setIsDownloading] = useState<boolean>(false);
+  
 
   const [htmlContent, setHtmlContent] = useState<string>("");
   const [pages, setPages] = useState<string[]>([]);
@@ -12077,12 +12080,8 @@ const TemplateEight: React.FC<TemplateEightProps> = ({
 
   // ── HTML builder with section ordering ───────────────────────────────────
   // AFTER
-  const generateHTML = useCallback(
-    (
-      forPDF = false,
-      pageBreakIds: string[] = [],
-      skillsCutIndex = -1,
-    ): string => {
+ const generateHTML = useCallback(
+(forPDF = false, pageBreakIds: string[] = []): string => {
       const formattedDob = formatDateOfBirth(dateOfBirth ? dateOfBirth : "");
       const addressStr = addressParts.join(", ");
 
@@ -12212,35 +12211,27 @@ const TemplateEight: React.FC<TemplateEightProps> = ({
           const skillsClean = rich(skills);
           if (!skillsClean || skillsClean === "<p><br></p>") return "";
 
-          if (forPDF && skillsCutIndex >= 0) {
-            const tempDiv = document.createElement("div");
-            tempDiv.innerHTML = skillsClean;
-            const allLis = Array.from(tempDiv.querySelectorAll("li"));
-            if (skillsCutIndex < allLis.length) {
-              const beforeLis = allLis
-                .slice(0, skillsCutIndex)
-                .map((li) => `<li>${li.innerHTML}</li>`)
-                .join("");
-              const afterLis = allLis
-                .slice(skillsCutIndex)
-                .map((li) => `<li>${li.innerHTML}</li>`)
-                .join("");
-              return `<div class="section-block" data-block-id="skills-section">
-        <div class="section-title">Skills</div>
-        <div class="skills-content"><ul>${beforeLis}</ul></div>
-      </div>
-      <div class="t8-page-break"></div>
-      <div class="section-block" data-block-id="skills-section-continued">
-        <div class="skills-content"><ul>${afterLis}</ul></div>
-      </div>`;
-            }
-          }
+
 
           return `<div class="section-block" data-block-id="skills-section">
     <div class="section-title">Skills</div>
     <div class="skills-content" data-block-id="skills-content">${skillsClean}</div>
   </div>`;
         },
+
+
+//         skills: () => {
+//   const skillsClean = rich(skills || "");
+//   if (!skillsClean) return "";
+//   return `<div class="skills-block" data-block-id="skills-section">
+//     <div class="section-title">Skills</div>
+//     <div class="skills-content" data-block-id="skills-content">${skillsClean}</div>
+//   </div>`;
+// },
+
+        
+
+
         custom: () => {
           if (!Array.isArray(finalize?.customSection)) return "";
           const filteredCustom = finalize.customSection.filter(
@@ -12650,6 +12641,7 @@ const TemplateEight: React.FC<TemplateEightProps> = ({
 
   // ── PDF download ─────────────────────────────────────────
   const handleDownload = async () => {
+    setIsDownloading(true)
     try {
       //   // AFTER
       //   const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
@@ -12673,7 +12665,7 @@ const TemplateEight: React.FC<TemplateEightProps> = ({
       // AFTER
 const res: AxiosResponse<Blob> = await api.post(
   `${API_URL}/candidates/generate-pdf`,
-  { html: generateHTML(true, pageBreakIds, skillsCutIndex) },
+  { html: generateHTML(true, pageBreakIds) },
   { responseType: "blob" },
 );
 
@@ -12689,22 +12681,55 @@ const res: AxiosResponse<Blob> = await api.post(
       console.error("Error generating PDF:", error);
       alert("Failed to generate PDF. Please try again.");
     }
+    finally{
+            setIsDownloading(false)
+
+    }
   };
 
   return (
     <>
-      {/* {lastSegment === "download-resume" && ( */}
-      <div className="text-center my-5">
-        <motion.button
-          onClick={handleDownload}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="bg-emerald-500 text-2xl md:text-base hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 cursor-pointer shadow-md hover:shadow-lg"
-        >
-          Download Resume
-        </motion.button>
-      </div>
-      {/* )} */}
+        {lastSegment === "download-resume" && (
+                    <div className="text-center my-8">
+                      <motion.button
+                        onClick={handleDownload}
+                        disabled={isDownloading}
+                        whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
+                        whileTap={!isDownloading ? { scale: 0.98 } : {}}
+                        className={`
+                                              relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
+                                              text-white transition-all duration-300 shadow-lg
+                                              ${
+                                                isDownloading
+                                                  ? "bg-gray-400 cursor-not-allowed opacity-80"
+                                                  : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600"
+                                              }
+                                            `}
+                      >
+                        {/* Animated background gradient for premium feel */}
+                        {!isDownloading && (
+                          <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+                        )}
+            
+                        <div className="relative flex items-center justify-center gap-3 text-lg">
+                          {isDownloading ? (
+                            <>
+                              <FaSpinner className="animate-spin text-xl" />
+                              <span>Generating PDF ...</span>
+                            </>
+                          ) : (
+                            <>
+                              <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
+                              <span>Download Resume</span>
+                              <span className="text-sm opacity-75 font-light ml-1">
+                                PDF
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      </motion.button>
+                    </div>
+                  )}
 
       {alldata ? (
         <div
