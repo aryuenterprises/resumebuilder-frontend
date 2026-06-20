@@ -143,13 +143,15 @@ export const templateData: Template[] = [
     description: "Bold blue dual-line header with clean single-column layout",
     temp: "paid",
     component: TemplateFourteen  },
-  //   {
-  //   id: 15,
-  //   style: "The Analyst",
-  //   image: "/images/resume15.png",
-  //   description: "Creative design with eye-catching sections.",
-  //   temp: "paid",
-  //   component: TemplateFifteen },
+    // {
+    // id: 15,
+    // style: "The Analyst",
+    // image: "/images/resume15.png",
+    // description: "Creative design with eye-catching sections.",
+    // temp: "paid",
+    //     pic: "true",
+    // component: TemplateFifteen },
+
     {
     id: 16,
     style: "Modern Professional",

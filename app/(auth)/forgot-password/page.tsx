@@ -601,7 +601,7 @@ import Link from "next/link";
 interface ApiError {
   response?: {
     data?: {
-      error?: string;
+      message?: string;
     };
   };
 }
@@ -687,7 +687,7 @@ const ForgetPassword = () => {
 
       const error = err as ApiError;
       const errorMessage =
-        error.response?.data?.error ||
+        error.response?.data?.message ||
         "Something went wrong. Please try again later.";
 
       showModal("error", {

@@ -1,6 +1,6 @@
 // "use client";
 
-// import { useState, FormEvent } from "react";
+// import { useState, FormEvent, useRef } from "react";
 // import {
 //   FiArrowRight,
 //   FiEye,
@@ -12,6 +12,7 @@
 //   FiX,
 //   FiThumbsUp,
 //   FiAlertCircle,
+//   FiCheck,
 // } from "react-icons/fi";
 // import { useRouter } from "next/navigation";
 // import axios from "axios";
@@ -20,6 +21,8 @@
 // import { setLocalStorage } from "@/app/utils";
 // import { motion, AnimatePresence } from "framer-motion";
 // import { Sparkles } from "lucide-react";
+// import { Turnstile } from "@marsidev/react-turnstile";
+// import type { TurnstileInstance } from "@marsidev/react-turnstile";
 
 // // Define TypeScript interfaces
 // interface LoginErrors {
@@ -37,8 +40,11 @@
 //   const [isLoading, setIsLoading] = useState(false);
 //   const [focusedField, setFocusedField] = useState<string | null>(null);
 
+//   // Turnstile State
+//   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+//   const turnstileRef = useRef<TurnstileInstance | null>(null);
+
 //   // Custom Modal States
-//   const [showSuccessModal, setShowSuccessModal] = useState(false);
 //   const [showErrorModal, setShowErrorModal] = useState(false);
 //   const [errorMessage, setErrorMessage] = useState("");
 
@@ -64,6 +70,13 @@
 //   const handlesubmit = async (e: FormEvent) => {
 //     e.preventDefault();
 
+//     // Turnstile check - MUST be verified
+//     if (!turnstileToken) {
+//       setErrorMessage("Security verification required. Please complete the verification check.");
+//       setShowErrorModal(true);
+//       return;
+//     }
+
 //     if (!validateForm()) {
 //       return;
 //     }
@@ -74,6 +87,7 @@
 //       const formData = {
 //         email,
 //         password,
+//         turnstileToken: turnstileToken, // 👈 ADD THIS - send token to backend
 //       };
 
 //       const response = await axios.post(`${API_URL}/auth/login/`, formData);
@@ -84,15 +98,17 @@
 //         setLocalStorage("access_token", access_token);
 //         setLocalStorage("refresh_token", refresh_token);
 
-//         // Show success modal instead of SweetAlert
-//         setShowSuccessModal(true);
+//         router.push('/dashboard')
 
 //         setEmail("");
 //         setPassword("");
 //         setErrors({});
+        
+//         // Reset Turnstile after successful login
+//         setTurnstileToken(null);
+//         turnstileRef.current?.reset();
+        
 //         setIsLoading(false);
-
-//         // Redirect after modal is closed (will be handled in modal)
 //       } else {
 //         setErrorMessage("Invalid response from server.");
 //         setShowErrorModal(true);
@@ -104,7 +120,13 @@
 
 //       let errorText = "Something went wrong. Please try again.";
 
-//       if (err.response?.data?.message) {
+//       // Check if error is from Turnstile verification (403)
+//       if (err.response?.status === 403) {
+//         errorText = err.response?.data?.message || "Security check failed. Please refresh and try again.";
+//         // Reset Turnstile for retry
+//         setTurnstileToken(null);
+//         turnstileRef.current?.reset();
+//       } else if (err.response?.data?.message) {
 //         errorText = err.response.data.message;
 //       } else if (err.response?.data?.error) {
 //         errorText = err.response.data.error;
@@ -236,6 +258,33 @@
 //                   )}
 //                 </div>
 
+//                 {/* CLOUDFLARE TURNSTILE WIDGET - LIGHT THEME */}
+//                 <div className="flex justify-center py-3 sm:py-4">
+//                   <Turnstile
+//                     ref={turnstileRef}
+//                     // siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+//                     siteKey="0x4AAAAAADk4XwG1znS-2CHx"
+//                     // siteKey="1x00000000000000000000AA"
+//                     options={{ 
+//                       theme: "light",
+//                     }}
+//                     onSuccess={(token) => {
+//                       console.log("Turnstile verified for login");
+//                       setTurnstileToken(token);
+//                     }}
+//                     onError={() => {
+//                       console.log("Turnstile error");
+//                       setTurnstileToken(null);
+//                     }}
+//                     onExpire={() => {
+//                       console.log("Turnstile token expired");
+//                       setTurnstileToken(null);
+//                     }}
+//                   />
+//                 </div>
+
+                
+
 //                 {/* General error message */}
 //                 {errors.general && (
 //                   <div className="mb-4 p-2.5 sm:p-3 bg-red-50 border border-red-100 rounded-lg">
@@ -245,11 +294,15 @@
 //                   </div>
 //                 )}
 
-//                 {/* Login Button */}
+//                 {/* Login Button - Disabled until Turnstile verified */}
 //                 <button
 //                   type="submit"
-//                   disabled={isLoading}
-//                   className="w-full py-2.5 sm:py-3 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-semibold rounded-lg sm:rounded-xl hover:from-indigo-700 hover:to-indigo-600 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/25 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer text-[11px] sm:text-xs md:text-sm"
+//                   disabled={isLoading || !turnstileToken}
+//                   className={`w-full py-2.5 sm:py-3 font-semibold rounded-lg sm:rounded-xl flex items-center justify-center gap-2 text-[11px] sm:text-xs md:text-sm transition-all duration-300 ${
+//                     !turnstileToken
+//                       ? "bg-gray-300 cursor-not-allowed text-gray-500"
+//                       : "bg-gradient-to-r from-indigo-600 to-indigo-500 text-white hover:from-indigo-700 hover:to-indigo-600 hover:shadow-lg hover:shadow-indigo-500/25 cursor-pointer"
+//                   }`}
 //                 >
 //                   {isLoading ? (
 //                     <>
@@ -304,106 +357,7 @@
 //         </motion.div>
 //       </div>
 
-//       {/* ========== SUCCESS MODAL - INDIGO PURPLE THEME ========== */}
-//       <AnimatePresence>
-//         {showSuccessModal && (
-//           <motion.div
-//             initial={{ opacity: 0 }}
-//             animate={{ opacity: 1 }}
-//             exit={{ opacity: 0 }}
-//             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
-//             onClick={() => setShowSuccessModal(false)}
-//           >
-//             <motion.div
-//               initial={{ scale: 0.9, opacity: 0, y: 20 }}
-//               animate={{ scale: 1, opacity: 1, y: 0 }}
-//               exit={{ scale: 0.9, opacity: 0, y: 20 }}
-//               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-//               className="relative w-full max-w-md"
-//               onClick={(e) => e.stopPropagation()}
-//             >
-//               <div className="bg-white rounded-2xl shadow-2xl overflow-hidden border border-indigo-100">
-//                 {/* Close Button */}
-//                 <button
-//                   onClick={() => setShowSuccessModal(false)}
-//                   className="absolute top-4 right-4 z-10 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
-//                 >
-//                   <FiX className="w-5 h-5" />
-//                 </button>
-
-//                 {/* Gradient Header */}
-//                 <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 pt-8 pb-6 text-center">
-//                   <motion.div
-//                     initial={{ scale: 0 }}
-//                     animate={{ scale: 1 }}
-//                     transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
-//                     className="w-20 h-20 mx-auto bg-white rounded-full flex items-center justify-center shadow-lg mb-4"
-//                   >
-//                     <FiThumbsUp className="w-10 h-10 text-indigo-600" />
-//                   </motion.div>
-//                   <h3 className="text-2xl font-bold text-white">
-//                     Login Successful!
-//                   </h3>
-//                 </div>
-
-//                 {/* Content */}
-//                 <div className="p-6">
-//                   <motion.p
-//                     initial={{ opacity: 0, y: 10 }}
-//                     animate={{ opacity: 1, y: 0 }}
-//                     transition={{ delay: 0.2 }}
-//                     className="text-gray-800 text-center font-medium mb-4"
-//                   >
-//                     Welcome back to{" "}
-//                     <span className="text-indigo-600">Pass ATS</span>!
-//                   </motion.p>
-
-//                   <motion.div
-//                     initial={{ opacity: 0, x: -20 }}
-//                     animate={{ opacity: 1, x: 0 }}
-//                     transition={{ delay: 0.3 }}
-//                     className="bg-indigo-50 rounded-xl p-4 mb-6 border-l-4 border-indigo-500"
-//                   >
-//                     <div className="flex gap-3">
-//                       <div className="flex-shrink-0">
-//                         <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
-//                           <FiMail className="w-4 h-4 text-indigo-600" />
-//                         </div>
-//                       </div>
-//                       <div>
-//                         <p className="text-indigo-900 font-semibold text-sm mb-1">
-//                           Welcome User
-//                         </p>
-//                         <p className="text-indigo-700 text-sm">
-//                           You have successfully logged into your Pass ATS
-//                           account.
-//                         </p>
-//                       </div>
-//                     </div>
-//                   </motion.div>
-
-//                   <motion.div
-//                     initial={{ opacity: 0, y: 10 }}
-//                     animate={{ opacity: 1, y: 0 }}
-//                     transition={{ delay: 0.5 }}
-//                     className="flex gap-3"
-//                   >
-//                     <button
-//                       onClick={() => {
-//                         setShowSuccessModal(false);
-//                         router.push("/dashboard");
-//                       }}
-//                       className="flex-1 px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-medium hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-[1.02] shadow-md cursor-pointer text-sm"
-//                     >
-//                       Go to Dashboard →
-//                     </button>
-//                   </motion.div>
-//                 </div>
-//               </div>
-//             </motion.div>
-//           </motion.div>
-//         )}
-//       </AnimatePresence>
+      
 
 //       {/* ========== ERROR MODAL - RED THEME ========== */}
 //       <AnimatePresence>
@@ -492,7 +446,6 @@
 //                     <button
 //                       onClick={() => {
 //                         setShowErrorModal(false);
-//                         // Focus on email field
 //                         const emailInput = document.querySelector(
 //                           'input[type="email"]',
 //                         );
@@ -540,6 +493,7 @@
 
 
 
+
 "use client";
 
 import { useState, FormEvent, useRef } from "react";
@@ -550,17 +504,14 @@ import {
   FiLock,
   FiMail,
   FiLogIn,
-  FiShield,
   FiX,
-  FiThumbsUp,
   FiAlertCircle,
-  FiCheck,
 } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { API_URL } from "../../config/api";
 import Link from "next/link";
-import { setLocalStorage } from "@/app/utils";
+import { setInMemoryToken, setLocalStorage } from "@/app/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { Turnstile } from "@marsidev/react-turnstile";
@@ -587,7 +538,6 @@ const Login = () => {
   const turnstileRef = useRef<TurnstileInstance | null>(null);
 
   // Custom Modal States
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -626,38 +576,45 @@ const Login = () => {
 
     setIsLoading(true);
 
+
     try {
       const formData = {
         email,
         password,
-        turnstileToken: turnstileToken, // 👈 ADD THIS - send token to backend
+        turnstileToken: turnstileToken,
       };
 
-      const response = await axios.post(`${API_URL}/auth/login/`, formData);
+      const response = await axios.post(`${API_URL}/auth/login/`, formData, {
+        withCredentials: true, // Captures the HttpOnly refresh_token cookie
+      });
+
       if (response.data && response.data.access_token) {
-        const { user, access_token, refresh_token } = response.data;
+        const { user, access_token } = response.data;
 
+        // 1. Save public user details for the UI layout
         setLocalStorage("user_details", user);
-        setLocalStorage("access_token", access_token);
-        setLocalStorage("refresh_token", refresh_token);
+        
+        // 2. 🔐 SAVE ACCESS TOKEN SECURELY IN-MEMORY
+        // We import and call the setter from our api.ts file
+        setInMemoryToken(access_token); 
 
-        router.push('/dashboard')
+        router.push('/dashboard');
 
         setEmail("");
         setPassword("");
         setErrors({});
         
-        // Reset Turnstile after successful login
         setTurnstileToken(null);
         turnstileRef.current?.reset();
-        
         setIsLoading(false);
       } else {
         setErrorMessage("Invalid response from server.");
         setShowErrorModal(true);
         setIsLoading(false);
       }
-    } catch (err: any) {
+    }
+    
+    catch (err: any) {
       console.error("Login Error:", err);
       setIsLoading(false);
 
@@ -805,28 +762,21 @@ const Login = () => {
                 <div className="flex justify-center py-3 sm:py-4">
                   <Turnstile
                     ref={turnstileRef}
-                    // siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
                     siteKey="0x4AAAAAADk4XwG1znS-2CHx"
-                    // siteKey="1x00000000000000000000AA"
                     options={{ 
                       theme: "light",
                     }}
                     onSuccess={(token) => {
-                      console.log("Turnstile verified for login");
                       setTurnstileToken(token);
                     }}
                     onError={() => {
-                      console.log("Turnstile error");
                       setTurnstileToken(null);
                     }}
                     onExpire={() => {
-                      console.log("Turnstile token expired");
                       setTurnstileToken(null);
                     }}
                   />
                 </div>
-
-                
 
                 {/* General error message */}
                 {errors.general && (
@@ -837,7 +787,7 @@ const Login = () => {
                   </div>
                 )}
 
-                {/* Login Button - Disabled until Turnstile verified */}
+                {/* Login Button */}
                 <button
                   type="submit"
                   disabled={isLoading || !turnstileToken}
@@ -899,8 +849,6 @@ const Login = () => {
           </div>
         </motion.div>
       </div>
-
-      
 
       {/* ========== ERROR MODAL - RED THEME ========== */}
       <AnimatePresence>
@@ -1021,3 +969,20 @@ const Login = () => {
 };
 
 export default Login;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
