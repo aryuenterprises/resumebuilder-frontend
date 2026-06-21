@@ -51,28 +51,6 @@ export interface Skill {
   text?: string | undefined;
 }
 
-// Simple Skill (no categories)
-// export interface SimpleSkill {
-//   id: number | string;
-//   name: string;
-// }
-
-// // Category Skill (for categorized mode)
-// export interface CategorySkill {
-//   id: number | string;
-//   name: string;
-// }
-
-// // Skill Category
-// export interface SkillCategory {
-//   id: number | string;
-//   title: string;
-//   skills: CategorySkill[];
-//   isOpen?: boolean;
-// }
-
-// // Combined skills type
-// export type SkillsType = SimpleSkill[] | SkillCategory[];
 
 export interface Project {
   id: string | number;
