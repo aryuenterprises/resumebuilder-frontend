@@ -11770,8 +11770,7 @@ import { motion } from "framer-motion";
 import api from "@/app/utils/api";
 import {
   ResumeCustomization,
-  SectionKey,
-  DEFAULT_SECTION_ORDER,
+ 
 } from "@/app/(resume)/download-resume/page";
 import { FaDownload, FaSpinner } from "react-icons/fa";
 
@@ -11800,9 +11799,7 @@ const TemplateEight: React.FC<TemplateEightProps> = ({
 
   // ── Customization ─────────────────────────────────────────────────────────
   const activeFontFamily = customization?.fontFamily ?? "'EB Garamond', serif";
-  const activeSectionOrder: SectionKey[] = customization?.sectionOrder ?? [
-    ...DEFAULT_SECTION_ORDER,
-  ];
+ 
 
   // ── Data sources ─────────────────────────────────────────────────────────
   const contact = alldata?.contact || context.contact || {};
@@ -12091,7 +12088,7 @@ const TemplateEight: React.FC<TemplateEightProps> = ({
           : "";
 
       // ── Section builders ──────────────────────────────────────────────────────
-      const sectionBuilders: Record<SectionKey, () => string> = {
+      const sectionBuilders = {
         summary: () =>
           summary
             ? `
@@ -12252,9 +12249,19 @@ const TemplateEight: React.FC<TemplateEightProps> = ({
       };
 
       // Build sections in the order defined by customization
-      const sectionsHTML = activeSectionOrder
-        .map((key) => sectionBuilders[key]?.() ?? "")
-        .join("");
+      
+
+
+         const sectionsHTML = [
+  sectionBuilders.summary?.(),
+  sectionBuilders.experience?.(),
+  sectionBuilders.projects?.(),
+  sectionBuilders.education?.(),
+  sectionBuilders.skills?.(),
+  sectionBuilders.custom?.(),
+]
+  .filter(Boolean)
+  .join("");
 
       const pdfStyle = forPDF
         ? `<style>.t8-resume { width: 100% !important; padding: 0 !important; }</style>`
@@ -12317,7 +12324,6 @@ const TemplateEight: React.FC<TemplateEightProps> = ({
     },
     [
       activeFontFamily,
-      activeSectionOrder,
       contact,
       educations,
       experiences,

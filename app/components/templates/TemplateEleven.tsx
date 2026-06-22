@@ -7908,8 +7908,7 @@ import { motion } from "framer-motion";
 import api from "@/app/utils/api";
 import {
   ResumeCustomization,
-  SectionKey,
-  DEFAULT_SECTION_ORDER,
+
 } from "@/app/(resume)/download-resume/page";
 import { FaDownload, FaSpinner } from "react-icons/fa";
 
@@ -7937,9 +7936,7 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({
 
   // ── Customization ─────────────────────────────────────────────────────────
   const activeFontFamily = customization?.fontFamily ?? "'Lato', sans-serif";
-  const activeSectionOrder: SectionKey[] = customization?.sectionOrder ?? [
-    ...DEFAULT_SECTION_ORDER,
-  ];
+
 
   // ── Data sources ─────────────────────────────────────────────────────────
   const contact = alldata?.contact || context.contact || {};
@@ -8472,7 +8469,7 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({
           ? `<link href="${getFontImport(activeFontFamily)}" rel="stylesheet"/>`
           : "";
 
-      const sectionBuilders: Record<SectionKey, () => string> = {
+      const sectionBuilders = {
         summary: () =>
           summary
             ? `
@@ -8619,9 +8616,16 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({
       };
 
       // Build sections in the order defined by customization
-      const sectionsHTML = activeSectionOrder
-        .map((key) => sectionBuilders[key]?.() ?? "")
-        .join("");
+     const sectionsHTML = [
+  sectionBuilders.summary?.(),
+  sectionBuilders.experience?.(),
+  sectionBuilders.projects?.(),
+  sectionBuilders.education?.(),
+  sectionBuilders.skills?.(),
+  sectionBuilders.custom?.(),
+]
+  .filter(Boolean)
+  .join("");
 
       const pdfOverrideStyle = forPDF
         ? `<style>
@@ -8700,7 +8704,6 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({
     },
     [
       activeFontFamily,
-      activeSectionOrder,
       contact,
       educations,
       experiences,

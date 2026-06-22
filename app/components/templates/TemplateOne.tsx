@@ -10765,6 +10765,54 @@
 
 // export default TemplateOne;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 "use client";
 import React, {
   useContext,
@@ -11477,11 +11525,7 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
     setIsDownloading(true);
 
     try {
-      // const pageBreakIds: string[] = ((window as any).__resumePageBreakIds || []).filter(
-      //   (id: string) => id !== "skills-section"
-      // );
-      // const skillsCutIndex: number = (window as any).__resumeSkillsCutIndex ?? -1;
-      // const pdfHtml = generateHTML(true, pageBreakIds, skillsCutIndex);
+     
 
       const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
       const pdfHtml = generateHTML(true, pageBreakIds);
@@ -11509,20 +11553,9 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
   // ── RENDER ─────────────────────────────────────────────────────────────────
   return (
     <>
-      {/* {lastSegment === "download-resume" && ( */}
-      {/* <div className="text-center my-5">
-        <motion.button
-          onClick={handleDownload}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors shadow-md hover:shadow-lg cursor-pointer"
-        >
-          Download Resume
-        </motion.button>
-      </div> */}
-      {/* )} */}
+      
 
-      {lastSegment === "download-resume" && (
+      {/* {lastSegment === "download-resume" && ( */}
         <div className="text-center my-8">
           <motion.button
             onClick={handleDownload}
@@ -11562,7 +11595,7 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
             </div>
           </motion.button>
         </div>
-      )}
+      {/* )} */}
 
       {alldata ? (
         <div

@@ -9045,8 +9045,7 @@ import { motion } from "framer-motion";
 import api from "@/app/utils/api";
 import {
   ResumeCustomization,
-  SectionKey,
-  DEFAULT_SECTION_ORDER,
+
 } from "@/app/(resume)/download-resume/page";
 import { FaDownload, FaSpinner } from "react-icons/fa";
 
@@ -9075,9 +9074,7 @@ const TemplateNine: React.FC<TemplateNineProps> = ({
 
   // ── Customization ─────────────────────────────────────────────────────────
   const activeFontFamily = customization?.fontFamily ?? "'DM Sans', sans-serif";
-  const activeSectionOrder: SectionKey[] = customization?.sectionOrder ?? [
-    ...DEFAULT_SECTION_ORDER,
-  ];
+
 
   // ── Data sources ─────────────────────────────────────────────────────────
   const contact = alldata?.contact || context.contact || {};
@@ -9357,7 +9354,7 @@ const generateHTML = useCallback((forPDF = false, pageBreakIds: string[] = [], s
           : "";
 
 
-            const sectionBuilders: Record<SectionKey, () => string> = {
+            const sectionBuilders = {
     summary: () =>
       summary
         ? `
@@ -9527,9 +9524,16 @@ const generateHTML = useCallback((forPDF = false, pageBreakIds: string[] = [], s
   };
 
       // Build sections in the order defined by customization
-      const sectionsHTML = activeSectionOrder
-        .map((key) => sectionBuilders[key]?.() ?? "")
-        .join("");
+       const sectionsHTML = [
+  sectionBuilders.summary?.(),
+  sectionBuilders.experience?.(),
+  sectionBuilders.projects?.(),
+  sectionBuilders.education?.(),
+  sectionBuilders.skills?.(),
+  sectionBuilders.custom?.(),
+]
+  .filter(Boolean)
+  .join("");
 
       const pdfStyle = forPDF
         ? `<style>.t9-resume { width: 100% !important; padding: 0 !important; }</style>`
@@ -9592,7 +9596,6 @@ const generateHTML = useCallback((forPDF = false, pageBreakIds: string[] = [], s
     },
     [
       activeFontFamily,
-      activeSectionOrder,
       contact,
       educations,
       experiences,

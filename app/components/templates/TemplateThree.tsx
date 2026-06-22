@@ -5901,21 +5901,6 @@
 
 // export default TemplateThree;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
 // import React, {
 //   useContext,
@@ -6335,7 +6320,6 @@
 //   };
 
 //   // ── Section builders ──────────────────────────────────────────────────────
- 
 
 //   // ── HTML builder with section ordering ───────────────────────────────────
 //   const generateHTML = useCallback(
@@ -6470,7 +6454,6 @@
 //       .join("");
 //   },
 // };
-
 
 //       const pdfOverrideStyle = forPDF
 //         ? `<style>.t3-resume { width: 100% !important; padding: 0 !important; }</style>`
@@ -7030,32 +7013,6 @@
 
 // export default TemplateThree;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 import React, {
   useContext,
@@ -7083,11 +7040,7 @@ import {
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import api from "@/app/utils/api";
-import {
-  ResumeCustomization,
-  SectionKey,
-  DEFAULT_SECTION_ORDER,
-} from "@/app/(resume)/download-resume/page";
+import { ResumeCustomization } from "@/app/(resume)/download-resume/page";
 import { FaDownload, FaSpinner } from "react-icons/fa";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -7108,8 +7061,7 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({
   const context = useContext(CreateContext);
   const pathname = usePathname();
   const lastSegment = pathname.split("/").pop();
-        const [isDownloading, setIsDownloading] = useState<boolean>(false);
-  
+  const [isDownloading, setIsDownloading] = useState<boolean>(false);
 
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const [htmlContent, setHtmlContent] = useState<string>("");
@@ -7117,9 +7069,6 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({
 
   // ── Customization ─────────────────────────────────────────────────────────
   const activeFontFamily = customization?.fontFamily ?? "'Inter', sans-serif";
-  const activeSectionOrder: SectionKey[] = customization?.sectionOrder ?? [
-    ...DEFAULT_SECTION_ORDER,
-  ];
 
   // ── Data ──────────────────────────────────────────────────────────────────
   const contact = alldata?.contact || context?.contact || ({} as Contact);
@@ -7478,11 +7427,10 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({
   };
 
   // ── Section builders ──────────────────────────────────────────────────────
- 
 
   // ── HTML builder with section ordering ───────────────────────────────────
   const generateHTML = useCallback(
-  (forPDF = false): string => {
+    (forPDF = false): string => {
       const fontPreloads =
         activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif"
           ? `<link rel="preconnect" href="https://fonts.googleapis.com">
@@ -7490,27 +7438,30 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({
            <link href="${getFontImport(activeFontFamily)}" rel="stylesheet">`
           : "";
 
-              // ── Section builders (inside generateHTML so forPDF & skillsCutIndex are in scope)
-  // AFTER (full real implementation inside generateHTML)
-const sectionBuilders: Record<SectionKey, () => string> = {
-  summary: () =>
-    summary
-      ? `<div class="t3-section-content" data-block-id="summary">
+      // ── Section builders (inside generateHTML so forPDF & skillsCutIndex are in scope)
+      // AFTER (full real implementation inside generateHTML)
+      const sectionBuilders = {
+        summary: () =>
+          summary
+            ? `<div class="t3-section-content" data-block-id="summary">
            <div class="t3-section-title">Summary</div>
            <div class="t3-summary">${rich(summary)}</div>
          </div>`
-      : "",
+            : "",
 
-  experience: () =>
-    experiences.length
-      ? `<div class="t3-section-content" data-block-id="exp-section">
+        experience: () =>
+          experiences.length
+            ? `<div class="t3-section-content" data-block-id="exp-section">
            <div class="t3-section-title">Experience</div>
-           ${experiences.map((exp, i: number) => {
-             const start = formatMonthYear(exp.startDate, false);
-             const end = exp.endDate
-               ? formatMonthYear(exp.endDate, false)
-               : exp.startDate ? "Present" : "";
-             return `<div class="t3-entry" data-block-id="exp-${i}">
+           ${experiences
+             .map((exp, i: number) => {
+               const start = formatMonthYear(exp.startDate, false);
+               const end = exp.endDate
+                 ? formatMonthYear(exp.endDate, false)
+                 : exp.startDate
+                   ? "Present"
+                   : "";
+               return `<div class="t3-entry" data-block-id="exp-${i}">
                <div class="t3-experience-header">
                  <div class="t3-experience-title">${exp.jobTitle || ""}</div>
                  <div class="t3-experience-date">${start}${start && end ? " - " : ""}${end}</div>
@@ -7518,16 +7469,19 @@ const sectionBuilders: Record<SectionKey, () => string> = {
                <div class="t3-experience-subtitle">${[exp.employer, exp.location].filter(Boolean).join(" — ")}</div>
                ${exp.text ? `<div class="t3-entry-content">${rich(exp.text)}</div>` : ""}
              </div>`;
-           }).join("")}
+             })
+             .join("")}
          </div>`
-      : "",
+            : "",
 
-  projects: () =>
-    projects.length
-      ? `<div class="t3-section-content" data-block-id="proj-section">
+        projects: () =>
+          projects.length
+            ? `<div class="t3-section-content" data-block-id="proj-section">
            <div class="t3-section-title">Projects</div>
-           ${projects.map((project: any, i: number) =>
-             `<div class="t3-project-item" data-block-id="proj-${i}">
+           ${projects
+             .map(
+               (project: any, i: number) =>
+                 `<div class="t3-project-item" data-block-id="proj-${i}">
                <div class="t3-project-header">
                  <div class="t3-project-title">${project.title || ""}</div>
                  <div class="t3-project-links">
@@ -7537,18 +7491,22 @@ const sectionBuilders: Record<SectionKey, () => string> = {
                </div>
                ${project.techStack?.length ? `<div class="t3-project-tech-stack"><strong>Tech:</strong> ${project.techStack.join(" • ")}</div>` : ""}
                ${project.description ? `<div class="t3-project-description">${rich(project.description)}</div>` : ""}
-             </div>`
-           ).join("")}
+             </div>`,
+             )
+             .join("")}
          </div>`
-      : "",
+            : "",
 
-  education: () =>
-    educations.length
-      ? `<div class="t3-section-content" data-block-id="edu-section">
+        education: () =>
+          educations.length
+            ? `<div class="t3-section-content" data-block-id="edu-section">
            <div class="t3-section-title">Education</div>
-           ${educations.map((edu, i: number) => {
-             const formattedGrade = formatGradeToCgpdAndPercentage(edu.grade || "");
-             return `<div class="t3-entry" data-block-id="edu-${i}">
+           ${educations
+             .map((edu, i: number) => {
+               const formattedGrade = formatGradeToCgpdAndPercentage(
+                 edu.grade || "",
+               );
+               return `<div class="t3-entry" data-block-id="edu-${i}">
                <div class="t3-education-header">
                  <div class="t3-education-school">${edu.schoolname || ""}</div>
                  <div class="t3-education-date">${[edu.startDate, edu.endDate || "Present"].filter(Boolean).join(" — ")}</div>
@@ -7557,46 +7515,55 @@ const sectionBuilders: Record<SectionKey, () => string> = {
                ${formattedGrade ? `<div class="t3-education-grade">${formattedGrade}</div>` : ""}
                ${edu.text ? `<div class="t3-entry-content">${rich(edu.text)}</div>` : ""}
              </div>`;
-           }).join("")}
+             })
+             .join("")}
          </div>`
-      : "",
+            : "",
 
-  skills: () => {
-  const cleanedSkills = rich(skills);
-  if (!skills || !cleanedSkills || cleanedSkills === "<p><br></p>") return "";
-  return `<div class="t3-section-content" data-block-id="skills-section">
+        skills: () => {
+          const cleanedSkills = rich(skills);
+          if (!skills || !cleanedSkills || cleanedSkills === "<p><br></p>")
+            return "";
+          return `<div class="t3-section-content" data-block-id="skills-section">
     <div class="t3-section-title">Skills</div>
     <div class="t3-skills-block">
       <div class="t3-skills-content">${cleanedSkills}</div>
     </div>
   </div>`;
-},
+        },
 
-  custom: () => {
-    if (!customSection.length) return "";
-    const filteredCustom = customSection.filter(
-      (s) => s?.name?.trim() || s?.description?.trim(),
-    );
-    if (!filteredCustom.length) return "";
-    return filteredCustom
-      .map((s, i: number) =>
-        `<div class="t3-custom-section" data-block-id="custom-${i}">
+        custom: () => {
+          if (!customSection.length) return "";
+          const filteredCustom = customSection.filter(
+            (s) => s?.name?.trim() || s?.description?.trim(),
+          );
+          if (!filteredCustom.length) return "";
+          return filteredCustom
+            .map(
+              (s, i: number) =>
+                `<div class="t3-custom-section" data-block-id="custom-${i}">
           ${s.name ? `<div class="t3-custom-section-title">${s.name}</div>` : ""}
           ${s.description ? `<div class="t3-custom-section-content">${rich(s.description)}</div>` : ""}
-        </div>`
-      )
-      .join("");
-  },
-};
-
+        </div>`,
+            )
+            .join("");
+        },
+      };
 
       const pdfOverrideStyle = forPDF
         ? `<style>.t3-resume { width: 100% !important; padding: 0 !important; }</style>`
         : "";
 
       // Build sections in the order defined by customization
-      const sectionsHTML = activeSectionOrder
-        .map((key) => sectionBuilders[key]?.() ?? "")
+      const sectionsHTML = [
+        sectionBuilders.summary?.(),
+        sectionBuilders.experience?.(),
+        sectionBuilders.projects?.(),
+        sectionBuilders.education?.(),
+        sectionBuilders.skills?.(),
+        sectionBuilders.custom?.(),
+      ]
+        .filter(Boolean)
         .join("");
 
       let bodyContent = `
@@ -7622,8 +7589,6 @@ const sectionBuilders: Record<SectionKey, () => string> = {
         </div>
       `;
 
-    
-
       return `<!DOCTYPE html>
 <html>
 <head>
@@ -7643,7 +7608,6 @@ const sectionBuilders: Record<SectionKey, () => string> = {
     },
     [
       activeFontFamily,
-      activeSectionOrder,
       contact,
       educations,
       experiences,
@@ -7714,121 +7678,145 @@ const sectionBuilders: Record<SectionKey, () => string> = {
         measureDoc.close();
 
         // REPLACE everything inside doMeasure() from "const resume = measureDoc..." to "resolve(pageHtmls);"
-const doMeasure = () => {
-  const resume = measureDoc.querySelector<HTMLElement>(".t3-resume");
-  if (!resume) {
-    document.body.removeChild(iframe);
-    resolve([fullHtml]);
-    return;
-  }
+        const doMeasure = () => {
+          const resume = measureDoc.querySelector<HTMLElement>(".t3-resume");
+          if (!resume) {
+            document.body.removeChild(iframe);
+            resolve([fullHtml]);
+            return;
+          }
 
-  measureDoc.documentElement.style.cssText = "height:auto!important;overflow:visible!important;";
-  measureDoc.body.style.cssText = "margin:0;padding:0;height:auto!important;overflow:visible!important;";
-  void resume.offsetHeight;
+          measureDoc.documentElement.style.cssText =
+            "height:auto!important;overflow:visible!important;";
+          measureDoc.body.style.cssText =
+            "margin:0;padding:0;height:auto!important;overflow:visible!important;";
+          void resume.offsetHeight;
 
-  const totalH = resume.scrollHeight;
-  const resumeTop = resume.getBoundingClientRect().top +
-    (measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop);
+          const totalH = resume.scrollHeight;
+          const resumeTop =
+            resume.getBoundingClientRect().top +
+            (measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop);
 
-  const getRelTop = (el: HTMLElement): number => {
-    const docScrollY = measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
-    return el.getBoundingClientRect().top + docScrollY - resumeTop;
-  };
-  const getRelBottom = (el: HTMLElement): number =>
-    getRelTop(el) + el.getBoundingClientRect().height;
+          const getRelTop = (el: HTMLElement): number => {
+            const docScrollY =
+              measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
+            return el.getBoundingClientRect().top + docScrollY - resumeTop;
+          };
+          const getRelBottom = (el: HTMLElement): number =>
+            getRelTop(el) + el.getBoundingClientRect().height;
 
-  interface Block { top: number; bottom: number; id?: string; }
-  const blocks: Block[] = [];
+          interface Block {
+            top: number;
+            bottom: number;
+            id?: string;
+          }
+          const blocks: Block[] = [];
 
-  const ITEM_SELECTORS = [
-    ".t3-entry",
-    ".t3-project-item",
-    ".t3-custom-section",
-  ].join(", ");
+          const ITEM_SELECTORS = [
+            ".t3-entry",
+            ".t3-project-item",
+            ".t3-custom-section",
+          ].join(", ");
 
-  resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
-    const top = getRelTop(el);
-    const bottom = getRelBottom(el);
-    if (bottom - top > 8) blocks.push({ top, bottom, id: el.dataset.blockId });
-  });
+          resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
+            const top = getRelTop(el);
+            const bottom = getRelBottom(el);
+            if (bottom - top > 8)
+              blocks.push({ top, bottom, id: el.dataset.blockId });
+          });
 
-  resume.querySelectorAll<HTMLElement>(".t3-section-title, .t3-custom-section-title").forEach((title) => {
-    const titleTop = getRelTop(title);
-    let firstItem: HTMLElement | null = null;
-    let sib = title.nextElementSibling as HTMLElement | null;
-    while (sib) {
-      if (sib.getBoundingClientRect().height > 8) { firstItem = sib; break; }
-      sib = sib.nextElementSibling as HTMLElement | null;
-    }
-    if (firstItem) {
-      const deepChild = firstItem.querySelector<HTMLElement>(
-        ".t3-entry, .t3-project-item, .t3-custom-section"
-      );
-      const anchor = deepChild || firstItem;
-      const anchorBottom = getRelBottom(anchor);
-      const combinedHeight = anchorBottom - titleTop;
-      if (combinedHeight > 8 && combinedHeight <= PAGE_CONTENT_H * 0.9) {
-        const sectionId = (title.parentElement as HTMLElement)?.dataset?.blockId;
-        blocks.push({ top: titleTop, bottom: anchorBottom, id: sectionId });
-      }
-    }
-  });
+          resume
+            .querySelectorAll<HTMLElement>(
+              ".t3-section-title, .t3-custom-section-title",
+            )
+            .forEach((title) => {
+              const titleTop = getRelTop(title);
+              let firstItem: HTMLElement | null = null;
+              let sib = title.nextElementSibling as HTMLElement | null;
+              while (sib) {
+                if (sib.getBoundingClientRect().height > 8) {
+                  firstItem = sib;
+                  break;
+                }
+                sib = sib.nextElementSibling as HTMLElement | null;
+              }
+              if (firstItem) {
+                const deepChild = firstItem.querySelector<HTMLElement>(
+                  ".t3-entry, .t3-project-item, .t3-custom-section",
+                );
+                const anchor = deepChild || firstItem;
+                const anchorBottom = getRelBottom(anchor);
+                const combinedHeight = anchorBottom - titleTop;
+                if (
+                  combinedHeight > 8 &&
+                  combinedHeight <= PAGE_CONTENT_H * 0.9
+                ) {
+                  const sectionId = (title.parentElement as HTMLElement)
+                    ?.dataset?.blockId;
+                  blocks.push({
+                    top: titleTop,
+                    bottom: anchorBottom,
+                    id: sectionId,
+                  });
+                }
+              }
+            });
 
-  blocks.sort((a, b) => a.top - b.top);
+          blocks.sort((a, b) => a.top - b.top);
 
-  const findBestCut = (
-    currentStart: number,
-    naiveCut: number
-  ): { cut: number; id?: string } => {
-    let actualCut = naiveCut;
-    let cutId: string | undefined;
-    const pageHeight = naiveCut - currentStart;
-    const minFill = currentStart + pageHeight * 0.92;
+          const findBestCut = (
+            currentStart: number,
+            naiveCut: number,
+          ): { cut: number; id?: string } => {
+            let actualCut = naiveCut;
+            let cutId: string | undefined;
+            const pageHeight = naiveCut - currentStart;
+            const minFill = currentStart + pageHeight * 0.92;
 
-    for (const block of blocks) {
-      if (block.top >= naiveCut) break;
-      if (block.bottom <= currentStart) continue;
-      if (block.bottom > naiveCut) {
-        const blockHeight = block.bottom - block.top;
-        if (
-          block.top >= minFill &&
-          blockHeight <= PAGE_CONTENT_H &&
-          block.top < actualCut
-        ) {
-          actualCut = block.top;
-          cutId = block.id;
-        }
-      }
-    }
-    if (actualCut <= currentStart) actualCut = naiveCut;
-    return { cut: actualCut, id: cutId };
-  };
+            for (const block of blocks) {
+              if (block.top >= naiveCut) break;
+              if (block.bottom <= currentStart) continue;
+              if (block.bottom > naiveCut) {
+                const blockHeight = block.bottom - block.top;
+                if (
+                  block.top >= minFill &&
+                  blockHeight <= PAGE_CONTENT_H &&
+                  block.top < actualCut
+                ) {
+                  actualCut = block.top;
+                  cutId = block.id;
+                }
+              }
+            }
+            if (actualCut <= currentStart) actualCut = naiveCut;
+            return { cut: actualCut, id: cutId };
+          };
 
-  const pageStarts: number[] = [0];
-  const pageBreakIds: string[] = [];
-  const MAX_PAGES = 20;
+          const pageStarts: number[] = [0];
+          const pageBreakIds: string[] = [];
+          const MAX_PAGES = 20;
 
-  while (pageStarts.length < MAX_PAGES) {
-    const currentStart = pageStarts[pageStarts.length - 1];
-    const naiveCut = currentStart + PAGE_CONTENT_H;
-    if (naiveCut >= totalH) break;
-    const { cut, id } = findBestCut(currentStart, naiveCut);
-    pageStarts.push(cut);
-    if (id) pageBreakIds.push(id);
-  }
+          while (pageStarts.length < MAX_PAGES) {
+            const currentStart = pageStarts[pageStarts.length - 1];
+            const naiveCut = currentStart + PAGE_CONTENT_H;
+            if (naiveCut >= totalH) break;
+            const { cut, id } = findBestCut(currentStart, naiveCut);
+            pageStarts.push(cut);
+            if (id) pageBreakIds.push(id);
+          }
 
-  document.body.removeChild(iframe);
-  (window as any).__resumePageBreakIds = pageBreakIds;
+          document.body.removeChild(iframe);
+          (window as any).__resumePageBreakIds = pageBreakIds;
 
-  const pageHtmls: string[] = [];
-  for (let i = 0; i < pageStarts.length; i++) {
-    const contentOffsetY = pageStarts[i];
-    const nextStart = pageStarts[i + 1] ?? totalH;
-    const clipH = nextStart - contentOffsetY;
-    // const previewClipH = Math.max(clipH, Math.min(PAGE_CONTENT_H, totalH - contentOffsetY));
-const previewClipH = clipH;
+          const pageHtmls: string[] = [];
+          for (let i = 0; i < pageStarts.length; i++) {
+            const contentOffsetY = pageStarts[i];
+            const nextStart = pageStarts[i + 1] ?? totalH;
+            const clipH = nextStart - contentOffsetY;
+            // const previewClipH = Math.max(clipH, Math.min(PAGE_CONTENT_H, totalH - contentOffsetY));
+            const previewClipH = clipH;
 
-    pageHtmls.push(`<!DOCTYPE html>
+            pageHtmls.push(`<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
@@ -7868,10 +7856,10 @@ const previewClipH = clipH;
   </div>
 </body>
 </html>`);
-  }
+          }
 
-  resolve(pageHtmls);
-};
+          resolve(pageHtmls);
+        };
 
         const win = iframe.contentWindow as any;
         if (win?.document?.fonts?.ready) {
@@ -7906,43 +7894,41 @@ const previewClipH = clipH;
 
   // ── PDF download ─────────────────────────────────────────────────────────
   // REPLACE handleDownload:
-const handleDownload = async (): Promise<void> => {
-  setIsDownloading(true)
-  try {
-    const res: AxiosResponse<Blob> = await api.post(
-      `${API_URL}/candidates/generate-pdf`,
-      { html: generateHTML(true) },
-      { responseType: "blob" },
-    );
-    const url = URL.createObjectURL(res.data);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  } catch (err) {
-    console.error("PDF error:", err);
-    alert("Failed to generate PDF. Please try again.");
-  }
-  finally{
-      setIsDownloading(false)
-
-  }
-};
+  const handleDownload = async (): Promise<void> => {
+    setIsDownloading(true);
+    try {
+      const res: AxiosResponse<Blob> = await api.post(
+        `${API_URL}/candidates/generate-pdf`,
+        { html: generateHTML(true) },
+        { responseType: "blob" },
+      );
+      const url = URL.createObjectURL(res.data);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("PDF error:", err);
+      alert("Failed to generate PDF. Please try again.");
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   // ── RENDER ────────────────────────────────────────────────────────────────
   return (
     <>
-       {lastSegment === "download-resume" && (
-                   <div className="text-center my-8">
-                     <motion.button
-                       onClick={handleDownload}
-                       disabled={isDownloading}
-                       whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
-                       whileTap={!isDownloading ? { scale: 0.98 } : {}}
-                       className={`
+      {lastSegment === "download-resume" && (
+        <div className="text-center my-8">
+          <motion.button
+            onClick={handleDownload}
+            disabled={isDownloading}
+            whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
+            whileTap={!isDownloading ? { scale: 0.98 } : {}}
+            className={`
                  relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
                  text-white transition-all duration-300 shadow-lg
                  ${
@@ -7951,31 +7937,31 @@ const handleDownload = async (): Promise<void> => {
                      : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600"
                  }
                `}
-                     >
-                       {/* Animated background gradient for premium feel */}
-                       {!isDownloading && (
-                         <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-                       )}
-           
-                       <div className="relative flex items-center justify-center gap-3 text-lg">
-                         {isDownloading ? (
-                           <>
-                             <FaSpinner className="animate-spin text-xl" />
-                             <span>Generating PDF ...</span>
-                           </>
-                         ) : (
-                           <>
-                             <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
-                             <span>Download Resume</span>
-                             <span className="text-sm opacity-75 font-light ml-1">
-                               PDF
-                             </span>
-                           </>
-                         )}
-                       </div>
-                     </motion.button>
-                   </div>
-                 )}
+          >
+            {/* Animated background gradient for premium feel */}
+            {!isDownloading && (
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+            )}
+
+            <div className="relative flex items-center justify-center gap-3 text-lg">
+              {isDownloading ? (
+                <>
+                  <FaSpinner className="animate-spin text-xl" />
+                  <span>Generating PDF ...</span>
+                </>
+              ) : (
+                <>
+                  <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
+                  <span>Download Resume</span>
+                  <span className="text-sm opacity-75 font-light ml-1">
+                    PDF
+                  </span>
+                </>
+              )}
+            </div>
+          </motion.button>
+        </div>
+      )}
 
       {alldata ? (
         <div

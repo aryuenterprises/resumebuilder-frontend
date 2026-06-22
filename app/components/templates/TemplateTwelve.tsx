@@ -5963,8 +5963,7 @@ import { motion } from "framer-motion";
 import api from "@/app/utils/api";
 import {
   ResumeCustomization,
-  SectionKey,
-  DEFAULT_SECTION_ORDER,
+
 } from "@/app/(resume)/download-resume/page";
 import { FaDownload, FaSpinner } from "react-icons/fa";
 
@@ -5994,7 +5993,6 @@ const TemplateTwelve: React.FC<TemplateTwelveProps> = ({ alldata, customization 
 
   // ── Customization ─────────────────────────────────────────────────────────
   const activeFontFamily = customization?.fontFamily ?? "'Source Sans 3', sans-serif";
-  const activeSectionOrder: SectionKey[] = customization?.sectionOrder ?? [...DEFAULT_SECTION_ORDER];
 
   // ── Data sources ─────────────────────────────────────────────────────────
   const contact = alldata?.contact || context.contact || {};
@@ -6432,7 +6430,7 @@ const generateHTML = useCallback(
         </div>`;
 
 
-        const sectionBuilders: Record<SectionKey, () => string> = {
+        const sectionBuilders = {
     summary: () => summary ? `
       <div class="section-block" data-block-id="t12-summary">
         <div class="section-title">Profile</div>
@@ -6584,9 +6582,16 @@ const generateHTML = useCallback(
   };
 
       // Build sections in the order defined by customization
-      const sectionsHTML = activeSectionOrder
-        .map(key => sectionBuilders[key]?.() ?? "")
-        .join("");
+    const sectionsHTML = [
+  sectionBuilders.summary?.(),
+  sectionBuilders.experience?.(),
+  sectionBuilders.projects?.(),
+  sectionBuilders.education?.(),
+  sectionBuilders.skills?.(),
+  sectionBuilders.custom?.(),
+]
+  .filter(Boolean)
+  .join("");
 
       const pdfStyle = forPDF
         ? `<style>
@@ -6637,7 +6642,6 @@ const generateHTML = useCallback(
     },
     [
       activeFontFamily,
-      activeSectionOrder,
       contact,
       educations,
       experiences,

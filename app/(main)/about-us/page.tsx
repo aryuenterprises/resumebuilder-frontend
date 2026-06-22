@@ -489,12 +489,7 @@ export default function AboutPage() {
                     other: "₹1000-₹2000",
                     pass: "₹49",
                   },
-                  {
-                    feature: "Lifetime Plan",
-                    other: "₹5000-₹10000",
-                    pass: "₹249",
-                  },
-
+                
                   {
                     feature: "Templates",
                     other: "5-10 Generic",
@@ -643,10 +638,10 @@ export default function AboutPage() {
                   {promise.icon}
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-0.5 sm:mb-1 text-xs sm:text-sm">
+                  <h3 className="font-semibold text-gray-900 mb-0.5 sm:mb-1 text-sm md:text-base">
                     {promise.title}
                   </h3>
-                  <p className="text-[10px] sm:text-xs text-gray-500 leading-relaxed">
+                  <p className="text-xs md:text-sm text-gray-500 leading-relaxed">
                     {promise.description}
                   </p>
                 </div>

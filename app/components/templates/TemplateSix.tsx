@@ -5381,8 +5381,6 @@ import { motion } from "framer-motion";
 import api from "@/app/utils/api";
 import {
   ResumeCustomization,
-  SectionKey,
-  DEFAULT_SECTION_ORDER,
 } from "@/app/(resume)/download-resume/page";
 import { FaDownload, FaSpinner } from "react-icons/fa";
 
@@ -5428,9 +5426,7 @@ const TemplateSix: React.FC<TemplateSixProps> = ({
 
   // ── Customization ─────────────────────────────────────────────────────────
   const activeFontFamily = customization?.fontFamily ?? "'Nunito', sans-serif";
-  const activeSectionOrder: SectionKey[] = customization?.sectionOrder ?? [
-    ...DEFAULT_SECTION_ORDER,
-  ];
+
 
   // ── Data sources ─────────────────────────────────────────────────────────
   const contact = alldata?.contact || context?.contact || ({} as Contact);
@@ -5867,7 +5863,7 @@ const TemplateSix: React.FC<TemplateSixProps> = ({
       const formattedDob = formatDateOfBirth(dateOfBirth || "");
 
       // ── Section builders inside generateHTML ──────────────────────────────
-      const sectionBuilders: Record<SectionKey, () => string> = {
+      const sectionBuilders = {
         summary: () =>
           summary
             ? `
@@ -6004,12 +6000,15 @@ const TemplateSix: React.FC<TemplateSixProps> = ({
 
       // Build right column sections in the order defined by customization
       // Filter out "skills" since it's in left column
-      const rightSections = activeSectionOrder.filter(
-        (key) => key !== "skills",
-      );
-      const rightColContent = rightSections
-        .map((key) => sectionBuilders[key]?.() ?? "")
-        .join("");
+      const rightColContent = [
+  sectionBuilders.summary?.(),
+  sectionBuilders.experience?.(),
+  sectionBuilders.projects?.(),
+  sectionBuilders.education?.(),
+  sectionBuilders.custom?.(),
+]
+  .filter(Boolean)
+  .join("");
 
       const fontPreloads =
         activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif"
@@ -6081,7 +6080,6 @@ const TemplateSix: React.FC<TemplateSixProps> = ({
     },
     [
       activeFontFamily,
-      activeSectionOrder,
       contact,
       educations,
       experiences,

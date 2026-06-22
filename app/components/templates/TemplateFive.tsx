@@ -5446,8 +5446,7 @@ import { motion } from "framer-motion";
 import api from "@/app/utils/api";
 import {
   ResumeCustomization,
-  SectionKey,
-  DEFAULT_SECTION_ORDER,
+
 } from "@/app/(resume)/download-resume/page";
 import { FaDownload, FaSpinner } from "react-icons/fa";
 
@@ -5476,7 +5475,6 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({ alldata, customization }) =
 
   // ── Customization ─────────────────────────────────────────────────────────
   const activeFontFamily = customization?.fontFamily ?? "'Inter', sans-serif";
-  const activeSectionOrder: SectionKey[] = customization?.sectionOrder ?? [...DEFAULT_SECTION_ORDER];
 
   // ── Data sources ─────────────────────────────────────────────────────────
   const contact = alldata?.contact || context.contact || {};
@@ -6003,7 +6001,7 @@ const generateHTML = useCallback(
         </div>`;
 
 
-        const sectionBuilders: Record<SectionKey, () => string> = {
+        const sectionBuilders = {
   summary: () => summary ? `
     <div class="t5-section" data-block-id="t5-summary">
       <div class="t5-section-title">Professional Summary</div>
@@ -6088,9 +6086,19 @@ skills: () => {
 };
 
       // Build sections in the order defined by customization
-      const sectionsHTML = activeSectionOrder
-        .map(key => sectionBuilders[key]?.() ?? "")
-        .join("");
+     
+
+        const sectionsHTML = [
+  sectionBuilders.summary?.(),
+  sectionBuilders.experience?.(),
+  sectionBuilders.projects?.(),
+  sectionBuilders.education?.(),
+  sectionBuilders.skills?.(),
+  sectionBuilders.custom?.(),
+]
+  .filter(Boolean)
+  .join("");
+
 
       const pdfStyle = forPDF
         ? `<style>.resume-t5 { width: 100% !important; padding: 0 !important; }</style>`
@@ -6131,7 +6139,6 @@ skills: () => {
     },
     [
       activeFontFamily,
-      activeSectionOrder,
       contact,
       educations,
       experiences,
