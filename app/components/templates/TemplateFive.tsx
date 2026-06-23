@@ -114,16 +114,16 @@
 //   // Helper function to render skills (now just a string with HTML content)
 //   const renderSkills = () => {
 //     if (!skills || (typeof skills === 'string' && !skills.trim())) return null;
-    
+
 //     // Clean the HTML content from Quill editor
 //     const cleanedSkills = cleanQuillHTML(skills);
-    
+
 //     if (!cleanedSkills || cleanedSkills === "<p><br></p>" || cleanedSkills === "") return null;
-    
+
 //     return (
 //       <div className="t5-section">
 //         <div className="t5-section-title">Skills</div>
-//         <div 
+//         <div
 //           className="t5-skills-content"
 //           dangerouslySetInnerHTML={{ __html: cleanedSkills }}
 //         />
@@ -218,7 +218,7 @@
 //     .resume-t5.is-preview {
 //       transform: scale(0.36);
 //       transform-origin: top left;
-//       width: 210mm; 
+//       width: 210mm;
 //       height: auto;
 //       max-height: none;
 //       min-height: auto;
@@ -684,16 +684,16 @@
 //          <img src="${base64Image}" alt="Profile" class="t5-photo" style="width:100px;height:100px;object-fit:cover;border-radius:6px;" />
 //        </div>`
 //     : '';
-    
+
 //     const formattedDob = formatDateOfBirth(dateOfBirth ? dateOfBirth : "");
 
 //     // Generate skills HTML for PDF (now just clean the HTML string)
 //     const generateSkillsHTML = () => {
 //       if (!skills || (typeof skills === 'string' && !skills.trim())) return "";
-      
+
 //       const cleanedSkills = cleanQuillHTML(skills);
 //       if (!cleanedSkills || cleanedSkills === "<p><br></p>" || cleanedSkills === "") return "";
-      
+
 //       return `
 //         <div class="t5-section">
 //           <div class="t5-section-title">Skills</div>
@@ -923,7 +923,7 @@
 //             Download Resume
 //           </motion.button>
 //         </div>
-//       )} 
+//       )}
 
 //       <div
 //         className={`resume-t5 ${alldata ? "is-preview" : ""}`}
@@ -1159,19 +1159,6 @@
 
 // export default TemplateFive;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
 
 // import React, { useContext, useState, useEffect, useRef, useCallback } from "react";
@@ -1201,7 +1188,7 @@
 //   const iframeRef = useRef<HTMLIFrameElement>(null);
 //   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 //   const blobUrlRef = useRef<string | null>(null);
-  
+
 //   const [iframeHeight, setIframeHeight] = useState<number>(1122);
 //   const [htmlContent, setHtmlContent] = useState<string>("");
 //   const [base64Image, setBase64Image] = useState<string | null>(null);
@@ -1287,8 +1274,6 @@
 //      SHARED CSS — scoped to .resume-t5
 //   ====================================================== */
 //   const styles = `
-    
-  
 
 //     /* PDF margins */
 //     @page {
@@ -1721,10 +1706,10 @@
 //     // Generate skills HTML
 //     const generateSkillsHTML = () => {
 //       if (!skills || (typeof skills === 'string' && !skills.trim())) return "";
-      
+
 //       const cleanedSkills = cleanQuillHTML(skills);
 //       if (!cleanedSkills || cleanedSkills === "<p><br></p>" || cleanedSkills === "") return "";
-      
+
 //       return `
 //         <div class="t5-section">
 //           <div class="t5-section-title">Skills</div>
@@ -1923,7 +1908,7 @@
 //   useEffect(() => {
 //     const newHtml = generateHTML();
 //     debouncedUpdate(newHtml);
-    
+
 //     return () => {
 //       if (debounceTimerRef.current) {
 //         clearTimeout(debounceTimerRef.current);
@@ -1942,11 +1927,11 @@
 //       if (blobUrlRef.current) {
 //         URL.revokeObjectURL(blobUrlRef.current);
 //       }
-      
+
 //       const blob = new Blob([htmlContent], { type: 'text/html' });
 //       const url = URL.createObjectURL(blob);
 //       blobUrlRef.current = url;
-      
+
 //       if (iframeRef.current) {
 //         iframeRef.current.src = url;
 //       }
@@ -1970,7 +1955,7 @@
 //       const html = generateHTML();
 //       const res = await axios.post(
 //         `${API_URL}/api/candidates/generate-pdf`,
-//         { 
+//         {
 //           html,
 //           options: {
 //             margin: {
@@ -2013,11 +1998,9 @@
 //             Download Resume
 //           </motion.button>
 //         </div>
-//       )} 
+//       )}
 
 //       {alldata ? (
-       
-
 
 //  <div
 //           style={{
@@ -2061,15 +2044,6 @@
 // };
 
 // export default TemplateFive;
-
-
-
-
-
-
-
-
-
 
 // "use client";
 // import React, { useContext, useState, useEffect, useRef, useCallback } from "react";
@@ -2136,7 +2110,7 @@
 //   const lastSegment = pathname.split("/").pop();
 //   const measureRef = useRef<HTMLIFrameElement>(null);
 //   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
-  
+
 //   const [htmlContent, setHtmlContent] = useState<string>("");
 //   const [pages, setPages] = useState<string[]>([]);
 //   const [base64Image, setBase64Image] = useState<string | null>(null);
@@ -2623,10 +2597,10 @@
 //     // Generate skills HTML
 //     const generateSkillsHTML = () => {
 //       if (!skills || (typeof skills === 'string' && !skills.trim())) return "";
-      
+
 //       const cleanedSkills = cleanQuillHTML(skills);
 //       if (!cleanedSkills || cleanedSkills === "<p><br></p>" || cleanedSkills === "") return "";
-      
+
 //       return `
 //         <div class="t5-section">
 //           <div class="t5-section-title">Skills</div>
@@ -3010,7 +2984,7 @@
 //     try {
 //       const res: AxiosResponse<Blob> = await axios.post(
 //         `${API_URL}/api/candidates/generate-pdf`,
-//         { 
+//         {
 //           html: generateHTML(true),
 //         },
 //         { responseType: "blob" },
@@ -3186,32 +3160,6 @@
 // };
 
 // export default TemplateFive;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // "use client";
 // import React, { useContext, useState, useEffect, useRef, useCallback } from "react";
@@ -4308,26 +4256,6 @@
 
 // export default TemplateFive;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
 // import React, { useContext, useState, useEffect, useRef, useCallback } from "react";
 // import axios, { AxiosResponse } from "axios";
@@ -4778,12 +4706,12 @@
 //         color: #2563eb !important;
 //       }
 //       .resume-t5 .t5-link-linkedin,
-//       .resume-t5 .t5-link-portfolio,      .resume-t5 .t5-link-github 
+//       .resume-t5 .t5-link-portfolio,      .resume-t5 .t5-link-github
 //  {
 //         background-color: #ffffff !important;
 //         color: #1e40af !important;
 //       }
-        
+
 //     }
 //   `;
 
@@ -5267,8 +5195,6 @@
 //       //   { responseType: "blob" },
 //       // );
 
-
-
 //         const res: AxiosResponse<Blob> = await api.post(
 //               `${API_URL}/candidates/generate-pdf`,
 //               { html:pdfHtml  },
@@ -5292,7 +5218,7 @@
 //   // ── RENDER ───────────────────────────────────────────────────────────────
 //   return (
 //     <>
-//            {lastSegment === "download-resume" && ( 
+//            {lastSegment === "download-resume" && (
 //       <div className="text-center my-5">
 //         <motion.button
 //           onClick={handleDownload}
@@ -5418,13 +5344,14 @@
 
 // export default TemplateFive;
 
-
-
-
-
-
 "use client";
-import React, { useContext, useState, useEffect, useRef, useCallback } from "react";
+import React, {
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+} from "react";
 import axios, { AxiosResponse } from "axios";
 import { CreateContext } from "@/app/context/CreateContext";
 import { API_URL } from "@/app/config/api";
@@ -5444,10 +5371,7 @@ import {
 } from "@/app/types/context.types";
 import { motion } from "framer-motion";
 import api from "@/app/utils/api";
-import {
-  ResumeCustomization,
-
-} from "@/app/(resume)/download-resume/page";
+import { ResumeCustomization } from "@/app/(resume)/download-resume/page";
 import { FaDownload, FaSpinner } from "react-icons/fa";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -5459,15 +5383,19 @@ const PAGE_CONTENT_H = A4_H - MARGIN * 2;
 
 interface TemplateFiveProps extends ResumeProps {
   customization?: ResumeCustomization;
+  viewMode?:boolean
 }
 
-const TemplateFive: React.FC<TemplateFiveProps> = ({ alldata, customization }) => {
+const TemplateFive: React.FC<TemplateFiveProps> = ({
+  alldata,
+  customization,
+  viewMode=false
+}) => {
   const context = useContext(CreateContext);
   const pathname = usePathname();
   const lastSegment = pathname.split("/").pop();
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
-            const [isDownloading, setIsDownloading] = useState<boolean>(false);
-  
+  const [isDownloading, setIsDownloading] = useState<boolean>(false);
 
   const [htmlContent, setHtmlContent] = useState<string>("");
   const [pages, setPages] = useState<string[]>([]);
@@ -5525,7 +5453,9 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({ alldata, customization }) =
     };
 
     processImage();
-    return () => { if (objectUrl) URL.revokeObjectURL(objectUrl); };
+    return () => {
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
   }, [contact.photo]);
 
   const isFinalizeData = (data: any): data is Finalize =>
@@ -5539,30 +5469,48 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({ alldata, customization }) =
   // ── Complete Font import map ────────────────────────────────────────────────
   const getFontImport = (fontFamily: string): string => {
     const map: Record<string, string> = {
-      "'Inter', sans-serif": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap",
+      "'Inter', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap",
       "'-apple-system', 'BlinkMacSystemFont', sans-serif": "",
-      "'Poppins', sans-serif": "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap",
-      "'Lato', sans-serif": "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",
-      "'Nunito', sans-serif": "https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap",
-      "'Raleway', sans-serif": "https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap",
-      "'Montserrat', sans-serif": "https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap",
-      "'Open Sans', sans-serif": "https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap",
-      "'Roboto', sans-serif": "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap",
-      "'Merriweather', serif": "https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap",
-      "'Playfair Display', serif": "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap",
-      "'DM Serif Display', serif": "https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap",
-      "'Libre Baskerville', serif": "https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap",
-      "'EB Garamond', serif": "https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&display=swap",
-      "'Crimson Text', serif": "https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap",
-      "'Source Code Pro', monospace": "https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&display=swap",
-      "'JetBrains Mono', monospace": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap",
+      "'Poppins', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap",
+      "'Lato', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",
+      "'Nunito', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap",
+      "'Raleway', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap",
+      "'Montserrat', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap",
+      "'Open Sans', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap",
+      "'Roboto', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap",
+      "'Merriweather', serif":
+        "https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap",
+      "'Playfair Display', serif":
+        "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap",
+      "'DM Serif Display', serif":
+        "https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap",
+      "'Libre Baskerville', serif":
+        "https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap",
+      "'EB Garamond', serif":
+        "https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&display=swap",
+      "'Crimson Text', serif":
+        "https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap",
+      "'Source Code Pro', monospace":
+        "https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&display=swap",
+      "'JetBrains Mono', monospace":
+        "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap",
     };
     return map[fontFamily] || map["'Inter', sans-serif"];
   };
 
   const getSystemFallback = (fontFamily: string): string => {
-    if (fontFamily.includes('serif')) return 'Georgia, "Times New Roman", serif';
-    if (fontFamily.includes('monospace')) return '"Courier New", Courier, monospace';
+    if (fontFamily.includes("serif"))
+      return 'Georgia, "Times New Roman", serif';
+    if (fontFamily.includes("monospace"))
+      return '"Courier New", Courier, monospace';
     return '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
   };
 
@@ -5940,8 +5888,9 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({ alldata, customization }) =
   const CSS = buildCSS(activeFontFamily);
 
   // ── Helper functions ──────────────────────────────────────────────────────
-  const href = (url: string) => url.startsWith("http") ? url : `https://${url}`;
-  
+  const href = (url: string) =>
+    url.startsWith("http") ? url : `https://${url}`;
+
   const rich = (html: string) => {
     const c = cleanQuillHTML(html);
     return c && c !== "<p><br></p>" ? c : "";
@@ -5949,17 +5898,22 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({ alldata, customization }) =
 
   // ── Section builders ──────────────────────────────────────────────────────
 
-
   // ── HTML builder with section ordering ───────────────────────────────────
- // AFTER
-const generateHTML = useCallback(
-  (forPDF = false, pageBreakIds: string[] = [], skillsCutIndex = -1): string => {
+  // AFTER
+  const generateHTML = useCallback(
+    (
+      forPDF = false,
+      pageBreakIds: string[] = [],
+      skillsCutIndex = -1,
+    ): string => {
       const addressStr = [
         contact?.address,
         contact?.city,
         contact?.postCode,
         contact?.country,
-      ].filter(Boolean).join(", ");
+      ]
+        .filter(Boolean)
+        .join(", ");
 
       const photoHtml = base64Image
         ? `<img src="${base64Image}" alt="Profile" class="t5-photo" />`
@@ -5967,11 +5921,12 @@ const generateHTML = useCallback(
 
       const formattedDob = formatDateOfBirth(dateOfBirth || "");
 
-      const fontPreloads = activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif" 
-        ? `<link rel="preconnect" href="https://fonts.googleapis.com"/>
+      const fontPreloads =
+        activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif"
+          ? `<link rel="preconnect" href="https://fonts.googleapis.com"/>
            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
            <link href="${getFontImport(activeFontFamily)}" rel="stylesheet"/>`
-        : '';
+          : "";
 
       const header = `
         <div class="t5-header" data-block-id="t5-header">
@@ -5991,31 +5946,44 @@ const generateHTML = useCallback(
               ${formattedDob ? `<div class="t5-details-text">${formattedDob}</div>` : ""}
             </div>
           </div>
-          ${linkedinUrl?.trim() || githubUrl?.trim() || portfolioUrl?.trim() ? `
+          ${
+            linkedinUrl?.trim() || githubUrl?.trim() || portfolioUrl?.trim()
+              ? `
             <div class="t5-links">
               ${linkedinUrl?.trim() ? `<a href="${href(linkedinUrl)}" class="t5-link-btn t5-link-linkedin" target="_blank">LinkedIn</a>` : ""}
               ${githubUrl?.trim() ? `<a href="${href(githubUrl)}" class="t5-link-btn t5-link-github" target="_blank">GitHub</a>` : ""}
               ${portfolioUrl?.trim() ? `<a href="${href(portfolioUrl)}" class="t5-link-btn t5-link-portfolio" target="_blank">Portfolio</a>` : ""}
             </div>
-          ` : ""}
+          `
+              : ""
+          }
         </div>`;
 
-
-        const sectionBuilders = {
-  summary: () => summary ? `
+      const sectionBuilders = {
+        summary: () =>
+          summary
+            ? `
     <div class="t5-section" data-block-id="t5-summary">
       <div class="t5-section-title">Professional Summary</div>
       <div class="t5-extra">${rich(summary)}</div>
     </div>
-  ` : "",
+  `
+            : "",
 
-  experience: () => experiences?.length > 0 ? `
+        experience: () =>
+          experiences?.length > 0
+            ? `
     <div class="t5-section" data-block-id="t5-exp-section">
       <div class="t5-section-title">Experience</div>
-      ${experiences.map((exp: any, i: number) => {
-        const start = formatMonthYear(exp.startDate, false);
-        const end = exp.endDate ? formatMonthYear(exp.endDate, false) : (exp.startDate ? "Present" : "");
-        return `<div class="t5-entry" data-block-id="t5-exp-${i}">
+      ${experiences
+        .map((exp: any, i: number) => {
+          const start = formatMonthYear(exp.startDate, false);
+          const end = exp.endDate
+            ? formatMonthYear(exp.endDate, false)
+            : exp.startDate
+              ? "Present"
+              : "";
+          return `<div class="t5-entry" data-block-id="t5-exp-${i}">
           <div class="t5-experience-header">
             <div class="t5-experience-title">${exp.jobTitle || ""}</div>
             <div class="t5-experience-date">${start}${start && end ? " — " : ""}${end}</div>
@@ -6023,14 +5991,20 @@ const generateHTML = useCallback(
           <div class="t5-experience-subtitle">${[exp.employer, exp.location].filter(Boolean).join(" • ")}</div>
           ${exp.text ? `<div class="t5-entry-content">${rich(exp.text)}</div>` : ""}
         </div>`;
-      }).join("")}
+        })
+        .join("")}
     </div>
-  ` : "",
+  `
+            : "",
 
-  projects: () => projects?.length > 0 ? `
+        projects: () =>
+          projects?.length > 0
+            ? `
     <div class="t5-section" data-block-id="t5-proj-section">
       <div class="t5-section-title">Projects</div>
-      ${projects.map((p: any, i: number) => `
+      ${projects
+        .map(
+          (p: any, i: number) => `
         <div class="t5-entry" data-block-id="t5-proj-${i}">
           <div class="t5-project-header">
             <div class="t5-entry-heading">${p.title || ""}</div>
@@ -6042,16 +6016,24 @@ const generateHTML = useCallback(
           ${p.techStack?.length ? `<div class="t5-project-tech">Tech Stack: ${p.techStack.join(" • ")}</div>` : ""}
           ${p.description ? `<div class="t5-entry-content">${rich(p.description)}</div>` : ""}
         </div>
-      `).join("")}
+      `,
+        )
+        .join("")}
     </div>
-  ` : "",
+  `
+            : "",
 
-  education: () => educations?.length > 0 ? `
+        education: () =>
+          educations?.length > 0
+            ? `
     <div class="t5-section" data-block-id="t5-edu-section">
       <div class="t5-section-title">Education</div>
-      ${educations.map((edu: any, i: number) => {
-        const formattedGrade = formatGradeToCgpdAndPercentage(edu.grade || "");
-        return `<div class="t5-entry" data-block-id="t5-edu-${i}">
+      ${educations
+        .map((edu: any, i: number) => {
+          const formattedGrade = formatGradeToCgpdAndPercentage(
+            edu.grade || "",
+          );
+          return `<div class="t5-entry" data-block-id="t5-edu-${i}">
           <div class="t5-education-header">
             <div class="t5-education-school">${edu.schoolname || ""}</div>
             <div class="t5-education-date">${[edu.startDate, edu.endDate || "Present"].filter(Boolean).join(" — ")}</div>
@@ -6060,45 +6042,49 @@ const generateHTML = useCallback(
           ${formattedGrade ? `<div class="t5-education-grade">${formattedGrade}</div>` : ""}
           ${edu.text ? `<div class="t5-entry-content">${rich(edu.text)}</div>` : ""}
         </div>`;
-      }).join("")}
+        })
+        .join("")}
     </div>
-  ` : "",
+  `
+            : "",
 
-  // AFTER
-skills: () => {
-  const skillsClean = rich(skills || "");
-  if (!skillsClean || skillsClean === "<p><br></p>") return "";
+        // AFTER
+        skills: () => {
+          const skillsClean = rich(skills || "");
+          if (!skillsClean || skillsClean === "<p><br></p>") return "";
 
-  return `<div class="t5-section" data-block-id="t5-skills-section">
+          return `<div class="t5-section" data-block-id="t5-skills-section">
     <div class="t5-section-title">Skills</div>
     <div class="t5-skills-content" data-block-id="t5-skills-content">${skillsClean}</div>
   </div>`;
-},
+        },
 
-  custom: () => customSections
-    .filter((s: any) => s?.name?.trim() || s?.description?.trim())
-    .map((s: any, i: number) => `
+        custom: () =>
+          customSections
+            .filter((s: any) => s?.name?.trim() || s?.description?.trim())
+            .map(
+              (s: any, i: number) => `
       <div class="t5-section custom-section-wrapper" data-block-id="t5-custom-${i}">
         <div class="t5-section-title">${s.name}</div>
         <div class="t5-extra">${rich(s.description)}</div>
       </div>
-    `).join(""),
-};
+    `,
+            )
+            .join(""),
+      };
 
       // Build sections in the order defined by customization
-     
 
-        const sectionsHTML = [
-  sectionBuilders.summary?.(),
-  sectionBuilders.experience?.(),
-  sectionBuilders.projects?.(),
-  sectionBuilders.education?.(),
-  sectionBuilders.skills?.(),
-  sectionBuilders.custom?.(),
-]
-  .filter(Boolean)
-  .join("");
-
+      const sectionsHTML = [
+        sectionBuilders.summary?.(),
+        sectionBuilders.experience?.(),
+        sectionBuilders.projects?.(),
+        sectionBuilders.education?.(),
+        sectionBuilders.skills?.(),
+        sectionBuilders.custom?.(),
+      ]
+        .filter(Boolean)
+        .join("");
 
       const pdfStyle = forPDF
         ? `<style>.resume-t5 { width: 100% !important; padding: 0 !important; }</style>`
@@ -6216,21 +6202,29 @@ skills: () => {
             return;
           }
 
-          measureDoc.documentElement.style.cssText = "height:auto!important;overflow:visible!important;";
-          measureDoc.body.style.cssText = "margin:0;padding:0;height:auto!important;overflow:visible!important;";
+          measureDoc.documentElement.style.cssText =
+            "height:auto!important;overflow:visible!important;";
+          measureDoc.body.style.cssText =
+            "margin:0;padding:0;height:auto!important;overflow:visible!important;";
           void resume.offsetHeight;
 
           const totalH = resume.scrollHeight;
           const resumeRect = resume.getBoundingClientRect();
-          const scrollY = measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
+          const scrollY =
+            measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
 
           const getRelTop = (el: HTMLElement): number => {
             const r = el.getBoundingClientRect();
             return r.top - resumeRect.top + scrollY;
           };
-          const getRelBottom = (el: HTMLElement): number => getRelTop(el) + el.getBoundingClientRect().height;
+          const getRelBottom = (el: HTMLElement): number =>
+            getRelTop(el) + el.getBoundingClientRect().height;
 
-          interface Block { top: number; bottom: number; id?: string; }
+          interface Block {
+            top: number;
+            bottom: number;
+            id?: string;
+          }
           const blocks: Block[] = [];
 
           const ITEM_SELECTORS = [
@@ -6247,31 +6241,40 @@ skills: () => {
             }
           });
 
-          resume.querySelectorAll<HTMLElement>(".t5-section-title").forEach((title) => {
-            const titleTop = getRelTop(title);
-            let firstItem: HTMLElement | null = null;
-            let sib = title.nextElementSibling as HTMLElement | null;
-            while (sib) {
-              if (sib.getBoundingClientRect().height > 8) {
-                firstItem = sib;
-                break;
+          resume
+            .querySelectorAll<HTMLElement>(".t5-section-title")
+            .forEach((title) => {
+              const titleTop = getRelTop(title);
+              let firstItem: HTMLElement | null = null;
+              let sib = title.nextElementSibling as HTMLElement | null;
+              while (sib) {
+                if (sib.getBoundingClientRect().height > 8) {
+                  firstItem = sib;
+                  break;
+                }
+                sib = sib.nextElementSibling as HTMLElement | null;
               }
-              sib = sib.nextElementSibling as HTMLElement | null;
-            }
-            // AFTER
-if (firstItem) {
-  // Skip anchor logic for skills — allow it to split across pages
-  if (firstItem.classList.contains("t5-skills-content")) return;
+              // AFTER
+              if (firstItem) {
+                // Skip anchor logic for skills — allow it to split across pages
+                if (firstItem.classList.contains("t5-skills-content")) return;
 
-  const deepChild = firstItem.querySelector<HTMLElement>(".t5-entry, .custom-section-wrapper");
-  const anchor = deepChild || firstItem;
-  const anchorBottom = getRelBottom(anchor);
-  if (anchorBottom - titleTop > 8) {
-    const sectionId = (title.parentElement as HTMLElement)?.dataset?.blockId;
-    blocks.push({ top: titleTop, bottom: anchorBottom, id: sectionId });
-  }
-}
-          });
+                const deepChild = firstItem.querySelector<HTMLElement>(
+                  ".t5-entry, .custom-section-wrapper",
+                );
+                const anchor = deepChild || firstItem;
+                const anchorBottom = getRelBottom(anchor);
+                if (anchorBottom - titleTop > 8) {
+                  const sectionId = (title.parentElement as HTMLElement)
+                    ?.dataset?.blockId;
+                  blocks.push({
+                    top: titleTop,
+                    bottom: anchorBottom,
+                    id: sectionId,
+                  });
+                }
+              }
+            });
 
           blocks.sort((a, b) => a.top - b.top);
 
@@ -6304,61 +6307,63 @@ if (firstItem) {
           }
 
           // AFTER
-const skillsLis = Array.from(resume.querySelectorAll<HTMLElement>(".t5-skills-content li"));
-skillsLis.forEach((li) => {
-  const top = getRelTop(li);
-  const bottom = getRelBottom(li);
-  if (bottom - top > 2) blocks.push({ top, bottom });
-});
+          const skillsLis = Array.from(
+            resume.querySelectorAll<HTMLElement>(".t5-skills-content li"),
+          );
+          skillsLis.forEach((li) => {
+            const top = getRelTop(li);
+            const bottom = getRelBottom(li);
+            if (bottom - top > 2) blocks.push({ top, bottom });
+          });
 
-blocks.sort((a, b) => a.top - b.top);
-pageStarts.length = 1;
-pageBreakIds.length = 0;
+          blocks.sort((a, b) => a.top - b.top);
+          pageStarts.length = 1;
+          pageBreakIds.length = 0;
 
-while (pageStarts.length < MAX_PAGES) {
-  const currentStart = pageStarts[pageStarts.length - 1];
-  const naiveCut = currentStart + PAGE_CONTENT_H;
-  if (naiveCut >= totalH) break;
+          while (pageStarts.length < MAX_PAGES) {
+            const currentStart = pageStarts[pageStarts.length - 1];
+            const naiveCut = currentStart + PAGE_CONTENT_H;
+            if (naiveCut >= totalH) break;
 
-  let actualCut = naiveCut;
-  let cutBlockId: string | undefined;
+            let actualCut = naiveCut;
+            let cutBlockId: string | undefined;
 
-  for (const block of blocks) {
-    if (block.top >= naiveCut) break;
-    if (block.bottom <= currentStart) continue;
-    if (block.top >= currentStart && block.bottom > naiveCut) {
-      if (block.top < actualCut) {
-        actualCut = block.top;
-        cutBlockId = block.id;
-      }
-    }
-  }
+            for (const block of blocks) {
+              if (block.top >= naiveCut) break;
+              if (block.bottom <= currentStart) continue;
+              if (block.top >= currentStart && block.bottom > naiveCut) {
+                if (block.top < actualCut) {
+                  actualCut = block.top;
+                  cutBlockId = block.id;
+                }
+              }
+            }
 
-  if (actualCut <= currentStart) actualCut = naiveCut;
-  pageStarts.push(actualCut);
-  if (cutBlockId) pageBreakIds.push(cutBlockId);
-}
+            if (actualCut <= currentStart) actualCut = naiveCut;
+            pageStarts.push(actualCut);
+            if (cutBlockId) pageBreakIds.push(cutBlockId);
+          }
 
-(window as any).__resumeSkillsCutIndex = -1;
-for (let p = 0; p < pageStarts.length - 1; p++) {
-  const cutY = pageStarts[p + 1];
-  for (let li = 0; li < skillsLis.length; li++) {
-    const liTop = getRelTop(skillsLis[li]);
-    const liBottom = getRelBottom(skillsLis[li]);
-    if (liTop < cutY && liBottom > cutY) {
-      (window as any).__resumeSkillsCutIndex = li;
-      break;
-    }
-    if (liTop >= cutY) {
-      (window as any).__resumeSkillsCutIndex = li;
-      break;
-    }
-  }
-  if ((window as any).__resumeSkillsCutIndex >= 0) break;
-}
+          (window as any).__resumeSkillsCutIndex = -1;
+          for (let p = 0; p < pageStarts.length - 1; p++) {
+            const cutY = pageStarts[p + 1];
+            for (let li = 0; li < skillsLis.length; li++) {
+              const liTop = getRelTop(skillsLis[li]);
+              const liBottom = getRelBottom(skillsLis[li]);
+              if (liTop < cutY && liBottom > cutY) {
+                (window as any).__resumeSkillsCutIndex = li;
+                break;
+              }
+              if (liTop >= cutY) {
+                (window as any).__resumeSkillsCutIndex = li;
+                break;
+              }
+            }
+            if ((window as any).__resumeSkillsCutIndex >= 0) break;
+          }
 
-document.body.removeChild(iframe);
-(window as any).__resumePageBreakIds = pageBreakIds;
+          document.body.removeChild(iframe);
+          (window as any).__resumePageBreakIds = pageBreakIds;
 
           const pageHtmls: string[] = [];
 
@@ -6445,16 +6450,15 @@ document.body.removeChild(iframe);
 
   // ── PDF download ─────────────────────────────────────────────────────────
   const handleDownload = async (): Promise<void> => {
-
-    setIsDownloading(true)
+    setIsDownloading(true);
     try {
       // const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
       // const pdfHtml = generateHTML(true, pageBreakIds);
 
       // AFTER
-// AFTER
-const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
-const pdfHtml = generateHTML(true, pageBreakIds, -1);
+      // AFTER
+      const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
+      const pdfHtml = generateHTML(true, pageBreakIds, -1);
 
       const res: AxiosResponse<Blob> = await api.post(
         `${API_URL}/candidates/generate-pdf`,
@@ -6473,61 +6477,215 @@ const pdfHtml = generateHTML(true, pageBreakIds, -1);
     } catch (err) {
       console.error("PDF error:", err);
       alert("Failed to generate PDF. Please try again.");
-    }
-    finally{
-          setIsDownloading(false)
-
+    } finally {
+      setIsDownloading(false);
     }
   };
 
   // ── RENDER ───────────────────────────────────────────────────────────────
+//   return (
+//     <>
+//       {lastSegment === "download-resume" && (
+//         <div className="text-center my-8">
+//           <motion.button
+//             onClick={handleDownload}
+//             disabled={isDownloading}
+//             whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
+//             whileTap={!isDownloading ? { scale: 0.98 } : {}}
+//             className={`
+//                             relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
+//                             text-white transition-all duration-300 shadow-lg
+//                             ${
+//                               isDownloading
+//                                 ? "bg-gray-400 cursor-not-allowed opacity-80"
+//                                 : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600"
+//                             }
+//                           `}
+//           >
+//             {/* Animated background gradient for premium feel */}
+//             {!isDownloading && (
+//               <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+//             )}
+
+//             <div className="relative flex items-center justify-center gap-3 text-lg">
+//               {isDownloading ? (
+//                 <>
+//                   <FaSpinner className="animate-spin text-xl" />
+//                   <span>Generating PDF ...</span>
+//                 </>
+//               ) : (
+//                 <>
+//                   <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
+//                   <span>Download Resume</span>
+//                   <span className="text-sm opacity-75 font-light ml-1">
+//                     PDF
+//                   </span>
+//                 </>
+//               )}
+//             </div>
+//           </motion.button>
+//         </div>
+//       )}
+
+//       {alldata ? (
+//         <div
+//           style={{
+//             width: `${A4_W}px`,
+//             height: `${A4_H}px`,
+//             transform: "scale(0.36)",
+//             transformOrigin: "top left",
+//             overflow: "hidden",
+//             pointerEvents: "none",
+//             flexShrink: 0,
+//           }}
+//         >
+//           {pages[0] ? (
+//             <iframe
+//               title="resume-thumb"
+//               srcDoc={pages[0]}
+//               style={{
+//                 width: `${A4_W}px`,
+//                 height: `${A4_H}px`,
+//                 border: "none",
+//                 display: "block",
+//                 pointerEvents: "none",
+//               }}
+//               sandbox="allow-same-origin"
+//             />
+//           ) : (
+//             <div
+//               style={{
+//                 width: `${A4_W}px`,
+//                 height: `${A4_H}px`,
+//                 background: "white",
+//                 display: "flex",
+//                 alignItems: "center",
+//                 justifyContent: "center",
+//                 color: "#ccc",
+//                 fontSize: 14,
+//                 fontFamily: "sans-serif",
+//               }}
+//             >
+//               Loading…
+//             </div>
+//           )}
+//         </div>
+//       ) : (
+//         <div style={{ width: `${A4_W}px`, margin: "0 auto" }}>
+//           {(pages.length > 0 ? pages : [htmlContent]).map((pageHtml, idx) => (
+//             <div key={idx} style={{ marginBottom: "28px" }}>
+//               <div
+//                 style={{
+//                   display: "flex",
+//                   alignItems: "center",
+//                   justifyContent: "center",
+//                   gap: "10px",
+//                   marginBottom: "10px",
+//                 }}
+//               >
+//                 <div
+//                   style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+//                 />
+//                 <span
+//                   style={{
+//                     fontSize: "11px",
+//                     fontWeight: 600,
+//                     color: "#6b7280",
+//                     whiteSpace: "nowrap",
+//                     padding: "3px 12px",
+//                     background: "#f3f4f6",
+//                     borderRadius: "999px",
+//                     border: "1px solid #e5e7eb",
+//                     letterSpacing: "0.05em",
+//                     fontFamily: "system-ui, sans-serif",
+//                   }}
+//                 >
+//                   Page {idx + 1}
+//                   {pages.length > 1 ? ` of ${pages.length}` : ""}
+//                 </span>
+//                 <div
+//                   style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+//                 />
+//               </div>
+
+//               <div
+//                 style={{
+//                   width: `${A4_W}px`,
+//                   height: `${A4_H}px`,
+//                   overflow: "hidden",
+//                   background: "white",
+//                   boxShadow:
+//                     "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
+//                   borderRadius: "2px",
+//                   flexShrink: 0,
+//                 }}
+//               >
+//                 <iframe
+//                   title={`resume-page-${idx + 1}`}
+//                   srcDoc={pageHtml}
+//                   style={{
+//                     width: `${A4_W}px`,
+//                     height: `${A4_H}px`,
+//                     border: "none",
+//                     display: "block",
+//                     pointerEvents: "none",
+//                   }}
+//                   scrolling="no"
+//                   sandbox="allow-same-origin allow-scripts"
+//                 />
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+//       )}
+//     </>
+//   );
+// };
+
+const isThumbnail = !!alldata && !viewMode ; 
   return (
     <>
-      
-        {lastSegment === "download-resume" && (
-                              <div className="text-center my-8">
-                                <motion.button
-                                  onClick={handleDownload}
-                                  disabled={isDownloading}
-                                  whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
-                                  whileTap={!isDownloading ? { scale: 0.98 } : {}}
-                                  className={`
-                            relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
-                            text-white transition-all duration-300 shadow-lg
-                            ${
-                              isDownloading
-                                ? "bg-gray-400 cursor-not-allowed opacity-80"
-                                : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600"
-                            }
-                          `}
-                                >
-                                  {/* Animated background gradient for premium feel */}
-                                  {!isDownloading && (
-                                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-                                  )}
-                      
-                                  <div className="relative flex items-center justify-center gap-3 text-lg">
-                                    {isDownloading ? (
-                                      <>
-                                        <FaSpinner className="animate-spin text-xl" />
-                                        <span>Generating PDF ...</span>
-                                      </>
-                                    ) : (
-                                      <>
-                                        <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
-                                        <span>Download Resume</span>
-                                        <span className="text-sm opacity-75 font-light ml-1">
-                                          PDF
-                                        </span>
-                                      </>
-                                    )}
-                                  </div>
-                                </motion.button>
-                              </div>
-                            )}
-
-
-      {alldata ? (
+      {/* Download button — hide in thumbnail mode */}
+      {!isThumbnail && lastSegment === 'download-resume' &&(
+        <div className="text-center my-8">
+          <motion.button
+            onClick={handleDownload}
+            disabled={isDownloading}
+            whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
+            whileTap={!isDownloading ? { scale: 0.98 } : {}}
+            className={`
+              relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
+              text-white transition-all duration-300  shadow-lg
+              ${
+                isDownloading
+                  ? "bg-gray-400 cursor-not-allowed opacity-80"
+                  : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600 cursor-pointer"
+              }
+            `}
+          >
+            {!isDownloading && (
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+            )}
+            <div className="relative flex items-center justify-center gap-3 text-lg">
+              {isDownloading ? (
+                <>
+                  <FaSpinner className="animate-spin text-xl" />
+                  <span>Generating PDF …</span>
+                </>
+              ) : (
+                <>
+                  <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
+                  <span>Download Resume</span>
+                  <span className="text-sm opacity-75 font-light ml-1">PDF</span>
+                </>
+              )}
+            </div>
+          </motion.button>
+        </div>
+      )}
+ 
+      {isThumbnail ? (
+        // ── THUMBNAIL MODE (dashboard card) ─────────────────────────────────
         <div
           style={{
             width: `${A4_W}px`,
@@ -6571,6 +6729,7 @@ const pdfHtml = generateHTML(true, pageBreakIds, -1);
           )}
         </div>
       ) : (
+        // ── FULL PREVIEW MODE (editor + view modal) ──────────────────────────
         <div style={{ width: `${A4_W}px`, margin: "0 auto" }}>
           {(pages.length > 0 ? pages : [htmlContent]).map((pageHtml, idx) => (
             <div key={idx} style={{ marginBottom: "28px" }}>
@@ -6603,14 +6762,14 @@ const pdfHtml = generateHTML(true, pageBreakIds, -1);
                 </span>
                 <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
               </div>
-
               <div
                 style={{
                   width: `${A4_W}px`,
                   height: `${A4_H}px`,
                   overflow: "hidden",
                   background: "white",
-                  boxShadow: "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
+                  boxShadow:
+                    "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
                   borderRadius: "2px",
                   flexShrink: 0,
                 }}

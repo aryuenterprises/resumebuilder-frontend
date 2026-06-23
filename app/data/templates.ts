@@ -20,6 +20,7 @@ import {
   TemplateTwelve,
   TemplateTwo,
 } from "../components/templates";
+import TemplateTwenty from "../components/templates/TemplateTwenty";
 import { Template } from "../types";
 
 export const templateData: Template[] = [
@@ -143,14 +144,14 @@ export const templateData: Template[] = [
     description: "Bold blue dual-line header with clean single-column layout",
     temp: "paid",
     component: TemplateFourteen  },
-    // {
-    // id: 15,
-    // style: "The Analyst",
-    // image: "/images/resume15.png",
-    // description: "Creative design with eye-catching sections.",
-    // temp: "paid",
-    //     pic: "true",
-    // component: TemplateFifteen },
+    {
+    id: 15,
+    style: "The Analyst",
+    image: "/images/resume15.png",
+    description: "Creative design with eye-catching sections.",
+    temp: "paid",
+        pic: "true",
+    component: TemplateFifteen },
 
     {
     id: 16,
@@ -159,25 +160,42 @@ export const templateData: Template[] = [
     description: "Creative design with eye-catching sections.",
     temp: "paid",
     component: TemplateSixteen},
-  //   {
-  //   id: 17,
+    {
+    id: 17,
+    style: "The Analyst",
+    image: "/images/resume17.png",
+    description: "Creative design with eye-catching sections.",
+    temp: "paid",
+    component: TemplateSeventeen },
+  //  {  id: 18,
   //   style: "The Analyst",
   //   image: "/images/resume17.png",
   //   description: "Creative design with eye-catching sections.",
   //   temp: "paid",
-  //   component: TemplateSeventeen },
-  //  {  id: 18,
+  //       pic: "true",
+  //   component: TemplateEighteen  },
+  //    {  id: 19,
   //   style: "The Analyst",
-  //   image: "/images/resume18.png",
+  //   image: "/images/resume17.png",
   //   description: "Creative design with eye-catching sections.",
   //   temp: "paid",
   //       pic: "true",
-  //   component: TemplateEighteen  },
-    // {  id: 18,
+  //   component: TemplateNineteen  },
+
+  //     {  id: 20,
+  //   style: "The Analyst",
+  //   image: "/images/resume17.png",
+  //   description: "Creative design with eye-catching sections.",
+  //   temp: "paid",
+  //       pic: "true",
+  //   component: TemplateTwenty  },
+
+    // {  id: 21,
     // style: "The Analyst",
-    // image: "/images/resume18.png",
+    // image: "/images/resume17.png",
     // description: "Creative design with eye-catching sections.",
     // temp: "paid",
     //     pic: "true",
-    // component: TemplateNineteen  },
+    // component: TemplateTwentyOne  },
+
 ];

@@ -119,8 +119,6 @@
 //   const styles = `
 //   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap');
 
-  
-
 //   .t17-resume-container {
 //     width: 210mm;
 //     min-height: 297mm;
@@ -522,10 +520,10 @@
 //     // Generate skills HTML for PDF
 //     const generateSkillsHTML = () => {
 //       if (!skills || (typeof skills === "string" && !skills.trim())) return "";
-      
+
 //       const cleanedSkills = cleanQuillHTML(skills);
 //       if (!cleanedSkills || cleanedSkills === "<p><br></p>" || cleanedSkills === "") return "";
-      
+
 //       return `
 //         <div class="t17-section-block">
 //           ${sectionHeader("Skills")}
@@ -537,7 +535,7 @@
 //     // Generate projects HTML for PDF
 //     const generateProjectsHTML = () => {
 //       if (!projects || projects.length === 0) return "";
-      
+
 //       return `
 //         <div class="t17-section-block">
 //           ${sectionHeader("Projects")}
@@ -899,23 +897,6 @@
 
 // export default TemplateSeventeen;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 import React, {
   useContext,
@@ -950,11 +931,13 @@ const PAGE_CONTENT_H = A4_H - MARGIN * 2;
 
 interface TemplateSeventeenProps extends ResumeProps {
   customization?: ResumeCustomization;
+  viewMode?:boolean
 }
 
 const TemplateSeventeen: React.FC<TemplateSeventeenProps> = ({
   alldata,
   customization,
+  viewMode=false
 }) => {
   const context = useContext(CreateContext);
   const pathname = usePathname();
@@ -1017,10 +1000,7 @@ const TemplateSeventeen: React.FC<TemplateSeventeenProps> = ({
       "'JetBrains Mono', monospace":
         "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap",
     };
-    return (
-      fontMap[fontFamily] ||
-      fontMap["'Jost', sans-serif"]
-    );
+    return fontMap[fontFamily] || fontMap["'Jost', sans-serif"];
   };
 
   const getSystemFallback = (fontFamily: string): string => {
@@ -1327,9 +1307,11 @@ const TemplateSeventeen: React.FC<TemplateSeventeenProps> = ({
       <div class="t17-header-block">
         <div class="t17-header-name">${contact?.firstName || ""} ${contact?.lastName || ""}</div>
         <div class="t17-header-jobtitle">
-          ${typeof contact?.jobTitle === "string"
-            ? contact.jobTitle
-            : (contact?.jobTitle as any)?.name || ""}
+          ${
+            typeof contact?.jobTitle === "string"
+              ? contact.jobTitle
+              : (contact?.jobTitle as any)?.name || ""
+          }
         </div>
         <div class="t17-header-divider"></div>
         <div class="t17-header-meta-row">
@@ -1416,14 +1398,16 @@ const TemplateSeventeen: React.FC<TemplateSeventeenProps> = ({
                      <div class="t17-entry-title">${edu.schoolname || ""}</div>
                      ${dateStr ? `<div class="t17-entry-date">${dateStr}</div>` : ""}
                    </div>
-                   ${edu.degree || edu.location || grade
-                     ? `<div class="t17-entry-subtitle">
+                   ${
+                     edu.degree || edu.location || grade
+                       ? `<div class="t17-entry-subtitle">
                          ${edu.degree || ""}
                          ${edu.degree && edu.location ? "  ·  " : ""}
                          ${edu.location || ""}
                          ${grade ? `<div class="t17-education-grade">${grade}</div>` : ""}
                        </div>`
-                     : ""}
+                       : ""
+                   }
                    ${edu.text ? richText(edu.text, "t17-edu-content") : ""}
                  </div>`;
                })
@@ -1752,9 +1736,170 @@ const TemplateSeventeen: React.FC<TemplateSeventeenProps> = ({
   };
 
   // ── RENDER ─────────────────────────────────────────────────────────────────
+//   return (
+//     <>
+//       {lastSegment === "download-resume" && (
+//         <div className="text-center my-8">
+//           <motion.button
+//             onClick={handleDownload}
+//             disabled={isDownloading}
+//             whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
+//             whileTap={!isDownloading ? { scale: 0.98 } : {}}
+//             className={`
+//               relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
+//               text-white transition-all duration-300 shadow-lg
+//               ${
+//                 isDownloading
+//                   ? "bg-gray-400 cursor-not-allowed opacity-80"
+//                   : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600"
+//               }
+//             `}
+//           >
+//             {!isDownloading && (
+//               <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+//             )}
+//             <div className="relative flex items-center justify-center gap-3 text-lg">
+//               {isDownloading ? (
+//                 <>
+//                   <FaSpinner className="animate-spin text-xl" />
+//                   <span>Generating PDF ...</span>
+//                 </>
+//               ) : (
+//                 <>
+//                   <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
+//                   <span>Download Resume</span>
+//                   <span className="text-sm opacity-75 font-light ml-1">
+//                     PDF
+//                   </span>
+//                 </>
+//               )}
+//             </div>
+//           </motion.button>
+//         </div>
+//       )}
+
+//       {alldata ? (
+//         // Thumbnail / card preview (used when alldata is passed — e.g. template picker)
+//         <div
+//           style={{
+//             width: `${A4_W}px`,
+//             height: `${A4_H}px`,
+//             transform: "scale(0.36)",
+//             transformOrigin: "top left",
+//             overflow: "hidden",
+//             pointerEvents: "none",
+//             flexShrink: 0,
+//           }}
+//         >
+//           {pages[0] ? (
+//             <iframe
+//               title="resume-thumb"
+//               srcDoc={pages[0]}
+//               style={{
+//                 width: `${A4_W}px`,
+//                 height: `${A4_H}px`,
+//                 border: "none",
+//                 display: "block",
+//                 pointerEvents: "none",
+//               }}
+//               sandbox="allow-same-origin"
+//             />
+//           ) : (
+//             <div
+//               style={{
+//                 width: `${A4_W}px`,
+//                 height: `${A4_H}px`,
+//                 background: "white",
+//                 display: "flex",
+//                 alignItems: "center",
+//                 justifyContent: "center",
+//                 color: "#ccc",
+//                 fontSize: 14,
+//                 fontFamily: "sans-serif",
+//               }}
+//             >
+//               Loading…
+//             </div>
+//           )}
+//         </div>
+//       ) : (
+//         // Full multi-page preview (used on the editor / download page)
+//         <div style={{ width: `${A4_W}px`, margin: "0 auto" }}>
+//           {(pages.length > 0 ? pages : [htmlContent]).map((pageHtml, idx) => (
+//             <div key={idx} style={{ marginBottom: "28px" }}>
+//               <div
+//                 style={{
+//                   display: "flex",
+//                   alignItems: "center",
+//                   justifyContent: "center",
+//                   gap: "10px",
+//                   marginBottom: "10px",
+//                 }}
+//               >
+//                 <div
+//                   style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+//                 />
+//                 <span
+//                   style={{
+//                     fontSize: "11px",
+//                     fontWeight: 600,
+//                     color: "#6b7280",
+//                     whiteSpace: "nowrap",
+//                     padding: "3px 12px",
+//                     background: "#f3f4f6",
+//                     borderRadius: "999px",
+//                     border: "1px solid #e5e7eb",
+//                     letterSpacing: "0.05em",
+//                     fontFamily: "system-ui, sans-serif",
+//                   }}
+//                 >
+//                   Page {idx + 1}
+//                   {pages.length > 1 ? ` of ${pages.length}` : ""}
+//                 </span>
+//                 <div
+//                   style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+//                 />
+//               </div>
+//               <div
+//                 style={{
+//                   width: `${A4_W}px`,
+//                   height: `${A4_H}px`,
+//                   overflow: "hidden",
+//                   background: "white",
+//                   boxShadow:
+//                     "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
+//                   borderRadius: "2px",
+//                   flexShrink: 0,
+//                 }}
+//               >
+//                 <iframe
+//                   title={`resume-page-${idx + 1}`}
+//                   srcDoc={pageHtml}
+//                   style={{
+//                     width: `${A4_W}px`,
+//                     height: `${A4_H}px`,
+//                     border: "none",
+//                     display: "block",
+//                     pointerEvents: "none",
+//                   }}
+//                   scrolling="no"
+//                   sandbox="allow-same-origin allow-scripts"
+//                 />
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+//       )}
+//     </>
+//   );
+// };
+
+
+const isThumbnail = !!alldata && !viewMode ; 
   return (
     <>
-      {lastSegment === "download-resume" && (
+      {/* Download button — hide in thumbnail mode */}
+      {!isThumbnail && lastSegment === 'download-resume' &&(
         <div className="text-center my-8">
           <motion.button
             onClick={handleDownload}
@@ -1763,11 +1908,11 @@ const TemplateSeventeen: React.FC<TemplateSeventeenProps> = ({
             whileTap={!isDownloading ? { scale: 0.98 } : {}}
             className={`
               relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
-              text-white transition-all duration-300 shadow-lg
+              text-white transition-all duration-300  shadow-lg
               ${
                 isDownloading
                   ? "bg-gray-400 cursor-not-allowed opacity-80"
-                  : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600"
+                  : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600 cursor-pointer"
               }
             `}
           >
@@ -1778,7 +1923,7 @@ const TemplateSeventeen: React.FC<TemplateSeventeenProps> = ({
               {isDownloading ? (
                 <>
                   <FaSpinner className="animate-spin text-xl" />
-                  <span>Generating PDF ...</span>
+                  <span>Generating PDF …</span>
                 </>
               ) : (
                 <>
@@ -1791,9 +1936,9 @@ const TemplateSeventeen: React.FC<TemplateSeventeenProps> = ({
           </motion.button>
         </div>
       )}
-
-      {alldata ? (
-        // Thumbnail / card preview (used when alldata is passed — e.g. template picker)
+ 
+      {isThumbnail ? (
+        // ── THUMBNAIL MODE (dashboard card) ─────────────────────────────────
         <div
           style={{
             width: `${A4_W}px`,
@@ -1837,7 +1982,7 @@ const TemplateSeventeen: React.FC<TemplateSeventeenProps> = ({
           )}
         </div>
       ) : (
-        // Full multi-page preview (used on the editor / download page)
+        // ── FULL PREVIEW MODE (editor + view modal) ──────────────────────────
         <div style={{ width: `${A4_W}px`, margin: "0 auto" }}>
           {(pages.length > 0 ? pages : [htmlContent]).map((pageHtml, idx) => (
             <div key={idx} style={{ marginBottom: "28px" }}>

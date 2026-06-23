@@ -2269,37 +2269,37 @@ function Choose_template() {
     if (!userData) return;
 
     const { subscription } = userData;
-          setUsersCurrentPlan("premium");
+          // setUsersCurrentPlan("premium");
 
 
-    // if (subscription?.is_expired === true) {
-    //   let daysExpired = 0;
-    //   if (subscription.plan_details?.expires_at) {
-    //     const expiryDate = new Date(subscription.plan_details.expires_at);
-    //     const today = new Date();
-    //     daysExpired = Math.floor(
-    //       (today.getTime() - expiryDate.getTime()) / (1000 * 3600 * 24),
-    //     );
-    //   }
+    if (subscription?.is_expired === true) {
+      let daysExpired = 0;
+      if (subscription.plan_details?.expires_at) {
+        const expiryDate = new Date(subscription.plan_details.expires_at);
+        const today = new Date();
+        daysExpired = Math.floor(
+          (today.getTime() - expiryDate.getTime()) / (1000 * 3600 * 24),
+        );
+      }
       
 
-    //   setSubscriptionStatus({
-    //     isExpired: true,
-    //     message: subscription.message || "Your premium access has ended",
-    //     daysExpired: daysExpired,
-    //   });
+      setSubscriptionStatus({
+        isExpired: true,
+        message: subscription.message || "Your premium access has ended",
+        daysExpired: daysExpired,
+      });
 
-    //   if (!dismissedReminder) {
-    //     setTimeout(() => {
-    //       setShowRenewalReminder(true);
-    //       setTimeout(() => setShowRenewalReminder(false), 8000);
-    //     }, 2000);
-    //   }
-    // } else {
-    //   setSubscriptionStatus({ isExpired: false, message: "" });
-    //   setUsersCurrentPlan(subscription?.current_plan?.toLowerCase() || null);
+      if (!dismissedReminder) {
+        setTimeout(() => {
+          setShowRenewalReminder(true);
+          setTimeout(() => setShowRenewalReminder(false), 8000);
+        }, 2000);
+      }
+    } else {
+      setSubscriptionStatus({ isExpired: false, message: "" });
+      setUsersCurrentPlan(subscription?.current_plan?.toLowerCase() || null);
       
-    // }
+    }
   }, [userData, dismissedReminder]);
 
   // ============================================================
@@ -2716,7 +2716,7 @@ function Choose_template() {
 
       {/* ============================================================
           RENEWAL REMINDER (Unchanged UI)
-          ============================================================ */}
+          ========hikajuza@mailinator.com==================================================== */}
       <AnimatePresence>
         {showRenewalReminder &&
           subscriptionStatus?.isExpired &&

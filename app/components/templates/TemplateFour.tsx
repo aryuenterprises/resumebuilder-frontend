@@ -45,16 +45,16 @@
 //   // Helper function to render skills (now just a string with HTML content)
 //   const renderSkills = () => {
 //     if (!skills || (typeof skills === 'string' && !skills.trim())) return null;
-    
+
 //     // Clean the HTML content from Quill editor
 //     const cleanedSkills = cleanQuillHTML(skills);
-    
+
 //     if (!cleanedSkills || cleanedSkills === "<p><br></p>" || cleanedSkills === "") return null;
-    
+
 //     return (
 //       <>
 //         <div className="section-title">Skills</div>
-//         <div 
+//         <div
 //           className="skills-content"
 //           dangerouslySetInnerHTML={{ __html: cleanedSkills }}
 //         />
@@ -229,7 +229,7 @@
 //     .t4-resume.is-preview {
 //       transform: scale(0.36);
 //       transform-origin: top left;
-//       width: 210mm; 
+//       width: 210mm;
 //       height: auto;
 //       max-height: none;
 //       min-height: auto;
@@ -531,10 +531,10 @@
 //     // Generate skills HTML for PDF (now just clean the HTML string)
 //     const generateSkillsHTML = () => {
 //       if (!skills || (typeof skills === 'string' && !skills.trim())) return "";
-      
+
 //       const cleanedSkills = cleanQuillHTML(skills);
 //       if (!cleanedSkills || cleanedSkills === "<p><br></p>" || cleanedSkills === "") return "";
-      
+
 //       return `
 //         <div class="section-title">Skills</div>
 //         <div class="skills-content">${cleanedSkills}</div>
@@ -964,29 +964,6 @@
 
 // export default TemplateFour;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
 
 // import React, { useContext, useState, useEffect, useRef, useCallback } from "react";
@@ -1010,7 +987,7 @@
 //   const iframeRef = useRef<HTMLIFrameElement>(null);
 //   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 //   const blobUrlRef = useRef<string | null>(null);
-  
+
 //   const [iframeHeight, setIframeHeight] = useState<number>(1122);
 //   const [htmlContent, setHtmlContent] = useState<string>("");
 
@@ -1052,9 +1029,6 @@
 //   ====================================================== */
 //   const styles = `
 //     /* All rules scoped to .t4-resume so nothing leaks to the host website */
-   
-
-   
 
 //     /* PDF margins */
 //     @page {
@@ -1472,10 +1446,10 @@
 //     // Generate skills HTML
 //     const generateSkillsHTML = () => {
 //       if (!skills || (typeof skills === 'string' && !skills.trim())) return "";
-      
+
 //       const cleanedSkills = cleanQuillHTML(skills);
 //       if (!cleanedSkills || cleanedSkills === "<p><br></p>" || cleanedSkills === "") return "";
-      
+
 //       return `
 //         <div class="section-title">Skills</div>
 //         <div class="skills-content">${cleanedSkills}</div>
@@ -1659,7 +1633,7 @@
 //   useEffect(() => {
 //     const newHtml = generateHTML();
 //     debouncedUpdate(newHtml);
-    
+
 //     return () => {
 //       if (debounceTimerRef.current) {
 //         clearTimeout(debounceTimerRef.current);
@@ -1679,12 +1653,12 @@
 //       if (blobUrlRef.current) {
 //         URL.revokeObjectURL(blobUrlRef.current);
 //       }
-      
+
 //       // Create new blob URL
 //       const blob = new Blob([htmlContent], { type: 'text/html' });
 //       const url = URL.createObjectURL(blob);
 //       blobUrlRef.current = url;
-      
+
 //       // Update iframe source
 //       if (iframeRef.current) {
 //         iframeRef.current.src = url;
@@ -1709,7 +1683,7 @@
 //       const html = generateHTML();
 //       const res = await axios.post(
 //         `${API_URL}/api/candidates/generate-pdf`,
-//         { 
+//         {
 //           html,
 //           options: {
 //             margin: {
@@ -1807,46 +1781,6 @@
 
 // export default TemplateFour;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
 // import React, { useContext, useState, useEffect, useRef, useCallback } from "react";
 // import axios, { AxiosResponse } from "axios";
@@ -1906,7 +1840,7 @@
 //   const lastSegment = pathname.split("/").pop();
 //   const measureRef = useRef<HTMLIFrameElement>(null);
 //   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
-  
+
 //   const [htmlContent, setHtmlContent] = useState<string>("");
 //   const [pages, setPages] = useState<string[]>([]);
 
@@ -2305,10 +2239,10 @@
 //     // Generate skills HTML
 //     const generateSkillsHTML = () => {
 //       if (!skills || (typeof skills === 'string' && !skills.trim())) return "";
-      
+
 //       const cleanedSkills = cleanQuillHTML(skills);
 //       if (!cleanedSkills || cleanedSkills === "<p><br></p>" || cleanedSkills === "") return "";
-      
+
 //       return `
 //         <div class="section-title">Skills</div>
 //         <div class="skills-content">${cleanedSkills}</div>
@@ -2677,7 +2611,7 @@
 //     try {
 //       const res: AxiosResponse<Blob> = await axios.post(
 //         `${API_URL}/api/candidates/generate-pdf`,
-//         { 
+//         {
 //           html: generateHTML(true),
 //         },
 //         { responseType: "blob" },
@@ -2854,20 +2788,6 @@
 
 // export default TemplateFour;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
 // import React, { useContext, useState, useEffect, useRef, useCallback } from "react";
 // import axios, { AxiosResponse } from "axios";
@@ -2899,7 +2819,7 @@
 //   const pathname = usePathname();
 //   const lastSegment = pathname.split("/").pop();
 //   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
-  
+
 //   const [htmlContent, setHtmlContent] = useState<string>("");
 //   const [pages, setPages] = useState<string[]>([]);
 
@@ -3308,10 +3228,10 @@
 //     // Generate skills HTML
 //     const generateSkillsHTML = () => {
 //       if (!skills || (typeof skills === 'string' && !skills.trim())) return "";
-      
+
 //       const cleanedSkills = cleanQuillHTML(skills);
 //       if (!cleanedSkills || cleanedSkills === "<p><br></p>" || cleanedSkills === "") return "";
-      
+
 //       return `
 //         <div class="t4-section-content" data-block-id="skills-section">
 //           <div class="section-title">Skills</div>
@@ -3956,9 +3876,6 @@
 
 // export default TemplateFour;
 
-
-
-
 // "use client";
 // import React, { useContext, useState, useEffect, useRef, useCallback } from "react";
 // import axios, { AxiosResponse } from "axios";
@@ -3996,7 +3913,7 @@
 //   const pathname = usePathname();
 //   const lastSegment = pathname.split("/").pop();
 //   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
-  
+
 //   const [htmlContent, setHtmlContent] = useState<string>("");
 //   const [pages, setPages] = useState<string[]>([]);
 
@@ -4430,8 +4347,6 @@
 //     return c && c !== "<p><br></p>" ? c : "";
 //   };
 
-
-
 //   // ── HTML generation with section ordering ─────────────────────────────────
 // const generateHTML = useCallback((forPDF = false, pageBreakIds: string[] = [], skillsCutIndex = -1): string => {
 //     const addressStr = [
@@ -4443,7 +4358,7 @@
 
 //     const formattedDobHtml = formatDateOfBirth(dateOfBirth ? dateOfBirth : "");
 
-//     const fontPreloads = activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif" 
+//     const fontPreloads = activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif"
 //       ? `<link rel="preconnect" href="https://fonts.googleapis.com"/>
 //          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 //          <link href="${getFontImport(activeFontFamily)}" rel="stylesheet"/>`
@@ -5085,24 +5000,6 @@
 
 // export default TemplateFour;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 import React, {
   useContext,
@@ -5124,10 +5021,7 @@ import { Finalize, ResumeProps } from "@/app/types/context.types";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import api from "@/app/utils/api";
-import {
-  ResumeCustomization,
-
-} from "@/app/(resume)/download-resume/page";
+import { ResumeCustomization } from "@/app/(resume)/download-resume/page";
 import { FaDownload, FaSpinner } from "react-icons/fa";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -5139,25 +5033,25 @@ const PAGE_CONTENT_H = A4_H - MARGIN * 2;
 
 interface TemplateFourProps extends ResumeProps {
   customization?: ResumeCustomization;
+  viewMode?:boolean
 }
 
 const TemplateFour: React.FC<TemplateFourProps> = ({
   alldata,
   customization,
+  viewMode=false
 }) => {
   const context = useContext(CreateContext);
   const pathname = usePathname();
   const lastSegment = pathname.split("/").pop();
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
-          const [isDownloading, setIsDownloading] = useState<boolean>(false);
-  
+  const [isDownloading, setIsDownloading] = useState<boolean>(false);
 
   const [htmlContent, setHtmlContent] = useState<string>("");
   const [pages, setPages] = useState<string[]>([]);
 
   // ── Customization ─────────────────────────────────────────────────────────
   const activeFontFamily = customization?.fontFamily ?? "'Nunito', sans-serif";
- 
 
   // ── Data ──────────────────────────────────────────────────────────────────
   const contact = alldata?.contact || context.contact || {};
@@ -5605,8 +5499,8 @@ const TemplateFour: React.FC<TemplateFourProps> = ({
   };
 
   // ── HTML generation with section ordering ─────────────────────────────────
- const generateHTML = useCallback(
-  (forPDF = false): string => {
+  const generateHTML = useCallback(
+    (forPDF = false): string => {
       const addressStr = [
         contact?.address,
         contact?.city,
@@ -5631,7 +5525,7 @@ const TemplateFour: React.FC<TemplateFourProps> = ({
         ? `<style>.t4-resume { width: 100% !important; padding: 0 !important; }</style>`
         : "";
 
-      const sectionBuilders= {
+      const sectionBuilders = {
         summary: () =>
           summary
             ? `
@@ -5720,15 +5614,16 @@ const TemplateFour: React.FC<TemplateFourProps> = ({
   `
             : "",
 
-       skills: () => {
-  if (!skills || (typeof skills === "string" && !skills.trim())) return "";
-  const cleanedSkills = rich(skills);
-  if (!cleanedSkills || cleanedSkills === "<p><br></p>") return "";
-  return `<div class="t4-section-content" data-block-id="skills-section">
+        skills: () => {
+          if (!skills || (typeof skills === "string" && !skills.trim()))
+            return "";
+          const cleanedSkills = rich(skills);
+          if (!cleanedSkills || cleanedSkills === "<p><br></p>") return "";
+          return `<div class="t4-section-content" data-block-id="skills-section">
     <div class="section-title">Skills</div>
     <div class="skills-content">${cleanedSkills}</div>
   </div>`;
-},
+        },
         custom: () =>
           fin.customSection
             .filter((s) => s?.name?.trim() || s?.description?.trim())
@@ -5744,19 +5639,17 @@ const TemplateFour: React.FC<TemplateFourProps> = ({
       };
 
       // Build sections in the order defined by customization
-      
 
-
-        const sectionsHTML = [
-  sectionBuilders.summary?.(),
-  sectionBuilders.experience?.(),
-  sectionBuilders.projects?.(),
-  sectionBuilders.education?.(),
-  sectionBuilders.skills?.(),
-  sectionBuilders.custom?.(),
-]
-  .filter(Boolean)
-  .join("");
+      const sectionsHTML = [
+        sectionBuilders.summary?.(),
+        sectionBuilders.experience?.(),
+        sectionBuilders.projects?.(),
+        sectionBuilders.education?.(),
+        sectionBuilders.skills?.(),
+        sectionBuilders.custom?.(),
+      ]
+        .filter(Boolean)
+        .join("");
 
       let bodyContent = `
       <!-- HEADER -->
@@ -5790,7 +5683,6 @@ const TemplateFour: React.FC<TemplateFourProps> = ({
     `;
 
       // For PDF: inject page breaks
-     
 
       return `<!DOCTYPE html>
 <html>
@@ -5880,114 +5772,139 @@ const TemplateFour: React.FC<TemplateFourProps> = ({
         measureDoc.close();
 
         const doMeasure = () => {
-  const resume = measureDoc.querySelector<HTMLElement>(".t4-resume");
-  if (!resume) {
-    document.body.removeChild(iframe);
-    resolve([fullHtml]);
-    return;
-  }
+          const resume = measureDoc.querySelector<HTMLElement>(".t4-resume");
+          if (!resume) {
+            document.body.removeChild(iframe);
+            resolve([fullHtml]);
+            return;
+          }
 
-  measureDoc.documentElement.style.cssText = "height:auto!important;overflow:visible!important;";
-  measureDoc.body.style.cssText = "margin:0;padding:0;height:auto!important;overflow:visible!important;";
-  void resume.offsetHeight;
+          measureDoc.documentElement.style.cssText =
+            "height:auto!important;overflow:visible!important;";
+          measureDoc.body.style.cssText =
+            "margin:0;padding:0;height:auto!important;overflow:visible!important;";
+          void resume.offsetHeight;
 
-  const totalH = resume.scrollHeight;
-  const resumeTop = resume.getBoundingClientRect().top +
-    (measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop);
+          const totalH = resume.scrollHeight;
+          const resumeTop =
+            resume.getBoundingClientRect().top +
+            (measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop);
 
-  const getRelTop = (el: HTMLElement): number => {
-    const docScrollY = measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
-    return el.getBoundingClientRect().top + docScrollY - resumeTop;
-  };
-  const getRelBottom = (el: HTMLElement): number =>
-    getRelTop(el) + el.getBoundingClientRect().height;
+          const getRelTop = (el: HTMLElement): number => {
+            const docScrollY =
+              measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
+            return el.getBoundingClientRect().top + docScrollY - resumeTop;
+          };
+          const getRelBottom = (el: HTMLElement): number =>
+            getRelTop(el) + el.getBoundingClientRect().height;
 
-  interface Block { top: number; bottom: number; id?: string; }
-  const blocks: Block[] = [];
+          interface Block {
+            top: number;
+            bottom: number;
+            id?: string;
+          }
+          const blocks: Block[] = [];
 
-  const ITEM_SELECTORS = [".entry-block", ".custom-section-wrapper"].join(", ");
+          const ITEM_SELECTORS = [
+            ".entry-block",
+            ".custom-section-wrapper",
+          ].join(", ");
 
-  resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
-    const top = getRelTop(el);
-    const bottom = getRelBottom(el);
-    if (bottom - top > 8) blocks.push({ top, bottom, id: el.dataset.blockId });
-  });
+          resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
+            const top = getRelTop(el);
+            const bottom = getRelBottom(el);
+            if (bottom - top > 8)
+              blocks.push({ top, bottom, id: el.dataset.blockId });
+          });
 
-  resume.querySelectorAll<HTMLElement>(".section-title").forEach((title) => {
-    const titleTop = getRelTop(title);
-    let firstItem: HTMLElement | null = null;
-    let sib = title.nextElementSibling as HTMLElement | null;
-    while (sib) {
-      if (sib.getBoundingClientRect().height > 8) { firstItem = sib; break; }
-      sib = sib.nextElementSibling as HTMLElement | null;
-    }
-    if (firstItem) {
-      const deepChild = firstItem.querySelector<HTMLElement>(
-        ".entry-block, .custom-section-wrapper"
-      );
-      const anchor = deepChild || firstItem;
-      const anchorBottom = getRelBottom(anchor);
-      const combinedHeight = anchorBottom - titleTop;
-      if (combinedHeight > 8 && combinedHeight <= PAGE_CONTENT_H * 0.9) {
-        const sectionId = (title.parentElement as HTMLElement)?.dataset?.blockId;
-        blocks.push({ top: titleTop, bottom: anchorBottom, id: sectionId });
-      }
-    }
-  });
+          resume
+            .querySelectorAll<HTMLElement>(".section-title")
+            .forEach((title) => {
+              const titleTop = getRelTop(title);
+              let firstItem: HTMLElement | null = null;
+              let sib = title.nextElementSibling as HTMLElement | null;
+              while (sib) {
+                if (sib.getBoundingClientRect().height > 8) {
+                  firstItem = sib;
+                  break;
+                }
+                sib = sib.nextElementSibling as HTMLElement | null;
+              }
+              if (firstItem) {
+                const deepChild = firstItem.querySelector<HTMLElement>(
+                  ".entry-block, .custom-section-wrapper",
+                );
+                const anchor = deepChild || firstItem;
+                const anchorBottom = getRelBottom(anchor);
+                const combinedHeight = anchorBottom - titleTop;
+                if (
+                  combinedHeight > 8 &&
+                  combinedHeight <= PAGE_CONTENT_H * 0.9
+                ) {
+                  const sectionId = (title.parentElement as HTMLElement)
+                    ?.dataset?.blockId;
+                  blocks.push({
+                    top: titleTop,
+                    bottom: anchorBottom,
+                    id: sectionId,
+                  });
+                }
+              }
+            });
 
-  blocks.sort((a, b) => a.top - b.top);
+          blocks.sort((a, b) => a.top - b.top);
 
-  const findBestCut = (
-    currentStart: number,
-    naiveCut: number
-  ): { cut: number; id?: string } => {
-    let actualCut = naiveCut;
-    let cutId: string | undefined;
-    const pageHeight = naiveCut - currentStart;
-    const minFill = currentStart + pageHeight * 0.92;
+          const findBestCut = (
+            currentStart: number,
+            naiveCut: number,
+          ): { cut: number; id?: string } => {
+            let actualCut = naiveCut;
+            let cutId: string | undefined;
+            const pageHeight = naiveCut - currentStart;
+            const minFill = currentStart + pageHeight * 0.92;
 
-    for (const block of blocks) {
-      if (block.top >= naiveCut) break;
-      if (block.bottom <= currentStart) continue;
-      if (block.bottom > naiveCut) {
-        const blockHeight = block.bottom - block.top;
-        if (
-          block.top >= minFill &&
-          blockHeight <= PAGE_CONTENT_H &&
-          block.top < actualCut
-        ) {
-          actualCut = block.top;
-          cutId = block.id;
-        }
-      }
-    }
-    if (actualCut <= currentStart) actualCut = naiveCut;
-    return { cut: actualCut, id: cutId };
-  };
+            for (const block of blocks) {
+              if (block.top >= naiveCut) break;
+              if (block.bottom <= currentStart) continue;
+              if (block.bottom > naiveCut) {
+                const blockHeight = block.bottom - block.top;
+                if (
+                  block.top >= minFill &&
+                  blockHeight <= PAGE_CONTENT_H &&
+                  block.top < actualCut
+                ) {
+                  actualCut = block.top;
+                  cutId = block.id;
+                }
+              }
+            }
+            if (actualCut <= currentStart) actualCut = naiveCut;
+            return { cut: actualCut, id: cutId };
+          };
 
-  const pageStarts: number[] = [0];
-  const pageBreakIds: string[] = [];
-  const MAX_PAGES = 20;
+          const pageStarts: number[] = [0];
+          const pageBreakIds: string[] = [];
+          const MAX_PAGES = 20;
 
-  while (pageStarts.length < MAX_PAGES) {
-    const currentStart = pageStarts[pageStarts.length - 1];
-    const naiveCut = currentStart + PAGE_CONTENT_H;
-    if (naiveCut >= totalH) break;
-    const { cut, id } = findBestCut(currentStart, naiveCut);
-    pageStarts.push(cut);
-    if (id) pageBreakIds.push(id);
-  }
+          while (pageStarts.length < MAX_PAGES) {
+            const currentStart = pageStarts[pageStarts.length - 1];
+            const naiveCut = currentStart + PAGE_CONTENT_H;
+            if (naiveCut >= totalH) break;
+            const { cut, id } = findBestCut(currentStart, naiveCut);
+            pageStarts.push(cut);
+            if (id) pageBreakIds.push(id);
+          }
 
-  document.body.removeChild(iframe);
-  (window as any).__resumePageBreakIds = pageBreakIds;
+          document.body.removeChild(iframe);
+          (window as any).__resumePageBreakIds = pageBreakIds;
 
-  const pageHtmls: string[] = [];
-  for (let i = 0; i < pageStarts.length; i++) {
-    const contentOffsetY = pageStarts[i];
-    const nextStart = pageStarts[i + 1] ?? totalH;
-    const clipH = nextStart - contentOffsetY;
+          const pageHtmls: string[] = [];
+          for (let i = 0; i < pageStarts.length; i++) {
+            const contentOffsetY = pageStarts[i];
+            const nextStart = pageStarts[i + 1] ?? totalH;
+            const clipH = nextStart - contentOffsetY;
 
-    pageHtmls.push(`<!DOCTYPE html>
+            pageHtmls.push(`<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
@@ -6027,10 +5944,10 @@ const TemplateFour: React.FC<TemplateFourProps> = ({
   </div>
 </body>
 </html>`);
-  }
+          }
 
-  resolve(pageHtmls);
-};
+          resolve(pageHtmls);
+        };
 
         const win = iframe.contentWindow as any;
         if (win?.document?.fonts?.ready) {
@@ -6065,7 +5982,7 @@ const TemplateFour: React.FC<TemplateFourProps> = ({
 
   // ── PDF download ─────────────────────────────────────────────────────────
   const handleDownload = async () => {
-      setIsDownloading(true)
+    setIsDownloading(true);
 
     try {
       // const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
@@ -6091,61 +6008,216 @@ const TemplateFour: React.FC<TemplateFourProps> = ({
     } catch (error) {
       console.error("Error generating PDF:", error);
       alert("Failed to generate PDF. Please try again.");
-    }
-    finally{
-        setIsDownloading(false)
-
+    } finally {
+      setIsDownloading(false);
     }
   };
 
   // ── RENDER ────────────────────────────────────────────────────────────────
+//   return (
+//     <>
+//       {lastSegment === "download-resume" && (
+//         <div className="text-center my-8">
+//           <motion.button
+//             onClick={handleDownload}
+//             disabled={isDownloading}
+//             whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
+//             whileTap={!isDownloading ? { scale: 0.98 } : {}}
+//             className={`
+//                       relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
+//                       text-white transition-all duration-300 shadow-lg
+//                       ${
+//                         isDownloading
+//                           ? "bg-gray-400 cursor-not-allowed opacity-80"
+//                           : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600"
+//                       }
+//                     `}
+//           >
+//             {/* Animated background gradient for premium feel */}
+//             {!isDownloading && (
+//               <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+//             )}
+
+//             <div className="relative flex items-center justify-center gap-3 text-lg">
+//               {isDownloading ? (
+//                 <>
+//                   <FaSpinner className="animate-spin text-xl" />
+//                   <span>Generating PDF ...</span>
+//                 </>
+//               ) : (
+//                 <>
+//                   <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
+//                   <span>Download Resume</span>
+//                   <span className="text-sm opacity-75 font-light ml-1">
+//                     PDF
+//                   </span>
+//                 </>
+//               )}
+//             </div>
+//           </motion.button>
+//         </div>
+//       )}
+
+//       {alldata ? (
+//         <div
+//           style={{
+//             width: `${A4_W}px`,
+//             height: `${A4_H}px`,
+//             transform: "scale(0.36)",
+//             transformOrigin: "top left",
+//             overflow: "hidden",
+//             pointerEvents: "none",
+//             flexShrink: 0,
+//           }}
+//         >
+//           {pages[0] ? (
+//             <iframe
+//               title="resume-thumb"
+//               srcDoc={pages[0]}
+//               style={{
+//                 width: `${A4_W}px`,
+//                 height: `${A4_H}px`,
+//                 border: "none",
+//                 display: "block",
+//                 pointerEvents: "none",
+//               }}
+//               sandbox="allow-same-origin"
+//             />
+//           ) : (
+//             <div
+//               style={{
+//                 width: `${A4_W}px`,
+//                 height: `${A4_H}px`,
+//                 background: "white",
+//                 display: "flex",
+//                 alignItems: "center",
+//                 justifyContent: "center",
+//                 color: "#ccc",
+//                 fontSize: 14,
+//                 fontFamily: "sans-serif",
+//               }}
+//             >
+//               Loading…
+//             </div>
+//           )}
+//         </div>
+//       ) : (
+//         <div style={{ width: `${A4_W}px`, margin: "0 auto" }}>
+//           {(pages.length > 0 ? pages : [htmlContent]).map((pageHtml, idx) => (
+//             <div key={idx} style={{ marginBottom: "28px" }}>
+//               <div
+//                 style={{
+//                   display: "flex",
+//                   alignItems: "center",
+//                   justifyContent: "center",
+//                   gap: "10px",
+//                   marginBottom: "10px",
+//                 }}
+//               >
+//                 <div
+//                   style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+//                 />
+//                 <span
+//                   style={{
+//                     fontSize: "11px",
+//                     fontWeight: 600,
+//                     color: "#6b7280",
+//                     whiteSpace: "nowrap",
+//                     padding: "3px 12px",
+//                     background: "#f3f4f6",
+//                     borderRadius: "999px",
+//                     border: "1px solid #e5e7eb",
+//                     letterSpacing: "0.05em",
+//                     fontFamily: "system-ui, sans-serif",
+//                   }}
+//                 >
+//                   Page {idx + 1}
+//                   {pages.length > 1 ? ` of ${pages.length}` : ""}
+//                 </span>
+//                 <div
+//                   style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+//                 />
+//               </div>
+
+//               <div
+//                 style={{
+//                   width: `${A4_W}px`,
+//                   height: `${A4_H}px`,
+//                   overflow: "hidden",
+//                   background: "white",
+//                   boxShadow:
+//                     "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
+//                   borderRadius: "2px",
+//                   flexShrink: 0,
+//                 }}
+//               >
+//                 <iframe
+//                   title={`resume-page-${idx + 1}`}
+//                   srcDoc={pageHtml}
+//                   style={{
+//                     width: `${A4_W}px`,
+//                     height: `${A4_H}px`,
+//                     border: "none",
+//                     display: "block",
+//                     pointerEvents: "none",
+//                   }}
+//                   scrolling="no"
+//                   sandbox="allow-same-origin allow-scripts"
+//                 />
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+//       )}
+//     </>
+//   );
+// };
+
+
+const isThumbnail = !!alldata && !viewMode ; 
   return (
     <>
-     
-       {lastSegment === "download-resume" && (
-                        <div className="text-center my-8">
-                          <motion.button
-                            onClick={handleDownload}
-                            disabled={isDownloading}
-                            whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
-                            whileTap={!isDownloading ? { scale: 0.98 } : {}}
-                            className={`
-                      relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
-                      text-white transition-all duration-300 shadow-lg
-                      ${
-                        isDownloading
-                          ? "bg-gray-400 cursor-not-allowed opacity-80"
-                          : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600"
-                      }
-                    `}
-                          >
-                            {/* Animated background gradient for premium feel */}
-                            {!isDownloading && (
-                              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-                            )}
-                
-                            <div className="relative flex items-center justify-center gap-3 text-lg">
-                              {isDownloading ? (
-                                <>
-                                  <FaSpinner className="animate-spin text-xl" />
-                                  <span>Generating PDF ...</span>
-                                </>
-                              ) : (
-                                <>
-                                  <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
-                                  <span>Download Resume</span>
-                                  <span className="text-sm opacity-75 font-light ml-1">
-                                    PDF
-                                  </span>
-                                </>
-                              )}
-                            </div>
-                          </motion.button>
-                        </div>
-                      )}
-
-
-      {alldata ? (
+      {/* Download button — hide in thumbnail mode */}
+      {!isThumbnail && lastSegment === 'download-resume' &&(
+        <div className="text-center my-8">
+          <motion.button
+            onClick={handleDownload}
+            disabled={isDownloading}
+            whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
+            whileTap={!isDownloading ? { scale: 0.98 } : {}}
+            className={`
+              relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
+              text-white transition-all duration-300  shadow-lg
+              ${
+                isDownloading
+                  ? "bg-gray-400 cursor-not-allowed opacity-80"
+                  : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600 cursor-pointer"
+              }
+            `}
+          >
+            {!isDownloading && (
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+            )}
+            <div className="relative flex items-center justify-center gap-3 text-lg">
+              {isDownloading ? (
+                <>
+                  <FaSpinner className="animate-spin text-xl" />
+                  <span>Generating PDF …</span>
+                </>
+              ) : (
+                <>
+                  <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
+                  <span>Download Resume</span>
+                  <span className="text-sm opacity-75 font-light ml-1">PDF</span>
+                </>
+              )}
+            </div>
+          </motion.button>
+        </div>
+      )}
+ 
+      {isThumbnail ? (
+        // ── THUMBNAIL MODE (dashboard card) ─────────────────────────────────
         <div
           style={{
             width: `${A4_W}px`,
@@ -6189,6 +6261,7 @@ const TemplateFour: React.FC<TemplateFourProps> = ({
           )}
         </div>
       ) : (
+        // ── FULL PREVIEW MODE (editor + view modal) ──────────────────────────
         <div style={{ width: `${A4_W}px`, margin: "0 auto" }}>
           {(pages.length > 0 ? pages : [htmlContent]).map((pageHtml, idx) => (
             <div key={idx} style={{ marginBottom: "28px" }}>
@@ -6201,9 +6274,7 @@ const TemplateFour: React.FC<TemplateFourProps> = ({
                   marginBottom: "10px",
                 }}
               >
-                <div
-                  style={{ flex: 1, height: "1px", background: "#d1d5db" }}
-                />
+                <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
                 <span
                   style={{
                     fontSize: "11px",
@@ -6221,11 +6292,8 @@ const TemplateFour: React.FC<TemplateFourProps> = ({
                   Page {idx + 1}
                   {pages.length > 1 ? ` of ${pages.length}` : ""}
                 </span>
-                <div
-                  style={{ flex: 1, height: "1px", background: "#d1d5db" }}
-                />
+                <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
               </div>
-
               <div
                 style={{
                   width: `${A4_W}px`,

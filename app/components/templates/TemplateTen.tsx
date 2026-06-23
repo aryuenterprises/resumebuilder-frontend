@@ -6963,10 +6963,7 @@ import { usePathname } from "next/navigation";
 import { ResumeProps } from "@/app/types";
 import { motion } from "framer-motion";
 import api from "@/app/utils/api";
-import {
-  ResumeCustomization,
-
-} from "@/app/(resume)/download-resume/page";
+import { ResumeCustomization } from "@/app/(resume)/download-resume/page";
 import { FaDownload, FaSpinner } from "react-icons/fa";
 
 const A4_W = 794;
@@ -6976,11 +6973,13 @@ const PAGE_CONTENT_H = A4_H - MARGIN * 2;
 
 interface TemplateTenProps extends ResumeProps {
   customization?: ResumeCustomization;
+  viewMode?:boolean
 }
 
 const TemplateTen: React.FC<TemplateTenProps> = ({
   alldata,
   customization,
+  viewMode=false
 }) => {
   const context = useContext(CreateContext);
   const pathname = usePathname();
@@ -6989,12 +6988,10 @@ const TemplateTen: React.FC<TemplateTenProps> = ({
 
   const [htmlContent, setHtmlContent] = useState<string>("");
   const [pages, setPages] = useState<string[]>([]);
-          const [isDownloading, setIsDownloading] = useState<boolean>(false);
-  
+  const [isDownloading, setIsDownloading] = useState<boolean>(false);
 
   // ── Customization ─────────────────────────────────────────────────────────
   const activeFontFamily = customization?.fontFamily ?? "'Inter', sans-serif";
-
 
   // ── Data sources ─────────────────────────────────────────────────────────
   const contact = alldata?.contact || context.contact || {};
@@ -7307,7 +7304,7 @@ const TemplateTen: React.FC<TemplateTenProps> = ({
           ? `<link href="${getFontImport(activeFontFamily)}" rel="stylesheet"/>`
           : "";
 
-      const sectionBuilders= {
+      const sectionBuilders = {
         summary: () =>
           summary
             ? `
@@ -7483,16 +7480,16 @@ const TemplateTen: React.FC<TemplateTenProps> = ({
       };
 
       // Build sections in the order defined by customization
-       const sectionsHTML = [
-  sectionBuilders.summary?.(),
-  sectionBuilders.experience?.(),
-  sectionBuilders.projects?.(),
-  sectionBuilders.education?.(),
-  sectionBuilders.skills?.(),
-  sectionBuilders.custom?.(),
-]
-  .filter(Boolean)
-  .join("");
+      const sectionsHTML = [
+        sectionBuilders.summary?.(),
+        sectionBuilders.experience?.(),
+        sectionBuilders.projects?.(),
+        sectionBuilders.education?.(),
+        sectionBuilders.skills?.(),
+        sectionBuilders.custom?.(),
+      ]
+        .filter(Boolean)
+        .join("");
 
       const pdfStyle = forPDF
         ? `<style>.t10-resume { width: 100% !important; padding: 0 !important; }</style>`
@@ -7888,7 +7885,7 @@ const TemplateTen: React.FC<TemplateTenProps> = ({
 
   // ── PDF download ─────────────────────────────────────────
   const handleDownload = async () => {
-    setIsDownloading(true)
+    setIsDownloading(true);
     try {
       // AFTER
       const pageBreakIds: string[] = (
@@ -7913,60 +7910,215 @@ const TemplateTen: React.FC<TemplateTenProps> = ({
     } catch (error) {
       console.error("Error generating PDF:", error);
       alert("Failed to generate PDF. Please try again.");
-    }finally{
-          setIsDownloading(false)
-
+    } finally {
+      setIsDownloading(false);
     }
   };
 
+//   return (
+//     <>
+//       {lastSegment === "download-resume" && (
+//         <div className="text-center my-8">
+//           <motion.button
+//             onClick={handleDownload}
+//             disabled={isDownloading}
+//             whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
+//             whileTap={!isDownloading ? { scale: 0.98 } : {}}
+//             className={`
+//                                                           relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
+//                                                           text-white transition-all duration-300 shadow-lg
+//                                                           ${
+//                                                             isDownloading
+//                                                               ? "bg-gray-400 cursor-not-allowed opacity-80"
+//                                                               : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600"
+//                                                           }
+//                                                         `}
+//           >
+//             {/* Animated background gradient for premium feel */}
+//             {!isDownloading && (
+//               <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+//             )}
+
+//             <div className="relative flex items-center justify-center gap-3 text-lg">
+//               {isDownloading ? (
+//                 <>
+//                   <FaSpinner className="animate-spin text-xl" />
+//                   <span>Generating PDF ...</span>
+//                 </>
+//               ) : (
+//                 <>
+//                   <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
+//                   <span>Download Resume</span>
+//                   <span className="text-sm opacity-75 font-light ml-1">
+//                     PDF
+//                   </span>
+//                 </>
+//               )}
+//             </div>
+//           </motion.button>
+//         </div>
+//       )}
+
+//       {alldata ? (
+//         <div
+//           style={{
+//             width: `${A4_W}px`,
+//             height: `${A4_H}px`,
+//             transform: "scale(0.36)",
+//             transformOrigin: "top left",
+//             overflow: "hidden",
+//             pointerEvents: "none",
+//             flexShrink: 0,
+//           }}
+//         >
+//           {pages[0] ? (
+//             <iframe
+//               title="resume-thumb"
+//               srcDoc={pages[0]}
+//               style={{
+//                 width: `${A4_W}px`,
+//                 height: `${A4_H}px`,
+//                 border: "none",
+//                 display: "block",
+//                 pointerEvents: "none",
+//               }}
+//               sandbox="allow-same-origin"
+//             />
+//           ) : (
+//             <div
+//               style={{
+//                 width: `${A4_W}px`,
+//                 height: `${A4_H}px`,
+//                 background: "white",
+//                 display: "flex",
+//                 alignItems: "center",
+//                 justifyContent: "center",
+//                 color: "#ccc",
+//                 fontSize: 14,
+//                 fontFamily: "sans-serif",
+//               }}
+//             >
+//               Loading…
+//             </div>
+//           )}
+//         </div>
+//       ) : (
+//         <div style={{ width: `${A4_W}px`, margin: "0 auto" }}>
+//           {(pages.length > 0 ? pages : [htmlContent]).map((pageHtml, idx) => (
+//             <div key={idx} style={{ marginBottom: "28px" }}>
+//               <div
+//                 style={{
+//                   display: "flex",
+//                   alignItems: "center",
+//                   justifyContent: "center",
+//                   gap: "10px",
+//                   marginBottom: "10px",
+//                 }}
+//               >
+//                 <div
+//                   style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+//                 />
+//                 <span
+//                   style={{
+//                     fontSize: "11px",
+//                     fontWeight: 600,
+//                     color: "#6b7280",
+//                     whiteSpace: "nowrap",
+//                     padding: "3px 12px",
+//                     background: "#f3f4f6",
+//                     borderRadius: "999px",
+//                     border: "1px solid #e5e7eb",
+//                     letterSpacing: "0.05em",
+//                     fontFamily: "system-ui, sans-serif",
+//                   }}
+//                 >
+//                   Page {idx + 1}
+//                   {pages.length > 1 ? ` of ${pages.length}` : ""}
+//                 </span>
+//                 <div
+//                   style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+//                 />
+//               </div>
+//               <div
+//                 style={{
+//                   width: `${A4_W}px`,
+//                   height: `${A4_H}px`,
+//                   overflow: "hidden",
+//                   background: "white",
+//                   boxShadow:
+//                     "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
+//                   borderRadius: "2px",
+//                   flexShrink: 0,
+//                 }}
+//               >
+//                 <iframe
+//                   title={`resume-page-${idx + 1}`}
+//                   srcDoc={pageHtml}
+//                   style={{
+//                     width: `${A4_W}px`,
+//                     height: `${A4_H}px`,
+//                     border: "none",
+//                     display: "block",
+//                     pointerEvents: "none",
+//                   }}
+//                   scrolling="no"
+//                   sandbox="allow-same-origin allow-scripts"
+//                 />
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+//       )}
+//     </>
+//   );
+// };
+
+
+
+const isThumbnail = !!alldata && !viewMode ; 
   return (
     <>
-      
-
-       {lastSegment === "download-resume" && (
-                                <div className="text-center my-8">
-                                  <motion.button
-                                    onClick={handleDownload}
-                                    disabled={isDownloading}
-                                    whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
-                                    whileTap={!isDownloading ? { scale: 0.98 } : {}}
-                                    className={`
-                                                          relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
-                                                          text-white transition-all duration-300 shadow-lg
-                                                          ${
-                                                            isDownloading
-                                                              ? "bg-gray-400 cursor-not-allowed opacity-80"
-                                                              : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600"
-                                                          }
-                                                        `}
-                                  >
-                                    {/* Animated background gradient for premium feel */}
-                                    {!isDownloading && (
-                                      <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-                                    )}
-                        
-                                    <div className="relative flex items-center justify-center gap-3 text-lg">
-                                      {isDownloading ? (
-                                        <>
-                                          <FaSpinner className="animate-spin text-xl" />
-                                          <span>Generating PDF ...</span>
-                                        </>
-                                      ) : (
-                                        <>
-                                          <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
-                                          <span>Download Resume</span>
-                                          <span className="text-sm opacity-75 font-light ml-1">
-                                            PDF
-                                          </span>
-                                        </>
-                                      )}
-                                    </div>
-                                  </motion.button>
-                                </div>
-                              )}
-
-
-      {alldata ? (
+      {/* Download button — hide in thumbnail mode */}
+      {!isThumbnail && lastSegment === 'download-resume' &&(
+        <div className="text-center my-8">
+          <motion.button
+            onClick={handleDownload}
+            disabled={isDownloading}
+            whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
+            whileTap={!isDownloading ? { scale: 0.98 } : {}}
+            className={`
+              relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
+              text-white transition-all duration-300  shadow-lg
+              ${
+                isDownloading
+                  ? "bg-gray-400 cursor-not-allowed opacity-80"
+                  : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600 cursor-pointer"
+              }
+            `}
+          >
+            {!isDownloading && (
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+            )}
+            <div className="relative flex items-center justify-center gap-3 text-lg">
+              {isDownloading ? (
+                <>
+                  <FaSpinner className="animate-spin text-xl" />
+                  <span>Generating PDF …</span>
+                </>
+              ) : (
+                <>
+                  <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
+                  <span>Download Resume</span>
+                  <span className="text-sm opacity-75 font-light ml-1">PDF</span>
+                </>
+              )}
+            </div>
+          </motion.button>
+        </div>
+      )}
+ 
+      {isThumbnail ? (
+        // ── THUMBNAIL MODE (dashboard card) ─────────────────────────────────
         <div
           style={{
             width: `${A4_W}px`,
@@ -8010,6 +8162,7 @@ const TemplateTen: React.FC<TemplateTenProps> = ({
           )}
         </div>
       ) : (
+        // ── FULL PREVIEW MODE (editor + view modal) ──────────────────────────
         <div style={{ width: `${A4_W}px`, margin: "0 auto" }}>
           {(pages.length > 0 ? pages : [htmlContent]).map((pageHtml, idx) => (
             <div key={idx} style={{ marginBottom: "28px" }}>
@@ -8022,9 +8175,7 @@ const TemplateTen: React.FC<TemplateTenProps> = ({
                   marginBottom: "10px",
                 }}
               >
-                <div
-                  style={{ flex: 1, height: "1px", background: "#d1d5db" }}
-                />
+                <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
                 <span
                   style={{
                     fontSize: "11px",
@@ -8042,9 +8193,7 @@ const TemplateTen: React.FC<TemplateTenProps> = ({
                   Page {idx + 1}
                   {pages.length > 1 ? ` of ${pages.length}` : ""}
                 </span>
-                <div
-                  style={{ flex: 1, height: "1px", background: "#d1d5db" }}
-                />
+                <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
               </div>
               <div
                 style={{

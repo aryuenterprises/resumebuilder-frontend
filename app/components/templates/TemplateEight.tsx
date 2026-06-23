@@ -11741,11 +11741,6 @@
 
 // export default TemplateEight;
 
-
-
-
-
-
 "use client";
 
 import React, {
@@ -11768,10 +11763,7 @@ import { usePathname } from "next/navigation";
 import { ResumeProps } from "@/app/types";
 import { motion } from "framer-motion";
 import api from "@/app/utils/api";
-import {
-  ResumeCustomization,
- 
-} from "@/app/(resume)/download-resume/page";
+import { ResumeCustomization } from "@/app/(resume)/download-resume/page";
 import { FaDownload, FaSpinner } from "react-icons/fa";
 
 const A4_W = 794;
@@ -11781,25 +11773,25 @@ const PAGE_CONTENT_H = A4_H - MARGIN * 2;
 
 interface TemplateEightProps extends ResumeProps {
   customization?: ResumeCustomization;
+  viewMode?:boolean
 }
 
 const TemplateEight: React.FC<TemplateEightProps> = ({
   alldata,
   customization,
+  viewMode=false
 }) => {
   const context = useContext(CreateContext);
   const pathname = usePathname();
   const lastSegment = pathname.split("/").pop();
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
-      const [isDownloading, setIsDownloading] = useState<boolean>(false);
-  
+  const [isDownloading, setIsDownloading] = useState<boolean>(false);
 
   const [htmlContent, setHtmlContent] = useState<string>("");
   const [pages, setPages] = useState<string[]>([]);
 
   // ── Customization ─────────────────────────────────────────────────────────
   const activeFontFamily = customization?.fontFamily ?? "'EB Garamond', serif";
- 
 
   // ── Data sources ─────────────────────────────────────────────────────────
   const contact = alldata?.contact || context.contact || {};
@@ -12077,8 +12069,8 @@ const TemplateEight: React.FC<TemplateEightProps> = ({
 
   // ── HTML builder with section ordering ───────────────────────────────────
   // AFTER
- const generateHTML = useCallback(
-(forPDF = false, pageBreakIds: string[] = []): string => {
+  const generateHTML = useCallback(
+    (forPDF = false, pageBreakIds: string[] = []): string => {
       const formattedDob = formatDateOfBirth(dateOfBirth ? dateOfBirth : "");
       const addressStr = addressParts.join(", ");
 
@@ -12208,26 +12200,20 @@ const TemplateEight: React.FC<TemplateEightProps> = ({
           const skillsClean = rich(skills);
           if (!skillsClean || skillsClean === "<p><br></p>") return "";
 
-
-
           return `<div class="section-block" data-block-id="skills-section">
     <div class="section-title">Skills</div>
     <div class="skills-content" data-block-id="skills-content">${skillsClean}</div>
   </div>`;
         },
 
-
-//         skills: () => {
-//   const skillsClean = rich(skills || "");
-//   if (!skillsClean) return "";
-//   return `<div class="skills-block" data-block-id="skills-section">
-//     <div class="section-title">Skills</div>
-//     <div class="skills-content" data-block-id="skills-content">${skillsClean}</div>
-//   </div>`;
-// },
-
-        
-
+        //         skills: () => {
+        //   const skillsClean = rich(skills || "");
+        //   if (!skillsClean) return "";
+        //   return `<div class="skills-block" data-block-id="skills-section">
+        //     <div class="section-title">Skills</div>
+        //     <div class="skills-content" data-block-id="skills-content">${skillsClean}</div>
+        //   </div>`;
+        // },
 
         custom: () => {
           if (!Array.isArray(finalize?.customSection)) return "";
@@ -12249,19 +12235,17 @@ const TemplateEight: React.FC<TemplateEightProps> = ({
       };
 
       // Build sections in the order defined by customization
-      
 
-
-         const sectionsHTML = [
-  sectionBuilders.summary?.(),
-  sectionBuilders.experience?.(),
-  sectionBuilders.projects?.(),
-  sectionBuilders.education?.(),
-  sectionBuilders.skills?.(),
-  sectionBuilders.custom?.(),
-]
-  .filter(Boolean)
-  .join("");
+      const sectionsHTML = [
+        sectionBuilders.summary?.(),
+        sectionBuilders.experience?.(),
+        sectionBuilders.projects?.(),
+        sectionBuilders.education?.(),
+        sectionBuilders.skills?.(),
+        sectionBuilders.custom?.(),
+      ]
+        .filter(Boolean)
+        .join("");
 
       const pdfStyle = forPDF
         ? `<style>.t8-resume { width: 100% !important; padding: 0 !important; }</style>`
@@ -12647,7 +12631,7 @@ const TemplateEight: React.FC<TemplateEightProps> = ({
 
   // ── PDF download ─────────────────────────────────────────
   const handleDownload = async () => {
-    setIsDownloading(true)
+    setIsDownloading(true);
     try {
       //   // AFTER
       //   const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
@@ -12663,17 +12647,17 @@ const TemplateEight: React.FC<TemplateEightProps> = ({
       ).filter((id: string) => id !== "skills-section");
       const skillsCutIndex: number =
         (window as any).__resumeSkillsCutIndex ?? -1;
-    //   const res: AxiosResponse<Blob> = await api.post(
-    //     `${API_URL}/candidates/generate-pdf`,
-    //     { html: generateHTML(true, pageBreakIds, skillsCutIndex) },
-    //   );
+      //   const res: AxiosResponse<Blob> = await api.post(
+      //     `${API_URL}/candidates/generate-pdf`,
+      //     { html: generateHTML(true, pageBreakIds, skillsCutIndex) },
+      //   );
 
       // AFTER
-const res: AxiosResponse<Blob> = await api.post(
-  `${API_URL}/candidates/generate-pdf`,
-  { html: generateHTML(true, pageBreakIds) },
-  { responseType: "blob" },
-);
+      const res: AxiosResponse<Blob> = await api.post(
+        `${API_URL}/candidates/generate-pdf`,
+        { html: generateHTML(true, pageBreakIds) },
+        { responseType: "blob" },
+      );
 
       const url = URL.createObjectURL(res.data);
       const a = document.createElement("a");
@@ -12686,58 +12670,215 @@ const res: AxiosResponse<Blob> = await api.post(
     } catch (error) {
       console.error("Error generating PDF:", error);
       alert("Failed to generate PDF. Please try again.");
-    }
-    finally{
-            setIsDownloading(false)
-
+    } finally {
+      setIsDownloading(false);
     }
   };
 
+//   return (
+//     <>
+//       {lastSegment === "download-resume" && (
+//         <div className="text-center my-8">
+//           <motion.button
+//             onClick={handleDownload}
+//             disabled={isDownloading}
+//             whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
+//             whileTap={!isDownloading ? { scale: 0.98 } : {}}
+//             className={`
+//                                               relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
+//                                               text-white transition-all duration-300 shadow-lg
+//                                               ${
+//                                                 isDownloading
+//                                                   ? "bg-gray-400 cursor-not-allowed opacity-80"
+//                                                   : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600"
+//                                               }
+//                                             `}
+//           >
+//             {/* Animated background gradient for premium feel */}
+//             {!isDownloading && (
+//               <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+//             )}
+
+//             <div className="relative flex items-center justify-center gap-3 text-lg">
+//               {isDownloading ? (
+//                 <>
+//                   <FaSpinner className="animate-spin text-xl" />
+//                   <span>Generating PDF ...</span>
+//                 </>
+//               ) : (
+//                 <>
+//                   <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
+//                   <span>Download Resume</span>
+//                   <span className="text-sm opacity-75 font-light ml-1">
+//                     PDF
+//                   </span>
+//                 </>
+//               )}
+//             </div>
+//           </motion.button>
+//         </div>
+//       )}
+
+//       {alldata ? (
+//         <div
+//           style={{
+//             width: `${A4_W}px`,
+//             height: `${A4_H}px`,
+//             transform: "scale(0.36)",
+//             transformOrigin: "top left",
+//             overflow: "hidden",
+//             pointerEvents: "none",
+//             flexShrink: 0,
+//           }}
+//         >
+//           {pages[0] ? (
+//             <iframe
+//               title="resume-thumb"
+//               srcDoc={pages[0]}
+//               style={{
+//                 width: `${A4_W}px`,
+//                 height: `${A4_H}px`,
+//                 border: "none",
+//                 display: "block",
+//                 pointerEvents: "none",
+//               }}
+//               sandbox="allow-same-origin"
+//             />
+//           ) : (
+//             <div
+//               style={{
+//                 width: `${A4_W}px`,
+//                 height: `${A4_H}px`,
+//                 background: "white",
+//                 display: "flex",
+//                 alignItems: "center",
+//                 justifyContent: "center",
+//                 color: "#ccc",
+//                 fontSize: 14,
+//                 fontFamily: "sans-serif",
+//               }}
+//             >
+//               Loading…
+//             </div>
+//           )}
+//         </div>
+//       ) : (
+//         <div style={{ width: `${A4_W}px`, margin: "0 auto" }}>
+//           {(pages.length > 0 ? pages : [htmlContent]).map((pageHtml, idx) => (
+//             <div key={idx} style={{ marginBottom: "28px" }}>
+//               <div
+//                 style={{
+//                   display: "flex",
+//                   alignItems: "center",
+//                   justifyContent: "center",
+//                   gap: "10px",
+//                   marginBottom: "10px",
+//                 }}
+//               >
+//                 <div
+//                   style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+//                 />
+//                 <span
+//                   style={{
+//                     fontSize: "11px",
+//                     fontWeight: 600,
+//                     color: "#6b7280",
+//                     whiteSpace: "nowrap",
+//                     padding: "3px 12px",
+//                     background: "#f3f4f6",
+//                     borderRadius: "999px",
+//                     border: "1px solid #e5e7eb",
+//                     letterSpacing: "0.05em",
+//                     fontFamily: "system-ui, sans-serif",
+//                   }}
+//                 >
+//                   Page {idx + 1}
+//                   {pages.length > 1 ? ` of ${pages.length}` : ""}
+//                 </span>
+//                 <div
+//                   style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+//                 />
+//               </div>
+//               <div
+//                 style={{
+//                   width: `${A4_W}px`,
+//                   height: `${A4_H}px`,
+//                   overflow: "hidden",
+//                   background: "white",
+//                   boxShadow:
+//                     "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
+//                   borderRadius: "2px",
+//                   flexShrink: 0,
+//                 }}
+//               >
+//                 <iframe
+//                   title={`resume-page-${idx + 1}`}
+//                   srcDoc={pageHtml}
+//                   style={{
+//                     width: `${A4_W}px`,
+//                     height: `${A4_H}px`,
+//                     border: "none",
+//                     display: "block",
+//                     pointerEvents: "none",
+//                   }}
+//                   scrolling="no"
+//                   sandbox="allow-same-origin allow-scripts"
+//                 />
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+//       )}
+//     </>
+//   );
+// };
+
+
+
+const isThumbnail = !!alldata && !viewMode ; 
   return (
     <>
-        {lastSegment === "download-resume" && (
-                    <div className="text-center my-8">
-                      <motion.button
-                        onClick={handleDownload}
-                        disabled={isDownloading}
-                        whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
-                        whileTap={!isDownloading ? { scale: 0.98 } : {}}
-                        className={`
-                                              relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
-                                              text-white transition-all duration-300 shadow-lg
-                                              ${
-                                                isDownloading
-                                                  ? "bg-gray-400 cursor-not-allowed opacity-80"
-                                                  : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600"
-                                              }
-                                            `}
-                      >
-                        {/* Animated background gradient for premium feel */}
-                        {!isDownloading && (
-                          <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-                        )}
-            
-                        <div className="relative flex items-center justify-center gap-3 text-lg">
-                          {isDownloading ? (
-                            <>
-                              <FaSpinner className="animate-spin text-xl" />
-                              <span>Generating PDF ...</span>
-                            </>
-                          ) : (
-                            <>
-                              <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
-                              <span>Download Resume</span>
-                              <span className="text-sm opacity-75 font-light ml-1">
-                                PDF
-                              </span>
-                            </>
-                          )}
-                        </div>
-                      </motion.button>
-                    </div>
-                  )}
-
-      {alldata ? (
+      {/* Download button — hide in thumbnail mode */}
+      {!isThumbnail && lastSegment === 'download-resume' &&(
+        <div className="text-center my-8">
+          <motion.button
+            onClick={handleDownload}
+            disabled={isDownloading}
+            whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
+            whileTap={!isDownloading ? { scale: 0.98 } : {}}
+            className={`
+              relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
+              text-white transition-all duration-300  shadow-lg
+              ${
+                isDownloading
+                  ? "bg-gray-400 cursor-not-allowed opacity-80"
+                  : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600 cursor-pointer"
+              }
+            `}
+          >
+            {!isDownloading && (
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+            )}
+            <div className="relative flex items-center justify-center gap-3 text-lg">
+              {isDownloading ? (
+                <>
+                  <FaSpinner className="animate-spin text-xl" />
+                  <span>Generating PDF …</span>
+                </>
+              ) : (
+                <>
+                  <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
+                  <span>Download Resume</span>
+                  <span className="text-sm opacity-75 font-light ml-1">PDF</span>
+                </>
+              )}
+            </div>
+          </motion.button>
+        </div>
+      )}
+ 
+      {isThumbnail ? (
+        // ── THUMBNAIL MODE (dashboard card) ─────────────────────────────────
         <div
           style={{
             width: `${A4_W}px`,
@@ -12781,6 +12922,7 @@ const res: AxiosResponse<Blob> = await api.post(
           )}
         </div>
       ) : (
+        // ── FULL PREVIEW MODE (editor + view modal) ──────────────────────────
         <div style={{ width: `${A4_W}px`, margin: "0 auto" }}>
           {(pages.length > 0 ? pages : [htmlContent]).map((pageHtml, idx) => (
             <div key={idx} style={{ marginBottom: "28px" }}>
@@ -12793,9 +12935,7 @@ const res: AxiosResponse<Blob> = await api.post(
                   marginBottom: "10px",
                 }}
               >
-                <div
-                  style={{ flex: 1, height: "1px", background: "#d1d5db" }}
-                />
+                <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
                 <span
                   style={{
                     fontSize: "11px",
@@ -12813,9 +12953,7 @@ const res: AxiosResponse<Blob> = await api.post(
                   Page {idx + 1}
                   {pages.length > 1 ? ` of ${pages.length}` : ""}
                 </span>
-                <div
-                  style={{ flex: 1, height: "1px", background: "#d1d5db" }}
-                />
+                <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
               </div>
               <div
                 style={{

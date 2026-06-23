@@ -7200,9 +7200,11 @@ const PAGE_CONTENT_H = A4_H - MARGIN * 2;
 
 interface TemplateTwoProps extends ResumeProps {
   customization?: ResumeCustomization;
+    viewMode?: boolean;
+
 }
 
-const TemplateTwo: React.FC<TemplateTwoProps> = ({ alldata, customization }) => {
+const TemplateTwo: React.FC<TemplateTwoProps> = ({ alldata, customization,  viewMode = false }) => {
   const context = useContext(CreateContext);
   const pathname = usePathname();
   const lastSegment = pathname.split("/").pop();
@@ -7951,10 +7953,167 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({ alldata, customization }) => 
   };
 
   // ── RENDER ────────────────────────────────────────────────────────────────
+//   return (
+//     <>
+//       {/* Download button */}
+//       {lastSegment === "download-resume" && (
+//         <div className="text-center my-8">
+//           <motion.button
+//             onClick={handleDownload}
+//             disabled={isDownloading}
+//             whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
+//             whileTap={!isDownloading ? { scale: 0.98 } : {}}
+//             className={`
+//               relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
+//               text-white transition-all duration-300 shadow-lg
+//               ${
+//                 isDownloading
+//                   ? "bg-gray-400 cursor-not-allowed opacity-80"
+//                   : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600"
+//               }
+//             `}
+//           >
+//             {!isDownloading && (
+//               <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+//             )}
+
+//             <div className="relative flex items-center justify-center gap-3 text-lg">
+//               {isDownloading ? (
+//                 <>
+//                   <FaSpinner className="animate-spin text-xl" />
+//                   <span>Generating PDF ...</span>
+//                 </>
+//               ) : (
+//                 <>
+//                   <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
+//                   <span>Download Resume</span>
+//                   <span className="text-sm opacity-75 font-light ml-1">
+//                     PDF
+//                   </span>
+//                 </>
+//               )}
+//             </div>
+//           </motion.button>
+//         </div>
+//       )}
+
+//       {alldata ? (
+//         <div
+//           style={{
+//             width: `${A4_W}px`,
+//             height: `${A4_H}px`,
+//             transform: "scale(0.36)",
+//             transformOrigin: "top left",
+//             overflow: "hidden",
+//             pointerEvents: "none",
+//             flexShrink: 0,
+//           }}
+//         >
+//           {pages[0] ? (
+//             <iframe
+//               title="resume-thumb"
+//               srcDoc={pages[0]}
+//               style={{
+//                 width: `${A4_W}px`,
+//                 height: `${A4_H}px`,
+//                 border: "none",
+//                 display: "block",
+//                 pointerEvents: "none",
+//               }}
+//               sandbox="allow-same-origin"
+//             />
+//           ) : (
+//             <div
+//               style={{
+//                 width: `${A4_W}px`,
+//                 height: `${A4_H}px`,
+//                 background: "white",
+//                 display: "flex",
+//                 alignItems: "center",
+//                 justifyContent: "center",
+//                 color: "#ccc",
+//                 fontSize: 14,
+//                 fontFamily: "sans-serif",
+//               }}
+//             >
+//               Loading…
+//             </div>
+//           )}
+//         </div>
+//       ) : (
+//         <div style={{ width: `${A4_W}px`, margin: "0 auto" }}>
+//           {(pages.length > 0 ? pages : [htmlContent]).map((pageHtml, idx) => (
+//             <div key={idx} style={{ marginBottom: "28px" }}>
+//               <div
+//                 style={{
+//                   display: "flex",
+//                   alignItems: "center",
+//                   justifyContent: "center",
+//                   gap: "10px",
+//                   marginBottom: "10px",
+//                 }}
+//               >
+//                 <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
+//                 <span
+//                   style={{
+//                     fontSize: "11px",
+//                     fontWeight: 600,
+//                     color: "#6b7280",
+//                     whiteSpace: "nowrap",
+//                     padding: "3px 12px",
+//                     background: "#f3f4f6",
+//                     borderRadius: "999px",
+//                     border: "1px solid #e5e7eb",
+//                     letterSpacing: "0.05em",
+//                     fontFamily: "system-ui, sans-serif",
+//                   }}
+//                 >
+//                   Page {idx + 1}
+//                   {pages.length > 1 ? ` of ${pages.length}` : ""}
+//                 </span>
+//                 <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
+//               </div>
+
+//               <div
+//                 style={{
+//                   width: `${A4_W}px`,
+//                   height: `${A4_H}px`,
+//                   overflow: "hidden",
+//                   background: "white",
+//                   boxShadow: "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
+//                   borderRadius: "2px",
+//                   flexShrink: 0,
+//                 }}
+//               >
+//                 <iframe
+//                   title={`resume-page-${idx + 1}`}
+//                   srcDoc={pageHtml}
+//                   style={{
+//                     width: `${A4_W}px`,
+//                     height: `${A4_H}px`,
+//                     border: "none",
+//                     display: "block",
+//                     pointerEvents: "none",
+//                   }}
+//                   scrolling="no"
+//                   sandbox="allow-same-origin allow-scripts"
+//                 />
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+//       )}
+//     </>
+//   );
+// };
+
+
+
+const isThumbnail = !!alldata && !viewMode ; 
   return (
     <>
-      {/* Download button */}
-      {lastSegment === "download-resume" && (
+      {/* Download button — hide in thumbnail mode */}
+      {!isThumbnail && lastSegment === 'download-resume' &&(
         <div className="text-center my-8">
           <motion.button
             onClick={handleDownload}
@@ -7963,39 +8122,37 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({ alldata, customization }) => 
             whileTap={!isDownloading ? { scale: 0.98 } : {}}
             className={`
               relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
-              text-white transition-all duration-300 shadow-lg
+              text-white transition-all duration-300  shadow-lg
               ${
                 isDownloading
                   ? "bg-gray-400 cursor-not-allowed opacity-80"
-                  : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600"
+                  : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600 cursor-pointer"
               }
             `}
           >
             {!isDownloading && (
               <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
             )}
-
             <div className="relative flex items-center justify-center gap-3 text-lg">
               {isDownloading ? (
                 <>
                   <FaSpinner className="animate-spin text-xl" />
-                  <span>Generating PDF ...</span>
+                  <span>Generating PDF …</span>
                 </>
               ) : (
                 <>
                   <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
                   <span>Download Resume</span>
-                  <span className="text-sm opacity-75 font-light ml-1">
-                    PDF
-                  </span>
+                  <span className="text-sm opacity-75 font-light ml-1">PDF</span>
                 </>
               )}
             </div>
           </motion.button>
         </div>
       )}
-
-      {alldata ? (
+ 
+      {isThumbnail ? (
+        // ── THUMBNAIL MODE (dashboard card) ─────────────────────────────────
         <div
           style={{
             width: `${A4_W}px`,
@@ -8039,6 +8196,7 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({ alldata, customization }) => 
           )}
         </div>
       ) : (
+        // ── FULL PREVIEW MODE (editor + view modal) ──────────────────────────
         <div style={{ width: `${A4_W}px`, margin: "0 auto" }}>
           {(pages.length > 0 ? pages : [htmlContent]).map((pageHtml, idx) => (
             <div key={idx} style={{ marginBottom: "28px" }}>
@@ -8071,14 +8229,14 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({ alldata, customization }) => 
                 </span>
                 <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
               </div>
-
               <div
                 style={{
                   width: `${A4_W}px`,
                   height: `${A4_H}px`,
                   overflow: "hidden",
                   background: "white",
-                  boxShadow: "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
+                  boxShadow:
+                    "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
                   borderRadius: "2px",
                   flexShrink: 0,
                 }}

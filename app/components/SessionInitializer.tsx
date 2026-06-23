@@ -39,9 +39,7 @@ export default function SessionInitializer({ children }: { children: React.React
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50/50">
         <div className="w-9 h-9 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-        <p className="text-xs text-gray-400 font-medium tracking-wide mt-3 animate-pulse">
-          Securing connection...
-        </p>
+        
       </div>
     );
   }
