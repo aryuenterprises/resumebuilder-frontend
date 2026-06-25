@@ -83,8 +83,10 @@ const ContactPage = () => {
         phone: mobileNum,
       };
 
+      
+
       await axios.post(
-        `https://aylms.aryuprojects.com/api/lead/submit/`,
+        `https://portal.aryuacademy.com/api/lead/submit/`,
         formData,
       );
 
