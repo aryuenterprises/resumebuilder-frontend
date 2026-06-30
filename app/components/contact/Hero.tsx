@@ -83,8 +83,6 @@ const ContactPage = () => {
         phone: mobileNum,
       };
 
-      
-
       await axios.post(
         `https://portal.aryuacademy.com/api/lead/submit/`,
         formData,
@@ -130,37 +128,37 @@ const ContactPage = () => {
   };
 
   const contactInfo = [
-  {
-    icon: FaEnvelope,
-    title: "Email",
-    value: "passats@aryuacademy.com",
-    description: "Send us an email",
-    isLink: true,
-    linkType: "email",
-  },
-  {
-    icon: FaClock,
-    title: "Response Time",
-    value: "Within 24 hours",
-    description: "Fast response guaranteed",
-    isLink: false,
-  },
-  {
-    icon: FaPhone,
-    title: "Phone",
-    value: "+91 8122869706",
-    description: "Mon-Fri, 9AM-6PM",
-    isLink: true,
-    linkType: "phone",
-  },
-  {
-    icon: FaMapMarkerAlt,
-    title: "Head Office",
-    value: "Aryu Enterprises",
-    description: "Chennai, India",
-    isLink: false,
-  },
-];
+    {
+      icon: FaEnvelope,
+      title: "Email",
+      value: "passats@aryuacademy.com",
+      description: "Send us an email",
+      isLink: true,
+      linkType: "email",
+    },
+    {
+      icon: FaClock,
+      title: "Response Time",
+      value: "Within 24 hours",
+      description: "Fast response guaranteed",
+      isLink: false,
+    },
+    {
+      icon: FaPhone,
+      title: "Phone",
+      value: "+91 8122869706",
+      description: "Mon-Fri, 9AM-6PM",
+      isLink: true,
+      linkType: "phone",
+    },
+    {
+      icon: FaMapMarkerAlt,
+      title: "Head Office",
+      value: "Aryu Enterprises",
+      description: "Chennai, India",
+      isLink: false,
+    },
+  ];
 
   return (
     <section className="relative bg-white py-12 sm:py-16 md:py-20 lg:py-24 xl:py-32 overflow-hidden">
@@ -201,44 +199,46 @@ const ContactPage = () => {
             {/* Contact Info Cards */}
             <div className="mt-6 sm:mt-8 grid grid-cols-1 sm:grid-cols-2  md:grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-4">
               {contactInfo.map((info, idx) => (
-  <motion.div
-    key={idx}
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    transition={{ delay: idx * 0.1 }}
-    className="flex items-start gap-2.5 sm:gap-3 p-3 sm:p-4 rounded-xl bg-gray-50 border border-gray-100 hover:shadow-md transition-all duration-300"
-  >
-    <div className="p-1.5 sm:p-2 bg-indigo-100 rounded-lg">
-      <info.icon className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4  text-indigo-600" />
-    </div>
-    <div>
-      <p className="text-[10px] sm:text-xs text-gray-500">{info.title}</p>
-      {info.isLink && info.linkType === "email" ? (
-        <a
-          href={`mailto:${info.value}`}
-          className="text-[11px] sm:text-xs md:text-sm font-semibold text-gray-900 break-words hover:underline"
-        >
-          {info.value}
-        </a>
-      ) : info.isLink && info.linkType === "phone" ? (
-        <a
-          href={`tel:${info.value.replace(/\s/g, '')}`}
-          className="text-[11px] sm:text-xs md:text-sm font-semibold text-gray-900 break-words hover:underline"
-        >
-          {info.value}
-        </a>
-      ) : (
-        <p className="text-[11px] sm:text-xs md:text-sm font-semibold text-gray-900 break-words">
-          {info.value}
-        </p>
-      )}
-      <p className="text-[9px] sm:text-[10px] text-gray-500 mt-0.5">
-        {info.description}
-      </p>
-    </div>
-  </motion.div>
-))}
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.1 }}
+                  className="flex items-start gap-2.5 sm:gap-3 p-3 sm:p-4 rounded-xl bg-gray-50 border border-gray-100 hover:shadow-md transition-all duration-300"
+                >
+                  <div className="p-1.5 sm:p-2 bg-indigo-100 rounded-lg">
+                    <info.icon className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4  text-indigo-600" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] sm:text-xs text-gray-500">
+                      {info.title}
+                    </p>
+                    {info.isLink && info.linkType === "email" ? (
+                      <a
+                        href={`mailto:${info.value}`}
+                        className="text-[11px] sm:text-xs md:text-sm font-semibold text-gray-900 break-words hover:underline"
+                      >
+                        {info.value}
+                      </a>
+                    ) : info.isLink && info.linkType === "phone" ? (
+                      <a
+                        href={`tel:${info.value.replace(/\s/g, "")}`}
+                        className="text-[11px] sm:text-xs md:text-sm font-semibold text-gray-900 break-words hover:underline"
+                      >
+                        {info.value}
+                      </a>
+                    ) : (
+                      <p className="text-[11px] sm:text-xs md:text-sm font-semibold text-gray-900 break-words">
+                        {info.value}
+                      </p>
+                    )}
+                    <p className="text-[9px] sm:text-[10px] text-gray-500 mt-0.5">
+                      {info.description}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
             </div>
           </motion.div>
 
@@ -255,7 +255,7 @@ const ContactPage = () => {
                   Send us a message
                 </h2>
                 <p className="text-[11px] sm:text-xs md:text-sm text-gray-500 mt-1">
-                  We'll get back to you within 24 hours
+                  We will get back to you within 24 hours
                 </p>
               </div>
 
@@ -329,7 +329,7 @@ const ContactPage = () => {
                       inputMode="numeric"
                       value={mobileNum}
                       onChange={(e) => setMobileNum(e.target.value)}
-                      placeholder="+91 123 45 78912"
+                      placeholder="+91 1234578912"
                       className={`w-full pl-9 sm:pl-10 pr-3 sm:pr-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl border transition-all outline-none text-sm sm:text-base ${
                         errors.mobileNum
                           ? "border-red-500 focus:border-red-500 focus:ring-red-100"
@@ -409,8 +409,3 @@ const ContactPage = () => {
 };
 
 export default ContactPage;
-
-
-
-
-
