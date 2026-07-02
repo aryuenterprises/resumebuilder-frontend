@@ -20,7 +20,6 @@ import {
   TemplateTwelve,
   TemplateTwo,
 } from "../components/templates";
-import TemplateTwenty from "../components/templates/TemplateTwenty";
 import { Template } from "../types";
 
 export const templateData: Template[] = [
@@ -197,5 +196,30 @@ export const templateData: Template[] = [
     // temp: "paid",
     //     pic: "true",
     // component: TemplateTwentyOne  },
+
+    // {  id: 21,
+    // style: "The Analyst",
+    // image: "/images/resume17.png",
+    // description: "Creative design with eye-catching sections.",
+    // temp: "paid",
+    //     pic: "true",
+    // component: TemplateTwentyTwo  },
+
+    // {  id: 21,
+    // style: "The Analyst",
+    // image: "/images/resume17.png",
+    // description: "Creative design with eye-catching sections.",
+    // temp: "paid",
+    //     pic: "true",
+    // component: TemplateTwentyThree  },
+
+    //  {  id: 21,
+    // style: "The Analyst",
+    // image: "/images/resume17.png",
+    // description: "Creative design with eye-catching sections.",
+    // temp: "paid",
+    //     pic: "true",
+    // component: TemplateTwentyFour  },
+
 
 ];

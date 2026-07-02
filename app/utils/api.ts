@@ -108,7 +108,7 @@ api.interceptors.response.use(
       } catch (refreshError) {
         processQueue(refreshError, null);
         isRefreshing = false;
-        // handleLogout();
+        handleLogout();
 
         console.error("Refresh token cookie expired too. Logging out...");
         return Promise.reject(refreshError);
