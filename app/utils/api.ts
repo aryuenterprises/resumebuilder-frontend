@@ -45,6 +45,66 @@ const processQueue = (error: any, token: string | null = null) => {
 };
 
 // 2. Response Interceptor: Catch expired access tokens and perform a Silent Refresh
+// api.interceptors.response.use(
+//   (response: AxiosResponse) => response,
+//   async (error) => {
+//     const originalRequest = error.config;
+
+//     // Check if Python returned a 401 or 403 (Token Expired)
+//     const isUnauthorized = error.response?.status === 401 || error.response?.status === 403;
+//     const isRefreshRequest = originalRequest.url?.includes("/token/refresh/");
+
+//     if (isUnauthorized && originalRequest && !originalRequest._retry && !isRefreshRequest) {
+      
+//       if (isRefreshing) {
+//         return new Promise((resolve, reject) => {
+//           failedQueue.push({ resolve, reject });
+//         })
+//           .then((token) => {
+//             originalRequest.headers.Authorization = `Bearer ${token}`;
+//             return api(originalRequest); 
+//           })
+//           .catch((err) => Promise.reject(err));
+//       }
+
+//       originalRequest._retry = true;
+//       isRefreshing = true; 
+
+//       try {
+//         console.log("Access token expired. Requesting a new one using the refresh cookie...");
+
+//         // 3. Call your Python refresh endpoint
+//         // Because withCredentials is true, the browser automatically sends the secure refresh_token cookie!
+//         const response = await axios.post(`${API_URL}/token/refresh/`, {}, { withCredentials: true });
+
+//         // Grab the brand new access token from the response body
+//         const newAccessToken = response.data.access_token;
+        
+//         // Update memory
+//         setInMemoryToken(newAccessToken);
+
+//         processQueue(null, newAccessToken);
+//         isRefreshing = false;
+
+//         // Retry original request
+//         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+//         return api(originalRequest); 
+//       } catch (refreshError) {
+//         processQueue(refreshError, null);
+//         isRefreshing = false;
+        
+//         console.error("Refresh token cookie expired too. Logging out...");
+//         // handleLogout();
+//         return Promise.reject(refreshError);
+//       }
+//     }
+
+//     return Promise.reject(error);
+//   }
+// );
+
+
+// 2. Response Interceptor: Catch expired access tokens and perform a Silent Refresh
 api.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error) => {
@@ -53,6 +113,15 @@ api.interceptors.response.use(
     // Check if Python returned a 401 or 403 (Token Expired)
     const isUnauthorized = error.response?.status === 401 || error.response?.status === 403;
     const isRefreshRequest = originalRequest.url?.includes("/token/refresh/");
+    
+  //  Check if this is a quota limit error
+    const isQuotaLimitError = error.response?.data?.message?.includes("ATS Scan limit exceeded") ||
+                              error.response?.data?.message?.includes("Scan limit exceeded");
+
+    // If it's a quota limit error, don't refresh, just reject
+    if (isQuotaLimitError) {
+      return Promise.reject(error);
+    }
 
     if (isUnauthorized && originalRequest && !originalRequest._retry && !isRefreshRequest) {
       
@@ -73,28 +142,23 @@ api.interceptors.response.use(
       try {
         console.log("Access token expired. Requesting a new one using the refresh cookie...");
 
-        // 3. Call your Python refresh endpoint
-        // Because withCredentials is true, the browser automatically sends the secure refresh_token cookie!
         const response = await axios.post(`${API_URL}/token/refresh/`, {}, { withCredentials: true });
 
-        // Grab the brand new access token from the response body
         const newAccessToken = response.data.access_token;
         
-        // Update memory
         setInMemoryToken(newAccessToken);
 
         processQueue(null, newAccessToken);
         isRefreshing = false;
 
-        // Retry original request
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return api(originalRequest); 
       } catch (refreshError) {
         processQueue(refreshError, null);
         isRefreshing = false;
-        
+                handleLogout();
+
         console.error("Refresh token cookie expired too. Logging out...");
-        handleLogout();
         return Promise.reject(refreshError);
       }
     }

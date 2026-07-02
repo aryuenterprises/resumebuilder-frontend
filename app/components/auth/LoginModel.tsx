@@ -135,6 +135,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { FiLogIn, FiShield, FiArrowRight, FiX } from "react-icons/fi";
 import { useRouter } from "next/navigation";
+import { useBodyScrollLock } from "@/app/hooks";
 
 const LoginModel = () => {
   const router = useRouter();
@@ -150,6 +151,9 @@ const LoginModel = () => {
       setShowLoginModal(false);
     }
   }, [userDetails]);
+
+
+  useBodyScrollLock(showLoginModal);
 
   return (
     <>
@@ -172,14 +176,7 @@ const LoginModel = () => {
                 {/* Decorative Top Bar */}
                 <div className="h-1 bg-gradient-to-r from-indigo-600 to-indigo-500" />
 
-                {/* Close Button */}
-                <button
-                  onClick={() => setShowLoginModal(false)}
-                  className="absolute top-3 sm:top-4 right-3 sm:right-4 text-gray-400 hover:text-gray-600 transition-colors duration-200 z-10 cursor-pointer"
-                  aria-label="Close modal"
-                >
-                  <FiX className="w-4 h-4 sm:w-5 sm:h-5" />
-                </button>
+                
 
                 {/* Modal Content */}
                 <div className="relative p-5 sm:p-6 md:p-8 text-center">
@@ -212,7 +209,7 @@ const LoginModel = () => {
                     transition={{ delay: 0.4 }}
                     className="text-[11px] sm:text-xs md:text-sm text-gray-500 mb-5 sm:mb-6 px-3 sm:px-4"
                   >
-                    Please login to your account to create and save your professional resume.
+                    Please login to your account.
                   </motion.p>
 
                   {/* Buttons */}
