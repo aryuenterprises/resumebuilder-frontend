@@ -2,55 +2,61 @@ pipeline {
     agent any
 
     environment {
-        DEPLOY_PATH = "/var/www/aryu_resumebuilder/resume_builder_frontend"
-        APP_NAME = "resumebuilder-frontend"
+        APP_DIR = "/var/www/passats-staging/resumebuilder-frontend"
+        BRANCH = "staging"
+        PM2_NAME = "resumebuilder-frontend-staging"
     }
 
     stages {
 
+        stage('Checkout') {
+            steps {
+                dir("${APP_DIR}") {
+                    sh """
+                    git fetch origin
+                    git checkout ${BRANCH}
+                    git reset --hard origin/${BRANCH}
+                    """
+                }
+            }
+        }
+
         stage('Install Dependencies') {
             steps {
-                sh 'npm ci'
+                dir("${APP_DIR}") {
+                    sh "npm install"
+                }
             }
         }
 
-        stage('Build Next.js') {
+        stage('Build') {
             steps {
-                sh 'npm run build'
+                dir("${APP_DIR}") {
+                    sh "npm run build"
+                }
             }
         }
 
-        stage('Deploy to Production Path') {
+        stage('Restart Application') {
             steps {
-                sh """
-                rsync -av --delete \
-                --no-group --no-owner \
-                --exclude='.git' \
-                --exclude='node_modules' \
-                ./ ${DEPLOY_PATH}/
-
-                """
+                dir("${APP_DIR}") {
+                    sh """
+                    PORT=3005 pm2 restart ${PM2_NAME} --update-env
+                    pm2 save
+                    """
+                }
             }
         }
 
-        stage('Restart via PM2') {
-            steps {
-                sh """
-                cd ${DEPLOY_PATH}
-                pm2 reload ${APP_NAME} || pm2 start npm --name "${APP_NAME}" -- start
-                pm2 save
-                """
-            }
-        }
     }
 
     post {
         success {
-            echo "✅ Deployment Successful"
+            echo 'Deployment Successful'
         }
+
         failure {
-            echo "❌ Deployment Failed"
+            echo 'Deployment Failed'
         }
     }
 }
-
