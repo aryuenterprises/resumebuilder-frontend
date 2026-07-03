@@ -41,7 +41,7 @@ pipeline {
             steps {
                 dir("${APP_DIR}") {
                     sh """
-                    PORT=3005 pm2 restart ${PM2_NAME} --update-env
+                    PORT=3005 pm2 restart ${PM2_NAME} --update-env || PORT=3005 pm2 start npm --name ${PM2_NAME} -- star
                     pm2 save
                     """
                 }
