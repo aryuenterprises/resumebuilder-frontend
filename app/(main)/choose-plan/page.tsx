@@ -1740,11 +1740,7 @@ export default function ChoosePlanPage() {
     }
   }, []);
 
-  console.log("usersCurrentPlan",usersCurrentPlan)
-
   useEffect(() => {
-
-    console.log("User Data:", userData);
 
     if (userData?.subscription) {
       setUsersCurrentPlan(userData.subscription.current_plan || null);

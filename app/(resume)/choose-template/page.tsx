@@ -871,7 +871,6 @@ function Choose_template() {
 
       // 🔥 FIX 1: Check for cancel error first
       if (axios.isCancel(err)) {
-        console.log("Upload cancelled");
         setUploadStatus("idle");
         setErrorMessage("Upload cancelled");
         return; // Early return to prevent further processing

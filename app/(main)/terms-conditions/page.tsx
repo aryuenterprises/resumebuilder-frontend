@@ -181,7 +181,6 @@ export default function TermsAndConditions() {
     fetchPlans();
   }, []);
 
-  console.log("planDetails", planDetails);
 
   const sections = [
     {

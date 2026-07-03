@@ -3685,7 +3685,6 @@ const DashboardPage = () => {
     if (!data) return null;
     const { profile, resumes, statistics, subscription, transactions } = data;
 
-    console.log("resumes",resumes)
     const filteredResumes =
       resumes?.flatMap((resume: Resume) => {
         const match = templateData.find((t) => t?.id === resume.template?.id);
