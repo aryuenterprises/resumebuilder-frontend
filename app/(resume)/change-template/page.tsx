@@ -921,6 +921,26 @@
 //   );
 // }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 "use client";
 
 import React, {
@@ -1729,7 +1749,7 @@ export default function ChangeTemplate() {
                         </div>
                       )}
 
-                      <div className="space-y-2 max-h-[400px] sm:max-h-[500px] lg:max-h-[600px] overflow-y-auto pr-1 custom-scrollbar">
+                      <div className="space-y-2 max-h-[400px] sm:max-h-[500px] lg:max-h-[600px] overflow-y-auto pr-1 ">
                         {templateData.map((template, index) => {
                           const isSelected =
                             previewTemplate?.id === template.id;
@@ -1944,28 +1964,7 @@ export default function ChangeTemplate() {
           )}
         </AnimatePresence>
 
-        <style jsx>{`
-          .custom-scrollbar::-webkit-scrollbar {
-            width: 3px;
-          }
-          .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-          }
-          .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #4f46e5;
-            border-radius: 10px;
-          }
-          .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #4338ca;
-          }
-
-          @media (min-width: 640px) {
-            .custom-scrollbar::-webkit-scrollbar {
-              width: 4px;
-            }
-          }
-        `}</style>
+       
       </ProtectedRoute>
     </div>
   );

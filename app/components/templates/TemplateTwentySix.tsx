@@ -13,7 +13,7 @@ import { usePathname } from "next/navigation";
 import { ResumeProps } from "@/app/types";
 import { motion } from "framer-motion";
 
-const TemplateThirtySeven: React.FC<ResumeProps> = ({ alldata }) => {
+const TemplateTwentySix: React.FC<ResumeProps> = ({ alldata }) => {
   const context = useContext(CreateContext);
   const pathname = usePathname();
   const lastSegment = pathname.split("/").pop();
@@ -641,4 +641,4 @@ const TemplateThirtySeven: React.FC<ResumeProps> = ({ alldata }) => {
   );
 };
 
-export default TemplateThirtySeven;
+export default TemplateTwentySix;

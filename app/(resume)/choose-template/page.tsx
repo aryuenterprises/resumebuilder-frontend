@@ -602,150 +602,345 @@ function Choose_template() {
     }
   }, []);
 
+  // const handleFileUpload = useCallback(
+  //   async (file: File) => {
+  //     const maxSize = 10 * 1024 * 1024;
+
+  //     if (!isPremiumUser || subscriptionStatus?.isExpired) {
+  //       setShowPlanRequiredPopup(true);
+  //       return;
+  //     }
+
+  //     if (!isValidFileType(file)) {
+  //       setErrorMessage("Please upload a PDF or DOCX file");
+  //       return;
+  //     }
+
+  //     if (file.size > maxSize) {
+  //       setErrorMessage("File size must be less than 10MB");
+  //       return;
+  //     }
+
+  //     if (uploadAbortController.current) {
+  //       uploadAbortController.current.abort();
+  //     }
+  //     uploadAbortController.current = new AbortController();
+
+  //     setIsUploading(true);
+  //     setUploadStatus("uploading");
+  //     setUploadedFile(file);
+  //     setErrorMessage("");
+
+  //     let progressInterval: NodeJS.Timeout | null = null;
+  //     const formData = new FormData();
+  //     formData.append("file", file);
+
+  //     try {
+  //       if (uploadStatus !== "error") {
+  //         progressInterval = setInterval(() => {
+  //           setUploadProgress((prev) => {
+  //             if (prev >= 90) {
+  //               if (progressInterval) clearInterval(progressInterval);
+  //               return 90;
+  //             }
+  //             return prev + 10;
+  //           });
+  //         }, 200);
+  //       }
+
+  //       setUploadStatus("processing");
+  //       setUploadProgress(100);
+
+  //       const response = await api.post(
+  //         `${API_URL}/parse/`,
+
+  //         formData,
+  //         {
+  //           headers: { "Content-Type": "multipart/form-data" },
+  //           signal: uploadAbortController.current.signal,
+  //           onUploadProgress: (progressEvent) => {
+  //             if (progressEvent.total && uploadStatus !== "error") {
+  //               const percentCompleted = Math.round(
+  //                 (progressEvent.loaded * 100) / progressEvent.total,
+  //               );
+  //               setUploadProgress(percentCompleted);
+  //             }
+  //           },
+  //         },
+  //       );
+
+  //       if (progressInterval) clearInterval(progressInterval);
+
+  //       const parsedResumeData = response.data.parsed;
+  //       const convertedData =
+  //         convertParsedResumeToFrontendFormat(parsedResumeData);
+
+  //       if (convertedData.contact) setContact(convertedData.contact);
+  //       if (convertedData.experiences)
+  //         setExperiences(convertedData.experiences);
+  //       if (convertedData.educations) setEducation(convertedData.educations);
+  //       if (convertedData.skills) setSkills(convertedData.skills);
+  //       if (convertedData.projects) setProjects(convertedData.projects);
+  //       if (convertedData.summary) setSummary(convertedData.summary);
+  //       if (convertedData.finalize) setFinalize(convertedData.finalize);
+
+  //       setFullResumeData({
+  //         contact: convertedData.contact,
+  //         experiences: convertedData.experiences,
+  //         education: convertedData.educations,
+  //         skills: convertedData.skills,
+  //         summary: convertedData.summary?.[0] || "",
+  //         finalize: convertedData.finalize || {},
+  //         projects: convertedData.projects || [],
+  //       });
+
+  //       const defaultTemplate = templateData[0];
+  //       setLocalStorage("chosenTemplate", defaultTemplate);
+  //       setChosenTemplate(defaultTemplate);
+  //       setIsUploadMode(true);
+  //       setUploadStatus("success");
+
+  //       toast.success("Resume uploaded and processed successfully!", {
+  //         duration: 3000,
+  //         style: { background: "#10b981", color: "#fff", borderRadius: "12px" },
+  //       });
+
+  //       setTimeout(() => {
+  //         setShowUploadPopup(false);
+  //         router.push(`/resume-details/contact`);
+  //         setTimeout(resetUploadState, 500);
+  //       }, 2000);
+  //     } catch (err) {
+  //       if (progressInterval) clearInterval(progressInterval);
+
+  //       if (axios.isCancel(err)) {
+  //         console.log("Upload cancelled");
+  //         setUploadStatus("idle");
+  //         setErrorMessage("Upload cancelled");
+  //       }
+  //       if (axios.isAxiosError(err)) {
+  //         const status = err.response?.status;
+  //         const message = err.response?.data?.message || err.message;
+
+  //         if (
+  //           status === 403 &&
+  //           message?.includes("Resume parsing limit exceeded")
+  //         ) {
+  //           setUploadStatus("error");
+  //           setUploadStatus(
+  //             "⚠️ Daily resume upload limit reached. Please try again tomorrow.",
+  //           );
+  //         }
+  //       }
+  //       // Use axios.isAxiosError for better type safety
+  //       else {
+  //         console.error("Upload error:", err);
+  //         setUploadStatus("error");
+  //         setErrorMessage("Failed to parse resume. Please try again.");
+  //       }
+  //     }
+
+  //     setIsUploading(false);
+  //   },
+  //   [
+  //     isPremiumUser,
+  //     subscriptionStatus,
+  //     isValidFileType,
+  //     uploadStatus,
+  //     setContact,
+  //     setExperiences,
+  //     setEducation,
+  //     setSkills,
+  //     setSummary,
+  //     setFinalize,
+  //     setProjects,
+  //     setFullResumeData,
+  //     setChosenTemplate,
+  //     setIsUploadMode,
+  //     router,
+  //     resetUploadState,
+  //   ],
+  // );
+
   const handleFileUpload = useCallback(
-    async (file: File) => {
-      const maxSize = 10 * 1024 * 1024;
+  async (file: File) => {
+    const maxSize = 10 * 1024 * 1024;
 
-      if (!isPremiumUser || subscriptionStatus?.isExpired) {
-        setShowPlanRequiredPopup(true);
-        return;
+    if (!isPremiumUser || subscriptionStatus?.isExpired) {
+      setShowPlanRequiredPopup(true);
+      return;
+    }
+
+    if (!isValidFileType(file)) {
+      setErrorMessage("Please upload a PDF or DOCX file");
+      return;
+    }
+
+    if (file.size > maxSize) {
+      setErrorMessage("File size must be less than 10MB");
+      return;
+    }
+
+    if (uploadAbortController.current) {
+      uploadAbortController.current.abort();
+    }
+    uploadAbortController.current = new AbortController();
+
+    setIsUploading(true);
+    setUploadStatus("uploading");
+    setUploadedFile(file);
+    setErrorMessage("");
+
+    let progressInterval: NodeJS.Timeout | null = null;
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      if (uploadStatus !== "error") {
+        progressInterval = setInterval(() => {
+          setUploadProgress((prev) => {
+            if (prev >= 90) {
+              if (progressInterval) clearInterval(progressInterval);
+              return 90;
+            }
+            return prev + 10;
+          });
+        }, 200);
       }
 
-      if (!isValidFileType(file)) {
-        setErrorMessage("Please upload a PDF or DOCX file");
-        return;
-      }
-
-      if (file.size > maxSize) {
-        setErrorMessage("File size must be less than 10MB");
-        return;
-      }
-
-      if (uploadAbortController.current) {
-        uploadAbortController.current.abort();
-      }
-      uploadAbortController.current = new AbortController();
-
-      setIsUploading(true);
-      setUploadStatus("uploading");
-      setUploadedFile(file);
-      setErrorMessage("");
-
-      let progressInterval: NodeJS.Timeout | null = null;
-      const formData = new FormData();
-      formData.append("file", file);
-
-      try {
-        if (uploadStatus !== "error") {
-          progressInterval = setInterval(() => {
-            setUploadProgress((prev) => {
-              if (prev >= 90) {
-                if (progressInterval) clearInterval(progressInterval);
-                return 90;
-              }
-              return prev + 10;
-            });
-          }, 200);
-        }
-
-        setUploadStatus("processing");
-        setUploadProgress(100);
-
-        // http://127.0.0.1:8001/api/resume/parse/
-
-        const response = await api.post(
-          // `https://ai.aryuacademy.com/api/v1/resume/parse-resume`,
-          `${API_URL}/parse/`,
-
-          formData,
-          {
-            headers: { "Content-Type": "multipart/form-data" },
-            signal: uploadAbortController.current.signal,
-            onUploadProgress: (progressEvent) => {
-              if (progressEvent.total && uploadStatus !== "error") {
-                const percentCompleted = Math.round(
-                  (progressEvent.loaded * 100) / progressEvent.total,
-                );
-                setUploadProgress(percentCompleted);
-              }
-            },
+      const response = await api.post(
+        `${API_URL}/parse/`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+          signal: uploadAbortController.current.signal,
+          onUploadProgress: (progressEvent) => {
+            if (progressEvent.total && uploadStatus !== "error") {
+              const percentCompleted = Math.round(
+                (progressEvent.loaded * 100) / progressEvent.total,
+              );
+              setUploadProgress(percentCompleted);
+            }
           },
-        );
+        },
+      );
 
-        if (progressInterval) clearInterval(progressInterval);
+      if (progressInterval) clearInterval(progressInterval);
 
-        const parsedResumeData = response.data.parsed;
-        const convertedData =
-          convertParsedResumeToFrontendFormat(parsedResumeData);
+      // Success handling
+      const parsedResumeData = response.data.parsed;
+      const convertedData = convertParsedResumeToFrontendFormat(parsedResumeData);
 
-        if (convertedData.contact) setContact(convertedData.contact);
-        if (convertedData.experiences)
-          setExperiences(convertedData.experiences);
-        if (convertedData.educations) setEducation(convertedData.educations);
-        if (convertedData.skills) setSkills(convertedData.skills);
-        if (convertedData.projects) setProjects(convertedData.projects);
-        if (convertedData.summary) setSummary(convertedData.summary);
-        if (convertedData.finalize) setFinalize(convertedData.finalize);
+      if (convertedData.contact) setContact(convertedData.contact);
+      if (convertedData.experiences) setExperiences(convertedData.experiences);
+      if (convertedData.educations) setEducation(convertedData.educations);
+      if (convertedData.skills) setSkills(convertedData.skills);
+      if (convertedData.projects) setProjects(convertedData.projects);
+      if (convertedData.summary) setSummary(convertedData.summary);
+      if (convertedData.finalize) setFinalize(convertedData.finalize);
 
-        setFullResumeData({
-          contact: convertedData.contact,
-          experiences: convertedData.experiences,
-          education: convertedData.educations,
-          skills: convertedData.skills,
-          summary: convertedData.summary?.[0] || "",
-          finalize: convertedData.finalize || {},
-          projects: convertedData.projects || [],
-        });
+      setFullResumeData({
+        contact: convertedData.contact,
+        experiences: convertedData.experiences,
+        education: convertedData.educations,
+        skills: convertedData.skills,
+        summary: convertedData.summary?.[0] || "",
+        finalize: convertedData.finalize || {},
+        projects: convertedData.projects || [],
+      });
 
-        const defaultTemplate = templateData[0];
-        setLocalStorage("chosenTemplate", defaultTemplate);
-        setChosenTemplate(defaultTemplate);
-        setIsUploadMode(true);
-        setUploadStatus("success");
+      const defaultTemplate = templateData[0];
+      setLocalStorage("chosenTemplate", defaultTemplate);
+      setChosenTemplate(defaultTemplate);
+      setIsUploadMode(true);
+      setUploadStatus("success");
 
-        toast.success("Resume uploaded and processed successfully!", {
-          duration: 3000,
-          style: { background: "#10b981", color: "#fff", borderRadius: "12px" },
-        });
+      toast.success("Resume uploaded and processed successfully!", {
+        duration: 3000,
+        style: { background: "#10b981", color: "#fff", borderRadius: "12px" },
+      });
 
-        setTimeout(() => {
-          setShowUploadPopup(false);
-          router.push(`/resume-details/contact`);
-          setTimeout(resetUploadState, 500);
-        }, 2000);
-      } catch (err) {
-        if (progressInterval) clearInterval(progressInterval);
-        if (axios.isCancel(err)) {
-          console.log("Upload cancelled");
-          setUploadStatus("idle");
-          setErrorMessage("Upload cancelled");
-        } else {
-          console.error("Upload error:", err);
-          setUploadStatus("error");
-          setErrorMessage("Failed to parse resume. Please try again.");
-        }
-        setIsUploading(false);
+      setTimeout(() => {
+        setShowUploadPopup(false);
+        router.push(`/resume-details/contact`);
+        setTimeout(resetUploadState, 500);
+      }, 2000);
+
+    } catch (err) {
+      if (progressInterval) clearInterval(progressInterval);
+
+      // 🔥 FIX 1: Check for cancel error first
+      if (axios.isCancel(err)) {
+        console.log("Upload cancelled");
+        setUploadStatus("idle");
+        setErrorMessage("Upload cancelled");
+        return; // Early return to prevent further processing
       }
-    },
-    [
-      isPremiumUser,
-      subscriptionStatus,
-      isValidFileType,
-      uploadStatus,
-      setContact,
-      setExperiences,
-      setEducation,
-      setSkills,
-      setSummary,
-      setFinalize,
-      setProjects,
-      setFullResumeData,
-      setChosenTemplate,
-      setIsUploadMode,
-      router,
-      resetUploadState,
-    ],
-  );
+
+      // 🔥 FIX 2: Handle axios errors properly
+      if (axios.isAxiosError(err)) {
+        const status = err.response?.status;
+        const message = err.response?.data?.message || err.message;
+
+        console.error("Upload error details:", { status, message, data: err.response?.data });
+
+        // 🔥 FIX 3: Check for quota limit error
+        if (status === 403 && message?.includes("Resume parsing limit exceeded")) {
+          setUploadStatus("error");
+          setErrorMessage("Daily resume upload limit reached. Please try again tomorrow.");
+          toast.error("Resume parsing limit exceeded for today", {
+            duration: 4000,
+            style: { background: "#ef4444", color: "#fff", borderRadius: "12px" },
+          });
+          setUploadedFile(null); // Clear the file
+        } 
+        // 🔥 FIX 4: Handle other 403 errors
+        else if (status === 403) {
+          setUploadStatus("error");
+          setErrorMessage("Access forbidden. Please check your permissions.");
+        } 
+        // 🔥 FIX 5: Handle authentication errors
+        else if (status === 401) {
+          setUploadStatus("error");
+          setErrorMessage("Session expired. Please login again.");
+        } 
+        // 🔥 FIX 6: Handle other errors
+        else {
+          setUploadStatus("error");
+          setErrorMessage(message || "Failed to parse resume. Please try again.");
+        }
+      } 
+      // 🔥 FIX 7: Handle non-axios errors
+      else {
+        console.error("Upload error:", err);
+        setUploadStatus("error");
+        setErrorMessage("Failed to parse resume. Please try again.");
+      }
+    } finally {
+      // 🔥 FIX 8: Always set uploading to false
+      setIsUploading(false);
+    }
+  },
+  [
+    isPremiumUser,
+    subscriptionStatus,
+    isValidFileType,
+    uploadStatus,
+    setContact,
+    setExperiences,
+    setEducation,
+    setSkills,
+    setSummary,
+    setFinalize,
+    setProjects,
+    setFullResumeData,
+    setChosenTemplate,
+    setIsUploadMode,
+    router,
+    resetUploadState,
+    templateData, // 🔥 FIX 9: Add templateData to dependencies
+  ],
+);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -799,7 +994,7 @@ function Choose_template() {
   ]);
 
   // ============================================================
-  // CLEANUP 
+  // CLEANUP
   // ============================================================
 
   useEffect(() => {
@@ -854,14 +1049,13 @@ function Choose_template() {
     handlePreview,
   ]);
 
-  
   return (
     <div className="min-h-screen bg-white">
       <Toaster position="top-right" />
       <Header />
 
       {/* ============================================================
-          RENEWAL REMINDER (Unchanged UI)
+          RENEWAL REMINDER 
           ======================================================== */}
       <AnimatePresence>
         {showRenewalReminder &&
@@ -923,7 +1117,7 @@ function Choose_template() {
       </AnimatePresence>
 
       {/* ============================================================
-          INITIAL POPUP (EXACT SAME UI)
+          INITIAL POPUP 
           ============================================================ */}
       <AnimatePresence>
         {showInitialPopup && (
@@ -1086,7 +1280,7 @@ function Choose_template() {
       </AnimatePresence>
 
       {/* ============================================================
-          LOGIN PROMPT POPUP (EXACT SAME UI)
+          LOGIN PROMPT POPUP 
           ============================================================ */}
       <AnimatePresence>
         {showLoginPrompt && (
@@ -1145,7 +1339,7 @@ function Choose_template() {
       </AnimatePresence>
 
       {/* ============================================================
-          UPGRADE/RENEWAL POPUP (EXACT SAME UI)
+          UPGRADE/RENEWAL POPUP 
           ============================================================ */}
       <AnimatePresence>
         {(showPlanRequiredPopup ||
@@ -1249,7 +1443,7 @@ function Choose_template() {
       </AnimatePresence>
 
       {/* ============================================================
-          TEMPLATE UPGRADE POPUP (EXACT SAME UI)
+          TEMPLATE UPGRADE POPUP 
           ============================================================ */}
       <AnimatePresence>
         {showUpgradePopup &&
@@ -1313,7 +1507,7 @@ function Choose_template() {
       </AnimatePresence>
 
       {/* ============================================================
-          UPLOAD POPUP (EXACT SAME UI)
+          UPLOAD POPUP 
           ============================================================ */}
       <AnimatePresence>
         {showUploadPopup && (
@@ -1448,15 +1642,18 @@ function Choose_template() {
                         {errorMessage ||
                           "Something went wrong. Please try again."}
                       </p>
-                      <button
-                        onClick={() => {
-                          resetUploadState();
-                          document.getElementById("file-upload")?.click();
-                        }}
+
+                      {errorMessage !== "Daily resume upload limit reached. Please try again tomorrow." && (
+                        <button
+                          onClick={() => {
+                            resetUploadState();
+                            document.getElementById("file-upload")?.click();
+                          }}
                         className="px-4 sm:px-5 py-2 bg-red-600 text-white rounded-lg text-xs sm:text-sm font-medium hover:bg-red-700 transition"
                       >
                         Try Again
                       </button>
+                      )}
                     </div>
                   ) : (
                     <div className="text-center">
@@ -1485,14 +1682,7 @@ function Choose_template() {
                   )}
                 </div>
 
-                {uploadStatus === "error" && errorMessage && !isUploading && (
-                  <div className="mt-3 sm:mt-4 p-2.5 sm:p-3 bg-red-50 border border-red-200 rounded-lg sm:rounded-xl flex items-start gap-1.5 sm:gap-2">
-                    <AlertCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-500 mt-0.5 flex-shrink-0" />
-                    <p className="text-[11px] sm:text-xs text-red-600">
-                      {errorMessage}
-                    </p>
-                  </div>
-                )}
+              
 
                 <div className="flex gap-2 sm:gap-3 mt-4 sm:mt-6">
                   <button
@@ -1520,7 +1710,7 @@ function Choose_template() {
       </AnimatePresence>
 
       {/* ============================================================
-          HERO SECTION (EXACT SAME UI)
+          HERO SECTION 
           ============================================================ */}
       <div className="relative overflow-hidden bg-gradient-to-br from-indigo-700 via-indigo-600 to-purple-700">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
@@ -1611,7 +1801,7 @@ function Choose_template() {
       </div>
 
       {/* ============================================================
-          UPLOAD CTA (EXACT SAME UI)
+          UPLOAD CTA 
           ============================================================ */}
       <div className="relative z-10 -mt-7 sm:-mt-8 px-4 sm:px-6 lg:px-8">
         <motion.div
@@ -1668,7 +1858,7 @@ function Choose_template() {
       </div>
 
       {/* ============================================================
-          TEMPLATES SECTION (EXACT SAME UI)
+          TEMPLATES SECTION 
           ============================================================ */}
       <section className="px-4 sm:px-6 lg:px-8 py-12 sm:py-14 lg:py-18 bg-white">
         <div className="max-w-7xl mx-auto">
@@ -1765,7 +1955,7 @@ function Choose_template() {
             })}
           </div>
 
-          {/* Upgrade Prompts (EXACT SAME UI) */}
+          {/* Upgrade Prompts  */}
           {subscriptionStatus?.isExpired ? (
             <motion.div
               initial={{ opacity: 0, y: 16 }}
@@ -1856,7 +2046,7 @@ function Choose_template() {
       <AnimatePresence>{templatePreviewSheet}</AnimatePresence>
 
       {/* ============================================================
-          RESUME PREVIEW MODAL (EXACT SAME UI)
+          RESUME PREVIEW MODAL 
           ============================================================ */}
       <ResumePreviewModal
         show={showPreview}

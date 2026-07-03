@@ -1437,8 +1437,6 @@ const ATSCheckerPage = () => {
     const formData = new FormData();
     formData.append("file", file);
 
-   
-
     // try {
     //   const response = await api.post<ATSResults>(
     //     `${API_URL}/ats/scan/`,
@@ -1455,51 +1453,46 @@ const ATSCheckerPage = () => {
     //     e?.response?.data?.message || e?.message || "Failed to analyze resume",
     //   );
 
-    //     if (error.response?.status === 403 && 
+    //     if (error.response?.status === 403 &&
     //   error.response?.data?.message?.includes("ATS Scan limit exceeded")) {
 
-      
     //   setFile(null);
     // } finally {
     //   setUploading(false);
     //   setTimeout(() => setLoading(false), 3000);
     // }
 
+    try {
+      const response = await api.post<ATSResults>(
+        `${API_URL}/ats/scan/`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } },
+      );
+      setAtsResults(response?.data);
+    } catch (err: unknown) {
+      // Use axios.isAxiosError for better type safety
+      if (axios.isAxiosError(err)) {
+        const status = err.response?.status;
+        const message = err.response?.data?.message || err.message;
 
-
-  
-  try {
-    const response = await api.post<ATSResults>(
-      `${API_URL}/ats/scan/`,
-      formData,
-      { headers: { "Content-Type": "multipart/form-data" } },
-    );
-    setAtsResults(response?.data);
-  } catch (err: unknown) {
-    // Use axios.isAxiosError for better type safety
-    if (axios.isAxiosError(err)) {
-      const status = err.response?.status;
-      const message = err.response?.data?.message || err.message;
-      
-      if (status === 403 && message?.includes("ATS Scan limit exceeded")) {
-        setError("⚠️ Daily scan limit reached. Please try again tomorrow.");
-        setFile(null);
-      } else if (status === 403) {
-        setError("Access forbidden. Please check your permissions.");
-      } else if (status === 401) {
-        setError("Session expired. Please login again.");
+        if (status === 403 && message?.includes("ATS Scan limit exceeded")) {
+          setError("⚠️ Daily scan limit reached. Please try again tomorrow.");
+          setFile(null);
+        } else if (status === 403) {
+          setError("Access forbidden. Please check your permissions.");
+        } else if (status === 401) {
+          setError("Session expired. Please login again.");
+        } else {
+          setError(message || "Failed to analyze resume");
+        }
       } else {
-        setError(message || "Failed to analyze resume");
+        setError("An unexpected error occurred");
       }
-    } else {
-      setError("An unexpected error occurred");
+    } finally {
+      setUploading(false);
+      setTimeout(() => setLoading(false), 3000);
     }
-  } finally {
-    setUploading(false);
-    setTimeout(() => setLoading(false), 3000);
-  }
-}
-
+  };
 
   const atsScore = atsResults?.ats_score || 0;
   const totalSections = atsResults?.section_analysis
@@ -1530,7 +1523,7 @@ const ATSCheckerPage = () => {
 
   return (
     <>
-    <LoginModel/>
+      <LoginModel />
       <AnimatePresence>{loading && <LoadingScreen />}</AnimatePresence>
 
       <section className="relative pt-14 sm:pt-20 md:pt-24 lg:pt-28 pb-12 sm:pb-16 md:pb-20 overflow-hidden">

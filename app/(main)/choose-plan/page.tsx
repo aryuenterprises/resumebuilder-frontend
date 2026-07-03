@@ -1720,7 +1720,7 @@ export default function ChoosePlanPage() {
     gcTime: 10 * 60 * 1000,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
-    enabled: !!getLocalStorage<User>("user_details")?.id && !!getLocalStorage<string>("access_token"),
+    enabled: !!getLocalStorage<User>("user_details")?.id,
   });
 
   // ─── Process User Data ──────────────────────────────────────────────────────
@@ -1728,9 +1728,8 @@ export default function ChoosePlanPage() {
   useEffect(() => {
     // Check authentication
     const userDetails = getLocalStorage<User>("user_details");
-    const accessToken = getLocalStorage<string>("access_token");
     
-    if (userDetails?.id && accessToken) {
+    if (userDetails?.id) {
       setIsAuthenticated(true);
       setUserId(userDetails.id);
       setUserEmail(userDetails.email || "");
@@ -1741,7 +1740,12 @@ export default function ChoosePlanPage() {
     }
   }, []);
 
+  console.log("usersCurrentPlan",usersCurrentPlan)
+
   useEffect(() => {
+
+    console.log("User Data:", userData);
+
     if (userData?.subscription) {
       setUsersCurrentPlan(userData.subscription.current_plan || null);
       setIsSubscriptionExpired(userData.subscription.is_expired || false);

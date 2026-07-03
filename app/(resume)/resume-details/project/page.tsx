@@ -1266,14 +1266,24 @@ const ProjectsForm = () => {
                             {(!project.title || project.title.trim() === "") &&
                               !loading &&
                               !isMobile && (
-                                <div className="absolute left-1/2 -translate-x-1/2 -top-2 -translate-y-full mt-1 w-full bg-gray-900 text-white text-xs rounded-lg py-2 px-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-50 shadow-lg">
-                                  <div className="relative text-center whitespace-nowrap">
-                                    <span className="inline-block mr-1">
-                                      ⚠️
-                                    </span>
+                                // <div className="absolute left-1/2 -translate-x-1/2 -top-2 -translate-y-full mt-1 w-full bg-gray-900 text-white text-xs rounded-lg py-2 px-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-50 shadow-lg">
+                                //   <div className="relative text-center whitespace-nowrap">
+                                //     <span className="inline-block mr-1">
+                                //       ⚠️
+                                //     </span>
+                                //     Enter project title to use AI Assist
+                                //   </div>
+                                // </div>
+
+
+ <div className="absolute left-1/2 -translate-x-1/2 -top-2 -translate-y-full mt-1 w-full bg-gray-900 text-white text-xs rounded-lg py-2 px-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-50 shadow-lg wrap-break-word overflow-auto-">
+                                      <div className="relative text-center wrap-break-word">
+                                        <span className="inline-block mr-1">
+                                          ⚠️
+                                        </span>
                                     Enter project title to use AI Assist
-                                  </div>
-                                </div>
+                                      </div>
+                                    </div>
                               )}
                           </div>
                         </div>

@@ -18,8 +18,10 @@ import {
   TemplateThirteen,
   TemplateThree,
   TemplateTwelve,
+  TemplateTwenty,
   TemplateTwo,
 } from "../components/templates";
+
 import { Template } from "../types";
 
 export const templateData: Template[] = [
@@ -168,10 +170,9 @@ export const templateData: Template[] = [
     component: TemplateSeventeen },
   //  {  id: 18,
   //   style: "The Analyst",
-  //   image: "/images/resume17.png",
+  //   image: "/images/resume18.png",
   //   description: "Creative design with eye-catching sections.",
   //   temp: "paid",
-  //       pic: "true",
   //   component: TemplateEighteen  },
   //    {  id: 19,
   //   style: "The Analyst",
@@ -181,13 +182,13 @@ export const templateData: Template[] = [
   //       pic: "true",
   //   component: TemplateNineteen  },
 
-  //     {  id: 20,
-  //   style: "The Analyst",
-  //   image: "/images/resume17.png",
-  //   description: "Creative design with eye-catching sections.",
-  //   temp: "paid",
-  //       pic: "true",
-  //   component: TemplateTwenty  },
+    //   {  id: 20,
+    // style: "The Analyst",
+    // image: "/images/resume17.png",
+    // description: "Creative design with eye-catching sections.",
+    // temp: "paid",
+    //     pic: "true",
+    // component: TemplateTwenty  },
 
     // {  id: 21,
     // style: "The Analyst",
@@ -220,6 +221,24 @@ export const templateData: Template[] = [
     // temp: "paid",
     //     pic: "true",
     // component: TemplateTwentyFour  },
+
+    //     {  id: 21,
+    // style: "The Analyst",
+    // image: "/images/resume17.png",
+    // description: "Creative design with eye-catching sections.",
+    // temp: "paid",
+    //     pic: "true",
+    // component: TemplateTwentyFive  },
+
+    //   {  id: 21,
+    // style: "The Analyst",
+    // image: "/images/resume17.png",
+    // description: "Creative design with eye-catching sections.",
+    // temp: "paid",
+    //     pic: "true",
+    // component: TemplateTwentySix  },
+
+     
 
 
 ];

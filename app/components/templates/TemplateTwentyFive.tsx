@@ -13,7 +13,7 @@ import { usePathname } from "next/navigation";
 import { ResumeProps } from "@/app/types";
 import { motion } from "framer-motion";
 
-const TemplateThirtySix: React.FC<ResumeProps> = ({ alldata }) => {
+const TemplateTwentyFive: React.FC<ResumeProps> = ({ alldata }) => {
   const context = useContext(CreateContext);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [base64Image, setBase64Image] = useState<string | null>(null);
@@ -626,4 +626,4 @@ const TemplateThirtySix: React.FC<ResumeProps> = ({ alldata }) => {
   );
 };
 
-export default TemplateThirtySix;
+export default TemplateTwentyFive;
