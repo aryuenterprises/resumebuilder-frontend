@@ -820,6 +820,7 @@ interface AllData {
   contact?: Contact;
   educations?: Education[];
   experiences?: Experience[];
+  projects?: any[];
   skills?: any;
   finalize?: Finalize;
   summary?: string;
@@ -849,6 +850,7 @@ const TemplateTwenty: React.FC<TemplateTwentyProps> = ({
   const contact = alldata?.contact || context.contact || {};
   const educations = alldata?.educations || context?.education || [];
   const experiences = alldata?.experiences || context?.experiences || [];
+  const projects = alldata?.projects || context?.projects || [];
   const skills = (alldata as any)?.skills?.text || (context as any)?.skills?.text || "";
   const finalize = alldata?.finalize || context?.finalize || {};
   const summary = alldata?.summary || context?.summary || "";
@@ -1041,6 +1043,22 @@ const TemplateTwenty: React.FC<TemplateTwentyProps> = ({
     .t20-entry-content ol { list-style-type: decimal !important; padding-left: 16px !important; margin: 0 !important; }
     .t20-entry-content li { margin: 0 0 2px 0 !important; line-height: 1.6 !important; font-size: 12.5px !important; }
 
+    /* ── PROJECTS ── */
+    .t20-project-header {
+      display: flex; justify-content: space-between; align-items: baseline;
+      gap: 8px; flex-wrap: wrap; margin-bottom: 3px;
+    }
+    .t20-project-links { display: flex; gap: 8px; flex-shrink: 0; }
+    .t20-link-badge {
+      font-size: 10.5px; font-weight: 700; color: #e8621a; text-decoration: underline;
+      white-space: nowrap;
+    }
+    .t20-tech-stack { display: flex; flex-wrap: wrap; gap: 5px; margin: 4px 0 6px; }
+    .t20-tech-chip {
+      font-size: 10px; font-weight: 600; color: #c95510; background: #f5ece0;
+      border-radius: 3px; padding: 2px 7px;
+    }
+
     /* ── SKILL / LANGUAGE BARS ── */
     .t20-skill-row { margin-bottom: 10px; }
     .t20-skill-name { font-size: 12px; font-weight: 700; color: #1a1a1a; margin-bottom: 3px; letter-spacing: 0.2px; }
@@ -1109,6 +1127,33 @@ const TemplateTwenty: React.FC<TemplateTwentyProps> = ({
                    ${start || end ? `<div class="t20-entry-date">${start}${start && end ? " – " : ""}${end}</div>` : ""}
                  </div>
                  ${exp.text ? `<div class="t20-entry-content">${stripHtml(exp.text)}</div>` : ""}
+               </div>`;
+               })
+               .join("")}
+           </div>`
+        : "";
+
+      const projBlock = projects.length
+        ? `<div class="t20-section" data-block-id="proj-section">
+             <div class="t20-section-title">Projects</div>
+             ${projects
+               .map((p: any, i: number) => {
+                 return `<div class="t20-entry" data-block-id="proj-${i}">
+                 <div class="t20-entry-header">
+                   <div class="t20-project-header">
+                     <div class="t20-entry-title">${p.title || ""}</div>
+                     ${
+                       p.liveUrl || p.githubUrl
+                         ? `<div class="t20-project-links">
+                           ${p.liveUrl ? `<a href="${href(p.liveUrl)}" class="t20-link-badge" target="_blank">Live Demo</a>` : ""}
+                           ${p.githubUrl ? `<a href="${href(p.githubUrl)}" class="t20-link-badge" target="_blank">GitHub</a>` : ""}
+                         </div>`
+                         : ""
+                     }
+                   </div>
+                 </div>
+                 ${p.techStack?.length ? `<div class="t20-tech-stack">${p.techStack.map((t: string) => `<span class="t20-tech-chip">${t}</span>`).join("")}</div>` : ""}
+                 ${p.description ? `<div class="t20-entry-content">${stripHtml(p.description)}</div>` : ""}
                </div>`;
                })
                .join("")}
@@ -1230,7 +1275,7 @@ const TemplateTwenty: React.FC<TemplateTwentyProps> = ({
         ? `<style>.t20-resume { width: 100% !important; padding: 0 !important; }</style>`
         : "";
 
-      let bodyContent = `${header}${summaryBlock}${expBlock}${eduBlock}${skillsBlock}${languagesBlock}${certificationsBlock}${awardsBlock}${hobbiesBlock}${referencesBlock}${websitesBlock}${customBlock}`;
+      let bodyContent = `${header}${summaryBlock}${expBlock}${projBlock}${eduBlock}${skillsBlock}${languagesBlock}${certificationsBlock}${awardsBlock}${hobbiesBlock}${referencesBlock}${websitesBlock}${customBlock}`;
 
       if (forPDF && pageBreakIds.length > 0) {
         const tempDiv = document.createElement("div");
@@ -1265,6 +1310,7 @@ const TemplateTwenty: React.FC<TemplateTwentyProps> = ({
       contact,
       educations,
       experiences,
+      projects,
       skills,
       finalize,
       summary,
@@ -1497,7 +1543,7 @@ const TemplateTwenty: React.FC<TemplateTwentyProps> = ({
   return (
     <>
       {/* Download button — hide in thumbnail mode */}
-      {!isThumbnail && lastSegment === "download-resume" && (
+      {/* {!isThumbnail && lastSegment === "download-resume" && ( */}
         <div className="text-center my-8">
           <motion.button
             onClick={handleDownload}
@@ -1530,7 +1576,7 @@ const TemplateTwenty: React.FC<TemplateTwentyProps> = ({
             </div>
           </motion.button>
         </div>
-      )}
+      {/* )} */}
 
       {isThumbnail ? (
         // ── THUMBNAIL MODE (dashboard card) ─────────────────────────────────
