@@ -203,6 +203,38 @@ const TemplatePreviewBottomSheet = React.memo(
           </div>
 
           <div className="flex-1 overflow-y-auto">
+               <div className="flex gap-3 flex-wrap m-3">
+                <button
+                  onClick={handleFullPreview}
+                  className={`${ghostBtn} flex-1 px-2 text-xs sm:text-sm`}
+                >
+                  <Eye className="w-4 h-4" />
+                  Full preview
+                </button>
+                <button
+                  onClick={handleUseTemplate}
+                  className={`flex-1 px-2 text-xs sm:text-sm ${
+                    isAccessible && !isPlanExpired ? primaryBtn : amberBtn
+                  }`}
+                >
+                  {isAccessible && !isPlanExpired ? (
+                    <>
+                      <Sparkles className="w-4 h-4" />
+                      Use this template
+                    </>
+                  ) : isPlanExpired ? (
+                    <>
+                      <Gift className="w-4 h-4" />
+                      Renew to access
+                    </>
+                  ) : (
+                    <>
+                      <Lock className="w-4 h-4" />
+                      Unlock with {requiredPlanLabel}
+                    </>
+                  )}
+                </button>
+              </div>
             <div
               className="relative mx-4 mt-1 aspect-[210/280] cursor-pointer overflow-hidden rounded-2xl bg-slate-50 ring-1 ring-slate-100"
               onClick={handleFullPreview}
@@ -274,38 +306,7 @@ const TemplatePreviewBottomSheet = React.memo(
                 </div>
               </div>
 
-              <div className="flex gap-3 flex-wrap">
-                <button
-                  onClick={handleFullPreview}
-                  className={`${ghostBtn} flex-1 px-2 text-xs sm:text-sm`}
-                >
-                  <Eye className="w-4 h-4" />
-                  Full preview
-                </button>
-                <button
-                  onClick={handleUseTemplate}
-                  className={`flex-1 px-2 text-xs sm:text-sm ${
-                    isAccessible && !isPlanExpired ? primaryBtn : amberBtn
-                  }`}
-                >
-                  {isAccessible && !isPlanExpired ? (
-                    <>
-                      <Sparkles className="w-4 h-4" />
-                      Use this template
-                    </>
-                  ) : isPlanExpired ? (
-                    <>
-                      <Gift className="w-4 h-4" />
-                      Renew to access
-                    </>
-                  ) : (
-                    <>
-                      <Lock className="w-4 h-4" />
-                      Unlock with {requiredPlanLabel}
-                    </>
-                  )}
-                </button>
-              </div>
+           
 
               <button
                 onClick={onClose}
