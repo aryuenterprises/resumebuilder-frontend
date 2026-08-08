@@ -103,11 +103,11 @@
 //         setEmail("");
 //         setPassword("");
 //         setErrors({});
-        
+
 //         // Reset Turnstile after successful login
 //         setTurnstileToken(null);
 //         turnstileRef.current?.reset();
-        
+
 //         setIsLoading(false);
 //       } else {
 //         setErrorMessage("Invalid response from server.");
@@ -265,7 +265,7 @@
 //                     // siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
 //                     siteKey="0x4AAAAAADk4XwG1znS-2CHx"
 //                     // siteKey="1x00000000000000000000AA"
-//                     options={{ 
+//                     options={{
 //                       theme: "light",
 //                     }}
 //                     onSuccess={(token) => {
@@ -282,8 +282,6 @@
 //                     }}
 //                   />
 //                 </div>
-
-                
 
 //                 {/* General error message */}
 //                 {errors.general && (
@@ -356,8 +354,6 @@
 //           </div>
 //         </motion.div>
 //       </div>
-
-      
 
 //       {/* ========== ERROR MODAL - RED THEME ========== */}
 //       <AnimatePresence>
@@ -479,21 +475,6 @@
 
 // export default Login;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 
 import { useState, FormEvent, useRef } from "react";
@@ -565,7 +546,9 @@ const Login = () => {
 
     // Turnstile check - MUST be verified
     if (!turnstileToken) {
-      setErrorMessage("Security verification required. Please complete the verification check.");
+      setErrorMessage(
+        "Security verification required. Please complete the verification check.",
+      );
       setShowErrorModal(true);
       return;
     }
@@ -575,7 +558,6 @@ const Login = () => {
     }
 
     setIsLoading(true);
-
 
     try {
       const formData = {
@@ -593,17 +575,17 @@ const Login = () => {
 
         // 1. Save public user details for the UI layout
         setLocalStorage("user_details", user);
-        
+
         // 2. 🔐 SAVE ACCESS TOKEN SECURELY IN-MEMORY
         // We import and call the setter from our api.ts file
-        setInMemoryToken(access_token); 
+        setInMemoryToken(access_token);
 
-        router.push('/dashboard');
+        router.push("/dashboard");
 
         setEmail("");
         setPassword("");
         setErrors({});
-        
+
         setTurnstileToken(null);
         turnstileRef.current?.reset();
         setIsLoading(false);
@@ -612,9 +594,7 @@ const Login = () => {
         setShowErrorModal(true);
         setIsLoading(false);
       }
-    }
-    
-    catch (err: any) {
+    } catch (err: any) {
       console.error("Login Error:", err);
       setIsLoading(false);
 
@@ -622,7 +602,9 @@ const Login = () => {
 
       // Check if error is from Turnstile verification (403)
       if (err.response?.status === 403) {
-        errorText = err.response?.data?.message || "Security check failed. Please refresh and try again.";
+        errorText =
+          err.response?.data?.message ||
+          "Security check failed. Please refresh and try again.";
         // Reset Turnstile for retry
         setTurnstileToken(null);
         turnstileRef.current?.reset();
@@ -763,7 +745,7 @@ const Login = () => {
                   <Turnstile
                     ref={turnstileRef}
                     siteKey="0x4AAAAAADk4XwG1znS-2CHx"
-                    options={{ 
+                    options={{
                       theme: "light",
                     }}
                     onSuccess={(token) => {
@@ -969,20 +951,3 @@ const Login = () => {
 };
 
 export default Login;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

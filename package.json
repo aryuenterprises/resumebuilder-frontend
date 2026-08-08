@@ -20,6 +20,7 @@
     "html-react-parser": "^5.2.17",
     "lucide-react": "^0.563.0",
     "next": "16.1.6",
+    "pagedjs": "^0.4.3",
     "primereact": "^10.9.7",
     "quill": "^2.0.3",
     "react": "19.2.3",

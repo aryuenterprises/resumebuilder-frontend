@@ -503,15 +503,20 @@ export default function ChoosePlanPage() {
     const fetchUserData = async () => {
       // Check if user is logged in
       const userDetails = getLocalStorage<User>("user_details");
-      const accessToken = getLocalStorage<string>("access_token");
+      // const accessToken = getLocalStorage<string>("access_token");
       
-      if (!userDetails?.id || !accessToken) {
+
+    
+
+      if (!userDetails?.id ) {
         // User is not logged in
         setIsAuthenticated(false);
         setUsersCurrentPlan(null);
         setIsSubscriptionExpired(false);
         return;
       }
+
+      console.log("aa")
       
       setIsAuthenticated(true);
       setUserId(userDetails.id);
@@ -523,12 +528,12 @@ export default function ChoosePlanPage() {
         
         if (subscription) {
           // Set current plan and expiration status
-          // setUsersCurrentPlan(subscription.current_plan || null);
-          // setIsSubscriptionExpired(subscription.is_expired || false);
+          setUsersCurrentPlan(subscription.current_plan || null);
+          setIsSubscriptionExpired(subscription.is_expired || false);
 
 
-           setUsersCurrentPlan("premium");
-          setIsSubscriptionExpired(false);
+          //  setUsersCurrentPlan("premium");
+          // setIsSubscriptionExpired(false);
 
           
           console.log("Subscription status:", {

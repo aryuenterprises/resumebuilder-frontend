@@ -315,9 +315,6 @@ const DashboardPage = () => {
     router.push("/login");
   };
 
-
-
-
   const totalResumes = filteredOldResumeData.length;
 
   // Calculate billing statistics
@@ -867,7 +864,6 @@ const DashboardPage = () => {
             )}
           </div>
 
-          {/* Resumes Section */}
           {/* Resumes Section */}
           <div>
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-5">
@@ -1469,54 +1465,6 @@ export default DashboardPage;
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
 
 // // ============================================================
@@ -1534,7 +1482,7 @@ export default DashboardPage;
 // // AnimatePresence - For animating components when they mount/unmount
 
 // import {
-//   FiFileText, FiPlus, FiMail, FiPhone, FiMapPin, 
+//   FiFileText, FiPlus, FiMail, FiPhone, FiMapPin,
 //   FiCheckCircle, FiCreditCard, FiTrash2, FiLogOut,
 //   FiAward, FiCalendar, FiX, FiAlertCircle, FiStar,
 //   FiEdit2, FiDollarSign, FiShoppingBag, FiLock,
@@ -1709,7 +1657,7 @@ export default DashboardPage;
 //  * ResumeCard - Displays a single resume with edit/delete options
 //  * Wrapped in React.memo to prevent unnecessary re-renders
 //  */
-// const ResumeCard = React.memo(({ 
+// const ResumeCard = React.memo(({
 //   item,                    // Resume data
 //   index,                   // Position in the list
 //   isMobile,               // Is the screen mobile size?
@@ -1721,10 +1669,10 @@ export default DashboardPage;
 // }: any) => {
 //   // Get the component that renders this resume template
 //   const ComponentToRender = item.component;
-  
+
 //   // Next.js router for navigation
 //   const router = useRouter();
-  
+
 //   // Context for resume creation mode
 
 //   // ============================================================
@@ -1736,13 +1684,13 @@ export default DashboardPage;
 //       initial={{ opacity: 0, scale: 0.95 }}
 //       animate={{ opacity: 1, scale: 1 }}
 //       transition={{ delay: Math.min(index * 0.05, 0.5) }}
-      
+
 //       // Hover animation - lift slightly (unless plan expired)
 //       whileHover={{ y: isPlanExpired ? 0 : -4 }}
-      
+
 //       // Dynamic classes based on plan status
 //       className={`relative group cursor-pointer ${isPlanExpired ? "opacity-75" : ""}`}
-      
+
 //       // Dynamic styles based on screen size
 //       style={{
 //         height: isMobile
@@ -1818,7 +1766,7 @@ export default DashboardPage;
 //               >
 //                 <FiEdit2 className="h-3 w-3 sm:h-4 sm:w-4 text-purple-600 group-hover/btn:scale-110 transition-transform" />
 //               </motion.button>
-              
+
 //               {/* Delete button */}
 //               <motion.button
 //                 whileHover={{ scale: 1.1 }}
@@ -1829,12 +1777,12 @@ export default DashboardPage;
 //                 <FiTrash2 className="h-3 w-3 sm:h-4 sm:w-4 text-rose-600 group-hover/btn:scale-110 transition-transform" />
 //               </motion.button>
 //             </div>
-            
+
 //             {/* Resume title */}
 //             <p className="text-white text-[11px] sm:text-sm font-medium text-center truncate px-1 sm:px-2">
 //               {item.resume_title || `Resume ${index + 1}`}
 //             </p>
-            
+
 //             {/* Template info */}
 //             <p className="text-white/60 text-[10px] sm:text-xs text-center mt-0.5 sm:mt-1">
 //               Template: {item.template?.id || "N/A"}
@@ -1859,7 +1807,7 @@ export default DashboardPage;
 //           >
 //             <IoEllipsisVertical className="w-4 h-4 text-gray-700" />
 //           </button>
-          
+
 //           {/* Dropdown menu (shown when active) */}
 //           {activeMenuId === item.id && (
 //             <>
@@ -1914,7 +1862,7 @@ export default DashboardPage;
 //   // ============================================================
 //   // 6a. HOOKS AND CONTEXT
 //   // ============================================================
-  
+
 //   const router = useRouter(); // Navigation
 //   const queryClient = useQueryClient(); // React Query cache controller
 //   const { setIsUploadMode } = useContext(CreateContext); // Context
@@ -1922,29 +1870,29 @@ export default DashboardPage;
 //   // ============================================================
 //   // 6b. LOCAL STATE
 //   // ============================================================
-  
+
 //   const [showBillingHistory, setShowBillingHistory] = useState(false);
 //   // Show/hide billing modal
-  
+
 //   const [showLogoutModal, setShowLogoutModal] = useState(false);
 //   // Show/hide logout confirmation
-  
+
 //   const [isMobile, setIsMobile] = useState(false);
 //   // Is screen mobile size? (< 640px)
-  
+
 //   const [isTablet, setIsTablet] = useState(false);
 //   // Is screen tablet size? (640px - 1024px)
-  
+
 //   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
 //   // Which resume menu is currently open (for mobile)
-  
+
 //   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
 //   // Which billing row is being hovered (for animation)
 
 //   // ============================================================
 //   // 6c. GET USER ID FROM LOCAL STORAGE
 //   // ============================================================
-  
+
 //   const userDetails = getLocalStorage<User>("user_details");
 //   const userId = userDetails?.id;
 //   // Used to scope queries to the current user
@@ -1952,7 +1900,7 @@ export default DashboardPage;
 //   // ============================================================
 //   // 6d. RESPONSIVE DETECTION
 //   // ============================================================
-  
+
 //   useEffect(() => {
 //     /**
 //      * handleResize - Detects screen size changes
@@ -1963,13 +1911,13 @@ export default DashboardPage;
 //       setIsMobile(width < 640); // Mobile: < 640px
 //       setIsTablet(width >= 640 && width < 1024); // Tablet: 640-1024px
 //     };
-    
+
 //     // Check on initial load
 //     handleResize();
-    
+
 //     // Add event listener for window resize
 //     window.addEventListener("resize", handleResize);
-    
+
 //     // Cleanup: remove event listener
 //     return () => window.removeEventListener("resize", handleResize);
 //   }, []); // Empty deps = run once on mount
@@ -1977,23 +1925,23 @@ export default DashboardPage;
 //   // ============================================================
 //   // 6e. REACT QUERY - FETCH DATA WITH CACHING
 //   // ============================================================
-  
+
 //   /**
 //    * useQuery - Fetches and caches dashboard data
-//    * 
+//    *
 //    * How it works:
 //    * 1. First visit: Fetches from API (takes 5-7s)
 //    * 2. Caches the data in memory
 //    * 3. Second visit: Returns cached data instantly (< 500ms)
 //    * 4. Background refresh: Updates data if it's "stale"
-//    * 
+//    *
 //    * Benefits:
 //    * - Automatic caching
 //    * - Background updates
 //    * - Built-in loading/error states
 //    * - No manual state management
 //    */
-//   const { 
+//   const {
 //     data,        // The fetched data
 //     isLoading,   // Boolean: currently loading?
 //     error,       // Error object if something went wrong
@@ -2001,24 +1949,24 @@ export default DashboardPage;
 //   } = useQuery({
 //     // 🔑 Unique key for this query (used for caching)
 //     queryKey: ['dashboard', userId],
-    
+
 //     // 📡 Function that fetches the data
 //     queryFn: fetchDashboardData,
-    
+
 //     // ⏰ Data is considered "fresh" for 5 minutes
 //     // During this time, it won't refetch automatically
 //     staleTime: 5 * 60 * 1000, // 5 minutes in milliseconds
-    
+
 //     // 🗑️ Data stays in cache for 10 minutes
 //     // After 10 minutes of not being used, it gets garbage collected
 //     gcTime: 10 * 60 * 1000, // 10 minutes (was cacheTime in v4)
-    
+
 //     // 🔄 Don't refetch when user switches tabs
 //     refetchOnWindowFocus: false,
-    
+
 //     // 🔄 Don't refetch when component mounts
 //     refetchOnMount: false,
-    
+
 //     // ✅ Only run this query if we have a userId
 //     enabled: !!userId,
 //   });
@@ -2026,10 +1974,10 @@ export default DashboardPage;
 //   // ============================================================
 //   // 6f. MEMOIZED DATA PROCESSING
 //   // ============================================================
-  
+
 //   /**
 //    * processedData - Memoized version of the data
-//    * 
+//    *
 //    * Why useMemo?
 //    * - Prevents re-processing data on every render
 //    * - Only re-processes when the source data changes
@@ -2038,13 +1986,13 @@ export default DashboardPage;
 //   const processedData = useMemo(() => {
 //     // If no data, return null
 //     if (!data) return null;
-    
+
 //     // Destructure the data
 //     const { profile, resumes, statistics, subscription, transactions } = data;
-    
+
 //     /**
 //      * Process resumes: Match each resume with its template component
-//      * 
+//      *
 //      * How it works:
 //      * 1. For each resume, find the matching template
 //      * 2. If found, add the template's component
@@ -2074,11 +2022,11 @@ export default DashboardPage;
 //   // ============================================================
 //   // 6g. REACT QUERY - DELETE MUTATION WITH OPTIMISTIC UPDATE
 //   // ============================================================
-  
+
 //   /**
 //    * useMutation - Handles deleting a resume
-//    * 
-//    * OPTIMISTIC UPDATE: 
+//    *
+//    * OPTIMISTIC UPDATE:
 //    * - Removes resume from UI immediately (before API call)
 //    * - If API fails, rolls back to previous state
 //    * - User sees instant feedback
@@ -2086,7 +2034,7 @@ export default DashboardPage;
 //   const deleteMutation = useMutation({
 //     // 📡 Function that performs the delete
 //     mutationFn: deleteResumeApi,
-    
+
 //     /**
 //      * onMutate - Runs before the API call
 //      * This is where we do the optimistic update
@@ -2094,10 +2042,10 @@ export default DashboardPage;
 //     onMutate: async (deletedId) => {
 //       // 🛑 Cancel any ongoing queries to prevent conflicts
 //       await queryClient.cancelQueries({ queryKey: ['dashboard', userId] });
-      
+
 //       // 💾 Save current data in case we need to rollback
 //       const previousData = queryClient.getQueryData(['dashboard', userId]);
-      
+
 //       // ✨ OPTIMISTICALLY UPDATE: Remove the resume from cache
 //       queryClient.setQueryData(['dashboard', userId], (old: any) => {
 //         if (!old) return old;
@@ -2106,11 +2054,11 @@ export default DashboardPage;
 //           resumes: old.resumes.filter((r: any) => r.id !== deletedId),
 //         };
 //       });
-      
+
 //       // Return context with previous data for rollback
 //       return { previousData };
 //     },
-    
+
 //     /**
 //      * onError - Runs if the mutation fails
 //      * Rolls back to the previous data
@@ -2121,7 +2069,7 @@ export default DashboardPage;
 //       // Show error toast
 //       toast.error("Failed to delete resume. Please try again.");
 //     },
-    
+
 //     /**
 //      * onSuccess - Runs if the mutation succeeds
 //      * Shows success notification
@@ -2171,7 +2119,7 @@ export default DashboardPage;
 //   // ============================================================
 //   // 6h. EVENT HANDLERS
 //   // ============================================================
-  
+
 //   /**
 //    * handleDeleteResume - Shows confirmation dialog, then deletes
 //    * @param id - The ID of the resume to delete
@@ -2218,19 +2166,19 @@ export default DashboardPage;
 //   const handleEditResume = (item: ResumeItem) => {
 //     // Save selected template to localStorage
 //     setLocalStorage("chosenTemplate", item.template);
-    
+
 //     // Save resume data and ID for editing
 //     setLocalStorage("editingResumeIdAndData", {
 //       id: item.id,
 //       resume_data: item.resume_data,
 //     });
-    
+
 //     // Remember that we came from the dashboard
 //     setSessionStorage("oldRouteNameDashboard", true);
-    
+
 //     // Navigate to the resume editor
 //     router.push(`/resume-details/contact`);
-    
+
 //     // Set upload mode to false (we're editing, not uploading)
 //     setIsUploadMode(false);
 //   };
@@ -2249,7 +2197,7 @@ export default DashboardPage;
 //     removeLocalStorage("user_token");
 //     removeLocalStorage("coverLetterData");
 //     removeLocalStorage("editingResumeIdAndData");
-    
+
 //     // Redirect to login page
 //     router.push("/login");
 //   };
@@ -2257,7 +2205,7 @@ export default DashboardPage;
 //   // ============================================================
 //   // 6i. SIDE EFFECTS
 //   // ============================================================
-  
+
 //   /**
 //    * useEffect - Prevents body scroll when billing modal is open
 //    * This improves UX by keeping the background fixed
@@ -2272,9 +2220,9 @@ export default DashboardPage;
 //   // ============================================================
 //   // 6j. COMPUTED VALUES
 //   // ============================================================
-  
+
 //   // Destructure the processed data
-//   const { 
+//   const {
 //     profile,                  // User profile
 //     subscription,            // Current plan
 //     paymentRecords,          // Billing history
@@ -2284,10 +2232,10 @@ export default DashboardPage;
 
 //   // Count total resumes
 //   const totalResumes = filteredOldResumeData?.length || 0;
-  
+
 //   // Count total transactions
 //   const totalTransactions = paymentRecords?.length || 0;
-  
+
 //   // Calculate total amount spent (only for successful payments)
 //   const totalAmountSpent = paymentRecords?.reduce(
 //     (sum: number, record: BillingRecord) =>
@@ -2312,7 +2260,7 @@ export default DashboardPage;
 //   // ============================================================
 //   // 6k. LOADING STATE
 //   // ============================================================
-  
+
 //   /**
 //    * Show loading spinner while data is being fetched
 //    * This is the first state the user sees
@@ -2334,7 +2282,7 @@ export default DashboardPage;
 //   // ============================================================
 //   // 6l. ERROR STATE
 //   // ============================================================
-  
+
 //   /**
 //    * Show error message if data fetch fails
 //    * Includes a "Retry" button to try again
@@ -2346,8 +2294,8 @@ export default DashboardPage;
 //         <div className="min-h-screen bg-gradient-to-br from-indigo-50/30 via-white to-indigo-50/20 flex items-center justify-center">
 //           <div className="text-center">
 //             <p className="text-red-600 text-xl mb-4">⚠️ Failed to load dashboard</p>
-//             <button 
-//               onClick={() => refetch()} 
+//             <button
+//               onClick={() => refetch()}
 //               className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
 //             >
 //               Retry
@@ -2361,7 +2309,7 @@ export default DashboardPage;
 //   // ============================================================
 //   // 6m. MAIN RENDER - THE DASHBOARD UI
 //   // ============================================================
-  
+
 //   return (
 //     <ProtectedRoute>
 //       {/* Toast notifications container */}
@@ -2370,7 +2318,7 @@ export default DashboardPage;
 //       {/* Main dashboard container */}
 //       <div className="min-h-screen bg-gradient-to-br from-indigo-50/30 via-white to-indigo-50/20">
 //         <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-5 lg:px-6 py-4 sm:py-6 lg:py-8">
-          
+
 //           {/* ============================================================
 //               SECTION: HEADER
 //               ============================================================ */}
@@ -2390,7 +2338,7 @@ export default DashboardPage;
 //               </motion.div>
 //               <span>DASHBOARD</span>
 //             </div>
-            
+
 //             {/* Welcome message and Create Resume button */}
 //             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
 //               <div>
@@ -2404,7 +2352,7 @@ export default DashboardPage;
 //                   Manage your resumes, track performance, and land your dream job
 //                 </p>
 //               </div>
-              
+
 //               {/* "Create New Resume" button */}
 //               <motion.button
 //                 whileHover={{ scale: 1.02 }}
@@ -2479,7 +2427,7 @@ export default DashboardPage;
 //               SECTION: PROFILE AND PLAN
 //               ============================================================ */}
 //           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
-            
+
 //             {/* PROFILE CARD */}
 //             <motion.div
 //               initial={{ opacity: 0, x: -20 }}
@@ -2496,14 +2444,14 @@ export default DashboardPage;
 //                     transition={{ duration: 0.2 }}
 //                   ></motion.div>
 //                 </div>
-                
+
 //                 {/* Profile content */}
 //                 <div className="p-4 sm:p-5 md:p-6 pt-10 sm:pt-12">
 //                   {/* User name */}
 //                   <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4 truncate">
 //                     {profile?.first_name} {profile?.last_name}
 //                   </h3>
-                  
+
 //                   {/* Contact details */}
 //                   <div className="space-y-2 sm:space-y-3">
 //                     {[
@@ -2544,7 +2492,7 @@ export default DashboardPage;
 //                       </motion.div>
 //                     ))}
 //                   </div>
-                  
+
 //                   {/* Logout button */}
 //                   <motion.button
 //                     whileHover={{ scale: 1.02 }}
@@ -2574,7 +2522,7 @@ export default DashboardPage;
 //                 className="lg:col-span-2 order-1 lg:order-2"
 //               >
 //                 <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-indigo-100 overflow-hidden hover:shadow-md transition-all duration-300">
-                  
+
 //                   {/* CASE 1: EXPIRED PLAN */}
 //                   {subscription.current_plan === "" &&
 //                   subscription.message &&
@@ -2603,7 +2551,7 @@ export default DashboardPage;
 //                           </div>
 //                         </div>
 //                       </div>
-                      
+
 //                       {/* Expired plan actions */}
 //                       <div className="p-4 sm:p-6">
 //                         <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-amber-50 rounded-lg sm:rounded-xl border border-amber-100">
@@ -2687,7 +2635,7 @@ export default DashboardPage;
 //                           </div>
 //                         </div>
 //                       </div>
-                      
+
 //                       {/* Plan features */}
 //                       <div className="p-4 sm:p-6">
 //                         <h4 className="text-xs sm:text-sm font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center gap-1.5 sm:gap-2">
@@ -3282,55 +3230,6 @@ export default DashboardPage;
 
 // export default DashboardPage;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
 
 // // ============================================================
@@ -3408,8 +3307,6 @@ export default DashboardPage;
 //   return id;
 // };
 
-
-
 // // ============================================================
 // // RESUME CARD
 // // ============================================================
@@ -3421,7 +3318,6 @@ export default DashboardPage;
 //   const router = useRouter();
 //   const A4_W = 794;
 //   const A4_H = 1123;
-
 
 //   return (
 //     <motion.div
@@ -3470,8 +3366,6 @@ export default DashboardPage;
 //             background: "linear-gradient(to bottom, transparent, rgba(0,0,0,0.15))",
 //           }}
 //         />
-
-       
 
 //         {/* Hover actions overlay (non-expired) */}
 //         {!isPlanExpired && !isMobile && (
@@ -3551,7 +3445,7 @@ export default DashboardPage;
 //                 <FiEdit2 className="w-3.5 h-3.5 text-slate-500" />
 //               </button>
 //             )}
-            
+
 //             <button
 //               onClick={() => onDelete(item.id)}
 //               className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors hover:bg-rose-50 cursor-pointer"
@@ -3913,7 +3807,6 @@ export default DashboardPage;
 //               </div>
 
 //               <div className="px-5 pb-5">
-               
 
 //                 <h3 className="font-bold text-slate-900 text-base mb-0.5 mt-8">
 //                   {profile?.first_name} {profile?.last_name}
