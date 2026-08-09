@@ -6332,6 +6332,1129 @@
 
 // export default TemplateThirteen;
 
+// "use client";
+// import React, {
+//   useContext,
+//   useState,
+//   useEffect,
+//   useRef,
+//   useCallback,
+// } from "react";
+// import axios, { AxiosResponse } from "axios";
+// import { CreateContext } from "@/app/context/CreateContext";
+// import { API_URL } from "@/app/config/api";
+// import {
+//   formatMonthYear,
+//   cleanQuillHTML,
+//   formatDateOfBirth,
+//   formatGradeToCgpdAndPercentage,
+// } from "@/app/utils";
+// import { usePathname } from "next/navigation";
+// import { ResumeProps } from "@/app/types";
+// import { motion } from "framer-motion";
+// import api from "@/app/utils/api";
+// import { ResumeCustomization } from "@/app/(resume)/download-resume/page";
+// import { FaDownload, FaSpinner } from "react-icons/fa";
+
+// const A4_W = 794;
+// const A4_H = 1123;
+// const MARGIN = 57;
+// const PAGE_CONTENT_H = A4_H - MARGIN * 2;
+// const CONTENT_W = A4_W - MARGIN * 2;
+
+// interface TemplateThirteenProps extends ResumeProps {
+//   customization?: ResumeCustomization;
+//   viewMode?:boolean
+// }
+
+// const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
+//   alldata,
+//   customization,
+//   viewMode=false
+// }) => {
+//   const context = useContext(CreateContext);
+//   const pathname = usePathname();
+//   const lastSegment = pathname.split("/").pop();
+//   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+//   const [htmlContent, setHtmlContent] = useState<string>("");
+//   const [pages, setPages] = useState<string[]>([]);
+//   const [isDownloading, setIsDownloading] = useState<boolean>(false);
+
+//   // ── Customization ─────────────────────────────────────────────────────────
+//   const activeFontFamily =
+//     customization?.fontFamily ?? "'Montserrat', sans-serif";
+
+//   // ── Data sources ─────────────────────────────────────────────────────────
+//   const contact = alldata?.contact || context.contact || {};
+//   const educations = alldata?.educations || context?.education || [];
+//   const experiences = alldata?.experiences || context?.experiences || [];
+//   const skills = alldata?.skills?.text || context?.skills?.text || "";
+//   const projects = alldata?.projects || context?.projects || [];
+//   const finalize = alldata?.finalize || context?.finalize || {};
+//   const summary = alldata?.summary || context?.summary || "";
+
+//   const addressParts = [
+//     contact?.address,
+//     contact?.city,
+//     contact?.postCode,
+//     contact?.country,
+//   ].filter(Boolean);
+
+//   const linkedinUrl = contact?.linkedIn;
+//   const portfolioUrl = contact?.portfolio;
+//   const githubUrl = contact?.github;
+//   const dateOfBirth = contact?.dob;
+//   const formattedDob = formatDateOfBirth(dateOfBirth ? dateOfBirth : "");
+
+//   // ── Complete Font import map ────────────────────────────────────────────────
+//   const getFontImport = (fontFamily: string): string => {
+//     const map: Record<string, string> = {
+//       "'Inter', sans-serif":
+//         "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap",
+//       "'-apple-system', 'BlinkMacSystemFont', sans-serif": "",
+//       "'Poppins', sans-serif":
+//         "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap",
+//       "'Lato', sans-serif":
+//         "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",
+//       "'Nunito', sans-serif":
+//         "https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&display=swap",
+//       "'Raleway', sans-serif":
+//         "https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800;900&display=swap",
+//       "'Montserrat', sans-serif":
+//         "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap",
+//       "'Open Sans', sans-serif":
+//         "https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap",
+//       "'Roboto', sans-serif":
+//         "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap",
+//       "'Merriweather', serif":
+//         "https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap",
+//       "'Playfair Display', serif":
+//         "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap",
+//       "'DM Serif Display', serif":
+//         "https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap",
+//       "'Libre Baskerville', serif":
+//         "https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap",
+//       "'EB Garamond', serif":
+//         "https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&display=swap",
+//       "'Crimson Text', serif":
+//         "https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap",
+//       "'Source Code Pro', monospace":
+//         "https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&display=swap",
+//       "'JetBrains Mono', monospace":
+//         "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap",
+//     };
+//     return map[fontFamily] || map["'Montserrat', sans-serif"];
+//   };
+
+//   const getSystemFallback = (fontFamily: string): string => {
+//     if (fontFamily.includes("serif"))
+//       return 'Georgia, "Times New Roman", serif';
+//     if (fontFamily.includes("monospace"))
+//       return '"Courier New", Courier, monospace';
+//     return '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+//   };
+
+//   // ── CSS builder with dynamic font ─────────────────────────────────────────
+//   const buildCSS = useCallback(
+//     (fontFamily: string) => `
+//     @import url('${getFontImport(fontFamily)}');
+
+//     @page { size: A4; margin: ${MARGIN}px; }
+    
+//     *, *::before, *::after { box-sizing: border-box; }
+
+//     html, body { margin: 0; padding: 0; background: white; }
+
+//     .t13-resume {
+//       width: ${A4_W}px;
+//       padding: 0;
+//       background: white;
+//       margin: 0;
+//       font-family: ${fontFamily}, ${getSystemFallback(fontFamily)};
+//       color: #111111;
+//     }
+
+//     .t13-resume p, .t13-resume div, .t13-resume span, .t13-resume li, .t13-resume a,
+//     .t13-resume h1, .t13-resume h2, .t13-resume h3 {
+//       font-family: ${fontFamily}, ${getSystemFallback(fontFamily)};
+//     }
+
+//     .t13-resume p {
+//       margin: 0 0 4px 0 !important; padding: 0 !important; line-height: 1.6 !important;
+//     }
+//     .t13-resume p:last-child { margin-bottom: 0 !important; }
+
+//     .t13-resume .experience-description ul, .t13-resume .experience-description ol,
+//     .t13-resume .education-description ul,  .t13-resume .education-description ol,
+//     .t13-resume .skills-content ul,         .t13-resume .skills-content ol,
+//     .t13-resume .custom-section-content ul, .t13-resume .custom-section-content ol {
+//       margin: 4px 0 4px 20px !important; padding-left: 20px !important;
+//     }
+//     .t13-resume .experience-description li, .t13-resume .education-description li,
+//     .t13-resume .skills-content li,         .t13-resume .custom-section-content li {
+//       margin-bottom: 2px !important; line-height: 1.6 !important;
+//     }
+//     .t13-resume .experience-description ul, .t13-resume .education-description ul,
+//     .t13-resume .skills-content ul,         .t13-resume .custom-section-content ul { list-style-type: disc !important; }
+//     .t13-resume .experience-description ol, .t13-resume .education-description ol,
+//     .t13-resume .skills-content ol,         .t13-resume .custom-section-content ol { list-style-type: decimal !important; }
+//     .t13-resume .experience-description strong, .t13-resume .education-description strong,
+//     .t13-resume .skills-content strong,         .t13-resume .custom-section-content strong { font-weight: 700 !important; }
+//     .t13-resume .experience-description em, .t13-resume .education-description em,
+//     .t13-resume .skills-content em,         .t13-resume .custom-section-content em { font-style: italic !important; }
+//     .t13-resume .experience-description u, .t13-resume .education-description u,
+//     .t13-resume .skills-content u,          .t13-resume .custom-section-content u { text-decoration: underline !important; }
+//     .t13-resume .experience-description p, .t13-resume .education-description p,
+//     .t13-resume .skills-content p,          .t13-resume .custom-section-content p { white-space: pre-wrap !important; }
+
+//     .t13-resume .skills-content {
+//       font-size: 13px; font-weight: 500; color: #444444; line-height: 1.6;
+//     }
+
+//     /* Header */
+//     .t13-resume .resume-header {
+//       padding: 40px ${MARGIN}px 30px ${MARGIN}px;
+//       background: #0a0a0a;
+//       color: white;
+//       -webkit-print-color-adjust: exact;
+//       print-color-adjust: exact;
+//     }
+//     .t13-resume .name {
+//       font-size: 40px; font-weight: 800; letter-spacing: -0.5px;
+//       margin: 0 0 8px 0; color: white; text-transform: uppercase; line-height: 1.1;
+//     }
+//     .t13-resume .job-title {
+//       font-size: 14px; font-weight: 500; letter-spacing: 3px;
+//       text-transform: uppercase; color: #aaaaaa; margin-bottom: 25px;
+//       padding-bottom: 20px; border-bottom: 2px solid rgba(255,255,255,0.15);
+//     }
+//     .t13-resume .contact-grid {
+//       display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+//       gap: 14px; margin-top: 10px;
+//     }
+//     .t13-resume .contact-item { display: flex; flex-direction: column; gap: 4px; }
+//     .t13-resume .contact-label {
+//       font-size: 10px; font-weight: 700; text-transform: uppercase;
+//       letter-spacing: 1.5px; color: #888888;
+//     }
+//     .t13-resume .contact-value {
+//       font-size: 13px; font-weight: 500; color: white; line-height: 1.4; word-break: break-word;
+//     }
+//     .t13-resume .contact-value a { color: white; text-decoration: none; }
+
+//     .t13-resume .education-grade { font-size: 12px; font-weight: 500; color: #666666; margin-top: 4px; }
+
+//     /* Main content */
+//     .t13-resume .resume-main { padding: 35px 0px 45px 0px; }
+
+//     .t13-resume .section { margin-bottom: 30px; }
+//     .t13-resume .section:last-child { margin-bottom: 0; }
+
+//     .t13-resume .section-title {
+//       font-size: 18px; font-weight: 800; text-transform: uppercase;
+//       letter-spacing: 2px; color: #111111; margin: 0 0 18px 0;
+//       padding-bottom: 8px; border-bottom: 3px solid #111111;
+//       display: inline-block;
+//       page-break-after: avoid; break-after: avoid;
+//     }
+
+//     .t13-resume .summary-text {
+//       font-size: 13.5px; line-height: 1.65; color: #333333; font-weight: 500;
+//     }
+
+//     .t13-resume .experience-item {
+//       margin-bottom: 28px;
+//       page-break-inside: avoid; break-inside: avoid;
+//     }
+//     .t13-resume .experience-item:last-child { margin-bottom: 0; }
+//     .t13-resume .experience-header { margin-bottom: 10px; }
+//     .t13-resume .experience-title-row {
+//       display: flex; justify-content: space-between; align-items: baseline;
+//       flex-wrap: wrap; gap: 10px; margin-bottom: 4px;
+//     }
+//     .t13-resume .experience-title { font-size: 17px; font-weight: 800; color: #111111; }
+//     .t13-resume .experience-date { font-size: 11.5px; font-weight: 600; color: #666666; letter-spacing: 0.5px; }
+//     .t13-resume .experience-company { font-size: 14px; font-weight: 600; color: #444444; margin-top: 2px; }
+//     .t13-resume .experience-description { margin-top: 10px; }
+
+//     .t13-resume .education-item {
+//       margin-bottom: 24px;
+//       page-break-inside: avoid; break-inside: avoid;
+//     }
+//     .t13-resume .education-item:last-child { margin-bottom: 0; }
+//     .t13-resume .education-header { margin-bottom: 8px; }
+//     .t13-resume .education-title-row {
+//       display: flex; justify-content: space-between; align-items: baseline;
+//       flex-wrap: wrap; gap: 10px; margin-bottom: 4px;
+//     }
+//     .t13-resume .education-school { font-size: 17px; font-weight: 800; color: #111111; }
+//     .t13-resume .education-date { font-size: 11.5px; font-weight: 600; color: #666666; }
+//     .t13-resume .education-degree { font-size: 14px; font-weight: 600; color: #444444; margin-top: 2px; }
+//     .t13-resume .education-description { margin-top: 8px; }
+
+//     .t13-resume .skills-container { margin-top: 8px; }
+
+//     .t13-resume .project-links { display: flex; gap: 15px; }
+//     .t13-resume .project-link { font-size: 10px; font-weight: 600; color: #666666; text-decoration: underline; }
+//     .t13-resume .project-tech-stack { font-size: 11px; font-weight: 500; color: #777777; margin: 4px 0; }
+
+//     .t13-resume .custom-section { margin-bottom: 20px; }
+//     .t13-resume .custom-section:last-child { margin-bottom: 0; }
+//     .t13-resume .custom-section-title {
+//       font-size: 15px; font-weight: 800; color: #111111;
+//       margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 1px;
+//     }
+//     .t13-resume .custom-section-content {
+//       font-size: 13.5px; font-weight: 500; color: #444444; line-height: 1.6;
+//     }
+
+//     /* Page break marker injected for PDF */
+//     .t13-page-break {
+//       page-break-before: always !important;
+//       break-before: page !important;
+//       display: block; height: 0; margin: 0; padding: 0;
+//     }
+
+//     @media print {
+//       * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+//       .t13-resume { width: 100% !important; padding: 0 !important; margin: 0 !important; }
+//       .t13-resume .resume-header {
+//         background: #0a0a0a !important;
+//         padding: 40px ${MARGIN}px 30px ${MARGIN}px !important;
+//       }
+//       .t13-resume .resume-main { padding: 35px 0px 45px 0px !important; }
+//       .t13-resume .section-title { border-bottom: 3px solid #111111 !important; }
+//       .t13-resume p { margin: 0 0 4px 0 !important; }
+//     }
+//   `,
+//     [],
+//   );
+
+//   const styles = buildCSS(activeFontFamily);
+
+//   // ── Helper functions ──────────────────────────────────────────────────────
+//   const href = (url: string) =>
+//     url.startsWith("http") ? url : `https://${url}`;
+//   const cleanUrl = (url: string) =>
+//     url.replace(/^https?:\/\//, "").replace(/^www\./, "");
+//   const rich = (html: string) => {
+//     const c = cleanQuillHTML(html);
+//     return c && c !== "<p><br></p>" ? c : "";
+//   };
+
+//   // ── Section builders ──────────────────────────────────────────────────────
+
+//   // ── HTML builder with section ordering ───────────────────────────────────
+//   // AFTER
+//   const generateHTML = useCallback(
+//     (
+//       forPDF = false,
+//       pageBreakIds: string[] = [],
+//       skillsCutIndex = -1,
+//     ): string => {
+//       const fontPreloads =
+//         activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif"
+//           ? `<link href="${getFontImport(activeFontFamily)}" rel="stylesheet"/>`
+//           : "";
+
+//       const sectionBuilders = {
+//         summary: () =>
+//           summary
+//             ? `
+//       <div class="section" data-block-id="summary">
+//         <h2 class="section-title">Profile</h2>
+//         <div class="summary-text">${rich(summary)}</div>
+//       </div>
+//     `
+//             : "",
+
+//         experience: () =>
+//           experiences.length
+//             ? `
+//       <div class="section" data-block-id="exp-section">
+//         <h2 class="section-title">Experience</h2>
+//         ${experiences
+//           .map((exp: any, i: number) => {
+//             const startFormatted = formatMonthYear(exp.startDate, false);
+//             const endFormatted = exp.endDate
+//               ? formatMonthYear(exp.endDate, false)
+//               : "Present";
+//             const companyLocation = [exp.employer, exp.location]
+//               .filter(Boolean)
+//               .join(" • ");
+//             return `
+//             <div class="experience-item" data-block-id="exp-${i}">
+//               <div class="experience-header">
+//                 <div class="experience-title-row">
+//                   <span class="experience-title">${exp.jobTitle || ""}</span>
+//                   <span class="experience-date">${startFormatted} — ${endFormatted}</span>
+//                 </div>
+//                 <div class="experience-company">${companyLocation}</div>
+//               </div>
+//               ${exp.text ? `<div class="experience-description">${rich(exp.text)}</div>` : ""}
+//             </div>
+//           `;
+//           })
+//           .join("")}
+//       </div>
+//     `
+//             : "",
+
+//         projects: () =>
+//           projects.length
+//             ? `
+//       <div class="section" data-block-id="proj-section">
+//         <h2 class="section-title">Projects</h2>
+//         ${projects
+//           .map(
+//             (p: any, i: number) => `
+//           <div class="experience-item" data-block-id="proj-${i}">
+//             <div class="experience-header">
+//               <div class="experience-title-row">
+//                 <span class="experience-title">${p.title || ""}</span>
+//                 <div class="project-links">
+//                   ${p.liveUrl ? `<a href="${href(p.liveUrl)}" class="project-link">Live Demo</a>` : ""}
+//                   ${p.githubUrl ? `<a href="${href(p.githubUrl)}" class="project-link">GitHub</a>` : ""}
+//                 </div>
+//               </div>
+//               ${p.techStack?.length ? `<div class="project-tech-stack"><strong>Tech:</strong> ${p.techStack.join(", ")}</div>` : ""}
+//               ${p.description ? `<div class="experience-description">${rich(p.description)}</div>` : ""}
+//             </div>
+//           </div>
+//         `,
+//           )
+//           .join("")}
+//       </div>
+//     `
+//             : "",
+
+//         education: () =>
+//           educations.length
+//             ? `
+//       <div class="section" data-block-id="edu-section">
+//         <h2 class="section-title">Education</h2>
+//         ${educations
+//           .map((edu: any, i: number) => {
+//             const dateStr =
+//               edu.startDate || edu.endDate
+//                 ? `${edu.startDate || ""} — ${edu.endDate || "Present"}`
+//                 : "";
+//             const formattedGrade = formatGradeToCgpdAndPercentage(
+//               edu.grade || "",
+//             );
+//             const eduTextHtml = edu.text ? rich(edu.text) : "";
+//             return `
+//             <div class="education-item" data-block-id="edu-${i}">
+//               <div class="education-header">
+//                 <div class="education-title-row">
+//                   <span class="education-school">${edu.schoolname || ""}</span>
+//                   ${dateStr ? `<span class="education-date">${dateStr}</span>` : ""}
+//                 </div>
+//                 ${edu.degree ? `<div class="education-degree">${edu.degree}</div>` : ""}
+//                 ${formattedGrade ? `<div class="education-grade">${formattedGrade}</div>` : ""}
+//               </div>
+//               ${eduTextHtml ? `<div class="education-description">${eduTextHtml}</div>` : ""}
+//             </div>
+//           `;
+//           })
+//           .join("")}
+//       </div>
+//     `
+//             : "",
+
+//         skills: () => {
+//           const skillsClean = rich(skills);
+//           if (!skillsClean || skillsClean === "<p><br></p>") return "";
+
+//           if (forPDF && skillsCutIndex >= 0) {
+//             const tempDiv = document.createElement("div");
+//             tempDiv.innerHTML = skillsClean;
+//             const allLis = Array.from(tempDiv.querySelectorAll("li"));
+//             if (skillsCutIndex < allLis.length) {
+//               const beforeLis = allLis
+//                 .slice(0, skillsCutIndex)
+//                 .map((li) => `<li>${li.innerHTML}</li>`)
+//                 .join("");
+//               const afterLis = allLis
+//                 .slice(skillsCutIndex)
+//                 .map((li) => `<li>${li.innerHTML}</li>`)
+//                 .join("");
+//               return `<div class="section" data-block-id="skills-section">
+//         <h2 class="section-title">Skills</h2>
+//         <div class="skills-container">
+//           <div class="skills-content"><ul>${beforeLis}</ul></div>
+//         </div>
+//       </div>
+//       <div class="t13-page-break"></div>
+//       <div class="section" data-block-id="skills-section-continued">
+//         <h2 class="section-title">Skills (continued)</h2>
+//         <div class="skills-container">
+//           <div class="skills-content"><ul>${afterLis}</ul></div>
+//         </div>
+//       </div>`;
+//             }
+//           }
+
+//           return `<div class="section" data-block-id="skills-section">
+//     <h2 class="section-title">Skills</h2>
+//     <div class="skills-container">
+//       <div class="skills-content" data-block-id="skills-content">${skillsClean}</div>
+//     </div>
+//   </div>`;
+//         },
+
+//         custom: () => {
+//           if (!Array.isArray(finalize?.customSection)) return "";
+//           const hasCustom = finalize.customSection.some(
+//             (s: any) => s?.name?.trim() || s?.description?.trim(),
+//           );
+//           if (!hasCustom) return "";
+//           return `
+//         <div class="section" data-block-id="custom-section">
+//           ${finalize.customSection
+//             .filter((s: any) => s?.name?.trim() || s?.description?.trim())
+//             .map(
+//               (s: any, i: number) => `
+//               <div class="custom-section" data-block-id="custom-${i}">
+//                 ${s.name ? `<h3 class="custom-section-title">${s.name}</h3>` : ""}
+//                 ${s.description ? `<div class="custom-section-content">${rich(s.description)}</div>` : ""}
+//               </div>
+//             `,
+//             )
+//             .join("")}
+//         </div>
+//       `;
+//         },
+//       };
+
+//       // Build sections in the order defined by customization
+//       const sectionsHTML = [
+//         sectionBuilders.summary?.(),
+//         sectionBuilders.experience?.(),
+//         sectionBuilders.projects?.(),
+//         sectionBuilders.education?.(),
+//         sectionBuilders.skills?.(),
+//         sectionBuilders.custom?.(),
+//       ]
+//         .filter(Boolean)
+//         .join("");
+
+//       const pdfStyle = forPDF
+//         ? `<style>
+//             html, body { margin: 0 !important; padding: 0 !important; background: white !important; }
+//             .t13-resume { width: 100% !important; padding: 0 !important; margin: 0 !important; }
+//             .t13-resume .resume-header { padding: 40px ${MARGIN}px 30px ${MARGIN}px !important; }
+//             .t13-resume .resume-main { padding: 35px 0px 45px 0px !important; }
+//             @page { size: A4; margin: ${MARGIN}px !important; }
+//           </style>`
+//         : "";
+
+//       let mainContent = sectionsHTML;
+
+//       // Inject page-break markers before elements at cut points (PDF only)
+//       if (forPDF && pageBreakIds.length > 0) {
+//         const tempDiv = document.createElement("div");
+//         tempDiv.innerHTML = mainContent;
+//         pageBreakIds.forEach((id) => {
+//           const el = tempDiv.querySelector(`[data-block-id="${id}"]`);
+//           if (el) {
+//             const breakDiv = document.createElement("div");
+//             breakDiv.className = "t13-page-break";
+//             el.parentNode?.insertBefore(breakDiv, el);
+//           }
+//         });
+//         mainContent = tempDiv.innerHTML;
+//       }
+
+//       return `<!DOCTYPE html>
+// <html>
+// <head>
+//   <meta charset="UTF-8"/>
+//   <meta name="viewport" content="width=device-width, initial-scale=1"/>
+//   <title>Resume - ${contact?.firstName || ""} ${contact?.lastName || ""}</title>
+//   ${fontPreloads}
+//   <style>${styles}</style>
+//   ${pdfStyle}
+// </head>
+// <body style="margin:0;padding:0;background:white;">
+//   <div class="t13-resume">
+//     <div class="resume-header" data-block-id="header">
+//       <h1 class="name">${contact?.firstName || ""} ${contact?.lastName || ""}</h1>
+//       <div class="job-title">${
+//         contact?.jobTitle
+//           ? typeof contact.jobTitle === "string"
+//             ? contact.jobTitle
+//             : (contact.jobTitle as any)?.name || ""
+//           : ""
+//       }</div>
+//       <div class="contact-grid">
+//         ${contact?.email ? `<div class="contact-item"><div class="contact-label">EMAIL</div><div class="contact-value">${contact.email}</div></div>` : ""}
+//         ${contact?.phone ? `<div class="contact-item"><div class="contact-label">PHONE</div><div class="contact-value">${contact.phone}</div></div>` : ""}
+//         ${formattedDob ? `<div class="contact-item"><div class="contact-label">BIRTH DATE</div><div class="contact-value">${formattedDob}</div></div>` : ""}
+//         ${linkedinUrl ? `<div class="contact-item"><div class="contact-label">LINKEDIN</div><div class="contact-value"><a href="${href(linkedinUrl)}">${cleanUrl(linkedinUrl)}</a></div></div>` : ""}
+//         ${githubUrl ? `<div class="contact-item"><div class="contact-label">GITHUB</div><div class="contact-value"><a href="${href(githubUrl)}">${cleanUrl(githubUrl)}</a></div></div>` : ""}
+//         ${portfolioUrl ? `<div class="contact-item"><div class="contact-label">PORTFOLIO</div><div class="contact-value"><a href="${href(portfolioUrl)}">${cleanUrl(portfolioUrl)}</a></div></div>` : ""}
+//         ${addressParts.length ? `<div class="contact-item"><div class="contact-label">LOCATION</div><div class="contact-value">${addressParts.join(", ")}</div></div>` : ""}
+//       </div>
+//     </div>
+//     <div class="resume-main">
+//       ${mainContent}
+//     </div>
+//   </div>
+// </body>
+// </html>`;
+//     },
+//     [
+//       activeFontFamily,
+//       contact,
+//       educations,
+//       experiences,
+//       skills,
+//       projects,
+//       finalize,
+//       summary,
+//       linkedinUrl,
+//       portfolioUrl,
+//       githubUrl,
+//       formattedDob,
+//       addressParts,
+//       styles,
+//     ],
+//   );
+
+//   // ── PAGE SPLITTER ─────────────────────────────────────────────────────────
+//   const splitIntoPages = useCallback(
+//     (fullHtml: string): Promise<string[]> => {
+//       return new Promise((resolve) => {
+//         const parser = new DOMParser();
+//         const parsed = parser.parseFromString(fullHtml, "text/html");
+//         const resumeEl = parsed.querySelector<HTMLElement>(".t13-resume");
+//         if (!resumeEl) {
+//           resolve([fullHtml]);
+//           return;
+//         }
+//         const resumeSnapshot = resumeEl.outerHTML;
+
+//         const iframe = document.createElement("iframe");
+//         iframe.style.cssText = [
+//           "position:fixed",
+//           "top:0",
+//           "left:-9999px",
+//           `width:${CONTENT_W}px`,
+//           "height:10000px",
+//           "border:none",
+//           "opacity:0",
+//           "pointer-events:none",
+//           "z-index:-1",
+//         ].join(";");
+//         document.body.appendChild(iframe);
+
+//         const measureDoc = iframe.contentDocument!;
+//         measureDoc.open();
+//         measureDoc.write(`<!DOCTYPE html>
+// <html>
+// <head>
+//   <meta charset="UTF-8"/>
+//   <style>
+//     ${styles}
+//     html, body {
+//       margin: 0 !important; padding: 0 !important;
+//       width: ${CONTENT_W}px !important; height: auto !important;
+//       overflow: visible !important; background: white !important;
+//     }
+//     .t13-resume {
+//       width: ${CONTENT_W}px !important;
+//       padding: 0 !important;
+//       margin: 0 !important; box-sizing: border-box !important;
+//     }
+//     .t13-resume .resume-header {
+//       padding: 40px ${MARGIN}px 30px ${MARGIN}px !important;
+//     }
+//     .t13-resume .resume-main {
+//       padding: 35px 0px 45px 0px !important;
+//     }
+//   </style>
+// </head>
+// <body>${resumeSnapshot}</body>
+// </html>`);
+//         measureDoc.close();
+
+//         const doMeasure = () => {
+//           const resume = measureDoc.querySelector<HTMLElement>(".t13-resume");
+//           if (!resume) {
+//             document.body.removeChild(iframe);
+//             resolve([fullHtml]);
+//             return;
+//           }
+
+//           measureDoc.documentElement.style.cssText =
+//             "height:auto!important;overflow:visible!important;";
+//           measureDoc.body.style.cssText =
+//             "margin:0;padding:0;height:auto!important;overflow:visible!important;";
+//           void resume.offsetHeight;
+
+//           const totalH = resume.scrollHeight;
+//           const resumeRect = resume.getBoundingClientRect();
+//           const scrollY =
+//             measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
+
+//           const getRelTop = (el: HTMLElement): number => {
+//             const r = el.getBoundingClientRect();
+//             return r.top - resumeRect.top + scrollY;
+//           };
+//           const getRelBottom = (el: HTMLElement): number =>
+//             getRelTop(el) + el.getBoundingClientRect().height;
+
+//           interface Block {
+//             top: number;
+//             bottom: number;
+//             id?: string;
+//           }
+//           const blocks: Block[] = [];
+
+//           // AFTER
+//           const ITEM_SELECTORS = [
+//             ".experience-item",
+//             ".education-item",
+//             ".custom-section",
+//             ".resume-header",
+//             ".summary-text",
+//           ].join(", ");
+
+//           resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
+//             const top = getRelTop(el);
+//             const bottom = getRelBottom(el);
+//             if (bottom - top > 8)
+//               blocks.push({ top, bottom, id: el.dataset.blockId });
+//           });
+
+//           resume
+//             .querySelectorAll<HTMLElement>(".section-title")
+//             .forEach((title) => {
+//               const titleTop = getRelTop(title);
+//               let firstItem: HTMLElement | null = null;
+//               let sib = title.nextElementSibling as HTMLElement | null;
+//               while (sib) {
+//                 if (sib.getBoundingClientRect().height > 8) {
+//                   firstItem = sib;
+//                   break;
+//                 }
+//                 sib = sib.nextElementSibling as HTMLElement | null;
+//               }
+//               // AFTER
+//               // AFTER
+//               if (firstItem) {
+//                 // Skip anchor logic for skills — allow it to split across pages
+//                 if (firstItem.classList.contains("skills-container")) return;
+
+//                 const deepChild = firstItem.querySelector<HTMLElement>(
+//                   ".experience-item, .education-item, .custom-section, .summary-text",
+//                 );
+//                 const anchor = deepChild || firstItem;
+//                 const anchorBottom = getRelBottom(anchor);
+//                 if (anchorBottom - titleTop > 8) {
+//                   const sectionId = (title.parentElement as HTMLElement)
+//                     ?.dataset?.blockId;
+//                   blocks.push({
+//                     top: titleTop,
+//                     bottom: anchorBottom,
+//                     id: sectionId,
+//                   });
+//                 }
+//               }
+//             });
+
+//           blocks.sort((a, b) => a.top - b.top);
+
+//           const pageStarts: number[] = [0];
+//           const pageBreakIds: string[] = [];
+//           const MAX_PAGES = 20;
+
+//           while (pageStarts.length < MAX_PAGES) {
+//             const currentStart = pageStarts[pageStarts.length - 1];
+//             const naiveCut = currentStart + PAGE_CONTENT_H;
+//             if (naiveCut >= totalH) break;
+//             let actualCut = naiveCut;
+//             let cutBlockId: string | undefined;
+//             for (const block of blocks) {
+//               if (block.top >= naiveCut) break;
+//               if (block.bottom <= currentStart) continue;
+//               if (
+//                 block.top >= currentStart &&
+//                 block.bottom > naiveCut &&
+//                 block.top < actualCut
+//               ) {
+//                 actualCut = block.top;
+//                 cutBlockId = block.id;
+//               }
+//             }
+//             if (actualCut <= currentStart) actualCut = naiveCut;
+//             pageStarts.push(actualCut);
+//             if (cutBlockId) pageBreakIds.push(cutBlockId);
+//           }
+
+//           const skillsLis = Array.from(
+//             resume.querySelectorAll<HTMLElement>(".skills-content li"),
+//           );
+//           skillsLis.forEach((li) => {
+//             const top = getRelTop(li);
+//             const bottom = getRelBottom(li);
+//             if (bottom - top > 2) blocks.push({ top, bottom });
+//           });
+
+//           blocks.sort((a, b) => a.top - b.top);
+//           pageStarts.length = 1;
+//           pageBreakIds.length = 0;
+
+//           while (pageStarts.length < MAX_PAGES) {
+//             const currentStart = pageStarts[pageStarts.length - 1];
+//             const naiveCut = currentStart + PAGE_CONTENT_H;
+//             if (naiveCut >= totalH) break;
+//             let actualCut = naiveCut;
+//             let cutBlockId: string | undefined;
+//             for (const block of blocks) {
+//               if (block.top >= naiveCut) break;
+//               if (block.bottom <= currentStart) continue;
+//               if (
+//                 block.top >= currentStart &&
+//                 block.bottom > naiveCut &&
+//                 block.top < actualCut
+//               ) {
+//                 actualCut = block.top;
+//                 cutBlockId = block.id;
+//               }
+//             }
+//             if (actualCut <= currentStart) actualCut = naiveCut;
+//             pageStarts.push(actualCut);
+//             if (cutBlockId) pageBreakIds.push(cutBlockId);
+//           }
+
+//           (window as any).__resumeSkillsCutIndex = -1;
+//           for (let p = 0; p < pageStarts.length - 1; p++) {
+//             const cutY = pageStarts[p + 1];
+//             for (let li = 0; li < skillsLis.length; li++) {
+//               const liTop = getRelTop(skillsLis[li]);
+//               const liBottom = getRelBottom(skillsLis[li]);
+//               if (liTop < cutY && liBottom > cutY) {
+//                 (window as any).__resumeSkillsCutIndex = li;
+//                 break;
+//               }
+//               if (liTop >= cutY) {
+//                 (window as any).__resumeSkillsCutIndex = li;
+//                 break;
+//               }
+//             }
+//             if ((window as any).__resumeSkillsCutIndex >= 0) break;
+//           }
+
+//           document.body.removeChild(iframe);
+//           (window as any).__resumePageBreakIds = pageBreakIds;
+
+//           const pageHtmls: string[] = [];
+//           for (let i = 0; i < pageStarts.length; i++) {
+//             const contentOffsetY = pageStarts[i];
+//             const nextStart = pageStarts[i + 1] ?? totalH;
+//             const clipH = nextStart - contentOffsetY;
+
+//             pageHtmls.push(`<!DOCTYPE html>
+// <html lang="en">
+// <head>
+//   <meta charset="UTF-8"/>
+//   <style>
+//     ${styles}
+//     html, body {
+//       margin: 0 !important; padding: 0 !important;
+//       width: ${A4_W}px !important; height: ${A4_H}px !important;
+//       overflow: hidden !important; background: white !important;
+//     }
+//     .page-margin-box {
+//       position: relative; width: ${A4_W}px; height: ${A4_H}px;
+//       background: white; overflow: hidden;
+//     }
+//     .page-content-clip {
+//       position: absolute;
+//       top: ${MARGIN}px; left: ${MARGIN}px;
+//       width: ${CONTENT_W}px; height: ${clipH}px; overflow: hidden;
+//     }
+//     .page-shift {
+//       position: absolute; top: ${-contentOffsetY}px; left: 0;
+//       width: ${CONTENT_W}px;
+//     }
+//     .t13-resume {
+//       width: ${CONTENT_W}px !important;
+//       padding: 0 !important;
+//       margin: 0 !important;
+//     }
+//     .t13-resume .resume-header {
+//       padding: 40px ${MARGIN}px 30px ${MARGIN}px !important;
+//     }
+//     .t13-resume .resume-main {
+//       padding: 35px 0px 45px 0px !important;
+//     }
+//   </style>
+// </head>
+// <body>
+//   <div class="page-margin-box">
+//     <div class="page-content-clip">
+//       <div class="page-shift">
+//         ${resumeSnapshot}
+//       </div>
+//     </div>
+//   </div>
+// </body>
+// </html>`);
+//           }
+//           resolve(pageHtmls);
+//         };
+
+//         const win = iframe.contentWindow as any;
+//         if (win?.document?.fonts?.ready) {
+//           win.document.fonts.ready.then(() => {
+//             setTimeout(() => requestAnimationFrame(doMeasure), 100);
+//           });
+//         } else {
+//           setTimeout(doMeasure, 500);
+//         }
+//       });
+//     },
+//     [styles],
+//   );
+
+//   // ── Debounced updates ────────────────────────────────────
+//   const scheduleUpdate = useCallback((html: string) => {
+//     if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+//     debounceTimerRef.current = setTimeout(() => setHtmlContent(html), 300);
+//   }, []);
+
+//   useEffect(() => {
+//     scheduleUpdate(generateHTML());
+//     return () => {
+//       if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+//     };
+//   }, [generateHTML, scheduleUpdate]);
+
+//   useEffect(() => {
+//     if (!htmlContent) return;
+//     splitIntoPages(htmlContent).then(setPages);
+//   }, [htmlContent, splitIntoPages]);
+
+//   // ── PDF download ─────────────────────────────────────────
+//   const handleDownload = async () => {
+//     setIsDownloading(true);
+//     try {
+//       // const pageBreakIds: string[] = (window as any).__resumeT13PageBreakIds || [];
+
+//       // const res: AxiosResponse<Blob> = await api.post(
+//       //   `${API_URL}/candidates/generate-pdf`,
+//       //   { html: generateHTML(true, pageBreakIds) },
+//       //   { responseType: "blob" },
+//       // );
+
+//       // AFTER
+//       const pageBreakIds: string[] = (
+//         (window as any).__resumePageBreakIds || []
+//       ).filter((id: string) => id !== "skills-section");
+//       const skillsCutIndex: number =
+//         (window as any).__resumeSkillsCutIndex ?? -1;
+//       const res: AxiosResponse<Blob> = await api.post(
+//         `${API_URL}/candidates/generate-pdf`,
+//         { html: generateHTML(true, pageBreakIds, skillsCutIndex) },
+//         { responseType: "blob" },
+//       );
+
+//       const url = URL.createObjectURL(res.data);
+//       const a = document.createElement("a");
+//       a.href = url;
+//       a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
+//       document.body.appendChild(a);
+//       a.click();
+//       document.body.removeChild(a);
+//       URL.revokeObjectURL(url);
+//     } catch (error) {
+//       console.error("Error generating PDF:", error);
+//       alert("Failed to generate PDF. Please try again.");
+//     } finally {
+//       setIsDownloading(false);
+//     }
+//   };
+
+
+
+// const isThumbnail = !!alldata && !viewMode ; 
+//   return (
+//     <>
+//       {/* Download button — hide in thumbnail mode */}
+//       {!isThumbnail && lastSegment === 'download-resume' &&(
+//         <div className="text-center my-8">
+//           <motion.button
+//             onClick={handleDownload}
+//             disabled={isDownloading}
+//             whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
+//             whileTap={!isDownloading ? { scale: 0.98 } : {}}
+//             className={`
+//               relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
+//               text-white transition-all duration-300  shadow-lg
+//               ${
+//                 isDownloading
+//                   ? "bg-gray-400 cursor-not-allowed opacity-80"
+//                   : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600 cursor-pointer"
+//               }
+//             `}
+//           >
+//             {!isDownloading && (
+//               <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+//             )}
+//             <div className="relative flex items-center justify-center gap-3 text-lg">
+//               {isDownloading ? (
+//                 <>
+//                   <FaSpinner className="animate-spin text-xl" />
+//                   <span>Generating PDF …</span>
+//                 </>
+//               ) : (
+//                 <>
+//                   <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
+//                   <span>Download Resume</span>
+//                   <span className="text-sm opacity-75 font-light ml-1">PDF</span>
+//                 </>
+//               )}
+//             </div>
+//           </motion.button>
+//         </div>
+//       )}
+ 
+//       {isThumbnail ? (
+//         // ── THUMBNAIL MODE (dashboard card) ─────────────────────────────────
+//         <div
+//           style={{
+//             width: `${A4_W}px`,
+//             height: `${A4_H}px`,
+//             transform: "scale(0.36)",
+//             transformOrigin: "top left",
+//             overflow: "hidden",
+//             pointerEvents: "none",
+//             flexShrink: 0,
+//           }}
+//         >
+//           {pages[0] ? (
+//             <iframe
+//               title="resume-thumb"
+//               srcDoc={pages[0]}
+//               style={{
+//                 width: `${A4_W}px`,
+//                 height: `${A4_H}px`,
+//                 border: "none",
+//                 display: "block",
+//                 pointerEvents: "none",
+//               }}
+//               sandbox="allow-same-origin"
+//             />
+//           ) : (
+//             <div
+//               style={{
+//                 width: `${A4_W}px`,
+//                 height: `${A4_H}px`,
+//                 background: "white",
+//                 display: "flex",
+//                 alignItems: "center",
+//                 justifyContent: "center",
+//                 color: "#ccc",
+//                 fontSize: 14,
+//                 fontFamily: "sans-serif",
+//               }}
+//             >
+//               Loading…
+//             </div>
+//           )}
+//         </div>
+//       ) : (
+//         // ── FULL PREVIEW MODE (editor + view modal) ──────────────────────────
+//         <div style={{ width: `${A4_W}px`, margin: "0 auto" }}>
+//           {(pages.length > 0 ? pages : [htmlContent]).map((pageHtml, idx) => (
+//             <div key={idx} style={{ marginBottom: "28px" }}>
+//               <div
+//                 style={{
+//                   display: "flex",
+//                   alignItems: "center",
+//                   justifyContent: "center",
+//                   gap: "10px",
+//                   marginBottom: "10px",
+//                 }}
+//               >
+//                 <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
+//                 <span
+//                   style={{
+//                     fontSize: "11px",
+//                     fontWeight: 600,
+//                     color: "#6b7280",
+//                     whiteSpace: "nowrap",
+//                     padding: "3px 12px",
+//                     background: "#f3f4f6",
+//                     borderRadius: "999px",
+//                     border: "1px solid #e5e7eb",
+//                     letterSpacing: "0.05em",
+//                     fontFamily: "system-ui, sans-serif",
+//                   }}
+//                 >
+//                   Page {idx + 1}
+//                   {pages.length > 1 ? ` of ${pages.length}` : ""}
+//                 </span>
+//                 <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
+//               </div>
+//               <div
+//                 style={{
+//                   width: `${A4_W}px`,
+//                   height: `${A4_H}px`,
+//                   overflow: "hidden",
+//                   background: "white",
+//                   boxShadow:
+//                     "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
+//                   borderRadius: "2px",
+//                   flexShrink: 0,
+//                 }}
+//               >
+//                 <iframe
+//                   title={`resume-page-${idx + 1}`}
+//                   srcDoc={pageHtml}
+//                   style={{
+//                     width: `${A4_W}px`,
+//                     height: `${A4_H}px`,
+//                     border: "none",
+//                     display: "block",
+//                     pointerEvents: "none",
+//                   }}
+//                   scrolling="no"
+//                   sandbox="allow-same-origin allow-scripts"
+//                 />
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+//       )}
+//     </>
+//   );
+// };
+
+// export default TemplateThirteen;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 "use client";
 import React, {
   useContext,
@@ -6340,7 +7463,7 @@ import React, {
   useRef,
   useCallback,
 } from "react";
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import { CreateContext } from "@/app/context/CreateContext";
 import { API_URL } from "@/app/config/api";
 import {
@@ -6364,18 +7487,19 @@ const CONTENT_W = A4_W - MARGIN * 2;
 
 interface TemplateThirteenProps extends ResumeProps {
   customization?: ResumeCustomization;
-  viewMode?:boolean
+  viewMode?: boolean;
 }
 
 const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
   alldata,
   customization,
-  viewMode=false
+  viewMode = false,
 }) => {
   const context = useContext(CreateContext);
   const pathname = usePathname();
   const lastSegment = pathname.split("/").pop();
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const splitRequestIdRef = useRef(0);
 
   const [htmlContent, setHtmlContent] = useState<string>("");
   const [pages, setPages] = useState<string[]>([]);
@@ -6407,7 +7531,7 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
   const dateOfBirth = contact?.dob;
   const formattedDob = formatDateOfBirth(dateOfBirth ? dateOfBirth : "");
 
-  // ── Complete Font import map ────────────────────────────────────────────────
+  // ── Font import map ─────────────────────────────────────────────────────
   const getFontImport = (fontFamily: string): string => {
     const map: Record<string, string> = {
       "'Inter', sans-serif":
@@ -6455,7 +7579,7 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
     return '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
   };
 
-  // ── CSS builder with dynamic font ─────────────────────────────────────────
+  // ── CSS builder ───────────────────────────────────────────────────────────
   const buildCSS = useCallback(
     (fontFamily: string) => `
     @import url('${getFontImport(fontFamily)}');
@@ -6512,7 +7636,6 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
       font-size: 13px; font-weight: 500; color: #444444; line-height: 1.6;
     }
 
-    /* Header */
     .t13-resume .resume-header {
       padding: 40px ${MARGIN}px 30px ${MARGIN}px;
       background: #0a0a0a;
@@ -6545,7 +7668,6 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
 
     .t13-resume .education-grade { font-size: 12px; font-weight: 500; color: #666666; margin-top: 4px; }
 
-    /* Main content */
     .t13-resume .resume-main { padding: 35px 0px 45px 0px; }
 
     .t13-resume .section { margin-bottom: 30px; }
@@ -6556,17 +7678,13 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
       letter-spacing: 2px; color: #111111; margin: 0 0 18px 0;
       padding-bottom: 8px; border-bottom: 3px solid #111111;
       display: inline-block;
-      page-break-after: avoid; break-after: avoid;
     }
 
     .t13-resume .summary-text {
       font-size: 13.5px; line-height: 1.65; color: #333333; font-weight: 500;
     }
 
-    .t13-resume .experience-item {
-      margin-bottom: 28px;
-      page-break-inside: avoid; break-inside: avoid;
-    }
+    .t13-resume .experience-item { margin-bottom: 28px; }
     .t13-resume .experience-item:last-child { margin-bottom: 0; }
     .t13-resume .experience-header { margin-bottom: 10px; }
     .t13-resume .experience-title-row {
@@ -6578,10 +7696,7 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
     .t13-resume .experience-company { font-size: 14px; font-weight: 600; color: #444444; margin-top: 2px; }
     .t13-resume .experience-description { margin-top: 10px; }
 
-    .t13-resume .education-item {
-      margin-bottom: 24px;
-      page-break-inside: avoid; break-inside: avoid;
-    }
+    .t13-resume .education-item { margin-bottom: 24px; }
     .t13-resume .education-item:last-child { margin-bottom: 0; }
     .t13-resume .education-header { margin-bottom: 8px; }
     .t13-resume .education-title-row {
@@ -6609,7 +7724,6 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
       font-size: 13.5px; font-weight: 500; color: #444444; line-height: 1.6;
     }
 
-    /* Page break marker injected for PDF */
     .t13-page-break {
       page-break-before: always !important;
       break-before: page !important;
@@ -6633,26 +7747,17 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
 
   const styles = buildCSS(activeFontFamily);
 
-  // ── Helper functions ──────────────────────────────────────────────────────
-  const href = (url: string) =>
-    url.startsWith("http") ? url : `https://${url}`;
-  const cleanUrl = (url: string) =>
-    url.replace(/^https?:\/\//, "").replace(/^www\./, "");
+  const href = (url: string) => (url.startsWith("http") ? url : `https://${url}`);
+  const cleanUrl = (url: string) => url.replace(/^https?:\/\//, "").replace(/^www\./, "");
   const rich = (html: string) => {
     const c = cleanQuillHTML(html);
     return c && c !== "<p><br></p>" ? c : "";
   };
 
-  // ── Section builders ──────────────────────────────────────────────────────
-
-  // ── HTML builder with section ordering ───────────────────────────────────
-  // AFTER
+  // ── HTML builder ─────────────────────────────────────────────────────────
+  // skillsCutIndex removed — line-level packer splits skills naturally.
   const generateHTML = useCallback(
-    (
-      forPDF = false,
-      pageBreakIds: string[] = [],
-      skillsCutIndex = -1,
-    ): string => {
+    (forPDF = false, pageBreakIds: string[] = []): string => {
       const fontPreloads =
         activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif"
           ? `<link href="${getFontImport(activeFontFamily)}" rel="stylesheet"/>`
@@ -6677,12 +7782,8 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
         ${experiences
           .map((exp: any, i: number) => {
             const startFormatted = formatMonthYear(exp.startDate, false);
-            const endFormatted = exp.endDate
-              ? formatMonthYear(exp.endDate, false)
-              : "Present";
-            const companyLocation = [exp.employer, exp.location]
-              .filter(Boolean)
-              .join(" • ");
+            const endFormatted = exp.endDate ? formatMonthYear(exp.endDate, false) : "Present";
+            const companyLocation = [exp.employer, exp.location].filter(Boolean).join(" • ");
             return `
             <div class="experience-item" data-block-id="exp-${i}">
               <div class="experience-header">
@@ -6740,9 +7841,7 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
               edu.startDate || edu.endDate
                 ? `${edu.startDate || ""} — ${edu.endDate || "Present"}`
                 : "";
-            const formattedGrade = formatGradeToCgpdAndPercentage(
-              edu.grade || "",
-            );
+            const formattedGrade = formatGradeToCgpdAndPercentage(edu.grade || "");
             const eduTextHtml = edu.text ? rich(edu.text) : "";
             return `
             <div class="education-item" data-block-id="edu-${i}">
@@ -6766,36 +7865,6 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
         skills: () => {
           const skillsClean = rich(skills);
           if (!skillsClean || skillsClean === "<p><br></p>") return "";
-
-          if (forPDF && skillsCutIndex >= 0) {
-            const tempDiv = document.createElement("div");
-            tempDiv.innerHTML = skillsClean;
-            const allLis = Array.from(tempDiv.querySelectorAll("li"));
-            if (skillsCutIndex < allLis.length) {
-              const beforeLis = allLis
-                .slice(0, skillsCutIndex)
-                .map((li) => `<li>${li.innerHTML}</li>`)
-                .join("");
-              const afterLis = allLis
-                .slice(skillsCutIndex)
-                .map((li) => `<li>${li.innerHTML}</li>`)
-                .join("");
-              return `<div class="section" data-block-id="skills-section">
-        <h2 class="section-title">Skills</h2>
-        <div class="skills-container">
-          <div class="skills-content"><ul>${beforeLis}</ul></div>
-        </div>
-      </div>
-      <div class="t13-page-break"></div>
-      <div class="section" data-block-id="skills-section-continued">
-        <h2 class="section-title">Skills (continued)</h2>
-        <div class="skills-container">
-          <div class="skills-content"><ul>${afterLis}</ul></div>
-        </div>
-      </div>`;
-            }
-          }
-
           return `<div class="section" data-block-id="skills-section">
     <h2 class="section-title">Skills</h2>
     <div class="skills-container">
@@ -6828,7 +7897,6 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
         },
       };
 
-      // Build sections in the order defined by customization
       const sectionsHTML = [
         sectionBuilders.summary?.(),
         sectionBuilders.experience?.(),
@@ -6840,6 +7908,10 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
         .filter(Boolean)
         .join("");
 
+      // Box model here was already correct — .resume-header/.resume-main
+      // padding stays identical across measurement, PDF, and preview page
+      // render, all scoped to CONTENT_W with the outer MARGIN supplied by
+      // @page / page-content-clip. Left untouched.
       const pdfStyle = forPDF
         ? `<style>
             html, body { margin: 0 !important; padding: 0 !important; background: white !important; }
@@ -6852,7 +7924,6 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
 
       let mainContent = sectionsHTML;
 
-      // Inject page-break markers before elements at cut points (PDF only)
       if (forPDF && pageBreakIds.length > 0) {
         const tempDiv = document.createElement("div");
         tempDiv.innerHTML = mainContent;
@@ -6923,7 +7994,7 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
     ],
   );
 
-  // ── PAGE SPLITTER ─────────────────────────────────────────────────────────
+  // ── Page splitter (TemplateOne's line-level engine, adapted for t13-*) ───
   const splitIntoPages = useCallback(
     (fullHtml: string): Promise<string[]> => {
       return new Promise((resolve) => {
@@ -6953,31 +8024,15 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
         const measureDoc = iframe.contentDocument!;
         measureDoc.open();
         measureDoc.write(`<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8"/>
-  <style>
-    ${styles}
-    html, body {
-      margin: 0 !important; padding: 0 !important;
-      width: ${CONTENT_W}px !important; height: auto !important;
-      overflow: visible !important; background: white !important;
-    }
-    .t13-resume {
-      width: ${CONTENT_W}px !important;
-      padding: 0 !important;
-      margin: 0 !important; box-sizing: border-box !important;
-    }
-    .t13-resume .resume-header {
-      padding: 40px ${MARGIN}px 30px ${MARGIN}px !important;
-    }
-    .t13-resume .resume-main {
-      padding: 35px 0px 45px 0px !important;
-    }
-  </style>
-</head>
-<body>${resumeSnapshot}</body>
-</html>`);
+<html><head><meta charset="UTF-8"/>
+<style>
+  ${styles}
+  html, body { margin: 0 !important; padding: 0 !important; width: ${CONTENT_W}px !important; height: auto !important; overflow: visible !important; background: white !important; }
+  .t13-resume { width: ${CONTENT_W}px !important; padding: 0 !important; margin: 0 !important; box-sizing: border-box !important; }
+  .t13-resume .resume-header { padding: 40px ${MARGIN}px 30px ${MARGIN}px !important; }
+  .t13-resume .resume-main { padding: 35px 0px 45px 0px !important; }
+</style></head>
+<body>${resumeSnapshot}</body></html>`);
         measureDoc.close();
 
         const doMeasure = () => {
@@ -6994,237 +8049,195 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
             "margin:0;padding:0;height:auto!important;overflow:visible!important;";
           void resume.offsetHeight;
 
-          const totalH = resume.scrollHeight;
           const resumeRect = resume.getBoundingClientRect();
           const scrollY =
             measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
-
-          const getRelTop = (el: HTMLElement): number => {
-            const r = el.getBoundingClientRect();
-            return r.top - resumeRect.top + scrollY;
-          };
-          const getRelBottom = (el: HTMLElement): number =>
+          const getRelTop = (el: Element) =>
+            el.getBoundingClientRect().top - resumeRect.top + scrollY;
+          const getRelBottom = (el: Element) =>
             getRelTop(el) + el.getBoundingClientRect().height;
 
-          interface Block {
+          interface Unit {
             top: number;
             bottom: number;
-            id?: string;
+            blockId?: string;
+            keepWithNext?: boolean;
           }
-          const blocks: Block[] = [];
+          const units: Unit[] = [];
+          const consumed = new Set<Element>();
 
-          // AFTER
-          const ITEM_SELECTORS = [
-            ".experience-item",
-            ".education-item",
-            ".custom-section",
-            ".resume-header",
-            ".summary-text",
+          const nearestBlockId = (el: Element): string | undefined => {
+            let cur: Element | null = el;
+            while (cur && cur !== resume) {
+              const id = (cur as HTMLElement).dataset?.blockId;
+              if (id) return id;
+              cur = cur.parentElement;
+            }
+            return undefined;
+          };
+
+          // Header-like rows: whole, never split, never left stranded alone
+          // at the bottom of a page.
+          const HEADER_LIKE_SELECTOR = [
+            ".experience-header",
+            ".education-header",
+            ".section-title",
+            ".custom-section-title",
           ].join(", ");
 
-          resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
-            const top = getRelTop(el);
-            const bottom = getRelBottom(el);
-            if (bottom - top > 8)
-              blocks.push({ top, bottom, id: el.dataset.blockId });
+          // Sits right after a header row but outside it — keep chained.
+          const CHAINED_KEEP_SELECTOR = [".experience-company"].join(", ");
+
+          // Whole, never split, but fine sitting alone at page bottom.
+          const ATOMIC_SELECTOR = [
+            ".resume-header",
+            ".project-tech-stack",
+            ".education-grade",
+          ].join(", ");
+
+          const DESC_WRAPPER_SELECTOR = [
+            ".summary-text",
+            ".experience-description",
+            ".education-description",
+            ".skills-content",
+            ".custom-section-content",
+          ].join(", ");
+
+          const pushLines = (el: HTMLElement, keepWithNext = false) => {
+            const range = measureDoc.createRange();
+            range.selectNodeContents(el);
+            const rects = Array.from(range.getClientRects()).filter(
+              (r) => r.height > 2 && r.width > 0,
+            );
+            if (rects.length === 0) return false;
+            const blockId = nearestBlockId(el);
+            rects
+              .sort((a, b) => a.top - b.top)
+              .forEach((r, idx) => {
+                units.push({
+                  top: r.top - resumeRect.top + scrollY,
+                  bottom: r.bottom - resumeRect.top + scrollY,
+                  blockId,
+                  keepWithNext: idx === 0 ? keepWithNext : false,
+                });
+              });
+            return true;
+          };
+
+          const pushAtomic = (el: HTMLElement, keepWithNext = false) => {
+            const h = el.getBoundingClientRect().height;
+            if (h <= 2) return;
+            units.push({
+              top: getRelTop(el),
+              bottom: getRelBottom(el),
+              blockId: nearestBlockId(el),
+              keepWithNext,
+            });
+          };
+
+          Array.from(resume.querySelectorAll<HTMLElement>("*")).forEach((el) => {
+            if (consumed.has(el)) return;
+
+            if (el.matches(HEADER_LIKE_SELECTOR)) {
+              pushAtomic(el, true);
+              el.querySelectorAll("*").forEach((c) => consumed.add(c));
+              consumed.add(el);
+              return;
+            }
+            if (el.matches(CHAINED_KEEP_SELECTOR)) {
+              pushAtomic(el, true);
+              el.querySelectorAll("*").forEach((c) => consumed.add(c));
+              consumed.add(el);
+              return;
+            }
+            if (el.matches(ATOMIC_SELECTOR)) {
+              pushAtomic(el, false);
+              el.querySelectorAll("*").forEach((c) => consumed.add(c));
+              consumed.add(el);
+              return;
+            }
+            if (el.matches("p, li")) {
+              if (pushLines(el)) {
+                el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                consumed.add(el);
+              }
+              return;
+            }
+            if (el.matches(DESC_WRAPPER_SELECTOR) && !el.querySelector("p, li")) {
+              if (pushLines(el)) consumed.add(el);
+            }
           });
 
-          resume
-            .querySelectorAll<HTMLElement>(".section-title")
-            .forEach((title) => {
-              const titleTop = getRelTop(title);
-              let firstItem: HTMLElement | null = null;
-              let sib = title.nextElementSibling as HTMLElement | null;
-              while (sib) {
-                if (sib.getBoundingClientRect().height > 8) {
-                  firstItem = sib;
-                  break;
-                }
-                sib = sib.nextElementSibling as HTMLElement | null;
-              }
-              // AFTER
-              // AFTER
-              if (firstItem) {
-                // Skip anchor logic for skills — allow it to split across pages
-                if (firstItem.classList.contains("skills-container")) return;
+          units.sort((a, b) => a.top - b.top || a.bottom - b.bottom);
 
-                const deepChild = firstItem.querySelector<HTMLElement>(
-                  ".experience-item, .education-item, .custom-section, .summary-text",
-                );
-                const anchor = deepChild || firstItem;
-                const anchorBottom = getRelBottom(anchor);
-                if (anchorBottom - titleTop > 8) {
-                  const sectionId = (title.parentElement as HTMLElement)
-                    ?.dataset?.blockId;
-                  blocks.push({
-                    top: titleTop,
-                    bottom: anchorBottom,
-                    id: sectionId,
-                  });
-                }
-              }
-            });
-
-          blocks.sort((a, b) => a.top - b.top);
+          const totalH = resume.scrollHeight;
 
           const pageStarts: number[] = [0];
           const pageBreakIds: string[] = [];
-          const MAX_PAGES = 20;
+          let pageStart = 0;
 
-          while (pageStarts.length < MAX_PAGES) {
-            const currentStart = pageStarts[pageStarts.length - 1];
-            const naiveCut = currentStart + PAGE_CONTENT_H;
-            if (naiveCut >= totalH) break;
-            let actualCut = naiveCut;
-            let cutBlockId: string | undefined;
-            for (const block of blocks) {
-              if (block.top >= naiveCut) break;
-              if (block.bottom <= currentStart) continue;
-              if (
-                block.top >= currentStart &&
-                block.bottom > naiveCut &&
-                block.top < actualCut
-              ) {
-                actualCut = block.top;
-                cutBlockId = block.id;
-              }
+          for (let i = 0; i < units.length; i++) {
+            const u = units[i];
+            if (u.bottom - pageStart <= PAGE_CONTENT_H) continue;
+
+            let breakAt = i;
+            while (
+              breakAt > 0 &&
+              units[breakAt - 1].keepWithNext &&
+              units[breakAt - 1].top >= pageStart
+            ) {
+              breakAt--;
             }
-            if (actualCut <= currentStart) actualCut = naiveCut;
-            pageStarts.push(actualCut);
-            if (cutBlockId) pageBreakIds.push(cutBlockId);
-          }
 
-          const skillsLis = Array.from(
-            resume.querySelectorAll<HTMLElement>(".skills-content li"),
-          );
-          skillsLis.forEach((li) => {
-            const top = getRelTop(li);
-            const bottom = getRelBottom(li);
-            if (bottom - top > 2) blocks.push({ top, bottom });
-          });
-
-          blocks.sort((a, b) => a.top - b.top);
-          pageStarts.length = 1;
-          pageBreakIds.length = 0;
-
-          while (pageStarts.length < MAX_PAGES) {
-            const currentStart = pageStarts[pageStarts.length - 1];
-            const naiveCut = currentStart + PAGE_CONTENT_H;
-            if (naiveCut >= totalH) break;
-            let actualCut = naiveCut;
-            let cutBlockId: string | undefined;
-            for (const block of blocks) {
-              if (block.top >= naiveCut) break;
-              if (block.bottom <= currentStart) continue;
-              if (
-                block.top >= currentStart &&
-                block.bottom > naiveCut &&
-                block.top < actualCut
-              ) {
-                actualCut = block.top;
-                cutBlockId = block.id;
-              }
-            }
-            if (actualCut <= currentStart) actualCut = naiveCut;
-            pageStarts.push(actualCut);
-            if (cutBlockId) pageBreakIds.push(cutBlockId);
-          }
-
-          (window as any).__resumeSkillsCutIndex = -1;
-          for (let p = 0; p < pageStarts.length - 1; p++) {
-            const cutY = pageStarts[p + 1];
-            for (let li = 0; li < skillsLis.length; li++) {
-              const liTop = getRelTop(skillsLis[li]);
-              const liBottom = getRelBottom(skillsLis[li]);
-              if (liTop < cutY && liBottom > cutY) {
-                (window as any).__resumeSkillsCutIndex = li;
-                break;
-              }
-              if (liTop >= cutY) {
-                (window as any).__resumeSkillsCutIndex = li;
-                break;
-              }
-            }
-            if ((window as any).__resumeSkillsCutIndex >= 0) break;
+            const newTop = units[breakAt].top;
+            pageStart = newTop > pageStart ? newTop : u.top;
+            pageStarts.push(pageStart);
+            pageBreakIds.push(units[breakAt].blockId || "");
+            if (pageStarts.length >= 20) break;
           }
 
           document.body.removeChild(iframe);
-          (window as any).__resumePageBreakIds = pageBreakIds;
+          (window as any).__resumePageBreakIds = pageBreakIds.filter(Boolean);
 
           const pageHtmls: string[] = [];
           for (let i = 0; i < pageStarts.length; i++) {
             const contentOffsetY = pageStarts[i];
             const nextStart = pageStarts[i + 1] ?? totalH;
             const clipH = nextStart - contentOffsetY;
-
             pageHtmls.push(`<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <style>
-    ${styles}
-    html, body {
-      margin: 0 !important; padding: 0 !important;
-      width: ${A4_W}px !important; height: ${A4_H}px !important;
-      overflow: hidden !important; background: white !important;
-    }
-    .page-margin-box {
-      position: relative; width: ${A4_W}px; height: ${A4_H}px;
-      background: white; overflow: hidden;
-    }
-    .page-content-clip {
-      position: absolute;
-      top: ${MARGIN}px; left: ${MARGIN}px;
-      width: ${CONTENT_W}px; height: ${clipH}px; overflow: hidden;
-    }
-    .page-shift {
-      position: absolute; top: ${-contentOffsetY}px; left: 0;
-      width: ${CONTENT_W}px;
-    }
-    .t13-resume {
-      width: ${CONTENT_W}px !important;
-      padding: 0 !important;
-      margin: 0 !important;
-    }
-    .t13-resume .resume-header {
-      padding: 40px ${MARGIN}px 30px ${MARGIN}px !important;
-    }
-    .t13-resume .resume-main {
-      padding: 35px 0px 45px 0px !important;
-    }
-  </style>
-</head>
+<html lang="en"><head><meta charset="UTF-8"/>
+<style>
+  ${styles}
+  html, body { margin: 0 !important; padding: 0 !important; width: ${A4_W}px !important; height: ${A4_H}px !important; overflow: hidden !important; background: white !important; }
+  .page-margin-box { position: relative; width: ${A4_W}px; height: ${A4_H}px; background: white; overflow: hidden; }
+  .page-content-clip { position: absolute; top: ${MARGIN}px; left: ${MARGIN}px; width: ${CONTENT_W}px; height: ${clipH}px; overflow: hidden; }
+  .page-shift { position: absolute; top: ${-contentOffsetY}px; left: 0; width: ${CONTENT_W}px; }
+  .t13-resume { width: ${CONTENT_W}px !important; padding: 0 !important; margin: 0 !important; }
+  .t13-resume .resume-header { padding: 40px ${MARGIN}px 30px ${MARGIN}px !important; }
+  .t13-resume .resume-main { padding: 35px 0px 45px 0px !important; }
+</style></head>
 <body>
-  <div class="page-margin-box">
-    <div class="page-content-clip">
-      <div class="page-shift">
-        ${resumeSnapshot}
-      </div>
-    </div>
-  </div>
-</body>
-</html>`);
+  <div class="page-margin-box"><div class="page-content-clip"><div class="page-shift">${resumeSnapshot}</div></div></div>
+</body></html>`);
           }
           resolve(pageHtmls);
         };
 
         const win = iframe.contentWindow as any;
         if (win?.document?.fonts?.ready) {
-          win.document.fonts.ready.then(() => {
-            setTimeout(() => requestAnimationFrame(doMeasure), 100);
-          });
+          win.document.fonts.ready.then(() => requestAnimationFrame(doMeasure));
         } else {
-          setTimeout(doMeasure, 500);
+          setTimeout(doMeasure, 150);
         }
       });
     },
     [styles],
   );
 
-  // ── Debounced updates ────────────────────────────────────
+  // ── Debounced updates (300ms → 120ms) ────────────────────────────────────
   const scheduleUpdate = useCallback((html: string) => {
     if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
-    debounceTimerRef.current = setTimeout(() => setHtmlContent(html), 300);
+    debounceTimerRef.current = setTimeout(() => setHtmlContent(html), 120);
   }, []);
 
   useEffect(() => {
@@ -7234,32 +8247,26 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
     };
   }, [generateHTML, scheduleUpdate]);
 
+  // Guarded against out-of-order async resolution — only the most recently
+  // started splitIntoPages call's result is ever applied.
   useEffect(() => {
     if (!htmlContent) return;
-    splitIntoPages(htmlContent).then(setPages);
+    const requestId = ++splitRequestIdRef.current;
+    splitIntoPages(htmlContent).then((result) => {
+      if (splitRequestIdRef.current === requestId) {
+        setPages(result);
+      }
+    });
   }, [htmlContent, splitIntoPages]);
 
   // ── PDF download ─────────────────────────────────────────
   const handleDownload = async () => {
     setIsDownloading(true);
     try {
-      // const pageBreakIds: string[] = (window as any).__resumeT13PageBreakIds || [];
-
-      // const res: AxiosResponse<Blob> = await api.post(
-      //   `${API_URL}/candidates/generate-pdf`,
-      //   { html: generateHTML(true, pageBreakIds) },
-      //   { responseType: "blob" },
-      // );
-
-      // AFTER
-      const pageBreakIds: string[] = (
-        (window as any).__resumePageBreakIds || []
-      ).filter((id: string) => id !== "skills-section");
-      const skillsCutIndex: number =
-        (window as any).__resumeSkillsCutIndex ?? -1;
+      const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
       const res: AxiosResponse<Blob> = await api.post(
         `${API_URL}/candidates/generate-pdf`,
-        { html: generateHTML(true, pageBreakIds, skillsCutIndex) },
+        { html: generateHTML(true, pageBreakIds) },
         { responseType: "blob" },
       );
 
@@ -7279,172 +8286,10 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
     }
   };
 
-//   return (
-//     <>
-//       {lastSegment === "download-resume" && (
-//         <div className="text-center my-8">
-//           <motion.button
-//             onClick={handleDownload}
-//             disabled={isDownloading}
-//             whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
-//             whileTap={!isDownloading ? { scale: 0.98 } : {}}
-//             className={`
-//                                                                       relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
-//                                                                       text-white transition-all duration-300 shadow-lg
-//                                                                       ${
-//                                                                         isDownloading
-//                                                                           ? "bg-gray-400 cursor-not-allowed opacity-80"
-//                                                                           : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600"
-//                                                                       }
-//                                                                     `}
-//           >
-//             {/* Animated background gradient for premium feel */}
-//             {!isDownloading && (
-//               <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-//             )}
-
-//             <div className="relative flex items-center justify-center gap-3 text-lg">
-//               {isDownloading ? (
-//                 <>
-//                   <FaSpinner className="animate-spin text-xl" />
-//                   <span>Generating PDF ...</span>
-//                 </>
-//               ) : (
-//                 <>
-//                   <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
-//                   <span>Download Resume</span>
-//                   <span className="text-sm opacity-75 font-light ml-1">
-//                     PDF
-//                   </span>
-//                 </>
-//               )}
-//             </div>
-//           </motion.button>
-//         </div>
-//       )}
-
-//       {alldata ? (
-//         <div
-//           style={{
-//             width: `${A4_W}px`,
-//             height: `${A4_H}px`,
-//             transform: "scale(0.36)",
-//             transformOrigin: "top left",
-//             overflow: "hidden",
-//             pointerEvents: "none",
-//             flexShrink: 0,
-//           }}
-//         >
-//           {pages[0] ? (
-//             <iframe
-//               title="resume-thumb"
-//               srcDoc={pages[0]}
-//               style={{
-//                 width: `${A4_W}px`,
-//                 height: `${A4_H}px`,
-//                 border: "none",
-//                 display: "block",
-//                 pointerEvents: "none",
-//               }}
-//               sandbox="allow-same-origin"
-//             />
-//           ) : (
-//             <div
-//               style={{
-//                 width: `${A4_W}px`,
-//                 height: `${A4_H}px`,
-//                 background: "white",
-//                 display: "flex",
-//                 alignItems: "center",
-//                 justifyContent: "center",
-//                 color: "#ccc",
-//                 fontSize: 14,
-//                 fontFamily: "sans-serif",
-//               }}
-//             >
-//               Loading…
-//             </div>
-//           )}
-//         </div>
-//       ) : (
-//         <div style={{ width: `${A4_W}px`, margin: "0 auto" }}>
-//           {(pages.length > 0 ? pages : [htmlContent]).map((pageHtml, idx) => (
-//             <div key={idx} style={{ marginBottom: "28px" }}>
-//               <div
-//                 style={{
-//                   display: "flex",
-//                   alignItems: "center",
-//                   justifyContent: "center",
-//                   gap: "10px",
-//                   marginBottom: "10px",
-//                 }}
-//               >
-//                 <div
-//                   style={{ flex: 1, height: "1px", background: "#d1d5db" }}
-//                 />
-//                 <span
-//                   style={{
-//                     fontSize: "11px",
-//                     fontWeight: 600,
-//                     color: "#6b7280",
-//                     whiteSpace: "nowrap",
-//                     padding: "3px 12px",
-//                     background: "#f3f4f6",
-//                     borderRadius: "999px",
-//                     border: "1px solid #e5e7eb",
-//                     letterSpacing: "0.05em",
-//                     fontFamily: "system-ui, sans-serif",
-//                   }}
-//                 >
-//                   Page {idx + 1}
-//                   {pages.length > 1 ? ` of ${pages.length}` : ""}
-//                 </span>
-//                 <div
-//                   style={{ flex: 1, height: "1px", background: "#d1d5db" }}
-//                 />
-//               </div>
-//               <div
-//                 style={{
-//                   width: `${A4_W}px`,
-//                   height: `${A4_H}px`,
-//                   overflow: "hidden",
-//                   background: "white",
-//                   boxShadow:
-//                     "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
-//                   borderRadius: "2px",
-//                   flexShrink: 0,
-//                 }}
-//               >
-//                 <iframe
-//                   title={`resume-page-${idx + 1}`}
-//                   srcDoc={pageHtml}
-//                   style={{
-//                     width: `${A4_W}px`,
-//                     height: `${A4_H}px`,
-//                     border: "none",
-//                     display: "block",
-//                     pointerEvents: "none",
-//                   }}
-//                   scrolling="no"
-//                   sandbox="allow-same-origin allow-scripts"
-//                 />
-//               </div>
-//             </div>
-//           ))}
-//         </div>
-//       )}
-//     </>
-//   );
-// };
-
-
-
-
-const isThumbnail = !!alldata && !viewMode ; 
+  const isThumbnail = !!alldata && !viewMode;
   return (
     <>
-      {/* Download button — hide in thumbnail mode */}
-      {!isThumbnail && lastSegment === 'download-resume' &&(
+      {!isThumbnail && lastSegment === "download-resume" && (
         <div className="text-center my-8">
           <motion.button
             onClick={handleDownload}
@@ -7481,9 +8326,8 @@ const isThumbnail = !!alldata && !viewMode ;
           </motion.button>
         </div>
       )}
- 
+
       {isThumbnail ? (
-        // ── THUMBNAIL MODE (dashboard card) ─────────────────────────────────
         <div
           style={{
             width: `${A4_W}px`,
@@ -7499,13 +8343,7 @@ const isThumbnail = !!alldata && !viewMode ;
             <iframe
               title="resume-thumb"
               srcDoc={pages[0]}
-              style={{
-                width: `${A4_W}px`,
-                height: `${A4_H}px`,
-                border: "none",
-                display: "block",
-                pointerEvents: "none",
-              }}
+              style={{ width: `${A4_W}px`, height: `${A4_H}px`, border: "none", display: "block", pointerEvents: "none" }}
               sandbox="allow-same-origin"
             />
           ) : (
@@ -7527,19 +8365,10 @@ const isThumbnail = !!alldata && !viewMode ;
           )}
         </div>
       ) : (
-        // ── FULL PREVIEW MODE (editor + view modal) ──────────────────────────
         <div style={{ width: `${A4_W}px`, margin: "0 auto" }}>
           {(pages.length > 0 ? pages : [htmlContent]).map((pageHtml, idx) => (
             <div key={idx} style={{ marginBottom: "28px" }}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "10px",
-                  marginBottom: "10px",
-                }}
-              >
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", marginBottom: "10px" }}>
                 <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
                 <span
                   style={{
@@ -7566,8 +8395,7 @@ const isThumbnail = !!alldata && !viewMode ;
                   height: `${A4_H}px`,
                   overflow: "hidden",
                   background: "white",
-                  boxShadow:
-                    "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
+                  boxShadow: "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
                   borderRadius: "2px",
                   flexShrink: 0,
                 }}
@@ -7575,13 +8403,7 @@ const isThumbnail = !!alldata && !viewMode ;
                 <iframe
                   title={`resume-page-${idx + 1}`}
                   srcDoc={pageHtml}
-                  style={{
-                    width: `${A4_W}px`,
-                    height: `${A4_H}px`,
-                    border: "none",
-                    display: "block",
-                    pointerEvents: "none",
-                  }}
+                  style={{ width: `${A4_W}px`, height: `${A4_H}px`, border: "none", display: "block", pointerEvents: "none" }}
                   scrolling="no"
                   sandbox="allow-same-origin allow-scripts"
                 />
