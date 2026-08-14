@@ -2231,7 +2231,7 @@ const STEPS: { id: Step; label: string; icon: string }[] = [
 export default function CoverLetterGenerator() {
   const router = useRouter();
 
-  // --- Auth state ---
+  // --- Auth shttp://localhost:3000/resume-details/educationtate ---
   const [isPremium, setIsPremium] = useState<boolean | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
@@ -2748,7 +2748,7 @@ const premium = subscription.current_plan?.toLowerCase() === "premium";
                 {/* Controls Row - Responsive Grid */}
                 <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 mb-6">
                   {/* Accent Color Picker */}
-                  {/* <div className="w-full sm:flex-1 h-fit bg-white/80 backdrop-blur-sm rounded-xl md:rounded-2xl border border-indigo-100/60 p-3 sm:p-4 shadow-lg shadow-indigo-500/5 hover:shadow-indigo-500/10 transition-shadow">
+                  <div className="w-full sm:flex-1 h-fit bg-white/80 backdrop-blur-sm rounded-xl md:rounded-2xl border border-indigo-100/60 p-3 sm:p-4 shadow-lg shadow-indigo-500/5 hover:shadow-indigo-500/10 transition-shadow">
                     <button
                       onClick={() => setShowColors((v) => !v)}
                       className="w-full flex items-center justify-between text-sm font-semibold text-slate-700 cursor-pointer"
@@ -2872,7 +2872,7 @@ const premium = subscription.current_plan?.toLowerCase() === "premium";
                         </motion.div>
                       )}
                     </AnimatePresence>
-                  </div> */}
+                  </div>
 
                   {/* Font Picker */}
                   <div className="w-full sm:flex-1 h-fit bg-white/80 backdrop-blur-sm rounded-xl md:rounded-2xl border border-indigo-100/60 p-3 sm:p-4 shadow-lg shadow-indigo-500/5 hover:shadow-indigo-500/10 transition-shadow">

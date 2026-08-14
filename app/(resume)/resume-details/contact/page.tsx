@@ -1245,63 +1245,7 @@ const ContactForm = () => {
     }
   };
 
-  const fetchContact = async (data1: string | number) => {
-    try {
-      const response = await axios.get(
-        `${API_URL}/api/contact-resume/get-contact/${userId}`,
-        {
-          params: {
-            templateId: chosenResumeDetails?.id,
-            resumeId: data1 || "",
-          },
-        },
-      );
-
-      const data = response.data[0] || response.data;
-
-      setResumeId(data.resumeId || "");
-
-      const updatedContact = {
-        ...contact,
-        contactId: data?._id || "",
-        firstName: data?.firstName || "",
-        lastName: data?.lastName || "",
-        jobTitle: data?.jobTitle || "",
-        phone: data?.phone || "",
-        email: data?.email || "",
-        address: data?.address || "",
-        dob: data?.dob || "",
-        city: data?.city || "",
-        country: data?.country || "",
-        postcode: data?.postCode || "",
-        linkedin: data?.linkedIn || "",
-        portfolio: data?.portfolio || "",
-        photo: data?.photo || null,
-      };
-
-      setContact(updatedContact);
-
-      // Update fullResumeData in context
-      if (fullResumeData) {
-        setFullResumeData({
-          ...fullResumeData,
-          contact: updatedContact,
-        });
-      } else {
-        setFullResumeData({
-          template: chosenResumeDetails || null,
-          contact: updatedContact,
-          experiences: [],
-          education: [],
-          skills: {},
-          summary: "",
-          finalize: {},
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+ 
 
   const handleContactChange = (field: keyof typeof contact, value: string) => {
     setContact((prev) => {

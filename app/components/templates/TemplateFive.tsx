@@ -2338,6 +2338,8 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({
       const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
       const pdfHtml = generateHTML(true, pageBreakIds);
 
+      console.log("pdfHtml",pdfHtml)
+
       const res: AxiosResponse<Blob> = await api.post(
         `${API_URL}/candidates/generate-pdf`,
         { html: pdfHtml },
