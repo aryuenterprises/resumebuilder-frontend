@@ -13,16 +13,6 @@
 // 9. MAIN COMPONENT — the whole page tied together
 // ============================================================
 
-
-
-
-
-
-
-
-
-
-
 "use client";
 
 // --- 1. IMPORTS ---
@@ -444,7 +434,11 @@ export function buildHTML(id: string, d: CLData): string {
        <div class="hdr">
          <div class="nm">${nm}</div>
          <div class="ttl">${ttl}</div>
-         <div class="meta">${[d.personal.email, d.personal.phone, d.personal.location]
+         <div class="meta">${[
+           d.personal.email,
+           d.personal.phone,
+           d.personal.location,
+         ]
            .filter(Boolean)
            .map((v) => `<span class="chip">${v}</span>`)
            .join("")}</div>
@@ -483,7 +477,9 @@ export function buildHTML(id: string, d: CLData): string {
          ["Phone", d.personal.phone || "—"],
          ["Location", d.personal.location || "—"],
        ]
-         .map(([l, v]) => `<div class="info-cell"><strong>${l}</strong>${v}</div>`)
+         .map(
+           ([l, v]) => `<div class="info-cell"><strong>${l}</strong>${v}</div>`,
+         )
          .join("")}</div>
        ${addrBlock}${referralNote}${greet}${bodyContent}${closing}
        <div class="spacer"></div>
@@ -535,7 +531,11 @@ export function buildHTML(id: string, d: CLData): string {
        <div class="hdr">
          <div class="nm">${nm}</div>
          <div class="ttl">${ttl}</div>
-         <div class="ctrow">${[d.personal.email, d.personal.phone, d.personal.location]
+         <div class="ctrow">${[
+           d.personal.email,
+           d.personal.phone,
+           d.personal.location,
+         ]
            .filter(Boolean)
            .map((v) => `<span class="cv">${v}</span>`)
            .join("")}</div>
@@ -569,7 +569,12 @@ export function buildHTML(id: string, d: CLData): string {
          ${d.company.name ? `<div class="badge"><div class="badge-l">Applying To</div><div class="badge-v">${d.company.jobTitle || "Open Role"}<br><span style="font-size:11px;font-weight:400;opacity:.85">${d.company.name}</span></div></div>` : ""}
        </div>
        <div class="stripe"></div>
-       <div class="ctbar">${[d.personal.email, d.personal.phone, d.personal.location, d.personal.linkedin]
+       <div class="ctbar">${[
+         d.personal.email,
+         d.personal.phone,
+         d.personal.location,
+         d.personal.linkedin,
+       ]
          .filter(Boolean)
          .map((v) => `<span class="cv">${v}</span>`)
          .join("")}</div>
@@ -601,7 +606,11 @@ export function buildHTML(id: string, d: CLData): string {
            <div class="geo"></div><div class="geo2"></div>
            <div class="nm">${nm}</div>
            <div class="ttl">${ttl}</div>
-           <div class="chips">${[d.personal.email, d.personal.phone, d.personal.location]
+           <div class="chips">${[
+             d.personal.email,
+             d.personal.phone,
+             d.personal.location,
+           ]
              .filter(Boolean)
              .map((v) => `<span class="chip">${v}</span>`)
              .join("")}</div>
@@ -627,7 +636,12 @@ export function buildHTML(id: string, d: CLData): string {
       `<div class="pg">
        <div class="nm">${nm}</div>
        <div class="ttl-pill">${ttl}</div>
-       <div class="cv-row">${[d.personal.email, d.personal.phone, d.personal.location, d.personal.linkedin]
+       <div class="cv-row">${[
+         d.personal.email,
+         d.personal.phone,
+         d.personal.location,
+         d.personal.linkedin,
+       ]
          .filter(Boolean)
          .map((v) => `<span>${v}</span>`)
          .join("")}</div>
@@ -652,7 +666,11 @@ export function buildHTML(id: string, d: CLData): string {
        <div class="nm">${nm}</div>
        <div class="ttl">${ttl}</div>
        <div class="hr1"></div><div class="hr2"></div>
-       <div class="cv-row">${[d.personal.email, d.personal.phone, d.personal.location]
+       <div class="cv-row">${[
+         d.personal.email,
+         d.personal.phone,
+         d.personal.location,
+       ]
          .filter(Boolean)
          .map((v) => `<span>${v}</span>`)
          .join("")}</div>
@@ -679,7 +697,11 @@ export function buildHTML(id: string, d: CLData): string {
          <div class="grid-bg"></div>
          <div class="nm">${nm}</div>
          <div class="ttl">${ttl}</div>
-         <div class="cv-row">${[d.personal.email, d.personal.phone, d.personal.location]
+         <div class="cv-row">${[
+           d.personal.email,
+           d.personal.phone,
+           d.personal.location,
+         ]
            .filter(Boolean)
            .map((v) => `<span>${v}</span>`)
            .join("")}</div>
@@ -712,7 +734,11 @@ export function buildHTML(id: string, d: CLData): string {
            <div class="nm">${nm}</div>
            <div class="meta">
              <div class="ttl">${ttl}</div>
-             <div class="cv-row">${[d.personal.email, d.personal.phone, d.personal.location]
+             <div class="cv-row">${[
+               d.personal.email,
+               d.personal.phone,
+               d.personal.location,
+             ]
                .filter(Boolean)
                .map((v) => `<span>${v}</span>`)
                .join("")}</div>
@@ -778,7 +804,11 @@ export function buildHTML(id: string, d: CLData): string {
          <div class="ttl">${ttl}</div>
        </div>
        <div class="rule-row"><div class="rule-line"></div><div class="rule-diamond">◆</div><div class="rule-line"></div></div>
-       <div class="cv-row">${[d.personal.email, d.personal.phone, d.personal.location]
+       <div class="cv-row">${[
+         d.personal.email,
+         d.personal.phone,
+         d.personal.location,
+       ]
          .filter(Boolean)
          .map((v) => `<span>${v}</span>`)
          .join("")}</div>
@@ -838,7 +868,11 @@ export function buildHTML(id: string, d: CLData): string {
        <div class="hdr">
          <div class="nm">${nm}</div>
          <div class="ttl">${ttl}</div>
-         <div class="cv-row">${[d.personal.email, d.personal.phone, d.personal.location]
+         <div class="cv-row">${[
+           d.personal.email,
+           d.personal.phone,
+           d.personal.location,
+         ]
            .filter(Boolean)
            .map((v) => `<span>${v}</span>`)
            .join("")}</div>
@@ -867,7 +901,12 @@ export function buildHTML(id: string, d: CLData): string {
       `<div class="pg">
        <div class="t1"></div>
        <div class="t2"><div class="nm">${nm}</div><div class="ttl">${ttl}</div></div>
-       <div class="t3"><div class="cv-row">${[d.personal.email, d.personal.phone, d.personal.location, d.personal.linkedin]
+       <div class="t3"><div class="cv-row">${[
+         d.personal.email,
+         d.personal.phone,
+         d.personal.location,
+         d.personal.linkedin,
+       ]
          .filter(Boolean)
          .map((v) => `<span>${v}</span>`)
          .join("")}</div></div>
@@ -897,7 +936,11 @@ export function buildHTML(id: string, d: CLData): string {
          <div class="slash"></div><div class="slash2"></div>
          <div class="nm">${nm}</div>
          <div class="ttl">${ttl}</div>
-         <div class="cv-row">${[d.personal.email, d.personal.phone, d.personal.location]
+         <div class="cv-row">${[
+           d.personal.email,
+           d.personal.phone,
+           d.personal.location,
+         ]
            .filter(Boolean)
            .map((v) => `<span class="cv-chip">${v}</span>`)
            .join("")}</div>
@@ -930,7 +973,11 @@ export function buildHTML(id: string, d: CLData): string {
          <div class="nm">${nm}</div>
          <div class="bottom-row">
            <div class="ttl">${ttl}</div>
-           <div class="cv-row">${[d.personal.email, d.personal.phone, d.personal.location]
+           <div class="cv-row">${[
+             d.personal.email,
+             d.personal.phone,
+             d.personal.location,
+           ]
              .filter(Boolean)
              .map((v) => `<span>${v}</span>`)
              .join("")}</div>
@@ -958,7 +1005,12 @@ export function buildHTML(id: string, d: CLData): string {
        <div class="nm">${nm}</div>
        <div class="ttl">${ttl}</div>
        <div class="rule"></div>
-       <div class="cv-row">${[d.personal.email, d.personal.phone, d.personal.location, d.personal.linkedin]
+       <div class="cv-row">${[
+         d.personal.email,
+         d.personal.phone,
+         d.personal.location,
+         d.personal.linkedin,
+       ]
          .filter(Boolean)
          .map((v) => `<span>${v}</span>`)
          .join(" &nbsp;·&nbsp; ")}</div>
@@ -981,7 +1033,12 @@ export function buildHTML(id: string, d: CLData): string {
     `),
       `<div class="pg">
        <div class="hdr"><div class="nm">${nm}</div><div class="ttl">${ttl}</div></div>
-       <div class="sub">${[dt, d.personal.email, d.personal.phone, d.personal.location]
+       <div class="sub">${[
+         dt,
+         d.personal.email,
+         d.personal.phone,
+         d.personal.location,
+       ]
          .filter(Boolean)
          .map((v) => `<span>${v}</span>`)
          .join(" &nbsp;|&nbsp; ")}</div>
@@ -1007,7 +1064,11 @@ export function buildHTML(id: string, d: CLData): string {
          <div class="name-col">
            <div class="nm">${nm}</div>
            <div class="ttl">${ttl}</div>
-           <div class="cv-row">${[d.personal.email, d.personal.phone, d.personal.location]
+           <div class="cv-row">${[
+             d.personal.email,
+             d.personal.phone,
+             d.personal.location,
+           ]
              .filter(Boolean)
              .map((v) => `<span>${v}</span>`)
              .join(" · ")}</div>
@@ -1032,7 +1093,11 @@ export function buildHTML(id: string, d: CLData): string {
       `<div class="pg">
        <div class="nm">${nm}</div>
        <div class="ttl">${ttl}</div>
-       <div class="cv-row">${[d.personal.email, d.personal.phone, d.personal.location]
+       <div class="cv-row">${[
+         d.personal.email,
+         d.personal.phone,
+         d.personal.location,
+       ]
          .filter(Boolean)
          .map((v) => `<span>${v}</span>`)
          .join(" · ")}</div>
@@ -1084,7 +1149,12 @@ export function buildHTML(id: string, d: CLData): string {
        <div class="nm">${nm}</div>
        <div class="ttl">${ttl}</div>
        <div class="r1"></div>
-       <div class="cv-row">${[d.personal.email, d.personal.phone, d.personal.location, d.personal.linkedin]
+       <div class="cv-row">${[
+         d.personal.email,
+         d.personal.phone,
+         d.personal.location,
+         d.personal.linkedin,
+       ]
          .filter(Boolean)
          .map((v) => `<span>${v}</span>`)
          .join("")}</div>
@@ -1145,7 +1215,11 @@ export function buildHTML(id: string, d: CLData): string {
        <div class="nm">${nm}</div>
        <div class="ttl">${ttl}</div>
        <div class="rule"></div>
-       <div class="cv-row">${[d.personal.email, d.personal.phone, d.personal.location]
+       <div class="cv-row">${[
+         d.personal.email,
+         d.personal.phone,
+         d.personal.location,
+       ]
          .filter(Boolean)
          .map((v) => `<span>${v}</span>`)
          .join(" · ")}</div>
@@ -1189,7 +1263,12 @@ export function buildHTML(id: string, d: CLData): string {
       `<div class="pg">
        <div class="nm-wrap"><div class="nm">${nm}</div></div>
        <div class="ttl">${ttl}</div>
-       <div class="cv-row">${[d.personal.email, d.personal.phone, d.personal.location, d.personal.linkedin]
+       <div class="cv-row">${[
+         d.personal.email,
+         d.personal.phone,
+         d.personal.location,
+         d.personal.linkedin,
+       ]
          .filter(Boolean)
          .map((v) => `<span>${v}</span>`)
          .join(" · ")}</div>
@@ -1246,7 +1325,11 @@ export function buildHTML(id: string, d: CLData): string {
        <div class="hdr">
          <div class="nm">${nm}</div>
          <div class="ttl">${ttl}</div>
-         <div class="cv-row">${[d.personal.email, d.personal.phone, d.personal.location]
+         <div class="cv-row">${[
+           d.personal.email,
+           d.personal.phone,
+           d.personal.location,
+         ]
            .filter(Boolean)
            .map((v) => `<span>${v}</span>`)
            .join("")}</div>
@@ -1282,7 +1365,12 @@ export function buildHTML(id: string, d: CLData): string {
          <div class="hdr">
            <div class="nm">${nm}</div>
            <div class="ttl">${ttl}</div>
-           <div class="cv-row">${[d.personal.email, d.personal.phone, d.personal.location, d.personal.linkedin]
+           <div class="cv-row">${[
+             d.personal.email,
+             d.personal.phone,
+             d.personal.location,
+             d.personal.linkedin,
+           ]
              .filter(Boolean)
              .map((v) => `<span>${v}</span>`)
              .join("")}</div>
@@ -1309,7 +1397,11 @@ export function buildHTML(id: string, d: CLData): string {
        <div class="nm">${nm}</div>
        <div class="sub">
          <div class="ttl">${ttl}</div>
-         <div class="cv-row">${[d.personal.email, d.personal.phone, d.personal.location]
+         <div class="cv-row">${[
+           d.personal.email,
+           d.personal.phone,
+           d.personal.location,
+         ]
            .filter(Boolean)
            .map((v) => `<span>${v}</span>`)
            .join("")}</div>
@@ -1334,7 +1426,12 @@ export function buildHTML(id: string, d: CLData): string {
        <div class="circle"></div>
        <div class="nm">${nm}</div>
        <div class="ttl">${ttl}</div>
-       <div class="cv-row">${[d.personal.email, d.personal.phone, d.personal.location, d.personal.linkedin]
+       <div class="cv-row">${[
+         d.personal.email,
+         d.personal.phone,
+         d.personal.location,
+         d.personal.linkedin,
+       ]
          .filter(Boolean)
          .map((v) => `<span>${v}</span>`)
          .join("")}</div>
@@ -1391,7 +1488,10 @@ export function buildHTML(id: string, d: CLData): string {
          ["Location", d.personal.location || "—"],
          ["Date", dt],
        ]
-         .map(([l, v]) => `<div class="slug-blk"><div class="slug-lbl">${l}</div><div class="slug-val">${v}</div></div>`)
+         .map(
+           ([l, v]) =>
+             `<div class="slug-blk"><div class="slug-lbl">${l}</div><div class="slug-val">${v}</div></div>`,
+         )
          .join("")}</div>
        <div class="nm-bar"><div class="nm">${nm}</div><div class="ttl">${ttl}</div></div>
        <div class="body">${addrBlock}${referralNote}${greet}${bodyContent}${closing}</div>
@@ -1444,7 +1544,11 @@ export function buildHTML(id: string, d: CLData): string {
          <div class="nm">${nm}</div>
          <div class="ttl">${ttl}</div>
          <div class="gold"></div>
-         <div class="cv-row">${[d.personal.email, d.personal.phone, d.personal.location]
+         <div class="cv-row">${[
+           d.personal.email,
+           d.personal.phone,
+           d.personal.location,
+         ]
            .filter(Boolean)
            .map((v) => `<span>${v}</span>`)
            .join("")}</div>
@@ -1472,7 +1576,12 @@ export function buildHTML(id: string, d: CLData): string {
        <div class="fold"></div><div class="fold-inner"></div>
        <div class="nm">${nm}</div>
        <div class="ttl">${ttl}</div>
-       <div class="cv-row">${[d.personal.email, d.personal.phone, d.personal.location, d.personal.linkedin]
+       <div class="cv-row">${[
+         d.personal.email,
+         d.personal.phone,
+         d.personal.location,
+         d.personal.linkedin,
+       ]
          .filter(Boolean)
          .map((v) => `<span>${v}</span>`)
          .join("")}</div>
@@ -2257,29 +2366,6 @@ export default function CoverLetterGenerator() {
   const liveRef = useRef<HTMLIFrameElement>(null); // preview iframe
   const modalRef = useRef<HTMLIFrameElement>(null); // fullscreen modal iframe
 
-  // ── Fetch auth on mount ──
-  // useEffect(() => {
-  //   const userDetails = getLocalStorage<User>("user_details");
-  //   const userId = userDetails?.id;
-  //   if (!userId) {
-  //     setIsLoggedIn(false);
-  //     setIsPremium(false);
-  //     setTimeout(() => setShowLoginPopup(true), 600);
-  //     return;
-  //   }
-  //   setIsLoggedIn(true);
-
-  //   axios
-  //     .get(`${API_URL}/api/users/dashboard`, { params: { userId } })
-  //     .then((res) => {
-  //       const payment = res?.data?.payments?.[0];
-  //       const premium = payment?.plan === "Premium";
-  //       setIsPremium(premium);
-  //       if (!premium) setTimeout(() => setShowPremiumPopup(true), 600);
-  //     })
-  //     .catch(() => setIsPremium(false));
-  // }, []);
-
   useEffect(() => {
     const fetchUserData = async () => {
       const userDetails = getLocalStorage<User>("user_details");
@@ -2296,7 +2382,7 @@ export default function CoverLetterGenerator() {
       try {
         const res = await api.get("/dashboard");
         const { subscription } = res?.data;
-const premium = subscription.current_plan?.toLowerCase() === "premium";
+        const premium = subscription.current_plan?.toLowerCase() === "premium";
         setIsPremium(premium);
       } catch (err) {
         console.error(err);
@@ -3886,11 +3972,10 @@ const premium = subscription.current_plan?.toLowerCase() === "premium";
                   </div>
                 </div>
                 <button
-                  onClick={() => 
-                    {
-                      setStep("template");
-                       setModal(false)
-                    }}
+                  onClick={() => {
+                    setStep("template");
+                    setModal(false);
+                  }}
                   className="flex items-center gap-1 px-2 py-1 bg-indigo-50 rounded-lg text-indigo-600 text-xs font-medium lg:hidden"
                 >
                   <FiLayout className="w-3 h-3" />
@@ -3953,16 +4038,3 @@ const premium = subscription.current_plan?.toLowerCase() === "premium";
     </>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -732,7 +732,6 @@ const ProjectsForm = () => {
   const UseContext = useContext(CreateContext);
   const latestResumeId = getLocalStorage("latest_resume_id");
 
-  const contactId = UseContext?.contact.contactId || UseContext?.contact._id;
 
   const { projects, setProjects } = UseContext || {};
 
@@ -992,7 +991,7 @@ const ProjectsForm = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-linear-to-br from-slate-50 via-white to-indigo-50/40">
-      <Stepper />
+      <Stepper onBeforeNavigate={() => saveToAPI(projects)} />
 
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto">

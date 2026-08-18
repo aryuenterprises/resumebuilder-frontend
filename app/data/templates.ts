@@ -149,18 +149,17 @@ export const templateData: Template[] = [
     image: "/images/resume15.png",
     description: "Creative design with eye-catching sections.",
     temp: "paid",
-    pic: "true",
     component: TemplateFifteen,
   },
 
-  {
-    id: 16,
-    style: "Modern Professional",
-    image: "/images/resume16.jpg",
-    description: "Creative design with eye-catching sections.",
-    temp: "paid",
-    component: TemplateSixteen,
-  },
+  // {
+  //   id: 16,
+  //   style: "Modern Professional",
+  //   image: "/images/resume16.jpg",
+  //   description: "Creative design with eye-catching sections.",
+  //   temp: "paid",
+  //   component: TemplateSixteen,
+  // },
   // {
   //   id: 17,
   //   style: "The Analyst",

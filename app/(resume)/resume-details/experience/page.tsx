@@ -152,9 +152,6 @@ const ExperienceForm = () => {
     setDragOverItemId(null);
   };
 
-  // const latestResumeId = localStorage.getItem("latest_resume_id");
-
-  // const latestResumeId = getLocalStorage("latest_resume_id");
 
   const latestResumeId = getLocalStorage("latest_resume_id");
 
@@ -311,7 +308,7 @@ const ExperienceForm = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-linear-to-br from-slate-50 via-white to-indigo-50/40">
-      <Stepper />
+      <Stepper  onBeforeNavigate={() => saveToAPI(experiences)} />
 
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto">

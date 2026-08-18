@@ -20,10 +20,7 @@ import {
 import { BsFileEarmarkText, BsStars } from "react-icons/bs";
 import { FiShield, FiTrendingUp, FiCheckCircle, FiMenu } from "react-icons/fi";
 import { useRouter } from "next/navigation";
-import {
-  Finalize as FinalizeType,
-  Template,
-} from "@/app/types/context.types";
+import { Finalize as FinalizeType, Template } from "@/app/types/context.types";
 import { getLocalStorage } from "@/app/utils";
 import { API_URL } from "@/app/config/api";
 import { IoArrowForward, IoSparkles } from "react-icons/io5";
@@ -62,7 +59,9 @@ const FinalizeForm = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [lastSavedData, setLastSavedData] = useState<string>("");
   const [showGrade, setShowGrade] = useState(false);
-  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
+  const [expandedSections, setExpandedSections] = useState<
+    Record<string, boolean>
+  >({});
   const [loading, setLoading] = useState(false);
   const [showAtsModal, setShowAtsModal] = useState(false);
   const [atsScore, setAtsScore] = useState(0);
@@ -70,19 +69,12 @@ const FinalizeForm = () => {
   const [progress, setProgress] = useState(0);
   const [showTips, setShowTips] = useState(false);
   // const latestResumeId = localStorage.getItem("latest_resume_id");
-        const latestResumeId = getLocalStorage("latest_resume_id");
-  
-
+  const latestResumeId = getLocalStorage("latest_resume_id");
 
   // Drag and drop state
   const [draggedItemId, setDraggedItemId] = useState<string | null>(null);
   const [dragOverItemId, setDragOverItemId] = useState<string | null>(null);
 
-  // const contactId = context?.contact?.contactId;
-
-  const contactId = contact.contactId || contact._id;
-
-  const chosenTemplate = getLocalStorage<Template>("chosenTemplate");
 
   // Helper functions
   const stripHtml = (html: string) => {
@@ -90,31 +82,33 @@ const FinalizeForm = () => {
   };
 
   const getPlainTextFromHtml = (html: string) => {
-    return html
-      ?.replace(/<\/?[^>]+(>|$)/g, "")
-      .replace(/•/g, "")
-      .replace(/\s+/g, " ")
-      .trim()
-      .split(".")
-      .map((s) => s.trim())
-      .filter(Boolean) || [];
+    return (
+      html
+        ?.replace(/<\/?[^>]+(>|$)/g, "")
+        .replace(/•/g, "")
+        .replace(/\s+/g, " ")
+        .trim()
+        .split(".")
+        .map((s) => s.trim())
+        .filter(Boolean) || []
+    );
   };
 
   const getFilteredSkills = () => {
     // Get the text content from skills object
-    const skillsText = skills?.text || '';
-    
+    const skillsText = skills?.text || "";
+
     if (!skillsText || !skillsText.trim()) return [];
-    
+
     // Remove all HTML tags
-    const plainText = skillsText.replace(/<[^>]*>/g, '');
-    
+    const plainText = skillsText.replace(/<[^>]*>/g, "");
+
     // Split by new lines or bullet points and clean up
     const skillsArray = plainText
       .split(/[\n•]/) // Split by new lines or bullet points
-      .map(skill => skill.trim())
-      .filter(skill => skill.length > 0);
-    
+      .map((skill) => skill.trim())
+      .filter((skill) => skill.length > 0);
+
     return skillsArray;
   };
 
@@ -140,35 +134,31 @@ const FinalizeForm = () => {
     //   return false;
     // }
 
-    const currentDataString = JSON.stringify({ customSection: finalizeData.customSection });
+    const currentDataString = JSON.stringify({
+      customSection: finalizeData.customSection,
+    });
     // if (currentDataString === lastSavedData) return true;
 
     setIsSaving(true);
 
     try {
       const cleanedData = {
-        customSection: finalizeData.customSection?.filter(
-          (item) => item?.name?.trim() !== ""
-        ) || [],
+        customSection:
+          finalizeData.customSection?.filter(
+            (item) => item?.name?.trim() !== "",
+          ) || [],
       };
 
-      // await axios.post(
-      //   `${API_URL}/api/finalize-resume/update`,
-      //   { skillsData: cleanedData, templateId: chosenTemplate?.id },
-      //   { params: { contactId } }
-      // );
+      const singlePayload = {
+        section_name: "finalize",
+        section_payload: cleanedData,
+      };
 
-
-         const singlePayload = {
-        "section_name": "finalize",
-          "section_payload": cleanedData
-      }
-    
-    
-
-    // 3. Send it as standard 'application/json'
-    const response = await api.patch(`${API_URL}/user-resumes/${latestResumeId}`,singlePayload);
-
+      // 3. Send it as standard 'application/json'
+      const response = await api.patch(
+        `${API_URL}/user-resumes/${latestResumeId}`,
+        singlePayload,
+      );
 
       setLastSavedData(currentDataString);
       toast.success("Changes saved successfully!");
@@ -212,28 +202,32 @@ const FinalizeForm = () => {
 
   const handleDrop = (e: React.DragEvent, targetId: string) => {
     e.preventDefault();
-    
+
     if (draggedItemId === null) return;
     if (draggedItemId === targetId) return;
 
     // Reorder the custom sections array
     setFinalize((prev: FinalizeType) => {
       const customSections = prev.customSection || [];
-      const draggedIndex = customSections.findIndex(section => section.id === draggedItemId);
-      const targetIndex = customSections.findIndex(section => section.id === targetId);
-      
+      const draggedIndex = customSections.findIndex(
+        (section) => section.id === draggedItemId,
+      );
+      const targetIndex = customSections.findIndex(
+        (section) => section.id === targetId,
+      );
+
       if (draggedIndex === -1 || targetIndex === -1) return prev;
-      
+
       const newSections = [...customSections];
       const [draggedItem] = newSections.splice(draggedIndex, 1);
       newSections.splice(targetIndex, 0, draggedItem);
-      
+
       return {
         ...prev,
         customSection: newSections,
       };
     });
-    
+
     setDraggedItemId(null);
     setDragOverItemId(null);
   };
@@ -253,7 +247,9 @@ const FinalizeForm = () => {
   const deleteCustomSection = (sectionId: string) => {
     setFinalize((prev: FinalizeType) => ({
       ...prev,
-      customSection: (prev.customSection || []).filter((s) => s.id !== sectionId),
+      customSection: (prev.customSection || []).filter(
+        (s) => s.id !== sectionId,
+      ),
     }));
     // Remove from expanded state
     setExpandedSections((prev) => {
@@ -263,11 +259,15 @@ const FinalizeForm = () => {
     });
   };
 
-  const updateCustomSection = (sectionId: string, value: string, field: "name" | "description") => {
+  const updateCustomSection = (
+    sectionId: string,
+    value: string,
+    field: "name" | "description",
+  ) => {
     setFinalize((prev: FinalizeType) => ({
       ...prev,
       customSection: (prev.customSection || []).map((s) =>
-        s.id === sectionId ? { ...s, [field]: value } : s
+        s.id === sectionId ? { ...s, [field]: value } : s,
       ),
     }));
   };
@@ -305,7 +305,7 @@ const FinalizeForm = () => {
     try {
       const response = await axios.post(
         `https://ai.aryuacademy.com/api/v1/ats/scan`,
-        formData
+        formData,
       );
 
       setAtsScore(response.data.ats_score);
@@ -357,8 +357,10 @@ const FinalizeForm = () => {
   };
 
   const getAtsVerdictText = (score: number) => {
-    if (score >= 85) return "Excellent! Your resume is highly optimized for ATS systems.";
-    if (score >= 70) return "Good! Your resume passes ATS screening with minor refinements.";
+    if (score >= 85)
+      return "Excellent! Your resume is highly optimized for ATS systems.";
+    if (score >= 70)
+      return "Good! Your resume passes ATS screening with minor refinements.";
     if (score >= 50) return "Average. Consider adding more relevant keywords.";
     return "Needs improvement. Consider significant revisions for ATS success.";
   };
@@ -366,25 +368,55 @@ const FinalizeForm = () => {
   // Editor toolbar
   const editorToolbar = (
     <div className="flex gap-0.5 sm:gap-1 p-1.5 sm:p-2 flex-wrap items-center bg-gray-50 border-b border-gray-200">
-      <button type="button" className="ql-bold p-1 sm:p-1.5 hover:bg-gray-200 rounded transition" title="Bold">
+      <button
+        type="button"
+        className="ql-bold p-1 sm:p-1.5 hover:bg-gray-200 rounded transition"
+        title="Bold"
+      >
         <strong>B</strong>
       </button>
-      <button type="button" className="ql-italic p-1 sm:p-1.5 hover:bg-gray-200 rounded transition" title="Italic">
+      <button
+        type="button"
+        className="ql-italic p-1 sm:p-1.5 hover:bg-gray-200 rounded transition"
+        title="Italic"
+      >
         <em>I</em>
       </button>
-      <button type="button" className="ql-underline p-1 sm:p-1.5 hover:bg-gray-200 rounded transition" title="Underline">
+      <button
+        type="button"
+        className="ql-underline p-1 sm:p-1.5 hover:bg-gray-200 rounded transition"
+        title="Underline"
+      >
         <u>U</u>
       </button>
-      <button type="button" className="ql-list p-1 sm:p-1.5 hover:bg-gray-200 rounded transition" value="ordered" title="Numbered List">
+      <button
+        type="button"
+        className="ql-list p-1 sm:p-1.5 hover:bg-gray-200 rounded transition"
+        value="ordered"
+        title="Numbered List"
+      >
         1.
       </button>
-      <button type="button" className="ql-list p-1 sm:p-1.5 hover:bg-gray-200 rounded transition" value="bullet" title="Bullet List">
+      <button
+        type="button"
+        className="ql-list p-1 sm:p-1.5 hover:bg-gray-200 rounded transition"
+        value="bullet"
+        title="Bullet List"
+      >
         •
       </button>
-      <button type="button" className="ql-link p-1 sm:p-1.5 hover:bg-gray-200 rounded transition" title="Insert Link">
+      <button
+        type="button"
+        className="ql-link p-1 sm:p-1.5 hover:bg-gray-200 rounded transition"
+        title="Insert Link"
+      >
         <FaLink className="w-3 h-3 sm:w-4 sm:h-4" />
       </button>
-      <button type="button" className="ql-clean p-1 sm:p-1.5 hover:bg-gray-200 rounded transition" title="Clear Formatting">
+      <button
+        type="button"
+        className="ql-clean p-1 sm:p-1.5 hover:bg-gray-200 rounded transition"
+        title="Clear Formatting"
+      >
         ⌫
       </button>
     </div>
@@ -394,7 +426,7 @@ const FinalizeForm = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-linear-to-br from-slate-50 via-white to-indigo-50/40">
-      <Stepper />
+      <Stepper  />
 
       <div className="flex-1 overflow-y-auto">
         <div className="container mx-auto px-2 py-6 sm:py-8 lg:py-10">
@@ -434,12 +466,14 @@ const FinalizeForm = () => {
                   <div>
                     <h3 className="text-base sm:text-lg font-bold text-gray-900 flex flex-wrap items-center gap-2">
                       ATS Score Checker
-                      <span className="text-[10px] sm:text-xs bg-indigo-100 text-indigo-700 px-1.5 sm:px-2 py-0.5 rounded-full">AI-Powered</span>
+                      <span className="text-[10px] sm:text-xs bg-indigo-100 text-indigo-700 px-1.5 sm:px-2 py-0.5 rounded-full">
+                        AI-Powered
+                      </span>
                     </h3>
                     <p className="text-xs sm:text-sm text-gray-600 mt-1">
-                      Analyze your resume with ATS systems and get instant feedback
+                      Analyze your resume with ATS systems and get instant
+                      feedback
                     </p>
-                   
                   </div>
                 </div>
 
@@ -474,14 +508,20 @@ const FinalizeForm = () => {
                     <BsFileEarmarkText className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600" />
                   </div>
                   <div>
-                    <h2 className="text-sm sm:text-base font-semibold text-gray-900">Custom Sections</h2>
-                    <p className="text-xs text-gray-500">Add sections like Volunteer Work, Publications, etc.</p>
+                    <h2 className="text-sm sm:text-base font-semibold text-gray-900">
+                      Custom Sections
+                    </h2>
+                    <p className="text-xs text-gray-500">
+                      Add sections like Volunteer Work, Publications, etc.
+                    </p>
                   </div>
                 </div>
                 {isSaving && (
                   <div className="flex items-center gap-2 px-2 sm:px-3 py-1 bg-indigo-100 rounded-full self-start sm:self-auto">
                     <div className="w-1.5 h-1.5 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-                    <span className="text-[10px] text-indigo-700 font-medium">Saving...</span>
+                    <span className="text-[10px] text-indigo-700 font-medium">
+                      Saving...
+                    </span>
                   </div>
                 )}
               </div>
@@ -491,7 +531,9 @@ const FinalizeForm = () => {
               {customSections.length === 0 ? (
                 <div className="text-center py-12 bg-gray-50 rounded-xl">
                   <BsFileEarmarkText className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                  <p className="text-gray-400 text-sm mb-4">No custom sections added yet</p>
+                  <p className="text-gray-400 text-sm mb-4">
+                    No custom sections added yet
+                  </p>
                   <button
                     onClick={addCustomSection}
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-50 text-indigo-600 font-medium hover:bg-indigo-100 transition-all text-sm"
@@ -505,40 +547,41 @@ const FinalizeForm = () => {
                   {customSections.map((section) => (
                     <div
                       key={section.id}
-                   
                       className={`bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-all 
-                        ${draggedItemId === section.id ? 'opacity-50' : ''}
-                        ${dragOverItemId === section.id ? 'border-2 border-indigo-400 shadow-lg transform scale-[1.02]' : ''}
+                        ${draggedItemId === section.id ? "opacity-50" : ""}
+                        ${dragOverItemId === section.id ? "border-2 border-indigo-400 shadow-lg transform scale-[1.02]" : ""}
                       `}
                     >
                       {/* Accordion Header - Shows Section Name */}
                       <div
-
                         className="flex justify-between items-center cursor-pointer p-4 hover:bg-gray-50 transition-colors cursor-move"
                         onClick={() => toggleSection(section.id!)}
-                           draggable={true}
-                      onDragStart={(e) => handleDragStart(e, section.id!)}
-                      onDragEnd={handleDragEnd}
-                      onDragOver={(e) => handleDragOver(e, section.id!)}
-                      onDragLeave={handleDragLeave}
-                      onDrop={(e) => handleDrop(e, section.id!)}
+                        draggable={true}
+                        onDragStart={(e) => handleDragStart(e, section.id!)}
+                        onDragEnd={handleDragEnd}
+                        onDragOver={(e) => handleDragOver(e, section.id!)}
+                        onDragLeave={handleDragLeave}
+                        onDrop={(e) => handleDrop(e, section.id!)}
                       >
                         <div className="flex items-center gap-3 flex-1 min-w-0">
                           {/* Drag Handle Icon */}
-                          <div onClick={(e) => e.stopPropagation()} className="flex-shrink-0 text-gray-400 group-hover:text-indigo-400 transition-colors cursor-move">
+                          <div
+                            onClick={(e) => e.stopPropagation()}
+                            className="flex-shrink-0 text-gray-400 group-hover:text-indigo-400 transition-colors cursor-move"
+                          >
                             <FiMenu className="w-4 h-4 sm:w-5 sm:h-5" />
                           </div>
-                       
-                          
+
                           <div className="flex-1 min-w-0">
                             <div className="font-semibold text-gray-800 truncate">
                               {section.name?.trim() ? (
                                 <span>{section.name}</span>
                               ) : (
-                                <span className="text-gray-400 italic">Untitled Section</span>
+                                <span className="text-gray-400 italic">
+                                  Untitled Section
+                                </span>
                               )}
                             </div>
-                          
                           </div>
                         </div>
                         <div className="flex items-center gap-2 flex-shrink-0">
@@ -553,7 +596,9 @@ const FinalizeForm = () => {
                             <FaTrash className="w-3.5 h-3.5" />
                           </button>
                           <motion.div
-                            animate={{ rotate: expandedSections[section.id!] ? 180 : 0 }}
+                            animate={{
+                              rotate: expandedSections[section.id!] ? 180 : 0,
+                            }}
                             transition={{ duration: 0.3 }}
                             className="text-gray-400"
                           >
@@ -563,7 +608,9 @@ const FinalizeForm = () => {
                       </div>
 
                       {/* Accordion Content */}
-                      <div className={`transition-all duration-300 overflow-hidden ${expandedSections[section.id!] ? "max-h-[600px]" : "max-h-0"}`}>
+                      <div
+                        className={`transition-all duration-300 overflow-hidden ${expandedSections[section.id!] ? "max-h-[600px]" : "max-h-0"}`}
+                      >
                         <div className="p-4 space-y-4 border-t border-gray-100 bg-gray-50/30">
                           <div>
                             <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2">
@@ -572,7 +619,13 @@ const FinalizeForm = () => {
                             <input
                               type="text"
                               value={section.name || ""}
-                              onChange={(e) => updateCustomSection(section.id!, e.target.value, "name")}
+                              onChange={(e) =>
+                                updateCustomSection(
+                                  section.id!,
+                                  e.target.value,
+                                  "name",
+                                )
+                              }
                               placeholder="e.g., Volunteer Work, Publications, Certifications"
                               className="w-full px-4 py-2.5 bg-white border-2 border-gray-200 rounded-lg text-sm focus:outline-none focus:border-indigo-500 transition-all"
                             />
@@ -585,7 +638,13 @@ const FinalizeForm = () => {
                               <Editor
                                 value={section.description || ""}
                                 headerTemplate={editorToolbar}
-                                onTextChange={(e: any) => updateCustomSection(section.id!, e.htmlValue, "description")}
+                                onTextChange={(e: any) =>
+                                  updateCustomSection(
+                                    section.id!,
+                                    e.htmlValue,
+                                    "description",
+                                  )
+                                }
                                 style={{ height: "250px", background: "white" }}
                               />
                             </div>
@@ -642,7 +701,9 @@ const FinalizeForm = () => {
             {/* Continue Button - Premium Design */}
             <button
               className="group relative px-6 sm:px-8 py-2.5 sm:py-3 text-sm sm:text-base font-medium md:font-semibold text-white rounded-lg md:rounded-xl shadow-lg transition-all duration-300 overflow-hidden whitespace-nowrap cursor-pointer"
-              onClick={() => saveToAPI(finalize).then(() => router.push("/download-resume"))}
+              onClick={() =>
+                saveToAPI(finalize).then(() => router.push("/download-resume"))
+              }
             >
               {/* Gradient Background with Animation */}
               <div className="absolute inset-0 bg-linear-to-r from-indigo-600 via-indigo-500 to-indigo-600 transition-all duration-300 group-hover:scale-105 group-hover:from-indigo-500 group-hover:via-indigo-400 group-hover:to-indigo-500"></div>
@@ -687,10 +748,22 @@ const FinalizeForm = () => {
         hasAI={false}
         proTip="Add sections that highlight unique skills or experiences relevant to your target role"
         bestPractices={[
-          { tip: "Be specific and relevant", example: "Mention awards, languages or achievements" },
-          { tip: "Keep it concise", example: "Use bullet points for better readability" },
-          { tip: "Highlight transferable skills", example: "Leadership, problem-solving, teamwork" },
-          { tip: "Tailor to the job", example: "Focus on what matters for the specific role" },
+          {
+            tip: "Be specific and relevant",
+            example: "Mention awards, languages or achievements",
+          },
+          {
+            tip: "Keep it concise",
+            example: "Use bullet points for better readability",
+          },
+          {
+            tip: "Highlight transferable skills",
+            example: "Leadership, problem-solving, teamwork",
+          },
+          {
+            tip: "Tailor to the job",
+            example: "Focus on what matters for the specific role",
+          },
         ]}
         avoidList={[
           "Adding irrelevant personal information",
@@ -701,7 +774,9 @@ const FinalizeForm = () => {
           <div className="bg-indigo-50 rounded-lg p-2 sm:p-3">
             <div className="flex items-center gap-1.5 mb-1.5">
               <FiShield className="w-3 h-3 text-indigo-600" />
-              <p className="text-xs font-semibold text-indigo-700">Popular Section Ideas</p>
+              <p className="text-xs font-semibold text-indigo-700">
+                Popular Section Ideas
+              </p>
             </div>
             <div className="grid grid-cols-2 gap-1.5 text-[11px]">
               <div>
@@ -730,7 +805,9 @@ const FinalizeForm = () => {
         <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl p-5 sm:p-6 text-center max-w-sm w-full">
             <div className="w-10 h-10 border-3 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-            <h3 className="font-semibold text-gray-800 mb-1">Analyzing Resume...</h3>
+            <h3 className="font-semibold text-gray-800 mb-1">
+              Analyzing Resume...
+            </h3>
             <p className="text-gray-500 text-xs">This may take a few seconds</p>
           </div>
         </div>
@@ -760,8 +837,12 @@ const FinalizeForm = () => {
                       <FaChartLine className="w-4 h-4 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold text-white">ATS Score Analysis</h3>
-                      <p className="text-indigo-100 text-xs">Your resume has been analyzed</p>
+                      <h3 className="text-lg font-bold text-white">
+                        ATS Score Analysis
+                      </h3>
+                      <p className="text-indigo-100 text-xs">
+                        Your resume has been analyzed
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -769,9 +850,19 @@ const FinalizeForm = () => {
                 <div className="p-5 sm:p-6 text-center">
                   <div className="relative w-28 h-28 sm:w-32 sm:h-32 mx-auto mb-4">
                     <svg className="w-full h-full -rotate-90">
-                      <circle cx="50%" cy="50%" r="45%" fill="none" stroke="#e5e7eb" strokeWidth="8" />
                       <circle
-                        cx="50%" cy="50%" r="45%" fill="none"
+                        cx="50%"
+                        cy="50%"
+                        r="45%"
+                        fill="none"
+                        stroke="#e5e7eb"
+                        strokeWidth="8"
+                      />
+                      <circle
+                        cx="50%"
+                        cy="50%"
+                        r="45%"
+                        fill="none"
                         stroke={getAtsGradeColor(progress)}
                         strokeWidth="8"
                         strokeDasharray={`${2 * Math.PI * 45}%`}
@@ -781,7 +872,10 @@ const FinalizeForm = () => {
                       />
                     </svg>
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-xl sm:text-2xl font-bold" style={{ color: getAtsGradeColor(progress) }}>
+                      <span
+                        className="text-xl sm:text-2xl font-bold"
+                        style={{ color: getAtsGradeColor(progress) }}
+                      >
                         {progress}%
                       </span>
                     </div>
@@ -789,15 +883,25 @@ const FinalizeForm = () => {
 
                   {showGrade && (
                     <>
-                      <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold mb-4
-                        ${progress >= 85 ? "bg-green-100 text-green-700" : 
-                          progress >= 70 ? "bg-blue-100 text-blue-700" :
-                          progress >= 50 ? "bg-yellow-100 text-yellow-700" : "bg-red-100 text-red-700"}`}>
+                      <span
+                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold mb-4
+                        ${
+                          progress >= 85
+                            ? "bg-green-100 text-green-700"
+                            : progress >= 70
+                              ? "bg-blue-100 text-blue-700"
+                              : progress >= 50
+                                ? "bg-yellow-100 text-yellow-700"
+                                : "bg-red-100 text-red-700"
+                        }`}
+                      >
                         {getAtsGrade(progress)}
                       </span>
 
                       <div className="p-3 bg-gray-50 rounded-lg mb-5">
-                        <p className="text-gray-700 text-sm">{atsVerdict || getAtsVerdictText(progress)}</p>
+                        <p className="text-gray-700 text-sm">
+                          {atsVerdict || getAtsVerdictText(progress)}
+                        </p>
                       </div>
 
                       <div className="flex flex-col sm:flex-row gap-3">

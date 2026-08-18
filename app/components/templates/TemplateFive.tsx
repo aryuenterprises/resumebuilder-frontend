@@ -1136,8 +1136,7 @@
 //     }
 //   };
 
- 
-// const isThumbnail = !!alldata && !viewMode ; 
+// const isThumbnail = !!alldata && !viewMode ;
 //   return (
 //     <>
 //       {/* Download button — hide in thumbnail mode */}
@@ -1178,7 +1177,7 @@
 //           </motion.button>
 //         </div>
 //       )}
- 
+
 //       {isThumbnail ? (
 //         // ── THUMBNAIL MODE (dashboard card) ─────────────────────────────────
 //         <div
@@ -1293,20 +1292,6 @@
 
 // export default TemplateFive;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 import React, {
   useContext,
@@ -1381,45 +1366,95 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({
   const dateOfBirth = contact?.dob;
 
   // ── Image → base64 ───────────────────────────────────────────────────────
-  useEffect(() => {
-    let objectUrl: string | null = null;
+  // useEffect(() => {
+  //   let objectUrl: string | null = null;
 
-    const processImage = async () => {
-      if (!contact.photo) {
-        setBase64Image(null);
-        return;
-      }
-      try {
-        if (typeof contact.photo === "string") {
-          if (contact.photo.startsWith("blob:")) {
-            const response = await fetch(contact.photo);
-            const blob = await response.blob();
-            const reader = new FileReader();
-            reader.onloadend = () => setBase64Image(reader.result as string);
-            reader.readAsDataURL(blob);
-          } else {
-            setBase64Image(`${API_URL}/api/uploads/photos/${contact.photo}`);
-          }
-        } else if (
-          contact.photo &&
-          typeof contact.photo === "object" &&
-          "size" in contact.photo
-        ) {
-          objectUrl = URL.createObjectURL(contact.photo as Blob);
+  //   const processImage = async () => {
+  //     if (!contact.photo) {
+  //       setBase64Image(null);
+  //       return;
+  //     }
+  //     try {
+  //       if (typeof contact.photo === "string") {
+  //         if (contact.photo.startsWith("blob:")) {
+  //           const response = await fetch(contact.photo);
+  //           const blob = await response.blob();
+  //           const reader = new FileReader();
+  //           reader.onloadend = () => setBase64Image(reader.result as string);
+  //           reader.readAsDataURL(blob);
+  //         } else {
+  //           setBase64Image(`${API_URL}/api/uploads/photos/${contact.photo}`);
+  //         }
+  //       } else if (
+  //         contact.photo &&
+  //         typeof contact.photo === "object" &&
+  //         "size" in contact.photo
+  //       ) {
+  //         objectUrl = URL.createObjectURL(contact.photo as Blob);
+  //         const reader = new FileReader();
+  //         reader.onloadend = () => setBase64Image(reader.result as string);
+  //         reader.readAsDataURL(contact.photo as Blob);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error processing image:", error);
+  //     }
+  //   };
+
+  //   processImage();
+  //   return () => {
+  //     if (objectUrl) URL.revokeObjectURL(objectUrl);
+  //   };
+  // }, [contact.photo]);
+
+
+  useEffect(() => {
+  let objectUrl: string | null = null;
+
+  const processImage = async () => {
+    if (!contact.photo) {
+      setBase64Image(null);
+      return;
+    }
+    try {
+      if (typeof contact.photo === "string") {
+        // Handle blob URLs (created from File objects)
+        if (contact.photo.startsWith("blob:")) {
+          const response = await fetch(contact.photo);
+          const blob = await response.blob();
           const reader = new FileReader();
           reader.onloadend = () => setBase64Image(reader.result as string);
-          reader.readAsDataURL(contact.photo as Blob);
+          reader.readAsDataURL(blob);
+        } 
+        // Handle base64 data URLs (your API response)
+        else if (contact.photo.startsWith("data:image/")) {
+          // Directly use the base64 data URL
+          setBase64Image(contact.photo);
+        } 
+        // Handle file path from server
+        else {
+          setBase64Image(`${API_URL}/api/uploads/photos/${contact.photo}`);
         }
-      } catch (error) {
-        console.error("Error processing image:", error);
+      } else if (
+        contact.photo &&
+        typeof contact.photo === "object" &&
+        "size" in contact.photo
+      ) {
+        objectUrl = URL.createObjectURL(contact.photo as Blob);
+        const reader = new FileReader();
+        reader.onloadend = () => setBase64Image(reader.result as string);
+        reader.readAsDataURL(contact.photo as Blob);
       }
-    };
+    } catch (error) {
+      console.error("Error processing image:", error);
+    }
+  };
 
-    processImage();
-    return () => {
-      if (objectUrl) URL.revokeObjectURL(objectUrl);
-    };
-  }, [contact.photo]);
+  processImage();
+  return () => {
+    if (objectUrl) URL.revokeObjectURL(objectUrl);
+  };
+}, [contact.photo]);
+
 
   const isFinalizeData = (data: any): data is Finalize =>
     data && typeof data === "object" && !Array.isArray(data);
@@ -1826,7 +1861,8 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({
 
   const CSS = buildCSS(activeFontFamily);
 
-  const href = (url: string) => (url.startsWith("http") ? url : `https://${url}`);
+  const href = (url: string) =>
+    url.startsWith("http") ? url : `https://${url}`;
   const rich = (html: string) => {
     const c = cleanQuillHTML(html);
     return c && c !== "<p><br></p>" ? c : "";
@@ -1962,7 +1998,9 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({
       <div class="t5-section-title">Education</div>
       ${educations
         .map((edu: any, i: number) => {
-          const formattedGrade = formatGradeToCgpdAndPercentage(edu.grade || "");
+          const formattedGrade = formatGradeToCgpdAndPercentage(
+            edu.grade || "",
+          );
           return `<div class="t5-entry" data-block-id="t5-edu-${i}">
           <div class="t5-education-header">
             <div class="t5-education-school">${edu.schoolname || ""}</div>
@@ -2216,38 +2254,43 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({
             });
           };
 
-          Array.from(resume.querySelectorAll<HTMLElement>("*")).forEach((el) => {
-            if (consumed.has(el)) return;
+          Array.from(resume.querySelectorAll<HTMLElement>("*")).forEach(
+            (el) => {
+              if (consumed.has(el)) return;
 
-            if (el.matches(HEADER_LIKE_SELECTOR)) {
-              pushAtomic(el, true);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches(CHAINED_KEEP_SELECTOR)) {
-              pushAtomic(el, true);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches(ATOMIC_SELECTOR)) {
-              pushAtomic(el, false);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches("p, li")) {
-              if (pushLines(el)) {
+              if (el.matches(HEADER_LIKE_SELECTOR)) {
+                pushAtomic(el, true);
                 el.querySelectorAll("*").forEach((c) => consumed.add(c));
                 consumed.add(el);
+                return;
               }
-              return;
-            }
-            if (el.matches(DESC_WRAPPER_SELECTOR) && !el.querySelector("p, li")) {
-              if (pushLines(el)) consumed.add(el);
-            }
-          });
+              if (el.matches(CHAINED_KEEP_SELECTOR)) {
+                pushAtomic(el, true);
+                el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                consumed.add(el);
+                return;
+              }
+              if (el.matches(ATOMIC_SELECTOR)) {
+                pushAtomic(el, false);
+                el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                consumed.add(el);
+                return;
+              }
+              if (el.matches("p, li")) {
+                if (pushLines(el)) {
+                  el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                  consumed.add(el);
+                }
+                return;
+              }
+              if (
+                el.matches(DESC_WRAPPER_SELECTOR) &&
+                !el.querySelector("p, li")
+              ) {
+                if (pushLines(el)) consumed.add(el);
+              }
+            },
+          );
 
           units.sort((a, b) => a.top - b.top || a.bottom - b.bottom);
 
@@ -2338,7 +2381,7 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({
       const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
       const pdfHtml = generateHTML(true, pageBreakIds);
 
-      console.log("pdfHtml",pdfHtml)
+      console.log("pdfHtml", pdfHtml);
 
       const res: AxiosResponse<Blob> = await api.post(
         `${API_URL}/candidates/generate-pdf`,
@@ -2367,13 +2410,13 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({
   return (
     <>
       {/* {!isThumbnail && lastSegment === "download-resume" && ( */}
-        <div className="text-center my-8">
-          <motion.button
-            onClick={handleDownload}
-            disabled={isDownloading}
-            whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
-            whileTap={!isDownloading ? { scale: 0.98 } : {}}
-            className={`
+      <div className="text-center my-8">
+        <motion.button
+          onClick={handleDownload}
+          disabled={isDownloading}
+          whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
+          whileTap={!isDownloading ? { scale: 0.98 } : {}}
+          className={`
               relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
               text-white transition-all duration-300  shadow-lg
               ${
@@ -2382,26 +2425,26 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({
                   : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600 cursor-pointer"
               }
             `}
-          >
-            {!isDownloading && (
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+        >
+          {!isDownloading && (
+            <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+          )}
+          <div className="relative flex items-center justify-center gap-3 text-lg">
+            {isDownloading ? (
+              <>
+                <FaSpinner className="animate-spin text-xl" />
+                <span>Generating PDF …</span>
+              </>
+            ) : (
+              <>
+                <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
+                <span>Download Resume</span>
+                <span className="text-sm opacity-75 font-light ml-1">PDF</span>
+              </>
             )}
-            <div className="relative flex items-center justify-center gap-3 text-lg">
-              {isDownloading ? (
-                <>
-                  <FaSpinner className="animate-spin text-xl" />
-                  <span>Generating PDF …</span>
-                </>
-              ) : (
-                <>
-                  <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
-                  <span>Download Resume</span>
-                  <span className="text-sm opacity-75 font-light ml-1">PDF</span>
-                </>
-              )}
-            </div>
-          </motion.button>
-        </div>
+          </div>
+        </motion.button>
+      </div>
       {/* )} */}
 
       {isThumbnail ? (
@@ -2420,7 +2463,13 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({
             <iframe
               title="resume-thumb"
               srcDoc={pages[0]}
-              style={{ width: `${A4_W}px`, height: `${A4_H}px`, border: "none", display: "block", pointerEvents: "none" }}
+              style={{
+                width: `${A4_W}px`,
+                height: `${A4_H}px`,
+                border: "none",
+                display: "block",
+                pointerEvents: "none",
+              }}
               sandbox="allow-same-origin"
             />
           ) : (
@@ -2445,8 +2494,18 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({
         <div style={{ width: `${A4_W}px`, margin: "0 auto" }}>
           {(pages.length > 0 ? pages : [htmlContent]).map((pageHtml, idx) => (
             <div key={idx} style={{ marginBottom: "28px" }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", marginBottom: "10px" }}>
-                <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "10px",
+                  marginBottom: "10px",
+                }}
+              >
+                <div
+                  style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+                />
                 <span
                   style={{
                     fontSize: "11px",
@@ -2464,7 +2523,9 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({
                   Page {idx + 1}
                   {pages.length > 1 ? ` of ${pages.length}` : ""}
                 </span>
-                <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
+                <div
+                  style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+                />
               </div>
               <div
                 style={{
@@ -2472,7 +2533,8 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({
                   height: `${A4_H}px`,
                   overflow: "hidden",
                   background: "white",
-                  boxShadow: "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
+                  boxShadow:
+                    "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
                   borderRadius: "2px",
                   flexShrink: 0,
                 }}
@@ -2480,7 +2542,13 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({
                 <iframe
                   title={`resume-page-${idx + 1}`}
                   srcDoc={pageHtml}
-                  style={{ width: `${A4_W}px`, height: `${A4_H}px`, border: "none", display: "block", pointerEvents: "none" }}
+                  style={{
+                    width: `${A4_W}px`,
+                    height: `${A4_H}px`,
+                    border: "none",
+                    display: "block",
+                    pointerEvents: "none",
+                  }}
                   scrolling="no"
                   sandbox="allow-same-origin allow-scripts"
                 />

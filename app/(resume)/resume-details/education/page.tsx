@@ -183,30 +183,12 @@ const Education_form = () => {
   };
 
   const saveToAPI = async (educationData: typeof education) => {
-    // if (!contactId) {
-    //   console.error("Contact ID is required");
-    //   return false;
-    // }
-
-    // const currentDataString = JSON.stringify(educationData);
-    // if (currentDataString === lastSavedData) {
-    //   return true;
-    // }
+  
 
     setIsSaving(true);
 
     try {
-      // const formData = {
-      //   education: educationData,
-      // };
-
-      // const response = await axios.post(
-      //   `${API_URL}/api/education/update`,
-      //   formData,
-      //   { params: { contactId: contactId } },
-      // );
-
-      // 2. Build your exact single JSON payload schema
+    
       const singlePayload = {
         section_name: "educations",
         section_payload: educationData,
@@ -366,7 +348,7 @@ const Education_form = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-linear-to-br from-slate-50 via-white to-indigo-50/40">
-      <Stepper />
+      <Stepper  onBeforeNavigate={() => saveToAPI(education)} />
 
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto">

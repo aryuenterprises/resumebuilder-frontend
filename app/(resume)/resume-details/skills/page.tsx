@@ -41,17 +41,13 @@ const SkillsForm = () => {
   const [skillTipsClicked, setSkillTipsClicked] = useState(false);
   const router = useRouter();
   const UseContext = useContext(CreateContext);
-  const contactId = UseContext?.contact.contactId || UseContext?.contact._id;
-  // const latestResumeId = localStorage.getItem("latest_resume_id");
-        const latestResumeId = getLocalStorage("latest_resume_id");
-  
+  const latestResumeId = getLocalStorage("latest_resume_id");
 
   const { skills, setSkills } = UseContext;
   const [skillsText, setSkillsText] = useState<string>("");
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [lastSavedData, setLastSavedData] = useState<string>("");
-
 
   // Check if mobile
   useEffect(() => {
@@ -82,28 +78,18 @@ const SkillsForm = () => {
 
     setIsSaving(true);
     try {
-      // await axios.post(
-      //   `${API_URL}/api/skill/update`,
-      //   { text: skillsDataToSave },
-      //   {
-      //     params: { contactId },
-      //   },
-      // );
+      const singlePayload = {
+        section_name: "skills",
+        section_payload: {
+          text: skillsDataToSave,
+        },
+      };
 
-
-          const singlePayload = {
-        "section_name": "skills",
-          "section_payload": {
-            "text": skillsDataToSave
-          }
-      }
-    
-    
-
-    // 3. Send it as standard 'application/json'
-    const response = await api.patch(`${API_URL}/user-resumes/${latestResumeId}`,singlePayload);
-
-
+      // 3. Send it as standard 'application/json'
+      const response = await api.patch(
+        `${API_URL}/user-resumes/${latestResumeId}`,
+        singlePayload,
+      );
 
       setLastSavedData(skillsDataToSave);
       toast.success("Skills saved successfully!");
@@ -191,11 +177,10 @@ const SkillsForm = () => {
     }
   };
 
-
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-indigo-50/40">
       {/* Sticky Stepper */}
-      <Stepper />
+      <Stepper onBeforeNavigate={() => saveToAPI(skillsText)}  />
 
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto">
@@ -518,8 +503,6 @@ const SkillsForm = () => {
                   </motion.button>
                 ))}
               </div>
-
-       
             </div>
           </motion.div>
         </div>

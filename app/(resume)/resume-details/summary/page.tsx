@@ -46,10 +46,9 @@ const SummaryForm = () => {
   const UseContext = useContext(CreateContext);
   // const contactId = UseContext?.contact._id || UseContext?.contact.contactId;
 
-    const contactId = UseContext?.contact.contactId ||  UseContext?.contact._id ;
+  const contactId = UseContext?.contact.contactId || UseContext?.contact._id;
 
-    // const contactId =  UseContext?.contact.contactId;
-
+  // const contactId =  UseContext?.contact.contactId;
 
   const {
     summary,
@@ -69,10 +68,8 @@ const SummaryForm = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [summaryTipsClicked, setSummaryTipsClicked] = useState(false);
   const router = useRouter();
-    // const latestResumeId = localStorage.getItem("latest_resume_id");
-          const latestResumeId = getLocalStorage("latest_resume_id");
-    
-
+  // const latestResumeId = localStorage.getItem("latest_resume_id");
+  const latestResumeId = getLocalStorage("latest_resume_id");
 
   const filteredExperiences =
     experiences?.map((exp) => ({
@@ -95,12 +92,11 @@ const SummaryForm = () => {
   //     : (skills as SimpleSkill[]).map((s) => s.name)
   //   : [];
 
-const filteredSkills = skills?.text
-  ? (skills.text.match(/<li>(.*?)<\/li>/g) || [])
-      .map((item: string) => item.replace(/<\/?li>/g, '').trim())
-      .filter(Boolean)
-  : [];
-    
+  const filteredSkills = skills?.text
+    ? (skills.text.match(/<li>(.*?)<\/li>/g) || [])
+        .map((item: string) => item.replace(/<\/?li>/g, "").trim())
+        .filter(Boolean)
+    : [];
 
   const formData = {
     experiences: filteredExperiences,
@@ -127,16 +123,16 @@ const filteredSkills = skills?.text
       //   { params: { contactId: contactId } },
       // );
 
-         const singlePayload = {
-        "section_name": "summary",
-          "section_payload": summaryText
-      }
-    
-    
+      const singlePayload = {
+        section_name: "summary",
+        section_payload: summaryText,
+      };
 
-    // 3. Send it as standard 'application/json'
-    const response = await api.patch(`${API_URL}/user-resumes/${latestResumeId}`,singlePayload);
-
+      // 3. Send it as standard 'application/json'
+      const response = await api.patch(
+        `${API_URL}/user-resumes/${latestResumeId}`,
+        singlePayload,
+      );
 
       return true;
     } catch (err: any) {
@@ -184,28 +180,9 @@ const filteredSkills = skills?.text
     }
   };
 
-  const fetchSummary = async () => {
-    try {
-      const response = await axios.get(
-        `${API_URL}/api/summary/get-summary/${contactId}`,
-      );
-
-      const fetchedText = response.data[0]?.text || "";
-      setSummary(fetchedText);
-
-      const plainText = fetchedText?.replace(/<[^>]*>/g, "").trim() || "";
-      setLastSavedData(plainText);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   return (
     <div className="min-h-screen flex flex-col bg-linear-to-br from-slate-50 via-white to-indigo-50/40">
-    
-
-            <Stepper/>
-
+      <Stepper onBeforeNavigate={() => saveToAPI(summary)} />
 
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto">
@@ -367,9 +344,8 @@ const filteredSkills = skills?.text
       </div>
 
       {/* Sticky Footer Buttons */}
-      
 
-         <div className="sticky bottom-0 z-20 bg-white/75 backdrop-blur-md border-t border-gray-100 shadow-lg shadow-gray-200/50">
+      <div className="sticky bottom-0 z-20 bg-white/75 backdrop-blur-md border-t border-gray-100 shadow-lg shadow-gray-200/50">
         <div className=" mx-auto px-2 sm:px-6 lg:px-8 py-3 sm:py-4">
           <div className="flex justify-between items-center gap-3 sm:gap-4">
             {/* Back Button - Icon only on mobile, full text on desktop */}
@@ -399,7 +375,7 @@ const filteredSkills = skills?.text
             {/* Continue Button - Premium Design */}
             <button
               className="group relative px-6 sm:px-8 py-2.5 sm:py-3 text-sm sm:text-base font-medium md:font-semibold text-white rounded-lg md:rounded-xl shadow-lg transition-all duration-300 overflow-hidden whitespace-nowrap cursor-pointer"
-               onClick={() => {
+              onClick={() => {
                 saveToAPI(summary).then(() =>
                   router.push("/resume-details/finalize"),
                 );
@@ -439,30 +415,40 @@ const filteredSkills = skills?.text
         </div>
       </div>
 
-    <TipsModal
-  isOpen={summaryTipsClicked}
-  onClose={() => setSummaryTipsClicked(false)}
-  title="Summary Tips"
-  subtitle="Write a compelling introduction"
-  hasAI={true}
-  
-  aiFeatureDescription="get a professionally written summary based on your experience."
-  proTip="Your summary is the first thing recruiters read — make it count in 3-5 sentences"
-  bestPractices={[
-    { tip: "Keep it short (3-5 sentences)", example: "Recruiters read quickly" },
-    { tip: "Focus on your best experience", example: "Talk about your main jobs" },
-    { tip: "Add numbers to show success", example: "Made processes 40% faster" },
-  ]}
-  avoidList={[
-    "Writing long paragraphs (more than 5 sentences)",
-    "Using overused words like 'hardworking'",
-    "Using 'I', 'me', 'my' too much",
-  ]}
-   examples={{
-    before: "I am a hard worker. I know many skills. I want to learn and grow. I am good at my job.",
-    after: "Senior Software Engineer with 8+ years of experience. Led 5+ developers, delivered 15+ projects, and improved efficiency by 40%."
-  }}
-/>
+      <TipsModal
+        isOpen={summaryTipsClicked}
+        onClose={() => setSummaryTipsClicked(false)}
+        title="Summary Tips"
+        subtitle="Write a compelling introduction"
+        hasAI={true}
+        aiFeatureDescription="get a professionally written summary based on your experience."
+        proTip="Your summary is the first thing recruiters read — make it count in 3-5 sentences"
+        bestPractices={[
+          {
+            tip: "Keep it short (3-5 sentences)",
+            example: "Recruiters read quickly",
+          },
+          {
+            tip: "Focus on your best experience",
+            example: "Talk about your main jobs",
+          },
+          {
+            tip: "Add numbers to show success",
+            example: "Made processes 40% faster",
+          },
+        ]}
+        avoidList={[
+          "Writing long paragraphs (more than 5 sentences)",
+          "Using overused words like 'hardworking'",
+          "Using 'I', 'me', 'my' too much",
+        ]}
+        examples={{
+          before:
+            "I am a hard worker. I know many skills. I want to learn and grow. I am good at my job.",
+          after:
+            "Senior Software Engineer with 8+ years of experience. Led 5+ developers, delivered 15+ projects, and improved efficiency by 40%.",
+        }}
+      />
 
       {/* AI Response Popup */}
       {showPopup && Airesponse && (

@@ -2139,42 +2139,94 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({
   const [base64Image, setBase64Image] = useState<string | null>(null);
 
   useEffect(() => {
-    let objectUrl: string | null = null;
-    const processImage = async () => {
-      if (!contact.photo) {
-        setBase64Image(null);
-        return;
-      }
-      try {
-        if (typeof contact.photo === "string") {
-          if (contact.photo.startsWith("blob:")) {
-            const res = await fetch(contact.photo);
-            const blob = await res.blob();
-            const reader = new FileReader();
-            reader.onloadend = () => setBase64Image(reader.result as string);
-            reader.readAsDataURL(blob);
-          } else {
-            setBase64Image(`${API_URL}/api/uploads/photos/${contact.photo}`);
-          }
-        } else if (
-          contact.photo &&
-          typeof contact.photo === "object" &&
-          "size" in contact.photo
-        ) {
-          objectUrl = URL.createObjectURL(contact.photo as Blob);
+  let objectUrl: string | null = null;
+  
+  const processImage = async () => {
+    if (!contact.photo) {
+      setBase64Image(null);
+      return;
+    }
+    
+    try {
+      // Handle base64 string from API
+      if (typeof contact.photo === "string") {
+        // Check if it's a blob URL
+        if (contact.photo.startsWith("blob:")) {
+          const res = await fetch(contact.photo);
+          const blob = await res.blob();
           const reader = new FileReader();
           reader.onloadend = () => setBase64Image(reader.result as string);
-          reader.readAsDataURL(contact.photo as Blob);
+          reader.readAsDataURL(blob);
+        } 
+        // Check if it's already a complete data URL
+        else if (contact.photo.startsWith("data:image/")) {
+          setBase64Image(contact.photo);
         }
-      } catch (err) {
-        console.error("Error processing image:", err);
+        // Check if it's a file path
+        else {
+          setBase64Image(`${API_URL}/api/uploads/photos/${contact.photo}`);
+        }
+      } 
+      // Handle File/Blob object
+      else if (
+        contact.photo &&
+        typeof contact.photo === "object" &&
+        "size" in contact.photo
+      ) {
+        objectUrl = URL.createObjectURL(contact.photo as Blob);
+        const reader = new FileReader();
+        reader.onloadend = () => setBase64Image(reader.result as string);
+        reader.readAsDataURL(contact.photo as Blob);
       }
-    };
-    processImage();
-    return () => {
-      if (objectUrl) URL.revokeObjectURL(objectUrl);
-    };
-  }, [contact.photo]);
+    } catch (err) {
+      console.error("Error processing image:", err);
+    }
+  };
+  
+  processImage();
+  
+  return () => {
+    if (objectUrl) URL.revokeObjectURL(objectUrl);
+  };
+}, [contact.photo]);
+  
+  // useEffect(() => {
+  //   let objectUrl: string | null = null;
+  //   const processImage = async () => {
+  //     if (!contact.photo) {
+  //       setBase64Image(null);
+  //       return;
+  //     }
+  //     try {
+  //       if (typeof contact.photo === "string") {
+  //         if (contact.photo.startsWith("blob:")) {
+  //           const res = await fetch(contact.photo);
+  //           const blob = await res.blob();
+  //           const reader = new FileReader();
+  //           reader.onloadend = () => setBase64Image(reader.result as string);
+  //           reader.readAsDataURL(blob);
+  //         } else {
+  //           setBase64Image(`${API_URL}/api/uploads/photos/${contact.photo}`);
+  //         }
+  //       } else if (
+  //         contact.photo &&
+  //         typeof contact.photo === "object" &&
+  //         "size" in contact.photo
+  //       ) {
+  //         objectUrl = URL.createObjectURL(contact.photo as Blob);
+  //         const reader = new FileReader();
+  //         reader.onloadend = () => setBase64Image(reader.result as string);
+  //         reader.readAsDataURL(contact.photo as Blob);
+  //       }
+  //     } catch (err) {
+  //       console.error("Error processing image:", err);
+  //     }
+  //   };
+  //   processImage();
+  //   return () => {
+  //     if (objectUrl) URL.revokeObjectURL(objectUrl);
+  //   };
+  // }, [contact.photo]);
 
   // ── Font map ────────────────────────────────────────────────────────────────
   const getFontImport = (fontFamily: string): string => {
