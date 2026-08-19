@@ -1255,8 +1255,8 @@ export default function ChangeTemplate() {
     setChosenTemplate: () => {},
   };
 
-  removeSessionStorage("oldRouteNameDashboard");
-  removeSessionStorage("editingResumeIdAndData");
+  // removeSessionStorage("oldRouteNameDashboard");
+  // removeSessionStorage("editingResumeIdAndData");
 
   // ============================================================
   // STATE

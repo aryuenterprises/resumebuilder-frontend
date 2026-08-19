@@ -343,6 +343,7 @@ import {
   getLocalStorage,
   setLocalStorage,
   getSessionStorage,
+  setSessionStorage,
 } from "@/app/utils";
 import { Template } from "@/app/types";
 import { User } from "@/app/types/user.types";
@@ -412,35 +413,40 @@ export default function RootLayout({
   // Runs every time the user lands on the contact page (flow entry point),
   // as long as they're not coming from a dashboard "Edit" click.
   // No session persistence — this check (and the modal) fires on every visit.
- // In your layout — add a ref to track first mount
-const hasCheckedResumeChoice = useRef(false);
+  // In your layout — add a ref to track first mount
+  // Remove this:
+  // const hasCheckedResumeChoice = useRef(false);
 
-useEffect(() => {
-  const isContactPage = pathname === "/resume-details/contact";
-  if (!isContactPage || !userId) return;
-  if (isOldRouteNameDashboard) return;
+  useEffect(() => {
+    const isContactPage = pathname === "/resume-details/contact";
+    if (!isContactPage || !userId) return;
+    if (isOldRouteNameDashboard) return;
 
-  // Only run this check once per full page load — not on every
-  // in-app navigation back to the contact step
-  if (hasCheckedResumeChoice.current) return;
-  hasCheckedResumeChoice.current = true;
+    // Survives layout unmount/remount (e.g. a trip through /change-template)
+    // unlike a ref, which resets to false every time this layout remounts.
+    const alreadyChecked = getSessionStorage("resumeChoiceChecked");
+    if (alreadyChecked) return;
 
-  const checkExisting = async () => {
-    try {
-      const response = await api.get(`${API_URL}/user-resumes`);
-      const hasExisting = Array.isArray(response.data) && response.data.length > 0;
+    const checkExisting = async () => {
+      try {
+        const response = await api.get(`${API_URL}/user-resumes`);
+        const hasExisting =
+          Array.isArray(response.data) && response.data.length > 0;
 
-      if (hasExisting) {
-        setShowResumeChoiceModal(true);
+        if (hasExisting) {
+          setShowResumeChoiceModal(true);
+        }
+        // Mark as checked regardless of outcome — an empty result also
+        // shouldn't be re-checked on the next internal navigation
+        setSessionStorage("resumeChoiceChecked", "true");
+      } catch (err) {
+        console.error("Error checking existing resumes:", err);
       }
-    } catch (err) {
-      console.error("Error checking existing resumes:", err);
-    }
-  };
+    };
 
-  checkExisting();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [pathname, userId]); 
+    checkExisting();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname, userId]);
 
   const handleContinueLastResume = () => {
     setShowResumeChoiceModal(false);
@@ -450,7 +456,7 @@ useEffect(() => {
   const handleCreateNewResume = () => {
     localStorage.removeItem("latest_resume_id");
 
-     setContact({
+    setContact({
       contactId: "",
       firstName: "",
       lastName: "",
@@ -533,114 +539,79 @@ useEffect(() => {
     >
       <LoginModel />
 
-      {/* Resume Choice Modal */}
-      {/* <AnimatePresence>
+      {/* showResumeChoiceModal */}
+      <AnimatePresence>
         {showResumeChoiceModal && (
           <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-100 p-4">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden"
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+              className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden "
             >
-              <div className="bg-gradient-to-r from-indigo-600 to-indigo-500 px-5 py-4">
-                <h2 className="text-lg font-semibold text-white">
-                  Welcome back!
-                </h2>
-                <p className="text-indigo-100 text-xs mt-1">
-                  You have a resume in progress. What would you like to do?
-                </p>
+              {/* Header */}
+              <div className="relative px-6 sm:px-8 pt-8 pb-6 bg-gradient-to-br from-indigo-700 via-indigo-600 to-purple-600 overflow-hidden">
+                {/* Decorative glow */}
+                <div className="absolute -top-8 -right-8 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
+                <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
+
+                <div className="relative flex flex-col items-center text-center">
+                  <div className="w-12 h-12 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center mb-4 ring-1 ring-white/20">
+                    <IoDiamondOutline className="w-6 h-6 text-white" />
+                  </div>
+                  <h2 className="text-xl font-bold text-white tracking-tight">
+                    Welcome back
+                  </h2>
+                  <p className="text-indigo-100 text-sm mt-1.5 max-w-xs">
+                    You have a resume already in progress. How would you like to
+                    proceed?
+                  </p>
+                </div>
               </div>
-              <div className="p-5 space-y-3">
+
+              {/* Options */}
+              <div className="p-5 sm:p-6 space-y-3 bg-white">
                 <button
                   onClick={handleContinueLastResume}
-                  className="w-full px-4 py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-all cursor-pointer"
+                  className="w-full group flex items-center gap-4 p-4 rounded-2xl border-2 border-indigo-100 bg-indigo-50/50 hover:border-indigo-400 hover:bg-indigo-50 transition-all duration-200 cursor-pointer text-left"
                 >
-                  Continue Last Resume
+                  <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center shadow-sm shadow-indigo-200 group-hover:scale-105 transition-transform">
+                    <FiArrowRight className="w-4 h-4 text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-gray-900">
+                      Continue Last Resume
+                    </p>
+                    <p className="text-xs text-gray-500 mt-0.5">
+                      Pick up right where you left off
+                    </p>
+                  </div>
+                  <FiChevronRight className="w-4 h-4 text-gray-300 group-hover:text-indigo-500 group-hover:translate-x-0.5 transition-all flex-shrink-0" />
                 </button>
+
                 <button
                   onClick={handleCreateNewResume}
-                  className="w-full px-4 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-all cursor-pointer"
+                  className="w-full group flex items-center gap-4 p-4 rounded-2xl border-2 border-gray-100 bg-gray-50/50 hover:border-gray-300 hover:bg-gray-50 transition-all duration-200 cursor-pointer text-left"
                 >
-                  Create New Resume
+                  <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gray-200 flex items-center justify-center group-hover:bg-gray-300 transition-colors">
+                    <FiLayout className="w-4 h-4 text-gray-600" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-gray-900">
+                      Create New Resume
+                    </p>
+                    <p className="text-xs text-gray-500 mt-0.5">
+                      Start fresh with a blank resume
+                    </p>
+                  </div>
+                  <FiChevronRight className="w-4 h-4 text-gray-300 group-hover:text-gray-500 group-hover:translate-x-0.5 transition-all flex-shrink-0" />
                 </button>
               </div>
             </motion.div>
           </div>
         )}
-      </AnimatePresence> */}
-
-      <AnimatePresence>
-  {showResumeChoiceModal && (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-100 p-4">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 10 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: 10 }}
-        transition={{ duration: 0.25, ease: "easeOut" }}
-        className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden "
-      >
-        {/* Header */}
-        <div className="relative px-6 sm:px-8 pt-8 pb-6 bg-gradient-to-br from-indigo-700 via-indigo-600 to-purple-600 overflow-hidden">
-          {/* Decorative glow */}
-          <div className="absolute -top-8 -right-8 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
-          <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
-
-          <div className="relative flex flex-col items-center text-center">
-            <div className="w-12 h-12 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center mb-4 ring-1 ring-white/20">
-              <IoDiamondOutline className="w-6 h-6 text-white" />
-            </div>
-            <h2 className="text-xl font-bold text-white tracking-tight">
-              Welcome back
-            </h2>
-            <p className="text-indigo-100 text-sm mt-1.5 max-w-xs">
-              You have a resume already in progress. How would you like to proceed?
-            </p>
-          </div>
-        </div>
-
-        {/* Options */}
-        <div className="p-5 sm:p-6 space-y-3 bg-white">
-          <button
-            onClick={handleContinueLastResume}
-            className="w-full group flex items-center gap-4 p-4 rounded-2xl border-2 border-indigo-100 bg-indigo-50/50 hover:border-indigo-400 hover:bg-indigo-50 transition-all duration-200 cursor-pointer text-left"
-          >
-            <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center shadow-sm shadow-indigo-200 group-hover:scale-105 transition-transform">
-              <FiArrowRight className="w-4 h-4 text-white" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-gray-900">
-                Continue Last Resume
-              </p>
-              <p className="text-xs text-gray-500 mt-0.5">
-                Pick up right where you left off
-              </p>
-            </div>
-            <FiChevronRight className="w-4 h-4 text-gray-300 group-hover:text-indigo-500 group-hover:translate-x-0.5 transition-all flex-shrink-0" />
-          </button>
-
-          <button
-            onClick={handleCreateNewResume}
-            className="w-full group flex items-center gap-4 p-4 rounded-2xl border-2 border-gray-100 bg-gray-50/50 hover:border-gray-300 hover:bg-gray-50 transition-all duration-200 cursor-pointer text-left"
-          >
-            <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gray-200 flex items-center justify-center group-hover:bg-gray-300 transition-colors">
-              <FiLayout className="w-4 h-4 text-gray-600" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-gray-900">
-                Create New Resume
-              </p>
-              <p className="text-xs text-gray-500 mt-0.5">
-                Start fresh with a blank resume
-              </p>
-            </div>
-            <FiChevronRight className="w-4 h-4 text-gray-300 group-hover:text-gray-500 group-hover:translate-x-0.5 transition-all flex-shrink-0" />
-          </button>
-        </div>
-      </motion.div>
-    </div>
-  )}
-</AnimatePresence>
+      </AnimatePresence>
 
       {/* Left Section - Form */}
       <aside
@@ -656,7 +627,6 @@ useEffect(() => {
       >
         <ResumeDataFetcher>{children}</ResumeDataFetcher>
       </aside>
-
       {/* Draggable Divider - Enhanced UI */}
       {isLargeScreen && (
         <div
@@ -750,7 +720,6 @@ useEffect(() => {
           </motion.div>
         </div>
       )}
-
       {/* Right Section - Resume Preview */}
       <section
         className={`bg-[#e8e6f2] overflow-hidden ${isLargeScreen ? "" : "max-lg:hidden lg:w-1/2"}`}
@@ -764,7 +733,7 @@ useEffect(() => {
         }
       >
         {/* change template */}
-        {/* <div
+        <div
           className="absolute top-4 right-4 z-10"
           onMouseEnter={() => setIsTemplateHovered(true)}
           onMouseLeave={() => setIsTemplateHovered(false)}
@@ -801,7 +770,7 @@ useEffect(() => {
               <FiChevronRight className="w-4 h-4" />
             </motion.div>
           </motion.button>
-        </div> */}
+        </div>
 
         {SelectedComponent && (
           <SimpleCanvasPreview>
@@ -823,7 +792,6 @@ useEffect(() => {
           <FiEye className="w-3 h-3" />
         </motion.button>
       )}
-
       {/* Mobile Preview Drawer */}
       <AnimatePresence>
         {showMobilePreview && SelectedComponent && (

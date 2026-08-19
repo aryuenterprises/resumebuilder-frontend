@@ -271,8 +271,8 @@ const ContactForm = () => {
           `${API_URL}/user-resumes/${editingResumeIdAndData.id}`,
           oldResumeEditPayload,
         );
-        removeSessionStorage("oldRouteNameDashboard");
-        removeSessionStorage("editingResumeIdAndData");
+        // removeSessionStorage("oldRouteNameDashboard");
+        // removeSessionStorage("editingResumeIdAndData");
         setLocalStorage("latest_resume_id", editingResumeIdAndData.id);
         return true;
       } else if (existingResumeId) {

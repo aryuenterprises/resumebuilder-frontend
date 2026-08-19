@@ -1,4 +1,3 @@
-
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
@@ -205,8 +204,7 @@ export const ResumePreviewModal = ({
                                 "Fully Customizable Sections",
                                 "Clean & Organized Layout",
                                 "Easy to Edit & Update",
-                                    "Font Customization",
-
+                                "Font Customization",
                               ]
                             ).map((feature, index) => (
                               <motion.div
@@ -278,9 +276,7 @@ export const ResumePreviewModal = ({
               <div className="relative shrink-0 border-t border-gray-100 bg-gray-50/50 px-4 sm:px-6 lg:px-8 py-3 z-10">
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs">
                   <div className="flex items-center gap-4">
-                    <span className="text-gray-600 font-medium">
-                    PassATS
-                    </span>
+                    <span className="text-gray-600 font-medium">PassATS</span>
                     <span className="w-1 h-1 bg-gray-300 rounded-full" />
                     <span className="text-gray-400">© 2024</span>
                   </div>

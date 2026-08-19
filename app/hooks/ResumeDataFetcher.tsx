@@ -4,7 +4,12 @@ import { useEffect, useContext, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { CreateContext } from "@/app/context/CreateContext";
 import { API_URL } from "@/app/config/api";
-import { getLocalStorage, getSessionStorage } from "@/app/utils";
+import {
+  getLocalStorage,
+  getSessionStorage,
+  removeLocalStorage,
+  removeSessionStorage,
+} from "@/app/utils";
 import { User } from "@/app/types/user.types";
 import {
   Contact,
@@ -51,25 +56,62 @@ export function ResumeDataFetcher({ children }: ResumeDataFetcherProps) {
   const isResumeDetailPage = pathname?.includes("/resume-details/");
 
   // Clear upload mode when navigating AWAY from resume detail pages
-  useEffect(() => {
-    const wasOnResumePage =
-      previousPathname.current?.includes("/resume-details/");
-    const isNowOnResumePage = isResumeDetailPage;
+  // useEffect(() => {
+  //   const wasOnResumePage =
+  //     previousPathname.current?.includes("/resume-details/");
+  //   const isNowOnResumePage = isResumeDetailPage;
 
-    if (wasOnResumePage && !isNowOnResumePage) {
-      console.log("🧹 Navigating away from resume page, clearing upload mode");
-      clearUploadMode();
-      hasFetchedData.current = false;
-      hasLoadedDashboardData.current = false; // Reset dashboard flag
+  //   if (wasOnResumePage && !isNowOnResumePage) {
+  //     console.log("🧹 Navigating away from resume page, clearing upload mode");
+  //     clearUploadMode();
+  //     hasFetchedData.current = false;
+  //     hasLoadedDashboardData.current = false; // Reset dashboard flag
 
-      // Cancel any ongoing requests
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-        abortControllerRef.current = null;
-      }
+  //       // Only clear dashboard-edit context once the user truly leaves the
+  //   // resume-details flow — not on every step-to-step navigation
+  //   removeSessionStorage("oldRouteNameDashboard");
+  //   removeLocalStorage("editingResumeIdAndData");
+
+  //     // Cancel any ongoing requests
+  //     if (abortControllerRef.current) {
+  //       abortControllerRef.current.abort();
+  //       abortControllerRef.current = null;
+  //     }
+  //   }
+  //   previousPathname.current = pathname;
+  // }, [pathname, isResumeDetailPage, clearUploadMode]);
+
+  // Clear upload mode / dashboard-edit context only when truly leaving
+  // the resume-building flow — /change-template is a detour within it,
+  // not an exit.
+useEffect(() => {
+  const isFlowPage = (path: string | null) =>
+    !!path &&
+    (path.includes("/resume-details/") || path === "/change-template");
+
+  const wasOnFlow = isFlowPage(previousPathname.current);
+  const isNowOnFlow = isFlowPage(pathname);
+
+  if (wasOnFlow && !isNowOnFlow) {
+    console.log("🧹 Navigating away from resume flow, clearing upload mode");
+    clearUploadMode();
+    hasFetchedData.current = false;
+    hasLoadedDashboardData.current = false;
+
+    removeSessionStorage("oldRouteNameDashboard");
+    removeLocalStorage("editingResumeIdAndData");
+    removeSessionStorage("resumeChoiceChecked"); // NEW
+
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
     }
-    previousPathname.current = pathname;
-  }, [pathname, isResumeDetailPage, clearUploadMode]);
+  }
+  previousPathname.current = pathname;
+}, [pathname, isResumeDetailPage, clearUploadMode]);
+
+
+
 
   // Handle editing from dashboard route - WITH GUARD
   useEffect(() => {

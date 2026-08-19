@@ -62,8 +62,8 @@ const ExperienceForm = () => {
 
   const [isExperienced, setIsExperienced] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  removeSessionStorage("oldRouteNameDashboard");
-  removeSessionStorage("editingResumeIdAndData");
+  // removeSessionStorage("oldRouteNameDashboard");
+  // removeSessionStorage("editingResumeIdAndData");
 
   const {
     contact,

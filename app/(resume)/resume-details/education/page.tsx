@@ -67,10 +67,8 @@ const Education_form = () => {
   const UseContext = useContext(CreateContext);
   const contactId = UseContext?.contact.contactId || UseContext?.contact._id;
 
-  const { fullResumeData, setFullResumeData } = UseContext || {};
-  // const latestResumeId = localStorage.getItem("latest_resume_id");
-  removeSessionStorage("oldRouteNameDashboard");
-  removeSessionStorage("editingResumeIdAndData");
+  // removeSessionStorage("oldRouteNameDashboard");
+  // removeSessionStorage("editingResumeIdAndData");
 
   const latestResumeId = getLocalStorage("latest_resume_id");
 

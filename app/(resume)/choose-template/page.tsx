@@ -88,6 +88,7 @@ const PLAN_CONFIG = {
   },
 };
 
+
 const getRequiredPlanForTemplate = (
   index: number,
 ): keyof typeof PLAN_CONFIG => {
@@ -146,7 +147,6 @@ const IconTile = React.memo(
     );
   },
 );
-IconTile.displayName = "IconTile";
 
 // ============================================================
 // OPTIMIZED: Template Preview Bottom Sheet (Memoized to prevent re-creation)
@@ -168,13 +168,18 @@ const TemplatePreviewBottomSheet = React.memo(
     primaryBtn,
     amberBtn,
   }: any) => {
+    
+
+    const router = useRouter();
+
     const handleUseTemplate = () => {
       if (isAccessible && !isPlanExpired) {
         onUse();
       } else if (isPlanExpired) {
         onClose();
       } else {
-        onClose();
+        // User's plan is not eligible - navigate to choose-plan
+        router.push('/choose-plan');
       }
     };
 
@@ -203,38 +208,38 @@ const TemplatePreviewBottomSheet = React.memo(
           </div>
 
           <div className="flex-1 overflow-y-auto">
-               <div className="flex gap-3 flex-wrap m-3">
-                <button
-                  onClick={handleFullPreview}
-                  className={`${ghostBtn} flex-1 px-2 text-xs sm:text-sm`}
-                >
-                  <Eye className="w-4 h-4" />
-                  Full preview
-                </button>
-                <button
-                  onClick={handleUseTemplate}
-                  className={`flex-1 px-2 text-xs sm:text-sm ${
-                    isAccessible && !isPlanExpired ? primaryBtn : amberBtn
-                  }`}
-                >
-                  {isAccessible && !isPlanExpired ? (
-                    <>
-                      <Sparkles className="w-4 h-4" />
-                      Use this template
-                    </>
-                  ) : isPlanExpired ? (
-                    <>
-                      <Gift className="w-4 h-4" />
-                      Renew to access
-                    </>
-                  ) : (
-                    <>
-                      <Lock className="w-4 h-4" />
-                      Unlock with {requiredPlanLabel}
-                    </>
-                  )}
-                </button>
-              </div>
+            <div className="flex gap-3 flex-wrap m-3">
+              <button
+                onClick={handleFullPreview}
+                className={`${ghostBtn} flex-1 px-2 text-xs sm:text-sm`}
+              >
+                <Eye className="w-4 h-4" />
+                Full preview
+              </button>
+              <button
+                onClick={handleUseTemplate}
+                className={`flex-1 px-2 text-xs sm:text-sm ${
+                  isAccessible && !isPlanExpired ? primaryBtn : amberBtn
+                }`}
+              >
+                {isAccessible && !isPlanExpired ? (
+                  <>
+                    <Sparkles className="w-4 h-4" />
+                    Use this template
+                  </>
+                ) : isPlanExpired ? (
+                  <>
+                    <Gift className="w-4 h-4" />
+                    Renew to access
+                  </>
+                ) : (
+                  <>
+                    <Lock className="w-4 h-4" />
+                    Unlock with {requiredPlanLabel}
+                  </>
+                )}
+              </button>
+            </div>
             <div
               className="relative mx-4 mt-1 aspect-[210/280] cursor-pointer overflow-hidden rounded-2xl bg-slate-50 ring-1 ring-slate-100"
               onClick={handleFullPreview}
@@ -306,8 +311,6 @@ const TemplatePreviewBottomSheet = React.memo(
                 </div>
               </div>
 
-           
-
               <button
                 onClick={onClose}
                 className="cursor-pointer w-full mt-3 py-2.5 text-slate-500 text-sm font-medium hover:text-slate-700 transition"
@@ -321,7 +324,7 @@ const TemplatePreviewBottomSheet = React.memo(
     );
   },
 );
-TemplatePreviewBottomSheet.displayName = "TemplatePreviewBottomSheet";
+
 
 function Choose_template() {
   const router = useRouter();
@@ -764,55 +767,52 @@ function Choose_template() {
   // );
 
   const handleFileUpload = useCallback(
-  async (file: File) => {
-    const maxSize = 10 * 1024 * 1024;
+    async (file: File) => {
+      const maxSize = 10 * 1024 * 1024;
 
-    if (!isPremiumUser || subscriptionStatus?.isExpired) {
-      setShowPlanRequiredPopup(true);
-      return;
-    }
-
-    if (!isValidFileType(file)) {
-      setErrorMessage("Please upload a PDF or DOCX file");
-      return;
-    }
-
-    if (file.size > maxSize) {
-      setErrorMessage("File size must be less than 10MB");
-      return;
-    }
-
-    if (uploadAbortController.current) {
-      uploadAbortController.current.abort();
-    }
-    uploadAbortController.current = new AbortController();
-
-    setIsUploading(true);
-    setUploadStatus("uploading");
-    setUploadedFile(file);
-    setErrorMessage("");
-
-    let progressInterval: NodeJS.Timeout | null = null;
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      if (uploadStatus !== "error") {
-        progressInterval = setInterval(() => {
-          setUploadProgress((prev) => {
-            if (prev >= 90) {
-              if (progressInterval) clearInterval(progressInterval);
-              return 90;
-            }
-            return prev + 10;
-          });
-        }, 200);
+      if (!isPremiumUser || subscriptionStatus?.isExpired) {
+        setShowPlanRequiredPopup(true);
+        return;
       }
 
-      const response = await api.post(
-        `${API_URL}/parse/`,
-        formData,
-        {
+      if (!isValidFileType(file)) {
+        setErrorMessage("Please upload a PDF or DOCX file");
+        return;
+      }
+
+      if (file.size > maxSize) {
+        setErrorMessage("File size must be less than 10MB");
+        return;
+      }
+
+      if (uploadAbortController.current) {
+        uploadAbortController.current.abort();
+      }
+      uploadAbortController.current = new AbortController();
+
+      setIsUploading(true);
+      setUploadStatus("uploading");
+      setUploadedFile(file);
+      setErrorMessage("");
+
+      let progressInterval: NodeJS.Timeout | null = null;
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        if (uploadStatus !== "error") {
+          progressInterval = setInterval(() => {
+            setUploadProgress((prev) => {
+              if (prev >= 90) {
+                if (progressInterval) clearInterval(progressInterval);
+                return 90;
+              }
+              return prev + 10;
+            });
+          }, 200);
+        }
+
+        const response = await api.post(`${API_URL}/parse/`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
           signal: uploadAbortController.current.signal,
           onUploadProgress: (progressEvent) => {
@@ -823,124 +823,139 @@ function Choose_template() {
               setUploadProgress(percentCompleted);
             }
           },
-        },
-      );
+        });
 
-      if (progressInterval) clearInterval(progressInterval);
+        if (progressInterval) clearInterval(progressInterval);
 
-      // Success handling
-      const parsedResumeData = response.data.parsed;
-      const convertedData = convertParsedResumeToFrontendFormat(parsedResumeData);
+        // Success handling
+        const parsedResumeData = response.data.parsed;
+        const convertedData =
+          convertParsedResumeToFrontendFormat(parsedResumeData);
 
-      if (convertedData.contact) setContact(convertedData.contact);
-      if (convertedData.experiences) setExperiences(convertedData.experiences);
-      if (convertedData.educations) setEducation(convertedData.educations);
-      if (convertedData.skills) setSkills(convertedData.skills);
-      if (convertedData.projects) setProjects(convertedData.projects);
-      if (convertedData.summary) setSummary(convertedData.summary);
-      if (convertedData.finalize) setFinalize(convertedData.finalize);
+        if (convertedData.contact) setContact(convertedData.contact);
+        if (convertedData.experiences)
+          setExperiences(convertedData.experiences);
+        if (convertedData.educations) setEducation(convertedData.educations);
+        if (convertedData.skills) setSkills(convertedData.skills);
+        if (convertedData.projects) setProjects(convertedData.projects);
+        if (convertedData.summary) setSummary(convertedData.summary);
+        if (convertedData.finalize) setFinalize(convertedData.finalize);
 
-      setFullResumeData({
-        contact: convertedData.contact,
-        experiences: convertedData.experiences,
-        education: convertedData.educations,
-        skills: convertedData.skills,
-        summary: convertedData.summary?.[0] || "",
-        finalize: convertedData.finalize || {},
-        projects: convertedData.projects || [],
-      });
+        setFullResumeData({
+          contact: convertedData.contact,
+          experiences: convertedData.experiences,
+          education: convertedData.educations,
+          skills: convertedData.skills,
+          summary: convertedData.summary?.[0] || "",
+          finalize: convertedData.finalize || {},
+          projects: convertedData.projects || [],
+        });
 
-      const defaultTemplate = templateData[0];
-      setLocalStorage("chosenTemplate", defaultTemplate);
-      setChosenTemplate(defaultTemplate);
-      setIsUploadMode(true);
-      setUploadStatus("success");
+        const defaultTemplate = templateData[0];
+        setLocalStorage("chosenTemplate", defaultTemplate);
+        setChosenTemplate(defaultTemplate);
+        setIsUploadMode(true);
+        setUploadStatus("success");
 
-      toast.success("Resume uploaded and processed successfully!", {
-        duration: 3000,
-        style: { background: "#10b981", color: "#fff", borderRadius: "12px" },
-      });
+        toast.success("Resume uploaded and processed successfully!", {
+          duration: 3000,
+          style: { background: "#10b981", color: "#fff", borderRadius: "12px" },
+        });
 
-      setTimeout(() => {
-        setShowUploadPopup(false);
-        router.push(`/resume-details/contact`);
-        setTimeout(resetUploadState, 500);
-      }, 2000);
+        setTimeout(() => {
+          setShowUploadPopup(false);
+          router.push(`/resume-details/contact`);
+          setTimeout(resetUploadState, 500);
+        }, 2000);
+      } catch (err) {
+        if (progressInterval) clearInterval(progressInterval);
 
-    } catch (err) {
-      if (progressInterval) clearInterval(progressInterval);
-
-      // 🔥 FIX 1: Check for cancel error first
-      if (axios.isCancel(err)) {
-        setUploadStatus("idle");
-        setErrorMessage("Upload cancelled");
-        return; // Early return to prevent further processing
-      }
-
-      // 🔥 FIX 2: Handle axios errors properly
-      if (axios.isAxiosError(err)) {
-        const status = err.response?.status;
-        const message = err.response?.data?.message || err.message;
-
-        console.error("Upload error details:", { status, message, data: err.response?.data });
-
-        // 🔥 FIX 3: Check for quota limit error
-        if (status === 403 && message?.includes("Resume parsing limit exceeded")) {
-          setUploadStatus("error");
-          setErrorMessage("Daily resume upload limit reached. Please try again tomorrow.");
-          toast.error("Resume parsing limit exceeded for today", {
-            duration: 4000,
-            style: { background: "#ef4444", color: "#fff", borderRadius: "12px" },
-          });
-          setUploadedFile(null); // Clear the file
-        } 
-        // 🔥 FIX 4: Handle other 403 errors
-        else if (status === 403) {
-          setUploadStatus("error");
-          setErrorMessage("Access forbidden. Please check your permissions.");
-        } 
-        // 🔥 FIX 5: Handle authentication errors
-        else if (status === 401) {
-          setUploadStatus("error");
-          setErrorMessage("Session expired. Please login again.");
-        } 
-        // 🔥 FIX 6: Handle other errors
-        else {
-          setUploadStatus("error");
-          setErrorMessage(message || "Failed to parse resume. Please try again.");
+        // 🔥 FIX 1: Check for cancel error first
+        if (axios.isCancel(err)) {
+          setUploadStatus("idle");
+          setErrorMessage("Upload cancelled");
+          return; // Early return to prevent further processing
         }
-      } 
-      // 🔥 FIX 7: Handle non-axios errors
-      else {
-        console.error("Upload error:", err);
-        setUploadStatus("error");
-        setErrorMessage("Failed to parse resume. Please try again.");
+
+        // 🔥 FIX 2: Handle axios errors properly
+        if (axios.isAxiosError(err)) {
+          const status = err.response?.status;
+          const message = err.response?.data?.message || err.message;
+
+          console.error("Upload error details:", {
+            status,
+            message,
+            data: err.response?.data,
+          });
+
+          // 🔥 FIX 3: Check for quota limit error
+          if (
+            status === 403 &&
+            message?.includes("Resume parsing limit exceeded")
+          ) {
+            setUploadStatus("error");
+            setErrorMessage(
+              "Daily resume upload limit reached. Please try again tomorrow.",
+            );
+            toast.error("Resume parsing limit exceeded for today", {
+              duration: 4000,
+              style: {
+                background: "#ef4444",
+                color: "#fff",
+                borderRadius: "12px",
+              },
+            });
+            setUploadedFile(null); // Clear the file
+          }
+          // 🔥 FIX 4: Handle other 403 errors
+          else if (status === 403) {
+            setUploadStatus("error");
+            setErrorMessage("Access forbidden. Please check your permissions.");
+          }
+          // 🔥 FIX 5: Handle authentication errors
+          else if (status === 401) {
+            setUploadStatus("error");
+            setErrorMessage("Session expired. Please login again.");
+          }
+          // 🔥 FIX 6: Handle other errors
+          else {
+            setUploadStatus("error");
+            setErrorMessage(
+              message || "Failed to parse resume. Please try again.",
+            );
+          }
+        }
+        // 🔥 FIX 7: Handle non-axios errors
+        else {
+          console.error("Upload error:", err);
+          setUploadStatus("error");
+          setErrorMessage("Failed to parse resume. Please try again.");
+        }
+      } finally {
+        // 🔥 FIX 8: Always set uploading to false
+        setIsUploading(false);
       }
-    } finally {
-      // 🔥 FIX 8: Always set uploading to false
-      setIsUploading(false);
-    }
-  },
-  [
-    isPremiumUser,
-    subscriptionStatus,
-    isValidFileType,
-    uploadStatus,
-    setContact,
-    setExperiences,
-    setEducation,
-    setSkills,
-    setSummary,
-    setFinalize,
-    setProjects,
-    setFullResumeData,
-    setChosenTemplate,
-    setIsUploadMode,
-    router,
-    resetUploadState,
-    templateData, // 🔥 FIX 9: Add templateData to dependencies
-  ],
-);
+    },
+    [
+      isPremiumUser,
+      subscriptionStatus,
+      isValidFileType,
+      uploadStatus,
+      setContact,
+      setExperiences,
+      setEducation,
+      setSkills,
+      setSummary,
+      setFinalize,
+      setProjects,
+      setFullResumeData,
+      setChosenTemplate,
+      setIsUploadMode,
+      router,
+      resetUploadState,
+      templateData, // 🔥 FIX 9: Add templateData to dependencies
+    ],
+  );
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -1643,16 +1658,17 @@ function Choose_template() {
                           "Something went wrong. Please try again."}
                       </p>
 
-                      {errorMessage !== "Daily resume upload limit reached. Please try again tomorrow." && (
+                      {errorMessage !==
+                        "Daily resume upload limit reached. Please try again tomorrow." && (
                         <button
                           onClick={() => {
                             resetUploadState();
                             document.getElementById("file-upload")?.click();
                           }}
-                        className="px-4 sm:px-5 py-2 bg-red-600 text-white rounded-lg text-xs sm:text-sm font-medium hover:bg-red-700 transition"
-                      >
-                        Try Again
-                      </button>
+                          className="px-4 sm:px-5 py-2 bg-red-600 text-white rounded-lg text-xs sm:text-sm font-medium hover:bg-red-700 transition"
+                        >
+                          Try Again
+                        </button>
                       )}
                     </div>
                   ) : (
@@ -1681,8 +1697,6 @@ function Choose_template() {
                     </div>
                   )}
                 </div>
-
-              
 
                 <div className="flex gap-2 sm:gap-3 mt-4 sm:mt-6">
                   <button
