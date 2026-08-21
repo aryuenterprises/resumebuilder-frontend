@@ -1064,9 +1064,7 @@
 // //   );
 // // };
 
-
-
-// const isThumbnail = !!alldata && !viewMode ; 
+// const isThumbnail = !!alldata && !viewMode ;
 //   return (
 //     <>
 //       {/* Download button — hide in thumbnail mode */}
@@ -1107,7 +1105,7 @@
 //           </motion.button>
 //         </div>
 //       )}
- 
+
 //       {isThumbnail ? (
 //         // ── THUMBNAIL MODE (dashboard card) ─────────────────────────────────
 //         <div
@@ -1221,27 +1219,6 @@
 // };
 
 // export default TemplateFifteen;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // "use client";
 // import React, {
@@ -2359,8 +2336,6 @@
 
 // export default TemplateFifteen;
 
-
-
 "use client";
 import React, {
   useContext,
@@ -2378,6 +2353,7 @@ import {
   formatDateOfBirth,
   formatGradeToCgpdAndPercentage,
   formatMonthYear,
+  formatSocialLink,
 } from "@/app/utils";
 import { usePathname } from "next/navigation";
 import { ResumeProps } from "@/app/types";
@@ -2418,8 +2394,7 @@ const TemplateFifteen: React.FC<TemplateFifteenProps> = ({
   const [htmlContent, setHtmlContent] = useState<string>("");
   const [pages, setPages] = useState<string[]>([]);
 
-  const activeFontFamily =
-    customization?.fontFamily ?? "'DM Sans', sans-serif";
+  const activeFontFamily = customization?.fontFamily ?? "'DM Sans', sans-serif";
 
   // ── Data ──────────────────────────────────────────────────────────────────
   const contact = alldata?.contact || context?.contact || {};
@@ -2823,9 +2798,9 @@ const TemplateFifteen: React.FC<TemplateFifteenProps> = ({
                  <span class="t15-contact-item">${item}</span>`,
             )
             .join("")}
-          ${linkedinUrl?.trim() ? `<span class="t15-contact-sep">·</span><a href="${href(linkedinUrl)}" class="t15-header-link" target="_blank">LinkedIn</a>` : ""}
-          ${githubUrl?.trim() ? `<span class="t15-contact-sep">·</span><a href="${href(githubUrl)}" class="t15-header-link" target="_blank">GitHub</a>` : ""}
-          ${portfolioUrl?.trim() ? `<span class="t15-contact-sep">·</span><a href="${href(portfolioUrl)}" class="t15-header-link" target="_blank">Portfolio</a>` : ""}
+          ${linkedinUrl?.trim() ? `<span class="t15-contact-sep">·</span><a href="${href(linkedinUrl)}" class="t15-header-link" target="_blank">LinkedIn: ${formatSocialLink(linkedinUrl, "linkedin")}</a>` : ""}
+          ${githubUrl?.trim() ? `<span class="t15-contact-sep">·</span><a href="${href(githubUrl)}" class="t15-header-link" target="_blank">GitHub: ${formatSocialLink(githubUrl, "github")}</a>` : ""}
+          ${portfolioUrl?.trim() ? `<span class="t15-contact-sep">·</span><a href="${href(portfolioUrl)}" class="t15-header-link" target="_blank">${formatSocialLink(portfolioUrl, "portfolio")}</a>` : ""}
         </div>
       </div>`;
 
@@ -3137,8 +3112,7 @@ const TemplateFifteen: React.FC<TemplateFifteenProps> = ({
 
           const resumeRect = resume.getBoundingClientRect();
           const scrollY =
-            measureDoc.documentElement.scrollTop ||
-            measureDoc.body.scrollTop;
+            measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
           const getRelTop = (el: Element) =>
             el.getBoundingClientRect().top - resumeRect.top + scrollY;
           const getRelBottom = (el: Element) =>
@@ -3164,20 +3138,18 @@ const TemplateFifteen: React.FC<TemplateFifteenProps> = ({
             return undefined;
           };
 
-          const HEADER_LIKE_SELECTOR = [
-            ".t15-entry-top",
-            ".t15-stitle",
-          ].join(", ");
+          const HEADER_LIKE_SELECTOR = [".t15-entry-top", ".t15-stitle"].join(
+            ", ",
+          );
 
           const CHAINED_KEEP_SELECTOR = [
             ".t15-entry-sub",
             ".t15-project-tech-stack",
           ].join(", ");
 
-          const ATOMIC_SELECTOR = [
-            ".t15-header",
-            ".t15-education-grade",
-          ].join(", ");
+          const ATOMIC_SELECTOR = [".t15-header", ".t15-education-grade"].join(
+            ", ",
+          );
 
           const DESC_WRAPPER_SELECTOR = [
             ".t15-summary",
@@ -3218,43 +3190,43 @@ const TemplateFifteen: React.FC<TemplateFifteenProps> = ({
             });
           };
 
-          Array.from(
-            resume.querySelectorAll<HTMLElement>("*"),
-          ).forEach((el) => {
-            if (consumed.has(el)) return;
+          Array.from(resume.querySelectorAll<HTMLElement>("*")).forEach(
+            (el) => {
+              if (consumed.has(el)) return;
 
-            if (el.matches(HEADER_LIKE_SELECTOR)) {
-              pushAtomic(el, true);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches(CHAINED_KEEP_SELECTOR)) {
-              pushAtomic(el, true);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches(ATOMIC_SELECTOR)) {
-              pushAtomic(el, false);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches("p, li")) {
-              if (pushLines(el)) {
+              if (el.matches(HEADER_LIKE_SELECTOR)) {
+                pushAtomic(el, true);
                 el.querySelectorAll("*").forEach((c) => consumed.add(c));
                 consumed.add(el);
+                return;
               }
-              return;
-            }
-            if (
-              el.matches(DESC_WRAPPER_SELECTOR) &&
-              !el.querySelector("p, li")
-            ) {
-              if (pushLines(el)) consumed.add(el);
-            }
-          });
+              if (el.matches(CHAINED_KEEP_SELECTOR)) {
+                pushAtomic(el, true);
+                el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                consumed.add(el);
+                return;
+              }
+              if (el.matches(ATOMIC_SELECTOR)) {
+                pushAtomic(el, false);
+                el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                consumed.add(el);
+                return;
+              }
+              if (el.matches("p, li")) {
+                if (pushLines(el)) {
+                  el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                  consumed.add(el);
+                }
+                return;
+              }
+              if (
+                el.matches(DESC_WRAPPER_SELECTOR) &&
+                !el.querySelector("p, li")
+              ) {
+                if (pushLines(el)) consumed.add(el);
+              }
+            },
+          );
 
           // ── Catch remaining standalone elements ─────────────────────
           resume
@@ -3263,10 +3235,7 @@ const TemplateFifteen: React.FC<TemplateFifteenProps> = ({
             )
             .forEach((el) => {
               if (consumed.has(el)) return;
-              pushAtomic(
-                el,
-                el.classList.contains("t15-entry-title"),
-              );
+              pushAtomic(el, el.classList.contains("t15-entry-title"));
               consumed.add(el);
             });
 
@@ -3300,8 +3269,7 @@ const TemplateFifteen: React.FC<TemplateFifteenProps> = ({
           }
 
           // ── Store data for PDF generation ────────────────────────────
-          (window as any).__resumePageBreakIds =
-            pageBreakIds.filter(Boolean);
+          (window as any).__resumePageBreakIds = pageBreakIds.filter(Boolean);
           (window as any).__resumePageStarts = pageStarts;
           (window as any).__resumeTotalH = totalH;
           (window as any).__resumeSnapshot = resumeSnapshot;
@@ -3353,9 +3321,7 @@ const TemplateFifteen: React.FC<TemplateFifteenProps> = ({
         if (mainFontsReady) {
           requestAnimationFrame(() => requestAnimationFrame(doMeasure));
         } else if (win?.document?.fonts?.ready) {
-          win.document.fonts.ready.then(() =>
-            requestAnimationFrame(doMeasure),
-          );
+          win.document.fonts.ready.then(() => requestAnimationFrame(doMeasure));
         } else {
           setTimeout(doMeasure, 150);
         }
@@ -3459,6 +3425,8 @@ const TemplateFifteen: React.FC<TemplateFifteenProps> = ({
       />
 
       {/* ── Download button ──────────────────────────────────────────────── */}
+            {!isThumbnail && lastSegment === "download-resume" && (
+
       <div className="text-center my-8">
         <motion.button
           onClick={handleDownload}
@@ -3488,14 +3456,13 @@ const TemplateFifteen: React.FC<TemplateFifteenProps> = ({
               <>
                 <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
                 <span>Download Resume</span>
-                <span className="text-sm opacity-75 font-light ml-1">
-                  PDF
-                </span>
+                <span className="text-sm opacity-75 font-light ml-1">PDF</span>
               </>
             )}
           </div>
         </motion.button>
       </div>
+            )}
 
       {isThumbnail ? (
         // ── THUMBNAIL MODE ──────────────────────────────────────────────

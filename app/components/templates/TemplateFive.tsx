@@ -1308,6 +1308,7 @@ import {
   cleanQuillHTML,
   formatDateOfBirth,
   formatGradeToCgpdAndPercentage,
+  formatSocialLink,
 } from "@/app/utils";
 import { usePathname } from "next/navigation";
 import {
@@ -1406,55 +1407,53 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({
   //   };
   // }, [contact.photo]);
 
-
   useEffect(() => {
-  let objectUrl: string | null = null;
+    let objectUrl: string | null = null;
 
-  const processImage = async () => {
-    if (!contact.photo) {
-      setBase64Image(null);
-      return;
-    }
-    try {
-      if (typeof contact.photo === "string") {
-        // Handle blob URLs (created from File objects)
-        if (contact.photo.startsWith("blob:")) {
-          const response = await fetch(contact.photo);
-          const blob = await response.blob();
+    const processImage = async () => {
+      if (!contact.photo) {
+        setBase64Image(null);
+        return;
+      }
+      try {
+        if (typeof contact.photo === "string") {
+          // Handle blob URLs (created from File objects)
+          if (contact.photo.startsWith("blob:")) {
+            const response = await fetch(contact.photo);
+            const blob = await response.blob();
+            const reader = new FileReader();
+            reader.onloadend = () => setBase64Image(reader.result as string);
+            reader.readAsDataURL(blob);
+          }
+          // Handle base64 data URLs (your API response)
+          else if (contact.photo.startsWith("data:image/")) {
+            // Directly use the base64 data URL
+            setBase64Image(contact.photo);
+          }
+          // Handle file path from server
+          else {
+            setBase64Image(`${API_URL}/api/uploads/photos/${contact.photo}`);
+          }
+        } else if (
+          contact.photo &&
+          typeof contact.photo === "object" &&
+          "size" in contact.photo
+        ) {
+          objectUrl = URL.createObjectURL(contact.photo as Blob);
           const reader = new FileReader();
           reader.onloadend = () => setBase64Image(reader.result as string);
-          reader.readAsDataURL(blob);
-        } 
-        // Handle base64 data URLs (your API response)
-        else if (contact.photo.startsWith("data:image/")) {
-          // Directly use the base64 data URL
-          setBase64Image(contact.photo);
-        } 
-        // Handle file path from server
-        else {
-          setBase64Image(`${API_URL}/api/uploads/photos/${contact.photo}`);
+          reader.readAsDataURL(contact.photo as Blob);
         }
-      } else if (
-        contact.photo &&
-        typeof contact.photo === "object" &&
-        "size" in contact.photo
-      ) {
-        objectUrl = URL.createObjectURL(contact.photo as Blob);
-        const reader = new FileReader();
-        reader.onloadend = () => setBase64Image(reader.result as string);
-        reader.readAsDataURL(contact.photo as Blob);
+      } catch (error) {
+        console.error("Error processing image:", error);
       }
-    } catch (error) {
-      console.error("Error processing image:", error);
-    }
-  };
+    };
 
-  processImage();
-  return () => {
-    if (objectUrl) URL.revokeObjectURL(objectUrl);
-  };
-}, [contact.photo]);
-
+    processImage();
+    return () => {
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
+  }, [contact.photo]);
 
   const isFinalizeData = (data: any): data is Finalize =>
     data && typeof data === "object" && !Array.isArray(data);
@@ -1918,9 +1917,9 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({
             linkedinUrl?.trim() || githubUrl?.trim() || portfolioUrl?.trim()
               ? `
             <div class="t5-links">
-              ${linkedinUrl?.trim() ? `<a href="${href(linkedinUrl)}" class="t5-link-btn t5-link-linkedin" target="_blank">LinkedIn</a>` : ""}
-              ${githubUrl?.trim() ? `<a href="${href(githubUrl)}" class="t5-link-btn t5-link-github" target="_blank">GitHub</a>` : ""}
-              ${portfolioUrl?.trim() ? `<a href="${href(portfolioUrl)}" class="t5-link-btn t5-link-portfolio" target="_blank">Portfolio</a>` : ""}
+              ${linkedinUrl?.trim() ? `<a href="${href(linkedinUrl)}" class="t5-link-btn t5-link-linkedin" target="_blank">LinkedIn: ${formatSocialLink(linkedinUrl, "linkedin")}</a>` : ""}
+              ${githubUrl?.trim() ? `<a href="${href(githubUrl)}" class="t5-link-btn t5-link-github" target="_blank">GitHub: ${formatSocialLink(githubUrl, "github")}</a>` : ""}
+              ${portfolioUrl?.trim() ? `<a href="${href(portfolioUrl)}" class="t5-link-btn t5-link-portfolio" target="_blank">${formatSocialLink(portfolioUrl, "portfolio")}</a>` : ""}
             </div>
           `
               : ""
@@ -2409,7 +2408,7 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({
 
   return (
     <>
-      {/* {!isThumbnail && lastSegment === "download-resume" && ( */}
+      {!isThumbnail && lastSegment === "download-resume" && (
       <div className="text-center my-8">
         <motion.button
           onClick={handleDownload}
@@ -2445,7 +2444,7 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({
           </div>
         </motion.button>
       </div>
-      {/* )} */}
+      )} 
 
       {isThumbnail ? (
         <div

@@ -1350,10 +1350,7 @@
 // //   );
 // // };
 
-
-
-
-// const isThumbnail = !!alldata && !viewMode ; 
+// const isThumbnail = !!alldata && !viewMode ;
 //   return (
 //     <>
 //       {/* Download button — hide in thumbnail mode */}
@@ -1394,7 +1391,7 @@
 //           </motion.button>
 //         </div>
 //       )}
- 
+
 //       {isThumbnail ? (
 //         // ── THUMBNAIL MODE (dashboard card) ─────────────────────────────────
 //         <div
@@ -1508,22 +1505,6 @@
 // };
 
 // export default TemplateEleven;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // "use client";
 // import React, {
@@ -2704,9 +2685,6 @@
 
 // export default TemplateEleven;
 
-
-
-
 "use client";
 import React, {
   useContext,
@@ -2724,6 +2702,7 @@ import {
   cleanQuillHTML,
   formatDateOfBirth,
   formatGradeToCgpdAndPercentage,
+  formatSocialLink,
 } from "@/app/utils";
 import { usePathname } from "next/navigation";
 import { ResumeProps } from "@/app/types";
@@ -2762,8 +2741,7 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({
   const [pages, setPages] = useState<string[]>([]);
 
   // ── Customization ─────────────────────────────────────────────────────────
-  const activeFontFamily =
-    customization?.fontFamily ?? "'Lato', sans-serif";
+  const activeFontFamily = customization?.fontFamily ?? "'Lato', sans-serif";
 
   // ── Data sources ─────────────────────────────────────────────────────────
   const contact = alldata?.contact || context.contact || {};
@@ -2806,8 +2784,7 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({
     ) {
       return [];
     }
-    const hasSkillsData =
-      skills && typeof skills === "string" && skills.trim();
+    const hasSkillsData = skills && typeof skills === "string" && skills.trim();
     if (!hasSkillsData) {
       return finalize.customSection.filter(
         (s: any) => s?.name?.trim() || s?.description?.trim(),
@@ -3445,9 +3422,9 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({
           </div>
           ${addressStr ? `<div class="address">${addressStr}</div>` : ""}
           <div class="links">
-            ${linkedinUrl ? `<a href="${href(linkedinUrl)}" class="link-item">LinkedIn</a>` : ""}
-            ${githubUrl ? `<a href="${href(githubUrl)}" class="link-item">GitHub</a>` : ""}
-            ${portfolioUrl ? `<a href="${href(portfolioUrl)}" class="link-item">Portfolio</a>` : ""}
+            ${linkedinUrl ? `<a href="${href(linkedinUrl)}" class="link-item">LinkedIn: ${formatSocialLink(linkedinUrl, "linkedin")}</a>` : ""}
+            ${githubUrl ? `<a href="${href(githubUrl)}" class="link-item">GitHub: ${formatSocialLink(githubUrl, "github")}</a>` : ""}
+            ${portfolioUrl ? `<a href="${href(portfolioUrl)}" class="link-item">${formatSocialLink(portfolioUrl, "portfolio")}</a>` : ""}
           </div>
         </div>
 
@@ -3619,8 +3596,7 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({
 
           const resumeRect = resume.getBoundingClientRect();
           const scrollY =
-            measureDoc.documentElement.scrollTop ||
-            measureDoc.body.scrollTop;
+            measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
           const getRelTop = (el: Element) =>
             el.getBoundingClientRect().top - resumeRect.top + scrollY;
           const getRelBottom = (el: Element) =>
@@ -3702,37 +3678,37 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({
             });
           };
 
-          Array.from(
-            resume.querySelectorAll<HTMLElement>("*"),
-          ).forEach((el) => {
-            if (consumed.has(el)) return;
+          Array.from(resume.querySelectorAll<HTMLElement>("*")).forEach(
+            (el) => {
+              if (consumed.has(el)) return;
 
-            if (el.matches(HEADER_LIKE_SELECTOR)) {
-              pushAtomic(el, true);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches(ATOMIC_SELECTOR)) {
-              pushAtomic(el, false);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches("p, li")) {
-              if (pushLines(el)) {
+              if (el.matches(HEADER_LIKE_SELECTOR)) {
+                pushAtomic(el, true);
                 el.querySelectorAll("*").forEach((c) => consumed.add(c));
                 consumed.add(el);
+                return;
               }
-              return;
-            }
-            if (
-              el.matches(DESC_WRAPPER_SELECTOR) &&
-              !el.querySelector("p, li")
-            ) {
-              if (pushLines(el)) consumed.add(el);
-            }
-          });
+              if (el.matches(ATOMIC_SELECTOR)) {
+                pushAtomic(el, false);
+                el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                consumed.add(el);
+                return;
+              }
+              if (el.matches("p, li")) {
+                if (pushLines(el)) {
+                  el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                  consumed.add(el);
+                }
+                return;
+              }
+              if (
+                el.matches(DESC_WRAPPER_SELECTOR) &&
+                !el.querySelector("p, li")
+              ) {
+                if (pushLines(el)) consumed.add(el);
+              }
+            },
+          );
 
           // ── Catch remaining standalone elements ─────────────────────
           resume
@@ -3779,8 +3755,7 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({
           }
 
           // ── Store data for PDF generation ────────────────────────────
-          (window as any).__resumePageBreakIds =
-            pageBreakIds.filter(Boolean);
+          (window as any).__resumePageBreakIds = pageBreakIds.filter(Boolean);
           (window as any).__resumePageStarts = pageStarts;
           (window as any).__resumeTotalH = totalH;
           (window as any).__resumeSnapshot = resumeSnapshot;
@@ -3818,9 +3793,7 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({
         if (mainFontsReady) {
           requestAnimationFrame(() => requestAnimationFrame(doMeasure));
         } else if (win?.document?.fonts?.ready) {
-          win.document.fonts.ready.then(() =>
-            requestAnimationFrame(doMeasure),
-          );
+          win.document.fonts.ready.then(() => requestAnimationFrame(doMeasure));
         } else {
           setTimeout(doMeasure, 150);
         }
@@ -3926,13 +3899,15 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({
       />
 
       {/* ── Download button ──────────────────────────────────────────────── */}
-      <div className="text-center my-8">
-        <motion.button
-          onClick={handleDownload}
-          disabled={isDownloading}
-          whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
-          whileTap={!isDownloading ? { scale: 0.98 } : {}}
-          className={`
+
+      {!isThumbnail && lastSegment === "download-resume" && (
+        <div className="text-center my-8">
+          <motion.button
+            onClick={handleDownload}
+            disabled={isDownloading}
+            whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
+            whileTap={!isDownloading ? { scale: 0.98 } : {}}
+            className={`
             relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
             text-white transition-all duration-300 shadow-lg
             ${
@@ -3941,28 +3916,29 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({
                 : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600 cursor-pointer"
             }
           `}
-        >
-          {!isDownloading && (
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          )}
-          <div className="relative flex items-center justify-center gap-3 text-lg">
-            {isDownloading ? (
-              <>
-                <FaSpinner className="animate-spin text-xl" />
-                <span>Generating PDF …</span>
-              </>
-            ) : (
-              <>
-                <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
-                <span>Download Resume</span>
-                <span className="text-sm opacity-75 font-light ml-1">
-                  PDF
-                </span>
-              </>
+          >
+            {!isDownloading && (
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
             )}
-          </div>
-        </motion.button>
-      </div>
+            <div className="relative flex items-center justify-center gap-3 text-lg">
+              {isDownloading ? (
+                <>
+                  <FaSpinner className="animate-spin text-xl" />
+                  <span>Generating PDF …</span>
+                </>
+              ) : (
+                <>
+                  <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
+                  <span>Download Resume</span>
+                  <span className="text-sm opacity-75 font-light ml-1">
+                    PDF
+                  </span>
+                </>
+              )}
+            </div>
+          </motion.button>
+        </div>
+      )}
 
       {isThumbnail ? (
         // ── THUMBNAIL MODE ──────────────────────────────────────────────

@@ -1047,6 +1047,7 @@ import {
   formatDateOfBirth,
   formatGradeToCgpdAndPercentage,
   formatMonthYear,
+  formatSocialLink,
 } from "@/app/utils";
 import { usePathname } from "next/navigation";
 import { ResumeProps } from "@/app/types";
@@ -1415,9 +1416,9 @@ const TemplateSeven: React.FC<TemplateSevenProps> = ({
           </div>
           ${addressParts.length ? `<div class="address">${addressParts.join(" , ")}</div>` : ""}
           <div class="links">
-            ${linkedinUrl ? `<a href="${href(linkedinUrl)}" class="link-item" target="_blank">LinkedIn</a>` : ""}
-            ${githubUrl ? `<a href="${href(githubUrl)}" class="link-item" target="_blank">GitHub</a>` : ""}
-            ${portfolioUrl ? `<a href="${href(portfolioUrl)}" class="link-item" target="_blank">Portfolio</a>` : ""}
+            ${linkedinUrl ? `<a href="${href(linkedinUrl)}" class="link-item" target="_blank">LinkedIn: ${formatSocialLink(linkedinUrl, "linkedin")}</a>` : ""}
+            ${githubUrl ? `<a href="${href(githubUrl)}" class="link-item" target="_blank">GitHub: ${formatSocialLink(githubUrl, "github")}</a>` : ""}
+            ${portfolioUrl ? `<a href="${href(portfolioUrl)}" class="link-item" target="_blank">${formatSocialLink(portfolioUrl, "portfolio")}</a>` : ""}
           </div>
         </div>`;
 
@@ -1925,7 +1926,7 @@ useEffect(() => {
 
   return (
     <>
-      {/* {!isThumbnail && lastSegment === "download-resume" && ( */}
+      {!isThumbnail && lastSegment === "download-resume" && (
         <div className="text-center my-8">
           <motion.button
             onClick={handleDownload}
@@ -1961,7 +1962,7 @@ useEffect(() => {
             </div>
           </motion.button>
         </div>
-      {/* )} */}
+       )} 
 
       {isThumbnail ? (
         <div

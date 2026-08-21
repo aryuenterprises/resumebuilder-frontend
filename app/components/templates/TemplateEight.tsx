@@ -1298,6 +1298,7 @@ import {
   cleanQuillHTML,
   formatDateOfBirth,
   formatGradeToCgpdAndPercentage,
+  formatSocialLink,
 } from "@/app/utils";
 import { usePathname } from "next/navigation";
 import { ResumeProps } from "@/app/types";
@@ -1801,9 +1802,9 @@ const TemplateEight: React.FC<TemplateEightProps> = ({
           ${contact?.email ? `<span class="header-meta-item">${contact.email}</span>` : ""}
           ${contact?.phone ? `<span class="header-meta-item">${contact.phone}</span>` : ""}
           ${formattedDob ? `<span class="header-meta-item">${formattedDob}</span>` : ""}
-          ${linkedinUrl ? `<span class="header-meta-item"><a href="${href(linkedinUrl)}">LinkedIn</a></span>` : ""}
-          ${githubUrl ? `<span class="header-meta-item"><a href="${href(githubUrl)}">GitHub</a></span>` : ""}
-          ${portfolioUrl ? `<span class="header-meta-item"><a href="${href(portfolioUrl)}">Portfolio</a></span>` : ""}
+          ${linkedinUrl ? `<span class="header-meta-item"><a href="${href(linkedinUrl)}">LinkedIn: ${formatSocialLink(linkedinUrl, "linkedin")}</</a></span>` : ""}
+          ${githubUrl ? `<span class="header-meta-item"><a href="${href(githubUrl)}">GitHub: ${formatSocialLink(githubUrl, "github")}</a></span>` : ""}
+          ${portfolioUrl ? `<span class="header-meta-item"><a href="${href(portfolioUrl)}">${formatSocialLink(portfolioUrl, "portfolio")}</a></span>` : ""}
         </div>
       </div>
       ${sectionsHTML}
@@ -2271,6 +2272,8 @@ const TemplateEight: React.FC<TemplateEightProps> = ({
       />
 
       {/* ── Download button ──────────────────────────────────────────────── */}
+            {!isThumbnail && lastSegment === "download-resume" && (
+
       <div className="text-center my-8">
         <motion.button
           onClick={handleDownload}
@@ -2309,6 +2312,8 @@ const TemplateEight: React.FC<TemplateEightProps> = ({
         </motion.button>
       </div>
 
+          )}
+          
       {isThumbnail ? (
         // ── THUMBNAIL MODE ──────────────────────────────────────────────
         <div

@@ -3659,6 +3659,7 @@ import {
   formatDateOfBirth,
   formatGradeToCgpdAndPercentage,
   formatMonthYear,
+  formatSocialLink,
 } from "@/app/utils";
 import { usePathname } from "next/navigation";
 import { ResumeProps } from "@/app/types";
@@ -4127,9 +4128,9 @@ const TemplateTwelve: React.FC<TemplateTwelveProps> = ({
             ${contact?.email ? `<span class="header-meta-item">${contact.email}</span>` : ""}
             ${contact?.phone ? `<span class="header-meta-item">${contact.phone}</span>` : ""}
             ${formattedDob ? `<span class="header-meta-item">${formattedDob}</span>` : ""}
-            ${linkedinUrl ? `<span class="header-meta-item"><a href="${href(linkedinUrl)}" target="_blank">LinkedIn</a></span>` : ""}
-            ${githubUrl ? `<span class="header-meta-item"><a href="${href(githubUrl)}" target="_blank">GitHub</a></span>` : ""}
-            ${portfolioUrl ? `<span class="header-meta-item"><a href="${href(portfolioUrl)}" target="_blank">Portfolio</a></span>` : ""}
+            ${linkedinUrl ? `<span class="header-meta-item"><a href="${href(linkedinUrl)}" target="_blank">LinkedIn: ${formatSocialLink(linkedinUrl, "linkedin")}</a></span>` : ""}
+            ${githubUrl ? `<span class="header-meta-item"><a href="${href(githubUrl)}" target="_blank">GitHub: ${formatSocialLink(githubUrl, "github")}</a></span>` : ""}
+            ${portfolioUrl ? `<span class="header-meta-item"><a href="${href(portfolioUrl)}" target="_blank">${formatSocialLink(portfolioUrl, "portfolio")}</a></span>` : ""}
           </div>
         </div>`;
 
@@ -4803,6 +4804,8 @@ const TemplateTwelve: React.FC<TemplateTwelveProps> = ({
       />
 
       {/* ── Download button ──────────────────────────────────────────────── */}
+            {!isThumbnail && lastSegment === "download-resume" && (
+
       <div className="text-center my-8">
         <motion.button
           onClick={handleDownload}
@@ -4840,6 +4843,7 @@ const TemplateTwelve: React.FC<TemplateTwelveProps> = ({
           </div>
         </motion.button>
       </div>
+            )}
 
       {isThumbnail ? (
         // ── THUMBNAIL MODE ──────────────────────────────────────────────

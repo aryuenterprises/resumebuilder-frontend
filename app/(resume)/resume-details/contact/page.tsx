@@ -81,11 +81,6 @@ const ContactForm = () => {
   const {
     contact,
     setContact,
-    experiences,
-    education,
-    projects,
-    skills,
-    summary,
   } = useContext(CreateContext);
 
   const contactId = contact.contactId || contact._id;
@@ -103,99 +98,6 @@ const ContactForm = () => {
     "editingResumeIdAndData",
   );
   const isOldRouteNameDashboard = getSessionStorage("oldRouteNameDashboard");
-
-  console.log("contact", contact);
-
-  // const saveToAPI = async (contactData: typeof contact) => {
-  //   if (!userId) {
-  //     console.error("User ID is required");
-  //     return false;
-  //   }
-
-  //   setIsSaving(true);
-
-  //   try {
-  //     // 1. Process the photo into a Base64 string if it's currently a blob URL
-  //     let finalPhotoBase64 = "";
-
-  //     if (contactData.photo) {
-  //       if (contactData.photo.startsWith("data:image")) {
-  //         // It's already base64 encoded
-  //         finalPhotoBase64 = contactData.photo;
-  //       } else if (contactData.photo.startsWith("blob:")) {
-  //         // Convert blob URL to a Base64 data URI string
-  //         const responseBlob = await fetch(contactData.photo);
-  //         const blobData = await responseBlob.blob();
-
-  //         finalPhotoBase64 = await new Promise<string>((resolve, reject) => {
-  //           const reader = new FileReader();
-  //           reader.onloadend = () => resolve(reader.result as string);
-  //           reader.onerror = reject;
-  //           reader.readAsDataURL(blobData);
-  //         });
-  //       } else {
-  //         // In case it's a regular hosting URL already stored
-  //         finalPhotoBase64 = contactData.photo;
-  //       }
-  //     }
-
-  //     // 2. Build your exact single JSON payload schema
-  //     const singlePayload = {
-  //       template: chosenResumeDetails?.id ? Number(chosenResumeDetails.id) : 1,
-  //       resume_title: contactData.jobTitle
-  //         ? `${contactData.jobTitle} Position Resume`
-  //         : "Senior Engineer Position Resume",
-  //       resume_data: {
-  //         contact: {
-  //           firstName: contactData.firstName || "",
-  //           lastName: contactData.lastName || "",
-  //           jobTitle: contactData.jobTitle || "",
-  //           city: contactData.city || "",
-  //           email: contactData.email || "",
-  //           phone: contactData.phone || "",
-  //           dob: contactData.dob || "",
-  //           country: contactData.country || "",
-  //           address: contactData.address || "",
-  //           postCode: contactData.postCode || "",
-  //           linkedIn: contactData.linkedIn || "",
-  //           github: contactData.github || "",
-  //           portfolio: contactData.portfolio || "",
-  //           photo: finalPhotoBase64, // Nesting the image right inside the JSON structure!
-  //         },
-  //       },
-  //     };
-
-  //     const oldResumeEditPayload = {
-  //       section_name: "contact",
-  //       section_payload: contactData,
-  //     };
-
-  //     if (isOldRouteNameDashboard && editingResumeIdAndData) {
-  //       // If we're editing an existing resume, we should update instead of creating new
-  //       await api.patch(
-  //         `${API_URL}/user-resumes/${editingResumeIdAndData.id}`,
-  //         oldResumeEditPayload,
-  //       );
-  //       removeSessionStorage("oldRouteNameDashboard");
-  //       removeSessionStorage("editingResumeIdAndData");
-  //       setLocalStorage("latest_resume_id", editingResumeIdAndData.id);
-  //     } else {
-  //       // Otherwise, create a new resume entry
-  //       const response = await api.post(
-  //         `${API_URL}/user-resumes`,
-  //         singlePayload,
-  //       );
-  //       setLocalStorage("latest_resume_id", response.data.id);
-
-  //       return true;
-  //     }
-  //   } catch (err) {
-  //     console.error("Error saving contact unified payload:", err);
-  //     return false;
-  //   } finally {
-  //     setIsSaving(false);
-  //   }
-  // };
 
   const saveToAPI = async (contactData: typeof contact) => {
     if (!userId) {

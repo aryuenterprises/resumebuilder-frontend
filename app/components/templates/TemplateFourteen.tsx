@@ -136,7 +136,7 @@
 //     @import url('${getFontImport(fontFamily)}');
 
 //     @page { size: A4; margin: ${MARGIN}px; }
-    
+
 //     *, *::before, *::after { box-sizing: border-box; }
 //     html, body { margin: 0; padding: 0; background: white; }
 
@@ -156,7 +156,6 @@
 //     .t14-resume p { margin: 0 0 4px 0 !important; padding: 0 !important; line-height: 1.6 !important; }
 //     .t14-resume p:last-child { margin-bottom: 0 !important; }
 // .t14-resume .resume-body > .section-block:last-child { margin-bottom: 0 !important; }
-
 
 //     .t14-resume .entry-content ul,
 
@@ -1050,8 +1049,7 @@
 // //   );
 // // };
 
-
-// const isThumbnail = !!alldata && !viewMode ; 
+// const isThumbnail = !!alldata && !viewMode ;
 //   return (
 //     <>
 //       {/* Download button — hide in thumbnail mode */}
@@ -1092,7 +1090,7 @@
 //           </motion.button>
 //         </div>
 //       )}
- 
+
 //       {isThumbnail ? (
 //         // ── THUMBNAIL MODE (dashboard card) ─────────────────────────────────
 //         <div
@@ -1206,28 +1204,6 @@
 // };
 
 // export default TemplateFourteen;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // "use client";
 // import React, {
@@ -1365,7 +1341,7 @@
 //     @import url('${getFontImport(fontFamily)}');
 
 //     @page { size: A4; margin: ${MARGIN}px; }
-    
+
 //     *, *::before, *::after { box-sizing: border-box; }
 //     html, body { margin: 0; padding: 0; background: white; }
 
@@ -2198,8 +2174,6 @@
 
 // export default TemplateFourteen;
 
-
-
 "use client";
 import React, {
   useContext,
@@ -2217,6 +2191,7 @@ import {
   formatDateOfBirth,
   formatGradeToCgpdAndPercentage,
   formatMonthYear,
+  formatSocialLink,
 } from "@/app/utils";
 import { usePathname } from "next/navigation";
 import { ResumeProps } from "@/app/types";
@@ -2531,9 +2506,9 @@ const TemplateFourteen: React.FC<TemplateFourteenProps> = ({
             ${contact?.email ? `<span class="header-meta-item">${contact.email}</span>` : ""}
             ${contact?.phone ? `<span class="header-meta-item">${contact.phone}</span>` : ""}
             ${formattedDob ? `<span class="header-meta-item">${formattedDob}</span>` : ""}
-            ${linkedinUrl ? `<span class="header-meta-item"><a href="${href(linkedinUrl)}" target="_blank">LinkedIn</a></span>` : ""}
-            ${githubUrl ? `<span class="header-meta-item"><a href="${href(githubUrl)}" target="_blank">GitHub</a></span>` : ""}
-            ${portfolioUrl ? `<span class="header-meta-item"><a href="${href(portfolioUrl)}" target="_blank">Portfolio</a></span>` : ""}
+            ${linkedinUrl ? `<span class="header-meta-item"><a href="${href(linkedinUrl)}" target="_blank">LinkedIn: ${formatSocialLink(linkedinUrl, "linkedin")}</a></span>` : ""}
+            ${githubUrl ? `<span class="header-meta-item"><a href="${href(githubUrl)}" target="_blank">GitHub: ${formatSocialLink(githubUrl, "github")}</a></span>` : ""}
+            ${portfolioUrl ? `<span class="header-meta-item"><a href="${href(portfolioUrl)}" target="_blank">${formatSocialLink(portfolioUrl, "portfolio")}</a></span>` : ""}
           </div>
         </div>`;
 
@@ -2623,9 +2598,7 @@ const TemplateFourteen: React.FC<TemplateFourteenProps> = ({
               edu.startDate || edu.endDate
                 ? `${edu.startDate || ""}${edu.startDate && edu.endDate ? " – " : ""}${edu.endDate || ""}`
                 : "";
-            const grade = formatGradeToCgpdAndPercentage(
-              edu.grade || "",
-            );
+            const grade = formatGradeToCgpdAndPercentage(edu.grade || "");
             return `
             <div class="entry-block" data-block-id="t14-edu-${i}">
               <div class="entry-top-row">
@@ -2875,8 +2848,7 @@ const TemplateFourteen: React.FC<TemplateFourteenProps> = ({
 
           const resumeRect = resume.getBoundingClientRect();
           const scrollY =
-            measureDoc.documentElement.scrollTop ||
-            measureDoc.body.scrollTop;
+            measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
           const getRelTop = (el: Element) =>
             el.getBoundingClientRect().top - resumeRect.top + scrollY;
           const getRelBottom = (el: Element) =>
@@ -2913,10 +2885,9 @@ const TemplateFourteen: React.FC<TemplateFourteenProps> = ({
             ".project-tech-stack",
           ].join(", ");
 
-          const ATOMIC_SELECTOR = [
-            ".header-block",
-            ".education-grade",
-          ].join(", ");
+          const ATOMIC_SELECTOR = [".header-block", ".education-grade"].join(
+            ", ",
+          );
 
           const DESC_WRAPPER_SELECTOR = [
             ".summary-text",
@@ -2957,43 +2928,43 @@ const TemplateFourteen: React.FC<TemplateFourteenProps> = ({
             });
           };
 
-          Array.from(
-            resume.querySelectorAll<HTMLElement>("*"),
-          ).forEach((el) => {
-            if (consumed.has(el)) return;
+          Array.from(resume.querySelectorAll<HTMLElement>("*")).forEach(
+            (el) => {
+              if (consumed.has(el)) return;
 
-            if (el.matches(HEADER_LIKE_SELECTOR)) {
-              pushAtomic(el, true);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches(CHAINED_KEEP_SELECTOR)) {
-              pushAtomic(el, true);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches(ATOMIC_SELECTOR)) {
-              pushAtomic(el, false);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches("p, li")) {
-              if (pushLines(el)) {
+              if (el.matches(HEADER_LIKE_SELECTOR)) {
+                pushAtomic(el, true);
                 el.querySelectorAll("*").forEach((c) => consumed.add(c));
                 consumed.add(el);
+                return;
               }
-              return;
-            }
-            if (
-              el.matches(DESC_WRAPPER_SELECTOR) &&
-              !el.querySelector("p, li")
-            ) {
-              if (pushLines(el)) consumed.add(el);
-            }
-          });
+              if (el.matches(CHAINED_KEEP_SELECTOR)) {
+                pushAtomic(el, true);
+                el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                consumed.add(el);
+                return;
+              }
+              if (el.matches(ATOMIC_SELECTOR)) {
+                pushAtomic(el, false);
+                el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                consumed.add(el);
+                return;
+              }
+              if (el.matches("p, li")) {
+                if (pushLines(el)) {
+                  el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                  consumed.add(el);
+                }
+                return;
+              }
+              if (
+                el.matches(DESC_WRAPPER_SELECTOR) &&
+                !el.querySelector("p, li")
+              ) {
+                if (pushLines(el)) consumed.add(el);
+              }
+            },
+          );
 
           // ── Catch remaining standalone elements ─────────────────────
           resume
@@ -3002,10 +2973,7 @@ const TemplateFourteen: React.FC<TemplateFourteenProps> = ({
             )
             .forEach((el) => {
               if (consumed.has(el)) return;
-              pushAtomic(
-                el,
-                el.classList.contains("entry-title"),
-              );
+              pushAtomic(el, el.classList.contains("entry-title"));
               consumed.add(el);
             });
 
@@ -3039,8 +3007,7 @@ const TemplateFourteen: React.FC<TemplateFourteenProps> = ({
           }
 
           // ── Store data for PDF generation ────────────────────────────
-          (window as any).__resumePageBreakIds =
-            pageBreakIds.filter(Boolean);
+          (window as any).__resumePageBreakIds = pageBreakIds.filter(Boolean);
           (window as any).__resumePageStarts = pageStarts;
           (window as any).__resumeTotalH = totalH;
           (window as any).__resumeSnapshot = resumeSnapshot;
@@ -3083,9 +3050,7 @@ const TemplateFourteen: React.FC<TemplateFourteenProps> = ({
         if (mainFontsReady) {
           requestAnimationFrame(() => requestAnimationFrame(doMeasure));
         } else if (win?.document?.fonts?.ready) {
-          win.document.fonts.ready.then(() =>
-            requestAnimationFrame(doMeasure),
-          );
+          win.document.fonts.ready.then(() => requestAnimationFrame(doMeasure));
         } else {
           setTimeout(doMeasure, 150);
         }
@@ -3172,7 +3137,7 @@ const TemplateFourteen: React.FC<TemplateFourteenProps> = ({
       console.error("PDF error:", err);
       alert("Failed to generate PDF. Please try again.");
     } finally {
-     setIsDownloading(false);
+      setIsDownloading(false);
     }
   };
 
@@ -3189,6 +3154,8 @@ const TemplateFourteen: React.FC<TemplateFourteenProps> = ({
       />
 
       {/* ── Download button ──────────────────────────────────────────────── */}
+            {!isThumbnail && lastSegment === "download-resume" && (
+
       <div className="text-center my-8">
         <motion.button
           onClick={handleDownload}
@@ -3218,14 +3185,13 @@ const TemplateFourteen: React.FC<TemplateFourteenProps> = ({
               <>
                 <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
                 <span>Download Resume</span>
-                <span className="text-sm opacity-75 font-light ml-1">
-                  PDF
-                </span>
+                <span className="text-sm opacity-75 font-light ml-1">PDF</span>
               </>
             )}
           </div>
         </motion.button>
       </div>
+            )}
 
       {isThumbnail ? (
         // ── THUMBNAIL MODE ──────────────────────────────────────────────

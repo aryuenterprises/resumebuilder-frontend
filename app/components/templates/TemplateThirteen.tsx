@@ -8456,6 +8456,7 @@ import {
   cleanQuillHTML,
   formatDateOfBirth,
   formatGradeToCgpdAndPercentage,
+  formatSocialLink,
 } from "@/app/utils";
 import { usePathname } from "next/navigation";
 import { ResumeProps } from "@/app/types";
@@ -8754,6 +8755,8 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
     url.startsWith("http") ? url : `https://${url}`;
   const cleanUrl = (url: string) =>
     url.replace(/^https?:\/\//, "").replace(/^www\./, "");
+
+  
   const rich = (html: string) => {
     const c = cleanQuillHTML(html);
     return c && c !== "<p><br></p>" ? c : "";
@@ -8966,9 +8969,9 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
         ${contact?.email ? `<div class="contact-item"><div class="contact-label">EMAIL</div><div class="contact-value">${contact.email}</div></div>` : ""}
         ${contact?.phone ? `<div class="contact-item"><div class="contact-label">PHONE</div><div class="contact-value">${contact.phone}</div></div>` : ""}
         ${formattedDob ? `<div class="contact-item"><div class="contact-label">BIRTH DATE</div><div class="contact-value">${formattedDob}</div></div>` : ""}
-        ${linkedinUrl ? `<div class="contact-item"><div class="contact-label">LINKEDIN</div><div class="contact-value"><a href="${href(linkedinUrl)}">${cleanUrl(linkedinUrl)}</a></div></div>` : ""}
-        ${githubUrl ? `<div class="contact-item"><div class="contact-label">GITHUB</div><div class="contact-value"><a href="${href(githubUrl)}">${cleanUrl(githubUrl)}</a></div></div>` : ""}
-        ${portfolioUrl ? `<div class="contact-item"><div class="contact-label">PORTFOLIO</div><div class="contact-value"><a href="${href(portfolioUrl)}">${cleanUrl(portfolioUrl)}</a></div></div>` : ""}
+        ${linkedinUrl ? `<div class="contact-item"><div class="contact-label">LINKEDIN</div><div class="contact-value"><a href="${href(linkedinUrl)}"> ${formatSocialLink(linkedinUrl, "linkedin")}</a></div></div>` : ""}
+        ${githubUrl ? `<div class="contact-item"><div class="contact-label">GITHUB</div><div class="contact-value"><a href="${href(githubUrl)}">${formatSocialLink(githubUrl, "github")}</a></div></div>` : ""}
+        ${portfolioUrl ? `<div class="contact-item"><div class="contact-label">PORTFOLIO</div><div class="contact-value"><a href="${href(portfolioUrl)}">${formatSocialLink(portfolioUrl, "portfolio")}</a></div></div>` : ""}
         ${addressParts.length ? `<div class="contact-item"><div class="contact-label">LOCATION</div><div class="contact-value">${addressParts.join(", ")}</div></div>` : ""}
       </div>
     </div>
@@ -9435,6 +9438,8 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
       />
 
       {/* ── Download button ──────────────────────────────────────────────── */}
+            {!isThumbnail && lastSegment === "download-resume" && (
+
       <div className="text-center my-8">
         <motion.button
           onClick={handleDownload}
@@ -9472,6 +9477,7 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
           </div>
         </motion.button>
       </div>
+            )}
 
       {isThumbnail ? (
         // ── THUMBNAIL MODE ──────────────────────────────────────────────

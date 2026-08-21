@@ -26,7 +26,6 @@
 // import { usePathname } from "next/navigation";
 // import { FaDownload, FaSpinner } from "react-icons/fa";
 
-
 // // ─────────────────────────────────────────────────────────────────────────────
 // // A4 CONSTANTS
 // // ─────────────────────────────────────────────────────────────────────────────
@@ -44,7 +43,6 @@
 //     const pathname = usePathname();
 //     const lastSegment = pathname.split("/").pop();
 //       const [isDownloading, setIsDownloading] = useState<boolean>(false);
-    
 
 //   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 //   const [htmlContent, setHtmlContent] = useState<string>("");
@@ -336,7 +334,7 @@
 
 //   // ── Helper functions ──────────────────────────────────────────────────────
 //   const href = (url: string) => url.startsWith("http") ? url : `https://${url}`;
-  
+
 //   const rich = (html: string) => {
 //     const c = cleanQuillHTML(html);
 //     return c && c !== "<p><br></p>" ? c : "";
@@ -346,13 +344,12 @@
 //   // const generateHTML = useCallback(
 // // (forPDF = false, pageBreakIds: string[] = [], skillsCutIndex = -1): string => {
 
-
 // const generateHTML = useCallback(
 // (forPDF = false): string => {
 
 //       const CSS = buildCSS(activeFontFamily);
-      
-//       const fontPreloads = activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif" 
+
+//       const fontPreloads = activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif"
 //         ? `<link rel="preconnect" href="https://fonts.googleapis.com">
 //            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 //            <link href="${getFontImport(activeFontFamily)}" rel="stylesheet">`
@@ -390,7 +387,6 @@
 //           <div class="summary-text">${rich(summary)}</div>
 //         </div>` : "",
 
-      
 // // skills: () => {
 // //   const skillsClean = rich(skills || "");
 // //   if (!skillsClean) return "";
@@ -416,7 +412,6 @@
 // //     <div class="skills-content" data-block-id="skills-content">${skillsClean}</div>
 // //   </div>`;
 // // },
-
 
 // skills: () => {
 //   const skillsClean = rich(skills || "");
@@ -509,8 +504,6 @@
 
 //       let leftCol = orderedLeft;
 //       let rightCol = orderedRight;
-
-    
 
 //       return `<!DOCTYPE html>
 // <html lang="en">
@@ -882,7 +875,7 @@
 // //   { html: generateHTML(true, pageBreakIds) },
 // //   { responseType: "blob" },
 // // );
-     
+
 //       const res: AxiosResponse<Blob> = await api.post(
 //   `${API_URL}/candidates/generate-pdf`,
 //   { html: generateHTML(true) },
@@ -910,7 +903,7 @@
 //   return (
 //     <>
 //     {/* Download button */}
-      
+
 //       {lastSegment === "download-resume" && (
 //               <div className="text-center my-8">
 //                 <motion.button
@@ -932,7 +925,7 @@
 //                   {!isDownloading && (
 //                     <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
 //                   )}
-      
+
 //                   <div className="relative flex items-center justify-center gap-3 text-lg">
 //                     {isDownloading ? (
 //                       <>
@@ -952,7 +945,6 @@
 //                 </motion.button>
 //               </div>
 //             )}
-
 
 //       {alldata ? (
 //         <div
@@ -1065,29 +1057,6 @@
 // };
 
 // export default TemplateTwo;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // "use client";
 // import React, {
@@ -1421,7 +1390,7 @@
 
 //   // ── Helper functions ──────────────────────────────────────────────────────
 //   const href = (url: string) => url.startsWith("http") ? url : `https://${url}`;
-  
+
 //   const rich = (html: string) => {
 //     const c = cleanQuillHTML(html);
 //     return c && c !== "<p><br></p>" ? c : "";
@@ -1431,8 +1400,8 @@
 //   const generateHTML = useCallback(
 //     (forPDF = false): string => {
 //       const CSS = buildCSS(activeFontFamily);
-      
-//       const fontPreloads = activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif" 
+
+//       const fontPreloads = activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif"
 //         ? `<link rel="preconnect" href="https://fonts.googleapis.com">
 //            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 //            <link href="${getFontImport(activeFontFamily)}" rel="stylesheet">`
@@ -1875,8 +1844,7 @@
 //     }
 //   };
 
-
-// const isThumbnail = !!alldata && !viewMode ; 
+// const isThumbnail = !!alldata && !viewMode ;
 //   return (
 //     <>
 //       {/* Download button — hide in thumbnail mode */}
@@ -1917,7 +1885,6 @@
 //           </motion.button>
 //         </div>
 //       {/* )} */}
- 
 
 //       {isThumbnail ? (
 //         // ── THUMBNAIL MODE (dashboard card) ─────────────────────────────────
@@ -2033,37 +2000,6 @@
 
 // export default TemplateTwo;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 import React, {
   useContext,
@@ -2081,6 +2017,7 @@ import {
   formatDateOfBirth,
   formatGradeToCgpdAndPercentage,
   formatMonthYear,
+  formatSocialLink,
 } from "@/app/utils";
 import { ResumeProps } from "@/app/types";
 import api from "@/app/utils/api";
@@ -2118,8 +2055,7 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({
   const [pages, setPages] = useState<string[]>([]);
 
   // ── Customization defaults ────────────────────────────────────────────────
-  const activeFontFamily =
-    customization?.fontFamily ?? "'Nunito', sans-serif";
+  const activeFontFamily = customization?.fontFamily ?? "'Nunito', sans-serif";
 
   // ── Data sources ──────────────────────────────────────────────────────────
   const contact = alldata?.contact || context?.contact || {};
@@ -2139,94 +2075,56 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({
   const [base64Image, setBase64Image] = useState<string | null>(null);
 
   useEffect(() => {
-  let objectUrl: string | null = null;
-  
-  const processImage = async () => {
-    if (!contact.photo) {
-      setBase64Image(null);
-      return;
-    }
-    
-    try {
-      // Handle base64 string from API
-      if (typeof contact.photo === "string") {
-        // Check if it's a blob URL
-        if (contact.photo.startsWith("blob:")) {
-          const res = await fetch(contact.photo);
-          const blob = await res.blob();
+    let objectUrl: string | null = null;
+
+    const processImage = async () => {
+      if (!contact.photo) {
+        setBase64Image(null);
+        return;
+      }
+
+      try {
+        // Handle base64 string from API
+        if (typeof contact.photo === "string") {
+          // Check if it's a blob URL
+          if (contact.photo.startsWith("blob:")) {
+            const res = await fetch(contact.photo);
+            const blob = await res.blob();
+            const reader = new FileReader();
+            reader.onloadend = () => setBase64Image(reader.result as string);
+            reader.readAsDataURL(blob);
+          }
+          // Check if it's already a complete data URL
+          else if (contact.photo.startsWith("data:image/")) {
+            setBase64Image(contact.photo);
+          }
+          // Check if it's a file path
+          else {
+            setBase64Image(`${API_URL}/api/uploads/photos/${contact.photo}`);
+          }
+        }
+        // Handle File/Blob object
+        else if (
+          contact.photo &&
+          typeof contact.photo === "object" &&
+          "size" in contact.photo
+        ) {
+          objectUrl = URL.createObjectURL(contact.photo as Blob);
           const reader = new FileReader();
           reader.onloadend = () => setBase64Image(reader.result as string);
-          reader.readAsDataURL(blob);
-        } 
-        // Check if it's already a complete data URL
-        else if (contact.photo.startsWith("data:image/")) {
-          setBase64Image(contact.photo);
+          reader.readAsDataURL(contact.photo as Blob);
         }
-        // Check if it's a file path
-        else {
-          setBase64Image(`${API_URL}/api/uploads/photos/${contact.photo}`);
-        }
-      } 
-      // Handle File/Blob object
-      else if (
-        contact.photo &&
-        typeof contact.photo === "object" &&
-        "size" in contact.photo
-      ) {
-        objectUrl = URL.createObjectURL(contact.photo as Blob);
-        const reader = new FileReader();
-        reader.onloadend = () => setBase64Image(reader.result as string);
-        reader.readAsDataURL(contact.photo as Blob);
+      } catch (err) {
+        console.error("Error processing image:", err);
       }
-    } catch (err) {
-      console.error("Error processing image:", err);
-    }
-  };
-  
-  processImage();
-  
-  return () => {
-    if (objectUrl) URL.revokeObjectURL(objectUrl);
-  };
-}, [contact.photo]);
-  
-  // useEffect(() => {
-  //   let objectUrl: string | null = null;
-  //   const processImage = async () => {
-  //     if (!contact.photo) {
-  //       setBase64Image(null);
-  //       return;
-  //     }
-  //     try {
-  //       if (typeof contact.photo === "string") {
-  //         if (contact.photo.startsWith("blob:")) {
-  //           const res = await fetch(contact.photo);
-  //           const blob = await res.blob();
-  //           const reader = new FileReader();
-  //           reader.onloadend = () => setBase64Image(reader.result as string);
-  //           reader.readAsDataURL(blob);
-  //         } else {
-  //           setBase64Image(`${API_URL}/api/uploads/photos/${contact.photo}`);
-  //         }
-  //       } else if (
-  //         contact.photo &&
-  //         typeof contact.photo === "object" &&
-  //         "size" in contact.photo
-  //       ) {
-  //         objectUrl = URL.createObjectURL(contact.photo as Blob);
-  //         const reader = new FileReader();
-  //         reader.onloadend = () => setBase64Image(reader.result as string);
-  //         reader.readAsDataURL(contact.photo as Blob);
-  //       }
-  //     } catch (err) {
-  //       console.error("Error processing image:", err);
-  //     }
-  //   };
-  //   processImage();
-  //   return () => {
-  //     if (objectUrl) URL.revokeObjectURL(objectUrl);
-  //   };
-  // }, [contact.photo]);
+    };
+
+    processImage();
+
+    return () => {
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
+  }, [contact.photo]);
 
   // ── Font map ────────────────────────────────────────────────────────────────
   const getFontImport = (fontFamily: string): string => {
@@ -2360,7 +2258,7 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({
     }
     .t2-resume .header-links {
       display: flex; gap: 16px; align-items: center;
-      flex-wrap: nowrap;
+      flex-wrap: wrap;
     }
     .t2-resume .header-link {
       font-size: 12px; font-weight: 700;
@@ -2518,9 +2416,9 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({
           ${contact?.phone ? `<div class="header-phone">${contact.phone}</div>` : ""}
           ${formDob ? `<div class="header-dob">${formDob}</div>` : ""}
           <div class="header-links">
-            ${linkedinUrl?.trim() ? `<a href="${href(linkedinUrl)}" class="header-link" target="_blank">LinkedIn</a>` : ""}
-            ${githubUrl?.trim() ? `<a href="${href(githubUrl)}" class="header-link" target="_blank">GitHub</a>` : ""}
-            ${portfolioUrl?.trim() ? `<a href="${href(portfolioUrl)}" class="header-link" target="_blank">Portfolio</a>` : ""}
+            ${linkedinUrl?.trim() ? `<a href="${href(linkedinUrl)}" class="header-link" target="_blank">LinkedIn: ${formatSocialLink(linkedinUrl, "linkedin")}</a>` : ""}
+            ${githubUrl?.trim() ? `<a href="${href(githubUrl)}" class="header-link" target="_blank">GitHub: ${formatSocialLink(githubUrl, "github")}</a>` : ""}
+            ${portfolioUrl?.trim() ? `<a href="${href(portfolioUrl)}" class="header-link" target="_blank">${formatSocialLink(portfolioUrl, "portfolio")}</a>` : ""}
           </div>
         </div>
       </div>`;
@@ -2552,9 +2450,7 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({
           )
             ? `<div class="custom-section-block" data-block-id="custom-section">
             ${finalize.customSection
-              .filter(
-                (s: any) => s?.name?.trim() || s?.description?.trim(),
-              )
+              .filter((s: any) => s?.name?.trim() || s?.description?.trim())
               .map(
                 (s: any, i: number) => `
               <div style="margin-bottom:6px" data-block-id="custom-${i}">
@@ -2631,10 +2527,14 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({
                 <div class="entry-title">${edu.degree || ""}</div>
                 ${dateStr ? `<div class="entry-date">${dateStr}</div>` : "<div></div>"}
               </div>
-              ${edu.schoolname || edu.location || grade ? `
+              ${
+                edu.schoolname || edu.location || grade
+                  ? `
                 <div class="entry-subtitle">
                   ${[edu.schoolname, edu.location].filter(Boolean).join(" - ")}${grade ? ` • ${grade}` : ""}
-                </div>` : ""}
+                </div>`
+                  : ""
+              }
               ${edu.text ? `<div class="entry-content">${rich(edu.text)}</div>` : ""}
             </div>`;
             })
@@ -2648,17 +2548,15 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({
       const rightSections: string[] = ["experience", "projects", "education"];
 
       const orderedLeft = leftSections
-        .filter(
-          (key) =>
-            sectionBuilders[key as keyof typeof sectionBuilders]?.(),
+        .filter((key) =>
+          sectionBuilders[key as keyof typeof sectionBuilders]?.(),
         )
         .map((key) => sectionBuilders[key as keyof typeof sectionBuilders]())
         .join("");
 
       const orderedRight = rightSections
-        .filter(
-          (key) =>
-            sectionBuilders[key as keyof typeof sectionBuilders]?.(),
+        .filter((key) =>
+          sectionBuilders[key as keyof typeof sectionBuilders]?.(),
         )
         .map((key) => sectionBuilders[key as keyof typeof sectionBuilders]())
         .join("");
@@ -2709,11 +2607,7 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({
 
   // ── PDF builder (clip/shift — matches preview exactly) ─────────────────────
   const buildPDFPagesHTML = useCallback(
-    (
-      pageStarts: number[],
-      totalH: number,
-      resumeSnapshot: string,
-    ): string => {
+    (pageStarts: number[], totalH: number, resumeSnapshot: string): string => {
       const CSS = buildCSS(activeFontFamily);
 
       let pagesBody = "";
@@ -2812,8 +2706,7 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({
         measureDoc.close();
 
         const doMeasure = () => {
-          const resume =
-            measureDoc.querySelector<HTMLElement>(".t2-resume");
+          const resume = measureDoc.querySelector<HTMLElement>(".t2-resume");
           if (!resume) {
             resolve([fullHtml]);
             return;
@@ -2827,8 +2720,7 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({
 
           const resumeRect = resume.getBoundingClientRect();
           const scrollY =
-            measureDoc.documentElement.scrollTop ||
-            measureDoc.body.scrollTop;
+            measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
           const getRelTop = (el: Element) =>
             el.getBoundingClientRect().top - resumeRect.top + scrollY;
           const getRelBottom = (el: Element) =>
@@ -2873,10 +2765,7 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({
             ".custom-section-content",
           ].join(", ");
 
-          const pushLines = (
-            el: HTMLElement,
-            keepWithNext = false,
-          ) => {
+          const pushLines = (el: HTMLElement, keepWithNext = false) => {
             const range = measureDoc.createRange();
             range.selectNodeContents(el);
             const rects = Array.from(range.getClientRects()).filter(
@@ -2897,10 +2786,7 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({
             return true;
           };
 
-          const pushAtomic = (
-            el: HTMLElement,
-            keepWithNext = false,
-          ) => {
+          const pushAtomic = (el: HTMLElement, keepWithNext = false) => {
             const h = el.getBoundingClientRect().height;
             if (h <= 2) return;
             units.push({
@@ -2911,39 +2797,37 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({
             });
           };
 
-          Array.from(
-            resume.querySelectorAll<HTMLElement>("*"),
-          ).forEach((el) => {
-            if (consumed.has(el)) return;
+          Array.from(resume.querySelectorAll<HTMLElement>("*")).forEach(
+            (el) => {
+              if (consumed.has(el)) return;
 
-            if (el.matches(HEADER_LIKE_SELECTOR)) {
-              pushAtomic(el, true);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches(ATOMIC_SELECTOR)) {
-              pushAtomic(el, false);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches("p, li")) {
-              if (pushLines(el)) {
-                el.querySelectorAll("*").forEach((c) =>
-                  consumed.add(c),
-                );
+              if (el.matches(HEADER_LIKE_SELECTOR)) {
+                pushAtomic(el, true);
+                el.querySelectorAll("*").forEach((c) => consumed.add(c));
                 consumed.add(el);
+                return;
               }
-              return;
-            }
-            if (
-              el.matches(DESC_WRAPPER_SELECTOR) &&
-              !el.querySelector("p, li")
-            ) {
-              if (pushLines(el)) consumed.add(el);
-            }
-          });
+              if (el.matches(ATOMIC_SELECTOR)) {
+                pushAtomic(el, false);
+                el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                consumed.add(el);
+                return;
+              }
+              if (el.matches("p, li")) {
+                if (pushLines(el)) {
+                  el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                  consumed.add(el);
+                }
+                return;
+              }
+              if (
+                el.matches(DESC_WRAPPER_SELECTOR) &&
+                !el.querySelector("p, li")
+              ) {
+                if (pushLines(el)) consumed.add(el);
+              }
+            },
+          );
 
           // Remaining single-line leaves
           resume
@@ -2956,9 +2840,7 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({
               consumed.add(el);
             });
 
-          units.sort(
-            (a, b) => a.top - b.top || a.bottom - b.bottom,
-          );
+          units.sort((a, b) => a.top - b.top || a.bottom - b.bottom);
 
           const totalH = resume.scrollHeight;
 
@@ -2988,8 +2870,7 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({
           }
 
           // ── Store data for PDF generation ────────────────────────────
-          (window as any).__resumePageBreakIds =
-            pageBreakIds.filter(Boolean);
+          (window as any).__resumePageBreakIds = pageBreakIds.filter(Boolean);
           (window as any).__resumePageStarts = pageStarts;
           (window as any).__resumeTotalH = totalH;
           (window as any).__resumeSnapshot = resumeSnapshot;
@@ -3027,9 +2908,7 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({
         if (mainFontsReady) {
           requestAnimationFrame(() => requestAnimationFrame(doMeasure));
         } else if (win?.document?.fonts?.ready) {
-          win.document.fonts.ready.then(() =>
-            requestAnimationFrame(doMeasure),
-          );
+          win.document.fonts.ready.then(() => requestAnimationFrame(doMeasure));
         } else {
           setTimeout(doMeasure, 150);
         }
@@ -3075,8 +2954,7 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({
     try {
       const storedPageStarts: number[] | undefined = (window as any)
         .__resumePageStarts;
-      const storedTotalH: number | undefined = (window as any)
-        .__resumeTotalH;
+      const storedTotalH: number | undefined = (window as any).__resumeTotalH;
       const storedSnapshot: string | undefined = (window as any)
         .__resumeSnapshot;
 
@@ -3126,13 +3004,14 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({
       />
 
       {/* ── Download button ──────────────────────────────────────────────── */}
-      <div className="text-center my-8">
-        <motion.button
-          onClick={handleDownload}
-          disabled={isDownloading}
-          whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
-          whileTap={!isDownloading ? { scale: 0.98 } : {}}
-          className={`
+      {!isThumbnail && lastSegment === "download-resume" && (
+        <div className="text-center my-8">
+          <motion.button
+            onClick={handleDownload}
+            disabled={isDownloading}
+            whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
+            whileTap={!isDownloading ? { scale: 0.98 } : {}}
+            className={`
             relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
             text-white transition-all duration-300 shadow-lg
             ${
@@ -3141,29 +3020,29 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({
                 : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600 cursor-pointer"
             }
           `}
-        >
-          {!isDownloading && (
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          )}
-          <div className="relative flex items-center justify-center gap-3 text-lg">
-            {isDownloading ? (
-              <>
-                <FaSpinner className="animate-spin text-xl" />
-                <span>Generating PDF …</span>
-              </>
-            ) : (
-              <>
-                <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
-                <span>Download Resume</span>
-                <span className="text-sm opacity-75 font-light ml-1">
-                  PDF
-                </span>
-              </>
+          >
+            {!isDownloading && (
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
             )}
-          </div>
-        </motion.button>
-      </div>
-
+            <div className="relative flex items-center justify-center gap-3 text-lg">
+              {isDownloading ? (
+                <>
+                  <FaSpinner className="animate-spin text-xl" />
+                  <span>Generating PDF …</span>
+                </>
+              ) : (
+                <>
+                  <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
+                  <span>Download Resume</span>
+                  <span className="text-sm opacity-75 font-light ml-1">
+                    PDF
+                  </span>
+                </>
+              )}
+            </div>
+          </motion.button>
+        </div>
+      )}
       {isThumbnail ? (
         // ── THUMBNAIL MODE ──────────────────────────────────────────────
         <div
@@ -3331,14 +3210,3 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({
 };
 
 export default TemplateTwo;
-
-
-
-
-
-
-
-
-
-
-

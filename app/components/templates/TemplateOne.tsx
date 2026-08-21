@@ -259,7 +259,6 @@
 //           ${contact?.phone ? `<span>${contact.phone}</span>` : ""}
 //           ${formattedDob ? `<span>${formattedDob}</span>` : ""}
 //         </div>
-      
 
 //          <div class="t1-links">
 //            ${linkedinUrl ? `<a href="${href(linkedinUrl)}"  class="t1-link-item" target="_blank">LinkedIn</a>` : ""}
@@ -974,35 +973,6 @@
 
 // export default TemplateOne;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 import React, {
   useContext,
@@ -1020,6 +990,7 @@ import {
   formatDateOfBirth,
   formatGradeToCgpdAndPercentage,
   formatMonthYear,
+  formatSocialLink,
 } from "@/app/utils";
 import { usePathname } from "next/navigation";
 import { ResumeProps } from "@/app/types";
@@ -1056,8 +1027,7 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
   const [htmlContent, setHtmlContent] = useState<string>("");
   const [pages, setPages] = useState<string[]>([]);
 
-  const activeFontFamily =
-    customization?.fontFamily ?? "'Poppins', sans-serif";
+  const activeFontFamily = customization?.fontFamily ?? "'Poppins', sans-serif";
 
   // ── Data ──────────────────────────────────────────────────────────────────
   const contact = alldata?.contact || context.contact || {};
@@ -1160,7 +1130,7 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
       display: flex; justify-content: center; flex-wrap: wrap; gap: 12px;
     }
     .t1-contact-details span { padding: 2px 8px; }
-    .t1-links { margin-top: 5px; text-align: center; display: flex; justify-content: center; flex-wrap: nowrap; gap: 0; }
+    .t1-links { margin-top: 5px; text-align: center; display: flex; justify-content: center; flex-wrap: wrap; gap: 0; }
     .t1-link-item { color: #374151 !important; text-decoration: none !important; font-size: 14px; padding: 2px 8px; white-space: nowrap; display: inline-block; }
 
     .t1-section-content { margin-bottom: 16px; }
@@ -1266,11 +1236,11 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
           ${contact?.phone ? `<span>${contact.phone}</span>` : ""}
           ${formattedDob ? `<span>${formattedDob}</span>` : ""}
         </div>
-         <div class="t1-links">
-           ${linkedinUrl ? `<a href="${href(linkedinUrl)}"  class="t1-link-item" target="_blank">LinkedIn</a>` : ""}
-           ${githubUrl ? `<a href="${href(githubUrl)}"    class="t1-link-item" target="_blank">GitHub</a>` : ""}
-           ${portfolioUrl ? `<a href="${href(portfolioUrl)}" class="t1-link-item" target="_blank">Portfolio</a>` : ""}
-         </div>
+        <div class="t1-links">
+  ${linkedinUrl ? `<a href="${href(linkedinUrl)}" class="t1-link-item" target="_blank">LinkedIn: ${formatSocialLink(linkedinUrl, "linkedin")}</a>` : ""}
+  ${githubUrl ? `<a href="${href(githubUrl)}" class="t1-link-item" target="_blank">GitHub: ${formatSocialLink(githubUrl, "github")}</a>` : ""}
+  ${portfolioUrl ? `<a href="${href(portfolioUrl)}" class="t1-link-item" target="_blank">${formatSocialLink(portfolioUrl, "portfolio")}</a>` : ""}
+</div>
       </div>`;
 
       const summaryBlock = summary?.trim()
@@ -1563,8 +1533,7 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
 
           const resumeRect = resume.getBoundingClientRect();
           const scrollY =
-            measureDoc.documentElement.scrollTop ||
-            measureDoc.body.scrollTop;
+            measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
           const getRelTop = (el: Element) =>
             el.getBoundingClientRect().top - resumeRect.top + scrollY;
           const getRelBottom = (el: Element) =>
@@ -1597,10 +1566,9 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
             ".t1-project-title",
           ].join(", ");
 
-          const ATOMIC_SELECTOR = [
-            ".t1-project-tech-stack",
-            ".t1-links",
-          ].join(", ");
+          const ATOMIC_SELECTOR = [".t1-project-tech-stack", ".t1-links"].join(
+            ", ",
+          );
 
           const DESC_WRAPPER_SELECTOR = [
             ".t1-summary-text",
@@ -1643,37 +1611,37 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
             });
           };
 
-          Array.from(
-            resume.querySelectorAll<HTMLElement>("*"),
-          ).forEach((el) => {
-            if (consumed.has(el)) return;
+          Array.from(resume.querySelectorAll<HTMLElement>("*")).forEach(
+            (el) => {
+              if (consumed.has(el)) return;
 
-            if (el.matches(HEADER_LIKE_SELECTOR)) {
-              pushAtomic(el, true);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches(ATOMIC_SELECTOR)) {
-              pushAtomic(el, false);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches("p, li")) {
-              if (pushLines(el)) {
+              if (el.matches(HEADER_LIKE_SELECTOR)) {
+                pushAtomic(el, true);
                 el.querySelectorAll("*").forEach((c) => consumed.add(c));
                 consumed.add(el);
+                return;
               }
-              return;
-            }
-            if (
-              el.matches(DESC_WRAPPER_SELECTOR) &&
-              !el.querySelector("p, li")
-            ) {
-              if (pushLines(el)) consumed.add(el);
-            }
-          });
+              if (el.matches(ATOMIC_SELECTOR)) {
+                pushAtomic(el, false);
+                el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                consumed.add(el);
+                return;
+              }
+              if (el.matches("p, li")) {
+                if (pushLines(el)) {
+                  el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                  consumed.add(el);
+                }
+                return;
+              }
+              if (
+                el.matches(DESC_WRAPPER_SELECTOR) &&
+                !el.querySelector("p, li")
+              ) {
+                if (pushLines(el)) consumed.add(el);
+              }
+            },
+          );
 
           resume
             .querySelectorAll<HTMLElement>(
@@ -1715,8 +1683,7 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
           }
 
           // ── Store data for PDF generation ────────────────────────────
-          (window as any).__resumePageBreakIds =
-            pageBreakIds.filter(Boolean);
+          (window as any).__resumePageBreakIds = pageBreakIds.filter(Boolean);
           (window as any).__resumePageStarts = pageStarts;
           (window as any).__resumeTotalH = totalH;
           (window as any).__resumeSnapshot = resumeSnapshot;
@@ -1755,9 +1722,7 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
           // Fonts already cached from main document — measure almost immediately
           requestAnimationFrame(() => requestAnimationFrame(doMeasure));
         } else if (win?.document?.fonts?.ready) {
-          win.document.fonts.ready.then(() =>
-            requestAnimationFrame(doMeasure),
-          );
+          win.document.fonts.ready.then(() => requestAnimationFrame(doMeasure));
         } else {
           setTimeout(doMeasure, 150);
         }
@@ -1857,13 +1822,14 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
       />
 
       {/* ── Download button ──────────────────────────────────────────────── */}
-      <div className="text-center my-8">
-        <motion.button
-          onClick={handleDownload}
-          disabled={isDownloading}
-          whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
-          whileTap={!isDownloading ? { scale: 0.98 } : {}}
-          className={`
+      {!isThumbnail && lastSegment === "download-resume" && (
+        <div className="text-center my-8">
+          <motion.button
+            onClick={handleDownload}
+            disabled={isDownloading}
+            whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
+            whileTap={!isDownloading ? { scale: 0.98 } : {}}
+            className={`
             relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
             text-white transition-all duration-300 shadow-lg
             ${
@@ -1872,28 +1838,29 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
                 : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600 cursor-pointer"
             }
           `}
-        >
-          {!isDownloading && (
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          )}
-          <div className="relative flex items-center justify-center gap-3 text-lg">
-            {isDownloading ? (
-              <>
-                <FaSpinner className="animate-spin text-xl" />
-                <span>Generating PDF …</span>
-              </>
-            ) : (
-              <>
-                <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
-                <span>Download Resume</span>
-                <span className="text-sm opacity-75 font-light ml-1">
-                  PDF
-                </span>
-              </>
+          >
+            {!isDownloading && (
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
             )}
-          </div>
-        </motion.button>
-      </div>
+            <div className="relative flex items-center justify-center gap-3 text-lg">
+              {isDownloading ? (
+                <>
+                  <FaSpinner className="animate-spin text-xl" />
+                  <span>Generating PDF …</span>
+                </>
+              ) : (
+                <>
+                  <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
+                  <span>Download Resume</span>
+                  <span className="text-sm opacity-75 font-light ml-1">
+                    PDF
+                  </span>
+                </>
+              )}
+            </div>
+          </motion.button>
+        </div>
+      )}
 
       {isThumbnail ? (
         // ── THUMBNAIL MODE ──────────────────────────────────────────────

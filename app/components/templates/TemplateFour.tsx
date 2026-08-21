@@ -1011,9 +1011,7 @@
 //     }
 //   };
 
-  
-
-// const isThumbnail = !!alldata && !viewMode ; 
+// const isThumbnail = !!alldata && !viewMode ;
 //   return (
 //     <>
 //       {/* Download button — hide in thumbnail mode */}
@@ -1054,7 +1052,7 @@
 //           </motion.button>
 //         </div>
 //       )}
- 
+
 //       {isThumbnail ? (
 //         // ── THUMBNAIL MODE (dashboard card) ─────────────────────────────────
 //         <div
@@ -1168,39 +1166,6 @@
 // };
 
 // export default TemplateFour;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // "use client";
 // import React, {
@@ -2422,20 +2387,6 @@
 
 // export default TemplateFour;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 import React, {
   useContext,
@@ -2453,6 +2404,7 @@ import {
   cleanQuillHTML,
   formatDateOfBirth,
   formatGradeToCgpdAndPercentage,
+  formatSocialLink,
 } from "@/app/utils";
 import { Finalize, ResumeProps } from "@/app/types/context.types";
 import { usePathname } from "next/navigation";
@@ -2489,8 +2441,7 @@ const TemplateFour: React.FC<TemplateFourProps> = ({
   const [pages, setPages] = useState<string[]>([]);
 
   // ── Customization ─────────────────────────────────────────────────────────
-  const activeFontFamily =
-    customization?.fontFamily ?? "'Nunito', sans-serif";
+  const activeFontFamily = customization?.fontFamily ?? "'Nunito', sans-serif";
 
   // ── Data ──────────────────────────────────────────────────────────────────
   const contact = alldata?.contact || context.contact || {};
@@ -2850,9 +2801,9 @@ const TemplateFour: React.FC<TemplateFourProps> = ({
           linkedinUrl?.trim() || githubUrl?.trim() || portfolioUrl?.trim()
             ? `
           <div class="header-links">
-            ${linkedinUrl?.trim() ? `<a href="${href(linkedinUrl)}" class="header-link" target="_blank">LinkedIn</a>` : ""}
-            ${githubUrl?.trim() ? `<a href="${href(githubUrl)}" class="header-link" target="_blank">GitHub</a>` : ""}
-            ${portfolioUrl?.trim() ? `<a href="${href(portfolioUrl)}" class="header-link" target="_blank">Portfolio</a>` : ""}
+            ${linkedinUrl?.trim() ? `<a href="${href(linkedinUrl)}" class="header-link" target="_blank">LinkedIn: ${formatSocialLink(linkedinUrl, "linkedin")}</a>` : ""}
+            ${githubUrl?.trim() ? `<a href="${href(githubUrl)}" class="header-link" target="_blank">GitHub: ${formatSocialLink(githubUrl, "github")}</a>` : ""}
+            ${portfolioUrl?.trim() ? `<a href="${href(portfolioUrl)}" class="header-link" target="_blank">${formatSocialLink(portfolioUrl, "portfolio")}</a>` : ""}
           </div>
         `
             : ""
@@ -2921,11 +2872,7 @@ const TemplateFour: React.FC<TemplateFourProps> = ({
 
   // ── PDF builder (clip/shift — matches preview exactly) ─────────────────────
   const buildPDFPagesHTML = useCallback(
-    (
-      pageStarts: number[],
-      totalH: number,
-      resumeSnapshot: string,
-    ): string => {
+    (pageStarts: number[], totalH: number, resumeSnapshot: string): string => {
       const CSS = buildCSS(activeFontFamily);
 
       let pagesBody = "";
@@ -3024,8 +2971,7 @@ const TemplateFour: React.FC<TemplateFourProps> = ({
         measureDoc.close();
 
         const doMeasure = () => {
-          const resume =
-            measureDoc.querySelector<HTMLElement>(".t4-resume");
+          const resume = measureDoc.querySelector<HTMLElement>(".t4-resume");
           if (!resume) {
             resolve([fullHtml]);
             return;
@@ -3039,8 +2985,7 @@ const TemplateFour: React.FC<TemplateFourProps> = ({
 
           const resumeRect = resume.getBoundingClientRect();
           const scrollY =
-            measureDoc.documentElement.scrollTop ||
-            measureDoc.body.scrollTop;
+            measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
           const getRelTop = (el: Element) =>
             el.getBoundingClientRect().top - resumeRect.top + scrollY;
           const getRelBottom = (el: Element) =>
@@ -3086,10 +3031,7 @@ const TemplateFour: React.FC<TemplateFourProps> = ({
             ".extra-content",
           ].join(", ");
 
-          const pushLines = (
-            el: HTMLElement,
-            keepWithNext = false,
-          ) => {
+          const pushLines = (el: HTMLElement, keepWithNext = false) => {
             const range = measureDoc.createRange();
             range.selectNodeContents(el);
             const rects = Array.from(range.getClientRects()).filter(
@@ -3110,10 +3052,7 @@ const TemplateFour: React.FC<TemplateFourProps> = ({
             return true;
           };
 
-          const pushAtomic = (
-            el: HTMLElement,
-            keepWithNext = false,
-          ) => {
+          const pushAtomic = (el: HTMLElement, keepWithNext = false) => {
             const h = el.getBoundingClientRect().height;
             if (h <= 2) return;
             units.push({
@@ -3124,39 +3063,37 @@ const TemplateFour: React.FC<TemplateFourProps> = ({
             });
           };
 
-          Array.from(
-            resume.querySelectorAll<HTMLElement>("*"),
-          ).forEach((el) => {
-            if (consumed.has(el)) return;
+          Array.from(resume.querySelectorAll<HTMLElement>("*")).forEach(
+            (el) => {
+              if (consumed.has(el)) return;
 
-            if (el.matches(HEADER_LIKE_SELECTOR)) {
-              pushAtomic(el, true);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches(ATOMIC_SELECTOR)) {
-              pushAtomic(el, false);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches("p, li")) {
-              if (pushLines(el)) {
-                el.querySelectorAll("*").forEach((c) =>
-                  consumed.add(c),
-                );
+              if (el.matches(HEADER_LIKE_SELECTOR)) {
+                pushAtomic(el, true);
+                el.querySelectorAll("*").forEach((c) => consumed.add(c));
                 consumed.add(el);
+                return;
               }
-              return;
-            }
-            if (
-              el.matches(DESC_WRAPPER_SELECTOR) &&
-              !el.querySelector("p, li")
-            ) {
-              if (pushLines(el)) consumed.add(el);
-            }
-          });
+              if (el.matches(ATOMIC_SELECTOR)) {
+                pushAtomic(el, false);
+                el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                consumed.add(el);
+                return;
+              }
+              if (el.matches("p, li")) {
+                if (pushLines(el)) {
+                  el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                  consumed.add(el);
+                }
+                return;
+              }
+              if (
+                el.matches(DESC_WRAPPER_SELECTOR) &&
+                !el.querySelector("p, li")
+              ) {
+                if (pushLines(el)) consumed.add(el);
+              }
+            },
+          );
 
           // Remaining single-line leaves with keepWithNext for chained items
           resume
@@ -3173,9 +3110,7 @@ const TemplateFour: React.FC<TemplateFourProps> = ({
               consumed.add(el);
             });
 
-          units.sort(
-            (a, b) => a.top - b.top || a.bottom - b.bottom,
-          );
+          units.sort((a, b) => a.top - b.top || a.bottom - b.bottom);
 
           const totalH = resume.scrollHeight;
 
@@ -3205,8 +3140,7 @@ const TemplateFour: React.FC<TemplateFourProps> = ({
           }
 
           // ── Store data for PDF generation ────────────────────────────
-          (window as any).__resumePageBreakIds =
-            pageBreakIds.filter(Boolean);
+          (window as any).__resumePageBreakIds = pageBreakIds.filter(Boolean);
           (window as any).__resumePageStarts = pageStarts;
           (window as any).__resumeTotalH = totalH;
           (window as any).__resumeSnapshot = resumeSnapshot;
@@ -3244,9 +3178,7 @@ const TemplateFour: React.FC<TemplateFourProps> = ({
         if (mainFontsReady) {
           requestAnimationFrame(() => requestAnimationFrame(doMeasure));
         } else if (win?.document?.fonts?.ready) {
-          win.document.fonts.ready.then(() =>
-            requestAnimationFrame(doMeasure),
-          );
+          win.document.fonts.ready.then(() => requestAnimationFrame(doMeasure));
         } else {
           setTimeout(doMeasure, 150);
         }
@@ -3292,8 +3224,7 @@ const TemplateFour: React.FC<TemplateFourProps> = ({
     try {
       const storedPageStarts: number[] | undefined = (window as any)
         .__resumePageStarts;
-      const storedTotalH: number | undefined = (window as any)
-        .__resumeTotalH;
+      const storedTotalH: number | undefined = (window as any).__resumeTotalH;
       const storedSnapshot: string | undefined = (window as any)
         .__resumeSnapshot;
 
@@ -3346,6 +3277,9 @@ const TemplateFour: React.FC<TemplateFourProps> = ({
       />
 
       {/* ── Download button ──────────────────────────────────────────────── */}
+
+            {!isThumbnail && lastSegment === "download-resume" && (
+
       <div className="text-center my-8">
         <motion.button
           onClick={handleDownload}
@@ -3375,14 +3309,14 @@ const TemplateFour: React.FC<TemplateFourProps> = ({
               <>
                 <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
                 <span>Download Resume</span>
-                <span className="text-sm opacity-75 font-light ml-1">
-                  PDF
-                </span>
+                <span className="text-sm opacity-75 font-light ml-1">PDF</span>
               </>
             )}
           </div>
         </motion.button>
       </div>
+
+          )}
 
       {isThumbnail ? (
         // ── THUMBNAIL MODE ──────────────────────────────────────────────

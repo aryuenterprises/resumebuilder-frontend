@@ -1220,14 +1220,6 @@
 // };
 // export default TemplateThree;
 
-
-
-
-
-
-
-
-
 // "use client";
 // import React, {
 //   useContext,
@@ -1357,7 +1349,6 @@
 //       return '"Courier New", Courier, monospace';
 //     return '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
 //   };
-
 
 //   // ── CSS builder ───────────────────────────────────────────────────────────
 //   const buildCSS = useCallback(
@@ -2124,21 +2115,6 @@
 
 // export default TemplateThree;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 import React, {
   useContext,
@@ -2156,6 +2132,7 @@ import {
   cleanQuillHTML,
   formatDateOfBirth,
   formatGradeToCgpdAndPercentage,
+  formatSocialLink,
 } from "@/app/utils";
 import { ResumeProps } from "@/app/types/context.types";
 import { usePathname } from "next/navigation";
@@ -2192,8 +2169,7 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({
   const [pages, setPages] = useState<string[]>([]);
 
   // ── Customization ─────────────────────────────────────────────────────────
-  const activeFontFamily =
-    customization?.fontFamily ?? "'Inter', sans-serif";
+  const activeFontFamily = customization?.fontFamily ?? "'Inter', sans-serif";
 
   // ── Data ──────────────────────────────────────────────────────────────────
   const contact = alldata?.contact || context?.contact || {};
@@ -2305,7 +2281,7 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({
       background-color: #878787; padding: 3px; border-radius: 12px; color: white;
     }
     .t3-header-left {
-      width: 40%; font-size: 22px; font-weight: 500; padding: 8px;
+      width: 50%; font-size: 22px; font-weight: 500; padding: 8px;
       text-transform: uppercase; word-wrap: break-word; overflow-wrap: break-word;
     }
     .t3-header-job { font-size: 12px; font-weight: 400; text-transform: lowercase; margin-top: 2px; }
@@ -2314,7 +2290,7 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({
       margin-top: 2px; flex-wrap: wrap;
     }
     .t3-header-link { font-size: 12px; font-weight: 600; text-decoration: underline; color: white; }
-    .t3-header-right { width: 60%; padding: 8px; font-size: 12px; }
+    .t3-header-right { width: 50%; padding: 8px; font-size: 12px; }
     .t3-header-contact-line { text-align: right; word-wrap: break-word; overflow-wrap: break-word; margin-bottom: 1px; }
 
     .t3-section-title {
@@ -2515,9 +2491,9 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({
             ${contact?.firstName || ""} ${contact?.lastName || ""}
             ${contact?.jobTitle ? `<div class="t3-header-job">${typeof contact.jobTitle === "string" ? contact.jobTitle : (contact.jobTitle as any)?.name || ""}</div>` : ""}
             <div class="t3-header-links">
-              ${linkedinUrl?.trim() ? `<a href="${href(linkedinUrl)}" class="t3-header-link" target="_blank">LinkedIn</a>` : ""}
-              ${githubUrl?.trim() ? `<a href="${href(githubUrl)}" class="t3-header-link" target="_blank">GitHub</a>` : ""}
-              ${portfolioUrl?.trim() ? `<a href="${href(portfolioUrl)}" class="t3-header-link" target="_blank">Portfolio</a>` : ""}
+              ${linkedinUrl?.trim() ? `<a href="${href(linkedinUrl)}" class="t3-header-link" target="_blank">LinkedIn: ${formatSocialLink(linkedinUrl, "linkedin")}</a>` : ""}
+              ${githubUrl?.trim() ? `<a href="${href(githubUrl)}" class="t3-header-link" target="_blank">GitHub: ${formatSocialLink(githubUrl, "github")}</a>` : ""}
+              ${portfolioUrl?.trim() ? `<a href="${href(portfolioUrl)}" class="t3-header-link" target="_blank">${formatSocialLink(portfolioUrl, "portfolio")}</a>` : ""}
             </div>
           </div>
           <div class="t3-header-right">
@@ -2582,11 +2558,7 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({
 
   // ── PDF builder (clip/shift — matches preview exactly) ─────────────────────
   const buildPDFPagesHTML = useCallback(
-    (
-      pageStarts: number[],
-      totalH: number,
-      resumeSnapshot: string,
-    ): string => {
+    (pageStarts: number[], totalH: number, resumeSnapshot: string): string => {
       const CSS = buildCSS(activeFontFamily);
 
       let pagesBody = "";
@@ -2685,8 +2657,7 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({
         measureDoc.close();
 
         const doMeasure = () => {
-          const resume =
-            measureDoc.querySelector<HTMLElement>(".t3-resume");
+          const resume = measureDoc.querySelector<HTMLElement>(".t3-resume");
           if (!resume) {
             resolve([fullHtml]);
             return;
@@ -2700,8 +2671,7 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({
 
           const resumeRect = resume.getBoundingClientRect();
           const scrollY =
-            measureDoc.documentElement.scrollTop ||
-            measureDoc.body.scrollTop;
+            measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
           const getRelTop = (el: Element) =>
             el.getBoundingClientRect().top - resumeRect.top + scrollY;
           const getRelBottom = (el: Element) =>
@@ -2755,10 +2725,7 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({
             ".t3-skills-content",
           ].join(", ");
 
-          const pushLines = (
-            el: HTMLElement,
-            keepWithNext = false,
-          ) => {
+          const pushLines = (el: HTMLElement, keepWithNext = false) => {
             const range = measureDoc.createRange();
             range.selectNodeContents(el);
             const rects = Array.from(range.getClientRects()).filter(
@@ -2779,10 +2746,7 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({
             return true;
           };
 
-          const pushAtomic = (
-            el: HTMLElement,
-            keepWithNext = false,
-          ) => {
+          const pushAtomic = (el: HTMLElement, keepWithNext = false) => {
             const h = el.getBoundingClientRect().height;
             if (h <= 2) return;
             units.push({
@@ -2793,45 +2757,43 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({
             });
           };
 
-          Array.from(
-            resume.querySelectorAll<HTMLElement>("*"),
-          ).forEach((el) => {
-            if (consumed.has(el)) return;
+          Array.from(resume.querySelectorAll<HTMLElement>("*")).forEach(
+            (el) => {
+              if (consumed.has(el)) return;
 
-            if (el.matches(HEADER_LIKE_SELECTOR)) {
-              pushAtomic(el, true);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches(CHAINED_KEEP_SELECTOR)) {
-              pushAtomic(el, true);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches(ATOMIC_SELECTOR)) {
-              pushAtomic(el, false);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches("p, li")) {
-              if (pushLines(el)) {
-                el.querySelectorAll("*").forEach((c) =>
-                  consumed.add(c),
-                );
+              if (el.matches(HEADER_LIKE_SELECTOR)) {
+                pushAtomic(el, true);
+                el.querySelectorAll("*").forEach((c) => consumed.add(c));
                 consumed.add(el);
+                return;
               }
-              return;
-            }
-            if (
-              el.matches(DESC_WRAPPER_SELECTOR) &&
-              !el.querySelector("p, li")
-            ) {
-              if (pushLines(el)) consumed.add(el);
-            }
-          });
+              if (el.matches(CHAINED_KEEP_SELECTOR)) {
+                pushAtomic(el, true);
+                el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                consumed.add(el);
+                return;
+              }
+              if (el.matches(ATOMIC_SELECTOR)) {
+                pushAtomic(el, false);
+                el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                consumed.add(el);
+                return;
+              }
+              if (el.matches("p, li")) {
+                if (pushLines(el)) {
+                  el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                  consumed.add(el);
+                }
+                return;
+              }
+              if (
+                el.matches(DESC_WRAPPER_SELECTOR) &&
+                !el.querySelector("p, li")
+              ) {
+                if (pushLines(el)) consumed.add(el);
+              }
+            },
+          );
 
           // Remaining single-line leaves
           resume
@@ -2844,9 +2806,7 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({
               consumed.add(el);
             });
 
-          units.sort(
-            (a, b) => a.top - b.top || a.bottom - b.bottom,
-          );
+          units.sort((a, b) => a.top - b.top || a.bottom - b.bottom);
 
           const totalH = resume.scrollHeight;
 
@@ -2876,8 +2836,7 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({
           }
 
           // ── Store data for PDF generation ────────────────────────────
-          (window as any).__resumePageBreakIds =
-            pageBreakIds.filter(Boolean);
+          (window as any).__resumePageBreakIds = pageBreakIds.filter(Boolean);
           (window as any).__resumePageStarts = pageStarts;
           (window as any).__resumeTotalH = totalH;
           (window as any).__resumeSnapshot = resumeSnapshot;
@@ -2915,9 +2874,7 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({
         if (mainFontsReady) {
           requestAnimationFrame(() => requestAnimationFrame(doMeasure));
         } else if (win?.document?.fonts?.ready) {
-          win.document.fonts.ready.then(() =>
-            requestAnimationFrame(doMeasure),
-          );
+          win.document.fonts.ready.then(() => requestAnimationFrame(doMeasure));
         } else {
           setTimeout(doMeasure, 150);
         }
@@ -2963,8 +2920,7 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({
     try {
       const storedPageStarts: number[] | undefined = (window as any)
         .__resumePageStarts;
-      const storedTotalH: number | undefined = (window as any)
-        .__resumeTotalH;
+      const storedTotalH: number | undefined = (window as any).__resumeTotalH;
       const storedSnapshot: string | undefined = (window as any)
         .__resumeSnapshot;
 
@@ -3016,13 +2972,14 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({
       />
 
       {/* ── Download button ──────────────────────────────────────────────── */}
-      <div className="text-center my-8">
-        <motion.button
-          onClick={handleDownload}
-          disabled={isDownloading}
-          whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
-          whileTap={!isDownloading ? { scale: 0.98 } : {}}
-          className={`
+      {!isThumbnail && lastSegment === "download-resume" && (
+        <div className="text-center my-8">
+          <motion.button
+            onClick={handleDownload}
+            disabled={isDownloading}
+            whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
+            whileTap={!isDownloading ? { scale: 0.98 } : {}}
+            className={`
               relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
               text-white transition-all duration-300 shadow-lg
               ${
@@ -3031,28 +2988,29 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({
                   : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600 cursor-pointer"
               }
             `}
-        >
-          {!isDownloading && (
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          )}
-          <div className="relative flex items-center justify-center gap-3 text-lg">
-            {isDownloading ? (
-              <>
-                <FaSpinner className="animate-spin text-xl" />
-                <span>Generating PDF …</span>
-              </>
-            ) : (
-              <>
-                <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
-                <span>Download Resume</span>
-                <span className="text-sm opacity-75 font-light ml-1">
-                  PDF
-                </span>
-              </>
+          >
+            {!isDownloading && (
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
             )}
-          </div>
-        </motion.button>
-      </div>
+            <div className="relative flex items-center justify-center gap-3 text-lg">
+              {isDownloading ? (
+                <>
+                  <FaSpinner className="animate-spin text-xl" />
+                  <span>Generating PDF …</span>
+                </>
+              ) : (
+                <>
+                  <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
+                  <span>Download Resume</span>
+                  <span className="text-sm opacity-75 font-light ml-1">
+                    PDF
+                  </span>
+                </>
+              )}
+            </div>
+          </motion.button>
+        </div>
+      )}
 
       {isThumbnail ? (
         // ── THUMBNAIL MODE ──────────────────────────────────────────────

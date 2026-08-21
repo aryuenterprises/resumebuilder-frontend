@@ -1093,8 +1093,7 @@
 // //   );
 // // };
 
-
-// const isThumbnail = !!alldata && !viewMode ; 
+// const isThumbnail = !!alldata && !viewMode ;
 //   return (
 //     <>
 //       {/* Download button — hide in thumbnail mode */}
@@ -1135,7 +1134,7 @@
 //           </motion.button>
 //         </div>
 //       )}
- 
+
 //       {isThumbnail ? (
 //         // ── THUMBNAIL MODE (dashboard card) ─────────────────────────────────
 //         <div
@@ -1249,23 +1248,6 @@
 // };
 
 // export default TemplateSixteen;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // "use client";
 // import React, {
@@ -2258,19 +2240,6 @@
 
 // export default TemplateSixteen;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 import React, {
   useContext,
@@ -2288,6 +2257,7 @@ import {
   formatDateOfBirth,
   formatGradeToCgpdAndPercentage,
   formatMonthYear,
+  formatSocialLink,
 } from "@/app/utils";
 import { usePathname } from "next/navigation";
 import { ResumeProps } from "@/app/types";
@@ -2407,7 +2377,7 @@ const TemplateSixteen: React.FC<TemplateSixteenProps> = ({
   };
 
   // ── CSS builder (NO @import — font loaded via <link>) ──────────────────────
-   // ── CSS builder (NO @import — font loaded via <link>) ──────────────────────
+  // ── CSS builder (NO @import — font loaded via <link>) ──────────────────────
   const buildCSS = useCallback(
     (fontFamily: string) => `
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap');
@@ -2647,9 +2617,9 @@ const TemplateSixteen: React.FC<TemplateSixteenProps> = ({
             ${contact?.email ? `<span class="t16-header-meta-item"><span class="t16-header-meta-dot"></span>${contact.email}</span>` : ""}
             ${contact?.phone ? `<span class="t16-header-meta-item"><span class="t16-header-meta-dot"></span>${contact.phone}</span>` : ""}
             ${formattedDob ? `<span class="t16-header-meta-item"><span class="t16-header-meta-dot"></span>${formattedDob}</span>` : ""}
-            ${linkedinUrl ? `<span class="t16-header-meta-item"><span class="t16-header-meta-dot"></span><a href="${href(linkedinUrl)}">LinkedIn</a></span>` : ""}
-            ${githubUrl ? `<span class="t16-header-meta-item"><span class="t16-header-meta-dot"></span><a href="${href(githubUrl)}">GitHub</a></span>` : ""}
-            ${portfolioUrl ? `<span class="t16-header-meta-item"><span class="t16-header-meta-dot"></span><a href="${href(portfolioUrl)}">Portfolio</a></span>` : ""}
+            ${linkedinUrl ? `<span class="t16-header-meta-item"><span class="t16-header-meta-dot"></span><a href="${href(linkedinUrl)}">LinkedIn: ${formatSocialLink(linkedinUrl, "linkedin")}</a></span>` : ""}
+            ${githubUrl ? `<span class="t16-header-meta-item"><span class="t16-header-meta-dot"></span><a href="${href(githubUrl)}">GitHub: ${formatSocialLink(githubUrl, "github")}</a></span>` : ""}
+            ${portfolioUrl ? `<span class="t16-header-meta-item"><span class="t16-header-meta-dot"></span><a href="${href(portfolioUrl)}">${formatSocialLink(portfolioUrl, "portfolio")}</a></span>` : ""}
           </div>
         </div>`;
 
@@ -3041,38 +3011,43 @@ const TemplateSixteen: React.FC<TemplateSixteenProps> = ({
             });
           };
 
-          Array.from(resume.querySelectorAll<HTMLElement>("*")).forEach((el) => {
-            if (consumed.has(el)) return;
+          Array.from(resume.querySelectorAll<HTMLElement>("*")).forEach(
+            (el) => {
+              if (consumed.has(el)) return;
 
-            if (el.matches(HEADER_LIKE_SELECTOR)) {
-              pushAtomic(el, true);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches(CHAINED_KEEP_SELECTOR)) {
-              pushAtomic(el, true);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches(ATOMIC_SELECTOR)) {
-              pushAtomic(el, false);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches("p, li")) {
-              if (pushLines(el)) {
+              if (el.matches(HEADER_LIKE_SELECTOR)) {
+                pushAtomic(el, true);
                 el.querySelectorAll("*").forEach((c) => consumed.add(c));
                 consumed.add(el);
+                return;
               }
-              return;
-            }
-            if (el.matches(DESC_WRAPPER_SELECTOR) && !el.querySelector("p, li")) {
-              if (pushLines(el)) consumed.add(el);
-            }
-          });
+              if (el.matches(CHAINED_KEEP_SELECTOR)) {
+                pushAtomic(el, true);
+                el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                consumed.add(el);
+                return;
+              }
+              if (el.matches(ATOMIC_SELECTOR)) {
+                pushAtomic(el, false);
+                el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                consumed.add(el);
+                return;
+              }
+              if (el.matches("p, li")) {
+                if (pushLines(el)) {
+                  el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                  consumed.add(el);
+                }
+                return;
+              }
+              if (
+                el.matches(DESC_WRAPPER_SELECTOR) &&
+                !el.querySelector("p, li")
+              ) {
+                if (pushLines(el)) consumed.add(el);
+              }
+            },
+          );
 
           units.sort((a, b) => a.top - b.top || a.bottom - b.bottom);
 
@@ -3140,9 +3115,7 @@ const TemplateSixteen: React.FC<TemplateSixteenProps> = ({
         if (mainFontsReady) {
           requestAnimationFrame(() => requestAnimationFrame(doMeasure));
         } else if (win?.document?.fonts?.ready) {
-          win.document.fonts.ready.then(() =>
-            requestAnimationFrame(doMeasure),
-          );
+          win.document.fonts.ready.then(() => requestAnimationFrame(doMeasure));
         } else {
           setTimeout(doMeasure, 150);
         }
@@ -3209,7 +3182,8 @@ const TemplateSixteen: React.FC<TemplateSixteenProps> = ({
         );
       } else {
         // ⬇ Fallback: old page-break approach
-        const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
+        const pageBreakIds: string[] =
+          (window as any).__resumePageBreakIds || [];
         pdfHtml = generateHTML(true, pageBreakIds);
       }
 
@@ -3246,6 +3220,8 @@ const TemplateSixteen: React.FC<TemplateSixteenProps> = ({
         crossOrigin="anonymous"
       />
 
+      {!isThumbnail && lastSegment === "download-resume" && (
+
       <div className="text-center my-8">
         <motion.button
           onClick={handleDownload}
@@ -3281,6 +3257,7 @@ const TemplateSixteen: React.FC<TemplateSixteenProps> = ({
           </div>
         </motion.button>
       </div>
+      )}
 
       {isThumbnail ? (
         <div
@@ -3298,7 +3275,13 @@ const TemplateSixteen: React.FC<TemplateSixteenProps> = ({
             <iframe
               title="resume-thumb"
               srcDoc={pages[0]}
-              style={{ width: `${A4_W}px`, height: `${A4_H}px`, border: "none", display: "block", pointerEvents: "none" }}
+              style={{
+                width: `${A4_W}px`,
+                height: `${A4_H}px`,
+                border: "none",
+                display: "block",
+                pointerEvents: "none",
+              }}
               sandbox="allow-same-origin"
             />
           ) : (
@@ -3325,8 +3308,18 @@ const TemplateSixteen: React.FC<TemplateSixteenProps> = ({
             // ── Paginated view ────────────────────────────────────────
             pages.map((pageHtml, idx) => (
               <div key={idx} style={{ marginBottom: "28px" }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", marginBottom: "10px" }}>
-                  <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "10px",
+                    marginBottom: "10px",
+                  }}
+                >
+                  <div
+                    style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+                  />
                   <span
                     style={{
                       fontSize: "11px",
@@ -3344,7 +3337,9 @@ const TemplateSixteen: React.FC<TemplateSixteenProps> = ({
                     Page {idx + 1}
                     {pages.length > 1 ? ` of ${pages.length}` : ""}
                   </span>
-                  <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
+                  <div
+                    style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+                  />
                 </div>
                 <div
                   style={{
@@ -3352,7 +3347,8 @@ const TemplateSixteen: React.FC<TemplateSixteenProps> = ({
                     height: `${A4_H}px`,
                     overflow: "hidden",
                     background: "white",
-                    boxShadow: "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
+                    boxShadow:
+                      "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
                     borderRadius: "2px",
                     flexShrink: 0,
                   }}
@@ -3360,7 +3356,13 @@ const TemplateSixteen: React.FC<TemplateSixteenProps> = ({
                   <iframe
                     title={`resume-page-${idx + 1}`}
                     srcDoc={pageHtml}
-                    style={{ width: `${A4_W}px`, height: `${A4_H}px`, border: "none", display: "block", pointerEvents: "none" }}
+                    style={{
+                      width: `${A4_W}px`,
+                      height: `${A4_H}px`,
+                      border: "none",
+                      display: "block",
+                      pointerEvents: "none",
+                    }}
                     scrolling="no"
                     sandbox="allow-same-origin allow-scripts"
                   />
@@ -3376,7 +3378,8 @@ const TemplateSixteen: React.FC<TemplateSixteenProps> = ({
                   height: `${A4_H}px`,
                   overflow: "hidden",
                   background: "white",
-                  boxShadow: "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
+                  boxShadow:
+                    "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
                   borderRadius: "2px",
                 }}
               >

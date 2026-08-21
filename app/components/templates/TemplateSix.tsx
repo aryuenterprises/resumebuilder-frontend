@@ -5358,21 +5358,6 @@
 
 // export default TemplateSix;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
 // import React, {
 //   useContext,
@@ -5443,7 +5428,6 @@
 
 //   // ── Customization ─────────────────────────────────────────────────────────
 //   const activeFontFamily = customization?.fontFamily ?? "'Nunito', sans-serif";
-
 
 //   // ── Data sources ─────────────────────────────────────────────────────────
 //   const contact = alldata?.contact || context?.contact || ({} as Contact);
@@ -5531,7 +5515,6 @@
 
 //     html, body { margin: 0; padding: 0; background: white; }
 
-
 //     .t6-resume {
 //       width: ${A4_W}px;
 //       padding: 0 ${MARGIN}px;
@@ -5543,7 +5526,7 @@
 //       display: flex;
 //       align-items: stretch;
 //         min-height: 100vh !important;
-      
+
 //       box-sizing: border-box;
 //     }
 
@@ -5604,8 +5587,6 @@
 
 //     .t6-resume .t6-skills-content { margin-top: 8px; }
 //     .t6-resume .t6-skills-content p { margin: 0 0 6px 0 !important; }
-
-   
 
 //     .t6-resume .t6-name {
 //       font-size: 28px;
@@ -6561,9 +6542,7 @@
 // //   );
 // // };
 
-
-
-// const isThumbnail = !!alldata && !viewMode ; 
+// const isThumbnail = !!alldata && !viewMode ;
 //   return (
 //     <>
 //       {/* Download button — hide in thumbnail mode */}
@@ -6604,7 +6583,7 @@
 //           </motion.button>
 //         </div>
 //       )}
- 
+
 //       {isThumbnail ? (
 //         // ── THUMBNAIL MODE (dashboard card) ─────────────────────────────────
 //         <div
@@ -6719,33 +6698,6 @@
 
 // export default TemplateSix;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 import React, {
   useContext,
@@ -6763,6 +6715,7 @@ import {
   formatDateOfBirth,
   formatGradeToCgpdAndPercentage,
   formatMonthYear,
+  formatSocialLink,
 } from "@/app/utils";
 import { usePathname } from "next/navigation";
 import { Contact, Finalize, ResumeProps } from "@/app/types/context.types";
@@ -6814,8 +6767,7 @@ const TemplateSix: React.FC<TemplateSixProps> = ({
   const [htmlContent, setHtmlContent] = useState<string>("");
   const [pages, setPages] = useState<string[]>([]);
 
-  const activeFontFamily =
-    customization?.fontFamily ?? "'Nunito', sans-serif";
+  const activeFontFamily = customization?.fontFamily ?? "'Nunito', sans-serif";
 
   // ── Data sources ─────────────────────────────────────────────────────────
   const contact = alldata?.contact || context?.contact || ({} as Contact);
@@ -7125,9 +7077,9 @@ const TemplateSix: React.FC<TemplateSixProps> = ({
           <div class="t6-name">${contact?.firstName || ""} ${contact?.lastName || ""}</div>
           ${contact?.jobTitle ? `<div class="t6-jobtitle">${typeof contact.jobTitle === "string" ? contact.jobTitle : (contact.jobTitle as any)?.name || ""}</div>` : ""}
           <div class="t6-links">
-            ${linkedinUrl?.trim() ? `<a href="${href(linkedinUrl)}" class="t6-link" target="_blank">LinkedIn</a>` : ""}
-            ${githubUrl?.trim() ? `<a href="${href(githubUrl)}" class="t6-link" target="_blank">GitHub</a>` : ""}
-            ${portfolioUrl?.trim() ? `<a href="${href(portfolioUrl)}" class="t6-link" target="_blank">Portfolio</a>` : ""}
+            ${linkedinUrl?.trim() ? `<a href="${href(linkedinUrl)}" class="t6-link" target="_blank">LinkedIn: ${formatSocialLink(linkedinUrl, "linkedin")}</a>` : ""}
+            ${githubUrl?.trim() ? `<a href="${href(githubUrl)}" class="t6-link" target="_blank">GitHub: ${formatSocialLink(githubUrl, "github")}</a>` : ""}
+            ${portfolioUrl?.trim() ? `<a href="${href(portfolioUrl)}" class="t6-link" target="_blank">${formatSocialLink(portfolioUrl, "portfolio")}</a>` : ""}
           </div>
           <div class="t6-lsection">Details</div>
           <hr class="t6-divider-sm"/>
@@ -7215,11 +7167,7 @@ const TemplateSix: React.FC<TemplateSixProps> = ({
 
   // ── PDF builder (clip/shift — matches preview exactly) ─────────────────────
   const buildPDFPagesHTML = useCallback(
-    (
-      pageStarts: number[],
-      totalH: number,
-      resumeSnapshot: string,
-    ): string => {
+    (pageStarts: number[], totalH: number, resumeSnapshot: string): string => {
       const CSS = buildCSS(activeFontFamily);
 
       let pagesBody = "";
@@ -7326,8 +7274,7 @@ const TemplateSix: React.FC<TemplateSixProps> = ({
         measureDoc.close();
 
         const doMeasure = () => {
-          const rightCol =
-            measureDoc.querySelector<HTMLElement>(".t6-right");
+          const rightCol = measureDoc.querySelector<HTMLElement>(".t6-right");
           if (!rightCol) {
             resolve([fullHtml]);
             return;
@@ -7341,8 +7288,7 @@ const TemplateSix: React.FC<TemplateSixProps> = ({
 
           const rightRect = rightCol.getBoundingClientRect();
           const scrollY =
-            measureDoc.documentElement.scrollTop ||
-            measureDoc.body.scrollTop;
+            measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
           const getRelTop = (el: Element) =>
             el.getBoundingClientRect().top - rightRect.top + scrollY;
           const getRelBottom = (el: Element) =>
@@ -7381,10 +7327,9 @@ const TemplateSix: React.FC<TemplateSixProps> = ({
             ".t6-education-grade",
           ].join(", ");
 
-          const ATOMIC_SELECTOR = [
-            ".t6-project-tech",
-            ".t6-divider-md",
-          ].join(", ");
+          const ATOMIC_SELECTOR = [".t6-project-tech", ".t6-divider-md"].join(
+            ", ",
+          );
 
           const DESC_WRAPPER_SELECTOR = [
             ".t6-entry-content",
@@ -7393,10 +7338,7 @@ const TemplateSix: React.FC<TemplateSixProps> = ({
             ".t6-skills-content",
           ].join(", ");
 
-          const pushLines = (
-            el: HTMLElement,
-            keepWithNext = false,
-          ) => {
+          const pushLines = (el: HTMLElement, keepWithNext = false) => {
             const range = measureDoc.createRange();
             range.selectNodeContents(el);
             const rects = Array.from(range.getClientRects()).filter(
@@ -7417,10 +7359,7 @@ const TemplateSix: React.FC<TemplateSixProps> = ({
             return true;
           };
 
-          const pushAtomic = (
-            el: HTMLElement,
-            keepWithNext = false,
-          ) => {
+          const pushAtomic = (el: HTMLElement, keepWithNext = false) => {
             const h = el.getBoundingClientRect().height;
             if (h <= 2) return;
             units.push({
@@ -7431,49 +7370,45 @@ const TemplateSix: React.FC<TemplateSixProps> = ({
             });
           };
 
-          Array.from(
-            rightCol.querySelectorAll<HTMLElement>("*"),
-          ).forEach((el) => {
-            if (consumed.has(el)) return;
+          Array.from(rightCol.querySelectorAll<HTMLElement>("*")).forEach(
+            (el) => {
+              if (consumed.has(el)) return;
 
-            if (el.matches(HEADER_LIKE_SELECTOR)) {
-              pushAtomic(el, true);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches(CHAINED_KEEP_SELECTOR)) {
-              pushAtomic(el, true);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches(ATOMIC_SELECTOR)) {
-              pushAtomic(el, false);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches("p, li")) {
-              if (pushLines(el)) {
-                el.querySelectorAll("*").forEach((c) =>
-                  consumed.add(c),
-                );
+              if (el.matches(HEADER_LIKE_SELECTOR)) {
+                pushAtomic(el, true);
+                el.querySelectorAll("*").forEach((c) => consumed.add(c));
                 consumed.add(el);
+                return;
               }
-              return;
-            }
-            if (
-              el.matches(DESC_WRAPPER_SELECTOR) &&
-              !el.querySelector("p, li")
-            ) {
-              if (pushLines(el)) consumed.add(el);
-            }
-          });
-
-          units.sort(
-            (a, b) => a.top - b.top || a.bottom - b.bottom,
+              if (el.matches(CHAINED_KEEP_SELECTOR)) {
+                pushAtomic(el, true);
+                el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                consumed.add(el);
+                return;
+              }
+              if (el.matches(ATOMIC_SELECTOR)) {
+                pushAtomic(el, false);
+                el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                consumed.add(el);
+                return;
+              }
+              if (el.matches("p, li")) {
+                if (pushLines(el)) {
+                  el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                  consumed.add(el);
+                }
+                return;
+              }
+              if (
+                el.matches(DESC_WRAPPER_SELECTOR) &&
+                !el.querySelector("p, li")
+              ) {
+                if (pushLines(el)) consumed.add(el);
+              }
+            },
           );
+
+          units.sort((a, b) => a.top - b.top || a.bottom - b.bottom);
 
           const totalH = rightCol.scrollHeight;
 
@@ -7503,8 +7438,7 @@ const TemplateSix: React.FC<TemplateSixProps> = ({
           }
 
           // ── Store data for PDF generation ────────────────────────────
-          (window as any).__resumePageBreakIds =
-            pageBreakIds.filter(Boolean);
+          (window as any).__resumePageBreakIds = pageBreakIds.filter(Boolean);
           (window as any).__resumePageStarts = pageStarts;
           (window as any).__resumeTotalH = totalH;
           (window as any).__resumeSnapshot = resumeSnapshot;
@@ -7553,9 +7487,7 @@ const TemplateSix: React.FC<TemplateSixProps> = ({
         if (mainFontsReady) {
           requestAnimationFrame(() => requestAnimationFrame(doMeasure));
         } else if (win?.document?.fonts?.ready) {
-          win.document.fonts.ready.then(() =>
-            requestAnimationFrame(doMeasure),
-          );
+          win.document.fonts.ready.then(() => requestAnimationFrame(doMeasure));
         } else {
           setTimeout(doMeasure, 150);
         }
@@ -7601,8 +7533,7 @@ const TemplateSix: React.FC<TemplateSixProps> = ({
     try {
       const storedPageStarts: number[] | undefined = (window as any)
         .__resumePageStarts;
-      const storedTotalH: number | undefined = (window as any)
-        .__resumeTotalH;
+      const storedTotalH: number | undefined = (window as any).__resumeTotalH;
       const storedSnapshot: string | undefined = (window as any)
         .__resumeSnapshot;
 
@@ -7655,14 +7586,14 @@ const TemplateSix: React.FC<TemplateSixProps> = ({
       />
 
       {/* ── Download button ──────────────────────────────────────────────── */}
-      {/* {!isThumbnail && lastSegment === "download-resume" && ( */}
-        <div className="text-center my-8">
-          <motion.button
-            onClick={handleDownload}
-            disabled={isDownloading}
-            whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
-            whileTap={!isDownloading ? { scale: 0.98 } : {}}
-            className={`
+      {!isThumbnail && lastSegment === "download-resume" && (
+      <div className="text-center my-8">
+        <motion.button
+          onClick={handleDownload}
+          disabled={isDownloading}
+          whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
+          whileTap={!isDownloading ? { scale: 0.98 } : {}}
+          className={`
               relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
               text-white transition-all duration-300 shadow-lg
               ${
@@ -7671,27 +7602,27 @@ const TemplateSix: React.FC<TemplateSixProps> = ({
                   : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600 cursor-pointer"
               }
             `}
-          >
-            {!isDownloading && (
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+        >
+          {!isDownloading && (
+            <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+          )}
+          <div className="relative flex items-center justify-center gap-3 text-lg">
+            {isDownloading ? (
+              <>
+                <FaSpinner className="animate-spin text-xl" />
+                <span>Generating PDF …</span>
+              </>
+            ) : (
+              <>
+                <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
+                <span>Download Resume</span>
+                <span className="text-sm opacity-75 font-light ml-1">PDF</span>
+              </>
             )}
-            <div className="relative flex items-center justify-center gap-3 text-lg">
-              {isDownloading ? (
-                <>
-                  <FaSpinner className="animate-spin text-xl" />
-                  <span>Generating PDF …</span>
-                </>
-              ) : (
-                <>
-                  <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
-                  <span>Download Resume</span>
-                  <span className="text-sm opacity-75 font-light ml-1">PDF</span>
-                </>
-              )}
-            </div>
-          </motion.button>
-        </div>
-      {/* )} */}
+          </div>
+        </motion.button>
+      </div>
+      )} 
 
       {isThumbnail ? (
         // ── THUMBNAIL MODE ──────────────────────────────────────────────
@@ -7811,7 +7742,7 @@ const TemplateSix: React.FC<TemplateSixProps> = ({
                     sandbox="allow-same-origin allow-scripts"
                   /> */}
 
-                    <iframe
+                  <iframe
                     title={`resume-page-${idx + 1}`}
                     srcDoc={pageHtml}
                     style={{
@@ -7872,6 +7803,5 @@ const TemplateSix: React.FC<TemplateSixProps> = ({
     </>
   );
 };
-
 
 export default TemplateSix;

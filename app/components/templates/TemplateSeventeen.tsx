@@ -2126,6 +2126,7 @@ import {
   formatDateOfBirth,
   formatGradeToCgpdAndPercentage,
   formatMonthYear,
+  formatSocialLink,
 } from "@/app/utils";
 import { usePathname } from "next/navigation";
 import { ResumeProps } from "@/app/types";
@@ -2538,9 +2539,9 @@ const TemplateSeventeen: React.FC<TemplateSeventeenProps> = ({
           ${contact?.email ? `<span class="t17-header-meta-item">${contact.email}</span>` : ""}
           ${contact?.phone ? `<span class="t17-header-meta-item">${contact.phone}</span>` : ""}
           ${formattedDob ? `<span class="t17-header-meta-item">${formattedDob}</span>` : ""}
-          ${linkedinUrl ? `<span class="t17-header-meta-item"><a href="${href(linkedinUrl)}" target="_blank">LinkedIn</a></span>` : ""}
-          ${githubUrl ? `<span class="t17-header-meta-item"><a href="${href(githubUrl)}" target="_blank">GitHub</a></span>` : ""}
-          ${portfolioUrl ? `<span class="t17-header-meta-item"><a href="${href(portfolioUrl)}" target="_blank">Portfolio</a></span>` : ""}
+          ${linkedinUrl ? `<span class="t17-header-meta-item"><a href="${href(linkedinUrl)}" target="_blank">LinkedIn: ${formatSocialLink(linkedinUrl, "linkedin")}</a></span>` : ""}
+          ${githubUrl ? `<span class="t17-header-meta-item"><a href="${href(githubUrl)}" target="_blank">GitHub: ${formatSocialLink(githubUrl, "github")}</a></span>` : ""}
+          ${portfolioUrl ? `<span class="t17-header-meta-item"><a href="${href(portfolioUrl)}" target="_blank">${formatSocialLink(portfolioUrl, "portfolio")}</a></span>` : ""}
         </div>
       </div>`;
 
