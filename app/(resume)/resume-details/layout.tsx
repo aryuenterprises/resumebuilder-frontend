@@ -720,6 +720,7 @@ export default function RootLayout({
           </motion.div>
         </div>
       )}
+     
       {/* Right Section - Resume Preview */}
       <section
         className={`bg-[#e8e6f2] overflow-hidden ${isLargeScreen ? "" : "max-lg:hidden lg:w-1/2"}`}

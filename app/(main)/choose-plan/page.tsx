@@ -358,8 +358,8 @@ const comparisonFeatures = [
     premium: "Advanced",
   },
   {
-    name: "Photo Upload",
-    free: "✗",
+    name: "ATS Checker",
+    free: "✓",
     pro: "✓",
     premium: "✓",
   },
@@ -1041,7 +1041,7 @@ export default function ChoosePlanPage() {
                         <span>Features</span>
                       </div>
                     </th>
-                    {planDetails.map((plan) => (
+                    {[...planDetails].reverse().map((plan) => (
                       <th
                         key={plan.id}
                         className="p-3 sm:p-4 md:p-5 text-center whitespace-nowrap"

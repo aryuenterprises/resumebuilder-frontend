@@ -576,7 +576,6 @@ const Footer = () => {
       { name: "Aryu Academy", url: "https://aryuacademy.com/" },
       { name: "Aryu Technologies", url: "https://aryutechnologies.com/" },
       { name: "Aryu Agency", url: "https://aryu.agency/" },
-      { name: "Aryu Enterprises", url: "https://aryuenterprises.com/" },
     ],
     quickLinks: [
       

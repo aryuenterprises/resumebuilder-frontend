@@ -127,21 +127,13 @@ const Login = () => {
 
       console.log(err.response?.data?.error);
 
-
-        if (err.response?.data?.error) {
+      if (err.response?.data?.error) {
         errorText = err.response.data.error;
-      } 
-      else if (err.response?.data?.message) {
+      } else if (err.response?.data?.message) {
         errorText = err.response.data.message;
-      } 
-
-   
-      
-      else if (err.message === "Network Error") {
+      } else if (err.message === "Network Error") {
         errorText = "Network error. Please check your internet connection.";
-      } 
-      
-      else if (err.code === "ECONNABORTED") {
+      } else if (err.code === "ECONNABORTED") {
         errorText = "Request timeout. Please try again.";
       }
 
@@ -182,7 +174,7 @@ const Login = () => {
                 {/* Email Field */}
                 <div className="mb-4 sm:mb-5">
                   <label className="block text-[11px] sm:text-xs md:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2">
-                    Email Address
+                    Email Address <span className="text-indigo-500">*</span>
                   </label>
                   <div className="relative group">
                     <div
@@ -217,7 +209,7 @@ const Login = () => {
                 <div className="mb-5 sm:mb-6">
                   <div className="flex justify-between items-center mb-1.5 sm:mb-2">
                     <label className="text-[11px] sm:text-xs md:text-sm font-semibold text-gray-700">
-                      Password
+                      Password <span className="text-indigo-500">*</span>
                     </label>
                     <button
                       type="button"
