@@ -88,7 +88,6 @@ const PLAN_CONFIG = {
   },
 };
 
-
 const getRequiredPlanForTemplate = (
   index: number,
 ): keyof typeof PLAN_CONFIG => {
@@ -168,8 +167,6 @@ const TemplatePreviewBottomSheet = React.memo(
     primaryBtn,
     amberBtn,
   }: any) => {
-    
-
     const router = useRouter();
 
     const handleUseTemplate = () => {
@@ -179,7 +176,7 @@ const TemplatePreviewBottomSheet = React.memo(
         onClose();
       } else {
         // User's plan is not eligible - navigate to choose-plan
-        router.push('/choose-plan');
+        router.push("/choose-plan");
       }
     };
 
@@ -324,7 +321,6 @@ const TemplatePreviewBottomSheet = React.memo(
     );
   },
 );
-
 
 function Choose_template() {
   const router = useRouter();

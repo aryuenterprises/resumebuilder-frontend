@@ -63,7 +63,7 @@ api.interceptors.response.use(
     // ✅ NEW: Check if user account is not found
     const isUserNotFound =
       error.response?.status === 404 &&
-      (error.response?.data?.message?.toLowerCase().includes("User account not found.") ||
+      (error.response?.data?.message?.toLowerCase().includes("user account not found.") ||
        error.response?.data?.detail?.toLowerCase().includes("user not found") ||
        error.response?.data?.error?.toLowerCase().includes("user not found"));
 
