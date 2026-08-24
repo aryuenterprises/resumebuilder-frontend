@@ -26,7 +26,7 @@ export const HeroSection = () => {
         >
           <span className="flex h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-indigo-500" />
           <span className="text-[10px] sm:text-xs font-medium text-indigo-700 tracking-wide uppercase">
-            Intelligent Resume Maker
+            Intelligent Resume Builder
           </span>
         </motion.div>
 
