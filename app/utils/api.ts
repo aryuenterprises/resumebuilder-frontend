@@ -55,13 +55,27 @@ api.interceptors.response.use(
       error.response?.status === 401 || error.response?.status === 403;
     const isRefreshRequest = originalRequest.url?.includes("/token/refresh/");
 
-    //  Check if this is a quota limit error
+    // Check if this is a quota limit error
     const isQuotaLimitError =
       error.response?.data?.message?.includes("ATS Scan limit exceeded") ||
       error.response?.data?.message?.includes("Scan limit exceeded");
 
+    // ✅ NEW: Check if user account is not found
+    const isUserNotFound =
+      error.response?.status === 404 &&
+      (error.response?.data?.message?.toLowerCase().includes("User account not found.") ||
+       error.response?.data?.detail?.toLowerCase().includes("user not found") ||
+       error.response?.data?.error?.toLowerCase().includes("user not found"));
+
     // If it's a quota limit error, don't refresh, just reject
     if (isQuotaLimitError) {
+      return Promise.reject(error);
+    }
+
+    // ✅ NEW: If user account is not found, logout immediately
+    if (isUserNotFound) {
+      console.error("User account not found. Logging out...");
+      await handleLogout();
       return Promise.reject(error);
     }
 
