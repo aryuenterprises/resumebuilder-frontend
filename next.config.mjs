@@ -7,8 +7,6 @@ const nextConfig: NextConfig = {
 export default nextConfig;
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  /* your config options here */
-};
+const nextConfig = {};
 
 export default nextConfig;
