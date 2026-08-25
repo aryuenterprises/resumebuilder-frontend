@@ -3,13 +3,14 @@ pipeline {
 
     environment {
         DEPLOY_PATH = "/var/www/aryu_resumebuilder/resume_builder_frontend"
-        APP_NAME = "resumebuilder-frontend"
+        APP_NAME    = "resumebuilder-frontend"
+        NODE_ENV    = "production"
     }
 
     stages {
-
         stage('Install Dependencies') {
             steps {
+                // npm ci enforces lockfile consistency
                 sh 'npm ci'
             }
         }
@@ -20,20 +21,7 @@ pipeline {
             }
         }
 
-        stage('Deploy to Production Path') {
-            steps {
-                sh """
-                rsync -av --delete \
-                --no-group --no-owner \
-                --exclude='.git' \
-                --exclude='node_modules' \
-                ./ ${DEPLOY_PATH}/
-
-                """
-            }
-        }
-
-        stage('Restart via PM2') {
+        stage('Restart PM2') {
             steps {
                 sh """
                 cd ${DEPLOY_PATH}
@@ -51,6 +39,9 @@ pipeline {
         failure {
             echo "❌ Deployment Failed"
         }
+        always {
+            // Optional: Clean workspace files if building in a separate agent directory
+            // cleanWs()
+        }
     }
 }
-
