@@ -10,7 +10,6 @@ pipeline {
     stages {
         stage('Install Dependencies') {
             steps {
-                // npm ci enforces lockfile consistency
                 sh 'npm ci'
             }
         }
@@ -40,8 +39,7 @@ pipeline {
             echo "❌ Deployment Failed"
         }
         always {
-            // Optional: Clean workspace files if building in a separate agent directory
-            // cleanWs()
+            echo "Pipeline run completed."
         }
     }
 }
