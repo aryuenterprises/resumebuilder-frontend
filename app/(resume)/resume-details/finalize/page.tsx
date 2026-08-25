@@ -68,7 +68,6 @@ const FinalizeForm = () => {
   const [atsVerdict, setAtsVerdict] = useState("");
   const [progress, setProgress] = useState(0);
   const [showTips, setShowTips] = useState(false);
-  // const latestResumeId = localStorage.getItem("latest_resume_id");
   const latestResumeId = getLocalStorage("latest_resume_id");
 
   // Drag and drop state
@@ -456,7 +455,7 @@ const FinalizeForm = () => {
           </div>
 
           {/* ATS Score Checker */}
-          <div className="mb-6 sm:mb-8">
+          {/* <div className="mb-6 sm:mb-8">
             <div className="bg-linear-to-br from-indigo-50 via-purple-50 to-indigo-100 rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-indigo-200 shadow-lg">
               <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 sm:gap-6">
                 <div className="flex items-start gap-3 sm:gap-4">
@@ -497,7 +496,7 @@ const FinalizeForm = () => {
                 </button>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Custom Sections */}
           <div className="bg-white rounded-xl sm:rounded-2xl md:rounded-3xl shadow-xl border border-gray-100 overflow-hidden">

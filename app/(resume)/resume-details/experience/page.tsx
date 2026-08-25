@@ -66,12 +66,11 @@ const ExperienceForm = () => {
   // removeSessionStorage("editingResumeIdAndData");
 
   const {
-    contact,
     experiences,
     setExperiences,
-    fullResumeData,
-    setFullResumeData,
   } = UseContext;
+
+  console.log("experiences",experiences)
 
   // Drag and drop state
   const [draggedItemId, setDraggedItemId] = useState<string | number | null>(
@@ -151,7 +150,6 @@ const ExperienceForm = () => {
     setDraggedItemId(null);
     setDragOverItemId(null);
   };
-
 
   const latestResumeId = getLocalStorage("latest_resume_id");
 
@@ -308,7 +306,7 @@ const ExperienceForm = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-linear-to-br from-slate-50 via-white to-indigo-50/40">
-      <Stepper  onBeforeNavigate={() => saveToAPI(experiences)} />
+      <Stepper onBeforeNavigate={() => saveToAPI(experiences)} />
 
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto">

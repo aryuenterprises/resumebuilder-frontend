@@ -1023,11 +1023,6 @@
 
 
 
-
-
-
-
-
 "use client";
 
 import React, {
@@ -1042,7 +1037,7 @@ import React, {
 import Header from "../../components/layouts/Header";
 import Footer from "../../components/layouts/Footer";
 import { templateData } from "@/app/data";
-import { getLocalStorage, setLocalStorage } from "@/app/utils";
+import { getLocalStorage, getSessionStorage, setLocalStorage } from "@/app/utils";
 import { EditingResumeData, Template } from "@/app/types";
 import ProtectedRoute from "@/app/utils/ProtectedRoute";
 import Link from "next/link";
@@ -1474,7 +1469,7 @@ const CustomizationPanel: React.FC<{
 CustomizationPanel.displayName = "CustomizationPanel";
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
- const Page = () => {
+const Page = () => {
   usePreventReload();
 
   const {
@@ -1509,13 +1504,21 @@ const [isResumeDataLoaded, setIsResumeDataLoaded] = useState(false);
       // source of truth for *which* resume the user actually clicked.
       // "latest_resume_id" only reflects whichever resume was most recently
       // created/saved via the ContactForm flow, which is a different resume
-      // whenever you download one that isn't the last one you edited. This
-      // page was ignoring editingResumeIdAndData entirely and always fell
-      // back to the stale latest_resume_id, which is why downloading showed
-      // old data. editingResumeIdAndData now takes priority when present.
-      const editingResumeIdAndData = getLocalStorage<EditingResumeData>(
-        "editingResumeIdAndData",
+      // whenever you download one that isn't the last one you edited.
+      //
+      // editingResumeIdAndData is only ever written, never cleared, so it
+      // can leak from a past Edit/Download into a later "Create New Resume"
+      // session. Gate it behind "oldRouteNameDashboard" — the same session
+      // flag ContactForm already uses for this exact purpose — so it's only
+      // trusted when the user actually arrived via a dashboard Edit/Download
+      // click in *this* browsing session, not just because it's still
+      // sitting in localStorage from before.
+      const cameFromDashboardAction = getSessionStorage(
+        "oldRouteNameDashboard",
       );
+      const editingResumeIdAndData = cameFromDashboardAction
+        ? getLocalStorage<EditingResumeData>("editingResumeIdAndData")
+        : null;
       const latestResumeId = getLocalStorage<string>("latest_resume_id");
       const targetResumeId = editingResumeIdAndData?.id ?? latestResumeId;
 
@@ -1818,3 +1821,14 @@ const [isResumeDataLoaded, setIsResumeDataLoaded] = useState(false);
 };
 
 export default Page;
+
+
+
+
+
+
+
+
+
+
+

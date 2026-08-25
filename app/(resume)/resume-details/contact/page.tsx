@@ -171,12 +171,12 @@ const ContactForm = () => {
         // If we're editing an existing resume from the dashboard, update it
         await api.patch(
           `${API_URL}/user-resumes/${editingResumeIdAndData.id}`,
-          oldResumeEditPayload,
+          oldResumeEditPayload, 
         );
         // removeSessionStorage("oldRouteNameDashboard");
         // removeSessionStorage("editingResumeIdAndData");
         setLocalStorage("latest_resume_id", editingResumeIdAndData.id);
-        return true;
+        return true; 
       } else if (existingResumeId) {
         // NEW: A resume already exists for this user (either they're continuing
         // their last resume, or this contact page has already saved once) —
