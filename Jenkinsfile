@@ -10,7 +10,6 @@ pipeline {
     stages {
         stage('Install Dependencies') {
             steps {
-                // --include=dev forces npm to install build dependencies even with NODE_ENV=production
                 sh 'npm ci --include=dev'
             }
         }
@@ -23,10 +22,8 @@ pipeline {
 
         stage('Deploy to Production Path') {
             steps {
-                // Syncs build artifacts and project files to the target directory
                 sh """
-                rsync -av --delete \
-                --no-group --no-owner \
+                rsync -rlptv --delete \
                 --exclude='.git' \
                 --exclude='node_modules' \
                 ./ ${DEPLOY_PATH}/
