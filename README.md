@@ -35,3 +35,5 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
+[![Build Status](https://github.com/aryuenterprises/resumebuilder-frontend/actions/workflows/build.yml/badge.svg)](https://github.com/aryuenterprises/resumebuilder-frontend/actions/workflows/build.yml)
+
