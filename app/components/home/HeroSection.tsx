@@ -37,7 +37,7 @@ export const HeroSection = () => {
           transition={{ delay: 0.1, duration: 0.6 }}
           className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-gray-900 tracking-tight mb-4 sm:mb-6 leading-tight sm:leading-[1.2] mt-0"
         >
-          Yu Dream{" "}
+          Your Dream{" "}
           <span className="relative inline-block">
             <span className="relative z-10 bg-linear-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent animate-linear">
               Job opportunity
