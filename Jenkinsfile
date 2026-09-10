@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DEPLOY_PATH = "/var/www/aryu_resumebuilder/resume_builder_frontend"
+        DEPLOY_PATH = "/var/www/aryu_resumebuilder"
         APP_NAME    = "resumebuilder-frontend"
         NODE_ENV    = "production"
     }
