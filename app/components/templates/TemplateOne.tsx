@@ -1210,6 +1210,9 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
       const CSS = buildCSS(activeFontFamily);
 
       const richText = (html: string, cls: string) => {
+
+        console.log("html", html);
+
         if (!html) return "";
         const clean = cleanQuillHTML(html);
         if (!clean || clean === "<p><br></p>") return "";

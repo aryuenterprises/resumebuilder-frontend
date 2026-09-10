@@ -56,7 +56,6 @@ const ProjectsForm = () => {
   const UseContext = useContext(CreateContext);
   const latestResumeId = getLocalStorage("latest_resume_id");
 
-
   const { projects, setProjects } = UseContext || {};
 
   const router = useRouter();
@@ -68,8 +67,12 @@ const ProjectsForm = () => {
   const [loading, setLoading] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [Airesponse, setAiresponse] = useState<string[] | null>(null);
-  const [showProjectTitleWarningModal, setShowProjectTitleWarningModal] = useState(false);
-  const [clickedIndexForGenerateWithAIBtn, setClickedIndexForGenerateWithAIBtn] = useState<number | null>(null);
+  const [showProjectTitleWarningModal, setShowProjectTitleWarningModal] =
+    useState(false);
+  const [
+    clickedIndexForGenerateWithAIBtn,
+    setClickedIndexForGenerateWithAIBtn,
+  ] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
 
   // Drag and drop state
@@ -166,7 +169,10 @@ const ProjectsForm = () => {
         if (i === clickedIndexForGenerateWithAIBtn) {
           return {
             ...project,
-            description: (project.description || "") + (project.description ? "\n" : "") + item,
+            description:
+              (project.description || "") +
+              (project.description ? "\n" : "") +
+              item,
           };
         }
         return project; // Return others unchanged
@@ -461,8 +467,11 @@ const ProjectsForm = () => {
 
                       {/* Tech Stack */}
                       <div>
-                        <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5 sm:mb-2">
-                          Tech Stack
+                        <label className="block text-xs font-semibold  tracking-wider text-gray-500 mb-1.5 sm:mb-2">
+                          TECH STACK{" "}
+                          <span className="text-[11px] text-gray-400 font-medium tracking-normal">
+                            (Press Enter to add tech stack)
+                          </span>
                         </label>
                         <div className="flex gap-2 mb-3">
                           <input
@@ -491,14 +500,14 @@ const ProjectsForm = () => {
                           {project.techStack.map((tech: string) => (
                             <span
                               key={tech}
-                              className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-indigo-50 text-indigo-700 text-xs rounded-lg"
+                              className="inline-flex font-medium items-center gap-1 px-2.5 py-1.5 bg-indigo-50 text-indigo-700 text-xs rounded-lg"
                             >
                               {tech}
                               <button
                                 onClick={() =>
                                   removeTechStack(project.id, tech)
                                 }
-                                className="hover:text-indigo-900 ml-1"
+                                className="hover:text-indigo-900 ml-1 cursor-pointer transition-colors "
                               >
                                 ×
                               </button>
@@ -580,7 +589,8 @@ const ProjectsForm = () => {
                                   d="M13 10V3L4 14h7v7l9-11h-7z"
                                 />
                               </svg>
-                              {loading && clickedIndexForGenerateWithAIBtn === index
+                              {loading &&
+                              clickedIndexForGenerateWithAIBtn === index
                                 ? "Generating..."
                                 : "Generate With AI"}
                             </button>
@@ -598,15 +608,14 @@ const ProjectsForm = () => {
                                 //   </div>
                                 // </div>
 
-
- <div className="absolute left-1/2 -translate-x-1/2 -top-2 -translate-y-full mt-1 w-full bg-gray-900 text-white text-xs rounded-lg py-2 px-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-50 shadow-lg wrap-break-word overflow-auto-">
-                                      <div className="relative text-center wrap-break-word">
-                                        <span className="inline-block mr-1">
-                                          ⚠️
-                                        </span>
+                                <div className="absolute left-1/2 -translate-x-1/2 -top-2 -translate-y-full mt-1 w-full bg-gray-900 text-white text-xs rounded-lg py-2 px-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-50 shadow-lg wrap-break-word overflow-auto-">
+                                  <div className="relative text-center wrap-break-word">
+                                    <span className="inline-block mr-1">
+                                      ⚠️
+                                    </span>
                                     Enter project title to use AI Assist
-                                      </div>
-                                    </div>
+                                  </div>
+                                </div>
                               )}
                           </div>
                         </div>
@@ -708,7 +717,8 @@ const ProjectsForm = () => {
                     AI Suggestions
                   </h2>
                   <p className="text-indigo-100 text-xs">
-                    Click on any suggestion to add it to your project description
+                    Click on any suggestion to add it to your project
+                    description
                   </p>
                 </div>
                 <button
@@ -779,7 +789,8 @@ const ProjectsForm = () => {
             <div className="p-5">
               <p className="text-sm text-gray-700 mb-4">
                 Please enter a project title first to use the AI Assist feature.
-                This helps generate relevant description content for your project.
+                This helps generate relevant description content for your
+                project.
               </p>
               <button
                 onClick={() => setShowProjectTitleWarningModal(false)}

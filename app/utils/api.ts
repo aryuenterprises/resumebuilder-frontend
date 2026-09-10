@@ -162,7 +162,6 @@
 
 // export default api;
 
-
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 import { API_URL } from "@/app/config/api";
 
@@ -213,35 +212,38 @@ const processQueue = (error: any, token: string | null = null) => {
 const isUserNotFoundError = (error: any): boolean => {
   const status = error.response?.status;
   const data = error.response?.data;
-  
+
   if (status === 404) {
     const messages = [
       data?.message,
       data?.detail,
       data?.error,
       data?.error_message,
-      data?.msg
+      data?.msg,
     ].filter(Boolean);
-    
-    return messages.some(msg => 
-      typeof msg === 'string' && 
-      (msg.toLowerCase().includes("user account not found") ||
-       msg.toLowerCase().includes("user not found") ||
-       msg.toLowerCase().includes("account not found") ||
-       msg.toLowerCase().includes("user doesn't exist") ||
-       msg.toLowerCase().includes("user deleted") ||
-       msg.toLowerCase().includes("account deleted"))
+
+    return messages.some(
+      (msg) =>
+        typeof msg === "string" &&
+        (msg.toLowerCase().includes("user account not found") ||
+          msg.toLowerCase().includes("user not found") ||
+          msg.toLowerCase().includes("account not found") ||
+          msg.toLowerCase().includes("user doesn't exist") ||
+          msg.toLowerCase().includes("user deleted") ||
+          msg.toLowerCase().includes("account deleted")),
     );
   }
-  
+
   if (status === 401 || status === 403) {
-    const message = data?.message || data?.detail || data?.error || '';
-    return typeof message === 'string' && 
+    const message = data?.message || data?.detail || data?.error || "";
+    return (
+      typeof message === "string" &&
       (message.toLowerCase().includes("user account not found") ||
-       message.toLowerCase().includes("user not found") ||
-       message.toLowerCase().includes("account not found"));
+        message.toLowerCase().includes("user not found") ||
+        message.toLowerCase().includes("account not found"))
+    );
   }
-  
+
   return false;
 };
 
@@ -253,15 +255,15 @@ const isRefreshRequest = (url?: string): boolean => {
 // ✅ Function to clear duplicate refresh tokens
 const clearDuplicateRefreshTokens = (): void => {
   if (typeof document === "undefined") return;
-  
+
   try {
     // Get all cookies
     const cookies = document.cookie.split(";");
     const refreshTokens: string[] = [];
     const otherCookies: string[] = [];
-    
+
     // Separate refresh_token cookies from others
-    cookies.forEach(cookie => {
+    cookies.forEach((cookie) => {
       const trimmedCookie = cookie.trim();
       if (trimmedCookie.startsWith("refresh_token=")) {
         refreshTokens.push(trimmedCookie);
@@ -269,20 +271,28 @@ const clearDuplicateRefreshTokens = (): void => {
         otherCookies.push(trimmedCookie);
       }
     });
-    
+
     // If we have more than 1 refresh_token, clear all and keep only the latest
     if (refreshTokens.length > 1) {
-      console.log(`Found ${refreshTokens.length} refresh_token cookies. Cleaning up...`);
-      
+      console.log(
+        `Found ${refreshTokens.length} refresh_token cookies. Cleaning up...`,
+      );
+
       // Clear all refresh_token cookies
       refreshTokens.forEach(() => {
-        document.cookie = "refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        document.cookie =
+          "refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         // Also try with different paths and domains
-        document.cookie = "refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname + ";";
+        document.cookie =
+          "refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" +
+          window.location.hostname +
+          ";";
       });
-      
+
       // Keep only the most recent one - we'll let the backend set a new one on next login
-      console.log("Cleared duplicate refresh tokens. Will obtain a fresh one on next authentication.");
+      console.log(
+        "Cleared duplicate refresh tokens. Will obtain a fresh one on next authentication.",
+      );
     }
   } catch (error) {
     console.error("Error clearing duplicate cookies:", error);
@@ -301,11 +311,13 @@ api.interceptors.response.use(
     const setCookieHeader = response.headers?.["set-cookie"];
     if (setCookieHeader && Array.isArray(setCookieHeader)) {
       // If backend is setting multiple refresh_token cookies, we'll handle it
-      const refreshCookies = setCookieHeader.filter(c => 
-        c.includes("refresh_token=")
+      const refreshCookies = setCookieHeader.filter((c) =>
+        c.includes("refresh_token="),
       );
       if (refreshCookies.length > 1) {
-        console.warn("Backend sent multiple refresh_token cookies. Cleaning up...");
+        console.warn(
+          "Backend sent multiple refresh_token cookies. Cleaning up...",
+        );
         // Clear all existing refresh tokens
         clearDuplicateRefreshTokens();
       }
@@ -347,11 +359,7 @@ api.interceptors.response.use(
     const isUnauthorized =
       error.response?.status === 401 || error.response?.status === 403;
 
-    if (
-      isUnauthorized &&
-      originalRequest &&
-      !originalRequest._retry
-    ) {
+    if (isUnauthorized && originalRequest && !originalRequest._retry) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
@@ -370,7 +378,9 @@ api.interceptors.response.use(
       if (!refreshPromise) {
         refreshPromise = (async () => {
           try {
-            console.log("Access token expired. Requesting a new one using the refresh cookie...");
+            console.log(
+              "Access token expired. Requesting a new one using the refresh cookie...",
+            );
 
             // ✅ Clear duplicate cookies before refresh
             clearDuplicateRefreshTokens();
@@ -378,26 +388,30 @@ api.interceptors.response.use(
             const response = await axios.post(
               `${API_URL}/token/refresh/`,
               {},
-              { 
+              {
                 withCredentials: true,
                 headers: {
                   // ✅ Prevent caching of refresh request
-                  'Cache-Control': 'no-cache',
-                  'Pragma': 'no-cache'
-                }
-              }
+                  "Cache-Control": "no-cache",
+                  Pragma: "no-cache",
+                },
+              },
             );
 
             const newAccessToken = response.data.access_token;
 
             // ✅ Check if refresh returned user not found error in response body
-            if (response.data?.message?.toLowerCase().includes("user not found") ||
-                response.data?.detail?.toLowerCase().includes("user not found")) {
+            if (
+              response.data?.message
+                ?.toLowerCase()
+                .includes("user not found") ||
+              response.data?.detail?.toLowerCase().includes("user not found")
+            ) {
               throw new Error("User account not found during refresh");
             }
 
             setInMemoryToken(newAccessToken);
-            
+
             // ✅ Clean up any duplicate refresh tokens after successful refresh
             clearDuplicateRefreshTokens();
 
@@ -405,7 +419,9 @@ api.interceptors.response.use(
           } catch (refreshError) {
             // ✅ Check if refresh failed due to user not found
             if (isUserNotFoundError(refreshError)) {
-              console.error("User account not found during refresh. Logging out...");
+              console.error(
+                "User account not found during refresh. Logging out...",
+              );
               clearDuplicateRefreshTokens();
               await handleLogout();
             }
@@ -426,11 +442,13 @@ api.interceptors.response.use(
         processQueue(refreshError, null);
         isRefreshing = false;
         refreshPromise = null;
-        
+
         // ✅ Clear duplicate cookies before logout
         clearDuplicateRefreshTokens();
-        
-        console.error("Refresh token cookie expired or invalid. Logging out...");
+
+        console.error(
+          "Refresh token cookie expired or invalid. Logging out...",
+        );
         await handleLogout();
         return Promise.reject(refreshError);
       }
@@ -458,26 +476,32 @@ export async function handleLogout(): Promise<void> {
 
     if (typeof window !== "undefined") {
       try {
-        console.log("Notifying backend to destroy the secure refresh token cookie...");
-        
+        console.log(
+          "Notifying backend to destroy the secure refresh token cookie...",
+        );
+
         // ✅ Clear duplicate refresh tokens before logout request
         clearDuplicateRefreshTokens();
-        
+
         await api.post("/auth/logout/", {}, {
-          _isLogoutRequest: true
+          _isLogoutRequest: true,
         } as any);
       } catch (err) {
         console.error("Backend cookie deletion failed or timed out:", err);
       } finally {
         // ✅ Force clear all refresh_token cookies from browser
         clearDuplicateRefreshTokens();
-        
+
         // ✅ Also clear any refresh_token cookies with different paths
-        const paths = ['/', '/auth', '/api'];
-        const domains = ['', window.location.hostname, '.' + window.location.hostname];
-        
-        paths.forEach(path => {
-          domains.forEach(domain => {
+        const paths = ["/", "/auth", "/api"];
+        const domains = [
+          "",
+          window.location.hostname,
+          "." + window.location.hostname,
+        ];
+
+        paths.forEach((path) => {
+          domains.forEach((domain) => {
             document.cookie = `refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path}; domain=${domain};`;
           });
         });
@@ -485,10 +509,14 @@ export async function handleLogout(): Promise<void> {
         // 3. Purge all user-related data from localStorage
         localStorage.removeItem("user_details");
         localStorage.removeItem("user_preferences");
-        
+        localStorage.removeItem("latest_resume_id");
+        localStorage.removeItem("chosenTemplate");
+        localStorage.removeItem("editingResumeIdAndData");
+        localStorage.removeItem("fullResumeData");
+
         // 4. Clear session storage
         sessionStorage.clear();
-        
+
         // 5. Redirect to login
         window.location.href = "/login";
       }

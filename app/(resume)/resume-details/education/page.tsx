@@ -496,7 +496,7 @@ const Education_form = () => {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
                           <div>
                             <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5 sm:mb-2">
-                              School Name
+                              School / College Name
                             </label>
                             <input
                               type="text"
@@ -533,7 +533,7 @@ const Education_form = () => {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
                           <div>
                             <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5 sm:mb-2">
-                              Degree
+                            Degree / Class
                             </label>
                             <input
                               type="text"

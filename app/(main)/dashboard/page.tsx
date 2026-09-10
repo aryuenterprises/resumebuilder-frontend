@@ -8247,7 +8247,7 @@ const DashboardPage = () => {
                           </div>
                           <div className="text-left sm:text-right">
                             <p className="text-2xl sm:text-3xl font-bold text-white">
-                              ₹{usersCurrentPlan?.plan_details?.price || "0"}
+                              ₹{usersCurrentPlan?.plan_details?.discount_price || "0"}
                             </p>
                             <p className="text-indigo-100 text-[10px] sm:text-xs mt-0.5 sm:mt-1">
                               per{" "}
