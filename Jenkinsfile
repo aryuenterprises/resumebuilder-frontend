@@ -32,14 +32,18 @@ pipeline {
         }
 
         stage('Restart PM2') {
-            steps {
-                sh """
-                cd ${DEPLOY_PATH}
-                npm ci --only=production
-                pm2 reload ${APP_NAME} || pm2 start npm --name "${APP_NAME}" -- start
-                pm2 save
-                """
-            }
+           steps {
+               sh """
+               cd ${DEPLOY_PATH}
+
+               npm ci --omit=dev
+
+               sudo -u aryu_user /usr/bin/pm2 reload ${APP_NAME} || \
+               sudo -u aryu_user /usr/bin/pm2 start npm --name "${APP_NAME}" -- start
+
+               sudo -u aryu_user /usr/bin/pm2 save
+               """
+           }
         }
     }
 
