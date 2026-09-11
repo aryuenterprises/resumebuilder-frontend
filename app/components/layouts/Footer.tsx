@@ -578,14 +578,13 @@ const Footer = () => {
       { name: "Aryu Agency", url: "https://aryu.agency/" },
     ],
     quickLinks: [
-      
       {
         name: "Build Resume",
         path: "/choose-template",
         icon: FiFileText,
         color: "text-indigo-500",
       },
-       {
+      {
         name: "Cover Letter",
         path: "/cover-letter",
         icon: LuLetterText,
@@ -640,9 +639,8 @@ const Footer = () => {
     },
   ];
 
-
-    const pathname = usePathname();
-    const lastSegment = pathname.split("/").pop();
+  const pathname = usePathname();
+  const lastSegment = pathname.split("/").pop();
 
   const [showButton, setShowButton] = useState(false);
 
@@ -673,8 +671,6 @@ const Footer = () => {
             transition={{ duration: 0.5 }}
             className="space-y-4"
           >
-          
-
             <div className="relative w-[100px] xs:w-[120px] sm:w-[140px] md:w-[150px] h-[33px] xs:h-[40px] sm:h-[46px] md:h-[50px]">
               <Image
                 src="/logo.png"
@@ -707,10 +703,9 @@ const Footer = () => {
                 </span>
               </motion.a>
 
-
               <motion.a
                 href="https://maps.app.goo.gl/eTAt2FsASTX7MmCU9"
-                target='_blank'
+                target="_blank"
                 whileHover={{ x: 5 }}
                 className="flex items-center gap-3 text-sm text-gray-600 group"
               >
@@ -722,8 +717,6 @@ const Footer = () => {
                 </span>
               </motion.a>
             </div>
-
-            
           </motion.div>
 
           {/* Company Links */}
@@ -795,11 +788,13 @@ const Footer = () => {
             </ul>
 
             {/* Support Text */}
-            {lastSegment !== 'contact-us' &&
-            <button onClick={()=>router.push('/contact-us')} className="mt-8 p-3 bg-indigo-50 rounded-xl border border-indigo-100 text-xs text-indigo-700 hover: text-center cursor-pointer hover:bg-indigo-200/50  transition-all duration-500  hover:-translate-y-1">
+              <button
+                onClick={() => router.push("/support")}
+                className="mt-8 p-3 bg-indigo-50 rounded-xl border border-indigo-100 text-xs text-indigo-700 hover: text-center cursor-pointer hover:bg-indigo-200/50  transition-all duration-500  hover:-translate-y-1"
+              >
                 Need help? Contact our support team
-            </button> 
-}
+              </button>
+          
           </motion.div>
 
           {/* Our Network */}

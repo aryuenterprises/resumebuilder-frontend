@@ -43,7 +43,6 @@
 //   const lastSegment = pathname.split("/").pop();
 //   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 //     const [isDownloading, setIsDownloading] = useState<boolean>(false);
-  
 
 //   const [htmlContent, setHtmlContent] = useState<string>("");
 //   const [pages, setPages] = useState<string[]>([]);
@@ -394,15 +393,13 @@
 
 //   // ── Helper functions ──────────────────────────────────────────────────────
 //   const href = (url: string) => url.startsWith("http") ? url : `https://${url}`;
-  
+
 //   const rich = (html: string) => {
 //     const c = cleanQuillHTML(html);
 //     return c && c !== "<p><br></p>" ? c : "";
 //   };
 
 //   // ── Section builders ──────────────────────────────────────────────────────
-
-  
 
 //   // ── HTML builder with section ordering ───────────────────────────────────
 //  // AFTER
@@ -428,7 +425,7 @@
 //           </div>
 //         </div>`;
 
-//       const fontPreloads = activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif" 
+//       const fontPreloads = activeFontFamily !== "'-apple-system', 'BlinkMacSystemFont', sans-serif"
 //         ? `<link rel="preconnect" href="https://fonts.googleapis.com"/>
 //            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 //            <link href="${getFontImport(activeFontFamily)}" rel="stylesheet"/>`
@@ -437,7 +434,6 @@
 //       const pdfStyle = forPDF
 //         ? `<style>.t7-resume { width: 100% !important; padding: 0 !important; }</style>`
 //         : "";
-
 
 //         const sectionBuilders = {
 //   summary: () => summary ? `
@@ -534,8 +530,6 @@
 // };
 
 //       // Build sections in the order defined by customization
-   
-
 
 //          const sectionsHTML = [
 //   sectionBuilders.summary?.(),
@@ -744,8 +738,6 @@
 //             if (cutBlockId) pageBreakIds.push(cutBlockId);
 //           }
 
-      
-
 // document.body.removeChild(iframe);
 // (window as any).__resumePageBreakIds = pageBreakIds;
 
@@ -863,9 +855,7 @@
 //     }
 //   };
 
-  
-
-// const isThumbnail = !!alldata && !viewMode ; 
+// const isThumbnail = !!alldata && !viewMode ;
 //   return (
 //     <>
 //       {/* Download button — hide in thumbnail mode */}
@@ -906,7 +896,7 @@
 //           </motion.button>
 //         </div>
 //       {/* )} */}
- 
+
 //       {isThumbnail ? (
 //         // ── THUMBNAIL MODE (dashboard card) ─────────────────────────────────
 //         <div
@@ -1021,16 +1011,6 @@
 
 // export default TemplateSeven;
 
-
-
-
-
-
-
-
-
-
-
 "use client";
 import React, {
   useContext,
@@ -1078,13 +1058,10 @@ const TemplateSeven: React.FC<TemplateSevenProps> = ({
   const lastSegment = pathname.split("/").pop();
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
 
   const [htmlContent, setHtmlContent] = useState<string>("");
   const [pages, setPages] = useState<string[]>([]);
-
-  
 
   // ── Customization ─────────────────────────────────────────────────────────
   const activeFontFamily = customization?.fontFamily ?? "'Nunito', sans-serif";
@@ -1098,8 +1075,8 @@ const TemplateSeven: React.FC<TemplateSevenProps> = ({
   const finalize = alldata?.finalize || context?.finalize || {};
   const summary = alldata?.summary || context?.summary || "";
 
-  console.log(skills)
-  
+  console.log(skills);
+
   const addressParts = [
     contact?.address,
     contact?.city,
@@ -1115,30 +1092,48 @@ const TemplateSeven: React.FC<TemplateSevenProps> = ({
   // ── Font import map ─────────────────────────────────────────────────────
   const getFontImport = (fontFamily: string): string => {
     const map: Record<string, string> = {
-      "'Inter', sans-serif": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap",
+      "'Inter', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap",
       "'-apple-system', 'BlinkMacSystemFont', sans-serif": "",
-      "'Poppins', sans-serif": "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap",
-      "'Lato', sans-serif": "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",
-      "'Nunito', sans-serif": "https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&display=swap",
-      "'Raleway', sans-serif": "https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800&display=swap",
-      "'Montserrat', sans-serif": "https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap",
-      "'Open Sans', sans-serif": "https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap",
-      "'Roboto', sans-serif": "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap",
-      "'Merriweather', serif": "https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap",
-      "'Playfair Display', serif": "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&display=swap",
-      "'DM Serif Display', serif": "https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap",
-      "'Libre Baskerville', serif": "https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap",
-      "'EB Garamond', serif": "https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&display=swap",
-      "'Crimson Text', serif": "https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap",
-      "'Source Code Pro', monospace": "https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&display=swap",
-      "'JetBrains Mono', monospace": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap",
+      "'Poppins', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap",
+      "'Lato', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",
+      "'Nunito', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&display=swap",
+      "'Raleway', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800&display=swap",
+      "'Montserrat', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap",
+      "'Open Sans', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap",
+      "'Roboto', sans-serif":
+        "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap",
+      "'Merriweather', serif":
+        "https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap",
+      "'Playfair Display', serif":
+        "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&display=swap",
+      "'DM Serif Display', serif":
+        "https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap",
+      "'Libre Baskerville', serif":
+        "https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap",
+      "'EB Garamond', serif":
+        "https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&display=swap",
+      "'Crimson Text', serif":
+        "https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap",
+      "'Source Code Pro', monospace":
+        "https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&display=swap",
+      "'JetBrains Mono', monospace":
+        "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap",
     };
     return map[fontFamily] || map["'Nunito', sans-serif"];
   };
 
   const getSystemFallback = (fontFamily: string): string => {
-    if (fontFamily.includes("serif")) return 'Georgia, "Times New Roman", serif';
-    if (fontFamily.includes("monospace")) return '"Courier New", Courier, monospace';
+    if (fontFamily.includes("serif"))
+      return 'Georgia, "Times New Roman", serif';
+    if (fontFamily.includes("monospace"))
+      return '"Courier New", Courier, monospace';
     return '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
   };
 
@@ -1392,13 +1387,12 @@ const TemplateSeven: React.FC<TemplateSevenProps> = ({
 
   const CSS = buildCSS(activeFontFamily);
 
-  const href = (url: string) => (url.startsWith("http") ? url : `https://${url}`);
+  const href = (url: string) =>
+    url.startsWith("http") ? url : `https://${url}`;
   const rich = (html: string) => {
     const c = cleanQuillHTML(html);
     return c && c !== "<p><br></p>" ? c : "";
   };
-
-  
 
   // ── HTML builder ─────────────────────────────────────────────────────────
   const generateHTML = useCallback(
@@ -1418,7 +1412,7 @@ const TemplateSeven: React.FC<TemplateSevenProps> = ({
           <div class="links">
             ${linkedinUrl ? `<a href="${href(linkedinUrl)}" class="link-item" target="_blank">LinkedIn: ${formatSocialLink(linkedinUrl, "linkedin")}</a>` : ""}
             ${githubUrl ? `<a href="${href(githubUrl)}" class="link-item" target="_blank">GitHub: ${formatSocialLink(githubUrl, "github")}</a>` : ""}
-            ${portfolioUrl ? `<a href="${href(portfolioUrl)}" class="link-item" target="_blank">${formatSocialLink(portfolioUrl, "portfolio")}</a>` : ""}
+            ${portfolioUrl ? `<a href="${href(portfolioUrl)}" class="link-item" target="_blaedu.endDate ? edu.endDate : edu.isCurrentlyStudying ? "Present" : ""nk">${formatSocialLink(portfolioUrl, "portfolio")}</a>` : ""}
           </div>
         </div>`;
 
@@ -1458,7 +1452,11 @@ const TemplateSeven: React.FC<TemplateSevenProps> = ({
       ${experiences
         .map((exp: any, i: number) => {
           const startFormatted = formatMonthYear(exp.startDate, false);
-          const endFormatted = exp.endDate ? formatMonthYear(exp.endDate, false) : "Present";
+          const endFormatted = exp.endDate
+                             ? formatMonthYear(exp.endDate, false)
+                             : exp.isCurrentlyWorking
+                               ? "Present"
+                               : "";
           return `<div class="experience-item" data-block-id="t7-exp-${i}">
           <div class="experience-header">
             <div>
@@ -1486,12 +1484,16 @@ const TemplateSeven: React.FC<TemplateSevenProps> = ({
         <div class="project-item" data-block-id="t7-proj-${i}">
           <div class="project-header">
             <div class="project-title">${p.title || ""}</div>
-            ${p.liveUrl || p.githubUrl ? `
+            ${
+              p.liveUrl || p.githubUrl
+                ? `
               <div class="project-links">
                 ${p.liveUrl ? `<a href="${href(p.liveUrl)}" class="project-link" target="_blank">Live Demo</a>` : ""}
                 ${p.githubUrl ? `<a href="${href(p.githubUrl)}" class="project-link" target="_blank">GitHub</a>` : ""}
               </div>
-            ` : ""}
+            `
+                : ""
+            }
           </div>
           ${p.techStack?.length ? `<div class="project-tech-stack"><strong>Tech:</strong> ${p.techStack.join(", ")}</div>` : ""}
           ${p.description ? `<div class="project-description">${rich(p.description)}</div>` : ""}
@@ -1510,7 +1512,9 @@ const TemplateSeven: React.FC<TemplateSevenProps> = ({
       <h2 class="section-title">Education</h2>
       ${educations
         .map((edu: any, i: number) => {
-          const formattedGrade = formatGradeToCgpdAndPercentage(edu.grade || "");
+          const formattedGrade = formatGradeToCgpdAndPercentage(
+            edu.grade || "",
+          );
           return `<div class="education-item" data-block-id="t7-edu-${i}">
           <div class="education-header">
             <div>
@@ -1518,7 +1522,7 @@ const TemplateSeven: React.FC<TemplateSevenProps> = ({
               <div class="education-subtitle">${[edu.degree, edu.location].filter(Boolean).join(" — ")}</div>
               ${formattedGrade ? `<div class="education-grade">${formattedGrade}</div>` : ""}
             </div>
-            <div class="education-date">${[edu.startDate, edu.endDate || "Present"].filter(Boolean).join(" — ")}</div>
+            <div class="education-date">${[edu.startDate, edu.endDate ? edu.endDate : edu.isCurrentlyStudying ? "Present" : ""].filter(Boolean).join(" — ")}</div>
           </div>
           ${edu.text ? `<div class="education-description">${rich(edu.text)}</div>` : ""}
         </div>`;
@@ -1539,7 +1543,9 @@ const TemplateSeven: React.FC<TemplateSevenProps> = ({
 
         custom: () => {
           if (!Array.isArray(finalize?.customSection)) return "";
-          const filteredCustom = finalize.customSection.filter((s: any) => s?.name?.trim() || s?.description?.trim());
+          const filteredCustom = finalize.customSection.filter(
+            (s: any) => s?.name?.trim() || s?.description?.trim(),
+          );
           if (filteredCustom.length === 0) return "";
           return filteredCustom
             .map(
@@ -1759,39 +1765,48 @@ const TemplateSeven: React.FC<TemplateSevenProps> = ({
             });
           };
 
-          Array.from(resume.querySelectorAll<HTMLElement>("*")).forEach((el) => {
-            if (consumed.has(el)) return;
+          Array.from(resume.querySelectorAll<HTMLElement>("*")).forEach(
+            (el) => {
+              if (consumed.has(el)) return;
 
-            if (el.matches(HEADER_LIKE_SELECTOR)) {
-              pushAtomic(el, true);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches(ATOMIC_SELECTOR)) {
-              pushAtomic(el, false);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches("p, li")) {
-              if (pushLines(el)) {
+              if (el.matches(HEADER_LIKE_SELECTOR)) {
+                pushAtomic(el, true);
                 el.querySelectorAll("*").forEach((c) => consumed.add(c));
                 consumed.add(el);
+                return;
               }
-              return;
-            }
-            if (el.matches(DESC_WRAPPER_SELECTOR) && !el.querySelector("p, li")) {
-              if (pushLines(el)) consumed.add(el);
-            }
-          });
+              if (el.matches(ATOMIC_SELECTOR)) {
+                pushAtomic(el, false);
+                el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                consumed.add(el);
+                return;
+              }
+              if (el.matches("p, li")) {
+                if (pushLines(el)) {
+                  el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                  consumed.add(el);
+                }
+                return;
+              }
+              if (
+                el.matches(DESC_WRAPPER_SELECTOR) &&
+                !el.querySelector("p, li")
+              ) {
+                if (pushLines(el)) consumed.add(el);
+              }
+            },
+          );
 
           // Fallback: h1 name (single leaf, no p/li wrapper).
-          resume.querySelectorAll<HTMLElement>(".name, .job-title, .contact-row, .address").forEach((el) => {
-            if (consumed.has(el)) return;
-            pushAtomic(el, false);
-            consumed.add(el);
-          });
+          resume
+            .querySelectorAll<HTMLElement>(
+              ".name, .job-title, .contact-row, .address",
+            )
+            .forEach((el) => {
+              if (consumed.has(el)) return;
+              pushAtomic(el, false);
+              consumed.add(el);
+            });
 
           units.sort((a, b) => a.top - b.top || a.bottom - b.bottom);
 
@@ -1859,20 +1874,20 @@ const TemplateSeven: React.FC<TemplateSevenProps> = ({
 
   const splitRequestIdRef = useRef(0);
 
-useEffect(() => {
-  if (!htmlContent) return;
-  const requestId = ++splitRequestIdRef.current;
+  useEffect(() => {
+    if (!htmlContent) return;
+    const requestId = ++splitRequestIdRef.current;
 
-  splitIntoPages(htmlContent).then((result) => {
-    // Discard results from any call that isn't the most recently started —
-    // this is what was letting a stale, shorter clipH win the race and
-    // visually clip newly-typed lines until a later edit happened to
-    // resolve last.
-    if (splitRequestIdRef.current === requestId) {
-      setPages(result);
-    }
-  });
-}, [htmlContent, splitIntoPages]);
+    splitIntoPages(htmlContent).then((result) => {
+      // Discard results from any call that isn't the most recently started —
+      // this is what was letting a stale, shorter clipH win the race and
+      // visually clip newly-typed lines until a later edit happened to
+      // resolve last.
+      if (splitRequestIdRef.current === requestId) {
+        setPages(result);
+      }
+    });
+  }, [htmlContent, splitIntoPages]);
   // ── Debounced updates (300ms → 120ms) ────────────────────────────────────
   const scheduleUpdate = useCallback((html: string) => {
     if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
@@ -1956,13 +1971,15 @@ useEffect(() => {
                 <>
                   <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
                   <span>Download Resume</span>
-                  <span className="text-sm opacity-75 font-light ml-1">PDF</span>
+                  <span className="text-sm opacity-75 font-light ml-1">
+                    PDF
+                  </span>
                 </>
               )}
             </div>
           </motion.button>
         </div>
-       )} 
+      )}
 
       {isThumbnail ? (
         <div
@@ -1980,7 +1997,13 @@ useEffect(() => {
             <iframe
               title="resume-thumb"
               srcDoc={pages[0]}
-              style={{ width: `${A4_W}px`, height: `${A4_H}px`, border: "none", display: "block", pointerEvents: "none" }}
+              style={{
+                width: `${A4_W}px`,
+                height: `${A4_H}px`,
+                border: "none",
+                display: "block",
+                pointerEvents: "none",
+              }}
               sandbox="allow-same-origin"
             />
           ) : (
@@ -2005,8 +2028,18 @@ useEffect(() => {
         <div style={{ width: `${A4_W}px`, margin: "0 auto" }}>
           {(pages.length > 0 ? pages : [htmlContent]).map((pageHtml, idx) => (
             <div key={idx} style={{ marginBottom: "28px" }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", marginBottom: "10px" }}>
-                <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "10px",
+                  marginBottom: "10px",
+                }}
+              >
+                <div
+                  style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+                />
                 <span
                   style={{
                     fontSize: "11px",
@@ -2024,7 +2057,9 @@ useEffect(() => {
                   Page {idx + 1}
                   {pages.length > 1 ? ` of ${pages.length}` : ""}
                 </span>
-                <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
+                <div
+                  style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+                />
               </div>
               <div
                 style={{
@@ -2032,7 +2067,8 @@ useEffect(() => {
                   height: `${A4_H}px`,
                   overflow: "hidden",
                   background: "white",
-                  boxShadow: "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
+                  boxShadow:
+                    "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
                   borderRadius: "2px",
                   flexShrink: 0,
                 }}
@@ -2040,7 +2076,13 @@ useEffect(() => {
                 <iframe
                   title={`resume-page-${idx + 1}`}
                   srcDoc={pageHtml}
-                  style={{ width: `${A4_W}px`, height: `${A4_H}px`, border: "none", display: "block", pointerEvents: "none" }}
+                  style={{
+                    width: `${A4_W}px`,
+                    height: `${A4_H}px`,
+                    border: "none",
+                    display: "block",
+                    pointerEvents: "none",
+                  }}
                   scrolling="no"
                   sandbox="allow-same-origin allow-scripts"
                 />

@@ -2538,8 +2538,10 @@ const TemplateTen: React.FC<TemplateTenProps> = ({
           .map((exp: any, i: number) => {
             const startFormatted = formatMonthYear(exp.startDate, false);
             const endFormatted = exp.endDate
-              ? formatMonthYear(exp.endDate, false)
-              : "Present";
+                               ? formatMonthYear(exp.endDate, false)
+                               : exp.isCurrentlyWorking
+                                 ? "Present"
+                                 : "";
             return `
             <div class="entry-block" data-block-id="exp-${i}">
               <div class="entry-top-row">
@@ -2595,9 +2597,14 @@ const TemplateTen: React.FC<TemplateTenProps> = ({
         </div>
         ${educations
           .map((edu: any, i: number) => {
-            const dateStr =
+            // const dateStr =
+            //   edu.startDate || edu.endDate
+            //     ? `${edu.startDate || ""}${edu.startDate && edu.endDate ? " – " : ""}${edu.endDate || ""}`
+            //     : "";
+
+                 const dateStr =
               edu.startDate || edu.endDate
-                ? `${edu.startDate || ""}${edu.startDate && edu.endDate ? " – " : ""}${edu.endDate || ""}`
+                ? `${edu.startDate || ""} - ${edu.endDate ? edu.endDate : edu.isCurrentlyStudying ? "Present" : ""}`
                 : "";
             const formattedGrade = formatGradeToCgpdAndPercentage(
               edu.grade || "",

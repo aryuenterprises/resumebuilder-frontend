@@ -2414,11 +2414,15 @@ const TemplateNine: React.FC<TemplateNineProps> = ({
           <div class="section-title-line"></div>
         </div>
         ${experiences
-          .map((exp: any, i: number) => {
-            const startFormatted = formatMonthYear(exp.startDate, false);
-            const endFormatted = exp.endDate
+          .map((exp: any, i: number) => {exp.endDate
               ? formatMonthYear(exp.endDate, false)
               : "Present";
+            const startFormatted = formatMonthYear(exp.startDate, false);
+            const endFormatted = exp.endDate
+                               ? formatMonthYear(exp.endDate, false)
+                               : exp.isCurrentlyWorking
+                                 ? "Present"
+                                 : "";
             return `
             <div class="entry-block" data-block-id="exp-${i}">
               <div class="entry-top-row">
@@ -2476,7 +2480,7 @@ const TemplateNine: React.FC<TemplateNineProps> = ({
           .map((edu: any, i: number) => {
             const dateStr =
               edu.startDate || edu.endDate
-                ? `${edu.startDate || ""} - ${edu.endDate || "Present"}`
+                ? `${edu.startDate || ""} - ${edu.endDate ? edu.endDate : edu.isCurrentlyStudying ? "Present" : ""}`
                 : "";
             const formattedGrade = formatGradeToCgpdAndPercentage(
               edu.grade || "",
@@ -3047,15 +3051,14 @@ const TemplateNine: React.FC<TemplateNineProps> = ({
       />
 
       {/* ── Download button ──────────────────────────────────────────────── */}
-            {!isThumbnail && lastSegment === "download-resume" && (
-
-      <div className="text-center my-8">
-        <motion.button
-          onClick={handleDownload}
-          disabled={isDownloading}
-          whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
-          whileTap={!isDownloading ? { scale: 0.98 } : {}}
-          className={`
+      {!isThumbnail && lastSegment === "download-resume" && (
+        <div className="text-center my-8">
+          <motion.button
+            onClick={handleDownload}
+            disabled={isDownloading}
+            whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
+            whileTap={!isDownloading ? { scale: 0.98 } : {}}
+            className={`
             relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
             text-white transition-all duration-300 shadow-lg
             ${
@@ -3064,27 +3067,29 @@ const TemplateNine: React.FC<TemplateNineProps> = ({
                 : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600 cursor-pointer"
             }
           `}
-        >
-          {!isDownloading && (
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          )}
-          <div className="relative flex items-center justify-center gap-3 text-lg">
-            {isDownloading ? (
-              <>
-                <FaSpinner className="animate-spin text-xl" />
-                <span>Generating PDF …</span>
-              </>
-            ) : (
-              <>
-                <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
-                <span>Download Resume</span>
-                <span className="text-sm opacity-75 font-light ml-1">PDF</span>
-              </>
+          >
+            {!isDownloading && (
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
             )}
-          </div>
-        </motion.button>
-      </div>
-            )}
+            <div className="relative flex items-center justify-center gap-3 text-lg">
+              {isDownloading ? (
+                <>
+                  <FaSpinner className="animate-spin text-xl" />
+                  <span>Generating PDF …</span>
+                </>
+              ) : (
+                <>
+                  <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
+                  <span>Download Resume</span>
+                  <span className="text-sm opacity-75 font-light ml-1">
+                    PDF
+                  </span>
+                </>
+              )}
+            </div>
+          </motion.button>
+        </div>
+      )}
 
       {isThumbnail ? (
         // ── THUMBNAIL MODE ──────────────────────────────────────────────

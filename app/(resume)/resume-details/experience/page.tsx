@@ -65,12 +65,9 @@ const ExperienceForm = () => {
   // removeSessionStorage("oldRouteNameDashboard");
   // removeSessionStorage("editingResumeIdAndData");
 
-  const {
-    experiences,
-    setExperiences,
-  } = UseContext;
+  const { experiences, setExperiences } = UseContext;
 
-  console.log("experiences",experiences)
+  console.log("experiences", experiences);
 
   // Drag and drop state
   const [draggedItemId, setDraggedItemId] = useState<string | number | null>(
@@ -439,11 +436,6 @@ const ExperienceForm = () => {
                                 •
                               </span>
                               <span className="whitespace-nowrap">
-                                {/* <MonthYearDisplay */}
-                                {/* // value={exp.startDate} */}
-                                {/* shortYear={true} */}
-                                {/* /> */}
-
                                 {formatMonthYear(exp.startDate, false)}
                                 {" - "}
                                 {exp.isCurrentlyWorking ? (
@@ -451,11 +443,6 @@ const ExperienceForm = () => {
                                     Present
                                   </span>
                                 ) : (
-                                  // <MonthYearDisplay
-                                  //   value={exp.endDate || ""}
-                                  //   shortYear={true}
-                                  // />
-
                                   formatMonthYear(exp.endDate, false)
                                 )}
                               </span>
@@ -580,6 +567,7 @@ const ExperienceForm = () => {
                                 </label>
                                 <input
                                   type="month"
+                                  min={exp.startDate}
                                   value={exp.endDate || ""}
                                   onChange={(e) =>
                                     handleChange(

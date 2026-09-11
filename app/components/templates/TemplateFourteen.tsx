@@ -2508,7 +2508,7 @@ const TemplateFourteen: React.FC<TemplateFourteenProps> = ({
             ${formattedDob ? `<span class="header-meta-item">${formattedDob}</span>` : ""}
             ${linkedinUrl ? `<span class="header-meta-item"><a href="${href(linkedinUrl)}" target="_blank">LinkedIn: ${formatSocialLink(linkedinUrl, "linkedin")}</a></span>` : ""}
             ${githubUrl ? `<span class="header-meta-item"><a href="${href(githubUrl)}" target="_blank">GitHub: ${formatSocialLink(githubUrl, "github")}</a></span>` : ""}
-            ${portfolioUrl ? `<span class="header-meta-item"><a href="${href(portfolioUrl)}" target="_blank">${formatSocialLink(portfolioUrl, "portfolio")}</a></span>` : ""}
+          edu.endDate ? edu.endDate : edu.isCurrentlyStudying ? "Present" : ""  ${portfolioUrl ? `<span class="header-meta-item"><a href="${href(portfolioUrl)}" target="_blank">${formatSocialLink(portfolioUrl, "portfolio")}</a></span>` : ""}
           </div>
         </div>`;
 
@@ -2533,7 +2533,9 @@ const TemplateFourteen: React.FC<TemplateFourteenProps> = ({
             const start = formatMonthYear(exp.startDate, false);
             const end = exp.endDate
               ? formatMonthYear(exp.endDate, false)
-              : "Present";
+              : exp.isCurrentlyWorking
+                ? "Present"
+                : "";
             const loc = [exp.employer, exp.location]
               .filter(Boolean)
               .join(" • ");
@@ -2589,14 +2591,16 @@ const TemplateFourteen: React.FC<TemplateFourteenProps> = ({
 
         education: () =>
           educations.length > 0
-            ? `
+            ? `exp.endDate
+              ? formatMonthYear(exp.endDate, false)
+              : "Present";
       <div class="section-block" data-block-id="t14-edu-section">
         ${sectionHeaderHTML("Education")}
         ${educations
           .map((edu: any, i: number) => {
             const dateStr =
               edu.startDate || edu.endDate
-                ? `${edu.startDate || ""}${edu.startDate && edu.endDate ? " – " : ""}${edu.endDate || ""}`
+                ? `${edu.startDate || ""}${edu.startDate && edu.endDate ? " – " : ""}${edu.endDate ? edu.endDate : edu.isCurrentlyStudying ? "Present" : ""}`
                 : "";
             const grade = formatGradeToCgpdAndPercentage(edu.grade || "");
             return `
@@ -3154,15 +3158,14 @@ const TemplateFourteen: React.FC<TemplateFourteenProps> = ({
       />
 
       {/* ── Download button ──────────────────────────────────────────────── */}
-            {!isThumbnail && lastSegment === "download-resume" && (
-
-      <div className="text-center my-8">
-        <motion.button
-          onClick={handleDownload}
-          disabled={isDownloading}
-          whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
-          whileTap={!isDownloading ? { scale: 0.98 } : {}}
-          className={`
+      {!isThumbnail && lastSegment === "download-resume" && (
+        <div className="text-center my-8">
+          <motion.button
+            onClick={handleDownload}
+            disabled={isDownloading}
+            whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
+            whileTap={!isDownloading ? { scale: 0.98 } : {}}
+            className={`
             relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
             text-white transition-all duration-300 shadow-lg
             ${
@@ -3171,27 +3174,29 @@ const TemplateFourteen: React.FC<TemplateFourteenProps> = ({
                 : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600 cursor-pointer"
             }
           `}
-        >
-          {!isDownloading && (
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          )}
-          <div className="relative flex items-center justify-center gap-3 text-lg">
-            {isDownloading ? (
-              <>
-                <FaSpinner className="animate-spin text-xl" />
-                <span>Generating PDF …</span>
-              </>
-            ) : (
-              <>
-                <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
-                <span>Download Resume</span>
-                <span className="text-sm opacity-75 font-light ml-1">PDF</span>
-              </>
+          >
+            {!isDownloading && (
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
             )}
-          </div>
-        </motion.button>
-      </div>
-            )}
+            <div className="relative flex items-center justify-center gap-3 text-lg">
+              {isDownloading ? (
+                <>
+                  <FaSpinner className="animate-spin text-xl" />
+                  <span>Generating PDF …</span>
+                </>
+              ) : (
+                <>
+                  <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
+                  <span>Download Resume</span>
+                  <span className="text-sm opacity-75 font-light ml-1">
+                    PDF
+                  </span>
+                </>
+              )}
+            </div>
+          </motion.button>
+        </div>
+      )}
 
       {isThumbnail ? (
         // ── THUMBNAIL MODE ──────────────────────────────────────────────

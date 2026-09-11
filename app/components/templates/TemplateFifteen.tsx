@@ -2818,10 +2818,10 @@ const TemplateFifteen: React.FC<TemplateFifteenProps> = ({
                .map((exp: any, i: number) => {
                  const s = formatMonthYear(exp.startDate, false);
                  const e = exp.endDate
-                   ? formatMonthYear(exp.endDate, false)
-                   : exp.startDate
-                     ? "Present"
-                     : "";
+                                    ? formatMonthYear(exp.endDate, false)
+                                    : exp.isCurrentlyWorking
+                                      ? "Present"
+                                      : "";
                  const companyLocation = [exp.employer, exp.location]
                    .filter(Boolean)
                    .join(" · ");
@@ -2887,7 +2887,7 @@ const TemplateFifteen: React.FC<TemplateFifteenProps> = ({
                      </div>
                      ${
                        edu.startDate || edu.endDate
-                         ? `<div class="t15-entry-date">${[edu.startDate, edu.endDate].filter(Boolean).join(" – ")}</div>`
+                         ? `<div class="t15-entry-date">${[edu.startDate, edu.endDate ? edu.endDate : edu.isCurrentlyStudying ? "Present" : ""].filter(Boolean).join(" – ")}</div>`
                          : ""
                      }
                    </div>

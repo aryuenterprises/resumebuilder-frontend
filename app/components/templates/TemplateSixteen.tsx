@@ -2637,8 +2637,10 @@ const TemplateSixteen: React.FC<TemplateSixteenProps> = ({
               .map((exp: any, i: number) => {
                 const s = formatMonthYear(exp.startDate, false);
                 const e = exp.endDate
-                  ? formatMonthYear(exp.endDate, false)
-                  : "Present";
+                                   ? formatMonthYear(exp.endDate, false)
+                                   : exp.isCurrentlyWorking
+                                     ? "Present"
+                                     : "";
                 const companyLocation = [exp.employer, exp.location]
                   .filter(Boolean)
                   .join("  ·  ");
@@ -2684,7 +2686,7 @@ const TemplateSixteen: React.FC<TemplateSixteenProps> = ({
               .map((edu: any, i: number) => {
                 const dateStr =
                   edu.startDate || edu.endDate
-                    ? `${edu.startDate || ""}${edu.startDate && edu.endDate ? " – " : ""}${edu.endDate || ""}`
+                    ? `${edu.startDate || ""}${edu.startDate && edu.endDate ? " – " : ""}${edu.endDate ? edu.endDate : edu.isCurrentlyStudying ? "Present" : ""}`
                     : "";
                 const grade = formatGradeToCgpdAndPercentage(edu.grade || "");
                 const eduText = edu.text ? cleanQuillHTML(edu.text) : "";

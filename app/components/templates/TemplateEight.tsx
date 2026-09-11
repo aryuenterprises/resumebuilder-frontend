@@ -1643,8 +1643,10 @@ const TemplateEight: React.FC<TemplateEightProps> = ({
           .map((exp: any, i: number) => {
             const startFormatted = formatMonthYear(exp.startDate, false);
             const endFormatted = exp.endDate
-              ? formatMonthYear(exp.endDate, false)
-              : "Present";
+                               ? formatMonthYear(exp.endDate, false)
+                               : exp.isCurrentlyWorking
+                                 ? "Present"
+                                 : "";
             return `
             <div class="entry-block" data-block-id="exp-${i}">
               <div class="entry-top-row">
@@ -1724,7 +1726,7 @@ const TemplateEight: React.FC<TemplateEightProps> = ({
             <div class="entry-block" data-block-id="edu-${i}">
               <div class="entry-top-row">
                 <div class="entry-title">${edu.schoolname || ""}</div>
-                <div class="entry-date">${[edu.startDate, edu.endDate || "Present"].filter(Boolean).join(" – ")}</div>
+                <div class="entry-date">${[edu.startDate, edu.endDate ? edu.endDate : edu.isCurrentlyStudying ? "Present" : ""].filter(Boolean).join(" – ")}</div>
               </div>
               <div class="entry-subtitle">
                 ${[edu.degree, edu.location].filter(Boolean).join(" · ")}

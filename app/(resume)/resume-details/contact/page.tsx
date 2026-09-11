@@ -427,7 +427,7 @@ const ContactForm = () => {
                           sanitizeName(e.target.value),
                         )
                       }
-                      placeholder="John"
+                      placeholder="Yuvaraj"
                       className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm sm:text-base placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
                     />
                   </div>
@@ -444,7 +444,7 @@ const ContactForm = () => {
                           sanitizeName(e.target.value),
                         )
                       }
-                      placeholder="Doe"
+                      placeholder="Kumar"
                       className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm sm:text-base placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
                     />
                   </div>
@@ -465,7 +465,7 @@ const ContactForm = () => {
                           sanitizeNumber(e.target.value),
                         )
                       }
-                      placeholder="+1 (555) 000-9999"
+                      placeholder="+91 97625 78631"
                       className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm sm:text-base placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
                     />
                   </div>
@@ -479,7 +479,7 @@ const ContactForm = () => {
                       onChange={(e) =>
                         handleContactChange("email", e.target.value)
                       }
-                      placeholder="john@example.com"
+                      placeholder="yuvaraj@gmail.com"
                       className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm sm:text-base placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
                     />
                   </div>
@@ -500,7 +500,7 @@ const ContactForm = () => {
                           sanitizeText(e.target.value),
                         )
                       }
-                      placeholder="Senior Software Engineer"
+                      placeholder="Software Engineer"
                       className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm sm:text-base placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
                     />
                   </div>
@@ -612,7 +612,7 @@ const ContactForm = () => {
                                     e.target.value,
                                   )
                                 }
-                                placeholder="johndoe.com"
+                                placeholder="yuvaraj.com"
                                 className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm sm:text-base placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
                               />
                             </div>
@@ -646,7 +646,7 @@ const ContactForm = () => {
                                     sanitizeTextWithComma(e.target.value),
                                   )
                                 }
-                                placeholder="New York"
+                                placeholder="Chennai"
                                 className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm sm:text-base placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
                               />
                             </div>
@@ -663,7 +663,7 @@ const ContactForm = () => {
                                     e.target.value,
                                   )
                                 }
-                                placeholder="10001"
+                                placeholder="600106"
                                 className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm sm:text-base placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
                               />
                             </div>
@@ -680,7 +680,7 @@ const ContactForm = () => {
                                     sanitizeTextWithComma(e.target.value),
                                   )
                                 }
-                                placeholder="United States"
+                                placeholder="India"
                                 className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm sm:text-base placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
                               />
                             </div>

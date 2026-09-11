@@ -1946,10 +1946,10 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({
         .map((exp: any, i: number) => {
           const start = formatMonthYear(exp.startDate, false);
           const end = exp.endDate
-            ? formatMonthYear(exp.endDate, false)
-            : exp.startDate
-              ? "Present"
-              : "";
+                             ? formatMonthYear(exp.endDate, false)
+                             : exp.isCurrentlyWorking
+                               ? "Present"
+                               : "";
           return `<div class="t5-entry" data-block-id="t5-exp-${i}">
           <div class="t5-experience-header">
             <div class="t5-experience-title">${exp.jobTitle || ""}</div>
@@ -2003,7 +2003,7 @@ const TemplateFive: React.FC<TemplateFiveProps> = ({
           return `<div class="t5-entry" data-block-id="t5-edu-${i}">
           <div class="t5-education-header">
             <div class="t5-education-school">${edu.schoolname || ""}</div>
-            <div class="t5-education-date">${[edu.startDate, edu.endDate || "Present"].filter(Boolean).join(" — ")}</div>
+            <div class="t5-education-date">${[edu.startDate, edu.endDate ? edu.endDate : edu.isCurrentlyStudying ? "Present" : ""].filter(Boolean).join(" — ")}</div>
           </div>
           <div class="t5-education-subtitle">${[edu.degree, edu.location].filter(Boolean).join(" • ")}</div>
           ${formattedGrade ? `<div class="t5-education-grade">${formattedGrade}</div>` : ""}

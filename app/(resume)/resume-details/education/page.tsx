@@ -75,6 +75,8 @@ const Education_form = () => {
     setEducation: () => {},
   };
 
+  console.log("education", education);
+
   const [showPopup, setShowPopup] = useState(false);
   const [loading, setLoading] = useState(false);
   const [Airesponse, setAireseponse] = useState<string[] | null>(null);
@@ -508,7 +510,7 @@ const Education_form = () => {
                                   e.target.value,
                                 )
                               }
-                              placeholder="University Name"
+                              placeholder="SRM University"
                               className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
                             />
                           </div>
@@ -533,7 +535,7 @@ const Education_form = () => {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
                           <div>
                             <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5 sm:mb-2">
-                            Degree / Class
+                              Degree / Class
                             </label>
                             <input
                               type="text"
@@ -576,6 +578,7 @@ const Education_form = () => {
                               Start Year
                             </label>
                             <Calendar
+                              
                               value={
                                 exp.startDate
                                   ? new Date(parseInt(exp.startDate), 0, 1)
@@ -605,6 +608,11 @@ const Education_form = () => {
                               End Year
                             </label>
                             <Calendar
+                            minDate={
+                                exp.startDate
+                                  ? new Date(parseInt(exp.startDate), 0, 1)
+                                  : new Date(1950, 0, 1)
+                              }
                               value={
                                 exp.endDate && !exp.isCurrentlyStudying
                                   ? new Date(parseInt(exp.endDate), 0, 1)

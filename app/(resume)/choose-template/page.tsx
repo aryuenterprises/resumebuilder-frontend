@@ -417,7 +417,6 @@ function Choose_template() {
     if (!userData) return;
 
     const { subscription } = userData;
-    // setUsersCurrentPlan("premium");
 
     if (subscription?.is_expired === true) {
       let daysExpired = 0;

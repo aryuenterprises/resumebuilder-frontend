@@ -2374,7 +2374,7 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({
                const start = formatMonthYear(exp.startDate, false);
                const end = exp.endDate
                  ? formatMonthYear(exp.endDate, false)
-                 : exp.startDate
+                 : exp.isCurrentlyWorking
                    ? "Present"
                    : "";
                return `<div class="t3-entry" data-block-id="exp-${i}">
@@ -2425,7 +2425,7 @@ const TemplateThree: React.FC<TemplateThreeProps> = ({
                return `<div class="t3-entry" data-block-id="edu-${i}">
                <div class="t3-education-header">
                  <div class="t3-education-school">${edu.schoolname || ""}</div>
-                 <div class="t3-education-date">${[edu.startDate, edu.endDate || "Present"].filter(Boolean).join(" — ")}</div>
+                 <div class="t3-education-date">${[edu.startDate, edu.endDate ? edu.endDate : edu.isCurrentlyStudying ? "Present" : ""].filter(Boolean).join(" — ")}</div>
                </div>
                <div class="t3-education-subtitle">${[edu.degree, edu.location].filter(Boolean).join(" — ")}</div>
                ${formattedGrade ? `<div class="t3-education-grade">${formattedGrade}</div>` : ""}

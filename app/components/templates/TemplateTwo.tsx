@@ -2472,7 +2472,7 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({
               const start = formatMonthYear(exp.startDate, false);
               const end = exp.endDate
                 ? formatMonthYear(exp.endDate, false)
-                : exp.startDate
+                : exp.isCurrentlyWorking
                   ? "Present"
                   : "";
               return `<div class="entry-block" data-block-id="exp-${i}">
@@ -2519,7 +2519,7 @@ const TemplateTwo: React.FC<TemplateTwoProps> = ({
           ${educations
             .map((edu: any, i: number) => {
               const grade = formatGradeToCgpdAndPercentage(edu.grade || "");
-              const dateStr = [edu.startDate, edu.endDate || "Present"]
+              const dateStr = [edu.startDate, edu.endDate ? edu.endDate : edu.isCurrentlyStudying ? "Present" : ""]
                 .filter(Boolean)
                 .join(" - ");
               return `<div class="entry-block" data-block-id="edu-${i}">

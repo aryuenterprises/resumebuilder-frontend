@@ -6461,7 +6461,7 @@
 //     @import url('${getFontImport(fontFamily)}');
 
 //     @page { size: A4; margin: ${MARGIN}px; }
-    
+
 //     *, *::before, *::after { box-sizing: border-box; }
 
 //     html, body { margin: 0; padding: 0; background: white; }
@@ -7279,9 +7279,7 @@
 //     }
 //   };
 
-
-
-// const isThumbnail = !!alldata && !viewMode ; 
+// const isThumbnail = !!alldata && !viewMode ;
 //   return (
 //     <>
 //       {/* Download button — hide in thumbnail mode */}
@@ -7322,7 +7320,7 @@
 //           </motion.button>
 //         </div>
 //       )}
- 
+
 //       {isThumbnail ? (
 //         // ── THUMBNAIL MODE (dashboard card) ─────────────────────────────────
 //         <div
@@ -7436,24 +7434,6 @@
 // };
 
 // export default TemplateThirteen;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // "use client";
 // import React, {
@@ -7585,7 +7565,7 @@
 //     @import url('${getFontImport(fontFamily)}');
 
 //     @page { size: A4; margin: ${MARGIN}px; }
-    
+
 //     *, *::before, *::after { box-sizing: border-box; }
 
 //     html, body { margin: 0; padding: 0; background: white; }
@@ -8418,27 +8398,6 @@
 
 // export default TemplateThirteen;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 import React, {
   useContext,
@@ -8756,7 +8715,6 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
   const cleanUrl = (url: string) =>
     url.replace(/^https?:\/\//, "").replace(/^www\./, "");
 
-  
   const rich = (html: string) => {
     const c = cleanQuillHTML(html);
     return c && c !== "<p><br></p>" ? c : "";
@@ -8787,13 +8745,15 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
           .map((exp: any, i: number) => {
             const startFormatted = formatMonthYear(exp.startDate, false);
             const endFormatted = exp.endDate
-              ? formatMonthYear(exp.endDate, false)
-              : "Present";
+                               ? formatMonthYear(exp.endDate, false)
+                               : exp.isCurrentlyWorking
+                                 ? "Present"
+                                 : "";
             const companyLocation = [exp.employer, exp.location]
               .filter(Boolean)
               .join(" • ");
             return `
-            <div class="experience-item" data-block-id="exp-${i}">
+            <div class="experience-item" data-block-id="exp-${i}">edu.endDate ? edu.endDate : edu.isCurrentlyStudying ? "Present" : ""
               <div class="experience-header">
                 <div class="experience-title-row">
                   <span class="experience-title">${exp.jobTitle || ""}</span>
@@ -8847,7 +8807,7 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
           .map((edu: any, i: number) => {
             const dateStr =
               edu.startDate || edu.endDate
-                ? `${edu.startDate || ""} — ${edu.endDate || "Present"}`
+                ? `${edu.startDate || ""} — ${edu.endDate ? edu.endDate : edu.isCurrentlyStudying ? "Present" : ""}`
                 : "";
             const formattedGrade = formatGradeToCgpdAndPercentage(
               edu.grade || "",
@@ -9119,8 +9079,7 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
 
           const resumeRect = resume.getBoundingClientRect();
           const scrollY =
-            measureDoc.documentElement.scrollTop ||
-            measureDoc.body.scrollTop;
+            measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
           const getRelTop = (el: Element) =>
             el.getBoundingClientRect().top - resumeRect.top + scrollY;
           const getRelBottom = (el: Element) =>
@@ -9206,43 +9165,43 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
             });
           };
 
-          Array.from(
-            resume.querySelectorAll<HTMLElement>("*"),
-          ).forEach((el) => {
-            if (consumed.has(el)) return;
+          Array.from(resume.querySelectorAll<HTMLElement>("*")).forEach(
+            (el) => {
+              if (consumed.has(el)) return;
 
-            if (el.matches(HEADER_LIKE_SELECTOR)) {
-              pushAtomic(el, true);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches(CHAINED_KEEP_SELECTOR)) {
-              pushAtomic(el, true);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches(ATOMIC_SELECTOR)) {
-              pushAtomic(el, false);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches("p, li")) {
-              if (pushLines(el)) {
+              if (el.matches(HEADER_LIKE_SELECTOR)) {
+                pushAtomic(el, true);
                 el.querySelectorAll("*").forEach((c) => consumed.add(c));
                 consumed.add(el);
+                return;
               }
-              return;
-            }
-            if (
-              el.matches(DESC_WRAPPER_SELECTOR) &&
-              !el.querySelector("p, li")
-            ) {
-              if (pushLines(el)) consumed.add(el);
-            }
-          });
+              if (el.matches(CHAINED_KEEP_SELECTOR)) {
+                pushAtomic(el, true);
+                el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                consumed.add(el);
+                return;
+              }
+              if (el.matches(ATOMIC_SELECTOR)) {
+                pushAtomic(el, false);
+                el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                consumed.add(el);
+                return;
+              }
+              if (el.matches("p, li")) {
+                if (pushLines(el)) {
+                  el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                  consumed.add(el);
+                }
+                return;
+              }
+              if (
+                el.matches(DESC_WRAPPER_SELECTOR) &&
+                !el.querySelector("p, li")
+              ) {
+                if (pushLines(el)) consumed.add(el);
+              }
+            },
+          );
 
           // ── Catch remaining standalone elements ─────────────────────
           resume
@@ -9289,8 +9248,7 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
           }
 
           // ── Store data for PDF generation ────────────────────────────
-          (window as any).__resumePageBreakIds =
-            pageBreakIds.filter(Boolean);
+          (window as any).__resumePageBreakIds = pageBreakIds.filter(Boolean);
           (window as any).__resumePageStarts = pageStarts;
           (window as any).__resumeTotalH = totalH;
           (window as any).__resumeSnapshot = resumeSnapshot;
@@ -9330,9 +9288,7 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
         if (mainFontsReady) {
           requestAnimationFrame(() => requestAnimationFrame(doMeasure));
         } else if (win?.document?.fonts?.ready) {
-          win.document.fonts.ready.then(() =>
-            requestAnimationFrame(doMeasure),
-          );
+          win.document.fonts.ready.then(() => requestAnimationFrame(doMeasure));
         } else {
           setTimeout(doMeasure, 150);
         }
@@ -9438,15 +9394,14 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
       />
 
       {/* ── Download button ──────────────────────────────────────────────── */}
-            {!isThumbnail && lastSegment === "download-resume" && (
-
-      <div className="text-center my-8">
-        <motion.button
-          onClick={handleDownload}
-          disabled={isDownloading}
-          whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
-          whileTap={!isDownloading ? { scale: 0.98 } : {}}
-          className={`
+      {!isThumbnail && lastSegment === "download-resume" && (
+        <div className="text-center my-8">
+          <motion.button
+            onClick={handleDownload}
+            disabled={isDownloading}
+            whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
+            whileTap={!isDownloading ? { scale: 0.98 } : {}}
+            className={`
             relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
             text-white transition-all duration-300 shadow-lg
             ${
@@ -9455,29 +9410,29 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
                 : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600 cursor-pointer"
             }
           `}
-        >
-          {!isDownloading && (
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          )}
-          <div className="relative flex items-center justify-center gap-3 text-lg">
-            {isDownloading ? (
-              <>
-                <FaSpinner className="animate-spin text-xl" />
-                <span>Generating PDF …</span>
-              </>
-            ) : (
-              <>
-                <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
-                <span>Download Resume</span>
-                <span className="text-sm opacity-75 font-light ml-1">
-                  PDF
-                </span>
-              </>
+          >
+            {!isDownloading && (
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
             )}
-          </div>
-        </motion.button>
-      </div>
-            )}
+            <div className="relative flex items-center justify-center gap-3 text-lg">
+              {isDownloading ? (
+                <>
+                  <FaSpinner className="animate-spin text-xl" />
+                  <span>Generating PDF …</span>
+                </>
+              ) : (
+                <>
+                  <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
+                  <span>Download Resume</span>
+                  <span className="text-sm opacity-75 font-light ml-1">
+                    PDF
+                  </span>
+                </>
+              )}
+            </div>
+          </motion.button>
+        </div>
+      )}
 
       {isThumbnail ? (
         // ── THUMBNAIL MODE ──────────────────────────────────────────────

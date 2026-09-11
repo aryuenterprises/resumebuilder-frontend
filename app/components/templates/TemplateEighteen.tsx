@@ -975,35 +975,6 @@
 
 // export default TemplateEighteen;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 import React, {
   useContext,
@@ -1120,8 +1091,10 @@ const TemplateEighteen: React.FC<TemplateEighteenProps> = ({
   };
 
   const getSystemFallback = (fontFamily: string): string => {
-    if (fontFamily.includes("serif")) return 'Georgia, "Times New Roman", serif';
-    if (fontFamily.includes("monospace")) return '"Courier New", Courier, monospace';
+    if (fontFamily.includes("serif"))
+      return 'Georgia, "Times New Roman", serif';
+    if (fontFamily.includes("monospace"))
+      return '"Courier New", Courier, monospace';
     return '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
   };
 
@@ -1278,7 +1251,8 @@ const TemplateEighteen: React.FC<TemplateEighteenProps> = ({
     (forPDF = false, pageBreakIds: string[] = []): string => {
       const CSS = buildCSS(activeFontFamily);
 
-      const href = (url: string) => (url.startsWith("http") ? url : `https://${url}`);
+      const href = (url: string) =>
+        url.startsWith("http") ? url : `https://${url}`;
       const formattedDob = formatDateOfBirth(dateOfBirth || "");
 
       const chipHTML = (label: string, url?: string) => {
@@ -1320,11 +1294,16 @@ const TemplateEighteen: React.FC<TemplateEighteenProps> = ({
           return `<div class="${cls}">${cleaned}</div>`;
         }
         const lines = cleaned.split("\n").filter((l) => l.trim());
-        if (lines.some((l) => l.trim().startsWith("-") || l.trim().startsWith("•"))) {
+        if (
+          lines.some(
+            (l) => l.trim().startsWith("-") || l.trim().startsWith("•"),
+          )
+        ) {
           return `<div class="${cls}"><ul>${lines
             .map((l) => {
               const t = l.trim();
-              const c = t.startsWith("-") || t.startsWith("•") ? t.slice(1).trim() : t;
+              const c =
+                t.startsWith("-") || t.startsWith("•") ? t.slice(1).trim() : t;
               return c ? `<li>${c}</li>` : "";
             })
             .join("")}</ul></div>`;
@@ -1353,7 +1332,11 @@ const TemplateEighteen: React.FC<TemplateEighteenProps> = ({
              ${experiences
                .map((exp: any, i: number) => {
                  const s = formatMonthYear(exp.startDate, false);
-                 const e = exp.endDate ? formatMonthYear(exp.endDate, false) : "Present";
+                 const e = exp.endDate
+                   ? formatMonthYear(exp.endDate, false)
+                   : exp.isCurrentlyWorking
+                     ? "Present"
+                     : "";
                  return `<div class="t18-item" data-block-id="exp-${i}">
                  <div class="t18-item-header">
                    <div>
@@ -1403,7 +1386,7 @@ const TemplateEighteen: React.FC<TemplateEighteenProps> = ({
                  const grade = formatGradeToCgpdAndPercentage(edu.grade || "");
                  const dateStr =
                    edu.startDate || edu.endDate
-                     ? `${edu.startDate || ""} – ${edu.endDate || "Present"}`
+                     ? `${edu.startDate || ""} – ${edu.endDate ? edu.endDate : edu.isCurrentlyStudying ? "Present" : ""}`
                      : "";
                  return `<div class="t18-item" data-block-id="edu-${i}">
                  <div class="t18-item-header">
@@ -1437,7 +1420,9 @@ const TemplateEighteen: React.FC<TemplateEighteenProps> = ({
       const customBlock =
         !Array.isArray(finalize) &&
         Array.isArray(finalize?.customSection) &&
-        finalize.customSection.some((s: any) => s?.name?.trim() || s?.description?.trim())
+        finalize.customSection.some(
+          (s: any) => s?.name?.trim() || s?.description?.trim(),
+        )
           ? finalize.customSection
               .filter((s: any) => s?.name?.trim() || s?.description?.trim())
               .map(
@@ -1559,9 +1544,12 @@ const TemplateEighteen: React.FC<TemplateEighteenProps> = ({
 
           const totalH = resume.scrollHeight;
           const resumeRect = resume.getBoundingClientRect();
-          const scrollY = measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
-          const getRelTop = (el: HTMLElement) => el.getBoundingClientRect().top - resumeRect.top + scrollY;
-          const getRelBottom = (el: HTMLElement) => getRelTop(el) + el.getBoundingClientRect().height;
+          const scrollY =
+            measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
+          const getRelTop = (el: HTMLElement) =>
+            el.getBoundingClientRect().top - resumeRect.top + scrollY;
+          const getRelBottom = (el: HTMLElement) =>
+            getRelTop(el) + el.getBoundingClientRect().height;
 
           interface Block {
             top: number;
@@ -1571,14 +1559,12 @@ const TemplateEighteen: React.FC<TemplateEighteenProps> = ({
           const blocks: Block[] = [];
 
           // Breakable item-level boundaries
-          const ITEM_SELECTORS = [
-            ".t18-item",
-            ".t18-project-item",
-          ].join(", ");
+          const ITEM_SELECTORS = [".t18-item", ".t18-project-item"].join(", ");
           resume.querySelectorAll<HTMLElement>(ITEM_SELECTORS).forEach((el) => {
             const top = getRelTop(el),
               bottom = getRelBottom(el);
-            if (bottom - top > 8) blocks.push({ top, bottom, id: el.dataset.blockId });
+            if (bottom - top > 8)
+              blocks.push({ top, bottom, id: el.dataset.blockId });
           });
 
           // Skills list items — breakable inside the skills card
@@ -1593,7 +1579,9 @@ const TemplateEighteen: React.FC<TemplateEighteenProps> = ({
 
           // Keep each card's title glued to its first item (avoid orphan headers)
           resume
-            .querySelectorAll<HTMLElement>(".t18-section-title, .t18-custom-section-title")
+            .querySelectorAll<HTMLElement>(
+              ".t18-section-title, .t18-custom-section-title",
+            )
             .forEach((title) => {
               const titleTop = getRelTop(title);
               let firstItem: HTMLElement | null = null;
@@ -1612,8 +1600,13 @@ const TemplateEighteen: React.FC<TemplateEighteenProps> = ({
                 const anchor = firstItem;
                 const anchorBottom = getRelBottom(anchor);
                 if (anchorBottom - titleTop > 8) {
-                  const sectionId = (title.parentElement as HTMLElement)?.dataset?.blockId;
-                  blocks.push({ top: titleTop, bottom: anchorBottom, id: sectionId });
+                  const sectionId = (title.parentElement as HTMLElement)
+                    ?.dataset?.blockId;
+                  blocks.push({
+                    top: titleTop,
+                    bottom: anchorBottom,
+                    id: sectionId,
+                  });
                 }
               }
             });
@@ -1633,7 +1626,11 @@ const TemplateEighteen: React.FC<TemplateEighteenProps> = ({
             for (const block of blocks) {
               if (block.top >= naiveCut) break;
               if (block.bottom <= currentStart) continue;
-              if (block.top >= currentStart && block.bottom > naiveCut && block.top < actualCut) {
+              if (
+                block.top >= currentStart &&
+                block.bottom > naiveCut &&
+                block.top < actualCut
+              ) {
                 actualCut = block.top;
                 cutBlockId = block.id;
               }
@@ -1733,13 +1730,13 @@ const TemplateEighteen: React.FC<TemplateEighteenProps> = ({
     <>
       {/* Download button — hide in thumbnail mode */}
       {/* {!isThumbnail && lastSegment === "download-resume" && ( */}
-        <div className="text-center my-8">
-          <motion.button
-            onClick={handleDownload}
-            disabled={isDownloading}
-            whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
-            whileTap={!isDownloading ? { scale: 0.98 } : {}}
-            className={`
+      <div className="text-center my-8">
+        <motion.button
+          onClick={handleDownload}
+          disabled={isDownloading}
+          whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
+          whileTap={!isDownloading ? { scale: 0.98 } : {}}
+          className={`
               relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
               text-white transition-all duration-300 shadow-lg
               ${
@@ -1748,23 +1745,23 @@ const TemplateEighteen: React.FC<TemplateEighteenProps> = ({
                   : "bg-emerald-500 hover:bg-emerald-600 hover:shadow-2xl cursor-pointer"
               }
             `}
-          >
-            <div className="relative flex items-center justify-center gap-3 text-lg">
-              {isDownloading ? (
-                <>
-                  <FaSpinner className="animate-spin text-xl" />
-                  <span>Generating PDF …</span>
-                </>
-              ) : (
-                <>
-                  <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
-                  <span>Download Resume</span>
-                  <span className="text-sm opacity-75 font-light ml-1">PDF</span>
-                </>
-              )}
-            </div>
-          </motion.button>
-        </div>
+        >
+          <div className="relative flex items-center justify-center gap-3 text-lg">
+            {isDownloading ? (
+              <>
+                <FaSpinner className="animate-spin text-xl" />
+                <span>Generating PDF …</span>
+              </>
+            ) : (
+              <>
+                <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
+                <span>Download Resume</span>
+                <span className="text-sm opacity-75 font-light ml-1">PDF</span>
+              </>
+            )}
+          </div>
+        </motion.button>
+      </div>
       {/* )} */}
 
       {isThumbnail ? (
@@ -1825,7 +1822,9 @@ const TemplateEighteen: React.FC<TemplateEighteenProps> = ({
                   marginBottom: "10px",
                 }}
               >
-                <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
+                <div
+                  style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+                />
                 <span
                   style={{
                     fontSize: "11px",
@@ -1843,7 +1842,9 @@ const TemplateEighteen: React.FC<TemplateEighteenProps> = ({
                   Page {idx + 1}
                   {pages.length > 1 ? ` of ${pages.length}` : ""}
                 </span>
-                <div style={{ flex: 1, height: "1px", background: "#d1d5db" }} />
+                <div
+                  style={{ flex: 1, height: "1px", background: "#d1d5db" }}
+                />
               </div>
               <div
                 style={{
@@ -1851,7 +1852,8 @@ const TemplateEighteen: React.FC<TemplateEighteenProps> = ({
                   height: `${A4_H}px`,
                   overflow: "hidden",
                   background: "white",
-                  boxShadow: "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
+                  boxShadow:
+                    "0 1px 4px rgba(0,0,0,0.10), 0 4px 24px rgba(0,0,0,0.08)",
                   borderRadius: "2px",
                   flexShrink: 0,
                 }}

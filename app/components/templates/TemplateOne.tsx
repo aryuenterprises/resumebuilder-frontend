@@ -973,8 +973,6 @@
 
 // export default TemplateOne;
 
-
-
 "use client";
 import React, {
   useContext,
@@ -1211,8 +1209,6 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
 
       const richText = (html: string, cls: string) => {
 
-        console.log("html", html);
-
         if (!html) return "";
         const clean = cleanQuillHTML(html);
         if (!clean || clean === "<p><br></p>") return "";
@@ -1263,7 +1259,9 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
                  const s = formatMonthYear(exp.startDate, false);
                  const e = exp.endDate
                    ? formatMonthYear(exp.endDate, false)
-                   : "Present";
+                   : exp.isCurrentlyWorking
+                     ? "Present"
+                     : "";
                  return `<div class="t1-experience-item" data-block-id="exp-${i}" style="margin-bottom:16px">
                  <div class="t1-item-header">
                    <div class="t1-item-title-container">
@@ -1304,7 +1302,7 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
                )
                .join("")}
            </div>`
-        : "";
+        : ""; 
 
       const eduBlock = educations.length
         ? `<div class="t1-section-content" data-block-id="edu-section">
@@ -1312,9 +1310,10 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
              ${educations
                .map((edu: any, i: number) => {
                  const grade = formatGradeToCgpdAndPercentage(edu.grade || "");
+
                  const dateStr =
                    edu.startDate || edu.endDate
-                     ? `${edu.startDate || ""} - ${edu.endDate || "Present"}`
+                     ? `${edu.startDate || ""} - ${edu.endDate ? edu.endDate : edu.isCurrentlyStudying ? "Present" : ""}`
                      : "";
                  return `<div class="t1-education-item" data-block-id="edu-${i}" style="margin-bottom:16px">
                  <div class="t1-item-header">

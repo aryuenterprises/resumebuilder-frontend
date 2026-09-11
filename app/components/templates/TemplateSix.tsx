@@ -6982,11 +6982,11 @@ const TemplateSix: React.FC<TemplateSixProps> = ({
           ${experiences
             .map((exp: any, i: number) => {
               const start = formatMonthYear(exp.startDate, false);
-              const end = exp.endDate
-                ? formatMonthYear(exp.endDate, false)
-                : exp.startDate
-                  ? "Present"
-                  : "";
+              const end =exp.endDate
+                                 ? formatMonthYear(exp.endDate, false)
+                                 : exp.isCurrentlyWorking
+                                   ? "Present"
+                                   : "";
               return `<div class="t6-entry" data-block-id="t6-exp-${i}">
               <div class="t6-experience-header">
                 <div class="t6-experience-title">${exp.jobTitle || ""}</div>
@@ -7038,7 +7038,7 @@ const TemplateSix: React.FC<TemplateSixProps> = ({
               return `<div class="t6-entry" data-block-id="t6-edu-${i}">
               <div class="t6-education-header">
                 <div class="t6-education-school">${edu.schoolname || ""}</div>
-                <div class="t6-education-date">${[edu.startDate, edu.endDate || "Present"].filter(Boolean).join(" — ")}</div>
+                <div class="t6-education-date">${[edu.startDate, edu.endDate ? edu.endDate : edu.isCurrentlyStudying ? "Present" : ""].filter(Boolean).join(" — ")}</div>
               </div>
               <div class="t6-education-subtitle">${[edu.degree, edu.location].filter(Boolean).join(" — ")}</div>
               ${grade ? `<div class="t6-education-grade">${grade}</div>` : ""}
@@ -7587,13 +7587,13 @@ const TemplateSix: React.FC<TemplateSixProps> = ({
 
       {/* ── Download button ──────────────────────────────────────────────── */}
       {!isThumbnail && lastSegment === "download-resume" && (
-      <div className="text-center my-8">
-        <motion.button
-          onClick={handleDownload}
-          disabled={isDownloading}
-          whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
-          whileTap={!isDownloading ? { scale: 0.98 } : {}}
-          className={`
+        <div className="text-center my-8">
+          <motion.button
+            onClick={handleDownload}
+            disabled={isDownloading}
+            whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
+            whileTap={!isDownloading ? { scale: 0.98 } : {}}
+            className={`
               relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
               text-white transition-all duration-300 shadow-lg
               ${
@@ -7602,27 +7602,29 @@ const TemplateSix: React.FC<TemplateSixProps> = ({
                   : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600 cursor-pointer"
               }
             `}
-        >
-          {!isDownloading && (
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          )}
-          <div className="relative flex items-center justify-center gap-3 text-lg">
-            {isDownloading ? (
-              <>
-                <FaSpinner className="animate-spin text-xl" />
-                <span>Generating PDF …</span>
-              </>
-            ) : (
-              <>
-                <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
-                <span>Download Resume</span>
-                <span className="text-sm opacity-75 font-light ml-1">PDF</span>
-              </>
+          >
+            {!isDownloading && (
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
             )}
-          </div>
-        </motion.button>
-      </div>
-      )} 
+            <div className="relative flex items-center justify-center gap-3 text-lg">
+              {isDownloading ? (
+                <>
+                  <FaSpinner className="animate-spin text-xl" />
+                  <span>Generating PDF …</span>
+                </>
+              ) : (
+                <>
+                  <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
+                  <span>Download Resume</span>
+                  <span className="text-sm opacity-75 font-light ml-1">
+                    PDF
+                  </span>
+                </>
+              )}
+            </div>
+          </motion.button>
+        </div>
+      )}
 
       {isThumbnail ? (
         // ── THUMBNAIL MODE ──────────────────────────────────────────────

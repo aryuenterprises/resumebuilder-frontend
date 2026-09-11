@@ -2559,13 +2559,15 @@ const TemplateSeventeen: React.FC<TemplateSeventeenProps> = ({
                .map((exp: any, i: number) => {
                  const s = formatMonthYear(exp.startDate, false);
                  const e = exp.endDate
-                   ? formatMonthYear(exp.endDate, false)
-                   : "Present";
+                                    ? formatMonthYear(exp.endDate, false)
+                                    : exp.isCurrentlyWorking
+                                      ? "Present"
+                                      : "";
                  const companyLocation = [exp.employer, exp.location]
                    .filter(Boolean)
                    .join("  ·  ");
                  return `<div class="t17-entry-block" data-block-id="exp-${i}">
-                   <div class="t17-entry-top-row">
+                   <dedu.endDate ? edu.endDate : edu.isCurrentlyStudying ? "Present" : ""iv class="t17-entry-top-row">
                      <div class="t17-entry-title">${exp.jobTitle || ""}</div>
                      <div class="t17-entry-date">${s} – ${e}</div>
                    </div>
@@ -2611,7 +2613,7 @@ const TemplateSeventeen: React.FC<TemplateSeventeenProps> = ({
                  const grade = formatGradeToCgpdAndPercentage(edu.grade || "");
                  const dateStr =
                    edu.startDate || edu.endDate
-                     ? `${edu.startDate || ""}${edu.startDate && edu.endDate ? " – " : ""}${edu.endDate || ""}`
+                     ? `${edu.startDate || ""}${edu.startDate && edu.endDate ? " – " : ""}${edu.endDate ? edu.endDate : edu.isCurrentlyStudying ? "Present" : ""}`
                      : "";
                  return `<div class="t17-entry-block" data-block-id="edu-${i}">
                    <div class="t17-entry-top-row">
