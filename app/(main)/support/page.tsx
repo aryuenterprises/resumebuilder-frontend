@@ -24,8 +24,7 @@
 // import { API_URL } from "@/app/config/api";
 // import { sanitizeText, getLocalStorage } from "@/app/utils";
 // import { User } from "@/app/types/user.types";
-
-
+// import api from "@/app/utils/api";
 
 // interface FormErrors {
 //   subject?: string;
@@ -35,12 +34,10 @@
 
 // interface SupportFormPayload {
 //   full_name: string;
-//   email: string;
 //   subject: string;
 //   message: string;
 //   priority: Priority;
 //   source: string;
-//   phone?: string;
 // }
 
 // type Priority = "low" | "medium" | "high" | "urgent";
@@ -72,10 +69,34 @@
 //   bg: string;
 //   dot: string;
 // }[] = [
-//   { value: "low",      label: "Low",      color: "text-green-700",  bg: "bg-green-50 border-green-200",   dot: "bg-green-500"  },
-//   { value: "medium",   label: "Medium",   color: "text-yellow-700", bg: "bg-yellow-50 border-yellow-200", dot: "bg-yellow-500" },
-//   { value: "high",     label: "High",     color: "text-orange-700", bg: "bg-orange-50 border-orange-200", dot: "bg-orange-500" },
-//   { value: "urgent",   label: "Urgent",   color: "text-red-700",    bg: "bg-red-50 border-red-200",       dot: "bg-red-500"    },
+//   {
+//     value: "low",
+//     label: "Low",
+//     color: "text-green-700",
+//     bg: "bg-green-50 border-green-200",
+//     dot: "bg-green-500",
+//   },
+//   {
+//     value: "medium",
+//     label: "Medium",
+//     color: "text-yellow-700",
+//     bg: "bg-yellow-50 border-yellow-200",
+//     dot: "bg-yellow-500",
+//   },
+//   {
+//     value: "high",
+//     label: "High",
+//     color: "text-orange-700",
+//     bg: "bg-orange-50 border-orange-200",
+//     dot: "bg-orange-500",
+//   },
+//   {
+//     value: "urgent",
+//     label: "Urgent",
+//     color: "text-red-700",
+//     bg: "bg-red-50 border-red-200",
+//     dot: "bg-red-500",
+//   },
 // ];
 
 // const SupportPage = () => {
@@ -99,8 +120,7 @@
 //     const userDetails = getLocalStorage<User>("user_details");
 
 //     const isLoggedIn =
-//       userDetails &&
-//       (userDetails.email || userDetails.first_name || userDetails.name);
+//       userDetails && (userDetails.email || userDetails.first_name);
 
 //     if (!isLoggedIn) {
 //       setUser(null);
@@ -113,9 +133,7 @@
 //     setAuthChecked(true);
 //   }, []);
 
-//   const userName = user?.full_name || user?.name || "User";
-//   const userEmail = user?.email || "";
-//   const userPhone = user?.phone || user?.mobileNum || "";
+//   const userName = user?.first_name + " "+user?.last_name  || "User";
 
 //   // ---------- File handlers ----------
 //   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -222,22 +240,19 @@
 
 //     try {
 //       const formData: SupportFormPayload = {
-//         full_name: userName,
-//         email: userEmail,
 //         subject: subject.trim(),
 //         message: message.trim(),
 //         priority,
-//         source: "support",
-//         phone: userPhone || undefined,
+//         ticket_type: "support",
 //       };
 
-//       await axios.post(`${API_URL}/support`, formData);
+//       await api.post(`${API_URL}/tickets/`, formData);
 
 //       Swal.fire({
 //         icon: "success",
 //         title: "Ticket submitted!",
 //         html: `<p>Your support ticket was created successfully.</p>
-//                <p class="text-sm text-gray-500 mt-2">We'll respond to <b>${userEmail}</b> within 24 hours.</p>`,
+//                <p class="text-sm text-gray-500 mt-2">We'll respond  within 24 hours.</p>`,
 //         confirmButtonText: "Done",
 //         confirmButtonColor: "#4f46e5",
 //         customClass: { popup: "rounded-2xl" },
@@ -317,93 +332,97 @@
 //         </div>
 
 //         {/* Login Required Modal */}
-//       {/* Login Required Modal — Warning Theme */}
-// <AnimatePresence>
-//   {showLoginModal && (
-//     <motion.div
-//       initial={{ opacity: 0 }}
-//       animate={{ opacity: 1 }}
-//       exit={{ opacity: 0 }}
-//       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
-//     >
-//       <motion.div
-//         initial={{ scale: 0.9, opacity: 0, y: 20 }}
-//         animate={{ scale: 1, opacity: 1, y: 0 }}
-//         exit={{ scale: 0.9, opacity: 0, y: 20 }}
-//         transition={{ type: "spring", damping: 25, stiffness: 300 }}
-//         className="relative w-full max-w-md"
-//       >
-//         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden border border-amber-100">
-//           <button
-//             onClick={() => setShowLoginModal(false)}
-//             className="absolute top-4 right-4 z-10 text-white hover:text-amber-100 transition-colors cursor-pointer"
-//             aria-label="Close"
-//           >
-//             <FiX className="w-5 h-5" />
-//           </button>
-
-//           {/* Amber gradient header */}
-//           <div className="bg-gradient-to-r from-amber-500 to-orange-500 px-6 pt-8 pb-6 text-center">
+//         {/* Login Required Modal — Warning Theme */}
+//         <AnimatePresence>
+//           {showLoginModal && (
 //             <motion.div
-//               initial={{ scale: 0 }}
-//               animate={{ scale: 1 }}
-//               transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
-//               className="w-20 h-20 mx-auto bg-white rounded-full flex items-center justify-center shadow-lg mb-4"
+//               initial={{ opacity: 0 }}
+//               animate={{ opacity: 1 }}
+//               exit={{ opacity: 0 }}
+//               className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
 //             >
-//               <FiAlertTriangle className="w-10 h-10 text-amber-500" />
-//             </motion.div>
-//             <h3 className="text-2xl font-bold text-white">
-//               Login Required
-//             </h3>
-//           </div>
+//               <motion.div
+//                 initial={{ scale: 0.9, opacity: 0, y: 20 }}
+//                 animate={{ scale: 1, opacity: 1, y: 0 }}
+//                 exit={{ scale: 0.9, opacity: 0, y: 20 }}
+//                 transition={{ type: "spring", damping: 25, stiffness: 300 }}
+//                 className="relative w-full max-w-md"
+//               >
+//                 <div className="bg-white rounded-2xl shadow-2xl overflow-hidden border border-amber-100">
+//                   <button
+//                     onClick={() => setShowLoginModal(false)}
+//                     className="absolute top-4 right-4 z-10 text-white hover:text-amber-100 transition-colors cursor-pointer"
+//                     aria-label="Close"
+//                   >
+//                     <FiX className="w-5 h-5" />
+//                   </button>
 
-//           {/* Content */}
-//           <div className="p-5 md:p-6">
-//             <motion.div
-//               initial={{ opacity: 0, y: 10 }}
-//               animate={{ opacity: 1, y: 0 }}
-//               transition={{ delay: 0.2 }}
-//               className="bg-amber-50 rounded-xl p-4 mb-6 border-l-4 border-amber-400"
-//             >
-//               <div className="flex gap-3">
-//                 <div className="flex-shrink-0">
-//                   <div className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center">
-//                     <FiAlertTriangle className="w-4 h-4 text-amber-600" />
+//                   {/* Amber gradient header */}
+//                   <div className="bg-gradient-to-r from-amber-500 to-orange-500 px-6 pt-8 pb-6 text-center">
+//                     <motion.div
+//                       initial={{ scale: 0 }}
+//                       animate={{ scale: 1 }}
+//                       transition={{
+//                         delay: 0.1,
+//                         type: "spring",
+//                         stiffness: 200,
+//                       }}
+//                       className="w-20 h-20 mx-auto bg-white rounded-full flex items-center justify-center shadow-lg mb-4"
+//                     >
+//                       <FiAlertTriangle className="w-10 h-10 text-amber-500" />
+//                     </motion.div>
+//                     <h3 className="text-2xl font-bold text-white">
+//                       Login Required
+//                     </h3>
+//                   </div>
+
+//                   {/* Content */}
+//                   <div className="p-5 md:p-6">
+//                     <motion.div
+//                       initial={{ opacity: 0, y: 10 }}
+//                       animate={{ opacity: 1, y: 0 }}
+//                       transition={{ delay: 0.2 }}
+//                       className="bg-amber-50 rounded-xl p-4 mb-6 border-l-4 border-amber-400"
+//                     >
+//                       <div className="flex gap-3">
+//                         <div className="flex-shrink-0">
+//                           <div className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center">
+//                             <FiAlertTriangle className="w-4 h-4 text-amber-600" />
+//                           </div>
+//                         </div>
+//                         <div>
+//                           <p className="text-amber-900 font-semibold text-sm mb-1">
+//                             Please sign in to continue
+//                           </p>
+//                           <p className="text-amber-800/80 text-sm">
+//                             You need to log in to submit a support ticket. Your
+//                             contact details will be filled in automatically once
+//                             you're signed in.
+//                           </p>
+//                         </div>
+//                       </div>
+//                     </motion.div>
+
+//                     <motion.div
+//                       initial={{ opacity: 0, y: 10 }}
+//                       animate={{ opacity: 1, y: 0 }}
+//                       transition={{ delay: 0.4 }}
+//                       className="flex"
+//                     >
+//                       <button
+//                         onClick={() => router.push("/login?redirect=/support")}
+//                         className="flex-1 px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-medium hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-[1.02] shadow-md cursor-pointer text-[12px] sm:text-sm inline-flex items-center justify-center gap-2"
+//                       >
+//                         <FiLogIn className="w-4 h-4" />
+//                         Go to Login
+//                       </button>
+//                     </motion.div>
 //                   </div>
 //                 </div>
-//                 <div>
-//                   <p className="text-amber-900 font-semibold text-sm mb-1">
-//                     Please sign in to continue
-//                   </p>
-//                   <p className="text-amber-800/80 text-sm">
-//                     You need to log in to submit a support ticket. Your contact
-//                     details will be filled in automatically once you're signed
-//                     in.
-//                   </p>
-//                 </div>
-//               </div>
+//               </motion.div>
 //             </motion.div>
-
-//             <motion.div
-//               initial={{ opacity: 0, y: 10 }}
-//               animate={{ opacity: 1, y: 0 }}
-//               transition={{ delay: 0.4 }}
-//               className="flex"
-//             >
-//               <button
-//                 onClick={() => router.push("/login?redirect=/support")}
-//                 className="flex-1 px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-medium hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-[1.02] shadow-md cursor-pointer text-[12px] sm:text-sm inline-flex items-center justify-center gap-2"
-//               >
-//                 <FiLogIn className="w-4 h-4" />
-//                 Go to Login
-//               </button>
-//             </motion.div>
-//           </div>
-//         </div>
-//       </motion.div>
-//     </motion.div>
-//   )}
-// </AnimatePresence>
+//           )}
+//         </AnimatePresence>
 //       </div>
 //     );
 //   }
@@ -434,28 +453,14 @@
 //                   <FaTicketAlt className="w-5 h-5 sm:w-5.5 sm:h-5.5 md:w-6 md:h-6 text-indigo-600" />
 //                 </div>
 //                 <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-indigo-600 to-indigo-500 bg-clip-text text-transparent">
-//                   Hi {userName.split(" ")[0]}, how can we help?
+//                   Hi {userName}, how can we help?
 //                 </h2>
 //                 <p className="text-[11px] sm:text-xs md:text-sm text-gray-500 mt-0.5 sm:mt-1">
 //                   We'll respond within 24 hours
 //                 </p>
 //               </div>
 
-//               {/* Logged-in user badge */}
-//               <div className="flex items-center gap-3 px-3 py-2.5 mb-5 rounded-xl bg-indigo-50/70 border border-indigo-100">
-//                 <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-r from-indigo-600 to-indigo-500 text-white flex items-center justify-center font-semibold text-xs sm:text-sm shrink-0">
-//                   {userName.charAt(0).toUpperCase()}
-//                 </div>
-//                 <div className="min-w-0 flex-1">
-//                   <p className="text-[11px] sm:text-xs font-semibold text-gray-900 truncate">
-//                     {userName}
-//                   </p>
-//                   <p className="text-[9px] sm:text-[10px] text-gray-500 truncate">
-//                     {userEmail}
-//                   </p>
-//                 </div>
-//                 <FiCheckCircle className="w-4 h-4 text-green-500 shrink-0" />
-//               </div>
+              
 
 //               <form onSubmit={handleSubmit} noValidate>
 //                 {/* Honeypot */}
@@ -714,3 +719,16 @@
 // };
 
 // export default SupportPage;
+
+
+import React from 'react'
+
+const page = () => {
+  return (
+    <div>
+      
+    </div>
+  )
+}
+
+export default page
