@@ -7557,6 +7557,7 @@ import { CreateContext } from "@/app/context/CreateContext";
 import Swal from "sweetalert2";
 import toast, { Toaster } from "react-hot-toast";
 import api from "@/app/utils/api";
+import apiClient from "@/app/utils/apiClient";
 
 interface BillingRecord {
   invoice_date: string;
@@ -7679,7 +7680,9 @@ const DashboardPage = () => {
 
   const fetchUserData = async () => {
     try {
-      const res = await api.get("/dashboard");
+      // const res = await api.get("/dashboard");
+      const res = await apiClient.get("/dashboard");
+
 
       const { profile, resumes, statistics, subscription, transactions } =
         res?.data;
@@ -7744,7 +7747,7 @@ const DashboardPage = () => {
     if (result.isConfirmed) {
       try {
         setDeletingId(id);
-        await api.delete(`${API_URL}/user-resumes/${id}`);
+        await apiClient.delete(`/user-resumes/${id}`);
 
         toast.custom(
           (t) => (

@@ -282,7 +282,7 @@ export default function RootLayout({
         
         <FacebookPixel />
         
-        <SessionInitializer>
+        {/* <SessionInitializer> */}
           <QueryProvider>
             <GoogleAuthProvider>
               <CreateProvider>
@@ -290,7 +290,7 @@ export default function RootLayout({
               </CreateProvider>
             </GoogleAuthProvider>
           </QueryProvider>
-        </SessionInitializer>
+        {/* </SessionInitializer> */}
       </body>
     </html>
   );

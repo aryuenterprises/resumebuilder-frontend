@@ -988,6 +988,7 @@ import { API_URL } from "@/app/config/api";
 import ProtectedRoute from "@/app/utils/ProtectedRoute";
 import api from "@/app/utils/api";
 import { useQuery } from "@tanstack/react-query";
+import apiClient from "@/app/utils/apiClient";
 
 // ============================================================
 // PLAN CONFIGURATION (Unchanged)
@@ -1289,7 +1290,7 @@ export default function ChangeTemplate() {
   const { data: userData } = useQuery({
     queryKey: ["user-dashboard"],
     queryFn: async () => {
-      const res = await api.get("/dashboard");
+      const res = await apiClient.get("/dashboard");
       return res.data;
     },
     staleTime: 5 * 60 * 1000,

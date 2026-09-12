@@ -1045,6 +1045,7 @@ import { CreateContext } from "@/app/context/CreateContext";
 import { usePreventReload } from "@/app/hooks";
 import api from "@/app/utils/api";
 import { API_URL } from "@/app/config/api";
+import apiClient from "@/app/utils/apiClient";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export interface ResumeCustomization {
@@ -1522,7 +1523,8 @@ const [isResumeDataLoaded, setIsResumeDataLoaded] = useState(false);
       const latestResumeId = getLocalStorage<string>("latest_resume_id");
       const targetResumeId = editingResumeIdAndData?.id ?? latestResumeId;
 
-      const response = await api.get(`${API_URL}/user-resumes`);
+      // apiClient.get("/api/resume/
+      const response = await apiClient.get(`/user-resumes`);
       const allResumes = Array.isArray(response.data) ? response.data : [];
 
       // Prefer the specific resume the user was working on (matches
@@ -1590,7 +1592,7 @@ const [isResumeDataLoaded, setIsResumeDataLoaded] = useState(false);
 
     const fetchUserData = async () => {
       try {
-        const res = await api.get("/dashboard");
+        const res = await apiClient.get("/dashboard");
         const { subscription } = res?.data || {};
         const plan = subscription?.current_plan || "free";
         if (isMounted) setUserPlan(plan.toLowerCase());

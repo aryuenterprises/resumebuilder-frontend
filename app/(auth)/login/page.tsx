@@ -513,6 +513,7 @@ import { Sparkles } from "lucide-react";
 import { Turnstile } from "@marsidev/react-turnstile";
 import type { TurnstileInstance } from "@marsidev/react-turnstile";
 import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
+import { resumeAuthService } from "@/app/utils/apiClient";
 
 // Define TypeScript interfaces
 interface LoginErrors {
@@ -561,7 +562,7 @@ const Login = () => {
   const handlesubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    // Turnstile check - MUST be verified
+    //resumeAuthService Turnstile check - MUST be verified
     if (!turnstileToken) {
       setErrorMessage(
         "Security verification required. Please complete the verification check.",
@@ -583,15 +584,26 @@ const Login = () => {
         turnstileToken: turnstileToken,
       };
 
-      const response = await axios.post(`${API_URL}/auth/login/`, formData, {
-        withCredentials: true, // Captures the HttpOnly refresh_token cookie
-      });
+      // const response = await axios.post(`${API_URL}/auth/login/`, formData, {
+      //   withCredentials: true, // Captures the HttpOnly refresh_token cookie
+      // });
 
-      if (response.data && response.data.access_token) {
-        const { user, access_token } = response.data;
 
-        setLocalStorage("user_details", user);
-        setInMemoryToken(access_token);
+      
+      // const response = await axios.post(`${API_URL}/auth/login/`, formData, {
+      //   withCredentials: true, // Captures the HttpOnly refresh_token cookie
+      // });
+
+
+         const response = await resumeAuthService.login({ email, password });
+      console.log("Logged in user:", response.user);
+      router.push("/dashboard");
+
+      if (response.user ) {
+        // const { user, access_token } = response.data;
+
+        setLocalStorage("user_details", response.user);
+        // setInMemoryToken(access_token);
 
         router.push("/dashboard");
 

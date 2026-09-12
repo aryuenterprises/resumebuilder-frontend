@@ -69,6 +69,7 @@ import { User } from "@/app/types/user.types";
 import { IoIosArrowDown } from "react-icons/io";
 import { Stepper, TipsModal } from "@/app/components/resume";
 import api from "@/app/utils/api";
+import apiClient from "@/app/utils/apiClient";
 
 const ContactForm = () => {
   const router = useRouter();
@@ -169,7 +170,7 @@ const ContactForm = () => {
 
       if (isOldRouteNameDashboard && editingResumeIdAndData) {
         // If we're editing an existing resume from the dashboard, update it
-        await api.patch(
+        await apiClient.patch(
           `${API_URL}/user-resumes/${editingResumeIdAndData.id}`,
           oldResumeEditPayload, 
         );
@@ -181,7 +182,7 @@ const ContactForm = () => {
         // NEW: A resume already exists for this user (either they're continuing
         // their last resume, or this contact page has already saved once) —
         // patch the same resume instead of creating a duplicate
-        await api.patch(
+        await apiClient.patch(
           `${API_URL}/user-resumes/${existingResumeId}`,
           oldResumeEditPayload,
         );
@@ -189,7 +190,7 @@ const ContactForm = () => {
         return true;
       } else {
         // Otherwise, this is genuinely a new resume — create it
-        const response = await api.post(
+        const response = await apiClient.post(
           `${API_URL}/user-resumes`,
           singlePayload,
         );

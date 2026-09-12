@@ -42,6 +42,7 @@ import { IoBulb } from "react-icons/io5";
 import api from "@/app/utils/api";
 import { API_URL } from "@/app/config/api";
 import LoginModel from "@/app/components/auth/LoginModel";
+import apiClient from "@/app/utils/apiClient";
 
 // ─── Tab IDs ─────────────────────────────────────────────────────────────────
 type TabId = "overview" | "ai" | "sections" | "tips" | "edit";
@@ -1463,7 +1464,7 @@ const ATSCheckerPage = () => {
     // }
 
     try {
-      const response = await api.post<ATSResults>(
+      const response = await apiClient.post<ATSResults>(
         `${API_URL}/ats/scan/`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } },

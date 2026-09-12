@@ -18,6 +18,7 @@ import {
   Template,
 } from "@/app/types/context.types";
 import api from "../utils/api";
+import apiClient from "../utils/apiClient";
 
 interface ResumeDataFetcherProps {
   children: React.ReactNode;
@@ -153,7 +154,10 @@ export function ResumeDataFetcher({ children }: ResumeDataFetcherProps) {
 
         console.log("🔄 Fetching existing resume data...");
 
-        const response = await api.get(`${API_URL}/user-resumes`);
+                      // apiClient.get("/api/resume/
+
+
+        const response = await apiClient.get(`/user-resumes`);
 
         console.log("response", response);
 

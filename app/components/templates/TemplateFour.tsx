@@ -2412,6 +2412,7 @@ import { motion } from "framer-motion";
 import api from "@/app/utils/api";
 import { ResumeCustomization } from "@/app/(resume)/download-resume/page";
 import { FaDownload, FaSpinner } from "react-icons/fa";
+import apiClient from "@/app/utils/apiClient";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // A4 CONSTANTS
@@ -3242,8 +3243,8 @@ const TemplateFour: React.FC<TemplateFourProps> = ({
         pdfHtml = generateHTML(true, pageBreakIds);
       }
 
-      const res: AxiosResponse<Blob> = await api.post(
-        `${API_URL}/candidates/generate-pdf`,
+      const res: AxiosResponse<Blob> = await apiClient.post(
+        `/candidates/generate-pdf`,
         { html: pdfHtml },
         { responseType: "blob" },
       );

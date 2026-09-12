@@ -35,6 +35,7 @@ import { User } from "@/app/types/user.types";
 import { HiOutlineBadgeCheck } from "react-icons/hi";
 import Faq from "@/app/components/sections/FAQ";
 import api from "@/app/utils/api";
+import apiClient from "@/app/utils/apiClient";
 
 // Types
 interface PlanFeature {
@@ -107,7 +108,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
       setPaymentStatus("processing");
       setPaymentMessage("Initializing payment...");
 
-      const res = await api.post("/payment/create-order/", {
+      const res = await apiClient.post("/payment/create-order/", {
         subscription_id: plan.id,
       });
 
@@ -121,7 +122,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
         handler: async function (response: any) {
           try {
             setPaymentMessage("Verifying payment...");
-            await api.post("/payment/verify-payment/", {
+            await apiClient.post("/payment/verify-payment/", {
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature,
@@ -523,7 +524,7 @@ export default function ChoosePlanPage() {
       setUserEmail(userDetails.email || "");
       
       try {
-        const res = await api.get("/dashboard");
+        const res = await apiClient.get("/dashboard");
         const { subscription } = res?.data;
         
         if (subscription) {
@@ -691,7 +692,7 @@ export default function ChoosePlanPage() {
     if (plan.regularPrice === "0" || plan.name.toLowerCase() === "free") {
       // Fetch latest subscription status
       try {
-        const res = await api.get("/dashboard");
+        const res = await apiClient.get("/dashboard");
         const { subscription } = res?.data;
         
         const currentPlan = subscription?.current_plan || null;

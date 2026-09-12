@@ -355,6 +355,7 @@ import { CreateContext } from "@/app/context/CreateContext";
 import { API_URL } from "@/app/config/api";
 import api from "@/app/utils/api";
 import { IoDiamondOutline } from "react-icons/io5";
+import apiClient from "@/app/utils/apiClient";
 
 export default function RootLayout({
   children,
@@ -429,7 +430,10 @@ export default function RootLayout({
 
     const checkExisting = async () => {
       try {
-        const response = await api.get(`${API_URL}/user-resumes`);
+
+              // apiClient.get("/api/resume/
+
+        const response = await apiClient.get(`/user-resumes`);
         const hasExisting =
           Array.isArray(response.data) && response.data.length > 0;
 

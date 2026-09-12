@@ -807,6 +807,7 @@ import {
   Experience,
   Finalize,
 } from "@/app/types/context.types";
+import apiClient from "@/app/utils/apiClient";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // A4 CONSTANTS — identical to TemplateOne
@@ -1516,8 +1517,8 @@ const TemplateTwenty: React.FC<TemplateTwentyProps> = ({
     try {
       const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
       const pdfHtml = generateHTML(true, pageBreakIds);
-      const res: AxiosResponse<Blob> = await api.post(
-        `${API_URL}/candidates/generate-pdf`,
+      const res: AxiosResponse<Blob> = await apiClient.post(
+        `/candidates/generate-pdf`,
         { html: pdfHtml },
         { responseType: "blob" },
       );

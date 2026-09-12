@@ -55,6 +55,7 @@ import { IoDocumentText, IoHomeOutline } from "react-icons/io5";
 import { SlSizeFullscreen } from "react-icons/sl";
 import api from "@/app/utils/api";
 import { TEMPLATE_DEFS } from "@/app/data";
+import apiClient from "@/app/utils/apiClient";
 
 // ============================================================
 // 2. TYPES — TypeScript "shapes" for our data
@@ -2380,7 +2381,7 @@ export default function CoverLetterGenerator() {
       setIsLoggedIn(true);
 
       try {
-        const res = await api.get("/dashboard");
+        const res = await apiClient.get("/dashboard");
         const { subscription } = res?.data;
         const premium = subscription.current_plan?.toLowerCase() === "premium";
         setIsPremium(premium);
@@ -2557,7 +2558,7 @@ export default function CoverLetterGenerator() {
       //   { responseType: "blob" },
       // );
 
-      const r = await api.post(
+      const r = await apiClient.post(
         `${API_URL}/candidates/generate-pdf`,
         { html: h },
         { responseType: "blob" },

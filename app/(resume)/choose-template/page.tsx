@@ -52,6 +52,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { ResumePreviewModal } from "@/app/components/resume";
 import api from "@/app/utils/api";
 import { useQuery } from "@tanstack/react-query";
+import apiClient from "@/app/utils/apiClient";
 
 // ============================================================
 // PLAN CONFIGURATION (Unchanged)
@@ -384,7 +385,7 @@ function Choose_template() {
   const { data: userData } = useQuery({
     queryKey: ["user-dashboard"],
     queryFn: async () => {
-      const res = await api.get("/dashboard");
+      const res = await apiClient.get("/dashboard");
       return res.data;
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -807,7 +808,7 @@ function Choose_template() {
           }, 200);
         }
 
-        const response = await api.post(`${API_URL}/parse/`, formData, {
+        const response = await apiClient.post(`/parse/`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
           signal: uploadAbortController.current.signal,
           onUploadProgress: (progressEvent) => {

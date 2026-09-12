@@ -22,6 +22,7 @@ import { Stepper, TipsModal } from "@/app/components/resume";
 import dynamic from "next/dynamic";
 import api from "@/app/utils/api";
 import { getLocalStorage } from "@/app/utils";
+import apiClient from "@/app/utils/apiClient";
 
 const Editor = dynamic(
   () => import("primereact/editor").then((mod) => mod.Editor),
@@ -86,8 +87,8 @@ const SkillsForm = () => {
       };
 
       // 3. Send it as standard 'application/json'
-      const response = await api.patch(
-        `${API_URL}/user-resumes/${latestResumeId}`,
+      const response = await apiClient.patch(
+        `/user-resumes/${latestResumeId}`,
         singlePayload,
       );
 

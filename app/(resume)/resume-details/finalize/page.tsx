@@ -26,6 +26,7 @@ import { API_URL } from "@/app/config/api";
 import { IoArrowForward, IoSparkles } from "react-icons/io5";
 import { Stepper, TipsModal } from "@/app/components/resume";
 import api from "@/app/utils/api";
+import apiClient from "@/app/utils/apiClient";
 
 // Dynamically import Editor to avoid SSR issues
 const Editor = dynamic(
@@ -154,8 +155,8 @@ const FinalizeForm = () => {
       };
 
       // 3. Send it as standard 'application/json'
-      const response = await api.patch(
-        `${API_URL}/user-resumes/${latestResumeId}`,
+      const response = await apiClient.patch(
+        `/user-resumes/${latestResumeId}`,
         singlePayload,
       );
 
