@@ -471,25 +471,6 @@
 
 // export default Login;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 
 import { useState, FormEvent, useRef } from "react";
@@ -588,18 +569,15 @@ const Login = () => {
       //   withCredentials: true, // Captures the HttpOnly refresh_token cookie
       // });
 
-
-      
       // const response = await axios.post(`${API_URL}/auth/login/`, formData, {
       //   withCredentials: true, // Captures the HttpOnly refresh_token cookie
       // });
 
-
-         const response = await resumeAuthService.login({ email, password });
+      const response = await resumeAuthService.login({ email, password });
       console.log("Logged in user:", response.user);
       router.push("/dashboard");
 
-      if (response.user ) {
+      if (response.user) {
         // const { user, access_token } = response.data;
 
         setLocalStorage("user_details", response.user);
@@ -642,47 +620,88 @@ const Login = () => {
   };
 
   // Google Login Handlers
-  const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
-    if (!credentialResponse.credential) {
-      setErrorMessage("No credential returned from Google sign-in.");
+  // const handleGoogleSuccess = async (
+  //   credentialResponse: CredentialResponse,
+  // ) => {
+  //   if (!credentialResponse.credential) {
+  //     setErrorMessage("No credential returned from Google sign-in.");
+  //     setShowErrorModal(true);
+  //     return;
+  //   }
+
+  //   setIsGoogleLoading(true);
+
+  //   try {
+  //     // Backend Google Auth endpoint according to docs
+  //     const response = await axios.post(
+  //       `${API_URL}/auth/google-login/`,
+  //       { credential: credentialResponse.credential },
+  //       { withCredentials: true }, // Crucial: sets the `resume_refresh` cookie
+  //     );
+
+  //     if (response.data && response.data.access_token) {
+  //       const { user, access_token } = response.data;
+
+  //       // Save public user details & store access token in memory
+  //       setLocalStorage("user_details", user);
+  //       setInMemoryToken(access_token);
+
+  //       router.push("/dashboard");
+  //     } else {
+  //       setErrorMessage("Invalid token response from backend.");
+  //       setShowErrorModal(true);
+  //     }
+  //   } catch (err: any) {
+  //     console.error("Google Login Error:", err);
+  //     const backendError =
+  //       err.response?.data?.error ||
+  //       err.response?.data?.message ||
+  //       "Google authentication failed. Please try again.";
+  //     setErrorMessage(backendError);
+  //     setShowErrorModal(true);
+  //   } finally {
+  //     setIsGoogleLoading(false);
+  //   }
+  // };
+
+  // Login.tsx
+
+const handleGoogleSuccess = async (
+  credentialResponse: CredentialResponse
+) => {
+  if (!credentialResponse.credential) {
+    setErrorMessage("No credential returned from Google sign-in.");
+    setShowErrorModal(true);
+    return;
+  }
+
+  setIsGoogleLoading(true);
+
+  try {
+    const data = await resumeAuthService.googleLogin(
+      credentialResponse.credential
+    );
+
+    if (data.user) {
+      setLocalStorage("user_details", data.user);
+      router.push("/dashboard");
+    } else {
+      setErrorMessage("Invalid response received from server.");
       setShowErrorModal(true);
-      return;
     }
-
-    setIsGoogleLoading(true);
-
-    try {
-      // Backend Google Auth endpoint according to docs
-      const response = await axios.post(
-        `${API_URL}/auth/google-login/`,
-        { credential: credentialResponse.credential },
-        { withCredentials: true } // Crucial: sets the `resume_refresh` cookie
-      );
-
-      if (response.data && response.data.access_token) {
-        const { user, access_token } = response.data;
-
-        // Save public user details & store access token in memory
-        setLocalStorage("user_details", user);
-        setInMemoryToken(access_token);
-
-        router.push("/dashboard");
-      } else {
-        setErrorMessage("Invalid token response from backend.");
-        setShowErrorModal(true);
-      }
-    } catch (err: any) {
-      console.error("Google Login Error:", err);
-      const backendError =
-        err.response?.data?.error ||
-        err.response?.data?.message ||
-        "Google authentication failed. Please try again.";
-      setErrorMessage(backendError);
-      setShowErrorModal(true);
-    } finally {
-      setIsGoogleLoading(false);
-    }
-  };
+  } catch (err: any) {
+    console.error("Google Login Error:", err);
+    const backendError =
+      err.response?.data?.error ||
+      err.response?.data?.message ||
+      err.response?.data?.detail ||
+      "Google authentication failed. Please check server logs.";
+    setErrorMessage(backendError);
+    setShowErrorModal(true);
+  } finally {
+    setIsGoogleLoading(false);
+  }
+};
 
   const handleGoogleError = () => {
     setErrorMessage("Google Sign-in was cancelled or encountered an error.");
