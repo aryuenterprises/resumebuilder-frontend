@@ -1,5 +1,3 @@
-
-
 "use client";
 import { useState, FormEvent, useEffect, useRef } from "react";
 import {
@@ -579,7 +577,7 @@ export default function RegisterForm() {
     { label: "Contains number", met: /[0-9]/.test(values.password) },
     {
       label: "Contains special character",
-  met: /[^A-Za-z0-9\s]/.test(values.password),
+      met: /[^A-Za-z0-9\s]/.test(values.password),
     },
     {
       label: "At least 12 characters (extra strength)",
