@@ -301,7 +301,8 @@ export default function RegisterForm() {
     // ---------- Module-scope regexes (compile once) ----------
     const EMAIL_RE =
       /^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$/;
-    const PHONE_RE = /^\+?[0-9](?:[\s\-().]?\d){7,14}$/;
+    // Exactly 10 digits, no spaces, dashes, parentheses, or plus signs
+    const PHONE_RE = /^\d{10}$/;
     const NAME_RE = /^[\p{L}][\p{L}\s'.-]{0,49}$/u;
 
     // Place names: letters (unicode), spaces, hyphen, apostrophe, period, comma, parentheses
@@ -340,7 +341,7 @@ export default function RegisterForm() {
     if (!phone) {
       newErrors.phone = "Phone number is required";
     } else if (!PHONE_RE.test(phone)) {
-      newErrors.phone = "Invalid phone number";
+      newErrors.phone = "Phone number must be exactly 10 digits";
     }
 
     // ---------- City ----------
