@@ -296,13 +296,13 @@ export default function RootLayout({
 
         <FacebookPixel />
 
-        {/* <SessionInitializer> */}
-        <QueryProvider>
-          <GoogleAuthProvider>
-            <CreateProvider>{children}</CreateProvider>
-          </GoogleAuthProvider>
-        </QueryProvider>
-        {/* </SessionInitializer> */}
+        <SessionInitializer>
+          <QueryProvider>
+            <GoogleAuthProvider>
+              <CreateProvider>{children}</CreateProvider>
+            </GoogleAuthProvider>
+          </QueryProvider>
+        </SessionInitializer>
       </body>
     </html>
   );

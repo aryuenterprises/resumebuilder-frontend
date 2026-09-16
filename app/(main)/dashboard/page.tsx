@@ -64,7 +64,7 @@ import { CreateContext } from "@/app/context/CreateContext";
 import Swal from "sweetalert2";
 import toast, { Toaster } from "react-hot-toast";
 import api from "@/app/utils/api";
-import apiClient from "@/app/utils/apiClient";
+import apiClient, { resumeAuthService } from "@/app/utils/apiClient";
 
 interface BillingRecord {
   invoice_date: string;
@@ -405,19 +405,8 @@ const DashboardPage = () => {
     router.push("/choose-template");
   };
 
-  const handleLogout = () => {
-    removeLocalStorage("user_details");
-    removeLocalStorage("fullResumeData");
-    removeLocalStorage("chosenTemplate");
-    removeLocalStorage("access_token");
-    removeLocalStorage("refresh_token");
-    removeLocalStorage("user_token");
-
-    removeLocalStorage("coverLetterData");
-    removeLocalStorage("editingResumeIdAndData");
-    removeLocalStorage("user_token");
-
-    router.push("/login");
+  const handleLogout = async () => {
+    await resumeAuthService.logout();
   };
 
   const totalResumes = filteredOldResumeData.length;

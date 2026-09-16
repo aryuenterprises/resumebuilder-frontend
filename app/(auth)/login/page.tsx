@@ -485,10 +485,8 @@ import {
   FiAlertCircle,
 } from "react-icons/fi";
 import { useRouter } from "next/navigation";
-import axios from "axios";
-import { API_URL } from "../../config/api";
 import Link from "next/link";
-import { setInMemoryToken, setLocalStorage } from "@/app/utils";
+import { setLocalStorage } from "@/app/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { Turnstile } from "@marsidev/react-turnstile";
@@ -559,29 +557,16 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const formData = {
+      const response = await resumeAuthService.login({
         email,
         password,
-        turnstileToken: turnstileToken,
-      };
-
-      // const response = await axios.post(`${API_URL}/auth/login/`, formData, {
-      //   withCredentials: true, // Captures the HttpOnly refresh_token cookie
-      // });
-
-      // const response = await axios.post(`${API_URL}/auth/login/`, formData, {
-      //   withCredentials: true, // Captures the HttpOnly refresh_token cookie
-      // });
-
-      const response = await resumeAuthService.login({ email, password });
+        turnstileToken,
+      });
       console.log("Logged in user:", response.user);
       router.push("/dashboard");
 
       if (response.user) {
-        // const { user, access_token } = response.data;
-
         setLocalStorage("user_details", response.user);
-        // setInMemoryToken(access_token);
 
         router.push("/dashboard");
 
@@ -597,19 +582,24 @@ const Login = () => {
         setShowErrorModal(true);
         setIsLoading(false);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Login Error:", err);
       setIsLoading(false);
 
       let errorText = "Something went wrong. Please try again.";
+      const errorObj = err as {
+        response?: { data?: { error?: string; message?: string } };
+        message?: string;
+        code?: string;
+      };
 
-      if (err.response?.data?.error) {
-        errorText = err.response.data.error;
-      } else if (err.response?.data?.message) {
-        errorText = err.response.data.message;
-      } else if (err.message === "Network Error") {
+      if (errorObj.response?.data?.error) {
+        errorText = errorObj.response.data.error;
+      } else if (errorObj.response?.data?.message) {
+        errorText = errorObj.response.data.message;
+      } else if (errorObj.message === "Network Error") {
         errorText = "Network error. Please check your internet connection.";
-      } else if (err.code === "ECONNABORTED") {
+      } else if (errorObj.code === "ECONNABORTED") {
         errorText = "Request timeout. Please try again.";
       }
 
@@ -689,12 +679,15 @@ const handleGoogleSuccess = async (
       setErrorMessage("Invalid response received from server.");
       setShowErrorModal(true);
     }
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Google Login Error:", err);
+    const errorObj = err as {
+      response?: { data?: { error?: string; message?: string; detail?: string } };
+    };
     const backendError =
-      err.response?.data?.error ||
-      err.response?.data?.message ||
-      err.response?.data?.detail ||
+      errorObj.response?.data?.error ||
+      errorObj.response?.data?.message ||
+      errorObj.response?.data?.detail ||
       "Google authentication failed. Please check server logs.";
     setErrorMessage(backendError);
     setShowErrorModal(true);
@@ -910,7 +903,7 @@ const handleGoogleSuccess = async (
                 {/* Register Link */}
                 <div className="mt-5 sm:mt-6 text-center">
                   <p className="text-[11px] sm:text-xs text-gray-600">
-                    Don't have an account?{" "}
+                    Don&apos;t have an account?{" "}
                     <button
                       type="button"
                       onClick={() => router.push("/register")}

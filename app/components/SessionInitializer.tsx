@@ -1,48 +1,49 @@
-"use client"; // This isolates the hooks so Next.js doesn't complain
+"use client";
 
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { API_URL } from "@/app/config/api";
-import { setInMemoryToken, getInMemoryToken } from "@/app/utils/api"; 
+import { useEffect } from "react";
+import {
+  tokenStorage,
+  isTokenExpired,
+  executeTokenRefresh,
+} from "@/app/utils/apiClient";
 
-export default function SessionInitializer({ children }: { children: React.ReactNode }) {
-  const [isHydrating, setIsHydrating] = useState(true);
-
+/**
+ * SessionInitializer:
+ * Restores the authenticated session on application startup / browser reload.
+ * Non-blocking: avoids flashing full-screen loaders for guests, while ensuring
+ * that expired access tokens are seamlessly refreshed before or during API calls.
+ */
+export default function SessionInitializer({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   useEffect(() => {
-    const checkCookieOnStartup = async () => {
-      // Guard: If an access token already exists in memory, do nothing
-      if (getInMemoryToken()) {
-        setIsHydrating(false);
-        return;
-      }
+    const restoreSessionOnStartup = async () => {
+      const refreshToken = tokenStorage.getRefreshToken();
+      const accessToken = tokenStorage.getAccessToken();
+      const userDetails =
+        typeof window !== "undefined"
+          ? localStorage.getItem("user_details")
+          : null;
 
-      try {
-        console.log("Application loaded. Attempting silent session restoration...");
-        const response = await axios.post(
-          `${API_URL}/token/refresh/`, 
-          {}, 
-          { withCredentials: true }
-        );
-        
-        setInMemoryToken(response.data.access_token);
-      } catch (err) {
-        console.log("No active secure session found. Initializing app for guest.");
-      } finally {
-        setIsHydrating(false);
+      // Only attempt refresh if user was logged in (stored refresh token or user_details exists)
+      // and the access token is missing or expired
+      if (
+        (refreshToken || userDetails) &&
+        (!accessToken || isTokenExpired(accessToken))
+      ) {
+        try {
+          await executeTokenRefresh();
+        } catch {
+          // If refresh fails on startup (e.g. offline), let apiClient interceptors handle it
+          // when protected API calls are made, avoiding premature logout
+        }
       }
     };
 
-    checkCookieOnStartup();
-  }, []); 
-
-  if (isHydrating) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50/50">
-        <div className="w-9 h-9 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-        
-      </div>
-    );
-  }
+    restoreSessionOnStartup();
+  }, []);
 
   return <>{children}</>;
 }
