@@ -1582,6 +1582,8 @@ const [isResumeDataLoaded, setIsResumeDataLoaded] = useState(false);
   const [userPlan, setUserPlan] = useState<string>("free");
   const [isPlanLoaded, setIsPlanLoaded] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
+    const [showPreview, setShowPreview] = useState(false); // ← ADD THIS
+
 
   const containerRef = useRef<HTMLDivElement>(null);
   const [previewScale, setPreviewScale] = useState(1);
@@ -1781,19 +1783,64 @@ const [isResumeDataLoaded, setIsResumeDataLoaded] = useState(false);
             {/* Live Resume Canvas */}
             <div className="w-full lg:flex-1 min-w-0">
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-3 sm:p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide">
-                    Live Preview
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] text-gray-400 bg-gray-50 px-2 py-1 rounded-full border">
-                      {currentTemplate?.style}
-                    </span>
-                    <span className="text-[10px] text-gray-400 bg-gray-50 px-2 py-1 rounded-full border">
-                      A4 · PDF ready
-                    </span>
-                  </div>
-                </div>
+                                
+
+                                <div className="flex items-center justify-between mb-3 gap-3 flex-wrap">
+  {/* Left: label with a live dot */}
+  <div className="flex items-center gap-2">
+    <span className="relative flex h-2 w-2">
+      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75" />
+      <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500" />
+    </span>
+    <span className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
+      Live Preview
+    </span>
+  </div>
+
+  {/* Right: meta pills + preview button */}
+  <div className="flex items-center gap-2">
+    <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-medium text-gray-500 bg-gray-50 px-2.5 py-1 rounded-full border border-gray-200">
+      <svg className="w-3 h-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 10h16M4 14h10M4 18h10" />
+      </svg>
+      {currentTemplate?.style}
+    </span>
+
+    <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-medium text-gray-500 bg-gray-50 px-2.5 py-1 rounded-full border border-gray-200">
+      <svg className="w-3 h-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg>
+      A4 · PDF
+    </span>
+
+    {/* ── Preview Button ── */}
+    <button
+      type="button"
+      onClick={() => setShowPreview(true)}
+      className="group inline-flex items-center gap-1.5 text-[11px] font-semibold text-white bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 px-3.5 py-1.5 rounded-full shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer active:scale-95"
+    >
+      <svg
+        className="w-3.5 h-3.5 transition-transform group-hover:scale-110"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        strokeWidth={2}
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+        />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+        />
+      </svg>
+      Preview
+    </button>
+  </div>
+</div>
                 <div
                   ref={containerRef}
                   className="flex justify-center overflow-hidden"
@@ -1818,6 +1865,55 @@ const [isResumeDataLoaded, setIsResumeDataLoaded] = useState(false);
       </div>
 
       <Footer />
+
+      {/* ── Fullscreen Preview Modal ── */}
+    {showPreview && (
+        <div className="fixed inset-0 z-50 bg-black/70 flex flex-col">
+          {/* Modal Header */}
+          <div className="flex items-center justify-between px-4 py-3 bg-white border-b border-gray-200">
+            <span className="text-sm font-semibold text-gray-800">
+              Resume Preview
+            </span>
+            <button
+              type="button"
+              onClick={() => setShowPreview(false)}
+              className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 transition-colors cursor-pointer"
+              aria-label="Close preview"
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+
+          {/* Modal Body */}
+          <div className="flex-1 overflow-auto p-4 flex justify-center items-start">
+            <div
+              style={{
+                      transform: `scale(${previewScale})`,
+                      transformOrigin: "top center",
+                      width: `${794 / previewScale}px`,
+                    }}
+            >
+              {React.createElement(selectedComponent, {
+                customization,
+                isThumbnail: false,
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+     
     </ProtectedRoute>
   );
 };

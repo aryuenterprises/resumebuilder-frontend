@@ -230,8 +230,6 @@ ${[...planDetails]
 
 All payments are processed in Indian Rupees (INR) through Razorpay. We accept UPI, debit cards, credit cards, and net banking.
 
-Monthly and Pro Plus subscriptions renew automatically at the end of each billing period unless cancelled before the renewal date. The Lifetime plan is a one-time purchase and does not auto-renew.
-
 We will provide 7 days advance notice of any price changes to existing subscribers.`,
     },
     {
@@ -243,8 +241,7 @@ We will provide 7 days advance notice of any price changes to existing subscribe
         Refunds will be credited to your original payment method within 5–7 business days.
         
         Refund requests made after 7 days of purchase will be evaluated on a case-by-case basis. We reserve the right to decline refunds where misuse of the refund policy is evident.
-        
-        The Lifetime plan is eligible for a full refund within 7 days of purchase only.`,
+        `,
     },
     {
       id: 6,
@@ -297,18 +294,9 @@ We will provide 7 days advance notice of any price changes to existing subscribe
         
         Our total cumulative liability to you for any claims related to the Service shall not exceed the total amount paid by you to us in the three months immediately preceding the event giving rise to the claim.`,
     },
+    
     {
       id: 11,
-      icon: <FiXCircle className="w-4 h-4 sm:w-5 sm:h-5" />,
-      title: "Termination",
-      content: `You may delete your account at any time from your account settings. Upon account deletion, your resume data will be permanently removed within 30 days.
-        
-        We may suspend or terminate your access to the Service without prior notice if you violate these Terms, engage in fraudulent activity, or if required to do so by law.
-        
-        Upon termination, your right to use the Service ends immediately. Clauses that by their nature survive termination will remain in effect.`,
-    },
-    {
-      id: 12,
       icon: <FiGlobe className="w-4 h-4 sm:w-5 sm:h-5" />,
       title: "Governing Law and Dispute Resolution",
       content: `These Terms are governed by the laws of India. Any dispute arising from these Terms or your use of the Service shall be subject to the exclusive jurisdiction of the competent courts in Chennai, Tamil Nadu, India.
@@ -318,7 +306,7 @@ We will provide 7 days advance notice of any price changes to existing subscribe
         If any provision of these Terms is found to be invalid or unenforceable, the remaining provisions will continue to apply in full.`,
     },
     {
-      id: 13,
+      id: 12,
       icon: <FiClock className="w-4 h-4 sm:w-5 sm:h-5" />,
       title: "Modifications to Terms",
       content: `We may update these Terms from time to time. For material changes, we will:
