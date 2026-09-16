@@ -23,8 +23,8 @@ import Link from "next/link";
 import {
   passwordGenerator,
   sanitizeNumber,
-  setInMemoryToken,
   setLocalStorage,
+  resumeAuthService,
 } from "@/app/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { HiSparkles } from "react-icons/hi";
@@ -529,18 +529,12 @@ export default function RegisterForm() {
     setGoogleLoading(true);
 
     try {
-      const response = await axios.post(
-        `${API_URL}/auth/google-login/`,
-        { credential: credentialResponse.credential },
-        { withCredentials: true },
+      const data = await resumeAuthService.googleLogin(
+        credentialResponse.credential
       );
 
-      if (response.data && response.data.access_token) {
-        const { user, access_token } = response.data;
-
-        setLocalStorage("user_details", user);
-        setInMemoryToken(access_token);
-
+      if (data.user) {
+        setLocalStorage("user_details", data.user);
         router.push("/dashboard");
       } else {
         setErrorMessage("Invalid token response from backend.");

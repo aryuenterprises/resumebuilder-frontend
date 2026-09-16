@@ -551,11 +551,8 @@ export default function ChoosePlanPage() {
         setUsersCurrentPlan(null);
         setIsSubscriptionExpired(false);
         
-        // Only clear tokens if it's an authentication error
+        // If authentication failed and interceptor could not refresh, update state
         if (axios.isAxiosError(err) && (err.response?.status === 401 || err.response?.status === 403)) {
-          localStorage.removeItem("access_token");
-          localStorage.removeItem("refresh_token");
-          localStorage.removeItem("user_details");
           setIsAuthenticated(false);
         }
       }
