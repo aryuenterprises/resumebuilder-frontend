@@ -364,11 +364,26 @@ export function ResumeDataFetcher({ children }: ResumeDataFetcherProps) {
 
     // NEW: If the user just chose "Create New Resume", don't fetch —
     // RootLayout already reset the context to empty via handleCreateNewResume().
-    if (getLocalStorage("isNewResumeMode") === "true") {
-      console.log("🆕 New resume mode — skipping fetch, keeping empty context");
-      hasFetchedData.current = true;
-      return;
-    }
+    // if (getLocalStorage("isNewResumeMode") === "true") {
+    //   console.log("🆕 New resume mode — skipping fetch, keeping empty context");
+    //   hasFetchedData.current = true;
+    //   return;
+    // }
+
+    // ResumeDataFetcher.tsx, inside the fetch effect
+if (getLocalStorage("isNewResumeMode") === "true") {
+  console.log("🆕 New resume mode — skipping fetch, resetting to empty state");
+  removeLocalStorage("isNewResumeMode"); // ⬅️ consume it so it can never leak into a later session
+  setContact({} as Contact);
+  setEducation([]);
+  setExperiences([]);
+  setProjects([]);
+  setSkills({} as Skill);
+  setSummary("");
+  setFinalize({});
+  hasFetchedData.current = true;
+  return;
+}
 
     if (hasFetchedData.current || !userId) {
       if (!userId) console.log("⚠️ No user ID found, skipping data fetch");

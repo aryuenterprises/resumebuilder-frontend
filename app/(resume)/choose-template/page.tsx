@@ -382,7 +382,7 @@ function Choose_template() {
   // OPTIMIZATION: React Query for caching user data
   // ============================================================
 
-  const { data: userData,isLoading } = useQuery({
+  const { data: userData, isLoading } = useQuery({
     queryKey: ["user-dashboard"],
     queryFn: async () => {
       const res = await apiClient.get("/dashboard");
@@ -670,8 +670,11 @@ function Choose_template() {
 
         // Success handling
         const parsedResumeData = response.data.parsed;
+        console.log("parsedResumeData",parsedResumeData)
         const convertedData =
           convertParsedResumeToFrontendFormat(parsedResumeData);
+
+          console.log("convertedData",convertedData)
 
         if (convertedData.contact) setContact(convertedData.contact);
         if (convertedData.experiences)
@@ -910,24 +913,20 @@ function Choose_template() {
       <Toaster position="top-right" />
       <Header />
 
-
-
-{/* ============================================================
+      {/* ============================================================
     CLEAN WHITE LOADER (Active during API load)
   ============================================================ */}
-{isLoading && (
-  <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white">
-    {/* Standard Indigo Spinner */}
-    <div className="h-10 w-10 animate-spin rounded-full border-4 border-slate-200 border-t-indigo-600"></div>
-    
-    {/* Subtle Loading Text */}
-    <p className="mt-4 text-slate-400 text-sm font-medium tracking-wide">
-      Loading...
-    </p>
-  </div>
-)}
+      {isLoading && (
+        <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white">
+          {/* Standard Indigo Spinner */}
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-slate-200 border-t-indigo-600"></div>
 
-      
+          {/* Subtle Loading Text */}
+          <p className="mt-4 text-slate-400 text-sm font-medium tracking-wide">
+            Loading...
+          </p>
+        </div>
+      )}
 
       {/* ============================================================
           RENEWAL REMINDER 
@@ -1416,7 +1415,8 @@ function Choose_template() {
                       Upload Your Resume
                     </h2>
                     <p className="text-white/80 text-xs sm:text-sm mt-0.5 sm:mt-1">
-  Upload PDF file to get started                    </p>
+                      Upload PDF file to get started{" "}
+                    </p>
                   </div>
                   <button
                     onClick={resetUploadState}
@@ -1549,7 +1549,7 @@ function Choose_template() {
                         Drop your file here
                       </p>
                       <p className="text-[11px] sm:text-xs md:text-sm text-gray-500 mb-3 sm:mb-4">
-                         Supports PDF up to 10MB
+                        Supports PDF up to 10MB
                       </p>
                       <button
                         onClick={() =>

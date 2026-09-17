@@ -677,7 +677,7 @@ export default function ChangeTemplate() {
                       <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs text-gray-600">
                         <FiLock className="w-3 h-3 sm:w-4 sm:h-4 text-indigo-600" />
                         <span>
-                          Unlock {totalTemplates - availableTemplates} more
+                          Unlock more
                           templates
                         </span>
                       </div>

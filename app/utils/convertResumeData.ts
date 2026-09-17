@@ -88,17 +88,14 @@ const formatBulletsToHTML = (bullets: string[]): string => {
 // Format skills array to HTML string with bullet points
 const formatSkillsToHTML = (skills: string[]): string => {
   if (!skills || skills.length === 0) return "";
-  
+
   // Capitalize each skill and format as bullet list
-  const formattedSkills = skills.map(skill => 
-    skill.charAt(0).toUpperCase() + skill.slice(1).toLowerCase()
+  const formattedSkills = skills.map(
+    (skill) => skill.charAt(0).toUpperCase() + skill.slice(1).toLowerCase(),
   );
-  
-  return `<ul>${formattedSkills.map(skill => `<li>${skill}</li>`).join("")}</ul>`;
+
+  return `<ul>${formattedSkills.map((skill) => `<li>${skill}</li>`).join("")}</ul>`;
 };
-
-
-
 
 // Parse year to number for Experience
 const parseYearToNumber = (yearString: string): number => {
@@ -115,6 +112,11 @@ export const convertParsedResumeToFrontendFormat = (
   userId?: string,
   templateId: string = "1",
 ) => {
+
+  console.log("parsedData",parsedData)
+
+
+  
   const { firstName, lastName } = splitName(parsedData.header.name || "");
 
   const contact = {
@@ -167,9 +169,8 @@ export const convertParsedResumeToFrontendFormat = (
 
   // Convert skills array to object with text property (HTML format)
   const skills = {
-    text: formatSkillsToHTML(parsedData.skills || [])
+    text: formatSkillsToHTML(parsedData.skills || []),
   };
-
 
   const summary = parsedData.summary?.summary
     ? `<p>${parsedData.summary.summary}</p>`
@@ -180,7 +181,7 @@ export const convertParsedResumeToFrontendFormat = (
       id: crypto.randomUUID(),
       title: `${project.title}`,
       // description: formatBulletsToHTML(project.bullets || []),
-            description: project.description || "",
+      description: project.description || "",
 
       techStack: project.technologies || [],
     })) || [];
