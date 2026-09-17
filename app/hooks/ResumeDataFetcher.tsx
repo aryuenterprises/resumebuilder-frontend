@@ -1,9 +1,245 @@
+// "use client";
+
+// import { useEffect, useContext, useRef } from "react";
+// import { usePathname } from "next/navigation";
+// import { CreateContext } from "@/app/context/CreateContext";
+// import { API_URL } from "@/app/config/api";
+// import {
+//   getLocalStorage,
+//   getSessionStorage,
+//   removeLocalStorage,
+//   removeSessionStorage,
+// } from "@/app/utils";
+// import { User } from "@/app/types/user.types";
+// import {
+//   Contact,
+//   EditingResumeData,
+//   Skill,
+//   Template,
+// } from "@/app/types/context.types";
+// import api from "../utils/api";
+// import apiClient from "../utils/apiClient";
+
+// interface ResumeDataFetcherProps {
+//   children: React.ReactNode;
+// }
+
+// export function ResumeDataFetcher({ children }: ResumeDataFetcherProps) {
+//   const pathname = usePathname();
+//   const {
+//     isUploadMode,
+//     clearUploadMode,
+//     setContact,
+//     setEducation,
+//     setExperiences,
+//     setSkills,
+//     setSummary,
+//     setFinalize,
+//     setFullResumeData,
+//     setResumeId,
+//     setProjects,
+//   } = useContext(CreateContext);
+
+//   const chosenTemplate = getLocalStorage<Template>("chosenTemplate");
+//   const editingResumeIdAndData = getLocalStorage<EditingResumeData>(
+//     "editingResumeIdAndData",
+//   );
+//   const isOldRouteNameDashboard = getSessionStorage("oldRouteNameDashboard");
+//   const userDetails = getLocalStorage<User>("user_details");
+//   const userId = userDetails?.id;
+
+//   const hasFetchedData = useRef(false);
+//   const hasLoadedDashboardData = useRef(false); // Add this guard
+//   const previousPathname = useRef(pathname);
+//   const abortControllerRef = useRef<AbortController | null>(null);
+
+//   // Check if we're on a resume detail page
+//   const isResumeDetailPage = pathname?.includes("/resume-details/");
+
+//   // Clear upload mode when navigating AWAY from resume detail pages
+
+//   useEffect(() => {
+//     const isFlowPage = (path: string | null) =>
+//       !!path &&
+//       (path.includes("/resume-details/") || path === "/change-template");
+
+//     const wasOnFlow = isFlowPage(previousPathname.current);
+//     const isNowOnFlow = isFlowPage(pathname);
+
+//     if (wasOnFlow && !isNowOnFlow) {
+//       console.log("🧹 Navigating away from resume flow, clearing upload mode");
+//       clearUploadMode();
+//       hasFetchedData.current = false;
+//       hasLoadedDashboardData.current = false;
+
+//       removeSessionStorage("oldRouteNameDashboard");
+//       removeLocalStorage("editingResumeIdAndData");
+//       removeSessionStorage("resumeChoiceChecked"); // NEW
+
+//       if (abortControllerRef.current) {
+//         abortControllerRef.current.abort();
+//         abortControllerRef.current = null;
+//       }
+//     }
+//     previousPathname.current = pathname;
+//   }, [pathname, isResumeDetailPage, clearUploadMode]);
+
+//   // Handle editing from dashboard route - WITH GUARD
+//   useEffect(() => {
+//     // CRITICAL: Guard against multiple executions
+//     if (hasLoadedDashboardData.current) {
+//       return;
+//     }
+
+//     if (!isOldRouteNameDashboard || !editingResumeIdAndData?.resume_data) {
+//       return;
+//     }
+
+//     console.log("🔄 Loading dashboard editing data");
+//     const { resume_data } = editingResumeIdAndData;
+
+//     // Mark as loaded immediately to prevent re-runs
+//     hasLoadedDashboardData.current = true;
+
+//     // Update all context values
+//     if (resume_data.contact) setContact(resume_data.contact);
+//     if (resume_data.educations) setEducation(resume_data.educations);
+//     if (resume_data.experiences) setExperiences(resume_data.experiences);
+//     if (resume_data.projects) setProjects(resume_data.projects);
+//     if (resume_data.skills) setSkills(resume_data.skills);
+//     if (resume_data.summary) setSummary(resume_data.summary);
+//     if (resume_data.finalize) setFinalize(resume_data.finalize);
+
+//     setFullResumeData({
+//       template: chosenTemplate?.templateId || chosenTemplate?.id,
+//       contact: resume_data.contact || ({} as Contact),
+//       experiences: resume_data.experiences || [],
+//       education: resume_data.educations || [],
+//       skills: resume_data.skills || ({} as Skill),
+//       summary: resume_data.summary || "",
+//       finalize: resume_data.finalize || {},
+//       projects: resume_data.projects || [],
+//     });
+
+//     hasFetchedData.current = true;
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, [isOldRouteNameDashboard, editingResumeIdAndData]); // Remove chosenTemplate from deps
+
+//   // Fetch existing resume data
+//   useEffect(() => {
+//     // Skip if not on resume detail page
+//     if (!isResumeDetailPage) {
+//       return;
+//     }
+
+//     // Skip if upload mode is active
+//     if (isUploadMode) {
+//       console.log("📝 Upload mode active - skipping existing data fetch");
+//       return;
+//     }
+
+//     // Skip if already fetched or no user ID
+//     if (hasFetchedData.current || !userId) {
+//       if (!userId) console.log("⚠️ No user ID found, skipping data fetch");
+//       return;
+//     }
+
+//     const fetchResumeData = async () => {
+//       // Create abort controller for this request
+//       abortControllerRef.current = new AbortController();
+
+//       try {
+//         hasFetchedData.current = true;
+//         setResumeId("");
+
+//         console.log("🔄 Fetching existing resume data...");
+
+//         // apiClient.get("/api/resume/
+
+//         const response = await apiClient.get(`/user-resumes`);
+
+//         console.log("response", response);
+
+//         const resumeData = response.data?.[0]?.resume_data;
+
+//         if (!resumeData) {
+//           // Explicitly reset context so a brand-new user gets a blank resume
+//           setContact({} as Contact);
+//           setEducation([]);
+//           setExperiences([]);
+//           setProjects([]);
+//           setSkills({} as Skill);
+//           setSummary("");
+//           setFinalize({});
+//           setFullResumeData({
+//             template: chosenTemplate?.templateId || chosenTemplate?.id,
+//             contact: {} as Contact,
+//             experiences: [],
+//             education: [],
+//             skills: {} as Skill,
+//             summary: "",
+//             finalize: {},
+//             projects: [],
+//           });
+//           return;
+//         }
+
+//         console.log("✅ Resume data fetched successfully", resumeData);
+
+//         // Update all contexts with existing data
+//         setContact(resumeData?.contact || "");
+//         setEducation(resumeData?.educations || []);
+//         setExperiences(resumeData?.experiences || []);
+//         setProjects(resumeData?.projects || []);
+//         setSkills(resumeData?.skills || "");
+//         setSummary(resumeData?.summary || "");
+//         setFinalize(resumeData?.finalize || {});
+
+//         setFullResumeData({
+//           template: chosenTemplate?.templateId || chosenTemplate?.id,
+//           contact: resumeData?.contact || ({} as Contact),
+//           experiences: resumeData?.experiences || [],
+//           education: resumeData?.educations || [],
+//           skills: resumeData?.skills || ({} as Skill),
+//           summary: resumeData?.summary || "",
+//           finalize: resumeData?.finalize || {},
+//           projects: resumeData?.projects || [],
+//         });
+//       } catch (error: any) {
+//         if (error.name === "AbortError") {
+//           console.log("Fetch aborted");
+//         } else {
+//           console.error("❌ Error fetching resume data:", error);
+//           hasFetchedData.current = false;
+//         }
+//       } finally {
+//         abortControllerRef.current = null;
+//       }
+//     };
+
+//     fetchResumeData();
+
+//     // Cleanup function
+//     return () => {
+//       if (abortControllerRef.current) {
+//         abortControllerRef.current.abort();
+//         abortControllerRef.current = null;
+//       }
+//     };
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, [isResumeDetailPage, isUploadMode, userId]);
+
+//   return <>{children}</>;
+// }
+
+
+
+
 "use client";
 
 import { useEffect, useContext, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { CreateContext } from "@/app/context/CreateContext";
-import { API_URL } from "@/app/config/api";
 import {
   getLocalStorage,
   getSessionStorage,
@@ -17,7 +253,6 @@ import {
   Skill,
   Template,
 } from "@/app/types/context.types";
-import api from "../utils/api";
 import apiClient from "../utils/apiClient";
 
 interface ResumeDataFetcherProps {
@@ -49,15 +284,13 @@ export function ResumeDataFetcher({ children }: ResumeDataFetcherProps) {
   const userId = userDetails?.id;
 
   const hasFetchedData = useRef(false);
-  const hasLoadedDashboardData = useRef(false); // Add this guard
+  const hasLoadedDashboardData = useRef(false);
   const previousPathname = useRef(pathname);
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  // Check if we're on a resume detail page
   const isResumeDetailPage = pathname?.includes("/resume-details/");
 
   // Clear upload mode when navigating AWAY from resume detail pages
-
   useEffect(() => {
     const isFlowPage = (path: string | null) =>
       !!path &&
@@ -74,7 +307,7 @@ export function ResumeDataFetcher({ children }: ResumeDataFetcherProps) {
 
       removeSessionStorage("oldRouteNameDashboard");
       removeLocalStorage("editingResumeIdAndData");
-      removeSessionStorage("resumeChoiceChecked"); // NEW
+      removeSessionStorage("resumeChoiceChecked");
 
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
@@ -84,12 +317,9 @@ export function ResumeDataFetcher({ children }: ResumeDataFetcherProps) {
     previousPathname.current = pathname;
   }, [pathname, isResumeDetailPage, clearUploadMode]);
 
-  // Handle editing from dashboard route - WITH GUARD
+  // Handle editing from dashboard route — WITH GUARD
   useEffect(() => {
-    // CRITICAL: Guard against multiple executions
-    if (hasLoadedDashboardData.current) {
-      return;
-    }
+    if (hasLoadedDashboardData.current) return;
 
     if (!isOldRouteNameDashboard || !editingResumeIdAndData?.resume_data) {
       return;
@@ -98,10 +328,8 @@ export function ResumeDataFetcher({ children }: ResumeDataFetcherProps) {
     console.log("🔄 Loading dashboard editing data");
     const { resume_data } = editingResumeIdAndData;
 
-    // Mark as loaded immediately to prevent re-runs
     hasLoadedDashboardData.current = true;
 
-    // Update all context values
     if (resume_data.contact) setContact(resume_data.contact);
     if (resume_data.educations) setEducation(resume_data.educations);
     if (resume_data.experiences) setExperiences(resume_data.experiences);
@@ -123,54 +351,72 @@ export function ResumeDataFetcher({ children }: ResumeDataFetcherProps) {
 
     hasFetchedData.current = true;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOldRouteNameDashboard, editingResumeIdAndData]); // Remove chosenTemplate from deps
+  }, [isOldRouteNameDashboard, editingResumeIdAndData]);
 
   // Fetch existing resume data
   useEffect(() => {
-    // Skip if not on resume detail page
-    if (!isResumeDetailPage) {
-      return;
-    }
+    if (!isResumeDetailPage) return;
 
-    // Skip if upload mode is active
     if (isUploadMode) {
       console.log("📝 Upload mode active - skipping existing data fetch");
       return;
     }
 
-    // Skip if already fetched or no user ID
+    // NEW: If the user just chose "Create New Resume", don't fetch —
+    // RootLayout already reset the context to empty via handleCreateNewResume().
+    if (getLocalStorage("isNewResumeMode") === "true") {
+      console.log("🆕 New resume mode — skipping fetch, keeping empty context");
+      hasFetchedData.current = true;
+      return;
+    }
+
     if (hasFetchedData.current || !userId) {
       if (!userId) console.log("⚠️ No user ID found, skipping data fetch");
       return;
     }
 
     const fetchResumeData = async () => {
-      // Create abort controller for this request
-      abortControllerRef.current = new AbortController();
+      const controller = new AbortController();
+      abortControllerRef.current = controller;
 
       try {
-        hasFetchedData.current = true;
         setResumeId("");
 
         console.log("🔄 Fetching existing resume data...");
 
-                      // apiClient.get("/api/resume/
-
-
         const response = await apiClient.get(`/user-resumes`);
-
-        console.log("response", response);
 
         const resumeData = response.data?.[0]?.resume_data;
 
         if (!resumeData) {
-          console.log("ℹ️ No existing resume data found");
+          // NEW: brand-new user (or user with zero resumes) — explicitly
+          // initialize empty context so the form + preview render blank
+          // instead of showing stale/undefined state.
+          console.log("ℹ️ No existing resume — initializing empty state");
+          setContact({} as Contact);
+          setEducation([]);
+          setExperiences([]);
+          setProjects([]);
+          setSkills({} as Skill);
+          setSummary("");
+          setFinalize({});
+          setFullResumeData({
+            template: chosenTemplate?.templateId || chosenTemplate?.id,
+            contact: {} as Contact,
+            experiences: [],
+            education: [],
+            skills: {} as Skill,
+            summary: "",
+            finalize: {},
+            projects: [],
+          });
+
+          hasFetchedData.current = true;
           return;
         }
 
         console.log("✅ Resume data fetched successfully", resumeData);
 
-        // Update all contexts with existing data
         setContact(resumeData?.contact || "");
         setEducation(resumeData?.educations || []);
         setExperiences(resumeData?.experiences || []);
@@ -189,22 +435,28 @@ export function ResumeDataFetcher({ children }: ResumeDataFetcherProps) {
           finalize: resumeData?.finalize || {},
           projects: resumeData?.projects || [],
         });
+
+        // Mark as fetched ONLY after a successful resolution
+        hasFetchedData.current = true;
       } catch (error: any) {
         if (error.name === "AbortError") {
           console.log("Fetch aborted");
-        } else {
-          console.error("❌ Error fetching resume data:", error);
-          hasFetchedData.current = false;
+          return;
         }
+        console.error("❌ Error fetching resume data:", error);
+        // Only reset on real errors so we retry next time
+        hasFetchedData.current = false;
       } finally {
-        abortControllerRef.current = null;
+        if (abortControllerRef.current === controller) {
+          abortControllerRef.current = null;
+        }
       }
     };
 
     fetchResumeData();
 
-    // Cleanup function
     return () => {
+      // Abort the in-flight request only when this effect truly unmounts
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
         abortControllerRef.current = null;

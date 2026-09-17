@@ -1,7 +1,7 @@
 // "use client";
 // import { templateData } from "@/app/data";
 // import { useState, useEffect, useContext, useRef, useCallback } from "react";
-// import { useRouter } from "next/navigation";
+// import { usePathname, useRouter } from "next/navigation";
 // import {
 //   FiChevronRight,
 //   FiLayout,
@@ -11,12 +11,23 @@
 //   FiArrowRight,
 //   FiMove,
 // } from "react-icons/fi";
-// import { getLocalStorage } from "@/app/utils";
+// import {
+//   getLocalStorage,
+//   setLocalStorage,
+//   getSessionStorage,
+//   setSessionStorage,
+// } from "@/app/utils";
 // import { Template } from "@/app/types";
+// import { User } from "@/app/types/user.types";
 // import { motion, AnimatePresence } from "framer-motion";
 // import LoginModel from "@/app/components/auth/LoginModel";
 // import { ResumeDataFetcher, usePreventReload } from "@/app/hooks";
 // import { SimpleCanvasPreview } from "@/app/components/resume";
+// import { CreateContext } from "@/app/context/CreateContext";
+// import { API_URL } from "@/app/config/api";
+// import api from "@/app/utils/api";
+// import { IoDiamondOutline } from "react-icons/io5";
+// import apiClient from "@/app/utils/apiClient";
 
 // export default function RootLayout({
 //   children,
@@ -24,6 +35,7 @@
 //   children: React.ReactNode;
 // }>) {
 //   const router = useRouter();
+//   const pathname = usePathname();
 //   const chosenTemplate = getLocalStorage<Template>("chosenTemplate");
 //   const [isTemplateHovered, setIsTemplateHovered] = useState(false);
 //   const [isDragHovered, setIsDragHovered] = useState(false);
@@ -34,6 +46,23 @@
 //   const [isDragging, setIsDragging] = useState(false);
 //   const containerRef = useRef<HTMLDivElement>(null);
 //   const [isLargeScreen, setIsLargeScreen] = useState(false);
+
+//   // --- Resume choice modal state ---
+//   const [showResumeChoiceModal, setShowResumeChoiceModal] = useState(false);
+//   const {
+//     setContact,
+//     setEducation,
+//     setExperiences,
+//     setProjects,
+//     setSkills,
+//     setSummary,
+//     setFinalize,
+//     setFullResumeData,
+//   } = useContext(CreateContext);
+
+//   const userDetails = getLocalStorage<User>("user_details");
+//   const userId = userDetails?.id;
+//   const isOldRouteNameDashboard = getSessionStorage("oldRouteNameDashboard");
 
 //   const selectedResume = templateData.find(
 //     (resume) => resume.id == (chosenTemplate?.id || chosenTemplate?.templateId),
@@ -48,10 +77,105 @@
 //     };
 
 //     checkScreenSize();
-//     window.addEventListener('resize', checkScreenSize);
+//     window.addEventListener("resize", checkScreenSize);
 
-//     return () => window.removeEventListener('resize', checkScreenSize);
+//     return () => window.removeEventListener("resize", checkScreenSize);
 //   }, []);
+
+//   // --- Ask "Continue last resume?" vs "Create new resume?" ---
+//   // Runs every time the user lands on the contact page (flow entry point),
+//   // as long as they're not coming from a dashboard "Edit" click.
+//   // No session persistence — this check (and the modal) fires on every visit.
+//   // In your layout — add a ref to track first mount
+//   // Remove this:
+//   // const hasCheckedResumeChoice = useRef(false);
+
+//   useEffect(() => {
+//     const isContactPage = pathname === "/resume-details/contact";
+//     if (!isContactPage || !userId) return;
+//     if (isOldRouteNameDashboard) return;
+
+//     // Survives layout unmount/remount (e.g. a trip through /change-template)
+//     // unlike a ref, which resets to false every time this layout remounts.
+//     const alreadyChecked = getSessionStorage("resumeChoiceChecked");
+//     if (alreadyChecked) return;
+
+//     // const checkExisting = async () => {
+//     //   try {
+//     //     const response = await apiClient.get(`/user-resumes`);
+//     //     const hasExisting =
+//     //       Array.isArray(response.data) && response.data.length > 0;
+
+//     //     if (hasExisting) {
+//     //       setShowResumeChoiceModal(true);
+//     //     }
+//     //     // Mark as checked regardless of outcome — an empty result also
+//     //     // shouldn't be re-checked on the next internal navigation
+//     //     setSessionStorage("resumeChoiceChecked", "true");
+//     //   } catch (err) {
+//     //     console.error("Error checking existing resumes:", err);
+//     //   }
+//     // };
+
+
+//     const checkExisting = async () => {
+//   try {
+//     const response = await apiClient.get(`/user-resumes`);
+//     const hasExisting =
+//       Array.isArray(response.data) && response.data.length > 0;
+
+//     if (hasExisting) {
+//       setShowResumeChoiceModal(true);
+//     } else {
+//       // NEW USER (or user with zero resumes): initialize empty resume
+//       // so the form and preview render blank instead of waiting on a
+//       // fetch that will never resolve to real data.
+//       handleCreateNewResume();
+//     }
+//     setSessionStorage("resumeChoiceChecked", "true");
+//   } catch (err) {
+//     console.error("Error checking existing resumes:", err);
+//     handleCreateNewResume();
+//   }
+// };
+//     checkExisting();
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, [pathname, userId]);
+
+//   const handleContinueLastResume = () => {
+//     setShowResumeChoiceModal(false);
+//     // ResumeDataFetcher's normal fetch runs as-is and prefills the last resume
+//   };
+
+//   const handleCreateNewResume = () => {
+//     localStorage.removeItem("latest_resume_id");
+
+//     setContact({
+//       contactId: "",
+//       firstName: "",
+//       lastName: "",
+//       jobTitle: "",
+//       phone: "",
+//       email: "",
+//       linkedIn: "",
+//       portfolio: "",
+//       address: "",
+//       city: "",
+//       country: "",
+//       postCode: "",
+//       croppedImage: null,
+//     });
+//     setEducation([]);
+//     setExperiences([]);
+//     setProjects([]);
+//     setSkills({});
+//     setSummary("");
+//     setFinalize({});
+//     setFullResumeData(null);
+
+//     setLocalStorage("isNewResumeMode", "true");
+//     setShowResumeChoiceModal(false);
+//   };
 
 //   // Handle mouse drag
 //   const handleMouseDown = (e: React.MouseEvent) => {
@@ -60,18 +184,21 @@
 //     setIsDragging(true);
 //   };
 
-//   const handleMouseMove = useCallback((e: MouseEvent) => {
-//     if (!isDragging || !containerRef.current || !isLargeScreen) return;
+//   const handleMouseMove = useCallback(
+//     (e: MouseEvent) => {
+//       if (!isDragging || !containerRef.current || !isLargeScreen) return;
 
-//     const containerRect = containerRef.current.getBoundingClientRect();
-//     const containerWidth = containerRect.width;
-//     const mouseX = e.clientX - containerRect.left;
+//       const containerRect = containerRef.current.getBoundingClientRect();
+//       const containerWidth = containerRect.width;
+//       const mouseX = e.clientX - containerRect.left;
 
-//     let percentage = (mouseX / containerWidth) * 100;
-//     percentage = Math.max(20, Math.min(80, percentage));
+//       let percentage = (mouseX / containerWidth) * 100;
+//       percentage = Math.max(20, Math.min(80, percentage));
 
-//     setLeftWidth(percentage);
-//   }, [isDragging, isLargeScreen]);
+//       setLeftWidth(percentage);
+//     },
+//     [isDragging, isLargeScreen],
+//   );
 
 //   const handleMouseUp = useCallback(() => {
 //     setIsDragging(false);
@@ -80,22 +207,22 @@
 //   // Add/remove event listeners
 //   useEffect(() => {
 //     if (isDragging && isLargeScreen) {
-//       document.addEventListener('mousemove', handleMouseMove);
-//       document.addEventListener('mouseup', handleMouseUp);
-//       document.body.style.userSelect = 'none';
-//       document.body.style.cursor = 'col-resize';
+//       document.addEventListener("mousemove", handleMouseMove);
+//       document.addEventListener("mouseup", handleMouseUp);
+//       document.body.style.userSelect = "none";
+//       document.body.style.cursor = "col-resize";
 //     } else {
-//       document.removeEventListener('mousemove', handleMouseMove);
-//       document.removeEventListener('mouseup', handleMouseUp);
-//       document.body.style.userSelect = '';
-//       document.body.style.cursor = '';
+//       document.removeEventListener("mousemove", handleMouseMove);
+//       document.removeEventListener("mouseup", handleMouseUp);
+//       document.body.style.userSelect = "";
+//       document.body.style.cursor = "";
 //     }
 
 //     return () => {
-//       document.removeEventListener('mousemove', handleMouseMove);
-//       document.removeEventListener('mouseup', handleMouseUp);
-//       document.body.style.userSelect = '';
-//       document.body.style.cursor = '';
+//       document.removeEventListener("mousemove", handleMouseMove);
+//       document.removeEventListener("mouseup", handleMouseUp);
+//       document.body.style.userSelect = "";
+//       document.body.style.cursor = "";
 //     };
 //   }, [isDragging, isLargeScreen, handleMouseMove, handleMouseUp]);
 
@@ -106,67 +233,160 @@
 //     >
 //       <LoginModel />
 
+//       {/* showResumeChoiceModal */}
+//       <AnimatePresence>
+//         {showResumeChoiceModal && (
+//           <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-100 p-4">
+//             <motion.div
+//               initial={{ opacity: 0, scale: 0.95, y: 10 }}
+//               animate={{ opacity: 1, scale: 1, y: 0 }}
+//               exit={{ opacity: 0, scale: 0.95, y: 10 }}
+//               transition={{ duration: 0.25, ease: "easeOut" }}
+//               className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden "
+//             >
+//               {/* Header */}
+//               <div className="relative px-6 sm:px-8 pt-8 pb-6 bg-gradient-to-br from-indigo-700 via-indigo-600 to-purple-600 overflow-hidden">
+//                 {/* Decorative glow */}
+//                 <div className="absolute -top-8 -right-8 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
+//                 <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
+
+//                 <div className="relative flex flex-col items-center text-center">
+//                   <div className="w-12 h-12 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center mb-4 ring-1 ring-white/20">
+//                     <IoDiamondOutline className="w-6 h-6 text-white" />
+//                   </div>
+//                   <h2 className="text-xl font-bold text-white tracking-tight">
+//                     Welcome back
+//                   </h2>
+//                   <p className="text-indigo-100 text-sm mt-1.5 max-w-xs">
+//                     You have a resume already in progress. How would you like to
+//                     proceed?
+//                   </p>
+//                 </div>
+//               </div>
+
+//               {/* Options */}
+//               <div className="p-5 sm:p-6 space-y-3 bg-white">
+//                 <button
+//                   onClick={handleContinueLastResume}
+//                   className="w-full group flex items-center gap-4 p-4 rounded-2xl border-2 border-indigo-100 bg-indigo-50/50 hover:border-indigo-400 hover:bg-indigo-50 transition-all duration-200 cursor-pointer text-left"
+//                 >
+//                   <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center shadow-sm shadow-indigo-200 group-hover:scale-105 transition-transform">
+//                     <FiArrowRight className="w-4 h-4 text-white" />
+//                   </div>
+//                   <div className="flex-1 min-w-0">
+//                     <p className="text-sm font-semibold text-gray-900">
+//                       Continue Last Resume
+//                     </p>
+//                     <p className="text-xs text-gray-500 mt-0.5">
+//                       Pick up right where you left off
+//                     </p>
+//                   </div>
+//                   <FiChevronRight className="w-4 h-4 text-gray-300 group-hover:text-indigo-500 group-hover:translate-x-0.5 transition-all flex-shrink-0" />
+//                 </button>
+
+//                 <button
+//                   onClick={handleCreateNewResume}
+//                   className="w-full group flex items-center gap-4 p-4 rounded-2xl border-2 border-gray-100 bg-gray-50/50 hover:border-gray-300 hover:bg-gray-50 transition-all duration-200 cursor-pointer text-left"
+//                 >
+//                   <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gray-200 flex items-center justify-center group-hover:bg-gray-300 transition-colors">
+//                     <FiLayout className="w-4 h-4 text-gray-600" />
+//                   </div>
+//                   <div className="flex-1 min-w-0">
+//                     <p className="text-sm font-semibold text-gray-900">
+//                       Create New Resume
+//                     </p>
+//                     <p className="text-xs text-gray-500 mt-0.5">
+//                       Start fresh with a blank resume
+//                     </p>
+//                   </div>
+//                   <FiChevronRight className="w-4 h-4 text-gray-300 group-hover:text-gray-500 group-hover:translate-x-0.5 transition-all flex-shrink-0" />
+//                 </button>
+//               </div>
+//             </motion.div>
+//           </div>
+//         )}
+//       </AnimatePresence>
+
 //       {/* Left Section - Form */}
 //       <aside
-//         className={`overflow-y-auto no-scollbar ${isLargeScreen ? '' : 'lg:w-1/2 w-full'}`}
-//         style={isLargeScreen ? {
-//           width: `${leftWidth}%`,
-//           minWidth: '20%',
-//         } : undefined}
+//         className={`overflow-y-auto no-scollbar ${isLargeScreen ? "" : "lg:w-1/2 w-full"}`}
+//         style={
+//           isLargeScreen
+//             ? {
+//                 width: `${leftWidth}%`,
+//                 minWidth: "20%",
+//               }
+//             : undefined
+//         }
 //       >
 //         <ResumeDataFetcher>{children}</ResumeDataFetcher>
 //       </aside>
-
 //       {/* Draggable Divider - Enhanced UI */}
 //       {isLargeScreen && (
 //         <div
 //           className={`relative flex-shrink-0 z-10 group transition-all duration-200 ${
-//             isDragging ? 'cursor-col-resize' : 'cursor-col-resize'
+//             isDragging ? "cursor-col-resize" : "cursor-col-resize"
 //           }`}
-//           style={{ width: '8px' }}
+//           style={{ width: "8px" }}
 //           onMouseDown={handleMouseDown}
 //           onMouseEnter={() => setIsDragHovered(true)}
 //           onMouseLeave={() => setIsDragHovered(false)}
 //         >
 //           {/* Background glow - always visible but subtle */}
-//           <div className={`absolute inset-0 transition-all duration-300 ${
-//             isDragging
-//               ? 'bg-indigo-500/30'
-//               : 'bg-indigo-400/10 group-hover:bg-indigo-400/20'
-//           }`} />
+//           <div
+//             className={`absolute inset-0 transition-all duration-300 ${
+//               isDragging
+//                 ? "bg-indigo-500/30"
+//                 : "bg-indigo-400/10 group-hover:bg-indigo-400/20"
+//             }`}
+//           />
 
 //           {/* Main divider line */}
-//           <div className={`absolute inset-y-0 left-1/2 -translate-x-1/2 w-[3px] transition-all duration-300 ${
-//             isDragging
-//               ? 'bg-indigo-600 shadow-lg shadow-indigo-400/50'
-//               : 'bg-gray-400 group-hover:bg-indigo-500 group-hover:shadow-lg group-hover:shadow-indigo-400/30'
-//           }`} />
+//           <div
+//             className={`absolute inset-y-0 left-1/2 -translate-x-1/2 w-[3px] transition-all duration-300 ${
+//               isDragging
+//                 ? "bg-indigo-600 shadow-lg shadow-indigo-400/50"
+//                 : "bg-gray-400 group-hover:bg-indigo-500 group-hover:shadow-lg group-hover:shadow-indigo-400/30"
+//             }`}
+//           />
 
 //           {/* Drag handle - centered with pulsing animation */}
 //           <motion.div
-//             className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-//               flex flex-col items-center justify-center gap-0.5
-//               bg-white shadow-lg rounded-lg p-1.5
+//             className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
+//               flex flex-col items-center justify-center gap-0.5 
+//               bg-white shadow-lg rounded-lg p-1.5 
 //               transition-all duration-300 pointer-events-none
-//               ${isDragging ? 'scale-110 ring-2 ring-indigo-500' : 'group-hover:scale-110'}`}
+//               ${isDragging ? "scale-110 ring-2 ring-indigo-500" : "group-hover:scale-110"}`}
 //             animate={{
 //               scale: isDragging ? 1.1 : 1,
-//               boxShadow: isDragging ? '0 0 20px rgba(99, 102, 241, 0.4)' : '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+//               boxShadow: isDragging
+//                 ? "0 0 20px rgba(99, 102, 241, 0.4)"
+//                 : "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
 //             }}
 //           >
-//             <FiMove className={`w-3 h-3 transition-colors duration-300 ${
-//               isDragging ? 'text-indigo-600' : 'text-gray-500 group-hover:text-indigo-600'
-//             }`} />
+//             <FiMove
+//               className={`w-3 h-3 transition-colors duration-300 ${
+//                 isDragging
+//                   ? "text-indigo-600"
+//                   : "text-gray-500 group-hover:text-indigo-600"
+//               }`}
+//             />
 //             <div className="flex gap-0.5">
 //               {[1, 2, 3].map((dot) => (
 //                 <motion.div
 //                   key={dot}
 //                   className={`w-0.5 h-0.5 rounded-full transition-colors duration-300 ${
-//                     isDragging ? 'bg-indigo-600' : 'bg-gray-400 group-hover:bg-indigo-500'
+//                     isDragging
+//                       ? "bg-indigo-600"
+//                       : "bg-gray-400 group-hover:bg-indigo-500"
 //                   }`}
-//                   animate={isDragging ? {
-//                     scaleY: [1, 1.5, 1],
-//                   } : {}}
+//                   animate={
+//                     isDragging
+//                       ? {
+//                           scaleY: [1, 1.5, 1],
+//                         }
+//                       : {}
+//                   }
 //                   transition={{
 //                     repeat: isDragging ? Infinity : 0,
 //                     duration: 0.5,
@@ -177,7 +397,7 @@
 //             </div>
 //           </motion.div>
 
-//           {/* Tooltip - "Drag to resize" - Now uses isDragHovered instead of isHovered */}
+//           {/* Tooltip - "Drag to resize" */}
 //           <motion.div
 //             initial={{ opacity: 0, y: 10 }}
 //             animate={{
@@ -185,27 +405,29 @@
 //               y: isDragHovered || isDragging ? 0 : 10,
 //             }}
 //             transition={{ duration: 0.3 }}
-//             className={`absolute bottom-1/2 left-1/2 -translate-x-1/2 translate-y-16
+//             className={`absolute bottom-1/2 left-1/2 -translate-x-1/2 translate-y-16 
 //               bg-gray-900 text-white text-xs px-3 py-1.5 rounded-lg whitespace-nowrap
-//               shadow-lg pointer-events-none ${(isDragHovered || isDragging) ? 'opacity-100' : 'opacity-0'}`}
+//               shadow-lg pointer-events-none ${isDragHovered || isDragging ? "opacity-100" : "opacity-0"}`}
 //           >
-//             {isDragging ? 'Release to resize' : 'Drag to resize'}
+//             {isDragging ? "Release to resize" : "Drag to resize"}
 //             <div className="absolute -top-1 left-1/2 -translate-x-1/2 border-4 border-transparent border-b-gray-900" />
 //           </motion.div>
-
 //         </div>
 //       )}
 
 //       {/* Right Section - Resume Preview */}
 //       <section
-//         className={`bg-[#e8e6f2] overflow-hidden ${isLargeScreen ? '' : 'max-lg:hidden lg:w-1/2'}`}
-//         style={isLargeScreen ? {
-//           width: `${100 - leftWidth}%`,
-//           minWidth: '20%',
-//         } : undefined}
+//         className={`bg-[#e8e6f2] overflow-hidden ${isLargeScreen ? "" : "max-lg:hidden lg:w-1/2"}`}
+//         style={
+//           isLargeScreen
+//             ? {
+//                 width: `${100 - leftWidth}%`,
+//                 minWidth: "20%",
+//               }
+//             : undefined
+//         }
 //       >
-
-//         {/* change template - Now uses isTemplateHovered */}
+//         {/* change template */}
 //         <div
 //           className="absolute top-4 right-4 z-10"
 //           onMouseEnter={() => setIsTemplateHovered(true)}
@@ -265,7 +487,6 @@
 //           <FiEye className="w-3 h-3" />
 //         </motion.button>
 //       )}
-
 //       {/* Mobile Preview Drawer */}
 //       <AnimatePresence>
 //         {showMobilePreview && SelectedComponent && (
@@ -325,6 +546,16 @@
 //     </div>
 //   );
 // }
+
+
+
+
+
+
+
+
+
+
 
 "use client";
 import { templateData } from "@/app/data";
@@ -411,37 +642,33 @@ export default function RootLayout({
   }, []);
 
   // --- Ask "Continue last resume?" vs "Create new resume?" ---
-  // Runs every time the user lands on the contact page (flow entry point),
-  // as long as they're not coming from a dashboard "Edit" click.
-  // No session persistence — this check (and the modal) fires on every visit.
-  // In your layout — add a ref to track first mount
-  // Remove this:
-  // const hasCheckedResumeChoice = useRef(false);
-
   useEffect(() => {
     const isContactPage = pathname === "/resume-details/contact";
     if (!isContactPage || !userId) return;
     if (isOldRouteNameDashboard) return;
 
-    // Survives layout unmount/remount (e.g. a trip through /change-template)
-    // unlike a ref, which resets to false every time this layout remounts.
     const alreadyChecked = getSessionStorage("resumeChoiceChecked");
     if (alreadyChecked) return;
 
     const checkExisting = async () => {
       try {
-
-              // apiClient.get("/api/resume/
-
         const response = await apiClient.get(`/user-resumes`);
         const hasExisting =
           Array.isArray(response.data) && response.data.length > 0;
 
         if (hasExisting) {
+          // Returning user with at least one resume → offer the choice
           setShowResumeChoiceModal(true);
+        } else {
+          // Brand-new user (or user with zero resumes) → skip the modal
+          // AND explicitly initialize an empty resume so the form and
+          // preview render blank immediately.
+          console.log("🆕 No existing resumes — starting empty resume");
+          handleCreateNewResume();
         }
-        // Mark as checked regardless of outcome — an empty result also
-        // shouldn't be re-checked on the next internal navigation
+
+        // Mark as checked regardless of outcome so it isn't re-checked
+        // on the next internal navigation within the same session.
         setSessionStorage("resumeChoiceChecked", "true");
       } catch (err) {
         console.error("Error checking existing resumes:", err);
@@ -556,7 +783,6 @@ export default function RootLayout({
             >
               {/* Header */}
               <div className="relative px-6 sm:px-8 pt-8 pb-6 bg-gradient-to-br from-indigo-700 via-indigo-600 to-purple-600 overflow-hidden">
-                {/* Decorative glow */}
                 <div className="absolute -top-8 -right-8 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
                 <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
 
@@ -631,6 +857,7 @@ export default function RootLayout({
       >
         <ResumeDataFetcher>{children}</ResumeDataFetcher>
       </aside>
+
       {/* Draggable Divider - Enhanced UI */}
       {isLargeScreen && (
         <div
@@ -642,7 +869,6 @@ export default function RootLayout({
           onMouseEnter={() => setIsDragHovered(true)}
           onMouseLeave={() => setIsDragHovered(false)}
         >
-          {/* Background glow - always visible but subtle */}
           <div
             className={`absolute inset-0 transition-all duration-300 ${
               isDragging
@@ -651,7 +877,6 @@ export default function RootLayout({
             }`}
           />
 
-          {/* Main divider line */}
           <div
             className={`absolute inset-y-0 left-1/2 -translate-x-1/2 w-[3px] transition-all duration-300 ${
               isDragging
@@ -660,7 +885,6 @@ export default function RootLayout({
             }`}
           />
 
-          {/* Drag handle - centered with pulsing animation */}
           <motion.div
             className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
               flex flex-col items-center justify-center gap-0.5 
@@ -707,7 +931,6 @@ export default function RootLayout({
             </div>
           </motion.div>
 
-          {/* Tooltip - "Drag to resize" */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{
@@ -724,7 +947,7 @@ export default function RootLayout({
           </motion.div>
         </div>
       )}
-     
+
       {/* Right Section - Resume Preview */}
       <section
         className={`bg-[#e8e6f2] overflow-hidden ${isLargeScreen ? "" : "max-lg:hidden lg:w-1/2"}`}
@@ -797,6 +1020,7 @@ export default function RootLayout({
           <FiEye className="w-3 h-3" />
         </motion.button>
       )}
+
       {/* Mobile Preview Drawer */}
       <AnimatePresence>
         {showMobilePreview && SelectedComponent && (

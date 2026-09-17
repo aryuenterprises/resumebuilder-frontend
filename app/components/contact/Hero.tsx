@@ -57,8 +57,6 @@ const ContactPage = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [mobileNum, setMobileNum] = useState<string>("");
-  // Honeypot — hidden from humans, bots fill it in.
-  const [website, setWebsite] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const validateForm = (): boolean => {
@@ -69,14 +67,6 @@ const ContactPage = () => {
       typeof v === "string" ? v.trim() : "";
 
     const isBlank = (v: unknown): boolean => asTrimmed(v).length === 0;
-
-    // ---------- Honeypot ----------
-    // If a bot filled this hidden field, fail silently (don't reveal why).
-    if (!isBlank(website)) {
-      newErrors.message = "Unable to submit. Please try again.";
-      setErrors(newErrors);
-      return false;
-    }
 
     // ---------- name ----------
     const trimmedName = asTrimmed(name);
@@ -134,7 +124,7 @@ const ContactPage = () => {
         full_name: name.trim(),
         email: email.trim(),
         message: message.trim(),
-        source: "contact", // was "resume" — this is the contact page
+        source: "contact",
         phone: mobileNum.trim() || undefined,
       };
 
@@ -158,7 +148,6 @@ const ContactPage = () => {
       setEmail("");
       setMessage("");
       setMobileNum("");
-      setWebsite("");
       setErrors({});
     } catch (err: unknown) {
       console.error("Error submitting form:", err);
@@ -322,24 +311,6 @@ const ContactPage = () => {
                 className="space-y-4 sm:space-y-5"
                 noValidate
               >
-                {/* Honeypot — hidden from users, bots fill it in */}
-                <input
-                  type="text"
-                  name="website"
-                  value={website}
-                  onChange={(e) => setWebsite(e.target.value)}
-                  tabIndex={-1}
-                  autoComplete="off"
-                  aria-hidden="true"
-                  style={{
-                    position: "absolute",
-                    left: "-9999px",
-                    opacity: 0,
-                    height: 0,
-                    width: 0,
-                  }}
-                />
-
                 {/* Name */}
                 <div>
                   <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
@@ -485,9 +456,3 @@ const ContactPage = () => {
 };
 
 export default ContactPage;
-
-
-
-
-
-

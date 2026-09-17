@@ -1405,23 +1405,36 @@ const ATSCheckerPage = () => {
     setDragActive(e.type === "dragenter" || e.type === "dragover");
   };
 
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-    const f = e.dataTransfer.files[0];
-    if (f?.type === "application/pdf") {
-      setFile(f);
-      setError(null);
-    } else setError("Please upload a PDF file");
-  };
+const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+  e.preventDefault();
+  e.stopPropagation();
+  setDragActive(false);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0]) {
-      setFile(e.target.files[0]);
-      setError(null);
-    }
-  };
+  const f = e.dataTransfer.files[0];
+  if (!f) return;
+
+  const err = validateFile(f);
+  if (err) {
+    setError(err);
+    return;
+  }
+  setFile(f);
+  setError(null);
+};
+
+const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const f = e.target.files?.[0];
+  if (!f) return;
+
+  const err = validateFile(f);
+  if (err) {
+    setError(err);
+    e.target.value = "";
+    return;
+  }
+  setFile(f);
+  setError(null);
+};
 
   const removeFile = () => {
     setFile(null);
@@ -1437,31 +1450,6 @@ const ATSCheckerPage = () => {
     setError(null);
     const formData = new FormData();
     formData.append("file", file);
-
-    // try {
-    //   const response = await api.post<ATSResults>(
-    //     `${API_URL}/ats/scan/`,
-    //     formData,
-    //     { headers: { "Content-Type": "multipart/form-data" } },
-    //   );
-    //   setAtsResults(response?.data);
-    // } catch (err: unknown) {
-    //   const e = err as {
-    //     response?: { data?: { message?: string } };
-    //     message?: string;
-    //   };
-    //   setError(
-    //     e?.response?.data?.message || e?.message || "Failed to analyze resume",
-    //   );
-
-    //     if (error.response?.status === 403 &&
-    //   error.response?.data?.message?.includes("ATS Scan limit exceeded")) {
-
-    //   setFile(null);
-    // } finally {
-    //   setUploading(false);
-    //   setTimeout(() => setLoading(false), 3000);
-    // }
 
     try {
       const response = await apiClient.post<ATSResults>(
@@ -1522,6 +1510,18 @@ const ATSCheckerPage = () => {
     transition: { duration: 0.6 },
   };
 
+
+ const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+
+const isValidPdf = (file: File): boolean => {
+  return file.type === "application/pdf";
+};
+
+const validateFile = (file: File): string | null => {
+  if (!isValidPdf(file)) return "Please upload a PDF file";
+  if (file.size > MAX_SIZE) return "File size must be less than 10MB";
+  return null;
+};
   return (
     <>
       <LoginModel />
@@ -1591,7 +1591,7 @@ const ATSCheckerPage = () => {
                       type="file"
                       id="resume-upload"
                       className="hidden"
-                      accept=".pdf"
+                        accept=".pdf,application/pdf" 
                       onChange={handleFileChange}
                     />
                     <div className="text-center">

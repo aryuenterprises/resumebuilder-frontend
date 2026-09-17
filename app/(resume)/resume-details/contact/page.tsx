@@ -1108,98 +1108,195 @@ const ContactForm = () => {
   );
   const isOldRouteNameDashboard = getSessionStorage("oldRouteNameDashboard");
 
+  // const saveToAPI = async (contactData: typeof contact) => {
+  //   if (!userId) {
+  //     console.error("User ID is required");
+  //     return false;
+  //   }
+
+  //   setIsSaving(true);
+
+  //   try {
+  //     let finalPhotoBase64 = "";
+
+  //     if (contactData.photo) {
+  //       if (contactData.photo.startsWith("data:image")) {
+  //         finalPhotoBase64 = contactData.photo;
+  //       } else if (contactData.photo.startsWith("blob:")) {
+  //         const responseBlob = await fetch(contactData.photo);
+  //         const blobData = await responseBlob.blob();
+
+  //         finalPhotoBase64 = await new Promise<string>((resolve, reject) => {
+  //           const reader = new FileReader();
+  //           reader.onloadend = () => resolve(reader.result as string);
+  //           reader.onerror = reject;
+  //           reader.readAsDataURL(blobData);
+  //         });
+  //       } else {
+  //         finalPhotoBase64 = contactData.photo;
+  //       }
+  //     }
+
+  //     const singlePayload = {
+  //       template: chosenResumeDetails?.id ? Number(chosenResumeDetails.id) : 1,
+  //       resume_title: contactData.jobTitle
+  //         ? `${contactData.jobTitle} Position Resume`
+  //         : "Senior Engineer Position Resume",
+  //       resume_data: {
+  //         contact: {
+  //           firstName: contactData.firstName || "",
+  //           lastName: contactData.lastName || "",
+  //           jobTitle: contactData.jobTitle || "",
+  //           city: contactData.city || "",
+  //           email: contactData.email || "",
+  //           phone: contactData.phone || "",
+  //           dob: contactData.dob || "",
+  //           country: contactData.country || "",
+  //           address: contactData.address || "",
+  //           postCode: contactData.postCode || "",
+  //           linkedIn: contactData.linkedIn || "",
+  //           github: contactData.github || "",
+  //           portfolio: contactData.portfolio || "",
+  //           photo: finalPhotoBase64,
+  //         },
+  //       },
+  //     };
+
+  //     const oldResumeEditPayload = {
+  //       section_name: "contact",
+  //       section_payload: contactData,
+  //     };
+
+  //     const existingResumeId = getLocalStorage<string>("latest_resume_id");
+
+  //     if (isOldRouteNameDashboard && editingResumeIdAndData) {
+  //       await apiClient.patch(
+  //         `${API_URL}/user-resumes/${editingResumeIdAndData.id}`,
+  //         oldResumeEditPayload,
+  //       );
+  //       setLocalStorage("latest_resume_id", editingResumeIdAndData.id);
+  //       return true;
+  //     } else if (existingResumeId) {
+  //       await apiClient.patch(
+  //         `${API_URL}/user-resumes/${existingResumeId}`,
+  //         oldResumeEditPayload,
+  //       );
+  //       setLocalStorage("latest_resume_id", existingResumeId);
+  //       return true;
+  //     } else {
+  //       const response = await apiClient.post(
+  //         `${API_URL}/user-resumes`,
+  //         singlePayload,
+  //       );
+  //       setLocalStorage("latest_resume_id", response.data.id);
+
+  //       return true;
+  //     }
+  //   } catch (err) {
+  //     console.error("Error saving contact unified payload:", err);
+  //     return false;
+  //   } finally {
+  //     setIsSaving(false);
+  //   }
+  // };
+
+
   const saveToAPI = async (contactData: typeof contact) => {
-    if (!userId) {
-      console.error("User ID is required");
-      return false;
-    }
+  if (!userId) {
+    console.error("User ID is required");
+    return false;
+  }
 
-    setIsSaving(true);
+  setIsSaving(true);
 
-    try {
-      let finalPhotoBase64 = "";
+  try {
+    let finalPhotoBase64 = "";
 
-      if (contactData.photo) {
-        if (contactData.photo.startsWith("data:image")) {
-          finalPhotoBase64 = contactData.photo;
-        } else if (contactData.photo.startsWith("blob:")) {
-          const responseBlob = await fetch(contactData.photo);
-          const blobData = await responseBlob.blob();
+    if (contactData.photo) {
+      if (contactData.photo.startsWith("data:image")) {
+        finalPhotoBase64 = contactData.photo;
+      } else if (contactData.photo.startsWith("blob:")) {
+        const responseBlob = await fetch(contactData.photo);
+        const blobData = await responseBlob.blob();
 
-          finalPhotoBase64 = await new Promise<string>((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result as string);
-            reader.onerror = reject;
-            reader.readAsDataURL(blobData);
-          });
-        } else {
-          finalPhotoBase64 = contactData.photo;
-        }
-      }
-
-      const singlePayload = {
-        template: chosenResumeDetails?.id ? Number(chosenResumeDetails.id) : 1,
-        resume_title: contactData.jobTitle
-          ? `${contactData.jobTitle} Position Resume`
-          : "Senior Engineer Position Resume",
-        resume_data: {
-          contact: {
-            firstName: contactData.firstName || "",
-            lastName: contactData.lastName || "",
-            jobTitle: contactData.jobTitle || "",
-            city: contactData.city || "",
-            email: contactData.email || "",
-            phone: contactData.phone || "",
-            dob: contactData.dob || "",
-            country: contactData.country || "",
-            address: contactData.address || "",
-            postCode: contactData.postCode || "",
-            linkedIn: contactData.linkedIn || "",
-            github: contactData.github || "",
-            portfolio: contactData.portfolio || "",
-            photo: finalPhotoBase64,
-          },
-        },
-      };
-
-      const oldResumeEditPayload = {
-        section_name: "contact",
-        section_payload: contactData,
-      };
-
-      const existingResumeId = getLocalStorage<string>("latest_resume_id");
-
-      if (isOldRouteNameDashboard && editingResumeIdAndData) {
-        await apiClient.patch(
-          `${API_URL}/user-resumes/${editingResumeIdAndData.id}`,
-          oldResumeEditPayload,
-        );
-        setLocalStorage("latest_resume_id", editingResumeIdAndData.id);
-        return true;
-      } else if (existingResumeId) {
-        await apiClient.patch(
-          `${API_URL}/user-resumes/${existingResumeId}`,
-          oldResumeEditPayload,
-        );
-        setLocalStorage("latest_resume_id", existingResumeId);
-        return true;
+        finalPhotoBase64 = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(blobData);
+        });
       } else {
-        const response = await apiClient.post(
-          `${API_URL}/user-resumes`,
-          singlePayload,
-        );
-        setLocalStorage("latest_resume_id", response.data.id);
-
-        return true;
+        finalPhotoBase64 = contactData.photo;
       }
-    } catch (err) {
-      console.error("Error saving contact unified payload:", err);
-      return false;
-    } finally {
-      setIsSaving(false);
     }
-  };
 
+    const singlePayload = {
+      template: chosenResumeDetails?.id ? Number(chosenResumeDetails.id) : 1,
+      resume_title: contactData.jobTitle
+        ? `${contactData.jobTitle} Position Resume`
+        : "Senior Engineer Position Resume",
+      resume_data: {
+        contact: {
+          firstName: contactData.firstName || "",
+          lastName: contactData.lastName || "",
+          jobTitle: contactData.jobTitle || "",
+          city: contactData.city || "",
+          email: contactData.email || "",
+          phone: contactData.phone || "",
+          dob: contactData.dob || "",
+          country: contactData.country || "",
+          address: contactData.address || "",
+          postCode: contactData.postCode || "",
+          linkedIn: contactData.linkedIn || "",
+          github: contactData.github || "",
+          portfolio: contactData.portfolio || "",
+          photo: finalPhotoBase64,
+        },
+      },
+    };
+
+    const oldResumeEditPayload = {
+      section_name: "contact",
+      section_payload: contactData,
+    };
+
+    const existingResumeId = getLocalStorage<string>("latest_resume_id");
+
+    if (isOldRouteNameDashboard && editingResumeIdAndData) {
+      await apiClient.patch(
+        `${API_URL}/user-resumes/${editingResumeIdAndData.id}`,
+        oldResumeEditPayload,
+      );
+      setLocalStorage("latest_resume_id", editingResumeIdAndData.id);
+      return true;
+    } else if (existingResumeId) {
+      await apiClient.patch(
+        `${API_URL}/user-resumes/${existingResumeId}`,
+        oldResumeEditPayload,
+      );
+      setLocalStorage("latest_resume_id", existingResumeId);
+      return true;
+    } else {
+      const response = await apiClient.post(
+        `${API_URL}/user-resumes`,
+        singlePayload,
+      );
+      setLocalStorage("latest_resume_id", response.data.id);
+
+      // ✅ NEW: clear the new-resume flag after the first successful save
+      localStorage.removeItem("isNewResumeMode");
+
+      return true;
+    }
+  } catch (err) {
+    console.error("Error saving contact unified payload:", err);
+    return false;
+  } finally {
+    setIsSaving(false);
+  }
+};
+
+          
   const handleContactChange = (field: keyof typeof contact, value: string) => {
     setContact((prev) => {
       const updated = { ...prev, [field]: value };

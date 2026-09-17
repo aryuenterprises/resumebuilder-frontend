@@ -581,11 +581,16 @@ function Choose_template() {
   // FILE UPLOAD HANDLING (Optimized with useCallback)
   // ============================================================
 
+  // const isValidFileType = useCallback((file: File): boolean => {
+  //   const validTypes = [
+  //     "application/pdf",
+  //     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  //   ];
+  //   return validTypes.includes(file.type);
+  // }, []);
+
   const isValidFileType = useCallback((file: File): boolean => {
-    const validTypes = [
-      "application/pdf",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    ];
+    const validTypes = ["application/pdf"];
     return validTypes.includes(file.type);
   }, []);
 
@@ -602,166 +607,6 @@ function Choose_template() {
     }
   }, []);
 
-  // const handleFileUpload = useCallback(
-  //   async (file: File) => {
-  //     const maxSize = 10 * 1024 * 1024;
-
-  //     if (!isPremiumUser || subscriptionStatus?.isExpired) {
-  //       setShowPlanRequiredPopup(true);
-  //       return;
-  //     }
-
-  //     if (!isValidFileType(file)) {
-  //       setErrorMessage("Please upload a PDF or DOCX file");
-  //       return;
-  //     }
-
-  //     if (file.size > maxSize) {
-  //       setErrorMessage("File size must be less than 10MB");
-  //       return;
-  //     }
-
-  //     if (uploadAbortController.current) {
-  //       uploadAbortController.current.abort();
-  //     }
-  //     uploadAbortController.current = new AbortController();
-
-  //     setIsUploading(true);
-  //     setUploadStatus("uploading");
-  //     setUploadedFile(file);
-  //     setErrorMessage("");
-
-  //     let progressInterval: NodeJS.Timeout | null = null;
-  //     const formData = new FormData();
-  //     formData.append("file", file);
-
-  //     try {
-  //       if (uploadStatus !== "error") {
-  //         progressInterval = setInterval(() => {
-  //           setUploadProgress((prev) => {
-  //             if (prev >= 90) {
-  //               if (progressInterval) clearInterval(progressInterval);
-  //               return 90;
-  //             }
-  //             return prev + 10;
-  //           });
-  //         }, 200);
-  //       }
-
-  //       setUploadStatus("processing");
-  //       setUploadProgress(100);
-
-  //       const response = await api.post(
-  //         `${API_URL}/parse/`,
-
-  //         formData,
-  //         {
-  //           headers: { "Content-Type": "multipart/form-data" },
-  //           signal: uploadAbortController.current.signal,
-  //           onUploadProgress: (progressEvent) => {
-  //             if (progressEvent.total && uploadStatus !== "error") {
-  //               const percentCompleted = Math.round(
-  //                 (progressEvent.loaded * 100) / progressEvent.total,
-  //               );
-  //               setUploadProgress(percentCompleted);
-  //             }
-  //           },
-  //         },
-  //       );
-
-  //       if (progressInterval) clearInterval(progressInterval);
-
-  //       const parsedResumeData = response.data.parsed;
-  //       const convertedData =
-  //         convertParsedResumeToFrontendFormat(parsedResumeData);
-
-  //       if (convertedData.contact) setContact(convertedData.contact);
-  //       if (convertedData.experiences)
-  //         setExperiences(convertedData.experiences);
-  //       if (convertedData.educations) setEducation(convertedData.educations);
-  //       if (convertedData.skills) setSkills(convertedData.skills);
-  //       if (convertedData.projects) setProjects(convertedData.projects);
-  //       if (convertedData.summary) setSummary(convertedData.summary);
-  //       if (convertedData.finalize) setFinalize(convertedData.finalize);
-
-  //       setFullResumeData({
-  //         contact: convertedData.contact,
-  //         experiences: convertedData.experiences,
-  //         education: convertedData.educations,
-  //         skills: convertedData.skills,
-  //         summary: convertedData.summary?.[0] || "",
-  //         finalize: convertedData.finalize || {},
-  //         projects: convertedData.projects || [],
-  //       });
-
-  //       const defaultTemplate = templateData[0];
-  //       setLocalStorage("chosenTemplate", defaultTemplate);
-  //       setChosenTemplate(defaultTemplate);
-  //       setIsUploadMode(true);
-  //       setUploadStatus("success");
-
-  //       toast.success("Resume uploaded and processed successfully!", {
-  //         duration: 3000,
-  //         style: { background: "#10b981", color: "#fff", borderRadius: "12px" },
-  //       });
-
-  //       setTimeout(() => {
-  //         setShowUploadPopup(false);
-  //         router.push(`/resume-details/contact`);
-  //         setTimeout(resetUploadState, 500);
-  //       }, 2000);
-  //     } catch (err) {
-  //       if (progressInterval) clearInterval(progressInterval);
-
-  //       if (axios.isCancel(err)) {
-  //         console.log("Upload cancelled");
-  //         setUploadStatus("idle");
-  //         setErrorMessage("Upload cancelled");
-  //       }
-  //       if (axios.isAxiosError(err)) {
-  //         const status = err.response?.status;
-  //         const message = err.response?.data?.message || err.message;
-
-  //         if (
-  //           status === 403 &&
-  //           message?.includes("Resume parsing limit exceeded")
-  //         ) {
-  //           setUploadStatus("error");
-  //           setUploadStatus(
-  //             "⚠️ Daily resume upload limit reached. Please try again tomorrow.",
-  //           );
-  //         }
-  //       }
-  //       // Use axios.isAxiosError for better type safety
-  //       else {
-  //         console.error("Upload error:", err);
-  //         setUploadStatus("error");
-  //         setErrorMessage("Failed to parse resume. Please try again.");
-  //       }
-  //     }
-
-  //     setIsUploading(false);
-  //   },
-  //   [
-  //     isPremiumUser,
-  //     subscriptionStatus,
-  //     isValidFileType,
-  //     uploadStatus,
-  //     setContact,
-  //     setExperiences,
-  //     setEducation,
-  //     setSkills,
-  //     setSummary,
-  //     setFinalize,
-  //     setProjects,
-  //     setFullResumeData,
-  //     setChosenTemplate,
-  //     setIsUploadMode,
-  //     router,
-  //     resetUploadState,
-  //   ],
-  // );
-
   const handleFileUpload = useCallback(
     async (file: File) => {
       const maxSize = 10 * 1024 * 1024;
@@ -772,7 +617,7 @@ function Choose_template() {
       }
 
       if (!isValidFileType(file)) {
-        setErrorMessage("Please upload a PDF or DOCX file");
+        setErrorMessage("Please upload a PDF file");
         return;
       }
 
@@ -971,7 +816,7 @@ function Choose_template() {
       if (file && isValidFileType(file)) {
         handleFileUpload(file);
       } else {
-        setErrorMessage("Please upload a PDF or DOCX file");
+        setErrorMessage("Please upload a PDF file");
       }
     },
     [isValidFileType, handleFileUpload],
@@ -1481,7 +1326,7 @@ function Choose_template() {
                       <Star className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 text-white" />
                     </div>
                     <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-1 sm:mb-2">
-                      Unlock Premium Template
+                      Unlock Template
                     </h3>
                     <p className="text-white/80 text-xs sm:text-sm">
                       Get access to {selectedLockedTemplate.requiredPlan}{" "}
@@ -1552,8 +1397,7 @@ function Choose_template() {
                       Upload Your Resume
                     </h2>
                     <p className="text-white/80 text-xs sm:text-sm mt-0.5 sm:mt-1">
-                      Upload file to get started
-                    </p>
+  Upload PDF file to get started                    </p>
                   </div>
                   <button
                     onClick={resetUploadState}
@@ -1583,13 +1427,23 @@ function Choose_template() {
                     type="file"
                     id="file-upload"
                     className="hidden"
-                    accept=".pdf,.docx"
+                    accept=".pdf,application/pdf"
+                    // onChange={(e) => {
+                    //   const file = e.target.files?.[0];
+                    //   if (file && isValidFileType(file)) {
+                    //     handleFileUpload(file);
+                    //   } else if (file) {
+                    //     setErrorMessage("Please upload a PDF or DOCX file");
+                    //   }
+                    //   e.target.value = "";
+                    // }}
+
                     onChange={(e) => {
                       const file = e.target.files?.[0];
                       if (file && isValidFileType(file)) {
                         handleFileUpload(file);
                       } else if (file) {
-                        setErrorMessage("Please upload a PDF or DOCX file");
+                        setErrorMessage("Please upload a PDF file"); // ⬅️ was "PDF or DOCX"
                       }
                       e.target.value = "";
                     }}
@@ -1676,7 +1530,7 @@ function Choose_template() {
                         Drop your file here
                       </p>
                       <p className="text-[11px] sm:text-xs md:text-sm text-gray-500 mb-3 sm:mb-4">
-                        Supports PDF and DOCX up to 10MB
+                         Supports PDF up to 10MB
                       </p>
                       <button
                         onClick={() =>

@@ -32,16 +32,15 @@ export const templateData: Template[] = [
     temp: "free",
     component: TemplateOne,
   },
-  // {
-  //   id: 2,
-  //   style: "Modern Classic",
-  //   image: "/images/resume2.jpg",
-  //   description: "Clean two-column layout with balanced white space.",
-  //   pic: "true",
-  //   temp: "paid",
-  //   component: TemplateTwo,
-  //   // twoColumn: true,
-  // },
+  {
+    id: 2,
+    style: "Modern Classic",
+    image: "/images/resume2.jpg",
+    description: "Clean two-column layout with balanced white space.",
+    pic: "true",
+    temp: "paid",
+    component: TemplateTwo,
+  },
 
   {
     id: 3,
