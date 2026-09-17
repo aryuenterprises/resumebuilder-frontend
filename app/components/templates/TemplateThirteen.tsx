@@ -8458,14 +8458,18 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
   const activeFontFamily =
     customization?.fontFamily ?? "'Montserrat', sans-serif";
 
-  // ── Data sources ─────────────────────────────────────────────────────────
-  const contact = alldata?.contact || context.contact || {};
+
+
+
+    const contact = alldata?.contact || context.contact || {};
   const educations = alldata?.educations || context?.education || [];
   const experiences = alldata?.experiences || context?.experiences || [];
   const skills = alldata?.skills?.text || context?.skills?.text || "";
   const projects = alldata?.projects || context?.projects || [];
   const finalize = alldata?.finalize || context?.finalize || {};
   const summary = alldata?.summary || context?.summary || "";
+
+
 
   const addressParts = [
     contact?.address,
@@ -8737,42 +8741,42 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
     `
             : "",
 
-        experience: () =>
-          experiences.length
-            ? `
-      <div class="section" data-block-id="exp-section">
-        <h2 class="section-title">Experience</h2>
-        ${experiences
-          .map((exp: any, i: number) => {
-            const startFormatted = formatMonthYear(exp.startDate, false);
-            const endFormatted = exp.endDate
-                               ? formatMonthYear(exp.endDate, false)
-                               : exp.isCurrentlyWorking
-                                 ? "Present"
-                                 : "";
-            const companyLocation = [exp.employer, exp.location]
-              .filter(Boolean)
-              .join(" • ");
-            return `
-            <div class="experience-item" data-block-id="exp-${i}">edu.endDate ? edu.endDate : edu.isCurrentlyStudying ? "Present" : ""
-              <div class="experience-header">
-                <div class="experience-title-row">
-                  <span class="experience-title">${exp.jobTitle || ""}</span>
-                  <span class="experience-date">${startFormatted} — ${endFormatted}</span>
-                </div>
-                <div class="experience-company">${companyLocation}</div>
+      experience: () =>
+  experiences.length > 0
+    ? `
+  <div class="section" data-block-id="exp-section">
+    <h2 class="section-title">Experience</h2>
+    ${experiences
+      .map((exp: any, i: number) => {
+        const startFormatted = formatMonthYear(exp.startDate, false);
+        const endFormatted = exp.endDate
+          ? formatMonthYear(exp.endDate, false)
+          : exp.isCurrentlyWorking
+            ? "Present"
+            : "";
+        const companyLocation = [exp.employer, exp.location]
+          .filter(Boolean)
+          .join(" • ");
+        return `
+          <div class="experience-item" data-block-id="exp-${i}">
+            <div class="experience-header">
+              <div class="experience-title-row">
+                <span class="experience-title">${exp.jobTitle || ""}</span>
+                <span class="experience-date">${startFormatted} — ${endFormatted}</span>
               </div>
-              ${exp.text ? `<div class="experience-description">${rich(exp.text)}</div>` : ""}
+              <div class="experience-company">${companyLocation}</div>
             </div>
-          `;
-          })
-          .join("")}
-      </div>
-    `
-            : "",
+            ${exp.text ? `<div class="experience-description">${rich(exp.text)}</div>` : ""}
+          </div>
+        `;
+      })
+      .join("")}
+  </div>
+`
+    : "",
 
         projects: () =>
-          projects.length
+          projects.length>0
             ? `
       <div class="section" data-block-id="proj-section">
         <h2 class="section-title">Projects</h2>
@@ -8800,7 +8804,7 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
             : "",
 
         education: () =>
-          educations.length
+          educations.length>0
             ? `
       <div class="section" data-block-id="edu-section">
         <h2 class="section-title">Education</h2>

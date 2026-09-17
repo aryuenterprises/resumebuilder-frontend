@@ -3302,11 +3302,7 @@ const TemplateEleven: React.FC<TemplateElevenProps> = ({
                   ${project.githubUrl ? `<a href="${href(project.githubUrl)}" class="project-link">GitHub</a>` : ""}
                 </div>
               </div>
-            </div>exp.endDate
-                   ? formatMonthYear(exp.endDate, false)
-                   : exp.isCurrentlyWorking
-                     ? "Present"
-                     : "";
+            
             ${project.techStack && project.techStack.length > 0 ? `<div class="project-tech-stack"><strong>Tech:</strong> ${project.techStack.join(" • ")}</div>` : ""}
             ${project.description ? `<div class="experience-description">${rich(project.description)}</div>` : ""}
           </div>

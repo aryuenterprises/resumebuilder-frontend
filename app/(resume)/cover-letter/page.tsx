@@ -2341,7 +2341,8 @@ const STEPS: { id: Step; label: string; icon: string }[] = [
 export default function CoverLetterGenerator() {
   const router = useRouter();
 
-  // --- Auth shttp://localhost:3000/resume-details/educationtate ---
+  // State to track if the initial dashboard data is loading
+  const [isLoading, setIsLoading] = useState(true);
   const [isPremium, setIsPremium] = useState<boolean | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
@@ -2381,12 +2382,16 @@ export default function CoverLetterGenerator() {
       setIsLoggedIn(true);
 
       try {
+        setIsLoading(true); // Start loading
+
         const res = await apiClient.get("/dashboard");
         const { subscription } = res?.data;
         const premium = subscription.current_plan?.toLowerCase() === "premium";
         setIsPremium(premium);
       } catch (err) {
         console.error(err);
+      } finally {
+        setIsLoading(false); // Start loading
       }
     };
     fetchUserData();
@@ -2552,12 +2557,6 @@ export default function CoverLetterGenerator() {
     const h = rebuild();
     setBusy(true);
     try {
-      // const r = await axios.post(
-      //   `https://passats.aryuacademy.com/api/candidates/generate-pdf`,
-      //   { html: h },
-      //   { responseType: "blob" },
-      // );
-
       const r = await apiClient.post(
         `${API_URL}/candidates/generate-pdf`,
         { html: h },
@@ -2616,6 +2615,25 @@ export default function CoverLetterGenerator() {
         .p-editor-container:focus-within{border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.1)}
         .p-editor-toolbar{background:#f8fafc!important;border-bottom:1px solid #e2e8f0!important;padding:8px 12px!important}
       `}</style>
+
+
+      {/* LOADING OVERLAY */}
+{isLoading && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-90 backdrop-blur-sm transition-opacity duration-300">
+    <div className="flex flex-col items-center gap-4">
+      {/* Spinner Animation */}
+      <div className="relative h-12 w-12">
+        <div className="absolute inset-0 animate-ping rounded-full bg-blue-400 opacity-75"></div>
+        <div className="relative flex h-12 w-12 items-center justify-center rounded-full bg-blue-500">
+          <FiRefreshCw className="h-6 w-6 animate-spin text-white" />
+        </div>
+      </div>
+      <span className="text-sm font-medium text-gray-600 animate-pulse">
+        Loading ...
+      </span>
+    </div>
+  </div>
+)}
 
       {/* login Popup */}
       <AnimatePresence>

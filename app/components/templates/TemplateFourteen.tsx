@@ -2509,7 +2509,7 @@ const TemplateFourteen: React.FC<TemplateFourteenProps> = ({
             ${formattedDob ? `<span class="header-meta-item">${formattedDob}</span>` : ""}
             ${linkedinUrl ? `<span class="header-meta-item"><a href="${href(linkedinUrl)}" target="_blank">LinkedIn: ${formatSocialLink(linkedinUrl, "linkedin")}</a></span>` : ""}
             ${githubUrl ? `<span class="header-meta-item"><a href="${href(githubUrl)}" target="_blank">GitHub: ${formatSocialLink(githubUrl, "github")}</a></span>` : ""}
-          edu.endDate ? edu.endDate : edu.isCurrentlyStudying ? "Present" : ""  ${portfolioUrl ? `<span class="header-meta-item"><a href="${href(portfolioUrl)}" target="_blank">${formatSocialLink(portfolioUrl, "portfolio")}</a></span>` : ""}
+          ${portfolioUrl ? `<span class="header-meta-item"><a href="${href(portfolioUrl)}" target="_blank">${formatSocialLink(portfolioUrl, "portfolio")}</a></span>` : ""}
           </div>
         </div>`;
 
@@ -2592,9 +2592,7 @@ const TemplateFourteen: React.FC<TemplateFourteenProps> = ({
 
         education: () =>
           educations.length > 0
-            ? `exp.endDate
-              ? formatMonthYear(exp.endDate, false)
-              : "Present";
+            ? `
       <div class="section-block" data-block-id="t14-edu-section">
         ${sectionHeaderHTML("Education")}
         ${educations

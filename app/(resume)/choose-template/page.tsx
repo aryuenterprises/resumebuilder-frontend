@@ -382,7 +382,7 @@ function Choose_template() {
   // OPTIMIZATION: React Query for caching user data
   // ============================================================
 
-  const { data: userData } = useQuery({
+  const { data: userData,isLoading } = useQuery({
     queryKey: ["user-dashboard"],
     queryFn: async () => {
       const res = await apiClient.get("/dashboard");
@@ -909,6 +909,25 @@ function Choose_template() {
     <div className="min-h-screen bg-white">
       <Toaster position="top-right" />
       <Header />
+
+
+
+{/* ============================================================
+    CLEAN WHITE LOADER (Active during API load)
+  ============================================================ */}
+{isLoading && (
+  <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white">
+    {/* Standard Indigo Spinner */}
+    <div className="h-10 w-10 animate-spin rounded-full border-4 border-slate-200 border-t-indigo-600"></div>
+    
+    {/* Subtle Loading Text */}
+    <p className="mt-4 text-slate-400 text-sm font-medium tracking-wide">
+      Loading...
+    </p>
+  </div>
+)}
+
+      
 
       {/* ============================================================
           RENEWAL REMINDER 
