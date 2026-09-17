@@ -973,10 +973,6 @@
 
 // export default TemplateOne;
 
-
-
-
-
 "use client";
 import React, {
   useContext,
@@ -1213,7 +1209,6 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
       const CSS = buildCSS(activeFontFamily);
 
       const richText = (html: string, cls: string) => {
-
         if (!html) return "";
         const clean = cleanQuillHTML(html);
         if (!clean || clean === "<p><br></p>") return "";
@@ -1307,7 +1302,7 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
                )
                .join("")}
            </div>`
-        : ""; 
+        : "";
 
       const eduBlock = educations.length
         ? `<div class="t1-section-content" data-block-id="edu-section">
@@ -2039,33 +2034,6 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
 
 export default TemplateOne;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
 // import React, {
 //   useContext,
@@ -2757,7 +2725,7 @@ export default TemplateOne;
 //       </div>
 
 //       {/* ── Download Button ──────────────────────────────────────────────── */}
-//       {!isThumbnail && lastSegment === "download-resume" && (
+//       {/* {!isThumbnail && lastSegment === "download-resume" && ( */}
 //         <div className="text-center my-8">
 //           <motion.button
 //             onClick={handleDownload}
@@ -2793,7 +2761,7 @@ export default TemplateOne;
 //             </div>
 //           </motion.button>
 //         </div>
-//      )}
+//       {/* )} */}
 
 //       {/* ── Screen Page Previews (Pure React Cards, Zero Iframes) ────────── */}
 //       <div
