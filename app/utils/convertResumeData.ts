@@ -57,27 +57,73 @@ const splitName = (fullName: string) => {
 };
 
 // Format date for Experience (string | undefined)
+// const formatExperienceDate = (
+//   year: string,
+//   isEndDate: boolean = false,
+// ): string | undefined => {
+//   if (!year || year.toLowerCase() === "present") {
+//     return undefined;
+//   }
+
+//   const yearMatch = year.toString().match(/\d{4}/);
+//   if (!yearMatch) return undefined;
+
+//   const yearNum = parseInt(yearMatch[0]);
+//   if (isNaN(yearNum)) return undefined;
+
+//   if (isEndDate) {
+//     return `${yearNum}-12`;
+//   } else {
+//     const date = new Date(yearNum, 0, 1);
+//     return date.toISOString();
+//   }
+// };
+
+
+const MONTHS: Record<string, number> = {
+  jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5,
+  jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11,
+};
+
 const formatExperienceDate = (
   year: string,
   isEndDate: boolean = false,
 ): string | undefined => {
-  if (!year || year.toLowerCase() === "present") {
+  if (!year || year.toLowerCase().trim() === "present") {
     return undefined;
   }
 
-  const yearMatch = year.toString().match(/\d{4}/);
-  if (!yearMatch) return undefined;
+  const str = year.toString().trim();
 
-  const yearNum = parseInt(yearMatch[0]);
+  // Extract 4-digit year
+  const yearMatch = str.match(/\d{4}/);
+  if (!yearMatch) return undefined;
+  const yearNum = parseInt(yearMatch[0], 10);
   if (isNaN(yearNum)) return undefined;
 
-  if (isEndDate) {
-    return `${yearNum}-12`;
-  } else {
-    const date = new Date(yearNum, 0, 1);
-    return date.toISOString();
+  // Extract month from name like "Apr 2026"
+  const monthNameMatch = str.match(/[A-Za-z]{3,}/);
+  let monthNum: number | undefined;
+
+  if (monthNameMatch) {
+    const name = monthNameMatch[0].slice(0, 3).toLowerCase();
+    if (name in MONTHS) monthNum = MONTHS[name];
   }
+
+  // Fallback if no month name: numeric month, else Jan/Dec
+  if (monthNum === undefined) {
+    const numericMonthMatch = str.match(/\b(0?[1-9]|1[0-2])\b/);
+    if (numericMonthMatch) {
+      monthNum = parseInt(numericMonthMatch[1], 10) - 1;
+    } else {
+      monthNum = isEndDate ? 11 : 0;
+    }
+  }
+
+  // Use UTC to avoid timezone shifting the date backward
+  return new Date(Date.UTC(yearNum, monthNum, 1)).toISOString();
 };
+
 
 // Convert bullets to HTML string
 const formatBulletsToHTML = (bullets: string[]): string => {
@@ -145,7 +191,7 @@ export const convertParsedResumeToFrontendFormat = (
       location: exp.location || "",
       startDate: formatExperienceDate(exp.fromYear, false),
       endDate: exp.isOngoing
-        ? undefined
+        ? "Present"
         : formatExperienceDate(exp.toYear, true),
       text: formatBulletsToHTML(exp.bullets || exp.description),
       isOpen: false,
