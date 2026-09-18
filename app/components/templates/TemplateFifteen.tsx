@@ -2336,6 +2336,19 @@
 
 // export default TemplateFifteen;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 "use client";
 import React, {
   useContext,
@@ -2575,33 +2588,71 @@ const TemplateFifteen: React.FC<TemplateFifteenProps> = ({
       padding: 0 2px;
     }
 
-    /* ── ENTRY ── */
+
+
+
+
+.t15-entry {
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #fff0f0;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+.t15-entry:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+.t15-entry-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  page-break-after: avoid;
+  break-after: avoid;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+.t15-entry-title-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  flex: 1;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
+
+
     .t15-entry {
-      margin-bottom: 14px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid #fff0f0;
-    }
-
-    .t15-entry:last-child {
-      border-bottom: none;
-      padding-bottom: 0;
-      margin-bottom: 0;
-    }
-
-    .t15-entry-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 8px;
-      page-break-after: avoid; break-after: avoid;
-    }
-
-    .t15-entry-title-wrap {
-      display: flex;
-      align-items: baseline;
-      gap: 7px;
-      flex: 1;
-    }
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+.t15-entry-top {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+.t15-entry-title-wrap {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
 
     .t15-dot {
       width: 7px;
@@ -2929,12 +2980,12 @@ const TemplateFifteen: React.FC<TemplateFifteenProps> = ({
           : "";
 
       const pdfStyle = forPDF
-        ? `<style>
-            @page { size: A4; margin: ${MARGIN}px 0; }
-            html, body { margin: 0 !important; padding: 0 !important; }
-            .t15-resume { width: ${A4_W}px !important; padding: 0 ${MARGIN}px !important; }
-          </style>`
-        : "";
+  ? `<style>
+      @page { size: A4; margin: ${MARGIN}px 0; }
+      html, body { margin: 0 !important; padding: 0 !important; }
+      .t15-resume { width: ${A4_W}px !important; padding: 0 ${MARGIN}px !important; }
+    </style>`
+  : "";
 
       let bodyContent = `${header}${summaryBlock}${expBlock}${projBlock}${eduBlock}${skillsBlock}${customBlock}`;
 
@@ -3369,49 +3420,79 @@ const TemplateFifteen: React.FC<TemplateFifteenProps> = ({
   }, []);
 
   // ── Download handler ───────────────────────────────────────────────────────
-  const handleDownload = async (): Promise<void> => {
-    setIsDownloading(true);
-    try {
-      const storedPageStarts: number[] | undefined = (window as any)
-        .__resumePageStarts;
-      const storedTotalH: number | undefined = (window as any).__resumeTotalH;
-      const storedSnapshot: string | undefined = (window as any)
-        .__resumeSnapshot;
+  // const handleDownload = async (): Promise<void> => {
+  //   setIsDownloading(true);
+  //   try {
+  //     const storedPageStarts: number[] | undefined = (window as any)
+  //       .__resumePageStarts;
+  //     const storedTotalH: number | undefined = (window as any).__resumeTotalH;
+  //     const storedSnapshot: string | undefined = (window as any)
+  //       .__resumeSnapshot;
 
-      let pdfHtml: string;
+  //     let pdfHtml: string;
 
-      if (storedPageStarts?.length && storedTotalH && storedSnapshot) {
-        pdfHtml = buildPDFPagesHTML(
-          storedPageStarts,
-          storedTotalH,
-          storedSnapshot,
-        );
-      } else {
-        const pageBreakIds: string[] =
-          (window as any).__resumePageBreakIds || [];
-        pdfHtml = generateHTML(true, pageBreakIds);
-      }
+  //     if (storedPageStarts?.length && storedTotalH && storedSnapshot) {
+  //       pdfHtml = buildPDFPagesHTML(
+  //         storedPageStarts,
+  //         storedTotalH,
+  //         storedSnapshot,
+  //       );
+  //     } else {
+  //       const pageBreakIds: string[] =
+  //         (window as any).__resumePageBreakIds || [];
+  //       pdfHtml = generateHTML(true, pageBreakIds);
+  //     }
 
-      const res: AxiosResponse<Blob> = await apiClient.post(
-        `/candidates/generate-pdf`,
-        { html: pdfHtml },
-        { responseType: "blob" },
-      );
-      const url = URL.createObjectURL(res.data);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error("PDF error:", err);
-      alert("Failed to generate PDF. Please try again.");
-    } finally {
-      setIsDownloading(false);
-    }
-  };
+  //     const res: AxiosResponse<Blob> = await apiClient.post(
+  //       `/candidates/generate-pdf`,
+  //       { html: pdfHtml },
+  //       { responseType: "blob" },
+  //     );
+  //     const url = URL.createObjectURL(res.data);
+  //     const a = document.createElement("a");
+  //     a.href = url;
+  //     a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
+  //     document.body.appendChild(a);
+  //     a.click();
+  //     document.body.removeChild(a);
+  //     URL.revokeObjectURL(url);
+  //   } catch (err) {
+  //     console.error("PDF error:", err);
+  //     alert("Failed to generate PDF. Please try again.");
+  //   } finally {
+  //     setIsDownloading(false);
+  //   }
+  // };
+
+
+const handleDownload = async (): Promise<void> => {
+  setIsDownloading(true);
+  try {
+    // No buildPDFPagesHTML, no browser-computed pageBreakIds — both fight
+    // WeasyPrint's own pagination and cause mismatched/extra pages and
+    // split flex containers (e.g. the dot separating from its title).
+    const pdfHtml = generateHTML(true, []);
+
+    const res: AxiosResponse<Blob> = await apiClient.post(
+      `/candidates/generate-pdf`,
+      { html: pdfHtml },
+      { responseType: "blob" },
+    );
+    const url = URL.createObjectURL(res.data);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch (err) {
+    console.error("PDF error:", err);
+    alert("Failed to generate PDF. Please try again.");
+  } finally {
+    setIsDownloading(false);
+  }
+};
 
   // ── RENDER ─────────────────────────────────────────────────────────────────
   const isThumbnail = !!alldata && !viewMode;

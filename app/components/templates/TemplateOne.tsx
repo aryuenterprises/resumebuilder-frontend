@@ -1769,36 +1769,58 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
 
   // ── Download handler ───────────────────────────────────────────────────────
   const handleDownload = async (): Promise<void> => {
+    // setIsDownloading(true);
+    // try {
+    //   const storedPageStarts: number[] | undefined = (window as any)
+    //     .__resumePageStarts;
+    //   const storedTotalH: number | undefined = (window as any).__resumeTotalH;
+    //   const storedSnapshot: string | undefined = (window as any)
+    //     .__resumeSnapshot;
+
+    //   let pdfHtml: string;
+
+    //   if (storedPageStarts?.length && storedTotalH && storedSnapshot) {
+    //     // ✅ Per-page clip/shift — matches preview exactly
+    //     pdfHtml = buildPDFPagesHTML(
+    //       storedPageStarts,
+    //       storedTotalH,
+    //       storedSnapshot,
+    //     );
+    //   } else {
+    //     // ⬇ Fallback: old page-break approach
+    //     const pageBreakIds: string[] =
+    //       (window as any).__resumePageBreakIds || [];
+    //     pdfHtml = generateHTML(true, pageBreakIds);
+    //   }
+
+    //   const res: AxiosResponse<Blob> = await apiClient.post(
+    //     `/candidates/generate-pdf`,
+    //     { html: pdfHtml },
+    //     { responseType: "blob" },
+    //   );
+    //   const url = URL.createObjectURL(res.data);
+    //   const a = document.createElement("a");
+    //   a.href = url;
+    //   a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
+    //   document.body.appendChild(a);
+    //   a.click();
+    //   document.body.removeChild(a);
+    //   URL.revokeObjectURL(url);
+    // }
     setIsDownloading(true);
-    try {
-      const storedPageStarts: number[] | undefined = (window as any)
-        .__resumePageStarts;
-      const storedTotalH: number | undefined = (window as any).__resumeTotalH;
-      const storedSnapshot: string | undefined = (window as any)
-        .__resumeSnapshot;
+  try {
+    // Don't use buildPDFPagesHTML (clip/shift) — WeasyPrint can't
+    // reliably clip absolutely-positioned overflow during pagination.
+    // Let WeasyPrint paginate the natural flow itself.
+    const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
+    const pdfHtml = generateHTML(true, pageBreakIds);
 
-      let pdfHtml: string;
-
-      if (storedPageStarts?.length && storedTotalH && storedSnapshot) {
-        // ✅ Per-page clip/shift — matches preview exactly
-        pdfHtml = buildPDFPagesHTML(
-          storedPageStarts,
-          storedTotalH,
-          storedSnapshot,
-        );
-      } else {
-        // ⬇ Fallback: old page-break approach
-        const pageBreakIds: string[] =
-          (window as any).__resumePageBreakIds || [];
-        pdfHtml = generateHTML(true, pageBreakIds);
-      }
-
-      const res: AxiosResponse<Blob> = await apiClient.post(
-        `/candidates/generate-pdf`,
-        { html: pdfHtml },
-        { responseType: "blob" },
-      );
-      const url = URL.createObjectURL(res.data);
+    const res: AxiosResponse<Blob> = await apiClient.post(
+      `/candidates/generate-pdf`,
+      { html: pdfHtml },
+      { responseType: "blob" },
+    );
+       const url = URL.createObjectURL(res.data);
       const a = document.createElement("a");
       a.href = url;
       a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
@@ -1806,7 +1828,9 @@ const TemplateOne: React.FC<TemplateOneProps> = ({
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-    } catch (err) {
+    // ...rest unchanged
+  } 
+     catch (err) {
       console.error("PDF error:", err);
       alert("Failed to generate PDF. Please try again.");
     } finally {

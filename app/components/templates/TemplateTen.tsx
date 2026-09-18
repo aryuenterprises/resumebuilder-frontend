@@ -1,5 +1,3 @@
-
-
 // "use client";
 // import React, {
 //   useContext,
@@ -973,10 +971,7 @@
 //     }
 //   };
 
-
-
-
-// const isThumbnail = !!alldata && !viewMode ; 
+// const isThumbnail = !!alldata && !viewMode ;
 //   return (
 //     <>
 //       {/* Download button — hide in thumbnail mode */}
@@ -1017,7 +1012,7 @@
 //           </motion.button>
 //         </div>
 //       )}
- 
+
 //       {isThumbnail ? (
 //         // ── THUMBNAIL MODE (dashboard card) ─────────────────────────────────
 //         <div
@@ -1131,16 +1126,6 @@
 // };
 
 // export default TemplateTen;
-
-
-
-
-
-
-
-
-
-
 
 // "use client";
 // import React, {
@@ -2142,8 +2127,6 @@
 
 // export default TemplateTen;
 
-
-
 "use client";
 import React, {
   useContext,
@@ -2204,8 +2187,7 @@ const TemplateTen: React.FC<TemplateTenProps> = ({
   const [pages, setPages] = useState<string[]>([]);
 
   // ── Customization ─────────────────────────────────────────────────────────
-  const activeFontFamily =
-    customization?.fontFamily ?? "'Inter', sans-serif";
+  const activeFontFamily = customization?.fontFamily ?? "'Inter', sans-serif";
 
   // ── Data sources ─────────────────────────────────────────────────────────
   const contact = alldata?.contact || context.contact || {};
@@ -2247,8 +2229,7 @@ const TemplateTen: React.FC<TemplateTenProps> = ({
       !Array.isArray(finalize.customSection)
     )
       return [];
-    const hasSkillsData =
-      skills && typeof skills === "string" && skills.trim();
+    const hasSkillsData = skills && typeof skills === "string" && skills.trim();
     if (!hasSkillsData)
       return finalize.customSection.filter(
         (s: any) => s?.name?.trim() || s?.description?.trim(),
@@ -2496,9 +2477,7 @@ const TemplateTen: React.FC<TemplateTenProps> = ({
         .map((l) => {
           const t = l.trim();
           const c =
-            t.startsWith("-") || t.startsWith("•")
-              ? t.substring(1).trim()
-              : t;
+            t.startsWith("-") || t.startsWith("•") ? t.substring(1).trim() : t;
           return c
             ? `<li style="margin-bottom:3px;line-height:1.6;">${c}</li>`
             : "";
@@ -2539,10 +2518,10 @@ const TemplateTen: React.FC<TemplateTenProps> = ({
           .map((exp: any, i: number) => {
             const startFormatted = formatMonthYear(exp.startDate, false);
             const endFormatted = exp.endDate
-                               ? formatMonthYear(exp.endDate, false)
-                               : exp.isCurrentlyWorking
-                                 ? "Present"
-                                 : "";
+              ? formatMonthYear(exp.endDate, false)
+              : exp.isCurrentlyWorking
+                ? "Present"
+                : "";
             return `
             <div class="entry-block" data-block-id="exp-${i}">
               <div class="entry-top-row">
@@ -2603,7 +2582,7 @@ const TemplateTen: React.FC<TemplateTenProps> = ({
             //     ? `${edu.startDate || ""}${edu.startDate && edu.endDate ? " – " : ""}${edu.endDate || ""}`
             //     : "";
 
-                 const dateStr =
+            const dateStr =
               edu.startDate || edu.endDate
                 ? `${edu.startDate || ""} - ${edu.endDate ? edu.endDate : edu.isCurrentlyStudying ? "Present" : ""}`
                 : "";
@@ -2875,8 +2854,7 @@ const TemplateTen: React.FC<TemplateTenProps> = ({
 
           const resumeRect = resume.getBoundingClientRect();
           const scrollY =
-            measureDoc.documentElement.scrollTop ||
-            measureDoc.body.scrollTop;
+            measureDoc.documentElement.scrollTop || measureDoc.body.scrollTop;
           const getRelTop = (el: Element) =>
             el.getBoundingClientRect().top - resumeRect.top + scrollY;
           const getRelBottom = (el: Element) =>
@@ -2957,43 +2935,43 @@ const TemplateTen: React.FC<TemplateTenProps> = ({
             });
           };
 
-          Array.from(
-            resume.querySelectorAll<HTMLElement>("*"),
-          ).forEach((el) => {
-            if (consumed.has(el)) return;
+          Array.from(resume.querySelectorAll<HTMLElement>("*")).forEach(
+            (el) => {
+              if (consumed.has(el)) return;
 
-            if (el.matches(HEADER_LIKE_SELECTOR)) {
-              pushAtomic(el, true);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches(CHAINED_KEEP_SELECTOR)) {
-              pushAtomic(el, true);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches(ATOMIC_SELECTOR)) {
-              pushAtomic(el, false);
-              el.querySelectorAll("*").forEach((c) => consumed.add(c));
-              consumed.add(el);
-              return;
-            }
-            if (el.matches("p, li")) {
-              if (pushLines(el)) {
+              if (el.matches(HEADER_LIKE_SELECTOR)) {
+                pushAtomic(el, true);
                 el.querySelectorAll("*").forEach((c) => consumed.add(c));
                 consumed.add(el);
+                return;
               }
-              return;
-            }
-            if (
-              el.matches(DESC_WRAPPER_SELECTOR) &&
-              !el.querySelector("p, li")
-            ) {
-              if (pushLines(el)) consumed.add(el);
-            }
-          });
+              if (el.matches(CHAINED_KEEP_SELECTOR)) {
+                pushAtomic(el, true);
+                el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                consumed.add(el);
+                return;
+              }
+              if (el.matches(ATOMIC_SELECTOR)) {
+                pushAtomic(el, false);
+                el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                consumed.add(el);
+                return;
+              }
+              if (el.matches("p, li")) {
+                if (pushLines(el)) {
+                  el.querySelectorAll("*").forEach((c) => consumed.add(c));
+                  consumed.add(el);
+                }
+                return;
+              }
+              if (
+                el.matches(DESC_WRAPPER_SELECTOR) &&
+                !el.querySelector("p, li")
+              ) {
+                if (pushLines(el)) consumed.add(el);
+              }
+            },
+          );
 
           // ── Catch remaining standalone elements ─────────────────────
           resume
@@ -3036,8 +3014,7 @@ const TemplateTen: React.FC<TemplateTenProps> = ({
           }
 
           // ── Store data for PDF generation ────────────────────────────
-          (window as any).__resumePageBreakIds =
-            pageBreakIds.filter(Boolean);
+          (window as any).__resumePageBreakIds = pageBreakIds.filter(Boolean);
           (window as any).__resumePageStarts = pageStarts;
           (window as any).__resumeTotalH = totalH;
           (window as any).__resumeSnapshot = resumeSnapshot;
@@ -3076,9 +3053,7 @@ const TemplateTen: React.FC<TemplateTenProps> = ({
         if (mainFontsReady) {
           requestAnimationFrame(() => requestAnimationFrame(doMeasure));
         } else if (win?.document?.fonts?.ready) {
-          win.document.fonts.ready.then(() =>
-            requestAnimationFrame(doMeasure),
-          );
+          win.document.fonts.ready.then(() => requestAnimationFrame(doMeasure));
         } else {
           setTimeout(doMeasure, 150);
         }
@@ -3125,51 +3100,83 @@ const TemplateTen: React.FC<TemplateTenProps> = ({
   }, []);
 
   // ── Download handler ───────────────────────────────────────────────────────
+  // const handleDownload = async (): Promise<void> => {
+  //   setIsDownloading(true);
+  //   try {
+  //     const storedPageStarts: number[] | undefined = (window as any)
+  //       .__resumePageStarts;
+  //     const storedTotalH: number | undefined = (window as any).__resumeTotalH;
+  //     const storedSnapshot: string | undefined = (window as any)
+  //       .__resumeSnapshot;
+
+  //     let pdfHtml: string;
+
+  //     if (storedPageStarts?.length && storedTotalH && storedSnapshot) {
+  //       // ✅ Per-page clip/shift — matches preview exactly
+  //       pdfHtml = buildPDFPagesHTML(
+  //         storedPageStarts,
+  //         storedTotalH,
+  //         storedSnapshot,
+  //       );
+  //     } else {
+  //       // ⬇ Fallback: old page-break approach
+  //       const pageBreakIds: string[] =
+  //         (window as any).__resumePageBreakIds || [];
+  //       pdfHtml = generateHTML(true, pageBreakIds);
+  //     }
+
+  //     const res: AxiosResponse<Blob> = await apiClient.post(
+  //       `/candidates/generate-pdf`,
+  //       { html: pdfHtml },
+  //       { responseType: "blob" },
+  //     );
+  //     const url = URL.createObjectURL(res.data);
+  //     const a = document.createElement("a");
+  //     a.href = url;
+  //     a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
+  //     document.body.appendChild(a);
+  //     a.click();
+  //     document.body.removeChild(a);
+  //     URL.revokeObjectURL(url);
+  //   } catch (err) {
+  //     console.error("PDF error:", err);
+  //     alert("Failed to generate PDF. Please try again.");
+  //   } finally {
+  //     setIsDownloading(false);
+  //   }
+  // };
+
+
   const handleDownload = async (): Promise<void> => {
-    setIsDownloading(true);
-    try {
-      const storedPageStarts: number[] | undefined = (window as any)
-        .__resumePageStarts;
-      const storedTotalH: number | undefined = (window as any).__resumeTotalH;
-      const storedSnapshot: string | undefined = (window as any)
-        .__resumeSnapshot;
+  setIsDownloading(true);
+  try {
+    // Don't send the clip/shift snapshot (buildPDFPagesHTML) to WeasyPrint —
+    // it can't reliably clip absolutely-positioned overflow during
+    // pagination, which causes extra/duplicated pages. Let WeasyPrint
+    // paginate the natural document flow itself via @page + break rules.
+    const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
+    const pdfHtml = generateHTML(true, pageBreakIds);
 
-      let pdfHtml: string;
-
-      if (storedPageStarts?.length && storedTotalH && storedSnapshot) {
-        // ✅ Per-page clip/shift — matches preview exactly
-        pdfHtml = buildPDFPagesHTML(
-          storedPageStarts,
-          storedTotalH,
-          storedSnapshot,
-        );
-      } else {
-        // ⬇ Fallback: old page-break approach
-        const pageBreakIds: string[] =
-          (window as any).__resumePageBreakIds || [];
-        pdfHtml = generateHTML(true, pageBreakIds);
-      }
-
-      const res: AxiosResponse<Blob> = await apiClient.post(
-        `/candidates/generate-pdf`,
-        { html: pdfHtml },
-        { responseType: "blob" },
-      );
-      const url = URL.createObjectURL(res.data);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error("PDF error:", err);
-      alert("Failed to generate PDF. Please try again.");
-    } finally {
-      setIsDownloading(false);
-    }
-  };
+    const res: AxiosResponse<Blob> = await apiClient.post(
+      `/candidates/generate-pdf`,
+      { html: pdfHtml },
+      { responseType: "blob" },
+    );
+    const url = URL.createObjectURL(res.data);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch (err) {
+    console.error("PDF error:", err);
+    alert("Failed to generate PDF. Please try again.");
+  } finally {
+    setIsDownloading(false);
+  }
+};
 
   const isThumbnail = !!alldata && !viewMode;
 
@@ -3184,15 +3191,14 @@ const TemplateTen: React.FC<TemplateTenProps> = ({
       />
 
       {/* ── Download button ──────────────────────────────────────────────── */}
-            {!isThumbnail && lastSegment === "download-resume" && (
-
-      <div className="text-center my-8">
-        <motion.button
-          onClick={handleDownload}
-          disabled={isDownloading}
-          whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
-          whileTap={!isDownloading ? { scale: 0.98 } : {}}
-          className={`
+      {!isThumbnail && lastSegment === "download-resume" && (
+        <div className="text-center my-8">
+          <motion.button
+            onClick={handleDownload}
+            disabled={isDownloading}
+            whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
+            whileTap={!isDownloading ? { scale: 0.98 } : {}}
+            className={`
             relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
             text-white transition-all duration-300 shadow-lg
             ${
@@ -3201,29 +3207,29 @@ const TemplateTen: React.FC<TemplateTenProps> = ({
                 : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600 cursor-pointer"
             }
           `}
-        >
-          {!isDownloading && (
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          )}
-          <div className="relative flex items-center justify-center gap-3 text-lg">
-            {isDownloading ? (
-              <>
-                <FaSpinner className="animate-spin text-xl" />
-                <span>Generating PDF …</span>
-              </>
-            ) : (
-              <>
-                <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
-                <span>Download Resume</span>
-                <span className="text-sm opacity-75 font-light ml-1">
-                  PDF
-                </span>
-              </>
+          >
+            {!isDownloading && (
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
             )}
-          </div>
-        </motion.button>
-      </div>
-            )}
+            <div className="relative flex items-center justify-center gap-3 text-lg">
+              {isDownloading ? (
+                <>
+                  <FaSpinner className="animate-spin text-xl" />
+                  <span>Generating PDF …</span>
+                </>
+              ) : (
+                <>
+                  <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
+                  <span>Download Resume</span>
+                  <span className="text-sm opacity-75 font-light ml-1">
+                    PDF
+                  </span>
+                </>
+              )}
+            </div>
+          </motion.button>
+        </div>
+      )}
 
       {isThumbnail ? (
         // ── THUMBNAIL MODE ──────────────────────────────────────────────

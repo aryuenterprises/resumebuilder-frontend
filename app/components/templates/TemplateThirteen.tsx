@@ -8609,10 +8609,18 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
       padding-bottom: 20px; border-bottom: 2px solid rgba(255,255,255,0.15);
     }
     .t13-resume .contact-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 14px; margin-top: 10px;
-    }
-    .t13-resume .contact-item { display: flex; flex-direction: column; gap: 4px; }
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 10px;
+}
+.t13-resume .contact-item {
+  flex: 1 1 200px;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
     .t13-resume .contact-label {
       font-size: 10px; font-weight: 700; text-transform: uppercase;
       letter-spacing: 1.5px; color: #888888;
@@ -8624,7 +8632,10 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
 
     .t13-resume .education-grade { font-size: 12px; font-weight: 500; color: #666666; margin-top: 4px; }
 
-    .t13-resume .resume-main { padding: 35px 0px 45px 0px; }
+
+    .t13-resume .resume-main {
+  padding: 35px ${MARGIN}px 45px ${MARGIN}px;  // was: 35px 0px 45px 0px
+}
 
     .t13-resume .section { margin-bottom: 30px; }
     .t13-resume .section:last-child { margin-bottom: 0; }
@@ -8883,15 +8894,20 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
         .filter(Boolean)
         .join("");
 
-      const pdfStyle = forPDF
-        ? `<style>
-            @page { size: A4; margin: 0 !important; }
-            html, body { margin: 0 !important; padding: 0 !important; background: white !important; }
-            .t13-resume { width: 100% !important; padding: 0 !important; margin: 0 !important; }
-            .t13-resume .resume-header { padding: 40px ${MARGIN}px 30px ${MARGIN}px !important; }
-            .t13-resume .resume-main { padding: 35px 0px 45px 0px !important; }
-          </style>`
-        : "";
+   const pdfStyle = forPDF
+  ? `<style>
+      @page { size: A4; margin: ${MARGIN}px !important; }
+      html, body { margin: 0 !important; padding: 0 !important; background: white !important; }
+      .t13-resume { width: 100% !important; padding: 0 !important; margin: 0 !important; }
+      .t13-resume .resume-header {
+        margin: -${MARGIN}px -${MARGIN}px 0 -${MARGIN}px !important;
+        padding: 40px ${MARGIN}px 30px ${MARGIN}px !important;
+      }
+      .t13-resume .resume-main {
+        padding: 35px 0 45px 0 !important; /* sides come from @page margin, not padding */
+      }
+    </style>`
+  : "";
 
       let mainContent = sectionsHTML;
 
@@ -9340,51 +9356,83 @@ const TemplateThirteen: React.FC<TemplateThirteenProps> = ({
   }, []);
 
   // ── Download handler ───────────────────────────────────────────────────────
+  // const handleDownload = async (): Promise<void> => {
+  //   setIsDownloading(true);
+  //   try {
+  //     const storedPageStarts: number[] | undefined = (window as any)
+  //       .__resumePageStarts;
+  //     const storedTotalH: number | undefined = (window as any).__resumeTotalH;
+  //     const storedSnapshot: string | undefined = (window as any)
+  //       .__resumeSnapshot;
+
+  //     let pdfHtml: string;
+
+  //     if (storedPageStarts?.length && storedTotalH && storedSnapshot) {
+  //       // ✅ Per-page clip/shift — matches preview exactly
+  //       pdfHtml = buildPDFPagesHTML(
+  //         storedPageStarts,
+  //         storedTotalH,
+  //         storedSnapshot,
+  //       );
+  //     } else {
+  //       // ⬇ Fallback: old page-break approach
+  //       const pageBreakIds: string[] =
+  //         (window as any).__resumePageBreakIds || [];
+  //       pdfHtml = generateHTML(true, pageBreakIds);
+  //     }
+
+  //     const res: AxiosResponse<Blob> = await apiClient.post(
+  //       `/candidates/generate-pdf`,
+  //       { html: pdfHtml },
+  //       { responseType: "blob" },
+  //     );
+  //     const url = URL.createObjectURL(res.data);
+  //     const a = document.createElement("a");
+  //     a.href = url;
+  //     a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
+  //     document.body.appendChild(a);
+  //     a.click();
+  //     document.body.removeChild(a);
+  //     URL.revokeObjectURL(url);
+  //   } catch (err) {
+  //     console.error("PDF error:", err);
+  //     alert("Failed to generate PDF. Please try again.");
+  //   } finally {
+  //     setIsDownloading(false);
+  //   }
+  // };
+
+
   const handleDownload = async (): Promise<void> => {
-    setIsDownloading(true);
-    try {
-      const storedPageStarts: number[] | undefined = (window as any)
-        .__resumePageStarts;
-      const storedTotalH: number | undefined = (window as any).__resumeTotalH;
-      const storedSnapshot: string | undefined = (window as any)
-        .__resumeSnapshot;
+  setIsDownloading(true);
+  try {
+    // Don't send the clip/shift snapshot (buildPDFPagesHTML) to WeasyPrint —
+    // it can't reliably clip absolutely-positioned overflow during its own
+    // pagination pass, which causes extra/duplicated pages. Let WeasyPrint
+    // paginate the natural document flow via @page + break rules instead.
+    const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
+    const pdfHtml = generateHTML(true, pageBreakIds);
 
-      let pdfHtml: string;
-
-      if (storedPageStarts?.length && storedTotalH && storedSnapshot) {
-        // ✅ Per-page clip/shift — matches preview exactly
-        pdfHtml = buildPDFPagesHTML(
-          storedPageStarts,
-          storedTotalH,
-          storedSnapshot,
-        );
-      } else {
-        // ⬇ Fallback: old page-break approach
-        const pageBreakIds: string[] =
-          (window as any).__resumePageBreakIds || [];
-        pdfHtml = generateHTML(true, pageBreakIds);
-      }
-
-      const res: AxiosResponse<Blob> = await apiClient.post(
-        `/candidates/generate-pdf`,
-        { html: pdfHtml },
-        { responseType: "blob" },
-      );
-      const url = URL.createObjectURL(res.data);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error("PDF error:", err);
-      alert("Failed to generate PDF. Please try again.");
-    } finally {
-      setIsDownloading(false);
-    }
-  };
+    const res: AxiosResponse<Blob> = await apiClient.post(
+      `/candidates/generate-pdf`,
+      { html: pdfHtml },
+      { responseType: "blob" },
+    );
+    const url = URL.createObjectURL(res.data);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch (err) {
+    console.error("PDF error:", err);
+    alert("Failed to generate PDF. Please try again.");
+  } finally {
+    setIsDownloading(false);
+  }
+};
 
   const isThumbnail = !!alldata && !viewMode;
 

@@ -2690,10 +2690,10 @@ const TemplateFour: React.FC<TemplateFourProps> = ({
         .map((exp, i: number) => {
           const start = formatMonthYear(exp.startDate, false);
           const end = exp.endDate
-                             ? formatMonthYear(exp.endDate, false)
-                             : exp.isCurrentlyWorking
-                               ? "Present"
-                               : "";
+            ? formatMonthYear(exp.endDate, false)
+            : exp.isCurrentlyWorking
+              ? "Present"
+              : "";
           return `<div class="entry-block" data-block-id="exp-${i}">
           <div class="experience-header">
             <div class="experience-title">${exp.jobTitle || ""}</div>
@@ -3220,50 +3220,81 @@ const TemplateFour: React.FC<TemplateFourProps> = ({
   }, []);
 
   // ── PDF download ─────────────────────────────────────────────────────────
+  // const handleDownload = async (): Promise<void> => {
+  //   setIsDownloading(true);
+  //   try {
+  //     const storedPageStarts: number[] | undefined = (window as any)
+  //       .__resumePageStarts;
+  //     const storedTotalH: number | undefined = (window as any).__resumeTotalH;
+  //     const storedSnapshot: string | undefined = (window as any)
+  //       .__resumeSnapshot;
+
+  //     let pdfHtml: string;
+
+  //     if (storedPageStarts?.length && storedTotalH && storedSnapshot) {
+  //       pdfHtml = buildPDFPagesHTML(
+  //         storedPageStarts,
+  //         storedTotalH,
+  //         storedSnapshot,
+  //       );
+  //     } else {
+  //       const pageBreakIds: string[] =
+  //         (window as any).__resumePageBreakIds || [];
+  //       pdfHtml = generateHTML(true, pageBreakIds);
+  //     }
+
+  //     const res: AxiosResponse<Blob> = await apiClient.post(
+  //       `/candidates/generate-pdf`,
+  //       { html: pdfHtml },
+  //       { responseType: "blob" },
+  //     );
+
+  //     const url = window.URL.createObjectURL(res.data);
+  //     const a = document.createElement("a");
+  //     a.href = url;
+  //     a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
+  //     document.body.appendChild(a);
+  //     a.click();
+  //     document.body.removeChild(a);
+  //     window.URL.revokeObjectURL(url);
+  //   } catch (error) {
+  //     console.error("Error generating PDF:", error);
+  //     alert("Failed to generate PDF. Please try again.");
+  //   } finally {
+  //     setIsDownloading(false);
+  //   }
+  // };
+
   const handleDownload = async (): Promise<void> => {
-    setIsDownloading(true);
-    try {
-      const storedPageStarts: number[] | undefined = (window as any)
-        .__resumePageStarts;
-      const storedTotalH: number | undefined = (window as any).__resumeTotalH;
-      const storedSnapshot: string | undefined = (window as any)
-        .__resumeSnapshot;
+  setIsDownloading(true);
+  try {
+    // Don't send the clip/shift snapshot (buildPDFPagesHTML) to WeasyPrint —
+    // it can't reliably clip absolutely-positioned overflow during
+    // pagination, which causes extra/duplicated pages. Let WeasyPrint
+    // paginate the natural document flow itself via @page + break rules.
+    const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
+    const pdfHtml = generateHTML(true, pageBreakIds);
 
-      let pdfHtml: string;
-
-      if (storedPageStarts?.length && storedTotalH && storedSnapshot) {
-        pdfHtml = buildPDFPagesHTML(
-          storedPageStarts,
-          storedTotalH,
-          storedSnapshot,
-        );
-      } else {
-        const pageBreakIds: string[] =
-          (window as any).__resumePageBreakIds || [];
-        pdfHtml = generateHTML(true, pageBreakIds);
-      }
-
-      const res: AxiosResponse<Blob> = await apiClient.post(
-        `/candidates/generate-pdf`,
-        { html: pdfHtml },
-        { responseType: "blob" },
-      );
-
-      const url = window.URL.createObjectURL(res.data);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("Error generating PDF:", error);
-      alert("Failed to generate PDF. Please try again.");
-    } finally {
-      setIsDownloading(false);
-    }
-  };
+    const res: AxiosResponse<Blob> = await apiClient.post(
+      `/candidates/generate-pdf`,
+      { html: pdfHtml },
+      { responseType: "blob" },
+    );
+    const url = URL.createObjectURL(res.data);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch (err) {
+    console.error("PDF error:", err);
+    alert("Failed to generate PDF. Please try again.");
+  } finally {
+    setIsDownloading(false);
+  }
+};
 
   const isThumbnail = !!alldata && !viewMode;
 
