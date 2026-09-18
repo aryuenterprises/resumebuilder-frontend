@@ -691,7 +691,7 @@ export default function ChangeTemplate() {
                   <div className="flex gap-2 sm:gap-3">
                     <button
                       onClick={() => setShowUpgradePopup(false)}
-                      className="flex-1 py-2.5 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-all text-xs sm:text-sm"
+                      className="flex-1 py-2.5 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-all text-xs sm:text-sm cursor-pointer"
                     >
                       Maybe Later
                     </button>
@@ -700,7 +700,7 @@ export default function ChangeTemplate() {
                         setShowUpgradePopup(false);
                         router.push("/choose-plan");
                       }}
-                      className="flex-1 py-2.5 sm:py-3 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-lg sm:rounded-xl font-medium hover:shadow-lg transition-all text-xs sm:text-sm"
+                      className="flex-1 py-2.5 sm:py-3 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-lg sm:rounded-xl font-medium hover:shadow-lg transition-all text-xs sm:text-sm cursor-pointer"
                     >
                       View Plans
                     </button>

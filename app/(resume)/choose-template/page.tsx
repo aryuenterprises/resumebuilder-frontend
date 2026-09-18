@@ -71,14 +71,14 @@ const PLAN_CONFIG = {
     label: "Free",
     color: "from-slate-500 to-slate-600",
     badgeColor: "bg-slate-100 text-slate-700",
-    canUpload: false,
+    canUpload: true, // ✅ CHANGED: free users can upload
   },
   pro: {
     maxTemplates: 3,
     label: "Pro",
     color: "from-indigo-600 to-indigo-500",
     badgeColor: "bg-indigo-100 text-indigo-700",
-    canUpload: false,
+    canUpload: true, // ✅ CHANGED: pro users can upload
   },
   premium: {
     maxTemplates: Infinity,
@@ -471,9 +471,16 @@ function Choose_template() {
     return !subscriptionStatus?.isExpired;
   }, [subscriptionStatus]);
 
+  // const canUserUpload = useMemo((): boolean => {
+  //   return currentPlan === "premium" && !subscriptionStatus?.isExpired;
+  // }, [currentPlan, subscriptionStatus]);
   const canUserUpload = useMemo((): boolean => {
-    return currentPlan === "premium" && !subscriptionStatus?.isExpired;
-  }, [currentPlan, subscriptionStatus]);
+  const userDetails = getLocalStorage<User>("user_details");
+  if (!userDetails?.id) return false; // not logged in
+  if (subscriptionStatus?.isExpired) return false; // expired
+  if (currentPlan === "no_plan") return false; // no plan
+  return PLAN_CONFIG[currentPlan].canUpload; // free, pro, premium → true
+}, [currentPlan, subscriptionStatus]);
 
   const getAvailableTemplatesCount = useMemo((): number => {
     if (currentPlan === "no_plan") return 0;
@@ -611,10 +618,16 @@ function Choose_template() {
     async (file: File) => {
       const maxSize = 10 * 1024 * 1024;
 
-      if (!isPremiumUser || subscriptionStatus?.isExpired) {
-        setShowPlanRequiredPopup(true);
-        return;
-      }
+      // if (!isPremiumUser || subscriptionStatus?.isExpired) {
+      //   setShowPlanRequiredPopup(true);
+      //   return;
+      // }
+
+          // ✅ CHANGED: use canUserUpload instead of isPremiumUser
+    if (!canUserUpload || subscriptionStatus?.isExpired) {
+      setShowPlanRequiredPopup(true);
+      return;
+    }
 
       if (!isValidFileType(file)) {
         setErrorMessage("Please upload a PDF file");
@@ -781,7 +794,9 @@ function Choose_template() {
       }
     },
     [
-      isPremiumUser,
+        canUserUpload, // ✅ CHANGED: was isPremiumUser
+
+      // isPremiumUser,
       subscriptionStatus,
       isValidFileType,
       uploadStatus,
@@ -1068,7 +1083,7 @@ function Choose_template() {
                     </motion.div>
 
                     {/* Upload Existing Resume Option */}
-                    <motion.div
+                    {/* <motion.div
                       initial={{ x: 20, opacity: 0 }}
                       animate={{ x: 0, opacity: 1 }}
                       transition={{ delay: 0.4 }}
@@ -1123,7 +1138,65 @@ function Choose_template() {
                             : "Upgrade to use"}
                         <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-1" />
                       </button>
-                    </motion.div>
+                    </motion.div> */}
+
+                    {/* Upload Existing Resume Option */}
+<motion.div
+  initial={{ x: 20, opacity: 0 }}
+  animate={{ x: 0, opacity: 1 }}
+  transition={{ delay: 0.4 }}
+  whileHover={{ y: -5 }}
+  whileTap={{ scale: 0.98 }}
+  className={`rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 transition-all duration-300 ${
+    canUserUpload // ✅ CHANGED
+      ? "group cursor-pointer bg-gradient-to-br from-purple-50 to-indigo-50/30 hover:shadow-xl border border-purple-100"
+      : "bg-gray-100 opacity-80 border border-gray-200"
+  }`}
+  onClick={handleUploadClick}
+>
+  <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-gradient-to-r from-purple-600 to-indigo-500 rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-4 shadow-lg">
+    {!canUserUpload && ( // ✅ CHANGED
+      <Lock className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 text-white/70" />
+    )}
+    {canUserUpload && ( // ✅ CHANGED
+      <Upload className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 text-white" />
+    )}
+  </div>
+  <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-gray-900 mb-1 sm:mb-2">
+    {subscriptionStatus?.isExpired
+      ? "Regain Access to AI Upload"
+      : "Improve My Existing Resume"}
+  </h3>
+  <p className="text-gray-600 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2 sm:line-clamp-3 md:line-clamp-none">
+    {subscriptionStatus?.isExpired
+      ? "Your subscription has ended. Renew to let AI optimize your resume instantly"
+      : "Already have a resume? Upload it and let AI rewrite, fix, and optimize it for better results"}
+  </p>
+  {!canUserUpload && ( // ✅ CHANGED
+    <div className="inline-flex items-center gap-1.5 bg-amber-50 border border-amber-200 rounded-lg px-2 py-1 mb-2">
+      <Crown className="w-3 h-3 text-amber-600" />
+      <span className="text-amber-700 text-xs font-medium">
+        {subscriptionStatus?.isExpired
+          ? "Renew to Continue"
+          : "Upgrade to use"}
+      </span>
+    </div>
+  )}
+  <button
+    className={`flex items-center ${
+      canUserUpload // ✅ CHANGED
+        ? "text-purple-600"
+        : "text-gray-500"
+    } font-semibold text-sm sm:text-base transition-all cursor-pointer`}
+  >
+    {canUserUpload
+      ? "Upload now"
+      : subscriptionStatus?.isExpired
+        ? "Renew Subscription →"
+        : "Upgrade to use"}
+    <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-1" />
+  </button>
+</motion.div>
                   </div>
 
                   <div className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-gray-100 text-center">
@@ -1261,7 +1334,7 @@ function Choose_template() {
                         What you're missing:
                       </span>
                     </div>
-                    <div className="space-y-2 text-left">
+                    {/* <div className="space-y-2 text-left">
                       <div className="flex items-center gap-2 text-xs text-gray-700">
                         <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
                         <span>Upload & AI-optimize existing resumes</span>
@@ -1277,7 +1350,22 @@ function Choose_template() {
                         <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
                         <span>Priority support & faster processing</span>
                       </div>
-                    </div>
+                    </div> */}
+
+                    <div className="space-y-2 text-left">
+  <div className="flex items-center gap-2 text-xs text-gray-700">
+    <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
+    <span>Access to all {templateData.length} professional templates</span>
+  </div>
+  <div className="flex items-center gap-2 text-xs text-gray-700">
+    <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
+    <span>Priority support & faster processing</span>
+  </div>
+  <div className="flex items-center gap-2 text-xs text-gray-700">
+    <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
+    <span>Advanced AI resume optimization</span>
+  </div>
+</div>
                   </div>
 
                   <p className="text-gray-600 text-xs sm:text-sm">
@@ -1704,7 +1792,7 @@ function Choose_template() {
             tone={subscriptionStatus?.isExpired ? "amber" : "indigo"}
             size="md"
           />
-          <div className="flex-1 text-center sm:text-left">
+          {/* <div className="flex-1 text-center sm:text-left">
             <p className="text-sm font-semibold text-slate-900">
               {subscriptionStatus?.isExpired
                 ? "Your AI resume optimization is waiting"
@@ -1717,8 +1805,8 @@ function Choose_template() {
                   ? "Upload it and let AI rewrite, fix, and optimize it for better results"
                   : "Upgrade to Premium to upload and improve it with AI"}
             </p>
-          </div>
-          <button
+          </div> */}
+          {/* <button
             onClick={handleUploadClick}
             className={`w-full sm:w-auto ${
               subscriptionStatus?.isExpired ? amberBtn : primaryBtn
@@ -1736,7 +1824,41 @@ function Choose_template() {
             {!isPremiumUser && !subscriptionStatus?.isExpired && (
               <Lock className="w-3.5 h-3.5" />
             )}
-          </button>
+          </button> */}
+
+          <div className="flex-1 text-center sm:text-left">
+  <p className="text-sm font-semibold text-slate-900">
+    {subscriptionStatus?.isExpired
+      ? "Your AI resume optimization is waiting"
+      : "Already have a resume?"}
+  </p>
+  <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+    {subscriptionStatus?.isExpired
+      ? "Renew now and get 20% off plus a free resume review"
+      : canUserUpload // ✅ CHANGED
+        ? "Upload it and let AI rewrite, fix, and optimize it for better results"
+        : "Login or subscribe to upload and improve it with AI"}
+  </p>
+</div>
+<button
+  onClick={handleUploadClick}
+  className={`w-full sm:w-auto ${
+    subscriptionStatus?.isExpired ? amberBtn : primaryBtn
+  }`}
+>
+  <Upload className="w-4 h-4" />
+  <span>
+    {subscriptionStatus?.isExpired
+      ? "Renew to unlock"
+      : "Upload & improve"}
+  </span>
+  {!subscriptionStatus?.isExpired && canUserUpload && ( // ✅ CHANGED
+    <ArrowRight className="w-4 h-4" />
+  )}
+  {!canUserUpload && !subscriptionStatus?.isExpired && ( // ✅ CHANGED
+    <Lock className="w-3.5 h-3.5" />
+  )}
+</button>
         </motion.div>
       </div>
 

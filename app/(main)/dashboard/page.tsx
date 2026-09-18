@@ -70,7 +70,7 @@ interface BillingRecord {
   invoice_date: string;
   plan_name: string;
   amount: number;
-  payment_status: "created" | "failed";
+  payment_status: "created" | "failed" | "done";
 }
 
 interface usersCurrentPlan {
@@ -140,6 +140,8 @@ const DashboardPage = () => {
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [usersCurrentPlan, setusersCurrentPlan] =
     useState<usersCurrentPlan | null>(null);
+
+  console.log("usersCurrentPlan", usersCurrentPlan);
   const [userProfile, setUserProfile] = useState<any>(null);
   const [paymentRecords, setPaymentRecords] = useState<BillingRecord[] | null>(
     null,
@@ -416,7 +418,7 @@ const DashboardPage = () => {
   const totalAmountSpent =
     paymentRecords?.reduce(
       (sum, record) =>
-        record.payment_status === "created" ? sum + Number(record.amount) : sum,
+        record.payment_status === "done" ? sum + Number(record.amount) : sum,
       0,
     ) || 0;
 
@@ -446,6 +448,8 @@ const DashboardPage = () => {
       </ProtectedRoute>
     );
   }
+
+  console.log("usersCurrentPlan",usersCurrentPlan)
 
   return (
     <ProtectedRoute>
@@ -774,12 +778,14 @@ const DashboardPage = () => {
                                 "0"}
                             </p>
                             <p className="text-indigo-100 text-[10px] sm:text-xs mt-0.5 sm:mt-1">
-                              per{" "}
-                              {usersCurrentPlan?.current_plan === "Premium"
+                              {/* per{" "} */}
+                              {/* {usersCurrentPlan?.current_plan === "Premium"
                                 ? "Lifetime"
                                 : usersCurrentPlan?.current_plan === "Pro Plus"
                                   ? "3 months"
-                                  : "month"}
+                                  : "month"} */}
+
+                                  {usersCurrentPlan.plan_details.duration_days}
                             </p>
                           </div>
                         </div>
@@ -797,8 +803,9 @@ const DashboardPage = () => {
                                 usersCurrentPlan.plan_details.description,
                                 "text/html",
                               );
+                              // Only select li elements inside ul
                               const features = Array.from(
-                                doc.querySelectorAll("li"),
+                                doc.querySelectorAll("ul li"),
                               ).map((li) => li.textContent?.trim() || "");
                               return features.map((feature, idx) => (
                                 <motion.div
@@ -852,7 +859,7 @@ const DashboardPage = () => {
                               )}
 
                               {/* Expiry/Validity Info */}
-                              {usersCurrentPlan?.current_plan === "Premium" ? (
+                              {/* {usersCurrentPlan?.current_plan === "Premium" ? (
                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 text-xs sm:text-sm">
                                   <span className="text-gray-600 flex items-center gap-1.5">
                                     <span className="w-1.5 h-1.5 bg-purple-500 rounded-full"></span>
@@ -865,6 +872,64 @@ const DashboardPage = () => {
                                 </div>
                               ) : (
                                 usersCurrentPlan?.plan_details.expires_at && (
+                                  <>
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 text-xs sm:text-sm">
+                                      <span className="text-gray-600 flex items-center gap-1.5">
+                                        <span className="w-1.5 h-1.5 bg-amber-500 rounded-full"></span>
+                                        Expiry Date:
+                                      </span>
+                                      <span
+                                        className={`font-medium ${new Date(usersCurrentPlan.plan_details.expires_at) < new Date() ? "text-red-600" : "text-gray-800"}`}
+                                      >
+                                        {new Date(
+                                          usersCurrentPlan.plan_details
+                                            .expires_at,
+                                        ).toLocaleDateString("en-IN", {
+                                          day: "numeric",
+                                          month: "long",
+                                          year: "numeric",
+                                        })}
+                                        {new Date(
+                                          usersCurrentPlan.plan_details
+                                            .expires_at,
+                                        ) < new Date() && (
+                                          <span className="ml-2 text-red-500 text-[10px] sm:text-xs font-semibold">
+                                            (Expired)
+                                          </span>
+                                        )}
+                                      </span>
+                                    </div>
+
+                                    {/* Days remaining */}
+                                    {/* {new Date(
+                                      usersCurrentPlan.plan_details.expires_at,
+                                    ) > new Date() && (
+                                      <div className="mt-2 pt-2 border-t border-gray-100">
+                                        <div className="flex items-center justify-between text-xs">
+                                          <span className="text-gray-600">
+                                            Days remaining:
+                                          </span>
+                                          <span className="font-semibold text-indigo-600">
+                                            {Math.ceil(
+                                              (new Date(
+                                                usersCurrentPlan.plan_details
+                                                  .expires_at,
+                                              ).getTime() -
+                                                new Date().getTime()) /
+                                                (1000 * 60 * 60 * 24),
+                                            )}{" "}
+                                            days
+                                          </span>
+                                        </div>
+                                      </div>
+                                    )}
+                                  </>
+                                )
+                              // )} */}
+
+
+
+                               {usersCurrentPlan?.plan_details.expires_at && (
                                   <>
                                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 text-xs sm:text-sm">
                                       <span className="text-gray-600 flex items-center gap-1.5">
@@ -917,8 +982,7 @@ const DashboardPage = () => {
                                       </div>
                                     )}
                                   </>
-                                )
-                              )}
+                                )}
                             </div>
                           </motion.div>
                         )}
@@ -1367,7 +1431,7 @@ const DashboardPage = () => {
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-[10px] sm:text-xs text-gray-500">
-                            Total Transactions
+                            Total Plan Activations{" "}
                           </p>
                           <p className="text-base sm:text-xl lg:text-2xl font-bold text-gray-900">
                             {totalTransactions}
