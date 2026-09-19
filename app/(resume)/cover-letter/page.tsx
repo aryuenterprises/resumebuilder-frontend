@@ -2639,7 +2639,12 @@ export default function CoverLetterGenerator() {
       <AnimatePresence>
         {showLoginPopup && (
           <LoginPopup
-            onClose={() => setShowLoginPopup(false)}
+            onClose={() => 
+            {
+              setIsLoading(false);
+                            setShowLoginPopup(false)}
+
+            }
             onLogin={() => router.push("/login")}
           />
         )}
