@@ -2059,6 +2059,16 @@
 
 // export default TemplateNine;
 
+
+
+
+
+
+
+
+
+
+
 "use client";
 import React, {
   useContext,
@@ -3039,15 +3049,46 @@ const TemplateNine: React.FC<TemplateNineProps> = ({
   // };
 
 
-  const handleDownload = async (): Promise<void> => {
+//   const handleDownload = async (): Promise<void> => {
+//   setIsDownloading(true);
+//   try {
+//     // Don't send the clip/shift snapshot (buildPDFPagesHTML) to WeasyPrint —
+//     // it can't reliably clip absolutely-positioned overflow during
+//     // pagination, which causes extra/duplicated pages. Let WeasyPrint
+//     // paginate the natural document flow itself via @page + break rules.
+//     const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
+//     const pdfHtml = generateHTML(true, pageBreakIds);
+
+//     const res: AxiosResponse<Blob> = await apiClient.post(
+//       `/candidates/generate-pdf`,
+//       { html: pdfHtml },
+//       { responseType: "blob" },
+//     );
+//     const url = URL.createObjectURL(res.data);
+//     const a = document.createElement("a");
+//     a.href = url;
+//     a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
+//     document.body.appendChild(a);
+//     a.click();
+//     document.body.removeChild(a);
+//     URL.revokeObjectURL(url);
+//   } catch (err) {
+//     console.error("PDF error:", err);
+//     alert("Failed to generate PDF. Please try again.");
+//   } finally {
+//     setIsDownloading(false);
+//   }
+// };
+
+
+const handleDownload = async (): Promise<void> => {
   setIsDownloading(true);
   try {
-    // Don't send the clip/shift snapshot (buildPDFPagesHTML) to WeasyPrint —
-    // it can't reliably clip absolutely-positioned overflow during
-    // pagination, which causes extra/duplicated pages. Let WeasyPrint
-    // paginate the natural document flow itself via @page + break rules.
-    const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
-    const pdfHtml = generateHTML(true, pageBreakIds);
+    // No browser-computed pageBreakIds — WeasyPrint's text layout doesn't
+    // match the browser's, so forcing a break at a browser-measured offset
+    // creates a mismatched/near-empty page. Let WeasyPrint paginate the
+    // natural flow using the CSS avoid-rules already in buildCSS.
+    const pdfHtml = generateHTML(true, []);
 
     const res: AxiosResponse<Blob> = await apiClient.post(
       `/candidates/generate-pdf`,

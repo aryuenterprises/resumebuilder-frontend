@@ -1146,7 +1146,7 @@
 //           </motion.button>
 //         </div>
 //       {/* )} */}
- 
+
 //       {isThumbnail ? (
 //         // ── THUMBNAIL MODE (dashboard card) ─────────────────────────────────
 //         <div
@@ -1641,14 +1641,14 @@ const TemplateEight: React.FC<TemplateEightProps> = ({
       <div class="section-block" data-block-id="exp-section">
         <div class="section-title">Experience</div>
         ${experiences
-          .map((exp: any, i: number) => {
-            const startFormatted = formatMonthYear(exp.startDate, false);
-            const endFormatted = exp.endDate
-                               ? formatMonthYear(exp.endDate, false)
-                               : exp.isCurrentlyWorking
-                                 ? "Present"
-                                 : "";
-            return `
+              .map((exp: any, i: number) => {
+                const startFormatted = formatMonthYear(exp.startDate, false);
+                const endFormatted = exp.endDate
+                  ? formatMonthYear(exp.endDate, false)
+                  : exp.isCurrentlyWorking
+                    ? "Present"
+                    : "";
+                return `
             <div class="entry-block" data-block-id="exp-${i}">
               <div class="entry-top-row">
                 <div class="entry-title">${exp.jobTitle || ""}</div>
@@ -1658,8 +1658,8 @@ const TemplateEight: React.FC<TemplateEightProps> = ({
               ${exp.text ? renderEntryText(exp.text, "entry-content-description") : ""}
             </div>
           `;
-          })
-          .join("")}
+              })
+              .join("")}
       </div>
     `
             : "",
@@ -1670,8 +1670,8 @@ const TemplateEight: React.FC<TemplateEightProps> = ({
       <div class="section-block" data-block-id="proj-section">
         <div class="section-title">Projects</div>
         ${projects
-          .map(
-            (p: any, i: number) => `
+              .map(
+                (p: any, i: number) => `
           <div class="entry-block" data-block-id="proj-${i}">
             <div class="project-header">
               <div class="entry-title">${p.title || ""}</div>
@@ -1684,8 +1684,8 @@ const TemplateEight: React.FC<TemplateEightProps> = ({
             ${p.description ? `<div class="entry-content">${rich(p.description)}</div>` : ""}
           </div>
         `,
-          )
-          .join("")}
+              )
+              .join("")}
       </div>
     `
             : "",
@@ -1696,34 +1696,34 @@ const TemplateEight: React.FC<TemplateEightProps> = ({
       <div class="section-block" data-block-id="edu-section">
         <div class="section-title">Education</div>
         ${educations
-          .map((edu: any, i: number) => {
-            const formattedGrade = formatGradeToCgpdAndPercentage(
-              edu.grade || "",
-            );
-            let textHtml = "";
-            if (edu.text) {
-              if (edu.text.includes("<") && edu.text.includes(">")) {
-                textHtml = `<div class="edu-content">${rich(edu.text)}</div>`;
-              } else {
-                const lines = edu.text
-                  .split("\n")
-                  .filter((l: string) => l.trim() !== "");
-                if (lines.some((l: string) => l.trim().startsWith("-"))) {
-                  textHtml = `<ul class="edu-content" style="list-style-type:disc!important;padding-left:18px;margin:4px 0;">${lines
-                    .map((l: string) => {
-                      const t = l.trim();
-                      const c = t.startsWith("-") ? t.substring(1).trim() : t;
-                      return c
-                        ? `<li style="margin-bottom:3px;">${c}</li>`
-                        : "";
-                    })
-                    .join("")}</ul>`;
-                } else {
-                  textHtml = `<div class="edu-content" style="white-space:pre-wrap">${rich(edu.text)}</div>`;
+              .map((edu: any, i: number) => {
+                const formattedGrade = formatGradeToCgpdAndPercentage(
+                  edu.grade || "",
+                );
+                let textHtml = "";
+                if (edu.text) {
+                  if (edu.text.includes("<") && edu.text.includes(">")) {
+                    textHtml = `<div class="edu-content">${rich(edu.text)}</div>`;
+                  } else {
+                    const lines = edu.text
+                      .split("\n")
+                      .filter((l: string) => l.trim() !== "");
+                    if (lines.some((l: string) => l.trim().startsWith("-"))) {
+                      textHtml = `<ul class="edu-content" style="list-style-type:disc!important;padding-left:18px;margin:4px 0;">${lines
+                        .map((l: string) => {
+                          const t = l.trim();
+                          const c = t.startsWith("-") ? t.substring(1).trim() : t;
+                          return c
+                            ? `<li style="margin-bottom:3px;">${c}</li>`
+                            : "";
+                        })
+                        .join("")}</ul>`;
+                    } else {
+                      textHtml = `<div class="edu-content" style="white-space:pre-wrap">${rich(edu.text)}</div>`;
+                    }
+                  }
                 }
-              }
-            }
-            return `
+                return `
             <div class="entry-block" data-block-id="edu-${i}">
               <div class="entry-top-row">
                 <div class="entry-title">${edu.schoolname || ""}</div>
@@ -1736,8 +1736,8 @@ const TemplateEight: React.FC<TemplateEightProps> = ({
               ${textHtml}
             </div>
           `;
-          })
-          .join("")}
+              })
+              .join("")}
       </div>
     `
             : "",
@@ -1793,12 +1793,11 @@ const TemplateEight: React.FC<TemplateEightProps> = ({
       let bodyContent = `
       <div class="header-block" data-block-id="header">
         <div class="header-name">${contact?.firstName || ""} ${contact?.lastName || ""}</div>
-        <div class="header-jobtitle">${
-          contact?.jobTitle
-            ? typeof contact.jobTitle === "string"
-              ? contact.jobTitle
-              : (contact.jobTitle as any)?.name || ""
-            : ""
+        <div class="header-jobtitle">${contact?.jobTitle
+          ? typeof contact.jobTitle === "string"
+            ? contact.jobTitle
+            : (contact.jobTitle as any)?.name || ""
+          : ""
         }</div>
         <div class="header-meta">
           ${addressStr ? `<span class="header-meta-item">${addressStr}</span>` : ""}
@@ -2262,15 +2261,47 @@ const TemplateEight: React.FC<TemplateEightProps> = ({
   //   }
   // };
 
+  // const handleDownload = async (): Promise<void> => {
+  //   setIsDownloading(true);
+  //   try {
+  //     // Don't send the clip/shift snapshot (buildPDFPagesHTML) to WeasyPrint —
+  //     // it can't reliably clip absolutely-positioned overflow during
+  //     // pagination, which causes extra/duplicated pages. Let WeasyPrint
+  //     // paginate the natural document flow itself via @page + break rules.
+  //     const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
+  //     const pdfHtml = generateHTML(true, pageBreakIds);
+
+  //     const res: AxiosResponse<Blob> = await apiClient.post(
+  //       `/candidates/generate-pdf`,
+  //       { html: pdfHtml },
+  //       { responseType: "blob" },
+  //     );
+  //     const url = URL.createObjectURL(res.data);
+  //     const a = document.createElement("a");
+  //     a.href = url;
+  //     a.download = `Resume_${contact?.firstName || ""}_${contact?.lastName || ""}.pdf`;
+  //     document.body.appendChild(a);
+  //     a.click();
+  //     document.body.removeChild(a);
+  //     URL.revokeObjectURL(url);
+  //   } catch (err) {
+  //     console.error("PDF error:", err);
+  //     alert("Failed to generate PDF. Please try again.");
+  //   } finally {
+  //     setIsDownloading(false);
+  //   }
+  // };
+
+
   const handleDownload = async (): Promise<void> => {
   setIsDownloading(true);
   try {
-    // Don't send the clip/shift snapshot (buildPDFPagesHTML) to WeasyPrint —
-    // it can't reliably clip absolutely-positioned overflow during
-    // pagination, which causes extra/duplicated pages. Let WeasyPrint
-    // paginate the natural document flow itself via @page + break rules.
-    const pageBreakIds: string[] = (window as any).__resumePageBreakIds || [];
-    const pdfHtml = generateHTML(true, pageBreakIds);
+    // No browser-computed pageBreakIds — WeasyPrint's text layout doesn't
+    // match the browser's, so forcing a break at a browser-measured offset
+    // creates a near-empty page and pushes the rest onto an extra page.
+    // Let WeasyPrint paginate the natural flow using the CSS avoid-rules
+    // already in buildCSS (.entry-block has page-break-inside: avoid, etc).
+    const pdfHtml = generateHTML(true, []);
 
     const res: AxiosResponse<Blob> = await apiClient.post(
       `/candidates/generate-pdf`,
@@ -2306,48 +2337,47 @@ const TemplateEight: React.FC<TemplateEightProps> = ({
       />
 
       {/* ── Download button ──────────────────────────────────────────────── */}
-            {!isThumbnail && lastSegment === "download-resume" && (
+      {!isThumbnail && lastSegment === "download-resume" && (
 
-      <div className="text-center my-8">
-        <motion.button
-          onClick={handleDownload}
-          disabled={isDownloading}
-          whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
-          whileTap={!isDownloading ? { scale: 0.98 } : {}}
-          className={`
+        <div className="text-center my-8">
+          <motion.button
+            onClick={handleDownload}
+            disabled={isDownloading}
+            whileHover={!isDownloading ? { scale: 1.02, y: -2 } : {}}
+            whileTap={!isDownloading ? { scale: 0.98 } : {}}
+            className={`
             relative overflow-hidden group px-8 py-4 rounded-2xl font-semibold
             text-white transition-all duration-300 shadow-lg
-            ${
-              isDownloading
+            ${isDownloading
                 ? "bg-gray-400 cursor-not-allowed opacity-80"
                 : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-2xl hover:from-emerald-600 hover:to-teal-600 cursor-pointer"
-            }
+              }
           `}
-        >
-          {!isDownloading && (
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          )}
-          <div className="relative flex items-center justify-center gap-3 text-lg">
-            {isDownloading ? (
-              <>
-                <FaSpinner className="animate-spin text-xl" />
-                <span>Generating PDF …</span>
-              </>
-            ) : (
-              <>
-                <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
-                <span>Download Resume</span>
-                <span className="text-sm opacity-75 font-light ml-1">
-                  PDF
-                </span>
-              </>
+          >
+            {!isDownloading && (
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
             )}
-          </div>
-        </motion.button>
-      </div>
+            <div className="relative flex items-center justify-center gap-3 text-lg">
+              {isDownloading ? (
+                <>
+                  <FaSpinner className="animate-spin text-xl" />
+                  <span>Generating PDF …</span>
+                </>
+              ) : (
+                <>
+                  <FaDownload className="text-xl group-hover:translate-y-0.5 transition-transform" />
+                  <span>Download Resume</span>
+                  <span className="text-sm opacity-75 font-light ml-1">
+                    PDF
+                  </span>
+                </>
+              )}
+            </div>
+          </motion.button>
+        </div>
 
-          )}
-          
+      )}
+
       {isThumbnail ? (
         // ── THUMBNAIL MODE ──────────────────────────────────────────────
         <div

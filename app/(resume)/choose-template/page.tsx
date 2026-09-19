@@ -216,9 +216,8 @@ const TemplatePreviewBottomSheet = React.memo(
               </button>
               <button
                 onClick={handleUseTemplate}
-                className={`flex-1 px-2 text-xs sm:text-sm ${
-                  isAccessible && !isPlanExpired ? primaryBtn : amberBtn
-                }`}
+                className={`flex-1 px-2 text-xs sm:text-sm ${isAccessible && !isPlanExpired ? primaryBtn : amberBtn
+                  }`}
               >
                 {isAccessible && !isPlanExpired ? (
                   <>
@@ -266,11 +265,10 @@ const TemplatePreviewBottomSheet = React.memo(
                   </h3>
                   {isPremium && (
                     <div
-                      className={`${
-                        PLAN_CONFIG[
-                          requiredPlanLabel.toLowerCase() as keyof typeof PLAN_CONFIG
-                        ]?.badgeColor || "bg-gray-100 text-gray-700"
-                      } px-2 py-0.5 rounded-full text-[11px] font-semibold flex items-center gap-1`}
+                      className={`${PLAN_CONFIG[
+                        requiredPlanLabel.toLowerCase() as keyof typeof PLAN_CONFIG
+                      ]?.badgeColor || "bg-gray-100 text-gray-700"
+                        } px-2 py-0.5 rounded-full text-[11px] font-semibold flex items-center gap-1`}
                     >
                       {requiredPlanLabel === "Premium" ? (
                         <Crown className="w-3 h-3" />
@@ -355,7 +353,6 @@ function Choose_template() {
   } | null>(null);
   const [previewTemplate, setPreviewTemplate] = useState<Template | null>(null);
   const [showPreview, setShowPreview] = useState(false);
-  const [showInitialPopup, setShowInitialPopup] = useState(true);
   const [showUploadPopup, setShowUploadPopup] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -475,12 +472,12 @@ function Choose_template() {
   //   return currentPlan === "premium" && !subscriptionStatus?.isExpired;
   // }, [currentPlan, subscriptionStatus]);
   const canUserUpload = useMemo((): boolean => {
-  const userDetails = getLocalStorage<User>("user_details");
-  if (!userDetails?.id) return false; // not logged in
-  if (subscriptionStatus?.isExpired) return false; // expired
-  if (currentPlan === "no_plan") return false; // no plan
-  return PLAN_CONFIG[currentPlan].canUpload; // free, pro, premium → true
-}, [currentPlan, subscriptionStatus]);
+    const userDetails = getLocalStorage<User>("user_details");
+    if (!userDetails?.id) return false; // not logged in
+    if (subscriptionStatus?.isExpired) return false; // expired
+    if (currentPlan === "no_plan") return false; // no plan
+    return PLAN_CONFIG[currentPlan].canUpload; // free, pro, premium → true
+  }, [currentPlan, subscriptionStatus]);
 
   const getAvailableTemplatesCount = useMemo((): number => {
     if (currentPlan === "no_plan") return 0;
@@ -580,7 +577,6 @@ function Choose_template() {
       return;
     }
 
-    setShowInitialPopup(false);
     setShowUploadPopup(true);
   }, [subscriptionStatus, canUserUpload]);
 
@@ -623,11 +619,11 @@ function Choose_template() {
       //   return;
       // }
 
-          // ✅ CHANGED: use canUserUpload instead of isPremiumUser
-    if (!canUserUpload || subscriptionStatus?.isExpired) {
-      setShowPlanRequiredPopup(true);
-      return;
-    }
+      // ✅ CHANGED: use canUserUpload instead of isPremiumUser
+      if (!canUserUpload || subscriptionStatus?.isExpired) {
+        setShowPlanRequiredPopup(true);
+        return;
+      }
 
       if (!isValidFileType(file)) {
         setErrorMessage("Please upload a PDF file");
@@ -683,11 +679,11 @@ function Choose_template() {
 
         // Success handling
         const parsedResumeData = response.data.parsed;
-        console.log("parsedResumeData",parsedResumeData)
+        console.log("parsedResumeData", parsedResumeData)
         const convertedData =
           convertParsedResumeToFrontendFormat(parsedResumeData);
 
-          console.log("convertedData",convertedData)
+        console.log("convertedData", convertedData)
 
         if (convertedData.contact) setContact(convertedData.contact);
         if (convertedData.experiences)
@@ -794,7 +790,7 @@ function Choose_template() {
       }
     },
     [
-        canUserUpload, // ✅ CHANGED: was isPremiumUser
+      canUserUpload, // ✅ CHANGED: was isPremiumUser
 
       // isPremiumUser,
       subscriptionStatus,
@@ -847,7 +843,6 @@ function Choose_template() {
   useEffect(() => {
     const isOpen = Boolean(
       showPreview ||
-      showInitialPopup ||
       showUploadPopup ||
       showUpgradePopup ||
       showLoginPrompt ||
@@ -859,7 +854,6 @@ function Choose_template() {
     return () => document.body.classList.remove("overflow-hidden");
   }, [
     showPreview,
-    showInitialPopup,
     showUploadPopup,
     showUpgradePopup,
     showLoginPrompt,
@@ -1005,226 +999,7 @@ function Choose_template() {
           )}
       </AnimatePresence>
 
-      {/* ============================================================
-          INITIAL POPUP 
-          ============================================================ */}
-      <AnimatePresence>
-        {showInitialPopup && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[150] flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xl overflow-y-auto"
-            onClick={() => setShowInitialPopup(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.9, y: 20, opacity: 0 }}
-              animate={{ scale: 1, y: 0, opacity: 1 }}
-              exit={{ scale: 0.9, y: 20, opacity: 0 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="bg-white rounded-2xl sm:rounded-3xl max-w-4xl w-full shadow-2xl mx-auto my-4 sm:my-6 md:my-8 overflow-hidden"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="relative bg-gradient-to-br from-indigo-700 via-indigo-600 to-purple-700 pt-6 sm:pt-8 pb-5 sm:pb-6 md:pb-8 px-4 sm:px-6 md:px-8 text-white">
-                <button
-                  onClick={() => setShowInitialPopup(false)}
-                  className="absolute top-2 right-2 sm:top-3 sm:right-3 md:top-4 md:right-4 p-1.5 sm:p-2 hover:bg-white/20 rounded-lg sm:rounded-xl transition-all duration-200 z-10"
-                >
-                  <X className="w-4 h-4 sm:w-5 sm:h-5" />
-                </button>
-
-                <div className="text-center">
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                    className="inline-flex items-center gap-1.5 max-sm:hidden sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-white/20 rounded-full text-white text-[10px] sm:text-sm font-semibold mb-3 sm:mb-4"
-                  >
-                    <IoRocket className="w-3 h-3 sm:w-4 sm:h-4" />
-                    <span>AI-POWERED RESUME BUILDER</span>
-                  </motion.div>
-                  <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold mb-2 sm:mb-3 px-2">
-                    Let's Build Your Job Winning Resume
-                  </h2>
-                  <p className="text-white/80 text-xs sm:text-sm md:text-base max-w-lg mx-auto px-2">
-                    Choose how you want to create your resume and get interview
-                    ready in minutes
-                  </p>
-                </div>
-              </div>
-
-              <div className="overflow-y-auto max-h-[60vh] sm:max-h-[50vh] md:max-h-[55vh] lg:max-h-[60vh]">
-                <div className="p-4 sm:p-6 md:p-8">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                    {/* Create New Resume Option */}
-                    <motion.div
-                      onClick={() => setShowInitialPopup(false)}
-                      initial={{ x: -20, opacity: 0 }}
-                      animate={{ x: 0, opacity: 1 }}
-                      transition={{ delay: 0.3 }}
-                      whileHover={{ y: -5 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="group cursor-pointer rounded-xl sm:rounded-2xl bg-gradient-to-br from-indigo-50 to-indigo-100/30 p-4 sm:p-5 md:p-6 hover:shadow-xl transition-all duration-300 border border-indigo-100"
-                    >
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-gradient-to-r from-indigo-600 to-indigo-500 rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-4 shadow-lg group-hover:scale-110 transition-transform">
-                        <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 text-white" />
-                      </div>
-                      <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-gray-900 mb-1 sm:mb-2">
-                        Create New Resume
-                      </h3>
-                      <p className="text-gray-600 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2 sm:line-clamp-3 md:line-clamp-none">
-                        No experience? No problem. AI will build your resume
-                        with the right skills, projects, and format
-                      </p>
-                      <button className="flex items-center text-indigo-600 font-semibold text-sm sm:text-base group-hover:gap-2 transition-all cursor-pointer">
-                        Get started
-                        <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-1 group-hover:translate-x-1 transition-transform" />
-                      </button>
-                    </motion.div>
-
-                    {/* Upload Existing Resume Option */}
-                    {/* <motion.div
-                      initial={{ x: 20, opacity: 0 }}
-                      animate={{ x: 0, opacity: 1 }}
-                      transition={{ delay: 0.4 }}
-                      whileHover={{ y: -5 }}
-                      whileTap={{ scale: 0.98 }}
-                      className={`rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 transition-all duration-300 ${
-                        isPremiumUser && !subscriptionStatus?.isExpired
-                          ? "group cursor-pointer bg-gradient-to-br from-purple-50 to-indigo-50/30 hover:shadow-xl border border-purple-100"
-                          : "bg-gray-100 opacity-80 border border-gray-200"
-                      }`}
-                      onClick={handleUploadClick}
-                    >
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-gradient-to-r from-purple-600 to-indigo-500 rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-4 shadow-lg">
-                        {(!isPremiumUser || subscriptionStatus?.isExpired) && (
-                          <Lock className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 text-white/70" />
-                        )}
-                        {isPremiumUser && !subscriptionStatus?.isExpired && (
-                          <Upload className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 text-white" />
-                        )}
-                      </div>
-                      <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-gray-900 mb-1 sm:mb-2">
-                        {subscriptionStatus?.isExpired
-                          ? "Regain Access to AI Upload"
-                          : "Improve My Existing Resume"}
-                      </h3>
-                      <p className="text-gray-600 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2 sm:line-clamp-3 md:line-clamp-none">
-                        {subscriptionStatus?.isExpired
-                          ? "Your subscription has ended. Renew to let AI optimize your resume instantly"
-                          : "Already have a resume? Upload it and let AI rewrite, fix, and optimize it for better results"}
-                      </p>
-                      {(!isPremiumUser || subscriptionStatus?.isExpired) && (
-                        <div className="inline-flex items-center gap-1.5 bg-amber-50 border border-amber-200 rounded-lg px-2 py-1 mb-2">
-                          <Crown className="w-3 h-3 text-amber-600" />
-                          <span className="text-amber-700 text-xs font-medium">
-                            {subscriptionStatus?.isExpired
-                              ? "Renew to Continue"
-                              : "Premium Feature"}
-                          </span>
-                        </div>
-                      )}
-                      <button
-                        className={`flex items-center ${
-                          isPremiumUser && !subscriptionStatus?.isExpired
-                            ? "text-purple-600"
-                            : "text-gray-500"
-                        } font-semibold text-sm sm:text-base transition-all cursor-pointer`}
-                      >
-                        {isPremiumUser && !subscriptionStatus?.isExpired
-                          ? "Upload now"
-                          : subscriptionStatus?.isExpired
-                            ? "Renew Subscription →"
-                            : "Upgrade to use"}
-                        <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-1" />
-                      </button>
-                    </motion.div> */}
-
-                    {/* Upload Existing Resume Option */}
-<motion.div
-  initial={{ x: 20, opacity: 0 }}
-  animate={{ x: 0, opacity: 1 }}
-  transition={{ delay: 0.4 }}
-  whileHover={{ y: -5 }}
-  whileTap={{ scale: 0.98 }}
-  className={`rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 transition-all duration-300 ${
-    canUserUpload // ✅ CHANGED
-      ? "group cursor-pointer bg-gradient-to-br from-purple-50 to-indigo-50/30 hover:shadow-xl border border-purple-100"
-      : "bg-gray-100 opacity-80 border border-gray-200"
-  }`}
-  onClick={handleUploadClick}
->
-  <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-gradient-to-r from-purple-600 to-indigo-500 rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-4 shadow-lg">
-    {!canUserUpload && ( // ✅ CHANGED
-      <Lock className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 text-white/70" />
-    )}
-    {canUserUpload && ( // ✅ CHANGED
-      <Upload className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 text-white" />
-    )}
-  </div>
-  <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-gray-900 mb-1 sm:mb-2">
-    {subscriptionStatus?.isExpired
-      ? "Regain Access to AI Upload"
-      : "Improve My Existing Resume"}
-  </h3>
-  <p className="text-gray-600 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2 sm:line-clamp-3 md:line-clamp-none">
-    {subscriptionStatus?.isExpired
-      ? "Your subscription has ended. Renew to let AI optimize your resume instantly"
-      : "Already have a resume? Upload it and let AI rewrite, fix, and optimize it for better results"}
-  </p>
-  {!canUserUpload && ( // ✅ CHANGED
-    <div className="inline-flex items-center gap-1.5 bg-amber-50 border border-amber-200 rounded-lg px-2 py-1 mb-2">
-      <Crown className="w-3 h-3 text-amber-600" />
-      <span className="text-amber-700 text-xs font-medium">
-        {subscriptionStatus?.isExpired
-          ? "Renew to Continue"
-          : "Upgrade to use"}
-      </span>
-    </div>
-  )}
-  <button
-    className={`flex items-center ${
-      canUserUpload // ✅ CHANGED
-        ? "text-purple-600"
-        : "text-gray-500"
-    } font-semibold text-sm sm:text-base transition-all cursor-pointer`}
-  >
-    {canUserUpload
-      ? "Upload now"
-      : subscriptionStatus?.isExpired
-        ? "Renew Subscription →"
-        : "Upgrade to use"}
-    <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-1" />
-  </button>
-</motion.div>
-                  </div>
-
-                  <div className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-gray-100 text-center">
-                    <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-[10px] sm:text-xs text-gray-500">
-                      <div className="flex items-center gap-1.5 sm:gap-2">
-                        <LuUsers className="w-3 h-3 sm:w-4 sm:h-4 text-indigo-500 shrink-0" />
-                        <span className="whitespace-nowrap">
-                          Built for freshers & experienced
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-1.5 sm:gap-2">
-                        <AiOutlineThunderbolt className="w-3 h-3 sm:w-4 sm:h-4 text-indigo-500 shrink-0" />
-                        <span className="whitespace-nowrap">AI powered</span>
-                      </div>
-                      <div className="flex items-center gap-1.5 sm:gap-2">
-                        <PiReadCvLogo className="w-3 h-3 sm:w-4 sm:h-4 text-indigo-500 shrink-0" />
-                        <span className="whitespace-nowrap">
-                          Ready in 3 minutes
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+   
 
       {/* ============================================================
           LOGIN PROMPT POPUP 
@@ -1292,49 +1067,49 @@ function Choose_template() {
         {(showPlanRequiredPopup ||
           (showUpgradePopup &&
             selectedLockedTemplate?.requiredPlan === "Renew")) && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[200] flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xl overflow-y-auto"
-            onClick={() => {
-              setShowPlanRequiredPopup(false);
-              setShowUpgradePopup(false);
-            }}
-          >
             <motion.div
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="bg-white rounded-2xl sm:rounded-3xl max-w-md w-full shadow-2xl overflow-hidden my-4 sm:my-8"
-              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[200] flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xl overflow-y-auto"
+              onClick={() => {
+                setShowPlanRequiredPopup(false);
+                setShowUpgradePopup(false);
+              }}
             >
-              <div className="bg-gradient-to-r from-amber-500 to-orange-500 p-5 sm:p-6 md:p-8 text-center">
-                <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-white/20 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                  <Gift className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 text-white" />
+              <motion.div
+                initial={{ scale: 0.9, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.9, y: 20 }}
+                transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                className="bg-white rounded-2xl sm:rounded-3xl max-w-md w-full shadow-2xl overflow-hidden my-4 sm:my-8"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="bg-gradient-to-r from-amber-500 to-orange-500 p-5 sm:p-6 md:p-8 text-center">
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-white/20 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                    <Gift className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 text-white" />
+                  </div>
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-1 sm:mb-2">
+                    {subscriptionStatus?.isExpired
+                      ? "Your Journey Continues Here!"
+                      : "Premium Feature"}
+                  </h3>
+                  <p className="text-white/80 text-xs sm:text-sm">
+                    {subscriptionStatus?.isExpired
+                      ? "Renew your subscription to unlock everything again"
+                      : "Unlock AI-powered resume optimization"}
+                  </p>
                 </div>
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-1 sm:mb-2">
-                  {subscriptionStatus?.isExpired
-                    ? "Your Journey Continues Here!"
-                    : "Premium Feature"}
-                </h3>
-                <p className="text-white/80 text-xs sm:text-sm">
-                  {subscriptionStatus?.isExpired
-                    ? "Renew your subscription to unlock everything again"
-                    : "Unlock AI-powered resume optimization"}
-                </p>
-              </div>
-              <div className="p-5 sm:p-6 text-center">
-                <div className="mb-4 sm:mb-6">
-                  <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl p-4 mb-4">
-                    <div className="flex items-center justify-center gap-2 mb-2">
-                      <Zap className="w-4 h-4 text-amber-600" />
-                      <span className="text-sm font-semibold text-gray-900">
-                        What you're missing:
-                      </span>
-                    </div>
-                    {/* <div className="space-y-2 text-left">
+                <div className="p-5 sm:p-6 text-center">
+                  <div className="mb-4 sm:mb-6">
+                    <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl p-4 mb-4">
+                      <div className="flex items-center justify-center gap-2 mb-2">
+                        <Zap className="w-4 h-4 text-amber-600" />
+                        <span className="text-sm font-semibold text-gray-900">
+                          What you're missing:
+                        </span>
+                      </div>
+                      {/* <div className="space-y-2 text-left">
                       <div className="flex items-center gap-2 text-xs text-gray-700">
                         <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
                         <span>Upload & AI-optimize existing resumes</span>
@@ -1352,56 +1127,56 @@ function Choose_template() {
                       </div>
                     </div> */}
 
-                    <div className="space-y-2 text-left">
-  <div className="flex items-center gap-2 text-xs text-gray-700">
-    <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
-    <span>Access to all {templateData.length} professional templates</span>
-  </div>
-  <div className="flex items-center gap-2 text-xs text-gray-700">
-    <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
-    <span>Priority support & faster processing</span>
-  </div>
-  <div className="flex items-center gap-2 text-xs text-gray-700">
-    <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
-    <span>Advanced AI resume optimization</span>
-  </div>
-</div>
-                  </div>
+                      <div className="space-y-2 text-left">
+                        <div className="flex items-center gap-2 text-xs text-gray-700">
+                          <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
+                          <span>Access to all {templateData.length} professional templates</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-gray-700">
+                          <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
+                          <span>Priority support & faster processing</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-gray-700">
+                          <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
+                          <span>Advanced AI resume optimization</span>
+                        </div>
+                      </div>
+                    </div>
 
-                  <p className="text-gray-600 text-xs sm:text-sm">
-                    {subscriptionStatus?.isExpired
-                      ? `Your ${usersCurrentPlan?.toUpperCase()} plan gave you amazing results. Ready to continue your success story?`
-                      : "Upgrade to Premium to upload your existing resume and let our AI optimize it for better results"}
-                  </p>
+                    <p className="text-gray-600 text-xs sm:text-sm">
+                      {subscriptionStatus?.isExpired
+                        ? `Your ${usersCurrentPlan?.toUpperCase()} plan gave you amazing results. Ready to continue your success story?`
+                        : "Upgrade to Premium to upload your existing resume and let our AI optimize it for better results"}
+                    </p>
+                  </div>
+                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                    <button
+                      onClick={() => {
+                        setShowPlanRequiredPopup(false);
+                        setShowUpgradePopup(false);
+                      }}
+                      className="flex-1 py-2.5 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-all cursor-pointer text-xs sm:text-sm"
+                    >
+                      Maybe Later
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowPlanRequiredPopup(false);
+                        setShowUpgradePopup(false);
+                        router.push("/choose-plan");
+                      }}
+                      className="flex-1 py-2.5 sm:py-3 bg-gradient-to-r from-amber-600 to-orange-500 text-white rounded-lg sm:rounded-xl font-medium hover:shadow-lg transition-all cursor-pointer text-xs sm:text-sm flex items-center justify-center gap-2"
+                    >
+                      <TrendingUp className="w-3.5 h-3.5" />
+                      {subscriptionStatus?.isExpired
+                        ? "Renew Now & Save 20%"
+                        : "Upgrade to Premium"}
+                    </button>
+                  </div>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-                  <button
-                    onClick={() => {
-                      setShowPlanRequiredPopup(false);
-                      setShowUpgradePopup(false);
-                    }}
-                    className="flex-1 py-2.5 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-all cursor-pointer text-xs sm:text-sm"
-                  >
-                    Maybe Later
-                  </button>
-                  <button
-                    onClick={() => {
-                      setShowPlanRequiredPopup(false);
-                      setShowUpgradePopup(false);
-                      router.push("/choose-plan");
-                    }}
-                    className="flex-1 py-2.5 sm:py-3 bg-gradient-to-r from-amber-600 to-orange-500 text-white rounded-lg sm:rounded-xl font-medium hover:shadow-lg transition-all cursor-pointer text-xs sm:text-sm flex items-center justify-center gap-2"
-                  >
-                    <TrendingUp className="w-3.5 h-3.5" />
-                    {subscriptionStatus?.isExpired
-                      ? "Renew Now & Save 20%"
-                      : "Upgrade to Premium"}
-                  </button>
-                </div>
-              </div>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
+          )}
       </AnimatePresence>
 
       {/* ============================================================
@@ -1517,15 +1292,14 @@ function Choose_template() {
 
               <div className="p-4 sm:p-5 md:p-6">
                 <div
-                  className={`relative border-2 border-dashed rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8 text-center transition-all duration-300 ${
-                    uploadStatus === "error"
-                      ? "border-red-500 bg-red-50/40"
-                      : uploadStatus === "success"
-                        ? "border-emerald-500 bg-emerald-50/40"
-                        : isDragging
-                          ? "border-indigo-500 bg-indigo-50"
-                          : "border-gray-300 hover:border-indigo-400 hover:bg-indigo-50/30"
-                  }`}
+                  className={`relative border-2 border-dashed rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8 text-center transition-all duration-300 ${uploadStatus === "error"
+                    ? "border-red-500 bg-red-50/40"
+                    : uploadStatus === "success"
+                      ? "border-emerald-500 bg-emerald-50/40"
+                      : isDragging
+                        ? "border-indigo-500 bg-indigo-50"
+                        : "border-gray-300 hover:border-indigo-400 hover:bg-indigo-50/30"
+                    }`}
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
@@ -1617,16 +1391,16 @@ function Choose_template() {
 
                       {errorMessage !==
                         "Daily resume upload limit reached. Please try again tomorrow." && (
-                        <button
-                          onClick={() => {
-                            resetUploadState();
-                            document.getElementById("file-upload")?.click();
-                          }}
-                          className="px-4 sm:px-5 py-2 bg-red-600 text-white rounded-lg text-xs sm:text-sm font-medium hover:bg-red-700 transition"
-                        >
-                          Try Again
-                        </button>
-                      )}
+                          <button
+                            onClick={() => {
+                              resetUploadState();
+                              document.getElementById("file-upload")?.click();
+                            }}
+                            className="px-4 sm:px-5 py-2 bg-red-600 text-white rounded-lg text-xs sm:text-sm font-medium hover:bg-red-700 transition"
+                          >
+                            Try Again
+                          </button>
+                        )}
                     </div>
                   ) : (
                     <div className="text-center">
@@ -1827,38 +1601,37 @@ function Choose_template() {
           </button> */}
 
           <div className="flex-1 text-center sm:text-left">
-  <p className="text-sm font-semibold text-slate-900">
-    {subscriptionStatus?.isExpired
-      ? "Your AI resume optimization is waiting"
-      : "Already have a resume?"}
-  </p>
-  <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-    {subscriptionStatus?.isExpired
-      ? "Renew now and get 20% off plus a free resume review"
-      : canUserUpload // ✅ CHANGED
-        ? "Upload it and let AI rewrite, fix, and optimize it for better results"
-        : "Login or subscribe to upload and improve it with AI"}
-  </p>
-</div>
-<button
-  onClick={handleUploadClick}
-  className={`w-full sm:w-auto ${
-    subscriptionStatus?.isExpired ? amberBtn : primaryBtn
-  }`}
->
-  <Upload className="w-4 h-4" />
-  <span>
-    {subscriptionStatus?.isExpired
-      ? "Renew to unlock"
-      : "Upload & improve"}
-  </span>
-  {!subscriptionStatus?.isExpired && canUserUpload && ( // ✅ CHANGED
-    <ArrowRight className="w-4 h-4" />
-  )}
-  {!canUserUpload && !subscriptionStatus?.isExpired && ( // ✅ CHANGED
-    <Lock className="w-3.5 h-3.5" />
-  )}
-</button>
+            <p className="text-sm font-semibold text-slate-900">
+              {subscriptionStatus?.isExpired
+                ? "Your AI resume optimization is waiting"
+                : "Already have a resume?"}
+            </p>
+            <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+              {subscriptionStatus?.isExpired
+                ? "Renew now and get 20% off plus a free resume review"
+                : canUserUpload // ✅ CHANGED
+                  ? "Upload it and let AI rewrite, fix, and optimize it for better results"
+                  : "Login or subscribe to upload and improve it with AI"}
+            </p>
+          </div>
+          <button
+            onClick={handleUploadClick}
+            className={`w-full sm:w-auto ${subscriptionStatus?.isExpired ? amberBtn : primaryBtn
+              }`}
+          >
+            <Upload className="w-4 h-4" />
+            <span>
+              {subscriptionStatus?.isExpired
+                ? "Renew to unlock"
+                : "Upload & improve"}
+            </span>
+            {!subscriptionStatus?.isExpired && canUserUpload && ( // ✅ CHANGED
+              <ArrowRight className="w-4 h-4" />
+            )}
+            {!canUserUpload && !subscriptionStatus?.isExpired && ( // ✅ CHANGED
+              <Lock className="w-3.5 h-3.5" />
+            )}
+          </button>
         </motion.div>
       </div>
 
@@ -1908,11 +1681,10 @@ function Choose_template() {
                     >
                       {isPremium && (
                         <div
-                          className={`absolute top-2.5 right-2.5 ${
-                            isPlanExpired
-                              ? "bg-amber-100 text-amber-700"
-                              : PLAN_CONFIG[requiredPlan].badgeColor
-                          } px-2 py-0.5 rounded-full text-[10px] font-semibold z-10 flex items-center gap-1 shadow-sm`}
+                          className={`absolute top-2.5 right-2.5 ${isPlanExpired
+                            ? "bg-amber-100 text-amber-700"
+                            : PLAN_CONFIG[requiredPlan].badgeColor
+                            } px-2 py-0.5 rounded-full text-[10px] font-semibold z-10 flex items-center gap-1 shadow-sm`}
                         >
                           {requiredPlan === "premium" ? (
                             <Crown className="w-2.5 h-2.5" />

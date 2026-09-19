@@ -2392,6 +2392,9 @@ interface TemplateFifteenProps extends ResumeProps {
   viewMode?: boolean;
 }
 
+
+
+
 const TemplateFifteen: React.FC<TemplateFifteenProps> = ({
   alldata,
   customization,
@@ -2555,28 +2558,45 @@ const TemplateFifteen: React.FC<TemplateFifteenProps> = ({
     /* ── SECTION TITLES ── */
     .t15-section-content { margin-bottom: 4px; }
 
-    .t15-stitle {
-      font-size: 10px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: #e53e3e;
-      margin-top: 18px;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      page-break-after: avoid; break-after: avoid;
-    }
+    
 
     .t15-stitle:first-child { margin-top: 0; }
 
-    .t15-stitle::after {
-      content: '';
-      flex: 1;
-      height: 1.5px;
-      background: #fed7d7;
-    }
+    .t15-stitle-row {
+  display: table;
+  width: 100%;
+  margin-top: 18px;
+  margin-bottom: 10px;
+  page-break-after: avoid;
+  break-after: avoid;
+}
+.t15-stitle-row:first-child { margin-top: 0; }
+
+.t15-stitle-label {
+  display: table-cell;
+  white-space: nowrap;
+  padding-right: 8px;
+  vertical-align: middle;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #e53e3e;
+}
+
+.t15-stitle-line {
+  display: table-cell;
+  width: 100%;
+  vertical-align: middle;
+}
+.t15-stitle-line::after {
+  content: '';
+  display: block;
+  height: 1.5px;
+  background: #fed7d7;
+}
+
+    
 
     /* ── SUMMARY ── */
     .t15-summary {
@@ -2624,23 +2644,6 @@ const TemplateFifteen: React.FC<TemplateFifteenProps> = ({
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-   
-
-
     .t15-entry {
   page-break-inside: avoid;
   break-inside: avoid;
@@ -2652,6 +2655,62 @@ const TemplateFifteen: React.FC<TemplateFifteenProps> = ({
 .t15-entry-title-wrap {
   page-break-inside: avoid;
   break-inside: avoid;
+}
+
+.t15-entry-title-wrap {
+  position: relative;
+  padding-left: 14px;
+  flex: 1;
+}
+
+.t15-entry-title-wrap::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 7px;
+  height: 7px;
+  background: #e53e3e;
+  border-radius: 50%;
+}
+
+
+.t15-entry {
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #fff0f0;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+.t15-entry:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+.t15-entry-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  page-break-after: avoid;
+  break-after: avoid;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+.t15-entry-title-wrap {
+  position: relative;
+  padding-left: 14px;
+  flex: 1;
+}
+.t15-entry-title-wrap::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 7px;
+  height: 7px;
+  background: #e53e3e;
+  border-radius: 50%;
 }
 
     .t15-dot {
@@ -2858,14 +2917,15 @@ const TemplateFifteen: React.FC<TemplateFifteenProps> = ({
 
       const summaryBlock = summary?.trim()
         ? `<div class="t15-section-content" data-block-id="summary">
-             <div class="t15-stitle">Summary</div>
+             ${sectionTitleHTML("Summary")}
+
              ${richText(summary.replace(/\\n/g, "<br>"), "t15-summary")}
            </div>`
         : "";
 
       const expBlock = experiences.length
         ? `<div class="t15-section-content" data-block-id="exp-section">
-             <div class="t15-stitle">Experience</div>
+             ${sectionTitleHTML("Experience")}
              ${experiences
                .map((exp: any, i: number) => {
                  const s = formatMonthYear(exp.startDate, false);
@@ -2880,7 +2940,6 @@ const TemplateFifteen: React.FC<TemplateFifteenProps> = ({
                  return `<div class="t15-entry" data-block-id="exp-${i}">
                    <div class="t15-entry-top">
                      <div class="t15-entry-title-wrap">
-                       <span class="t15-dot"></span>
                        <span class="t15-entry-title">${exp.jobTitle || ""}</span>
                      </div>
                      ${s || e ? `<div class="t15-entry-date">${s}${s && e ? " – " : ""}${e}</div>` : ""}
@@ -2895,14 +2954,13 @@ const TemplateFifteen: React.FC<TemplateFifteenProps> = ({
 
       const projBlock = projects.length
         ? `<div class="t15-section-content" data-block-id="proj-section">
-             <div class="t15-stitle">Projects</div>
+             ${sectionTitleHTML("Projects")}
              ${projects
                .map(
                  (p: any, i: number) => `
                <div class="t15-entry" data-block-id="proj-${i}">
                  <div class="t15-entry-top">
                    <div class="t15-entry-title-wrap">
-                     <span class="t15-dot"></span>
                      <span class="t15-entry-title">${p.title || ""}</span>
                    </div>
                    ${
@@ -2924,7 +2982,8 @@ const TemplateFifteen: React.FC<TemplateFifteenProps> = ({
 
       const eduBlock = educations.length
         ? `<div class="t15-section-content" data-block-id="edu-section">
-             <div class="t15-stitle">Education</div>
+             ${sectionTitleHTML("Education")}
+
              ${educations
                .map((edu: any, i: number) => {
                  const grade = formatGradeToCgpdAndPercentage(edu.grade || "");
@@ -2934,7 +2993,6 @@ const TemplateFifteen: React.FC<TemplateFifteenProps> = ({
                  return `<div class="t15-entry" data-block-id="edu-${i}">
                    <div class="t15-entry-top">
                      <div class="t15-entry-title-wrap">
-                       <span class="t15-dot"></span>
                        <span class="t15-entry-title">${edu.degree || ""}</span>
                      </div>
                      ${
@@ -2956,7 +3014,7 @@ const TemplateFifteen: React.FC<TemplateFifteenProps> = ({
         if (!hasSkillsContent()) return "";
         const cleanedSkills = cleanQuillHTML(skills);
         return `<div class="t15-section-content" data-block-id="skills-section">
-          <div class="t15-stitle">Skills</div>
+          ${sectionTitleHTML("Skills")}
           <div class="t15-skills-content" data-block-id="skills-content">${cleanedSkills}</div>
         </div>`;
       })();
@@ -2972,7 +3030,7 @@ const TemplateFifteen: React.FC<TemplateFifteenProps> = ({
               .map(
                 (s: any, i: number) => `
                 <div class="t15-section-content" data-block-id="custom-${i}">
-                  ${s.name ? `<div class="t15-stitle">${s.name}</div>` : ""}
+                  ${s.name ? sectionTitleHTML(s.name) : ""}
                   ${s.description ? richText(s.description, "t15-custom-section-content") : ""}
                 </div>`,
               )
@@ -3092,6 +3150,12 @@ const TemplateFifteen: React.FC<TemplateFifteenProps> = ({
     () => getFontLinkTag(activeFontFamily),
     [activeFontFamily],
   );
+
+  const sectionTitleHTML = (title: string) =>
+  `<div class="t15-stitle-row">
+     <span class="t15-stitle-label">${title}</span>
+     <span class="t15-stitle-line"></span>
+   </div>`;
 
   // ── Page splitter (reuses iframe, smart font wait, atomic units) ───────────
   const splitIntoPages = useCallback(

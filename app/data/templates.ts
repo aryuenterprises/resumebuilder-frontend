@@ -77,14 +77,14 @@ export const templateData: Template[] = [
   //   component: TemplateSix,
   // },
 
-  // {
-  //   id: 7,
-  //   style: "Modern Executive",
-  //   image: "/images/resume7.jpg",
-  //   description: "Bold name header with inline contact details.",
-  //   temp: "paid",
-  //   component: TemplateSeven,
-  // },
+  {
+    id: 7,
+    style: "Modern Executive",
+    image: "/images/resume7.jpg",
+    description: "Bold name header with inline contact details.",
+    temp: "paid",
+    component: TemplateSeven,
+  },
   {
     id: 8,
     style: "Clean Corporate",
